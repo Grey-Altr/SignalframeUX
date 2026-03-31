@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectName": "string -- project name from design brief",
+  "productType": "software | hardware | hybrid",
+  "outputRoot": "string -- path to output directory (e.g., ./pde-output or .planning/design)",
+  "mode": "standalone | pde-integrated",
+  "generatedAt": "2026-03-31T19:23:58.690Z",
+  "updatedAt": "2026-03-31T19:34:50.314Z",
+  "artifacts": {
+    "REC": {
+      "code": "REC",
+      "name": "Tool & MCP Recommendations",
+      "type": "recommendations",
+      "domain": "strategy",
+      "path": ".planning/design/strategy/REC-recommendations-v1.md",
+      "status": "draft",
+      "version": "1"
+    },
+    "CMP": {
+      "code": "CMP",
+      "name": "Competitive Landscape Analysis",
+      "type": "competitive",
+      "domain": "strategy",
+      "path": ".planning/design/strategy/CMP-competitive-v1.md",
+      "status": "draft",
+      "version": "1"
+    }
+  },
+  "tokenDependencyMap": {},
+  "designCoverage": "{\"hasDesignSystem\":false,\"hasWireframes\":false,\"hasFlows\":false,\"hasHardwareSpec\":false,\"hasCritique\":false,\"hasIterate\":false,\"hasHandoff\":false,\"hasIdeation\":false,\"hasCompetitive\":true,\"hasOpportunity\":false,\"hasMockup\":false,\"hasHigAudit\":false,\"hasRecommendations\":true}"
+}
