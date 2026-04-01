@@ -7,6 +7,7 @@ import { MarqueeBand } from "@/components/blocks/marquee-band";
 import { CodeSection } from "@/components/blocks/code-section";
 import { ComponentGrid } from "@/components/blocks/component-grid";
 import { Footer } from "@/components/layout/footer";
+import { CircuitDivider } from "@/components/animation/circuit-divider";
 
 export default function HomePage() {
   return (
@@ -15,9 +16,12 @@ export default function HomePage() {
       <main>
         <Hero />
         <ManifestoBand />
+        <CircuitDivider variant="default" />
         <DualLayer />
+        <CircuitDivider variant="minimal" />
         <StatsBand />
         <MarqueeBand />
+        <CircuitDivider variant="complex" />
         <CodeSection />
         <ComponentGrid />
       </main>

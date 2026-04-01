@@ -49,15 +49,12 @@ function useScrambleText(target: string, delay: number, duration = 600) {
   return text;
 }
 
-function ScrambleLink({ href, label, delay }: { href: string; label: string; delay: number }) {
+function NavLink({ href, label, delay }: { href: string; label: string; delay: number }) {
   const [text, setText] = useState(label);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const loadedRef = useRef(false);
 
-  // Load scramble
+  // Load scramble only — no hover scramble
   useEffect(() => {
     const chars = label.split("");
-    // Start scrambled
     setText(chars.map(() => SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)]).join(""));
 
     const timeout = setTimeout(() => {
@@ -71,45 +68,21 @@ function ScrambleLink({ href, label, delay }: { href: string; label: string; del
           return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
         });
         setText(result.join(""));
-        if (settled.size >= chars.length) { clearInterval(iv); loadedRef.current = true; }
+        if (settled.size >= chars.length) clearInterval(iv);
       }, 40);
     }, delay);
 
     return () => clearTimeout(timeout);
   }, [label, delay]);
 
-  function scramble() {
-    if (!loadedRef.current) return;
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    const chars = label.split("");
-    const settled = new Set<number>();
-    const startTime = Date.now();
-    intervalRef.current = setInterval(() => {
-      const progress = Math.min((Date.now() - startTime) / 250, 1);
-      const result = chars.map((c, i) => {
-        if (settled.has(i)) return c;
-        if (progress >= (i / chars.length) * 0.6 + 0.4) { settled.add(i); return c; }
-        return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
-      });
-      setText(result.join(""));
-      if (settled.size >= chars.length) clearInterval(intervalRef.current!);
-    }, 30);
-  }
-
-  function reset() {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setText(label);
-  }
-
   return (
     <Link
       href={href}
       data-anim="nav-link"
-      className="relative text-foreground no-underline mr-[clamp(8px,1.5vw,20px)] inline-block hover:text-primary after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100"
-      onMouseEnter={scramble}
-      onMouseLeave={reset}
+      className="nav-hover-link relative text-foreground no-underline mr-[clamp(6px,1vw,14px)] inline-block transition-colors duration-300 hover:text-primary"
     >
       {text}
+      <span className="nav-hover-underline" />
     </Link>
   );
 }
@@ -409,7 +382,7 @@ function LogoMark() {
   return (
     <Link
       href="/"
-      className="sf-logo no-underline shrink-0 mr-[clamp(16px,2.5vw,32px)] flex items-baseline gap-0 text-foreground"
+      className="sf-logo no-underline shrink-0 mr-[clamp(8px,1.2vw,16px)] flex items-baseline gap-0 text-foreground"
       style={{
         fontFamily: "var(--font-anton)",
         fontSize: "clamp(28px,4vw,48px)",
@@ -520,9 +493,9 @@ export function Nav() {
         <LogoMark />
 
         {/* Nav links */}
-        <div className="flex items-center shrink-0">
+        <div className="flex items-center shrink-0 -ml-[clamp(4px,0.5vw,8px)]">
           {NAV_LINKS.map((link, i) => (
-            <ScrambleLink
+            <NavLink
               key={link.href}
               href={link.href}
               label={link.label}

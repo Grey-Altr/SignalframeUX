@@ -28,23 +28,25 @@ export function VHSOverlay() {
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const ctx = gsap.context(() => {
-      // Bright scanline — travels down viewport
+      // Bright scanline — travels down viewport (delayed 10s on load)
       if (scanRef.current) {
         gsap.to(scanRef.current, {
           y: "100vh",
           duration: 14,
           ease: "none",
           repeat: -1,
+          delay: 10,
         });
       }
 
-      // Slow scanline — 6x slower, subtler
+      // Slow scanline — 6x slower, subtler (delayed 10s on load)
       if (scanSlowRef.current) {
         gsap.to(scanSlowRef.current, {
           y: "100vh",
           duration: 84,
           ease: "none",
           repeat: -1,
+          delay: 10,
         });
       }
 
