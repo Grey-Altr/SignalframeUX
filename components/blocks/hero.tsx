@@ -36,39 +36,42 @@ export function Hero() {
         {/* Title: SIGNAL//FIELD */}
         <div className="relative z-10">
           <div
+            data-anim="hero-title"
             className="text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background uppercase"
             style={{
               fontFamily: "var(--font-anton)",
               textShadow: "0 1px 0 rgba(255,255,255,0.05), 0 -1px 0 rgba(0,0,0,0.3)",
             }}
           >
-            SIGNAL
+            <span data-anim="hero-char">S</span><span data-anim="hero-char">I</span><span data-anim="hero-char">G</span><span data-anim="hero-char">N</span><span data-anim="hero-char">A</span><span data-anim="hero-char">L</span>
             <span className="block text-primary text-[clamp(40px,9vw,120px)]">
               <span className="text-[oklch(0.55_0_0)] text-[clamp(28px,6vw,80px)]">//</span>
-              FIELD
+              <span data-anim="hero-char">F</span><span data-anim="hero-char">I</span><span data-anim="hero-char">E</span><span data-anim="hero-char">L</span><span data-anim="hero-char">D</span>
             </span>
           </div>
         </div>
 
         {/* Multilingual text */}
         <div className="relative z-10 mt-3">
-          <p className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)]">
+          <p data-anim="hero-katakana" data-text="シグナルフレーム™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)]">
             シグナルフレーム™
           </p>
           <p
+            data-anim="hero-farsi"
+            data-text="سیگنال‌فریم™"
             className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-1"
             dir="rtl"
             style={{ textAlign: "left" }}
           >
             سیگنال‌فریم™
           </p>
-          <p className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-2">
+          <p data-anim="hero-mandarin" data-text="信号框架™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-2">
             信号框架™
           </p>
         </div>
 
         {/* Subtitle */}
-        <p className="mt-8 text-[oklch(0.55_0_0)] uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-10">
+        <p data-anim="hero-subtitle" className="mt-8 text-[oklch(0.55_0_0)] uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-10">
           DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.<br />
           THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
         </p>
@@ -89,13 +92,13 @@ export function Hero() {
         {/* CTAs with border-draw animation */}
         <div className="flex gap-4 mt-10">
           <Link href="/start" className="group relative inline-block no-underline">
-            <span className="hero-cta-btn primary relative inline-block bg-foreground text-background px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground cursor-pointer overflow-hidden">
+            <span data-anim="cta-btn" className="hero-cta-btn primary relative inline-block bg-foreground text-background px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground cursor-pointer overflow-hidden">
               GET STARTED
               <span className="bd-span"><span className="bd-top" /><span className="bd-right" /><span className="bd-bottom" /><span className="bd-left" /></span>
             </span>
           </Link>
           <Link href="https://github.com" className="group relative inline-block no-underline">
-            <span className="hero-cta-btn secondary relative inline-block bg-transparent text-foreground px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground cursor-pointer overflow-hidden">
+            <span data-anim="cta-btn" className="hero-cta-btn secondary relative inline-block bg-transparent text-foreground px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground cursor-pointer overflow-hidden">
               VIEW ON GITHUB
               <span className="bd-span"><span className="bd-top" /><span className="bd-right" /><span className="bd-bottom" /><span className="bd-left" /></span>
             </span>

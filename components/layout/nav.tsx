@@ -104,6 +104,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
+              data-anim="nav-link"
               className="relative text-foreground no-underline mr-[clamp(8px,1.5vw,20px)] inline-block hover:text-primary after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100"
             >
               {link.label}

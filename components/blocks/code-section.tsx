@@ -1,6 +1,6 @@
 export function CodeSection() {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
+    <section data-anim="section-reveal" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — Description */}
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground">
         <h2

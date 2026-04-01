@@ -3,6 +3,7 @@ import { Electrolize } from "next/font/google";
 import localFont from "next/font/local";
 import { GlobalEffects } from "@/components/layout/global-effects";
 import { LenisProvider } from "@/components/layout/lenis-provider";
+import { PageAnimations } from "@/components/layout/page-animations";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -46,6 +47,7 @@ export default function RootLayout({
           {children}
         </LenisProvider>
         <GlobalEffects />
+        <PageAnimations />
       </body>
     </html>
   );

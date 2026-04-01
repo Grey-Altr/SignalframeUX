@@ -7,7 +7,7 @@ const STATS = [
 
 export function StatsBand() {
   return (
-    <section className="grid grid-cols-2 md:grid-cols-4 border-b-4 border-foreground">
+    <section data-anim="section-reveal" className="grid grid-cols-2 md:grid-cols-4 border-b-4 border-foreground">
       {STATS.map((stat, i) => (
         <div
           key={stat.label}
@@ -18,6 +18,7 @@ export function StatsBand() {
           <div
             className="text-[clamp(48px,5vw,72px)] leading-none text-foreground"
             style={{ fontFamily: "var(--font-anton)" }}
+            {...(stat.value !== "∞" ? { "data-anim": "stat-number", "data-target": stat.value } : {})}
           >
             {stat.value}
           </div>

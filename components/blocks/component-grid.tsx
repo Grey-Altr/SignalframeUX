@@ -41,6 +41,7 @@ export function ComponentGrid() {
           return (
             <button
               key={comp.id}
+              data-anim="comp-cell"
               className="relative border-r-2 border-b-2 border-foreground cursor-pointer transition-all duration-200 group"
               style={{
                 aspectRatio: "1",

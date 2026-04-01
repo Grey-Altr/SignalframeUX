@@ -5,7 +5,7 @@ const FIELD_TAGS = ["GENERATIVE", "PARAMETRIC", "DATA-DRIVEN", "CANVAS", "SHADER
 
 export function DualLayer() {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
+    <section data-anim="section-reveal" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — SIGNAL (white) */}
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground relative">
         <h2
@@ -24,6 +24,7 @@ export function DualLayer() {
           {SIGNAL_TAGS.map((tag) => (
             <span
               key={tag}
+              data-anim="tag"
               className="sf-pressable border border-foreground px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-foreground cursor-default inline-block hover:border-2 hover:px-[11px] hover:py-[5px]"
             >
               {tag}
@@ -50,6 +51,7 @@ export function DualLayer() {
           {FIELD_TAGS.map((tag) => (
             <span
               key={tag}
+              data-anim="tag"
               className="border border-[oklch(0.35_0_0)] px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[oklch(0.55_0_0)] inline-block"
             >
               {tag}
