@@ -172,9 +172,7 @@ export function PageAnimations() {
     const cells = document.querySelectorAll("[data-anim='comp-cell']");
     cells.forEach((c) => {
       const el = c as HTMLElement;
-      el.style.opacity = "0";
-      el.style.transform = "translateY(24px)";
-      el.style.transition = "opacity 0.5s, transform 0.5s";
+      el.classList.add("sf-anim-hidden");
     });
     const cellObs = new IntersectionObserver(
       (entries) => {
@@ -184,14 +182,22 @@ export function PageAnimations() {
           const el = e.target as HTMLElement;
           const idx = Array.prototype.indexOf.call(cells, el);
           setTimeout(() => {
-            el.style.opacity = "1";
-            el.style.transform = "translateY(0)";
-          }, (idx % 4) * 80); // Stagger within each row
+            el.classList.remove("sf-anim-hidden");
+            el.classList.add("sf-anim-visible");
+          }, (idx % 4) * 80);
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
     cells.forEach((c) => cellObs.observe(c));
+    // Fallback: reveal all after 2s in case observer doesn't fire
+    setTimeout(() => {
+      cells.forEach((c) => {
+        const el = c as HTMLElement;
+        el.classList.remove("sf-anim-hidden");
+        el.classList.add("sf-anim-visible");
+      });
+    }, 2000);
 
     // ── 6. Yellow band parallax ──
     const band = document.querySelector(
@@ -233,9 +239,7 @@ export function PageAnimations() {
     const sections = document.querySelectorAll("[data-anim='section-reveal']");
     sections.forEach((s) => {
       const el = s as HTMLElement;
-      el.style.opacity = "0";
-      el.style.transform = "translateY(30px)";
-      el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+      el.classList.add("sf-anim-hidden");
     });
     const sectionObs = new IntersectionObserver(
       (entries) => {
@@ -243,13 +247,21 @@ export function PageAnimations() {
           if (!e.isIntersecting) return;
           sectionObs.unobserve(e.target);
           const el = e.target as HTMLElement;
-          el.style.opacity = "1";
-          el.style.transform = "translateY(0)";
+          el.classList.remove("sf-anim-hidden");
+          el.classList.add("sf-anim-visible");
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.05 }
     );
     sections.forEach((s) => sectionObs.observe(s));
+    // Fallback: reveal all after 1.5s
+    setTimeout(() => {
+      sections.forEach((s) => {
+        const el = s as HTMLElement;
+        el.classList.remove("sf-anim-hidden");
+        el.classList.add("sf-anim-visible");
+      });
+    }, 1500);
   }, []);
 
   return null;
