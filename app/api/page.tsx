@@ -685,7 +685,7 @@ export default function APIPage() {
               </div>
 
               {/* Rendered buttons */}
-              <div className="text-center">
+              <div className="text-center" style={{ marginTop: "60px" }}>
                 <div
                   style={{
                     fontSize: "9px",

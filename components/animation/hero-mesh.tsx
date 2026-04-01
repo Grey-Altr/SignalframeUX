@@ -13,8 +13,8 @@ const GRID_SPACING = 40;
 const DOT_RADIUS = 1.2;
 const DOT_OPACITY = 0.3;
 const LINE_OPACITY = 0.08;
-const MOUSE_RADIUS = 120;
-const MOUSE_FORCE = 18;
+const MOUSE_RADIUS = 150;
+const MOUSE_FORCE = 28;
 const SINE_AMPLITUDE = 3;
 const SINE_SPEED = 0.0008;
 
@@ -75,20 +75,20 @@ export function HeroMesh({ className }: { className?: string }) {
     function onMouseMove(e: MouseEvent) {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      mouseRef.current.x = e.clientX - rect.left;
-      mouseRef.current.y = e.clientY - rect.top;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // Only track when cursor is over the canvas area
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        mouseRef.current.x = x;
+        mouseRef.current.y = y;
+      } else {
+        mouseRef.current.x = -9999;
+        mouseRef.current.y = -9999;
+      }
     }
 
-    function onMouseLeave() {
-      mouseRef.current.x = -9999;
-      mouseRef.current.y = -9999;
-    }
-
-    // Listen on the parent (the hero panel) so mouse events work through the z-index stack
-    const parent = canvas.parentElement;
-    const target = parent || canvas;
-    target.addEventListener("mousemove", onMouseMove);
-    target.addEventListener("mouseleave", onMouseLeave);
+    // Listen on document so z-index children don't block events
+    document.addEventListener("mousemove", onMouseMove);
 
     const startTime = performance.now();
 
@@ -181,8 +181,7 @@ export function HeroMesh({ className }: { className?: string }) {
     return () => {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
-      target.removeEventListener("mousemove", onMouseMove);
-      target.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mousemove", onMouseMove);
       mql.removeEventListener("change", motionHandler);
     };
   }, [buildGrid]);

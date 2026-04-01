@@ -5,11 +5,11 @@ import { HeroMesh } from "@/components/animation/hero-mesh";
 
 export function Hero() {
   return (
-    <section className="mt-[80px] grid grid-cols-1 md:grid-cols-2 min-h-[calc(100vh-80px)] border-b-4 border-foreground">
+    <section className="mt-[60px] grid grid-cols-1 md:grid-cols-2 min-h-[calc(100vh-60px)] border-b-4 border-foreground">
       {/* Left — Black panel */}
-      <div className="bg-foreground text-background px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative overflow-hidden">
+      <div className="bg-foreground dark:bg-[oklch(0.1_0_0)] text-background dark:text-foreground px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative overflow-hidden">
         {/* Canvas mesh background */}
-        <HeroMesh className="absolute inset-0 z-0 opacity-[0.35]" />
+        <HeroMesh className="absolute inset-0 z-0 opacity-[0.45]" />
 
         {/* Halftone decorative circle */}
         <div
@@ -34,7 +34,7 @@ export function Hero() {
         <div className="relative z-10">
           <div
             data-anim="hero-title"
-            className="text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background uppercase"
+            className="text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background dark:text-foreground uppercase"
             style={{
               fontFamily: "var(--font-anton)",
               textShadow: "0 1px 0 rgba(255,255,255,0.05), 0 -1px 0 rgba(0,0,0,0.3)",
@@ -43,32 +43,32 @@ export function Hero() {
             <span data-anim="hero-char">S</span><span data-anim="hero-char">I</span><span data-anim="hero-char">G</span><span data-anim="hero-char">N</span><span data-anim="hero-char">A</span><span data-anim="hero-char">L</span>
             <span className="block text-primary text-[clamp(40px,9vw,120px)]">
               <span className="text-[oklch(0.55_0_0)] text-[clamp(28px,6vw,80px)]">//</span>
-              <span data-anim="hero-char">F</span><span data-anim="hero-char">I</span><span data-anim="hero-char">E</span><span data-anim="hero-char">L</span><span data-anim="hero-char">D</span>
+              <span data-anim="hero-char">F</span><span data-anim="hero-char">R</span><span data-anim="hero-char">A</span><span data-anim="hero-char">M</span><span data-anim="hero-char">E</span>
             </span>
           </div>
         </div>
 
         {/* Multilingual text */}
         <div className="relative z-10 mt-3">
-          <p data-anim="hero-katakana" data-text="シグナルフレーム™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)]">
+          <p data-anim="hero-katakana" data-text="シグナルフレーム™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-bold opacity-0">
             シグナルフレーム™
           </p>
           <p
             data-anim="hero-farsi"
             data-text="سیگنال‌فریم™"
-            className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-1"
+            className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black -mt-[2px] opacity-0"
             dir="rtl"
             style={{ textAlign: "left" }}
           >
             سیگنال‌فریم™
           </p>
-          <p data-anim="hero-mandarin" data-text="信号框架™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-2">
+          <p data-anim="hero-mandarin" data-text="信号框架™" className="text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-2 opacity-0">
             信号框架™
           </p>
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" className="mt-8 text-[oklch(0.55_0_0)] uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-10">
+        <p data-anim="hero-subtitle" className="mt-8 text-[oklch(0.55_0_0)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-10 opacity-0">
           DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.<br />
           THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
         </p>
@@ -77,7 +77,7 @@ export function Hero() {
       {/* Right — White panel */}
       <div className="bg-background px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative">
         {/* Manifesto */}
-        <p className="text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
+        <p data-anim="hero-copy" className="text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px] opacity-0">
           Accept the interface into your life.
           <span className="text-[14px] align-super text-muted-foreground">™</span>{" "}
           A dual-layer design system that separates{" "}
@@ -113,16 +113,16 @@ export function Hero() {
         .hero-cta-btn {
           will-change: transform;
           transition: transform 600ms linear(0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191, 0.25, 0.316, 0.391, 0.473, 0.562, 0.66, 0.765, 0.878, 1.0, 1.025, 1.042, 1.05, 1.05, 1.042, 1.028, 1.009, 0.988, 0.965, 0.945, 0.928, 0.916, 0.908, 0.906, 0.91, 0.918, 0.931, 0.947, 0.965, 0.984, 1.0),
-                      color 100ms ease,
-                      background-color 100ms ease,
-                      border-color 100ms ease;
+                      color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                      background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                      border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         .hero-cta-btn:hover {
           transform: translateY(-2px);
           transition: transform 200ms cubic-bezier(0.3, 0.7, 0.4, 1.5),
-                      color 100ms ease,
-                      background-color 100ms ease,
-                      border-color 100ms ease;
+                      color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                      background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                      border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
         }
         .hero-cta-btn.primary:hover {
           background: var(--color-background);

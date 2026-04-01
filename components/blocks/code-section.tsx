@@ -24,7 +24,7 @@ export function CodeSection() {
           TERMINAL™
         </div>
 
-        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4">
+        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4 text-[oklch(0.65_0_0)]">
           <code>
             <Line comment="// INITIALIZE SIGNALFRAMEUX™" />
             <Line>

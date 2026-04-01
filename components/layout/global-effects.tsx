@@ -46,8 +46,7 @@ function CustomCursor() {
 
     function onMove(e: MouseEvent) {
       if (!cursor) return;
-      cursor.style.left = e.clientX + "px";
-      cursor.style.top = e.clientY + "px";
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     }
 
     function onOver(e: MouseEvent) {
@@ -60,12 +59,22 @@ function CustomCursor() {
       }
     }
 
+    function onClick() {
+      if (!cursor) return;
+      cursor.classList.add("sf-cursor-click");
+      cursor.addEventListener("animationend", () => {
+        cursor.classList.remove("sf-cursor-click");
+      }, { once: true });
+    }
+
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseover", onOver);
+    document.addEventListener("mousedown", onClick);
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mousedown", onClick);
     };
   }, []);
 
@@ -86,18 +95,16 @@ function CustomCursor() {
       <style jsx>{`
         .sf-cursor {
           position: fixed;
-          top: 0;
-          left: 0;
-          width: 28px;
-          height: 28px;
+          top: -20px;
+          left: -20px;
+          width: 40px;
+          height: 40px;
           pointer-events: none;
           z-index: 10000;
           mix-blend-mode: exclusion;
-          transform: translate(-50%, -50%) rotate(0deg);
-          transition: left 0.12s cubic-bezier(0.22, 1, 0.36, 1),
-                      top 0.12s cubic-bezier(0.22, 1, 0.36, 1),
-                      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                      opacity 0.2s;
+          transform: translate(0px, 0px);
+          will-change: transform;
+          transition: opacity 0.2s;
           opacity: 0.7;
         }
         .sf-cursor::before,
@@ -107,27 +114,39 @@ function CustomCursor() {
           top: 50%;
           left: 50%;
           background: linear-gradient(#FF0090 42%, transparent 42%, transparent 58%, #FF0090 58%);
-          transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                      background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .sf-cursor::before {
           width: 1px;
-          height: 20px;
+          height: 28px;
           transform: translate(-50%, -50%);
         }
         .sf-cursor::after {
-          width: 20px;
+          width: 28px;
           height: 1px;
           transform: translate(-50%, -50%);
         }
         .sf-cursor.active {
-          transform: translate(-50%, -50%) rotate(45deg);
           opacity: 1;
+        }
+        .sf-cursor.active::before,
+        .sf-cursor.active::after {
+          transform: translate(-50%, -50%) rotate(45deg);
         }
         .sf-cursor.active::before {
           background: linear-gradient(#FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
         }
         .sf-cursor.active::after {
           background: linear-gradient(to right, #FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
+        }
+        @keyframes sf-cursor-click {
+          0% { scale: 1; }
+          40% { scale: 0.5; }
+          100% { scale: 1; }
+        }
+        .sf-cursor-click {
+          animation: sf-cursor-click 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
       `}</style>
     </>
@@ -163,9 +182,9 @@ function ScrollProgress() {
 /** VHS-style fixed badge in bottom-right corner */
 function VHSBadge() {
   return (
-    <div className="fixed bottom-6 right-6 bg-foreground text-background px-4 py-2 text-[clamp(8px,1vw,11px)] font-bold uppercase tracking-[0.1em] z-[200] flex items-center gap-2">
+    <div className="fixed bottom-6 right-6 bg-foreground dark:bg-[oklch(0.2_0_0)] text-background dark:text-foreground px-4 py-2 text-[clamp(8px,1vw,11px)] font-bold uppercase tracking-[0.1em] z-[200] flex items-center gap-2">
       <span className="text-primary text-sm">◉◉</span>
-      SF™ UX
+      SF//UX
     </div>
   );
 }
