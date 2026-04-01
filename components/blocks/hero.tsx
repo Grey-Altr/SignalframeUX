@@ -30,7 +30,7 @@ export function Hero() {
           aria-hidden="true"
         />
 
-        {/* Title: SIGNAL//FIELD */}
+        {/* Title: SIGNAL//FRAME */}
         <div className="relative z-10">
           <div
             data-anim="hero-title"

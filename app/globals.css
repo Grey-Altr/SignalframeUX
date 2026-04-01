@@ -343,13 +343,17 @@
 
 /* ── Scroll-triggered reveal classes ── */
 .sf-anim-hidden {
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 0 !important;
+  transform: translateY(24px) !important;
 }
 .sf-anim-visible {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s ease, transform 0.5s ease !important;
+}
+/* Once visible, allow normal hover transforms */
+.sf-anim-visible[data-anim="comp-cell"]:hover {
+  transform: translateY(-2px) !important;
 }
 
 /* ── Click-pop animation ── */

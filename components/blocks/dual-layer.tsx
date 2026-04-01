@@ -33,13 +33,13 @@ export function DualLayer() {
         </div>
       </div>
 
-      {/* Right — //FIELD (black) */}
+      {/* Right — //FRAME (black) */}
       <div className="bg-foreground px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)]">
         <h2
           className="text-[clamp(48px,6vw,80px)] leading-none tracking-[-0.02em] text-primary mb-6"
           style={{ fontFamily: "var(--font-anton)", fontStyle: "italic" }}
         >
-          //FIELD
+          //FRAME
         </h2>
         <p className="text-[13px] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-[oklch(0.55_0_0)]">
           THE GENERATIVE EXPRESSION LAYER. PARAMETRIC NOISE.

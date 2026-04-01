@@ -108,7 +108,9 @@ function LiveClock() {
       {display.map((char, i) => (
         <span
           key={i}
-          className="inline-block w-[0.45em] text-right mr-[0.04em] leading-none"
+          className={`inline-block text-center leading-none ${
+            char === ":" ? "w-[0.3em] text-primary" : "w-[0.55em]"
+          }`}
         >
           {char}
         </span>
@@ -117,6 +119,40 @@ function LiveClock() {
   );
 }
 
+const DARK_OVERRIDES: Record<string, string> = {
+  "--color-background": "oklch(0.145 0 0)",
+  "--color-foreground": "oklch(0.985 0 0)",
+  "--color-card": "oklch(0.205 0 0)",
+  "--color-card-foreground": "oklch(0.985 0 0)",
+  "--color-popover": "oklch(0.205 0 0)",
+  "--color-popover-foreground": "oklch(0.985 0 0)",
+  "--color-secondary": "oklch(0.269 0 0)",
+  "--color-secondary-foreground": "oklch(0.985 0 0)",
+  "--color-muted": "oklch(0.269 0 0)",
+  "--color-muted-foreground": "oklch(0.708 0 0)",
+  "--color-accent": "oklch(0.269 0 0)",
+  "--color-accent-foreground": "oklch(0.985 0 0)",
+  "--color-border": "oklch(0.400 0 0)",
+  "--color-input": "oklch(0.400 0 0)",
+};
+
+const LIGHT_OVERRIDES: Record<string, string> = {
+  "--color-background": "oklch(1 0 0)",
+  "--color-foreground": "oklch(0.145 0 0)",
+  "--color-card": "oklch(1 0 0)",
+  "--color-card-foreground": "oklch(0.145 0 0)",
+  "--color-popover": "oklch(1 0 0)",
+  "--color-popover-foreground": "oklch(0.145 0 0)",
+  "--color-secondary": "oklch(0.970 0.005 298)",
+  "--color-secondary-foreground": "oklch(0.205 0 0)",
+  "--color-muted": "oklch(0.930 0.005 298)",
+  "--color-muted-foreground": "oklch(0.550 0.010 298)",
+  "--color-accent": "oklch(0.930 0.005 298)",
+  "--color-accent-foreground": "oklch(0.205 0 0)",
+  "--color-border": "oklch(0.205 0 0)",
+  "--color-input": "oklch(0.205 0 0)",
+};
+
 function DarkModeToggle() {
   const [dark, setDark] = useState(false);
 
@@ -124,6 +160,12 @@ function DarkModeToggle() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
+    // Apply color overrides directly to :root so they override @theme inline
+    const overrides = next ? DARK_OVERRIDES : LIGHT_OVERRIDES;
+    const root = document.documentElement;
+    Object.entries(overrides).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
+    });
   }
 
   return (

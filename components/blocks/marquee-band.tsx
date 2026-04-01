@@ -1,7 +1,7 @@
 "use client";
 
 const MARQUEE_TEXT =
-  "SIGNAL//FIELD™ // DESIGN SYSTEM // BUILT FOR ENGINEERS // SHIP FASTER // ACCEPT THE INTERFACE // ";
+  "SIGNAL//FRAME™ // DESIGN SYSTEM // BUILT FOR ENGINEERS // SHIP FASTER // ACCEPT THE INTERFACE // ";
 
 export function MarqueeBand() {
   return (

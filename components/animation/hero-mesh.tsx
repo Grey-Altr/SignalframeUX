@@ -84,8 +84,11 @@ export function HeroMesh({ className }: { className?: string }) {
       mouseRef.current.y = -9999;
     }
 
-    canvas.addEventListener("mousemove", onMouseMove);
-    canvas.addEventListener("mouseleave", onMouseLeave);
+    // Listen on the parent (the hero panel) so mouse events work through the z-index stack
+    const parent = canvas.parentElement;
+    const target = parent || canvas;
+    target.addEventListener("mousemove", onMouseMove);
+    target.addEventListener("mouseleave", onMouseLeave);
 
     const startTime = performance.now();
 
@@ -176,8 +179,8 @@ export function HeroMesh({ className }: { className?: string }) {
     return () => {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
-      canvas.removeEventListener("mousemove", onMouseMove);
-      canvas.removeEventListener("mouseleave", onMouseLeave);
+      target.removeEventListener("mousemove", onMouseMove);
+      target.removeEventListener("mouseleave", onMouseLeave);
       mql.removeEventListener("change", motionHandler);
     };
   }, [buildGrid]);
@@ -190,7 +193,7 @@ export function HeroMesh({ className }: { className?: string }) {
         position: "absolute",
         inset: 0,
         zIndex: 0,
-        pointerEvents: "auto",
+        pointerEvents: "none",
         width: "100%",
         height: "100%",
       }}
