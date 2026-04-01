@@ -105,32 +105,34 @@ export function HeroMesh({ className }: { className?: string }) {
       const my = mouseRef.current.y;
       const isReduced = reducedMotionRef.current;
 
-      // Update node positions
+      // Update node positions with smooth interpolation
+      const lerp = 0.08; // Easing factor — lower = smoother/slower return
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        let nx = n.baseX;
-        let ny = n.baseY;
+        let targetX = n.baseX;
+        let targetY = n.baseY;
 
         if (!isReduced) {
           // Sine wave ambient motion
           const phase = (n.baseX + n.baseY) * 0.01;
-          nx += Math.sin(elapsed * SINE_SPEED + phase) * SINE_AMPLITUDE;
-          ny += Math.cos(elapsed * SINE_SPEED * 0.7 + phase * 1.3) * SINE_AMPLITUDE;
+          targetX += Math.sin(elapsed * SINE_SPEED + phase) * SINE_AMPLITUDE;
+          targetY += Math.cos(elapsed * SINE_SPEED * 0.7 + phase * 1.3) * SINE_AMPLITUDE;
 
           // Mouse repulsion
-          const dx = nx - mx;
-          const dy = ny - my;
+          const dx = targetX - mx;
+          const dy = targetY - my;
           const distSq = dx * dx + dy * dy;
           if (distSq < MOUSE_RADIUS * MOUSE_RADIUS && distSq > 0) {
             const dist = Math.sqrt(distSq);
             const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
-            nx += (dx / dist) * force;
-            ny += (dy / dist) * force;
+            targetX += (dx / dist) * force;
+            targetY += (dy / dist) * force;
           }
         }
 
-        n.x = nx;
-        n.y = ny;
+        // Smooth interpolation toward target (eases in and springs back)
+        n.x += (targetX - n.x) * lerp;
+        n.y += (targetY - n.y) * lerp;
       }
 
       // Draw lines using grid topology (right neighbor + bottom neighbor only)
