@@ -1,35 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
-/** Magenta scanline that scrolls down the viewport */
-function Scanline() {
-  return (
-    <>
-      <div className="scanline" />
-      <style jsx>{`
-        @keyframes scanline-move {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
-        }
-        .scanline {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: rgba(255, 229, 0, 0.1);
-          z-index: 999;
-          pointer-events: none;
-          animation: scanline-move 8s linear infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .scanline { display: none; }
-        }
-      `}</style>
-    </>
-  );
-}
+import { gsap } from "@/lib/gsap-plugins";
+import { VHSOverlay } from "@/components/animation/vhs-overlay";
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
 function CustomCursor() {
@@ -61,10 +34,19 @@ function CustomCursor() {
 
     function onClick() {
       if (!cursor) return;
-      cursor.classList.add("sf-cursor-click");
-      cursor.addEventListener("animationend", () => {
-        cursor.classList.remove("sf-cursor-click");
-      }, { once: true });
+      gsap.fromTo(
+        cursor,
+        { "--cursor-scale": 1 },
+        {
+          "--cursor-scale": 0.4,
+          duration: 0.1,
+          ease: "power2.in",
+          yoyo: true,
+          repeat: 1,
+          repeatDelay: 0,
+          overwrite: true,
+        }
+      );
     }
 
     document.addEventListener("mousemove", onMove);
@@ -94,18 +76,19 @@ function CustomCursor() {
       `}</style>
       <style jsx>{`
         .sf-cursor {
+          --cursor-scale: 1;
           position: fixed;
-          top: -20px;
-          left: -20px;
-          width: 40px;
-          height: 40px;
+          top: -24px;
+          left: -24px;
+          width: 48px;
+          height: 48px;
           pointer-events: none;
           z-index: 10000;
           mix-blend-mode: exclusion;
           transform: translate(0px, 0px);
           will-change: transform;
           transition: opacity 0.2s;
-          opacity: 0.7;
+          opacity: 1;
         }
         .sf-cursor::before,
         .sf-cursor::after {
@@ -118,35 +101,29 @@ function CustomCursor() {
                       background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .sf-cursor::before {
-          width: 1px;
-          height: 28px;
-          transform: translate(-50%, -50%);
+          width: 2px;
+          height: 36px;
+          transform: translate(-50%, -50%) scaleY(var(--cursor-scale));
         }
         .sf-cursor::after {
-          width: 28px;
-          height: 1px;
-          transform: translate(-50%, -50%);
+          width: 36px;
+          height: 2px;
+          transform: translate(-50%, -50%) scaleX(var(--cursor-scale));
         }
         .sf-cursor.active {
           opacity: 1;
         }
-        .sf-cursor.active::before,
+        .sf-cursor.active::before {
+          transform: translate(-50%, -50%) rotate(45deg) scaleY(var(--cursor-scale));
+        }
         .sf-cursor.active::after {
-          transform: translate(-50%, -50%) rotate(45deg);
+          transform: translate(-50%, -50%) rotate(45deg) scaleX(var(--cursor-scale));
         }
         .sf-cursor.active::before {
           background: linear-gradient(#FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
         }
         .sf-cursor.active::after {
           background: linear-gradient(to right, #FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
-        }
-        @keyframes sf-cursor-click {
-          0% { scale: 1; }
-          40% { scale: 0.5; }
-          100% { scale: 1; }
-        }
-        .sf-cursor-click {
-          animation: sf-cursor-click 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         }
       `}</style>
     </>
@@ -192,7 +169,7 @@ function VHSBadge() {
 export function GlobalEffects() {
   return (
     <>
-      <Scanline />
+      <VHSOverlay />
       <CustomCursor />
       <ScrollProgress />
       <VHSBadge />
