@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Electrolize, Geist } from "next/font/google";
+import { Electrolize } from "next/font/google";
 import localFont from "next/font/local";
+import { GlobalEffects } from "@/components/layout/global-effects";
+import { LenisProvider } from "@/components/layout/lenis-provider";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const electrolize = Electrolize({
   weight: "400",
@@ -40,9 +39,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(electrolize.variable, anton.variable, "font-sans", geist.variable)}
+      className={`${electrolize.variable} ${anton.variable}`}
     >
-      <body className="antialiased">{children}</body>
+      <body className="antialiased overflow-x-hidden">
+        <LenisProvider>
+          {children}
+        </LenisProvider>
+        <GlobalEffects />
+      </body>
     </html>
   );
 }

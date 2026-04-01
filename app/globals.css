@@ -30,6 +30,23 @@
   --color-input: oklch(0.205 0 0);
   --color-ring: oklch(0.65 0.29 350);
 
+  /* ── Sidebar Colors (shadcn compat) ── */
+  --color-sidebar: oklch(0.985 0 0);
+  --color-sidebar-foreground: oklch(0.145 0 0);
+  --color-sidebar-primary: oklch(0.65 0.29 350);
+  --color-sidebar-primary-foreground: oklch(0.985 0 0);
+  --color-sidebar-accent: oklch(0.930 0.005 298);
+  --color-sidebar-accent-foreground: oklch(0.205 0 0);
+  --color-sidebar-border: oklch(0.205 0 0);
+  --color-sidebar-ring: oklch(0.65 0.29 350);
+
+  /* ── Chart Colors ── */
+  --color-chart-1: oklch(0.65 0.29 350);
+  --color-chart-2: oklch(0.91 0.18 98);
+  --color-chart-3: oklch(0.85 0.25 145);
+  --color-chart-4: oklch(0.550 0.010 298);
+  --color-chart-5: oklch(0.205 0 0);
+
   /* ── Radius: 0px everywhere (industrial edges) ── */
   --radius: 0px;
   --radius-xs: 0px;
@@ -37,10 +54,14 @@
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 
-  /* ── Typography (literal font names for Tailwind v4) ── */
-  --font-sans: var(--font-sans);
+  /* ── Typography (literal font names — NOT var() refs) ── */
+  --font-sans: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-mono: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+  --font-heading: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-display: "Anton", "Impact", sans-serif;
 
   /* ── Type Scale: Augmented Fourth (1.414) ── */
@@ -52,23 +73,6 @@
   --text-2xl: 2.828rem;
   --text-3xl: 4.000rem;
   --text-4xl: 5.657rem;
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* ── SignalframeUX Extension Variables ── */
@@ -97,41 +101,9 @@
   --hover-y: -2px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* ── Dark Mode (inverted) ── */
+/* ── Dark Mode ── */
 .dark {
   --color-background: oklch(0.145 0 0);
   --color-foreground: oklch(0.985 0 0);
@@ -147,53 +119,27 @@
   --color-accent-foreground: oklch(0.985 0 0);
   --color-border: oklch(0.400 0 0);
   --color-input: oklch(0.400 0 0);
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --color-sidebar: oklch(0.205 0 0);
+  --color-sidebar-foreground: oklch(0.985 0 0);
+  --color-sidebar-primary: oklch(0.65 0.29 350);
+  --color-sidebar-primary-foreground: oklch(0.985 0 0);
+  --color-sidebar-accent: oklch(0.269 0 0);
+  --color-sidebar-accent-foreground: oklch(0.985 0 0);
+  --color-sidebar-border: oklch(0.400 0 0);
+  --color-sidebar-ring: oklch(0.65 0.29 350);
 }
 
 /* ══════════════════════════════════════════════════════════════
    BASE STYLES
    ══════════════════════════════════════════════════════════════ */
 
-*,
-*::before,
-*::after {
-  border-color: var(--color-border);
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -201,7 +147,6 @@ body {
    ══════════════════════════════════════════════════════════════ */
 
 @layer utilities {
-  /* ── Industrial modifiers ── */
   .sf-border {
     border-width: 2px;
     border-color: var(--color-foreground);
@@ -211,8 +156,11 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
-  /* ── Yellow manifesto band ── */
+  .sf-display {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    line-height: 0.9;
+  }
   .sf-yellow-band {
     background-color: var(--sf-yellow);
     color: var(--color-foreground);
@@ -293,7 +241,6 @@ body {
     width: 100%;
   }
 
-  /* ── Entrance animations ── */
   .sf-entrance {
     opacity: 0;
     transform: translateY(12px);
@@ -306,7 +253,6 @@ body {
     transform: translateY(0);
   }
 
-  /* ── Loading skeleton ── */
   .sf-skeleton {
     position: relative;
     overflow: hidden;
@@ -325,12 +271,9 @@ body {
     animation: sf-skeleton-sweep 1.5s ease-in-out infinite;
   }
 
-  /* ── Error shake ── */
   .sf-shake--active {
     animation: sf-shake 0.4s linear;
   }
-
-  /* ── Flash confirm ── */
   .sf-flash--active {
     animation: sf-flash 0.15s linear;
   }
@@ -389,14 +332,8 @@ body {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
+/* ── Marquee animation for community band ── */
+@keyframes sf-marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
