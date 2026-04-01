@@ -109,7 +109,7 @@ function LiveClock() {
         <span
           key={i}
           className={`inline-block text-center leading-none ${
-            char === ":" ? "w-[0.3em] text-primary" : "w-[0.55em]"
+            char === ":" ? "w-[0.3em]" : "w-[0.55em]"
           }`}
         >
           {char}
