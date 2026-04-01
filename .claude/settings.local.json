@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''''mcpServers'''',{}\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d[''''mcpServers''''][''''stitch''''], indent=2\\)\\)\")",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(echo \"$f done\")",
+      "Bash(done)"
+    ]
+  }
+}

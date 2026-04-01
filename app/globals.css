@@ -1,0 +1,402 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ══════════════════════════════════════════════════════════════
+   SIGNALFRAMEUX — Design System Tokens
+   DU/TDR brutalist-flat aesthetic · OKLCH color space
+   ══════════════════════════════════════════════════════════════ */
+
+@theme inline {
+  /* ── Color Tokens ── */
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0 0);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0 0);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0 0);
+  --color-primary: oklch(0.65 0.29 350);
+  --color-primary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.970 0.005 298);
+  --color-secondary-foreground: oklch(0.205 0 0);
+  --color-muted: oklch(0.930 0.005 298);
+  --color-muted-foreground: oklch(0.550 0.010 298);
+  --color-accent: oklch(0.930 0.005 298);
+  --color-accent-foreground: oklch(0.205 0 0);
+  --color-destructive: oklch(0.550 0.180 25);
+  --color-border: oklch(0.205 0 0);
+  --color-input: oklch(0.205 0 0);
+  --color-ring: oklch(0.65 0.29 350);
+
+  /* ── Radius: 0px everywhere (industrial edges) ── */
+  --radius: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  /* ── Typography (literal font names for Tailwind v4) ── */
+  --font-sans: var(--font-sans);
+  --font-mono: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+  --font-display: "Anton", "Impact", sans-serif;
+
+  /* ── Type Scale: Augmented Fourth (1.414) ── */
+  --text-xs: 0.500rem;
+  --text-sm: 0.707rem;
+  --text-base: 1.000rem;
+  --text-lg: 1.414rem;
+  --text-xl: 2.000rem;
+  --text-2xl: 2.828rem;
+  --text-3xl: 4.000rem;
+  --text-4xl: 5.657rem;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ── SignalframeUX Extension Variables ── */
+:root {
+  --sf-yellow: oklch(0.91 0.18 98);
+  --sf-green: oklch(0.85 0.25 145);
+  --sf-clock: oklch(0.145 0 0);
+  --sf-grain-opacity: 0.03;
+  --sf-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
+  --sf-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
+  --sf-deboss-shadow: 0 -1px 0 oklch(0 0 0 / 0.15);
+
+  /* ── Motion Tokens ── */
+  --duration-instant: 34ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 400ms;
+  --duration-glacial: 600ms;
+  --ease-default: cubic-bezier(0.2, 0, 0, 1);
+  --ease-hover: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.085 32.8%, 1.009 36.5%, 0.982 38.5%, 0.961, 0.946 42.4%, 0.938, 0.934 46.4%, 0.936 49.3%, 0.954 53.5%, 1 62.8%, 1.012 68.8%, 1.006 81.5%, 1);
+
+  /* ── Press Feedback Tokens ── */
+  --press-scale: 0.97;
+  --press-y: 1px;
+  --hover-y: -2px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* ── Dark Mode (inverted) ── */
+.dark {
+  --color-background: oklch(0.145 0 0);
+  --color-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.205 0 0);
+  --color-card-foreground: oklch(0.985 0 0);
+  --color-popover: oklch(0.205 0 0);
+  --color-popover-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.269 0 0);
+  --color-secondary-foreground: oklch(0.985 0 0);
+  --color-muted: oklch(0.269 0 0);
+  --color-muted-foreground: oklch(0.708 0 0);
+  --color-accent: oklch(0.269 0 0);
+  --color-accent-foreground: oklch(0.985 0 0);
+  --color-border: oklch(0.400 0 0);
+  --color-input: oklch(0.400 0 0);
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BASE STYLES
+   ══════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SIGNALFRAMEUX UTILITY CLASSES
+   ══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* ── Industrial modifiers ── */
+  .sf-border {
+    border-width: 2px;
+    border-color: var(--color-foreground);
+  }
+  .sf-mono {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Yellow manifesto band ── */
+  .sf-yellow-band {
+    background-color: var(--sf-yellow);
+    color: var(--color-foreground);
+    padding: 1.5rem 2rem;
+  }
+
+  /* ── Grain texture overlay ── */
+  .sf-grain {
+    position: relative;
+  }
+  .sf-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/grain.svg") repeat;
+    opacity: var(--sf-grain-opacity);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+
+  /* ── Interaction feedback ── */
+  .sf-pressable {
+    transition:
+      transform var(--duration-normal) var(--ease-default),
+      box-shadow var(--duration-normal) var(--ease-default);
+  }
+  .sf-pressable:hover {
+    transform: translateY(var(--hover-y));
+    transition-timing-function: var(--ease-hover);
+  }
+  .sf-pressable:active {
+    transform: translateY(var(--press-y)) scale(var(--press-scale));
+    transition-duration: var(--duration-instant);
+    transition-timing-function: linear;
+  }
+
+  .sf-hoverable {
+    transition: transform var(--duration-normal) var(--ease-default);
+  }
+  .sf-hoverable:hover {
+    transform: translateY(var(--hover-y));
+    transition-timing-function: var(--ease-hover);
+  }
+  .sf-hoverable:not(:hover) {
+    transition-duration: var(--duration-glacial);
+  }
+
+  .sf-focusable:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .sf-invert-hover {
+    transition:
+      background-color var(--duration-fast) var(--ease-default),
+      color var(--duration-fast) var(--ease-default);
+  }
+  .sf-invert-hover:hover {
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  .sf-link-draw {
+    position: relative;
+    text-decoration: none;
+  }
+  .sf-link-draw::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width var(--duration-slow) var(--ease-default);
+  }
+  .sf-link-draw:hover::after {
+    width: 100%;
+  }
+
+  /* ── Entrance animations ── */
+  .sf-entrance {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--duration-slow) var(--ease-default),
+      transform var(--duration-slow) var(--ease-default);
+  }
+  .sf-entrance--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Loading skeleton ── */
+  .sf-skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-muted);
+  }
+  .sf-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-primary) 2px,
+      transparent 4px
+    );
+    animation: sf-skeleton-sweep 1.5s ease-in-out infinite;
+  }
+
+  /* ── Error shake ── */
+  .sf-shake--active {
+    animation: sf-shake 0.4s linear;
+  }
+
+  /* ── Flash confirm ── */
+  .sf-flash--active {
+    animation: sf-flash 0.15s linear;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes sf-skeleton-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes sf-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-4px); }
+  20% { transform: translateX(4px); }
+  30% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+@keyframes sf-flash {
+  0% { filter: invert(0); }
+  50% { filter: invert(1); }
+  100% { filter: invert(0); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .sf-pressable:hover,
+  .sf-pressable:active,
+  .sf-hoverable:hover {
+    transform: none;
+  }
+
+  .sf-entrance {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
