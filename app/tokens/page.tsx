@@ -169,7 +169,7 @@ export default function TokensPage() {
         >
           <h1
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-anton)",
               fontSize: "clamp(60px, 9vw, 100px)",
               textTransform: "uppercase",
               lineHeight: 0.9,
@@ -254,7 +254,7 @@ export default function TokensPage() {
         >
           <h2
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-anton)",
               fontSize: "clamp(32px, 5vw, 48px)",
               textTransform: "uppercase",
               marginBottom: "16px",
@@ -332,7 +332,7 @@ export default function TokensPage() {
         {/* ═══ COLOR SCALES ═══ */}
         <div
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-anton)",
             fontSize: "clamp(32px, 5vw, 48px)",
             textTransform: "uppercase",
             padding: "32px 48px 16px",
@@ -415,7 +415,7 @@ export default function TokensPage() {
         {/* ═══ SPACING SCALE ═══ */}
         <div
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-anton)",
             fontSize: "clamp(32px, 5vw, 48px)",
             textTransform: "uppercase",
             padding: "32px 48px 16px",
@@ -508,7 +508,7 @@ export default function TokensPage() {
         {/* ═══ TYPOGRAPHY SCALE ═══ */}
         <div
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-anton)",
             fontSize: "clamp(32px, 5vw, 48px)",
             textTransform: "uppercase",
             padding: "32px 48px 16px",
@@ -591,7 +591,7 @@ export default function TokensPage() {
         {/* ═══ MOTION TOKENS ═══ */}
         <div
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-anton)",
             fontSize: "clamp(32px, 5vw, 48px)",
             textTransform: "uppercase",
             padding: "32px 48px 16px",

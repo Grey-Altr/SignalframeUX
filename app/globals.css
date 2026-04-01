@@ -75,6 +75,11 @@
   --text-4xl: 5.657rem;
 }
 
+/* ── Runtime font override (next/font uses hashed names) ── */
+:root {
+  --font-display: var(--font-anton), "Impact", sans-serif;
+}
+
 /* ── SignalframeUX Extension Variables ── */
 :root {
   --sf-yellow: oklch(0.91 0.18 98);

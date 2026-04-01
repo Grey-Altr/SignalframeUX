@@ -34,7 +34,7 @@ function LiveClock() {
   return (
     <span
       className="text-[clamp(28px,4vw,48px)] leading-none tracking-tight tabular-nums"
-      style={{ fontFamily: "var(--font-display)", fontVariantNumeric: "tabular-nums" }}
+      style={{ fontFamily: "var(--font-anton)", fontVariantNumeric: "tabular-nums" }}
       aria-label={`Current time: ${time}`}
     >
       {time.split("").map((char, i) => (
@@ -89,7 +89,7 @@ export function Nav() {
         <Link
           href="/"
           className="no-underline shrink-0 mr-[clamp(16px,2.5vw,32px)] flex items-center gap-0 text-foreground"
-          style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px,4vw,48px)", lineHeight: 1, letterSpacing: "-0.02em" }}
+          style={{ fontFamily: "var(--font-anton)", fontSize: "clamp(28px,4vw,48px)", lineHeight: 1, letterSpacing: "-0.02em" }}
         >
           <span className="inline-block">S</span>
           <span className="inline-block">F</span>

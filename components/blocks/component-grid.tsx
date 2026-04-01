@@ -26,7 +26,7 @@ export function ComponentGrid() {
       <div className="px-6 md:px-12 pt-16 pb-6 border-b-2 border-foreground">
         <h2
           className="text-[clamp(36px,5vw,64px)] leading-none text-foreground"
-          style={{ fontFamily: "var(--font-display)" }}
+          style={{ fontFamily: "var(--font-anton)" }}
         >
           BROWSE_COMPONENTS ( 12 / 340 )
         </h2>

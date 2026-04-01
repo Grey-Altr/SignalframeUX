@@ -12,7 +12,7 @@ export function MarqueeBand() {
       <div
         className="flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily: "var(--font-anton)",
         }}
       >
         <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">

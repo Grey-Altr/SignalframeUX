@@ -174,14 +174,14 @@ function PreviewGlitch() {
     <div className="relative">
       <span
         className="text-base uppercase"
-        style={{ fontFamily: "var(--font-display)" }}
+        style={{ fontFamily: "var(--font-anton)" }}
       >
         ABC
       </span>
       <span
         className="absolute left-0.5 top-px text-base uppercase"
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily: "var(--font-anton)",
           color: "#FF0090",
           clipPath: "inset(30% 0 30% 0)",
         }}
@@ -428,7 +428,7 @@ export default function ComponentsPage() {
           <h1
             className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-anton)",
               fontSize: "clamp(60px, 9vw, 120px)",
             }}
           >
@@ -440,7 +440,7 @@ export default function ComponentsPage() {
             <strong
               className="block text-primary"
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "clamp(28px, 4vw, 48px)",
                 lineHeight: 1,
               }}
@@ -520,7 +520,7 @@ export default function ComponentsPage() {
                 {/* Component name */}
                 <div
                   className={`text-[15px] uppercase leading-none transition-colors duration-150 ${styles.titleHover}`}
-                  style={{ fontFamily: "var(--font-display)" }}
+                  style={{ fontFamily: "var(--font-anton)" }}
                 >
                   {comp.name}
                 </div>

@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <span
               className="sf-display text-2xl text-foreground"
-              style={{ fontFamily: "var(--font-display)" }}
+              style={{ fontFamily: "var(--font-anton)" }}
             >
               SF<span className="text-primary">//</span>UX
             </span>

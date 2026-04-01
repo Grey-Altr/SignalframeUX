@@ -462,7 +462,7 @@ const GRAIN_BG_STYLE = {
 };
 
 const MARQUEE_STYLE = {
-  fontFamily: "var(--font-display)",
+  fontFamily: "var(--font-anton)",
   fontSize: "16px",
   animation: "sf-marquee-scroll 12s linear infinite",
 };
@@ -476,7 +476,7 @@ export default function StartPage() {
         <section className="bg-black text-white py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)] border-b-4 border-foreground">
           <h1
             className="text-[clamp(48px,11vw,120px)] leading-[0.9] uppercase mb-6"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "var(--font-anton)" }}
           >
             GET
             <br />
@@ -505,7 +505,7 @@ export default function StartPage() {
                   : "bg-black text-white hover:bg-[#FF0090]"
               }`}
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "clamp(24px, 4vw, 48px)",
               }}
             >
@@ -530,7 +530,7 @@ export default function StartPage() {
                   step.highlight ? "text-[#333]" : "text-foreground"
                 }`}
                 style={{
-                  fontFamily: "var(--font-display)",
+                  fontFamily: "var(--font-anton)",
                   fontSize: "clamp(24px, 4vw, 48px)",
                 }}
               >
@@ -558,7 +558,7 @@ export default function StartPage() {
           <h2
             className="uppercase mb-6"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-anton)",
               fontSize: "clamp(24px, 4vw, 48px)",
             }}
           >
@@ -608,7 +608,7 @@ export default function StartPage() {
 
               <h3
                 className="uppercase text-[15px] mb-3 transition-colors duration-150 group-hover:text-[#FF0090]"
-                style={{ fontFamily: "var(--font-display)" }}
+                style={{ fontFamily: "var(--font-anton)" }}
               >
                 {card.title}
               </h3>
@@ -649,7 +649,7 @@ export default function StartPage() {
             <h2
               className="uppercase text-[#333] mb-3"
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "clamp(24px, 4vw, 48px)",
               }}
             >

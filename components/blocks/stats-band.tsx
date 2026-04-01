@@ -17,7 +17,7 @@ export function StatsBand() {
         >
           <div
             className="text-[clamp(48px,5vw,72px)] leading-none text-foreground"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "var(--font-anton)" }}
           >
             {stat.value}
           </div>

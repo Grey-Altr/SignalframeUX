@@ -130,7 +130,7 @@ export default function APIPage() {
               className="border-b border-[#333]"
               style={{
                 padding: "20px 16px",
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "24px",
                 textTransform: "uppercase",
               }}
@@ -222,7 +222,7 @@ export default function APIPage() {
             <h1
               className="text-foreground"
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "72px",
                 textTransform: "uppercase",
                 lineHeight: 0.95,
@@ -266,7 +266,7 @@ export default function APIPage() {
             {/* ── IMPORT ── */}
             <h2
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "32px",
                 textTransform: "uppercase",
                 marginTop: "48px",
@@ -326,7 +326,7 @@ export default function APIPage() {
             {/* ── PROPS ── */}
             <h2
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "32px",
                 textTransform: "uppercase",
                 marginTop: "48px",
@@ -434,7 +434,7 @@ export default function APIPage() {
             {/* ── USAGE ── */}
             <h2
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "32px",
                 textTransform: "uppercase",
                 marginTop: "48px",
@@ -569,7 +569,7 @@ export default function APIPage() {
             {/* ── ACCESSIBILITY ── */}
             <h2
               style={{
-                fontFamily: "var(--font-display)",
+                fontFamily: "var(--font-anton)",
                 fontSize: "32px",
                 textTransform: "uppercase",
                 marginTop: "48px",

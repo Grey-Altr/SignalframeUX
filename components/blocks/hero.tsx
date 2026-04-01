@@ -38,7 +38,7 @@ export function Hero() {
           <div
             className="text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background uppercase"
             style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-anton)",
               textShadow: "0 1px 0 rgba(255,255,255,0.05), 0 -1px 0 rgba(0,0,0,0.3)",
             }}
           >

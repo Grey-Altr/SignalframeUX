@@ -5,7 +5,7 @@ export function CodeSection() {
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground">
         <h2
           className="text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-6"
-          style={{ fontFamily: "var(--font-display)" }}
+          style={{ fontFamily: "var(--font-anton)" }}
         >
           API_INIT
         </h2>
