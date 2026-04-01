@@ -81,9 +81,9 @@ export function Hero() {
           Accept the interface into your life.
           <span className="text-[14px] align-super text-muted-foreground">™</span>{" "}
           A dual-layer design system that separates{" "}
-          <em className="text-primary not-italic">what you read</em> from{" "}
-          <em className="text-primary not-italic">what you feel</em>.{" "}
-          <em className="text-primary not-italic">340+</em> components. One API. Zero compromise.
+          <span className="text-primary">what you read</span> from{" "}
+          <span className="text-primary">what you feel</span>.{" "}
+          <span className="text-primary">340+</span> components. One API. Zero compromise.
         </p>
 
         {/* CTAs with border-draw animation */}
