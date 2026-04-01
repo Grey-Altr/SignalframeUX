@@ -31,7 +31,7 @@ const NAV_SECTIONS = [
     ],
   },
   {
-    title: "FIELD LAYER",
+    title: "FRAME LAYER",
     items: [
       { label: "NoiseBG", id: "noisebg" },
       { label: "ParticleMesh", id: "particlemesh" },
@@ -53,7 +53,7 @@ const NAV_SECTIONS = [
   {
     title: "HOOKS",
     items: [
-      { label: "useFieldEffect", id: "useFieldEffect" },
+      { label: "useFrameEffect", id: "useFrameEffect" },
       { label: "useToken", id: "useToken" },
       { label: "useMotion", id: "useMotion" },
       { label: "useBreakpoint", id: "useBreakpoint" },
@@ -65,7 +65,7 @@ const NAV_SECTIONS = [
 const BUTTON_PROPS = [
   {
     name: "variant",
-    type: "'signal' | 'ghost' | 'field' | 'danger'",
+    type: "'signal' | 'ghost' | 'frame' | 'danger'",
     default: "'signal'",
     desc: "VISUAL VARIANT",
   },
@@ -76,13 +76,13 @@ const BUTTON_PROPS = [
     desc: "BUTTON SIZE",
   },
   {
-    name: "fieldEffect",
+    name: "frameEffect",
     type: "'shimmer' | 'pulse' | 'glitch' | 'none'",
     default: "'none'",
-    desc: "FIELD LAYER EFFECT",
+    desc: "FRAME LAYER EFFECT",
   },
   {
-    name: "fieldIntensity",
+    name: "frameIntensity",
     type: "number (0-1)",
     default: "0.5",
     desc: "EFFECT STRENGTH",
@@ -104,7 +104,7 @@ const BUTTON_PROPS = [
 
 export default function APIPage() {
   const [activeNav, setActiveNav] = useState("button");
-  const [activeTab, setActiveTab] = useState<"signal" | "field">("signal");
+  const [activeTab, setActiveTab] = useState<"signal" | "frame">("signal");
 
   return (
     <>
@@ -259,7 +259,7 @@ export default function APIPage() {
               }}
             >
               THE PRIMARY INTERACTIVE ELEMENT. SUPPORTS SIGNAL (DETERMINISTIC)
-              AND FIELD (GENERATIVE) VARIANTS. PROGRESSIVE ENHANCEMENT — FIELD
+              AND FRAME (GENERATIVE) VARIANTS. PROGRESSIVE ENHANCEMENT — FRAME
               EFFECTS LAYER ON TOP WITHOUT BREAKING ACCESSIBILITY.
             </p>
 
@@ -468,7 +468,7 @@ export default function APIPage() {
                 SIGNAL (DEFAULT)
               </button>
               <button
-                onClick={() => setActiveTab("field")}
+                onClick={() => setActiveTab("frame")}
                 className="uppercase font-mono font-bold"
                 style={{
                   fontSize: "13px",
@@ -476,15 +476,15 @@ export default function APIPage() {
                   padding: "8px 16px",
                   border: "none",
                   borderBottom:
-                    activeTab === "field"
+                    activeTab === "frame"
                       ? "3px solid #FF0090"
                       : "3px solid transparent",
-                  color: activeTab === "field" ? "#FF0090" : "#888",
+                  color: activeTab === "frame" ? "#FF0090" : "#888",
                   background: "transparent",
                   cursor: "pointer",
                 }}
               >
-                FIELD VARIANT (GENERATIVE)
+                FRAME VARIANT (GENERATIVE)
               </button>
             </div>
 
@@ -550,12 +550,12 @@ export default function APIPage() {
                 <span style={{ color: "#00FF00" }}>&lt;Button</span>
                 {"\n  "}
                 <span style={{ color: "#FF6B6B" }}>variant</span>=
-                <span style={{ color: "#FFE500" }}>{'"field"'}</span>
+                <span style={{ color: "#FFE500" }}>{'"frame"'}</span>
                 {"\n  "}
-                <span style={{ color: "#FF6B6B" }}>fieldEffect</span>=
+                <span style={{ color: "#FF6B6B" }}>frameEffect</span>=
                 <span style={{ color: "#FFE500" }}>{'"shimmer"'}</span>
                 {"\n  "}
-                <span style={{ color: "#FF6B6B" }}>fieldIntensity</span>
+                <span style={{ color: "#FF6B6B" }}>frameIntensity</span>
                 {"={"}
                 <span style={{ color: "#FF6B6B" }}>0.8</span>
                 {"}"}
@@ -607,8 +607,8 @@ export default function APIPage() {
               </span>
               WCAG 2.1 AA COMPLIANT{"\n"}
               {"• "}FOCUS RING: 3PX SOLID, OFFSET 2PX{"\n"}
-              {"• "}CONTRAST: 7:1 MIN (SIGNAL), 4.5:1 (FIELD){"\n"}
-              {"• "}FIELD EFFECTS: RESPECTS PREFERS-REDUCED-MOTION{"\n"}
+              {"• "}CONTRAST: 7:1 MIN (SIGNAL), 4.5:1 (FRAME){"\n"}
+              {"• "}FRAME EFFECTS: RESPECTS PREFERS-REDUCED-MOTION{"\n"}
               {"• "}ARIA: ROLE=&quot;BUTTON&quot; AUTOMATIC
             </div>
           </div>
@@ -636,7 +636,7 @@ export default function APIPage() {
                 LIVE PREVIEW™
               </span>
               <div className="flex gap-2">
-                {["LIGHT", "DARK", "FIELD"].map((label, i) => (
+                {["LIGHT", "DARK", "FRAME"].map((label, i) => (
                   <button
                     key={label}
                     className="font-mono"
@@ -679,8 +679,8 @@ export default function APIPage() {
                 }}
               >
                 <div>SF//UX::BUTTON::RENDER</div>
-                <div>VARIANT: SIGNAL | GHOST | FIELD</div>
-                <div>FIELD: SHIMMER @ 0.8</div>
+                <div>VARIANT: SIGNAL | GHOST | FRAME</div>
+                <div>FRAME: SHIMMER @ 0.8</div>
                 <div>FPS: 60 | MEM: 2.4MB</div>
               </div>
 
@@ -751,7 +751,7 @@ export default function APIPage() {
                     marginBottom: "8px",
                   }}
                 >
-                  VARIANT: FIELD (SHIMMER)
+                  VARIANT: FRAME (SHIMMER)
                 </div>
                 <button
                   className="font-mono font-bold uppercase relative overflow-hidden"

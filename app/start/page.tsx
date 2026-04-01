@@ -7,7 +7,7 @@ const STEPS = [
     number: "01",
     title: "INSTALL",
     description:
-      "ADD SIGNALFRAMEUX\u2122 TO YOUR PROJECT. THE CORE PACKAGE INCLUDES ALL SIGNAL LAYER COMPONENTS, TOKENS, AND THE API SURFACE. FIELD LAYER IS INCLUDED BUT OPT-IN.",
+      "ADD SIGNALFRAMEUX\u2122 TO YOUR PROJECT. THE CORE PACKAGE INCLUDES ALL SIGNAL LAYER COMPONENTS, TOKENS, AND THE API SURFACE. FRAME LAYER IS INCLUDED BUT OPT-IN.",
     code: [
       { type: "comment", text: "# NPM" },
       {
@@ -29,13 +29,13 @@ const STEPS = [
         ],
       },
       { type: "blank" },
-      { type: "comment", text: "# FIELD LAYER (OPTIONAL)" },
+      { type: "comment", text: "# FRAME LAYER (OPTIONAL)" },
       {
         type: "line",
         parts: [
           { text: "pnpm", cls: "fn" },
           { text: " add " },
-          { text: "@sfux/field", cls: "str" },
+          { text: "@sfux/frame", cls: "str" },
         ],
       },
     ],
@@ -46,7 +46,7 @@ const STEPS = [
     number: "02",
     title: "INITIALIZE",
     description:
-      "WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT TO SET YOUR THEME, TOKEN MODE, AND FIELD LAYER PREFERENCES.",
+      "WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT TO SET YOUR THEME, TOKEN MODE, AND FRAME LAYER PREFERENCES.",
     code: [
       {
         type: "line",
@@ -96,7 +96,7 @@ const STEPS = [
         type: "line",
         parts: [
           { text: "  " },
-          { text: "field", cls: "cn" },
+          { text: "frame", cls: "cn" },
           { text: ": { " },
           { text: "enabled", cls: "cn" },
           { text: ": " },
@@ -155,7 +155,7 @@ const STEPS = [
     number: "03",
     title: "USE_COMPONENTS",
     description:
-      "IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY INHERIT YOUR THEME AND TOKEN CONFIGURATION. SIGNAL COMPONENTS ARE DETERMINISTIC. FIELD VARIANTS ADD GENERATIVE EFFECTS ON TOP.",
+      "IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY INHERIT YOUR THEME AND TOKEN CONFIGURATION. SIGNAL COMPONENTS ARE DETERMINISTIC. FRAME VARIANTS ADD GENERATIVE EFFECTS ON TOP.",
     code: [
       {
         type: "line",
@@ -232,15 +232,15 @@ const STEPS = [
           { text: " " },
           { text: "variant", cls: "cn" },
           { text: "=" },
-          { text: '"field"', cls: "str" },
+          { text: '"frame"', cls: "str" },
           { text: " " },
-          { text: "fieldEffect", cls: "cn" },
+          { text: "frameEffect", cls: "cn" },
           { text: "=" },
           { text: '"shimmer"', cls: "str" },
           { text: ">" },
         ],
       },
-      { type: "line", parts: [{ text: "        ENGAGE FIELD" }] },
+      { type: "line", parts: [{ text: "        ENGAGE FRAME" }] },
       {
         type: "line",
         parts: [
@@ -265,9 +265,9 @@ const STEPS = [
   },
   {
     number: "04",
-    title: "ACTIVATE_FIELD",
+    title: "ACTIVATE_FRAME",
     description:
-      "THE FIELD LAYER IS THE GENERATIVE EXPRESSION SYSTEM. ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT, AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE WITH THE SIGNAL LAYER\u2019S READABILITY.",
+      "THE FRAME LAYER IS THE GENERATIVE EXPRESSION SYSTEM. ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT, AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE WITH THE SIGNAL LAYER\u2019S READABILITY.",
     code: [
       {
         type: "line",
@@ -280,7 +280,7 @@ const STEPS = [
           { text: " } " },
           { text: "from", cls: "kw" },
           { text: " " },
-          { text: "'@sfux/field'", cls: "str" },
+          { text: "'@sfux/frame'", cls: "str" },
         ],
       },
       { type: "blank" },
@@ -340,14 +340,14 @@ const STEPS = [
         ],
       },
     ],
-    note: "FIELD EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION. USE fieldIntensity TO CONTROL VISUAL WEIGHT.",
+    note: "FRAME EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION. USE frameIntensity TO CONTROL VISUAL WEIGHT.",
     highlight: false,
   },
   {
     number: "05",
     title: "DEPLOY",
     description:
-      "SIGNALFRAMEUX\u2122 IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. FIELD LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
+      "SIGNALFRAMEUX\u2122 IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. FRAME LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
     code: [
       { type: "comment", text: "# BUILD FOR PRODUCTION" },
       {
@@ -369,7 +369,7 @@ const STEPS = [
       { type: "blank" },
       { type: "comment", text: "# CORE: ~12KB GZIPPED" },
       { type: "comment", text: "# COMPONENTS: ~3KB PER COMPONENT (AVG)" },
-      { type: "comment", text: "# FIELD: ~8KB BASE + ~2KB PER EFFECT" },
+      { type: "comment", text: "# FRAME: ~8KB BASE + ~2KB PER EFFECT" },
     ],
     note: null,
     highlight: false,
@@ -381,7 +381,7 @@ const CHECKLIST = [
   { label: "WRAP APP IN SFUXPROVIDER", done: true, status: "COMPLETE" },
   { label: "IMPORT AND USE SIGNAL COMPONENTS", done: true, status: "COMPLETE" },
   { label: "CONFIGURE OKLCH TOKEN OVERRIDES", done: false, status: "OPTIONAL" },
-  { label: "ENABLE FIELD LAYER EFFECTS", done: false, status: "OPTIONAL" },
+  { label: "ENABLE FRAME LAYER EFFECTS", done: false, status: "OPTIONAL" },
   { label: "SET UP STORYBOOK FOR DEVELOPMENT", done: false, status: "RECOMMENDED" },
 ];
 
@@ -389,7 +389,7 @@ const NEXT_CARDS = [
   {
     title: "BROWSE COMPONENTS",
     description:
-      "EXPLORE ALL 340+ SIGNAL AND FIELD COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.",
+      "EXPLORE ALL 340+ SIGNAL AND FRAME COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.",
     arrow: "COMPONENT LIBRARY",
     href: "/components",
   },

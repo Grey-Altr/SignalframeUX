@@ -2,7 +2,7 @@ const STATS = [
   { value: "340", label: "COMPONENTS" },
   { value: "48", label: "OKLCH SCALES" },
   { value: "12", label: "MOTION CURVES" },
-  { value: "∞", label: "FIELD STATES" },
+  { value: "∞", label: "FRAME STATES" },
 ];
 
 export function StatsBand() {

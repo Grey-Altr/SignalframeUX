@@ -43,7 +43,7 @@ const COLOR_SCALES = [
     ],
   },
   {
-    name: "FIELD",
+    name: "FRAME",
     hue: 145,
     swatches: [
       { step: 50, l: 0.97, c: 0.03, h: 145 },

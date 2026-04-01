@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer";
 const CATEGORIES = [
   "ALL",
   "SIGNAL",
-  "FIELD",
+  "FRAME",
   "LAYOUT",
   "INPUT",
   "DATA",
@@ -326,45 +326,45 @@ const COMPONENTS: ComponentEntry[] = [
     filterTag: "LAYOUT",
     preview: <PreviewDrawer />,
   },
-  // Row 4 — FIELD generative components
+  // Row 4 — FRAME generative components
   {
     index: "101",
     name: "NOISE_BG",
     category: "GENERATIVE",
-    subcategory: "FIELD",
+    subcategory: "FRAME",
     version: "v1.0.0",
     variant: "black",
-    filterTag: "FIELD",
+    filterTag: "FRAME",
     preview: <PreviewNoise />,
   },
   {
     index: "102",
     name: "WAVEFORM",
     category: "GENERATIVE",
-    subcategory: "FIELD",
+    subcategory: "FRAME",
     version: "v1.0.0",
     variant: "black",
-    filterTag: "FIELD",
+    filterTag: "FRAME",
     preview: <PreviewWave />,
   },
   {
     index: "103",
     name: "GLITCH_TXT",
     category: "GENERATIVE",
-    subcategory: "FIELD",
+    subcategory: "FRAME",
     version: "v1.0.0",
     variant: "black",
-    filterTag: "FIELD",
+    filterTag: "FRAME",
     preview: <PreviewGlitch />,
   },
   {
     index: "104",
     name: "PARTICLE",
     category: "GENERATIVE",
-    subcategory: "FIELD",
+    subcategory: "FRAME",
     version: "v1.0.0",
     variant: "black",
-    filterTag: "FIELD",
+    filterTag: "FRAME",
     preview: <PreviewParticle />,
   },
 ];
@@ -448,7 +448,7 @@ export default function ComponentsPage() {
               340
             </strong>
             <span className="text-muted-foreground text-[11px] uppercase tracking-[0.15em] leading-snug block mt-1">
-              SIGNAL + FIELD PRIMITIVES
+              SIGNAL + FRAME PRIMITIVES
               <br />
               FOR EVERY SURFACE
             </span>

@@ -174,7 +174,7 @@ export function Footer() {
 
           <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-muted-foreground">
             <span>&copy; {new Date().getFullYear()} SIGNALFRAMEUX</span>
-            <span>SIGNAL // FIELD</span>
+            <span>SIGNAL // FRAME</span>
           </div>
         </div>
       </div>

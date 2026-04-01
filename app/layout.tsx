@@ -21,7 +21,7 @@ const anton = localFont({
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX",
   description:
-    "Universal design system combining clarity (Signal) and generative depth (Field). Built for product design engineers.",
+    "Universal design system combining clarity (Signal) and generative depth (Frame). Built for product design engineers.",
   keywords: [
     "design system",
     "component library",

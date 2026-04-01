@@ -1,7 +1,7 @@
 "use client";
 
 const SIGNAL_TAGS = ["LAYOUT", "TYPOGRAPHY", "COLOR", "SPACING", "MOTION"];
-const FIELD_TAGS = ["GENERATIVE", "PARAMETRIC", "DATA-DRIVEN", "CANVAS", "SHADER"];
+const FRAME_TAGS = ["GENERATIVE", "PARAMETRIC", "DATA-DRIVEN", "CANVAS", "SHADER"];
 
 export function DualLayer() {
   return (
@@ -48,7 +48,7 @@ export function DualLayer() {
           NEVER INTERFERES WITH READABILITY.
         </p>
         <div className="flex flex-wrap gap-2 mt-8">
-          {FIELD_TAGS.map((tag) => (
+          {FRAME_TAGS.map((tag) => (
             <span
               key={tag}
               data-anim="tag"

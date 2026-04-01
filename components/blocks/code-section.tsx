@@ -12,7 +12,7 @@ export function CodeSection() {
         <p className="text-[13px] leading-[1.8] text-foreground/60 max-w-[440px]">
           SIGNALFRAMEUX OPERATES AS A PROGRAMMABLE API.
           INITIALIZE WITH A CONFIG OBJECT. EVERY TOKEN,
-          COMPONENT, AND FIELD EFFECT IS ADDRESSABLE
+          COMPONENT, AND FRAME EFFECT IS ADDRESSABLE
           THROUGH A UNIFIED INTERFACE.
         </p>
       </div>
@@ -42,7 +42,7 @@ export function CodeSection() {
             <Line indent={2}>
               tokens: <Str>&apos;oklch&apos;</Str>,
             </Line>
-            <Line indent={2}>field: {"{"}</Line>
+            <Line indent={2}>frame: {"{"}</Line>
             <Line indent={4}>
               enabled: <Const>true</Const>,
             </Line>

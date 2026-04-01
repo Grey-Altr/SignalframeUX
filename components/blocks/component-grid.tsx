@@ -9,12 +9,12 @@ const COMPONENTS = [
   { id: "004", name: "MODAL", bg: "white", layer: "SIGNAL" },
   { id: "005", name: "TABLE", bg: "white", layer: "SIGNAL" },
   { id: "006", name: "TOAST", bg: "white", layer: "SIGNAL" },
-  { id: "007", name: "NOISE_BG", bg: "black", layer: "FIELD" },
-  { id: "008", name: "PARTICLE_MESH", bg: "black", layer: "FIELD" },
-  { id: "009", name: "GLITCH_TEXT", bg: "black", layer: "FIELD" },
+  { id: "007", name: "NOISE_BG", bg: "black", layer: "FRAME" },
+  { id: "008", name: "PARTICLE_MESH", bg: "black", layer: "FRAME" },
+  { id: "009", name: "GLITCH_TEXT", bg: "black", layer: "FRAME" },
   { id: "010", name: "DROPDOWN", bg: "white", layer: "SIGNAL" },
   { id: "011", name: "TABS", bg: "white", layer: "SIGNAL" },
-  { id: "012", name: "WAVEFORM", bg: "black", layer: "FIELD" },
+  { id: "012", name: "WAVEFORM", bg: "black", layer: "FRAME" },
 ];
 
 export function ComponentGrid() {
