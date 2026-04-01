@@ -3,6 +3,23 @@
 import { useState } from "react";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
+import { SFBadge } from "@/components/sf/sf-badge";
+import { SFButton } from "@/components/sf/sf-button";
+import {
+  SFTabs,
+  SFTabsList,
+  SFTabsTrigger,
+  SFTabsContent,
+} from "@/components/sf/sf-tabs";
+import {
+  SFTable,
+  SFTableHeader,
+  SFTableHead,
+  SFTableBody,
+  SFTableRow,
+  SFTableCell,
+} from "@/components/sf/sf-table";
+import { SFScrollArea } from "@/components/sf/sf-scroll-area";
 
 /* ── Sidebar nav structure ── */
 const NAV_SECTIONS = [
@@ -96,745 +113,332 @@ const BUTTON_PROPS = [
   {
     name: "onClick",
     type: "() => void",
-    default: "—",
+    default: "\u2014",
     desc: "CLICK HANDLER",
     required: true,
   },
 ];
 
+/* ── Code block renderer ── */
+function CodeBlock({ children, label }: { children: React.ReactNode; label?: string }) {
+  return (
+    <div className="relative overflow-x-auto font-mono bg-[oklch(0.12_0_0)] text-[oklch(0.6_0.28_145)] p-5 pr-6 text-[12px] leading-[1.7] my-4 shadow-[inset_0_2px_4px_oklch(0_0_0/0.2)]">
+      {label && (
+        <span className="absolute top-1.5 right-2.5 text-[8px] text-muted-foreground uppercase tracking-[0.2em]">
+          {label}
+        </span>
+      )}
+      {children}
+    </div>
+  );
+}
+
 export default function APIPage() {
   const [activeNav, setActiveNav] = useState("button");
-  const [activeTab, setActiveTab] = useState<"signal" | "frame">("signal");
 
   return (
     <>
       <Nav />
       <main>
         {/* 3-panel grid layout */}
-        <div
-          className="mt-[83px] min-h-[calc(100vh-83px)]"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "240px 1fr 380px",
-          }}
-        >
+        <div className="mt-[83px] min-h-[calc(100vh-83px)] grid grid-cols-1 md:grid-cols-[240px_1fr_380px]">
           {/* ═══════════════════════════════════════════
               LEFT PANEL — API Navigation
               ═══════════════════════════════════════════ */}
-          <aside
-            className="sticky top-[83px] h-[calc(100vh-83px)] overflow-y-auto"
-            style={{ background: "#000", color: "#fff" }}
-          >
-            {/* Header */}
-            <div
-              className="border-b border-[#333]"
-              style={{
-                padding: "20px 16px",
-                fontFamily: "var(--font-anton)",
-                fontSize: "24px",
-                textTransform: "uppercase",
-              }}
-            >
-              API™
-            </div>
-
-            {/* Nav sections */}
-            {NAV_SECTIONS.map((section) => (
-              <div
-                key={section.title}
-                className="border-b border-[#222]"
-                style={{ padding: "12px 0" }}
-              >
-                <div
-                  style={{
-                    fontSize: "9px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                    color: "#888",
-                    padding: "0 16px 8px",
-                  }}
-                >
-                  {section.title}
-                </div>
-                {section.items.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    onClick={() => setActiveNav(item.id)}
-                    className={`block no-underline uppercase transition-colors ${
-                      activeNav === item.id
-                        ? "text-[#FF0090] bg-[#1a1a1a] border-l-[3px] border-l-[#FF0090]"
-                        : "text-[#aaa] hover:text-white hover:bg-[#1a1a1a]"
-                    }`}
-                    style={{
-                      padding: "6px 16px",
-                      fontSize: "11px",
-                      letterSpacing: "0.08em",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {item.label}
-                    {"badge" in item && item.badge && (
-                      <span
-                        className="ml-1.5 inline-block"
-                        style={{
-                          fontSize: "8px",
-                          background: "#FF0090",
-                          color: "#fff",
-                          padding: "1px 5px",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </a>
-                ))}
+          <aside className="sticky top-[83px] h-[calc(100vh-83px)] bg-foreground text-background hidden md:block">
+            <SFScrollArea className="h-full">
+              {/* Header */}
+              <div className="border-b border-[oklch(0.3_0_0)] p-5 sf-display text-2xl">
+                API&trade;
               </div>
-            ))}
+
+              {/* Nav sections */}
+              {NAV_SECTIONS.map((section) => (
+                <div
+                  key={section.title}
+                  className="border-b border-[oklch(0.2_0_0)] py-3"
+                >
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground px-4 pb-2">
+                    {section.title}
+                  </div>
+                  {section.items.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      onClick={() => setActiveNav(item.id)}
+                      className={`block no-underline uppercase transition-colors text-[11px] tracking-[0.08em] py-1.5 px-4 ${
+                        activeNav === item.id
+                          ? "text-primary bg-[oklch(0.18_0_0)] border-l-[3px] border-l-primary"
+                          : "text-[oklch(0.65_0_0)] hover:text-background hover:bg-[oklch(0.18_0_0)]"
+                      }`}
+                    >
+                      {item.label}
+                      {"badge" in item && item.badge && (
+                        <SFBadge
+                          intent="primary"
+                          className="ml-1.5 text-[8px] py-0 px-1.5 h-auto"
+                        >
+                          {item.badge}
+                        </SFBadge>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              ))}
+            </SFScrollArea>
           </aside>
 
           {/* ═══════════════════════════════════════════
               CENTER PANEL — Documentation
               ═══════════════════════════════════════════ */}
-          <div
-            className="overflow-y-auto border-r-[3px] border-foreground"
-            style={{
-              padding: "40px 48px",
-              height: "calc(100vh - 83px)",
-            }}
-          >
+          <div className="overflow-y-auto border-r-[3px] border-foreground py-10 px-6 md:px-12 h-auto md:h-[calc(100vh-83px)]">
             {/* Breadcrumb */}
-            <div
-              style={{
-                fontSize: "10px",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                color: "#888",
-                marginBottom: "24px",
-              }}
-            >
-              <span className="text-[#FF0090]">API</span> /{" "}
-              <span className="text-[#FF0090]">COMPONENTS</span> / BUTTON
+            <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-6">
+              <span className="text-primary">API</span> /{" "}
+              <span className="text-primary">COMPONENTS</span> / BUTTON
             </div>
 
             {/* Title */}
-            <h1
-              className="text-foreground"
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "72px",
-                textTransform: "uppercase",
-                lineHeight: 0.95,
-                marginBottom: "8px",
-              }}
-            >
+            <h1 className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">
               BUTTON
             </h1>
 
             {/* Version badge */}
-            <span
-              className="inline-block font-bold"
-              style={{
-                fontSize: "9px",
-                padding: "3px 10px",
-                background: "#FFE500",
-                color: "#333",
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                marginBottom: "24px",
-              }}
-            >
+            <SFBadge intent="signal" className="mb-6 text-[9px] tracking-[0.1em]">
               SIGNAL LAYER · v2.1.0 · STABLE
-            </span>
+            </SFBadge>
 
             {/* Description */}
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: 1.8,
-                color: "#333",
-                maxWidth: "580px",
-                marginBottom: "32px",
-              }}
-            >
+            <p className="text-sm leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
               THE PRIMARY INTERACTIVE ELEMENT. SUPPORTS SIGNAL (DETERMINISTIC)
               AND FRAME (GENERATIVE) VARIANTS. PROGRESSIVE ENHANCEMENT — FRAME
               EFFECTS LAYER ON TOP WITHOUT BREAKING ACCESSIBILITY.
             </p>
 
             {/* ── IMPORT ── */}
-            <h2
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "32px",
-                textTransform: "uppercase",
-                marginTop: "48px",
-                marginBottom: "16px",
-                paddingTop: "24px",
-                borderTop: "2px solid #000",
-              }}
-            >
+            <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
               IMPORT
             </h2>
-            <div
-              className="relative overflow-x-auto font-mono"
-              style={{
-                background: "#111",
-                color: "#00FF00",
-                padding: "20px 24px",
-                fontSize: "12px",
-                lineHeight: 1.7,
-                margin: "16px 0",
-                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
-              }}
-            >
-              <span
-                className="absolute"
-                style={{
-                  top: "6px",
-                  right: "10px",
-                  fontSize: "8px",
-                  color: "#888",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                }}
-              >
-                TSX
-              </span>
-              <span style={{ color: "#FF0090" }}>import</span>
+            <CodeBlock label="TSX">
+              <span className="text-primary">import</span>
               {" { "}
-              <span style={{ color: "#00FF00" }}>Button</span>
+              <span className="text-[oklch(0.6_0.28_145)]">Button</span>
               {" } "}
-              <span style={{ color: "#FF0090" }}>from</span>{" "}
-              <span style={{ color: "#FFE500" }}>
+              <span className="text-primary">from</span>{" "}
+              <span className="text-[var(--sf-yellow)]">
                 {"'@sfux/components'"}
               </span>
               {"\n\n"}
-              <span style={{ color: "#555" }}>{"// OR DIRECT IMPORT"}</span>
+              <span className="text-[oklch(0.4_0_0)]">{"// OR DIRECT IMPORT"}</span>
               {"\n"}
-              <span style={{ color: "#FF0090" }}>import</span>
+              <span className="text-primary">import</span>
               {" { "}
-              <span style={{ color: "#00FF00" }}>Button</span>
+              <span className="text-[oklch(0.6_0.28_145)]">Button</span>
               {" } "}
-              <span style={{ color: "#FF0090" }}>from</span>{" "}
-              <span style={{ color: "#FFE500" }}>
+              <span className="text-primary">from</span>{" "}
+              <span className="text-[var(--sf-yellow)]">
                 {"'@sfux/components/Button'"}
               </span>
-            </div>
+            </CodeBlock>
 
             {/* ── PROPS ── */}
-            <h2
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "32px",
-                textTransform: "uppercase",
-                marginTop: "48px",
-                marginBottom: "16px",
-                paddingTop: "24px",
-                borderTop: "2px solid #000",
-              }}
-            >
+            <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
               PROPS
             </h2>
-            <table
-              className="w-full font-mono"
-              style={{
-                borderCollapse: "collapse",
-                marginBottom: "24px",
-                fontSize: "11px",
-              }}
-            >
-              <thead>
-                <tr>
-                  {["PROP", "TYPE", "DEFAULT", "DESC"].map((h) => (
-                    <th
-                      key={h}
-                      className="text-left"
-                      style={{
-                        padding: "10px 12px",
-                        background: "#000",
-                        color: "#fff",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.15em",
-                        fontSize: "9px",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
+            <SFTable className="mb-6">
+              <SFTableHeader>
+                <SFTableRow>
+                  <SFTableHead>PROP</SFTableHead>
+                  <SFTableHead>TYPE</SFTableHead>
+                  <SFTableHead>DEFAULT</SFTableHead>
+                  <SFTableHead>DESC</SFTableHead>
+                </SFTableRow>
+              </SFTableHeader>
+              <SFTableBody>
                 {BUTTON_PROPS.map((prop) => (
-                  <tr key={prop.name}>
-                    <td
-                      style={{
-                        padding: "10px 12px",
-                        borderBottom: "1px solid #ddd",
-                        color: "#FF0090",
-                        fontWeight: 700,
-                      }}
-                    >
+                  <SFTableRow key={prop.name}>
+                    <SFTableCell className="text-primary font-bold">
                       {prop.name}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px 12px",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: "10px",
-                          background: "#f0f0f0",
-                          padding: "2px 6px",
-                          color: "#333",
-                        }}
-                      >
+                    </SFTableCell>
+                    <SFTableCell>
+                      <code className="text-[10px] bg-muted px-1.5 py-0.5">
                         {prop.type}
-                      </span>
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px 12px",
-                        borderBottom: "1px solid #ddd",
-                        color: "#888",
-                      }}
-                    >
+                      </code>
+                    </SFTableCell>
+                    <SFTableCell className="text-muted-foreground">
                       {prop.default}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px 12px",
-                        borderBottom: "1px solid #ddd",
-                      }}
-                    >
+                    </SFTableCell>
+                    <SFTableCell>
                       {prop.desc}
                       {prop.required && (
-                        <span
-                          className="ml-1.5"
-                          style={{
-                            fontSize: "8px",
-                            background: "#E91E63",
-                            color: "#fff",
-                            padding: "1px 4px",
-                          }}
+                        <SFBadge
+                          intent="primary"
+                          className="ml-1.5 text-[8px] py-0 px-1 h-auto"
                         >
                           REQ
-                        </span>
+                        </SFBadge>
                       )}
-                    </td>
-                  </tr>
+                    </SFTableCell>
+                  </SFTableRow>
                 ))}
-              </tbody>
-            </table>
+              </SFTableBody>
+            </SFTable>
 
             {/* ── USAGE ── */}
-            <h2
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "32px",
-                textTransform: "uppercase",
-                marginTop: "48px",
-                marginBottom: "16px",
-                paddingTop: "24px",
-                borderTop: "2px solid #000",
-              }}
-            >
+            <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
               USAGE
             </h2>
 
-            {/* Tabs */}
-            <div className="flex gap-0 mb-0">
-              <button
-                onClick={() => setActiveTab("signal")}
-                className="uppercase font-mono font-bold"
-                style={{
-                  fontSize: "13px",
-                  letterSpacing: "0.1em",
-                  padding: "8px 16px",
-                  border: "none",
-                  borderBottom:
-                    activeTab === "signal"
-                      ? "3px solid #FF0090"
-                      : "3px solid transparent",
-                  color: activeTab === "signal" ? "#FF0090" : "#888",
-                  background: "transparent",
-                  cursor: "pointer",
-                }}
-              >
-                SIGNAL (DEFAULT)
-              </button>
-              <button
-                onClick={() => setActiveTab("frame")}
-                className="uppercase font-mono font-bold"
-                style={{
-                  fontSize: "13px",
-                  letterSpacing: "0.1em",
-                  padding: "8px 16px",
-                  border: "none",
-                  borderBottom:
-                    activeTab === "frame"
-                      ? "3px solid #FF0090"
-                      : "3px solid transparent",
-                  color: activeTab === "frame" ? "#FF0090" : "#888",
-                  background: "transparent",
-                  cursor: "pointer",
-                }}
-              >
-                FRAME VARIANT (GENERATIVE)
-              </button>
-            </div>
-
-            {activeTab === "signal" ? (
-              <div
-                className="relative overflow-x-auto font-mono"
-                style={{
-                  background: "#111",
-                  color: "#00FF00",
-                  padding: "20px 24px",
-                  fontSize: "12px",
-                  lineHeight: 1.7,
-                  margin: "0 0 16px 0",
-                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
-                }}
-              >
-                <span
-                  className="absolute"
-                  style={{
-                    top: "6px",
-                    right: "10px",
-                    fontSize: "8px",
-                    color: "#888",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                  }}
-                >
-                  TSX
-                </span>
-                <span style={{ color: "#00FF00" }}>&lt;Button</span>{" "}
-                <span style={{ color: "#FF6B6B" }}>variant</span>=
-                <span style={{ color: "#FFE500" }}>{'"signal"'}</span>
-                <span style={{ color: "#00FF00" }}>&gt;</span>
-                {"\n  GET STARTED\n"}
-                <span style={{ color: "#00FF00" }}>&lt;/Button&gt;</span>
-              </div>
-            ) : (
-              <div
-                className="relative overflow-x-auto font-mono"
-                style={{
-                  background: "#111",
-                  color: "#00FF00",
-                  padding: "20px 24px",
-                  fontSize: "12px",
-                  lineHeight: 1.7,
-                  margin: "0 0 16px 0",
-                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
-                }}
-              >
-                <span
-                  className="absolute"
-                  style={{
-                    top: "6px",
-                    right: "10px",
-                    fontSize: "8px",
-                    color: "#888",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                  }}
-                >
-                  TSX
-                </span>
-                <span style={{ color: "#00FF00" }}>&lt;Button</span>
-                {"\n  "}
-                <span style={{ color: "#FF6B6B" }}>variant</span>=
-                <span style={{ color: "#FFE500" }}>{'"frame"'}</span>
-                {"\n  "}
-                <span style={{ color: "#FF6B6B" }}>frameEffect</span>=
-                <span style={{ color: "#FFE500" }}>{'"shimmer"'}</span>
-                {"\n  "}
-                <span style={{ color: "#FF6B6B" }}>frameIntensity</span>
-                {"={"}
-                <span style={{ color: "#FF6B6B" }}>0.8</span>
-                {"}"}
-                {"\n"}
-                <span style={{ color: "#00FF00" }}>&gt;</span>
-                {"\n  LAUNCH SEQUENCE\n"}
-                <span style={{ color: "#00FF00" }}>&lt;/Button&gt;</span>
-              </div>
-            )}
+            <SFTabs defaultValue="signal">
+              <SFTabsList className="border-b-0 mb-0">
+                <SFTabsTrigger value="signal">SIGNAL (DEFAULT)</SFTabsTrigger>
+                <SFTabsTrigger value="frame">FRAME VARIANT (GENERATIVE)</SFTabsTrigger>
+              </SFTabsList>
+              <SFTabsContent value="signal" className="mt-0">
+                <CodeBlock label="TSX">
+                  <span className="text-[oklch(0.6_0.28_145)]">&lt;Button</span>{" "}
+                  <span className="text-[oklch(0.7_0.15_25)]">variant</span>=
+                  <span className="text-[var(--sf-yellow)]">{'"signal"'}</span>
+                  <span className="text-[oklch(0.6_0.28_145)]">&gt;</span>
+                  {"\n  GET STARTED\n"}
+                  <span className="text-[oklch(0.6_0.28_145)]">&lt;/Button&gt;</span>
+                </CodeBlock>
+              </SFTabsContent>
+              <SFTabsContent value="frame" className="mt-0">
+                <CodeBlock label="TSX">
+                  <span className="text-[oklch(0.6_0.28_145)]">&lt;Button</span>
+                  {"\n  "}
+                  <span className="text-[oklch(0.7_0.15_25)]">variant</span>=
+                  <span className="text-[var(--sf-yellow)]">{'"frame"'}</span>
+                  {"\n  "}
+                  <span className="text-[oklch(0.7_0.15_25)]">frameEffect</span>=
+                  <span className="text-[var(--sf-yellow)]">{'"shimmer"'}</span>
+                  {"\n  "}
+                  <span className="text-[oklch(0.7_0.15_25)]">frameIntensity</span>
+                  {"={"}
+                  <span className="text-[oklch(0.7_0.15_25)]">0.8</span>
+                  {"}"}
+                  {"\n"}
+                  <span className="text-[oklch(0.6_0.28_145)]">&gt;</span>
+                  {"\n  LAUNCH SEQUENCE\n"}
+                  <span className="text-[oklch(0.6_0.28_145)]">&lt;/Button&gt;</span>
+                </CodeBlock>
+              </SFTabsContent>
+            </SFTabs>
 
             {/* ── ACCESSIBILITY ── */}
-            <h2
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "32px",
-                textTransform: "uppercase",
-                marginTop: "48px",
-                marginBottom: "16px",
-                paddingTop: "24px",
-                borderTop: "2px solid #000",
-              }}
-            >
+            <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
               ACCESSIBILITY
             </h2>
-            <div
-              className="font-mono"
-              style={{
-                background: "#111",
-                color: "#555",
-                padding: "20px 24px",
-                fontSize: "12px",
-                lineHeight: 1.7,
-                margin: "16px 0",
-                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
-              }}
-            >
-              <span
-                className="absolute"
-                style={{
-                  top: "6px",
-                  right: "10px",
-                  fontSize: "8px",
-                  color: "#888",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                }}
-              >
-                INFO
+            <CodeBlock label="INFO">
+              <span className="text-muted-foreground">
+                WCAG 2.1 AA COMPLIANT{"\n"}
+                {"• "}FOCUS RING: 3PX SOLID, OFFSET 2PX{"\n"}
+                {"• "}CONTRAST: 7:1 MIN (SIGNAL), 4.5:1 (FRAME){"\n"}
+                {"• "}FRAME EFFECTS: RESPECTS PREFERS-REDUCED-MOTION{"\n"}
+                {"• "}ARIA: ROLE=&quot;BUTTON&quot; AUTOMATIC
               </span>
-              WCAG 2.1 AA COMPLIANT{"\n"}
-              {"• "}FOCUS RING: 3PX SOLID, OFFSET 2PX{"\n"}
-              {"• "}CONTRAST: 7:1 MIN (SIGNAL), 4.5:1 (FRAME){"\n"}
-              {"• "}FRAME EFFECTS: RESPECTS PREFERS-REDUCED-MOTION{"\n"}
-              {"• "}ARIA: ROLE=&quot;BUTTON&quot; AUTOMATIC
-            </div>
+            </CodeBlock>
           </div>
 
           {/* ═══════════════════════════════════════════
               RIGHT PANEL — Live Preview
               ═══════════════════════════════════════════ */}
-          <aside
-            className="sticky top-[83px] h-[calc(100vh-83px)] overflow-y-auto"
-            style={{ background: "#0a0a0a", color: "#fff" }}
-          >
-            {/* Preview header */}
-            <div
-              className="flex items-center justify-between border-b border-[#333]"
-              style={{ padding: "16px 20px" }}
-            >
-              <span
-                style={{
-                  fontSize: "9px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  color: "#888",
-                }}
-              >
-                LIVE PREVIEW™
-              </span>
-              <div className="flex gap-2">
-                {["LIGHT", "DARK", "FRAME"].map((label, i) => (
-                  <button
-                    key={label}
-                    className="font-mono"
-                    style={{
-                      fontSize: "9px",
-                      padding: "4px 10px",
-                      border:
-                        i === 0
-                          ? "1px solid #FF0090"
-                          : "1px solid #444",
-                      color: i === 0 ? "#FF0090" : "#888",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                      background: "transparent",
-                      cursor: "pointer",
-                    }}
+          <aside className="sticky top-[83px] h-[calc(100vh-83px)] bg-[oklch(0.08_0_0)] text-[oklch(0.985_0_0)] hidden md:block">
+            <SFScrollArea className="h-full">
+              {/* Preview header */}
+              <div className="flex items-center justify-between border-b border-[oklch(0.25_0_0)] p-4">
+                <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                  LIVE PREVIEW&trade;
+                </span>
+                <div className="flex gap-2">
+                  {["LIGHT", "DARK", "FRAME"].map((label, i) => (
+                    <SFButton
+                      key={label}
+                      intent={i === 0 ? "primary" : "ghost"}
+                      size="sm"
+                      className={`text-[9px] h-6 px-2.5 ${
+                        i !== 0
+                          ? "border-[oklch(0.35_0_0)] text-muted-foreground"
+                          : ""
+                      }`}
+                    >
+                      {label}
+                    </SFButton>
+                  ))}
+                </div>
+              </div>
+
+              {/* Preview stage */}
+              <div className="relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px]">
+                {/* HUD overlay */}
+                <div className="absolute top-5 left-5 text-[8px] uppercase tracking-[0.2em] text-[oklch(0.6_0.28_145)] opacity-40">
+                  <div>SF//UX::BUTTON::RENDER</div>
+                  <div>VARIANT: SIGNAL | GHOST | FRAME</div>
+                  <div>FRAME: SHIMMER @ 0.8</div>
+                  <div>FPS: 60 | MEM: 2.4MB</div>
+                </div>
+
+                {/* Rendered buttons */}
+                <div className="text-center mt-[60px]">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                    VARIANT: SIGNAL
+                  </div>
+                  <SFButton intent="ghost" size="lg" className="bg-white text-black border-white hover:bg-white/80 hover:text-black">
+                    GET STARTED
+                  </SFButton>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                    VARIANT: GHOST
+                  </div>
+                  <SFButton intent="ghost" size="lg" className="text-white border-white hover:bg-white hover:text-black">
+                    VIEW DOCS
+                  </SFButton>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                    VARIANT: FRAME (SHIMMER)
+                  </div>
+                  <SFButton intent="primary" size="lg" className="relative overflow-hidden">
+                    LAUNCH SEQUENCE
+                  </SFButton>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                    VARIANT: YELLOW (TDR)
+                  </div>
+                  <SFButton
+                    intent="ghost"
+                    size="lg"
+                    className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground"
                   >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Preview stage */}
-            <div
-              className="relative flex flex-col items-center justify-center gap-6"
-              style={{ padding: "40px 24px", minHeight: "300px" }}
-            >
-              {/* HUD overlay */}
-              <div
-                className="absolute"
-                style={{
-                  top: "20px",
-                  left: "20px",
-                  fontSize: "8px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  color: "#00FF00",
-                  opacity: 0.4,
-                }}
-              >
-                <div>SF//UX::BUTTON::RENDER</div>
-                <div>VARIANT: SIGNAL | GHOST | FRAME</div>
-                <div>FRAME: SHIMMER @ 0.8</div>
-                <div>FPS: 60 | MEM: 2.4MB</div>
-              </div>
-
-              {/* Rendered buttons */}
-              <div className="text-center" style={{ marginTop: "60px" }}>
-                <div
-                  style={{
-                    fontSize: "9px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                    color: "#888",
-                    marginBottom: "8px",
-                  }}
-                >
-                  VARIANT: SIGNAL
+                    BUY ME&trade;
+                  </SFButton>
                 </div>
-                <button
-                  className="font-mono font-bold uppercase"
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.15em",
-                    padding: "14px 28px",
-                    background: "#fff",
-                    color: "#000",
-                    border: "2px solid #fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  GET STARTED
-                </button>
               </div>
 
-              <div className="text-center">
-                <div
-                  style={{
-                    fontSize: "9px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                    color: "#888",
-                    marginBottom: "8px",
-                  }}
-                >
-                  VARIANT: GHOST
-                </div>
-                <button
-                  className="font-mono font-bold uppercase"
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.15em",
-                    padding: "14px 28px",
-                    background: "transparent",
-                    color: "#fff",
-                    border: "2px solid #fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  VIEW DOCS
-                </button>
+              {/* Preview code */}
+              <div className="w-full p-5 bg-[oklch(0.12_0_0)] font-mono text-[11px] text-[oklch(0.6_0.28_145)] leading-[1.6] border-t border-[oklch(0.25_0_0)]">
+                <span className="text-muted-foreground">
+                  {"// CURRENTLY RENDERED"}
+                </span>
+                {"\n"}
+                &lt;<span className="text-primary">Button</span>
+                {"\n  "}
+                <span className="text-[oklch(0.7_0.15_25)]">variant</span>=
+                <span className="text-[var(--sf-yellow)]">{'"signal"'}</span>
+                {"\n  "}
+                <span className="text-[oklch(0.7_0.15_25)]">size</span>=
+                <span className="text-[var(--sf-yellow)]">{'"md"'}</span>
+                {"\n/>\n"}
               </div>
-
-              <div className="text-center">
-                <div
-                  style={{
-                    fontSize: "9px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                    color: "#888",
-                    marginBottom: "8px",
-                  }}
-                >
-                  VARIANT: FRAME (SHIMMER)
-                </div>
-                <button
-                  className="font-mono font-bold uppercase relative overflow-hidden"
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.15em",
-                    padding: "14px 28px",
-                    background: "#FF0090",
-                    color: "#fff",
-                    border: "2px solid #FF0090",
-                    cursor: "pointer",
-                  }}
-                >
-                  LAUNCH SEQUENCE
-                </button>
-              </div>
-
-              <div className="text-center">
-                <div
-                  style={{
-                    fontSize: "9px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.2em",
-                    color: "#888",
-                    marginBottom: "8px",
-                  }}
-                >
-                  VARIANT: YELLOW (TDR)
-                </div>
-                <button
-                  className="font-mono font-bold uppercase"
-                  style={{
-                    fontSize: "12px",
-                    letterSpacing: "0.15em",
-                    padding: "14px 28px",
-                    background: "#FFE500",
-                    color: "#000",
-                    border: "2px solid #FFE500",
-                    cursor: "pointer",
-                  }}
-                >
-                  BUY ME™
-                </button>
-              </div>
-            </div>
-
-            {/* Preview code */}
-            <div
-              className="font-mono"
-              style={{
-                width: "100%",
-                padding: "20px",
-                background: "#111",
-                fontSize: "11px",
-                color: "#00FF00",
-                lineHeight: 1.6,
-                borderTop: "1px solid #333",
-              }}
-            >
-              <span style={{ color: "#888" }}>
-                {"// CURRENTLY RENDERED"}
-              </span>
-              {"\n"}
-              &lt;<span style={{ color: "#FF0090" }}>Button</span>
-              {"\n  "}
-              <span style={{ color: "#FF6B6B" }}>variant</span>=
-              <span style={{ color: "#FFE500" }}>{'"signal"'}</span>
-              {"\n  "}
-              <span style={{ color: "#FF6B6B" }}>size</span>=
-              <span style={{ color: "#FFE500" }}>{'"md"'}</span>
-              {"\n/>\n"}
-            </div>
+            </SFScrollArea>
           </aside>
         </div>
-
-        {/* ── Responsive: override grid on mobile ── */}
-        <style>{`
-          @media (max-width: 900px) {
-            .mt-\\[83px\\] {
-              grid-template-columns: 1fr !important;
-            }
-          }
-        `}</style>
       </main>
       <Footer />
     </>

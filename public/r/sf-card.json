@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-card",
+  "title": "SF Card",
+  "description": "Industrial card with 2px borders, hover border highlight",
+  "registryDependencies": [
+    "card"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-card.tsx",
+      "content": "import {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFCardProps extends React.ComponentProps<typeof Card> {\n  hoverable?: boolean;\n}\n\nfunction SFCard({ className, hoverable = true, ...props }: SFCardProps) {\n  return (\n    <Card\n      className={cn(\n        \"border-2 border-foreground bg-background shadow-none\",\n        hoverable &&\n          \"transition-colors duration-100 hover:border-primary\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFCardHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof CardHeader>) {\n  return <CardHeader className={cn(\"pb-3\", className)} {...props} />;\n}\n\nfunction SFCardTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof CardTitle>) {\n  return (\n    <CardTitle\n      className={cn(\"font-mono uppercase tracking-wider text-sm\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFCardDescription({\n  className,\n  ...props\n}: React.ComponentProps<typeof CardDescription>) {\n  return (\n    <CardDescription\n      className={cn(\"text-muted-foreground text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFCard,\n  SFCardHeader,\n  SFCardTitle,\n  SFCardDescription,\n  CardContent as SFCardContent,\n  CardFooter as SFCardFooter,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

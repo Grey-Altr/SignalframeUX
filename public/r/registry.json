@@ -1,0 +1,231 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "signalframeux",
+  "homepage": "https://signalframeux.com",
+  "items": [
+    {
+      "name": "sf-button",
+      "type": "registry:ui",
+      "title": "SF Button",
+      "description": "Brutalist button with signal/ghost/signal intents, 2px borders, invert-on-hover",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "components/sf/sf-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-card",
+      "type": "registry:ui",
+      "title": "SF Card",
+      "description": "Industrial card with 2px borders, hover border highlight",
+      "registryDependencies": ["card"],
+      "files": [
+        {
+          "path": "components/sf/sf-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-input",
+      "type": "registry:ui",
+      "title": "SF Input",
+      "description": "Brutalist text input with 2px border-bottom, mono uppercase placeholder",
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "components/sf/sf-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-badge",
+      "type": "registry:ui",
+      "title": "SF Badge",
+      "description": "Flat badge with default/primary/outline/signal intents",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["badge"],
+      "files": [
+        {
+          "path": "components/sf/sf-badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-tabs",
+      "type": "registry:ui",
+      "title": "SF Tabs",
+      "description": "Industrial tabs with 2px borders, invert active state",
+      "registryDependencies": ["tabs"],
+      "files": [
+        {
+          "path": "components/sf/sf-tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-table",
+      "type": "registry:ui",
+      "title": "SF Table",
+      "description": "Brutalist data table with inverted header, mono text",
+      "registryDependencies": ["table"],
+      "files": [
+        {
+          "path": "components/sf/sf-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-separator",
+      "type": "registry:ui",
+      "title": "SF Separator",
+      "description": "2px foreground-colored divider",
+      "registryDependencies": ["separator"],
+      "files": [
+        {
+          "path": "components/sf/sf-separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-tooltip",
+      "type": "registry:ui",
+      "title": "SF Tooltip",
+      "description": "Industrial tooltip with inverted colors, no radius",
+      "registryDependencies": ["tooltip"],
+      "files": [
+        {
+          "path": "components/sf/sf-tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-dialog",
+      "type": "registry:ui",
+      "title": "SF Dialog",
+      "description": "Brutalist modal dialog with 2px borders, no radius, no shadow",
+      "registryDependencies": ["dialog"],
+      "files": [
+        {
+          "path": "components/sf/sf-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-sheet",
+      "type": "registry:ui",
+      "title": "SF Sheet",
+      "description": "Industrial slide-out panel with 2px borders",
+      "registryDependencies": ["sheet"],
+      "files": [
+        {
+          "path": "components/sf/sf-sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-dropdown-menu",
+      "type": "registry:ui",
+      "title": "SF Dropdown Menu",
+      "description": "Brutalist dropdown with inverted focus state, mono text",
+      "registryDependencies": ["dropdown-menu"],
+      "files": [
+        {
+          "path": "components/sf/sf-dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-toggle",
+      "type": "registry:ui",
+      "title": "SF Toggle",
+      "description": "Industrial toggle button with invert-on-press",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["toggle"],
+      "files": [
+        {
+          "path": "components/sf/sf-toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-slider",
+      "type": "registry:ui",
+      "title": "SF Slider",
+      "description": "Flat slider with square thumb, 3px track, no radius",
+      "registryDependencies": ["slider"],
+      "files": [
+        {
+          "path": "components/sf/sf-slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-command",
+      "type": "registry:ui",
+      "title": "SF Command",
+      "description": "Industrial command palette with inverted selection, mono text",
+      "registryDependencies": ["command"],
+      "files": [
+        {
+          "path": "components/sf/sf-command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-skeleton",
+      "type": "registry:ui",
+      "title": "SF Skeleton",
+      "description": "Flat skeleton with scanline sweep animation",
+      "registryDependencies": ["skeleton"],
+      "files": [
+        {
+          "path": "components/sf/sf-skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-popover",
+      "type": "registry:ui",
+      "title": "SF Popover",
+      "description": "Brutalist popover with 2px borders, no radius, no shadow",
+      "registryDependencies": ["popover"],
+      "files": [
+        {
+          "path": "components/sf/sf-popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-scroll-area",
+      "type": "registry:ui",
+      "title": "SF Scroll Area",
+      "description": "Scroll area with flat square scrollbar thumb",
+      "registryDependencies": ["scroll-area"],
+      "files": [
+        {
+          "path": "components/sf/sf-scroll-area.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}

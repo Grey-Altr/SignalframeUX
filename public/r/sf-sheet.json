@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-sheet",
+  "title": "SF Sheet",
+  "description": "Industrial slide-out panel with 2px borders",
+  "registryDependencies": [
+    "sheet"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-sheet.tsx",
+      "content": "\"use client\";\n\nimport {\n  Sheet,\n  SheetClose,\n  SheetContent,\n  SheetDescription,\n  SheetFooter,\n  SheetHeader,\n  SheetTitle,\n  SheetTrigger,\n} from \"@/components/ui/sheet\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFSheet(props: React.ComponentProps<typeof Sheet>) {\n  return <Sheet {...props} />;\n}\n\nfunction SFSheetTrigger(props: React.ComponentProps<typeof SheetTrigger>) {\n  return <SheetTrigger {...props} />;\n}\n\nfunction SFSheetClose(props: React.ComponentProps<typeof SheetClose>) {\n  return <SheetClose {...props} />;\n}\n\nfunction SFSheetContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof SheetContent>) {\n  return (\n    <SheetContent\n      className={cn(\n        \"rounded-none border-foreground border-2 bg-background shadow-none\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFSheetHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof SheetHeader>) {\n  return (\n    <SheetHeader\n      className={cn(\"border-b-2 border-foreground pb-4\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFSheetFooter({\n  className,\n  ...props\n}: React.ComponentProps<typeof SheetFooter>) {\n  return (\n    <SheetFooter\n      className={cn(\"border-t-2 border-foreground pt-4\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFSheetTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof SheetTitle>) {\n  return (\n    <SheetTitle\n      className={cn(\"font-mono uppercase tracking-wider text-sm\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFSheetDescription({\n  className,\n  ...props\n}: React.ComponentProps<typeof SheetDescription>) {\n  return (\n    <SheetDescription\n      className={cn(\"text-muted-foreground text-xs uppercase tracking-wide\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFSheet,\n  SFSheetTrigger,\n  SFSheetClose,\n  SFSheetContent,\n  SFSheetHeader,\n  SFSheetFooter,\n  SFSheetTitle,\n  SFSheetDescription,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

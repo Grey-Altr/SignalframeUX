@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-table",
+  "title": "SF Table",
+  "description": "Brutalist data table with inverted header, mono text",
+  "registryDependencies": [
+    "table"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-table.tsx",
+      "content": "import {\n  Table,\n  TableBody,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n} from \"@/components/ui/table\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFTable({\n  className,\n  ...props\n}: React.ComponentProps<typeof Table>) {\n  return (\n    <Table\n      className={cn(\"font-mono text-xs border-2 border-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFTableHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof TableHeader>) {\n  return (\n    <TableHeader\n      className={cn(\"bg-foreground text-background\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFTableHead({\n  className,\n  ...props\n}: React.ComponentProps<typeof TableHead>) {\n  return (\n    <TableHead\n      className={cn(\n        \"uppercase tracking-wider text-xs text-background font-normal h-9 px-3\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFTableRow({\n  className,\n  ...props\n}: React.ComponentProps<typeof TableRow>) {\n  return (\n    <TableRow\n      className={cn(\n        \"border-b border-foreground/20 hover:bg-muted/50\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFTableCell({\n  className,\n  ...props\n}: React.ComponentProps<typeof TableCell>) {\n  return (\n    <TableCell className={cn(\"px-3 py-2\", className)} {...props} />\n  );\n}\n\nexport {\n  SFTable,\n  SFTableHeader,\n  SFTableHead,\n  SFTableRow,\n  SFTableCell,\n  TableBody as SFTableBody,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

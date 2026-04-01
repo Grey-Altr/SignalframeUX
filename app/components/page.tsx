@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
+import { SFButton } from "@/components/sf/sf-button";
+import { SFInput } from "@/components/sf/sf-input";
+import { SFBadge } from "@/components/sf/sf-badge";
 
 const CATEGORIES = [
   "ALL",
@@ -63,8 +66,8 @@ function PreviewSlider() {
   return (
     <div className="relative w-[80%] h-1 bg-current">
       <div
-        className="absolute top-[-4px] h-3 w-2"
-        style={{ left: "60%", background: "#FF0090" }}
+        className="absolute top-[-4px] h-3 w-2 bg-primary"
+        style={{ left: "60%" }}
       />
     </div>
   );
@@ -126,10 +129,7 @@ function PreviewTable() {
 function PreviewDots() {
   return (
     <div className="flex gap-1">
-      <span
-        className="w-2 h-2 border"
-        style={{ background: "#FF0090", borderColor: "#FF0090" }}
-      />
+      <span className="w-2 h-2 border bg-primary border-primary" />
       <span className="w-2 h-2 border border-current" />
       <span className="w-2 h-2 border border-current" />
       <span className="w-2 h-2 border border-current" />
@@ -163,7 +163,7 @@ function PreviewWave() {
       className="w-[80%] h-5"
       style={{
         background:
-          "repeating-linear-gradient(90deg, transparent 0px, transparent 2px, #00FF00 2px, #00FF00 3px)",
+          "repeating-linear-gradient(90deg, transparent 0px, transparent 2px, var(--sf-green) 2px, var(--sf-green) 3px)",
       }}
     />
   );
@@ -172,19 +172,10 @@ function PreviewWave() {
 function PreviewGlitch() {
   return (
     <div className="relative">
+      <span className="text-base uppercase sf-display">ABC</span>
       <span
-        className="text-base uppercase"
-        style={{ fontFamily: "var(--font-anton)" }}
-      >
-        ABC
-      </span>
-      <span
-        className="absolute left-0.5 top-px text-base uppercase"
-        style={{
-          fontFamily: "var(--font-anton)",
-          color: "#FF0090",
-          clipPath: "inset(30% 0 30% 0)",
-        }}
+        className="absolute left-0.5 top-px text-base uppercase sf-display text-primary"
+        style={{ clipPath: "inset(30% 0 30% 0)" }}
       >
         ABC
       </span>
@@ -194,7 +185,7 @@ function PreviewGlitch() {
 
 function PreviewParticle() {
   return (
-    <span className="text-lg tracking-[4px]" style={{ color: "#00FF00" }}>
+    <span className="text-lg tracking-[4px]" style={{ color: "var(--sf-green)" }}>
       · · · ·
     </span>
   );
@@ -283,7 +274,7 @@ const COMPONENTS: ComponentEntry[] = [
     version: "v2.0.0",
     variant: "black",
     filterTag: "FEEDBACK",
-    preview: <PreviewBadge color="#FF0090" text="NEW" />,
+    preview: <PreviewBadge color="var(--color-primary)" text="NEW" />,
   },
   // Row 3 — Data / Feedback / Navigation
   {
@@ -304,7 +295,7 @@ const COMPONENTS: ComponentEntry[] = [
     version: "v2.0.0",
     variant: "default",
     filterTag: "FEEDBACK",
-    preview: <PreviewBadge color="#00FF00" text="SUCCESS" />,
+    preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" />,
   },
   {
     index: "011",
@@ -421,16 +412,10 @@ export default function ComponentsPage() {
       <Nav />
       <main className="mt-[83px]">
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
-        <header
-          className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground"
-          style={{ marginTop: 0 }}
-        >
+        <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
           <h1
-            className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6"
-            style={{
-              fontFamily: "var(--font-anton)",
-              fontSize: "clamp(60px, 9vw, 120px)",
-            }}
+            className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
+            style={{ fontSize: "clamp(60px, 9vw, 120px)" }}
           >
             COMP
             <br />
@@ -438,12 +423,8 @@ export default function ComponentsPage() {
           </h1>
           <div className="px-6 md:px-12 pb-6 text-right">
             <strong
-              className="block text-primary"
-              style={{
-                fontFamily: "var(--font-anton)",
-                fontSize: "clamp(28px, 4vw, 48px)",
-                lineHeight: 1,
-              }}
+              className="block text-primary sf-display"
+              style={{ fontSize: "clamp(28px, 4vw, 48px)", lineHeight: 1 }}
             >
               340
             </strong>
@@ -456,32 +437,33 @@ export default function ComponentsPage() {
         </header>
 
         {/* ── Filter Bar ── */}
-        <div className="flex flex-wrap border-b-[3px] border-foreground text-[11px] uppercase tracking-[0.15em] font-bold">
+        <div className="flex flex-wrap border-b-[3px] border-foreground">
           {CATEGORIES.map((cat) => (
-            <button
+            <SFButton
               key={cat}
+              intent={activeFilter === cat ? "signal" : "ghost"}
+              size="sm"
               onClick={() => setActiveFilter(cat)}
-              className={`px-5 py-3.5 border-r-2 border-foreground transition-colors duration-100 ${
-                activeFilter === cat
-                  ? "bg-foreground text-primary"
-                  : "bg-background text-foreground hover:bg-foreground hover:text-background"
+              className={`border-0 border-r-2 border-foreground rounded-none px-5 py-3.5 text-[11px] tracking-[0.15em] h-auto ${
+                activeFilter === cat ? "text-primary" : ""
               }`}
-              style={{ fontFamily: "inherit" }}
             >
               {cat}
-            </button>
+            </SFButton>
           ))}
-          <input
+          <SFInput
             type="text"
             placeholder="SEARCH COMPONENTS..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 px-5 py-3.5 bg-transparent border-none outline-none text-[11px] uppercase tracking-[0.15em] font-bold placeholder:text-muted-foreground"
-            style={{ fontFamily: "inherit" }}
+            className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[11px] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
           />
-          <span className="px-5 py-3.5 text-muted-foreground border-l-2 border-foreground whitespace-nowrap">
+          <SFBadge
+            intent="outline"
+            className="border-0 border-l-2 border-foreground rounded-none px-5 py-3.5 h-auto text-[11px] tracking-[0.15em] text-muted-foreground"
+          >
             {resultCount} RESULTS
-          </span>
+          </SFBadge>
         </div>
 
         {/* ── Component Grid ── */}
@@ -519,26 +501,21 @@ export default function ComponentsPage() {
 
                 {/* Component name */}
                 <div
-                  className={`text-[15px] uppercase leading-none transition-colors duration-150 ${styles.titleHover}`}
-                  style={{ fontFamily: "var(--font-anton)" }}
+                  className={`text-[15px] uppercase leading-none transition-colors duration-150 sf-display ${styles.titleHover}`}
                 >
                   {comp.name}
                 </div>
 
                 {/* Preview area */}
                 <div
-                  className={`w-full h-12 border flex items-center justify-center text-[10px] transition-colors duration-150 ${
+                  className={`w-full h-12 border flex items-center justify-center text-[10px] transition-colors duration-150 mt-2 mb-2 ${
                     comp.variant === "black"
-                      ? "border-[#333] group-hover:border-primary"
+                      ? "border-[oklch(0.3_0_0)] group-hover:border-primary"
                       : comp.variant === "yellow"
                         ? "border-foreground"
                         : "border-border/40 group-hover:border-primary"
                   }`}
-                  style={{
-                    boxShadow: "inset 0 1px 2px rgba(0,0,0,0.06)",
-                    marginTop: "8px",
-                    marginBottom: "8px",
-                  }}
+                  style={{ boxShadow: "var(--sf-inset-shadow)" }}
                 >
                   {comp.preview}
                 </div>
@@ -554,10 +531,7 @@ export default function ComponentsPage() {
         </div>
 
         {/* ── Detail Hint Bar ── */}
-        <div
-          className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground text-[11px] font-bold uppercase tracking-[0.15em]"
-          style={{ backgroundColor: "var(--sf-yellow)" }}
-        >
+        <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[11px] font-bold uppercase tracking-[0.15em]">
           <span>
             CLICK ANY COMPONENT TO VIEW PROPS, VARIANTS, AND CODE →
           </span>

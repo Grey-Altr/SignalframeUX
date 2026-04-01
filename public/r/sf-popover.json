@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-popover",
+  "title": "SF Popover",
+  "description": "Brutalist popover with 2px borders, no radius, no shadow",
+  "registryDependencies": [
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-popover.tsx",
+      "content": "\"use client\";\n\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from \"@/components/ui/popover\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFPopover(props: React.ComponentProps<typeof Popover>) {\n  return <Popover {...props} />;\n}\n\nfunction SFPopoverTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {\n  return <PopoverTrigger {...props} />;\n}\n\nfunction SFPopoverContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof PopoverContent>) {\n  return (\n    <PopoverContent\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background shadow-none ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFPopoverHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof PopoverHeader>) {\n  return (\n    <PopoverHeader\n      className={cn(\"border-b-2 border-foreground pb-2\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFPopoverTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof PopoverTitle>) {\n  return (\n    <PopoverTitle\n      className={cn(\"font-mono uppercase tracking-wider text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFPopoverDescription({\n  className,\n  ...props\n}: React.ComponentProps<typeof PopoverDescription>) {\n  return (\n    <PopoverDescription\n      className={cn(\"text-muted-foreground text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFPopover,\n  SFPopoverTrigger,\n  SFPopoverContent,\n  SFPopoverHeader,\n  SFPopoverTitle,\n  SFPopoverDescription,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-command",
+  "title": "SF Command",
+  "description": "Industrial command palette with inverted selection, mono text",
+  "registryDependencies": [
+    "command"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-command.tsx",
+      "content": "\"use client\";\n\nimport {\n  Command,\n  CommandDialog,\n  CommandEmpty,\n  CommandGroup,\n  CommandInput,\n  CommandItem,\n  CommandList,\n  CommandSeparator,\n  CommandShortcut,\n} from \"@/components/ui/command\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFCommand({\n  className,\n  ...props\n}: React.ComponentProps<typeof Command>) {\n  return (\n    <Command\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFCommandDialog({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandDialog>) {\n  return <CommandDialog className={cn(\"rounded-none\", className)} {...props} />;\n}\n\nfunction SFCommandInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandInput>) {\n  return (\n    <CommandInput\n      className={cn(\"font-mono uppercase tracking-wider text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFCommandList(props: React.ComponentProps<typeof CommandList>) {\n  return <CommandList {...props} />;\n}\n\nfunction SFCommandEmpty({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandEmpty>) {\n  return (\n    <CommandEmpty\n      className={cn(\"font-mono uppercase tracking-wider text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFCommandGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandGroup>) {\n  return (\n    <CommandGroup\n      className={cn(\n        \"**:[[cmdk-group-heading]]:font-mono **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-[0.2em] **:[[cmdk-group-heading]]:text-[9px]\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFCommandItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandItem>) {\n  return (\n    <CommandItem\n      className={cn(\n        \"rounded-none font-mono uppercase tracking-wider text-xs cursor-pointer data-selected:bg-foreground data-selected:text-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFCommandSeparator({\n  className,\n  ...props\n}: React.ComponentProps<typeof CommandSeparator>) {\n  return (\n    <CommandSeparator\n      className={cn(\"bg-foreground h-[2px]\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFCommand,\n  SFCommandDialog,\n  SFCommandInput,\n  SFCommandList,\n  SFCommandEmpty,\n  SFCommandGroup,\n  SFCommandItem,\n  SFCommandSeparator,\n  CommandShortcut as SFCommandShortcut,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

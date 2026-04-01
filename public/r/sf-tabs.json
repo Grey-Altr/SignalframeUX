@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-tabs",
+  "title": "SF Tabs",
+  "description": "Industrial tabs with 2px borders, invert active state",
+  "registryDependencies": [
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-tabs.tsx",
+      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from \"@/components/ui/tabs\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFTabs(props: React.ComponentProps<typeof Tabs>) {\n  return <Tabs {...props} />;\n}\n\nfunction SFTabsList({\n  className,\n  ...props\n}: React.ComponentProps<typeof TabsList>) {\n  return (\n    <TabsList\n      className={cn(\n        \"bg-transparent border-b-2 border-foreground rounded-none h-auto p-0 gap-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFTabsTrigger({\n  className,\n  ...props\n}: React.ComponentProps<typeof TabsTrigger>) {\n  return (\n    <TabsTrigger\n      className={cn(\n        \"font-mono uppercase tracking-wider text-xs rounded-none px-4 py-2\",\n        \"border-b-2 border-transparent -mb-[2px]\",\n        \"data-[state=active]:border-foreground data-[state=active]:bg-transparent\",\n        \"data-[state=active]:shadow-none data-[state=active]:text-foreground\",\n        \"text-muted-foreground hover:text-foreground\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFTabs, SFTabsList, SFTabsTrigger, TabsContent as SFTabsContent };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

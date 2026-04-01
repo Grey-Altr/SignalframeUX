@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-badge",
+  "title": "SF Badge",
+  "description": "Flat badge with default/primary/outline/signal intents",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "badge"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-badge.tsx",
+      "content": "import { Badge } from \"@/components/ui/badge\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\nconst sfBadgeVariants = cva(\n  \"font-mono uppercase tracking-wider text-xs border-0\",\n  {\n    variants: {\n      intent: {\n        default: \"bg-foreground text-background\",\n        primary: \"bg-primary text-primary-foreground\",\n        outline: \"bg-transparent text-foreground border-2 border-foreground\",\n        signal: \"bg-[var(--sf-yellow)] text-foreground\",\n      },\n    },\n    defaultVariants: {\n      intent: \"default\",\n    },\n  }\n);\n\ninterface SFBadgeProps\n  extends React.ComponentProps<typeof Badge>,\n    VariantProps<typeof sfBadgeVariants> {}\n\nexport function SFBadge({ intent, className, ...props }: SFBadgeProps) {\n  return (\n    <Badge\n      className={cn(sfBadgeVariants({ intent }), className)}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

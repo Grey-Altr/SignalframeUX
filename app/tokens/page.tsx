@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
+import {
+  SFTabs,
+  SFTabsList,
+  SFTabsTrigger,
+  SFTabsContent,
+} from "@/components/sf/sf-tabs";
+import { SFBadge } from "@/components/sf/sf-badge";
 
 /* ── COLOR SCALE DATA ── */
 const COLOR_SCALES = [
@@ -149,541 +155,254 @@ const MOTION_TOKENS = [
   { name: "STEP", easing: "steps(8)", duration: "500ms", css: "steps(8) \u00b7 500ms" },
 ];
 
-const TABS = ["COLOR", "SPACING", "TYPOGRAPHY", "MOTION", "ELEVATION", "RADIUS", "BREAKPOINTS"] as const;
+const EASING_MAP = ["ease", "ease-in", "ease-out", "cubic-bezier(0.68, -0.55, 0.27, 1.55)", "steps(8)"];
 
 export default function TokensPage() {
-  const [activeTab, setActiveTab] = useState<string>("COLOR");
-
   return (
     <>
       <Nav />
       <main className="mt-[83px]">
         {/* ═══ PAGE HEADER ═══ */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
-            borderBottom: "4px solid #000",
-            alignItems: "end",
-          }}
-        >
+        <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">
           <h1
-            style={{
-              fontFamily: "var(--font-anton)",
-              fontSize: "clamp(60px, 9vw, 100px)",
-              textTransform: "uppercase",
-              lineHeight: 0.9,
-              padding: "40px 48px 24px",
-            }}
+            className="sf-display px-6 md:px-12 pt-10 pb-6"
+            style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
           >
             TOKEN
             <br />
             EXPLORER
           </h1>
-          <div
-            style={{
-              padding: "24px 48px",
-              textAlign: "right",
-              fontSize: "11px",
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              color: "#888",
-            }}
-          >
+          <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             OKLCH COLOR SPACE · 48 SCALES
           </div>
         </div>
 
         {/* ═══ CATEGORY TABS ═══ */}
-        <div
-          style={{
-            display: "flex",
-            borderBottom: "3px solid #000",
-            fontSize: "11px",
-            textTransform: "uppercase",
-            letterSpacing: "0.15em",
-            flexWrap: "wrap",
-          }}
-        >
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                padding: "14px 24px",
-                fontWeight: 700,
-                background: activeTab === tab ? "#000" : "transparent",
-                color: activeTab === tab ? "#FF0090" : "inherit",
-                borderTop: "none",
-                borderLeft: "none",
-                borderRight: "2px solid #000",
-                borderBottom: "none",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                transition: "background 100ms ease, color 100ms ease",
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== tab) {
-                  e.currentTarget.style.background = "#000";
-                  e.currentTarget.style.color = "#fff";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== tab) {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.color = "inherit";
-                }
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* ═══ OKLCH INFO BAND (yellow) ═══ */}
-        <div
-          style={{
-            background: "#FFE500",
-            padding: "40px 48px",
-            borderBottom: "4px solid #000",
-            position: "relative",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "var(--font-anton)",
-              fontSize: "clamp(32px, 5vw, 48px)",
-              textTransform: "uppercase",
-              marginBottom: "16px",
-              color: "#333",
-            }}
-          >
-            OKLCH COLOR SYSTEM™
-          </h2>
-          <p
-            style={{
-              fontSize: "14px",
-              lineHeight: 1.7,
-              color: "#333",
-              maxWidth: "700px",
-            }}
-          >
-            SignalframeUX™ uses{" "}
-            <code
-              style={{
-                background: "rgba(0,0,0,0.1)",
-                padding: "2px 6px",
-                fontSize: "12px",
-              }}
-            >
-              oklch()
-            </code>{" "}
-            for perceptually uniform color. Every scale maintains consistent
-            lightness across hues. No more blue looking darker than yellow at
-            the same step. 48 scales × 12 steps = 576 color tokens. Accept
-            color into your life.™
-          </p>
-          {/* Marquee band */}
-          <div
-            style={{
-              height: "32px",
-              overflow: "hidden",
-              position: "relative",
-              marginTop: "20px",
-              borderTop: "1px solid rgba(0,0,0,0.1)",
-              borderBottom: "1px solid rgba(0,0,0,0.1)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                height: "100%",
-                whiteSpace: "nowrap",
-                animation: "sf-marquee-scroll 20s linear infinite",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "10px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                  color: "#333",
-                }}
+        <SFTabs defaultValue="COLOR">
+          <SFTabsList className="border-b-[3px] border-foreground w-full justify-start flex-wrap rounded-none">
+            {["COLOR", "SPACING", "TYPOGRAPHY", "MOTION", "ELEVATION", "RADIUS", "BREAKPOINTS"].map((tab) => (
+              <SFTabsTrigger
+                key={tab}
+                value={tab}
+                className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-primary"
               >
-                PERCEPTUALLY UNIFORM // OKLCH COLOR SPACE // 576 TOKENS //
-                CONSISTENT ACROSS HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY
-                UNIFORM // OKLCH COLOR SPACE // 576 TOKENS // CONSISTENT ACROSS
-                HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH
-                COLOR SPACE // 576 TOKENS // CONSISTENT ACROSS HUES
-                //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH COLOR
-                SPACE // 576 TOKENS // CONSISTENT ACROSS HUES
-                //&nbsp;&nbsp;&nbsp;&nbsp;
-              </span>
-            </div>
-          </div>
-        </div>
+                {tab}
+              </SFTabsTrigger>
+            ))}
+          </SFTabsList>
 
-        {/* ═══ COLOR SCALES ═══ */}
-        <div
-          style={{
-            fontFamily: "var(--font-anton)",
-            fontSize: "clamp(32px, 5vw, 48px)",
-            textTransform: "uppercase",
-            padding: "32px 48px 16px",
-            borderBottom: "2px solid #000",
-          }}
-        >
-          COLOR_SCALES ( {COLOR_SCALES.length} / 48 )
-        </div>
-        <div>
-          {COLOR_SCALES.map((scale) => (
-            <div
-              key={scale.name}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "200px repeat(12, 1fr)",
-                borderBottom: "2px solid #000",
-              }}
-            >
-              <div
-                style={{
-                  padding: "0 24px",
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  borderRight: "2px solid #000",
-                  background: "#000",
-                  color: "#fff",
-                }}
-              >
-                {scale.name}
+          {/* ═══ COLOR TAB ═══ */}
+          <SFTabsContent value="COLOR" className="mt-0">
+            {/* OKLCH Info Band */}
+            <div className="sf-yellow-band border-b-4 border-foreground relative py-10 px-6 md:px-12">
+              <h2 className="sf-display text-foreground mb-4" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+                OKLCH COLOR SYSTEM&trade;
+              </h2>
+              <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
+                SignalframeUX&trade; uses{" "}
+                <code className="bg-foreground/10 px-1.5 py-0.5 text-[12px]">
+                  oklch()
+                </code>{" "}
+                for perceptually uniform color. Every scale maintains consistent
+                lightness across hues. No more blue looking darker than yellow at
+                the same step. 48 scales × 12 steps = 576 color tokens. Accept
+                color into your life.&trade;
+              </p>
+              {/* Marquee band */}
+              <div className="h-8 overflow-hidden relative mt-5 border-t border-foreground/10 border-b border-b-foreground/10">
+                <div
+                  className="flex items-center h-full whitespace-nowrap"
+                  style={{ animation: "sf-marquee-scroll 20s linear infinite" }}
+                >
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
+                    PERCEPTUALLY UNIFORM // OKLCH COLOR SPACE // 576 TOKENS //
+                    CONSISTENT ACROSS HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY
+                    UNIFORM // OKLCH COLOR SPACE // 576 TOKENS // CONSISTENT ACROSS
+                    HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH
+                    COLOR SPACE // 576 TOKENS // CONSISTENT ACROSS HUES
+                    //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH COLOR
+                    SPACE // 576 TOKENS // CONSISTENT ACROSS HUES
+                    //&nbsp;&nbsp;&nbsp;&nbsp;
+                  </span>
+                </div>
               </div>
-              {scale.swatches.map((sw) => {
-                const isDark = sw.l < 0.55;
-                const oklchStr = sw.c === 0
-                  ? `oklch(${sw.l} 0 0)`
-                  : `oklch(${sw.l} ${sw.c} ${sw.h})`;
-                return (
+            </div>
+
+            {/* COLOR SCALES heading */}
+            <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+              COLOR_SCALES ( {COLOR_SCALES.length} / 48 )
+            </div>
+            <div>
+              {COLOR_SCALES.map((scale) => (
+                <div
+                  key={scale.name}
+                  className="grid grid-cols-[200px_repeat(12,1fr)] border-b-2 border-foreground"
+                >
+                  <div className="px-6 flex items-center text-[11px] font-bold uppercase tracking-[0.1em] border-r-2 border-foreground bg-foreground text-background">
+                    {scale.name}
+                  </div>
+                  {scale.swatches.map((sw) => {
+                    const isDark = sw.l < 0.55;
+                    const oklchStr = sw.c === 0
+                      ? `oklch(${sw.l} 0 0)`
+                      : `oklch(${sw.l} ${sw.c} ${sw.h})`;
+                    return (
+                      <div
+                        key={sw.step}
+                        className="aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10"
+                        style={{
+                          background: oklchStr,
+                          color: isDark ? "oklch(0.985 0 0)" : "oklch(0.145 0 0)",
+                        }}
+                      >
+                        <span className="text-[8px] font-bold uppercase opacity-70">
+                          {sw.step}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </SFTabsContent>
+
+          {/* ═══ SPACING TAB ═══ */}
+          <SFTabsContent value="SPACING" className="mt-0">
+            <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+              SPACING_SCALE
+            </div>
+            <div className="border-b-4 border-foreground">
+              {/* Header row */}
+              <div className="grid grid-cols-[120px_200px_1fr_120px] bg-foreground text-background text-[9px] uppercase tracking-[0.2em] font-bold">
+                <span className="p-2.5 px-4">TOKEN</span>
+                <span className="p-2.5 px-4">VALUE</span>
+                <span className="p-2.5 px-4">VISUAL</span>
+                <span className="p-2.5 px-4">PX</span>
+              </div>
+              {SPACING.map((s) => (
+                <div
+                  key={s.name}
+                  className="grid grid-cols-[120px_200px_1fr_120px] border-b border-border items-center"
+                >
+                  <div className="p-3 px-4 font-bold text-[11px] uppercase text-primary">
+                    {s.name}
+                  </div>
+                  <div className="p-3 px-4 text-[11px] text-muted-foreground">
+                    {s.rem}
+                  </div>
+                  <div className="p-3 px-4">
+                    <div
+                      className="h-4 bg-foreground transition-[width] duration-300"
+                      style={{ width: `${s.px}px` }}
+                    />
+                  </div>
+                  <div className="p-3 px-4 text-[10px] text-muted-foreground text-right">
+                    {s.px}px
+                  </div>
+                </div>
+              ))}
+            </div>
+          </SFTabsContent>
+
+          {/* ═══ TYPOGRAPHY TAB ═══ */}
+          <SFTabsContent value="TYPOGRAPHY" className="mt-0">
+            <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+              TYPE_SCALE ( AUGMENTED FOURTH · 1.414 )
+            </div>
+            <div className="border-b-4 border-foreground">
+              {TYPE_SCALE.map((t) => (
+                <div
+                  key={t.name}
+                  className="grid grid-cols-[160px_1fr_200px] border-b border-border items-baseline"
+                >
+                  <div className="p-5 px-4 text-[10px] uppercase tracking-[0.15em] text-primary font-bold">
+                    {t.name}
+                  </div>
                   <div
-                    key={sw.step}
+                    className="p-5 px-4 overflow-hidden whitespace-nowrap text-ellipsis"
                     style={{
-                      aspectRatio: "1",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background: oklchStr,
-                      color: isDark ? "#fff" : "#000",
-                      position: "relative",
-                      borderRight: "1px solid rgba(0,0,0,0.1)",
+                      fontFamily: t.font,
+                      fontSize: `${t.size}px`,
+                      fontWeight: t.weight,
+                      lineHeight: 1,
+                      textTransform: t.uppercase ? "uppercase" : undefined,
+                      letterSpacing: t.uppercase ? "0.15em" : undefined,
+                      ...(t.code
+                        ? {
+                            color: "oklch(0.6 0.28 145)",
+                            background: "oklch(0.12 0 0)",
+                            padding: "8px 12px",
+                            margin: "12px 16px",
+                          }
+                        : {}),
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: "8px",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        opacity: 0.7,
-                      }}
-                    >
-                      {sw.step}
-                    </span>
+                    {t.sample}
                   </div>
-                );
-              })}
+                  <div className="p-5 px-4 text-[9px] text-muted-foreground text-right uppercase tracking-[0.1em]">
+                    {t.meta}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </SFTabsContent>
 
-        {/* ═══ GRADIENT SEPARATOR BAR ═══ */}
-        <div
-          style={{
-            height: "6px",
-            background: "linear-gradient(90deg, #FF0090, #FFE500, #FF0090)",
-          }}
-        />
-
-        {/* ═══ SPACING SCALE ═══ */}
-        <div
-          style={{
-            fontFamily: "var(--font-anton)",
-            fontSize: "clamp(32px, 5vw, 48px)",
-            textTransform: "uppercase",
-            padding: "32px 48px 16px",
-            borderBottom: "2px solid #000",
-          }}
-        >
-          SPACING_SCALE
-        </div>
-        <div style={{ borderBottom: "4px solid #000" }}>
-          {/* Header row */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "120px 200px 1fr 120px",
-              background: "#000",
-              color: "#fff",
-              fontSize: "9px",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              fontWeight: 700,
-            }}
-          >
-            <span style={{ padding: "10px 16px" }}>TOKEN</span>
-            <span style={{ padding: "10px 16px" }}>VALUE</span>
-            <span style={{ padding: "10px 16px" }}>VISUAL</span>
-            <span style={{ padding: "10px 16px" }}>PX</span>
-          </div>
-          {SPACING.map((s) => (
-            <div
-              key={s.name}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "120px 200px 1fr 120px",
-                borderBottom: "1px solid #ddd",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  padding: "12px 16px",
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  textTransform: "uppercase",
-                  color: "#FF0090",
-                }}
-              >
-                {s.name}
-              </div>
-              <div
-                style={{
-                  padding: "12px 16px",
-                  fontSize: "11px",
-                  color: "#333",
-                }}
-              >
-                {s.rem}
-              </div>
-              <div style={{ padding: "12px 16px" }}>
+          {/* ═══ MOTION TAB ═══ */}
+          <SFTabsContent value="MOTION" className="mt-0">
+            <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+              MOTION_TOKENS
+            </div>
+            <div className="border-b-4 border-foreground">
+              {MOTION_TOKENS.map((m, i) => (
                 <div
-                  style={{
-                    height: "16px",
-                    background: "#000",
-                    width: `${s.px}px`,
-                    transition: "width 0.3s",
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  padding: "12px 16px",
-                  fontSize: "10px",
-                  color: "#888",
-                  textAlign: "right",
-                }}
-              >
-                {s.px}px
-              </div>
+                  key={m.name}
+                  className="grid grid-cols-[200px_1fr_200px] border-b border-border items-center py-4"
+                >
+                  <div className="px-4 font-bold text-[11px] uppercase text-primary">
+                    {m.name}
+                  </div>
+                  <div className="px-4 relative h-6">
+                    <div
+                      className="w-7 h-7 bg-foreground absolute top-[-2px]"
+                      style={{
+                        animation: "sf-motion-slide 2s infinite alternate",
+                        animationTimingFunction: EASING_MAP[i],
+                      }}
+                    />
+                  </div>
+                  <div className="px-4 text-[10px] text-muted-foreground text-right">
+                    {m.css}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </SFTabsContent>
 
-        {/* ═══ GRADIENT SEPARATOR BAR ═══ */}
+          {/* ═══ PLACEHOLDER TABS ═══ */}
+          {["ELEVATION", "RADIUS", "BREAKPOINTS"].map((tab) => (
+            <SFTabsContent key={tab} value={tab} className="mt-0">
+              <div className="flex items-center justify-center py-24 text-muted-foreground">
+                <SFBadge intent="outline" className="text-sm py-2 px-6">
+                  {tab} TOKENS — COMING SOON
+                </SFBadge>
+              </div>
+            </SFTabsContent>
+          ))}
+        </SFTabs>
+
+        {/* Gradient separator */}
         <div
-          style={{
-            height: "6px",
-            background: "linear-gradient(90deg, #FF0090, #FFE500, #FF0090)",
-          }}
+          className="h-1.5"
+          style={{ background: "linear-gradient(90deg, var(--color-primary), var(--sf-yellow), var(--color-primary))" }}
         />
-
-        {/* ═══ TYPOGRAPHY SCALE ═══ */}
-        <div
-          style={{
-            fontFamily: "var(--font-anton)",
-            fontSize: "clamp(32px, 5vw, 48px)",
-            textTransform: "uppercase",
-            padding: "32px 48px 16px",
-            borderBottom: "2px solid #000",
-          }}
-        >
-          TYPE_SCALE ( AUGMENTED FOURTH · 1.414 )
-        </div>
-        <div style={{ borderBottom: "4px solid #000" }}>
-          {TYPE_SCALE.map((t) => (
-            <div
-              key={t.name}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "160px 1fr 200px",
-                borderBottom: "1px solid #ddd",
-                alignItems: "baseline",
-              }}
-            >
-              <div
-                style={{
-                  padding: "20px 16px",
-                  fontSize: "10px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                  color: "#FF0090",
-                  fontWeight: 700,
-                }}
-              >
-                {t.name}
-              </div>
-              <div
-                style={{
-                  padding: "20px 16px",
-                  fontFamily: t.font,
-                  fontSize: `${t.size}px`,
-                  fontWeight: t.weight,
-                  lineHeight: 1,
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  textTransform: t.uppercase ? "uppercase" : undefined,
-                  letterSpacing: t.uppercase ? "0.15em" : undefined,
-                  ...(t.code
-                    ? {
-                        color: "#00FF00",
-                        background: "#111",
-                        padding: "8px 12px",
-                        margin: "12px 16px",
-                      }
-                    : {}),
-                }}
-              >
-                {t.sample}
-              </div>
-              <div
-                style={{
-                  padding: "20px 16px",
-                  fontSize: "9px",
-                  color: "#888",
-                  textAlign: "right",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                {t.meta}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ═══ GRADIENT SEPARATOR BAR ═══ */}
-        <div
-          style={{
-            height: "6px",
-            background: "linear-gradient(90deg, #FF0090, #FFE500, #FF0090)",
-          }}
-        />
-
-        {/* ═══ MOTION TOKENS ═══ */}
-        <div
-          style={{
-            fontFamily: "var(--font-anton)",
-            fontSize: "clamp(32px, 5vw, 48px)",
-            textTransform: "uppercase",
-            padding: "32px 48px 16px",
-            borderBottom: "2px solid #000",
-          }}
-        >
-          MOTION_TOKENS
-        </div>
-        <div style={{ borderBottom: "4px solid #000" }}>
-          {MOTION_TOKENS.map((m, i) => (
-            <div
-              key={m.name}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "200px 1fr 200px",
-                borderBottom: "1px solid #ddd",
-                alignItems: "center",
-                padding: "16px 0",
-              }}
-            >
-              <div
-                style={{
-                  padding: "0 16px",
-                  fontWeight: 700,
-                  fontSize: "11px",
-                  textTransform: "uppercase",
-                  color: "#FF0090",
-                }}
-              >
-                {m.name}
-              </div>
-              <div
-                style={{
-                  padding: "0 16px",
-                  position: "relative",
-                  height: "24px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    background: "#000",
-                    position: "absolute",
-                    top: "-2px",
-                    animation: `sf-motion-slide 2s infinite alternate`,
-                    animationTimingFunction:
-                      i === 0
-                        ? "ease"
-                        : i === 1
-                        ? "ease-in"
-                        : i === 2
-                        ? "ease-out"
-                        : i === 3
-                        ? "cubic-bezier(0.68, -0.55, 0.27, 1.55)"
-                        : "steps(8)",
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  padding: "0 16px",
-                  fontSize: "10px",
-                  color: "#888",
-                  textAlign: "right",
-                }}
-              >
-                {m.css}
-              </div>
-            </div>
-          ))}
-        </div>
       </main>
       <Footer />
 
       {/* ═══ KEYFRAME ANIMATIONS ═══ */}
       <style jsx global>{`
-        @keyframes sf-marquee-scroll {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
-        }
         @keyframes sf-motion-slide {
-          from {
-            left: 0;
-          }
-          to {
-            left: calc(100% - 28px);
-          }
+          from { left: 0; }
+          to { left: calc(100% - 28px); }
         }
       `}</style>
     </>

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-scroll-area",
+  "title": "SF Scroll Area",
+  "description": "Scroll area with flat square scrollbar thumb",
+  "registryDependencies": [
+    "scroll-area"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-scroll-area.tsx",
+      "content": "\"use client\";\n\nimport { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFScrollArea({\n  className,\n  ...props\n}: React.ComponentProps<typeof ScrollArea>) {\n  return (\n    <ScrollArea\n      className={cn(\n        \"[&_[data-slot=scroll-area-thumb]]:rounded-none [&_[data-slot=scroll-area-thumb]]:bg-foreground/30\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFScrollArea, ScrollBar as SFScrollBar };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

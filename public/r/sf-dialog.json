@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-dialog",
+  "title": "SF Dialog",
+  "description": "Brutalist modal dialog with 2px borders, no radius, no shadow",
+  "registryDependencies": [
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-dialog.tsx",
+      "content": "\"use client\";\n\nimport {\n  Dialog,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"@/components/ui/dialog\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFDialog(props: React.ComponentProps<typeof Dialog>) {\n  return <Dialog {...props} />;\n}\n\nfunction SFDialogTrigger(props: React.ComponentProps<typeof DialogTrigger>) {\n  return <DialogTrigger {...props} />;\n}\n\nfunction SFDialogClose(props: React.ComponentProps<typeof DialogClose>) {\n  return <DialogClose {...props} />;\n}\n\nfunction SFDialogContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogContent>) {\n  return (\n    <DialogContent\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background shadow-none ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFDialogHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogHeader>) {\n  return (\n    <DialogHeader\n      className={cn(\"border-b-2 border-foreground pb-4\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFDialogFooter({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogFooter>) {\n  return (\n    <DialogFooter\n      className={cn(\n        \"rounded-none border-t-2 border-foreground bg-muted/30\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFDialogTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogTitle>) {\n  return (\n    <DialogTitle\n      className={cn(\"font-mono uppercase tracking-wider text-sm\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction SFDialogDescription({\n  className,\n  ...props\n}: React.ComponentProps<typeof DialogDescription>) {\n  return (\n    <DialogDescription\n      className={cn(\"text-muted-foreground text-xs uppercase tracking-wide\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFDialog,\n  SFDialogTrigger,\n  SFDialogClose,\n  SFDialogContent,\n  SFDialogHeader,\n  SFDialogFooter,\n  SFDialogTitle,\n  SFDialogDescription,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

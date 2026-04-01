@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-slider",
+  "title": "SF Slider",
+  "description": "Flat slider with square thumb, 3px track, no radius",
+  "registryDependencies": [
+    "slider"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-slider.tsx",
+      "content": "\"use client\";\n\nimport { Slider } from \"@/components/ui/slider\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSliderProps extends React.ComponentProps<typeof Slider> {}\n\nexport function SFSlider({ className, ...props }: SFSliderProps) {\n  return (\n    <Slider\n      className={cn(\n        \"[&_[data-slot=slider-track]]:rounded-none [&_[data-slot=slider-track]]:h-[3px] [&_[data-slot=slider-track]]:bg-muted\",\n        \"[&_[data-slot=slider-range]]:bg-primary\",\n        \"[&_[data-slot=slider-thumb]]:rounded-none [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-foreground [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

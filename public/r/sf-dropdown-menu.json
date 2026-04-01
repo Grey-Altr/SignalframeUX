@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-dropdown-menu",
+  "title": "SF Dropdown Menu",
+  "description": "Brutalist dropdown with inverted focus state, mono text",
+  "registryDependencies": [
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-dropdown-menu.tsx",
+      "content": "\"use client\";\n\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuGroup,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuShortcut,\n  DropdownMenuTrigger,\n} from \"@/components/ui/dropdown-menu\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFDropdownMenu(props: React.ComponentProps<typeof DropdownMenu>) {\n  return <DropdownMenu {...props} />;\n}\n\nfunction SFDropdownMenuTrigger(\n  props: React.ComponentProps<typeof DropdownMenuTrigger>\n) {\n  return <DropdownMenuTrigger {...props} />;\n}\n\nfunction SFDropdownMenuContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof DropdownMenuContent>) {\n  return (\n    <DropdownMenuContent\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background shadow-none ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFDropdownMenuGroup(\n  props: React.ComponentProps<typeof DropdownMenuGroup>\n) {\n  return <DropdownMenuGroup {...props} />;\n}\n\nfunction SFDropdownMenuItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof DropdownMenuItem>) {\n  return (\n    <DropdownMenuItem\n      className={cn(\n        \"rounded-none font-mono uppercase tracking-wider text-xs cursor-pointer focus:bg-foreground focus:text-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFDropdownMenuLabel({\n  className,\n  ...props\n}: React.ComponentProps<typeof DropdownMenuLabel>) {\n  return (\n    <DropdownMenuLabel\n      className={cn(\n        \"font-mono uppercase tracking-[0.2em] text-[9px] text-muted-foreground\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFDropdownMenuSeparator({\n  className,\n  ...props\n}: React.ComponentProps<typeof DropdownMenuSeparator>) {\n  return (\n    <DropdownMenuSeparator\n      className={cn(\"bg-foreground h-[2px]\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFDropdownMenu,\n  SFDropdownMenuTrigger,\n  SFDropdownMenuContent,\n  SFDropdownMenuGroup,\n  SFDropdownMenuItem,\n  SFDropdownMenuLabel,\n  SFDropdownMenuSeparator,\n  DropdownMenuShortcut as SFDropdownMenuShortcut,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

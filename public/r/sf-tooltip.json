@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-tooltip",
+  "title": "SF Tooltip",
+  "description": "Industrial tooltip with inverted colors, no radius",
+  "registryDependencies": [
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-tooltip.tsx",
+      "content": "import {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFTooltip(props: React.ComponentProps<typeof Tooltip>) {\n  return <Tooltip {...props} />;\n}\n\nfunction SFTooltipContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof TooltipContent>) {\n  return (\n    <TooltipContent\n      className={cn(\n        \"bg-foreground text-background font-mono text-xs uppercase tracking-wider\",\n        \"border-0 rounded-none px-3 py-1.5\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFTooltip,\n  SFTooltipContent,\n  TooltipTrigger as SFTooltipTrigger,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

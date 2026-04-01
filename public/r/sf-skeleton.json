@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-skeleton",
+  "title": "SF Skeleton",
+  "description": "Flat skeleton with scanline sweep animation",
+  "registryDependencies": [
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-skeleton.tsx",
+      "content": "import { Skeleton } from \"@/components/ui/skeleton\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSkeletonProps extends React.ComponentProps<typeof Skeleton> {}\n\nexport function SFSkeleton({ className, ...props }: SFSkeletonProps) {\n  return (\n    <Skeleton\n      className={cn(\n        \"rounded-none bg-muted animate-none sf-skeleton\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-input",
+  "title": "SF Input",
+  "description": "Brutalist text input with 2px border-bottom, mono uppercase placeholder",
+  "registryDependencies": [
+    "input"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-input.tsx",
+      "content": "import { Input } from \"@/components/ui/input\";\nimport { cn } from \"@/lib/utils\";\n\nexport function SFInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof Input>) {\n  return (\n    <Input\n      className={cn(\n        \"font-mono border-2 border-foreground bg-background\",\n        \"focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-0\",\n        \"placeholder:text-muted-foreground placeholder:uppercase placeholder:tracking-wider\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

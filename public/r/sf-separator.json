@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-separator",
+  "title": "SF Separator",
+  "description": "2px foreground-colored divider",
+  "registryDependencies": [
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-separator.tsx",
+      "content": "import { Separator } from \"@/components/ui/separator\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSeparatorProps extends React.ComponentProps<typeof Separator> {\n  weight?: \"thin\" | \"normal\" | \"heavy\";\n}\n\nexport function SFSeparator({\n  className,\n  weight = \"normal\",\n  ...props\n}: SFSeparatorProps) {\n  return (\n    <Separator\n      className={cn(\n        \"bg-foreground\",\n        weight === \"thin\" && \"h-px\",\n        weight === \"normal\" && \"h-[2px]\",\n        weight === \"heavy\" && \"h-[3px]\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
