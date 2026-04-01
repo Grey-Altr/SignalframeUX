@@ -1,0 +1,200 @@
+"use client";
+
+import { useEffect, useRef, useCallback } from "react";
+
+interface Node {
+  baseX: number;
+  baseY: number;
+  x: number;
+  y: number;
+}
+
+const GRID_SPACING = 40;
+const DOT_RADIUS = 1.2;
+const DOT_OPACITY = 0.3;
+const LINE_OPACITY = 0.08;
+const MOUSE_RADIUS = 120;
+const MOUSE_FORCE = 18;
+const SINE_AMPLITUDE = 3;
+const SINE_SPEED = 0.0008;
+
+export function HeroMesh({ className }: { className?: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
+  const nodesRef = useRef<Node[]>([]);
+  const colsRef = useRef(0);
+  const animRef = useRef<number>(0);
+  const reducedMotionRef = useRef(false);
+
+  const buildGrid = useCallback((width: number, height: number) => {
+    const nodes: Node[] = [];
+    const cols = Math.ceil(width / GRID_SPACING) + 2;
+    const rows = Math.ceil(height / GRID_SPACING) + 2;
+    colsRef.current = cols + 1; // account for c starting at -1
+    for (let r = -1; r < rows; r++) {
+      for (let c = -1; c < cols; c++) {
+        const x = c * GRID_SPACING;
+        const y = r * GRID_SPACING;
+        nodes.push({ baseX: x, baseY: y, x, y });
+      }
+    }
+    nodesRef.current = nodes;
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedMotionRef.current = mql.matches;
+    const motionHandler = (e: MediaQueryListEvent) => {
+      reducedMotionRef.current = e.matches;
+    };
+    mql.addEventListener("change", motionHandler);
+
+    function resize() {
+      if (!canvas) return;
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildGrid(w, h);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    function onMouseMove(e: MouseEvent) {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
+    }
+
+    function onMouseLeave() {
+      mouseRef.current.x = -9999;
+      mouseRef.current.y = -9999;
+    }
+
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", onMouseLeave);
+
+    const startTime = performance.now();
+
+    function draw(now: number) {
+      if (!ctx || !canvas) return;
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      const elapsed = now - startTime;
+      const nodes = nodesRef.current;
+      const cols = colsRef.current;
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+      const isReduced = reducedMotionRef.current;
+
+      // Update node positions
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        let nx = n.baseX;
+        let ny = n.baseY;
+
+        if (!isReduced) {
+          // Sine wave ambient motion
+          const phase = (n.baseX + n.baseY) * 0.01;
+          nx += Math.sin(elapsed * SINE_SPEED + phase) * SINE_AMPLITUDE;
+          ny += Math.cos(elapsed * SINE_SPEED * 0.7 + phase * 1.3) * SINE_AMPLITUDE;
+
+          // Mouse repulsion
+          const dx = nx - mx;
+          const dy = ny - my;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < MOUSE_RADIUS * MOUSE_RADIUS && distSq > 0) {
+            const dist = Math.sqrt(distSq);
+            const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
+            nx += (dx / dist) * force;
+            ny += (dy / dist) * force;
+          }
+        }
+
+        n.x = nx;
+        n.y = ny;
+      }
+
+      // Draw lines using grid topology (right neighbor + bottom neighbor only)
+      // This is O(n) instead of O(n^2)
+      ctx.strokeStyle = `rgba(255, 255, 255, ${LINE_OPACITY})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        // Right neighbor
+        const rightIdx = i + 1;
+        if (rightIdx < nodes.length && rightIdx % cols !== 0) {
+          const b = nodes[rightIdx];
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+        }
+        // Bottom neighbor
+        const bottomIdx = i + cols;
+        if (bottomIdx < nodes.length) {
+          const b = nodes[bottomIdx];
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+        }
+      }
+      ctx.stroke();
+
+      // Draw dots
+      ctx.fillStyle = `rgba(255, 255, 255, ${DOT_OPACITY})`;
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, DOT_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      animRef.current = requestAnimationFrame(draw);
+    }
+
+    // For reduced motion, draw once statically
+    if (reducedMotionRef.current) {
+      draw(startTime);
+    } else {
+      animRef.current = requestAnimationFrame(draw);
+    }
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener("resize", resize);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("mouseleave", onMouseLeave);
+      mql.removeEventListener("change", motionHandler);
+    };
+  }, [buildGrid]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={className}
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: "auto",
+        width: "100%",
+        height: "100%",
+      }}
+      aria-hidden="true"
+    />
+  );
+}

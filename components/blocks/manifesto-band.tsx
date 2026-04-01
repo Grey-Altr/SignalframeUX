@@ -1,25 +1,198 @@
+"use client";
+
+import { useEffect, useRef, useCallback } from "react";
+
+/* ── Link style constant (kept DRY) ── */
+const LINK_CLASS =
+  "text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100";
+
+/* ── Manifesto content definition ── */
+type Segment =
+  | { type: "word"; text: string }
+  | { type: "sup"; text: string }
+  | { type: "link"; text: string; href: string }
+  | { type: "space" };
+
+const SEGMENTS: Segment[] = [
+  // "SignalframeUX™ is not a component library. It is a programmable surface."
+  { type: "word", text: "SignalframeUX" },
+  { type: "sup", text: "™" },
+  { type: "space" },
+  { type: "word", text: "is" },
+  { type: "space" },
+  { type: "word", text: "not" },
+  { type: "space" },
+  { type: "word", text: "a" },
+  { type: "space" },
+  { type: "word", text: "component" },
+  { type: "space" },
+  { type: "word", text: "library." },
+  { type: "space" },
+  { type: "word", text: "It" },
+  { type: "space" },
+  { type: "word", text: "is" },
+  { type: "space" },
+  { type: "word", text: "a" },
+  { type: "space" },
+  { type: "link", text: "programmable surface", href: "#" },
+  { type: "word", text: "." },
+  { type: "space" },
+  // "Build. Ship. Signal. Repeat.™"
+  { type: "word", text: "Build." },
+  { type: "space" },
+  { type: "word", text: "Ship." },
+  { type: "space" },
+  { type: "word", text: "Signal." },
+  { type: "space" },
+  { type: "word", text: "Repeat." },
+  { type: "sup", text: "™" },
+  { type: "space" },
+  // "Made in SignalframeUX, north of nowhere."
+  { type: "word", text: "Made" },
+  { type: "space" },
+  { type: "word", text: "in" },
+  { type: "space" },
+  { type: "word", text: "SignalframeUX," },
+  { type: "space" },
+  { type: "word", text: "north" },
+  { type: "space" },
+  { type: "word", text: "of" },
+  { type: "space" },
+  { type: "word", text: "nowhere." },
+  { type: "space" },
+  // Links row
+  { type: "link", text: "340+ components", href: "#" },
+  { type: "space" },
+  { type: "word", text: "·" },
+  { type: "space" },
+  { type: "link", text: "OKLCH tokens", href: "#" },
+  { type: "space" },
+  { type: "word", text: "·" },
+  { type: "space" },
+  { type: "link", text: "API-first", href: "#" },
+  { type: "space" },
+  { type: "word", text: "·" },
+  { type: "space" },
+  { type: "link", text: "React + TypeScript", href: "#" },
+  { type: "word", text: "." },
+];
+
 export function ManifestoBand() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  // Collect only the word-type indices (not links, not spaces)
+  const wordIndices: number[] = [];
+  SEGMENTS.forEach((seg, i) => {
+    if (seg.type === "word" || seg.type === "sup") {
+      wordIndices.push(i);
+    }
+  });
+
+  const handleScroll = useCallback(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    // Progress: 0 when section top hits viewport bottom, 1 when section bottom hits viewport top
+    const sectionHeight = rect.height;
+    const totalTravel = vh + sectionHeight;
+    const traveled = vh - rect.top;
+    const progress = Math.max(0, Math.min(1, traveled / totalTravel));
+
+    // Map progress to word reveal — words reveal across the middle 60% of scroll
+    const revealStart = 0.15;
+    const revealEnd = 0.85;
+    const revealProgress = Math.max(
+      0,
+      Math.min(1, (progress - revealStart) / (revealEnd - revealStart))
+    );
+
+    const totalWords = wordIndices.length;
+    const currentWordFloat = revealProgress * totalWords;
+
+    wordIndices.forEach((segIndex, wordOrder) => {
+      const el = wordRefs.current[segIndex];
+      if (!el) return;
+
+      if (wordOrder < currentWordFloat - 1) {
+        el.style.opacity = "1";
+      } else if (wordOrder < currentWordFloat) {
+        // Partial fade for the "current" word
+        const partial = currentWordFloat - wordOrder;
+        el.style.opacity = String(0.15 + 0.85 * partial);
+      } else {
+        el.style.opacity = "0.15";
+      }
+    });
+  }, [wordIndices]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // Initial pass
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [handleScroll]);
+
   return (
-    <section data-anim="yellow-band" className="sf-yellow-band sf-grain border-b-4 border-foreground py-10 px-[clamp(20px,4vw,48px)] relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      data-anim="yellow-band"
+      className="sf-yellow-band sf-grain border-b-4 border-foreground py-10 px-[clamp(20px,4vw,48px)] relative overflow-hidden"
+    >
       <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-[#333] relative z-10">
-        SignalframeUX<sup className="text-[11px]">™</sup> is not a component library. It is a{" "}
-        <a href="#" className="text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100">
-          programmable surface
-        </a>.
-        Build. Ship. Signal. Repeat.<sup className="text-[11px]">™</sup>{" "}
-        Made in SignalframeUX, north of nowhere.{" "}
-        <a href="#" className="text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100">
-          340+ components
-        </a>{" "}
-        · <a href="#" className="text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100">
-          OKLCH tokens
-        </a>{" "}
-        · <a href="#" className="text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100">
-          API-first
-        </a>{" "}
-        · <a href="#" className="text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100">
-          React + TypeScript
-        </a>.
+        {SEGMENTS.map((seg, i) => {
+          if (seg.type === "space") {
+            return " ";
+          }
+
+          if (seg.type === "link") {
+            // Links always full opacity
+            return (
+              <a key={i} href={seg.href} className={LINK_CLASS}>
+                {seg.text}
+              </a>
+            );
+          }
+
+          if (seg.type === "sup") {
+            return (
+              <sup
+                key={i}
+                ref={(el) => { wordRefs.current[i] = el; }}
+                data-anim="manifesto-word"
+                className="text-[11px] transition-opacity duration-150"
+                style={{ opacity: 0.15 }}
+              >
+                {seg.text}
+              </sup>
+            );
+          }
+
+          // Regular word
+          return (
+            <span
+              key={i}
+              ref={(el) => { wordRefs.current[i] = el; }}
+              data-anim="manifesto-word"
+              className="transition-opacity duration-150"
+              style={{ opacity: 0.15 }}
+            >
+              {seg.text}
+            </span>
+          );
+        })}
       </p>
     </section>
   );

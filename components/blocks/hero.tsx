@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { HeroMesh } from "@/components/animation/hero-mesh";
 
 export function Hero() {
   return (
@@ -8,11 +9,7 @@ export function Hero() {
       {/* Left — Black panel */}
       <div className="bg-foreground text-background px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative overflow-hidden">
         {/* Canvas mesh background */}
-        <canvas
-          className="absolute inset-0 w-full h-full opacity-35 z-0"
-          style={{ pointerEvents: "none" }}
-          aria-hidden="true"
-        />
+        <HeroMesh className="absolute inset-0 z-0 opacity-[0.35]" />
 
         {/* Halftone decorative circle */}
         <div

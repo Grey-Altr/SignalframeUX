@@ -19,6 +19,7 @@ const COMPONENTS = [
 
 export function ComponentGrid() {
   const [activeCell, setActiveCell] = useState<string | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<string | null>(null);
 
   return (
     <section className="border-b-4 border-foreground">
@@ -37,44 +38,40 @@ export function ComponentGrid() {
         {COMPONENTS.map((comp) => {
           const isBlack = comp.bg === "black";
           const isActive = activeCell === comp.id;
+          const isHovered = hoveredCell === comp.id;
+
+          // Determine colors based on state
+          let bgColor: string;
+          let textColor: string;
+          let borderColor: string | undefined;
+
+          if (isActive) {
+            bgColor = isBlack ? "oklch(0.65 0.29 350)" : "oklch(0.145 0 0)";
+            textColor = "white";
+            borderColor = undefined;
+          } else if (isHovered) {
+            bgColor = isBlack ? "oklch(0.65 0.29 350)" : "oklch(0.145 0 0)";
+            textColor = "white";
+            borderColor = "oklch(0.65 0.29 350)";
+          } else {
+            bgColor = isBlack ? "oklch(0.145 0 0)" : "white";
+            textColor = isBlack ? "white" : "oklch(0.145 0 0)";
+            borderColor = undefined;
+          }
 
           return (
             <button
               key={comp.id}
               data-anim="comp-cell"
-              className="relative border-r-2 border-b-2 border-foreground cursor-pointer transition-all duration-200 group"
+              className="relative border-r-2 border-b-2 border-foreground cursor-pointer group"
               style={{
                 aspectRatio: "1",
-                backgroundColor: isActive
-                  ? isBlack
-                    ? "oklch(0.65 0.29 350)"
-                    : "oklch(0.145 0 0)"
-                  : isBlack
-                  ? "oklch(0.145 0 0)"
-                  : "white",
-                color: isActive || isBlack ? "white" : "oklch(0.145 0 0)",
+                backgroundColor: bgColor,
+                color: textColor,
+                borderColor: borderColor || undefined,
               }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget;
-                if (isBlack) {
-                  el.style.backgroundColor = "oklch(0.65 0.29 350)";
-                  el.style.borderColor = "oklch(0.65 0.29 350)";
-                } else {
-                  el.style.backgroundColor = "oklch(0.145 0 0)";
-                  el.style.color = "white";
-                  el.style.borderColor = "oklch(0.65 0.29 350)";
-                }
-                el.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget;
-                el.style.backgroundColor = isBlack
-                  ? "oklch(0.145 0 0)"
-                  : "white";
-                el.style.color = isBlack ? "white" : "oklch(0.145 0 0)";
-                el.style.borderColor = "";
-                el.style.transform = "translateY(0)";
-              }}
+              onMouseEnter={() => setHoveredCell(comp.id)}
+              onMouseLeave={() => setHoveredCell(null)}
               onClick={() => {
                 setActiveCell(comp.id);
                 setTimeout(() => setActiveCell(null), 150);

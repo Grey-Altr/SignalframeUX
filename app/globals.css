@@ -144,6 +144,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease,
+      border-color 0.4s ease;
   }
 }
 
@@ -348,4 +352,71 @@
 @keyframes sf-marquee-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER CIRCUIT SVG
+   ══════════════════════════════════════════════════════════════ */
+
+.sf-circuit-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  transition: none;
+}
+
+.sf-circuit-path--secondary {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+}
+
+.sf-circuit-dot {
+  opacity: 0;
+  transition: none;
+}
+
+.sf-circuit--visible .sf-circuit-path--main {
+  animation: sf-circuit-draw 1.8s ease forwards;
+}
+
+.sf-circuit--visible .sf-circuit-path--secondary {
+  animation: sf-circuit-draw-short 0.6s ease forwards;
+}
+
+.sf-circuit--visible .sf-circuit-dot {
+  animation: sf-circuit-dot-in 0.3s ease forwards;
+}
+
+@keyframes sf-circuit-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes sf-circuit-draw-short {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes sf-circuit-dot-in {
+  0% { opacity: 0; r: 0; }
+  100% { opacity: 1; r: 2; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COMPONENT GRID CELL HOVER (CSS-driven transform)
+   ══════════════════════════════════════════════════════════════ */
+
+[data-anim="comp-cell"] {
+  will-change: transform;
+  transition:
+    transform var(--duration-glacial) var(--ease-spring),
+    background-color var(--duration-normal) var(--ease-default),
+    color var(--duration-normal) var(--ease-default),
+    border-color var(--duration-normal) var(--ease-default);
+}
+
+[data-anim="comp-cell"]:hover {
+  transform: translateY(-2px);
+  transition:
+    transform var(--duration-normal) var(--ease-hover),
+    background-color var(--duration-normal) var(--ease-default),
+    color var(--duration-normal) var(--ease-default),
+    border-color var(--duration-normal) var(--ease-default);
 }
