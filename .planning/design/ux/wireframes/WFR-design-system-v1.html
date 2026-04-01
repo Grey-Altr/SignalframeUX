@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System Showcase — SignalframeUX Wireframe v1</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      /* --- Reset & Base --- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body.pde-layout--lofi {
+        font-family: var(--typography-fontFamily-body);
+        font-size: var(--typography-fontSize-base);
+        line-height: var(--typography-lineHeight-normal);
+        color: var(--color-text);
+        background: var(--color-bg);
+        min-height: 100vh;
+      }
+
+      /* --- Skip Link --- */
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: var(--spacing-4);
+        padding: var(--spacing-2) var(--spacing-4);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+        z-index: 1000;
+        font-size: var(--typography-fontSize-sm);
+      }
+      .skip-link:focus {
+        top: var(--spacing-2);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* --- Layout --- */
+      .page-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-semantic-gutter);
+      }
+
+      /* --- Header --- */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--color-bg);
+        border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-4) 0;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-4);
+      }
+
+      .site-logo {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+
+      .nav-list {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-6);
+        align-items: center;
+      }
+
+      .nav-list a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        transition: color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .nav-list a:hover,
+      .nav-list a:focus {
+        color: var(--color-accent);
+      }
+
+      .nav-list a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--typography-fontWeight-semibold);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3);
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .btn-icon:hover,
+      .btn-icon:focus {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .kbd {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        border: var(--border-width-thin) solid var(--color-border);
+        border-radius: var(--border-radius-xs);
+        padding: 1px 4px;
+        background: var(--color-bg-subtle);
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+      }
+      .mobile-menu-toggle:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+        .nav-list { display: none; }
+      }
+
+      /* --- Two-Column Layout --- */
+      .ds-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        min-height: calc(100vh - 60px);
+      }
+      @media (min-width: 768px) {
+        .ds-layout {
+          grid-template-columns: 240px 1fr;
+        }
+      }
+
+      /* --- Sidebar --- */
+      .ds-sidebar {
+        padding: var(--spacing-6) var(--spacing-4);
+        border-right: var(--border-width-thin) dashed var(--color-border);
+        background: var(--color-surface);
+      }
+      .ds-sidebar__title {
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-wider);
+        margin-bottom: var(--spacing-4);
+      }
+      .ds-sidebar__list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-1);
+      }
+      .ds-sidebar__link {
+        display: block;
+        padding: var(--spacing-2) var(--spacing-3);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        border-radius: var(--border-radius-sm);
+        border: var(--border-width-thin) solid transparent;
+      }
+      .ds-sidebar__link:hover,
+      .ds-sidebar__link:focus-visible {
+        color: var(--color-accent);
+        background: var(--color-accent-subtle);
+        outline: none;
+      }
+      .ds-sidebar__link[aria-current="true"] {
+        color: var(--color-accent);
+        background: var(--color-accent-subtle);
+        font-weight: var(--typography-fontWeight-medium);
+      }
+      .ds-sidebar__divider {
+        height: 1px;
+        background: var(--color-border-subtle);
+        margin: var(--spacing-3) 0;
+      }
+      @media (max-width: 767px) {
+        .ds-sidebar {
+          border-right: none;
+          border-bottom: var(--border-width-thin) dashed var(--color-border);
+          padding: var(--spacing-4);
+        }
+        .ds-sidebar__list {
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: var(--spacing-2);
+        }
+      }
+
+      /* --- Main Content --- */
+      .ds-main {
+        padding: var(--spacing-8) var(--spacing-6);
+        max-width: 960px;
+      }
+
+      /* --- Section --- */
+      .ds-section {
+        margin-bottom: var(--spacing-semantic-section);
+      }
+      .ds-section__heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-tight);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-2);
+      }
+      .ds-section__desc {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--spacing-6);
+      }
+
+      /* --- Overview Stats --- */
+      .ds-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-8);
+      }
+      .ds-stat {
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-5);
+        background: var(--color-surface-raised);
+        text-align: center;
+      }
+      .ds-stat__value {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-xl);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+      }
+      .ds-stat__label {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+        margin-top: var(--spacing-1);
+      }
+
+      /* --- Token Grid --- */
+      .ds-token-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-token-card {
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-4);
+        background: var(--color-surface-raised);
+      }
+      .ds-token-card__swatch {
+        width: 100%;
+        height: 48px;
+        background: var(--color-bg-muted);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-3);
+        border: var(--border-width-thin) dashed var(--color-border-subtle);
+      }
+      .ds-token-card__name {
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-medium);
+        color: var(--color-text);
+      }
+      .ds-token-card__meta {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        margin-top: var(--spacing-1);
+      }
+
+      /* --- Color Scale Row --- */
+      .ds-color-scale {
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-color-scale__label {
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-2);
+      }
+      .ds-color-scale__row {
+        display: flex;
+        gap: 2px;
+        border-radius: var(--border-radius-md);
+        overflow: hidden;
+      }
+      .ds-color-scale__step {
+        flex: 1;
+        height: 40px;
+        background: var(--color-bg-muted);
+        border: var(--border-width-thin) dashed var(--color-border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+      }
+
+      /* --- Type Scale --- */
+      .ds-type-scale {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-type-sample {
+        display: flex;
+        align-items: baseline;
+        gap: var(--spacing-4);
+        padding: var(--spacing-3) var(--spacing-4);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface-raised);
+      }
+      .ds-type-sample__label {
+        flex-shrink: 0;
+        width: 60px;
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+      }
+      .ds-type-sample__text {
+        color: var(--color-text);
+        font-family: var(--typography-fontFamily-display);
+      }
+
+      /* --- Spacing Scale --- */
+      .ds-spacing-scale {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-3);
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-spacing-sample {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-4);
+      }
+      .ds-spacing-sample__label {
+        flex-shrink: 0;
+        width: 80px;
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        text-align: right;
+      }
+      .ds-spacing-sample__bar {
+        height: 16px;
+        background: var(--color-bg-muted);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-xs);
+      }
+
+      /* --- Motion Tokens --- */
+      .ds-motion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-motion-card {
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-4);
+        background: var(--color-surface-raised);
+        text-align: center;
+      }
+      .ds-motion-card__preview {
+        width: 100%;
+        height: 32px;
+        background: var(--color-bg-muted);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-3);
+        border: var(--border-width-thin) dashed var(--color-border-subtle);
+      }
+      .ds-motion-card__name {
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-medium);
+        color: var(--color-text);
+      }
+      .ds-motion-card__value {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        margin-top: var(--spacing-1);
+      }
+
+      /* --- Component Cards --- */
+      .ds-component-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--spacing-6);
+        margin-bottom: var(--spacing-6);
+      }
+      .ds-component-card {
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        background: var(--color-surface-raised);
+        overflow: hidden;
+      }
+      .ds-component-card__preview {
+        width: 100%;
+        height: 120px;
+        background: var(--color-bg-muted);
+        border-bottom: var(--border-width-thin) dashed var(--color-border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+      }
+      .ds-component-card__body {
+        padding: var(--spacing-4);
+      }
+      .ds-component-card__name {
+        font-size: var(--typography-fontSize-base);
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-1);
+      }
+      .ds-component-card__meta {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+      }
+      .ds-component-card__actions {
+        display: flex;
+        gap: var(--spacing-2);
+        margin-top: var(--spacing-3);
+        padding-top: var(--spacing-3);
+        border-top: var(--border-width-thin) dashed var(--color-border-subtle);
+      }
+
+      /* --- Variation Browser --- */
+      .ds-variation-browser {
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        background: var(--color-surface-raised);
+        margin-bottom: var(--spacing-6);
+        overflow: hidden;
+      }
+      .ds-variation-browser__toolbar {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3);
+        padding: var(--spacing-3) var(--spacing-4);
+        border-bottom: var(--border-width-thin) dashed var(--color-border-subtle);
+        background: var(--color-surface);
+      }
+      .ds-variation-browser__toolbar-label {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+      }
+      .ds-pill {
+        display: inline-block;
+        padding: var(--spacing-1) var(--spacing-3);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-secondary);
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .ds-pill[aria-pressed="true"] {
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+      }
+      .ds-variation-browser__canvas {
+        padding: var(--spacing-8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 160px;
+      }
+      .ds-variation-browser__placeholder {
+        width: 200px;
+        height: 48px;
+        border: var(--border-width-medium) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      /* --- Code View Toggle --- */
+      .ds-code-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        padding: var(--spacing-1) var(--spacing-3);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: transparent;
+        color: var(--color-text-secondary);
+        font-size: var(--typography-fontSize-xs);
+        font-family: var(--typography-fontFamily-mono);
+        cursor: pointer;
+      }
+      .ds-code-toggle:focus-visible {
+        outline: var(--border-width-medium) solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      .ds-code-block {
+        display: none;
+        margin-top: var(--spacing-3);
+        padding: var(--spacing-4);
+        background: var(--color-bg);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        line-height: var(--typography-lineHeight-relaxed);
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .ds-code-block[aria-hidden="false"] {
+        display: block;
+      }
+
+      /* --- Footer --- */
+      .site-footer {
+        border-top: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-8) 0;
+        margin-top: var(--spacing-semantic-section);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links a {
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .footer-links a:hover,
+      .footer-links a:focus {
+        color: var(--color-accent);
+      }
+
+      .footer-copy {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+      }
+
+      /* Scroll to top */
+      .scroll-to-top {
+        position: fixed;
+        bottom: var(--spacing-6);
+        right: var(--spacing-6);
+        width: 40px;
+        height: 40px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        background: var(--color-surface);
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        z-index: 50;
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .scroll-to-top:hover,
+      .scroll-to-top:focus-visible {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--lofi">
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="homepage.html">Work</a></li>
+          <li><a href="design-system.html" aria-current="page">System</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette (Cmd+K)" title="Command Palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle title="Toggle dark/light theme">T</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== TWO-COLUMN LAYOUT ===== -->
+  <div class="ds-layout">
+
+    <!-- Sidebar -->
+    <aside class="ds-sidebar" aria-label="Design system categories">
+      <p class="ds-sidebar__title">Explorer</p>
+      <nav aria-label="Design system sections">
+        <ul class="ds-sidebar__list" role="list">
+          <li><a href="#overview" class="ds-sidebar__link" aria-current="true">Overview</a></li>
+          <li class="ds-sidebar__divider" role="separator" aria-hidden="true"></li>
+          <li><a href="#color-tokens" class="ds-sidebar__link">Color Tokens</a></li>
+          <li><a href="#typography-scale" class="ds-sidebar__link">Typography Scale</a></li>
+          <li><a href="#spacing-scale" class="ds-sidebar__link">Spacing Scale</a></li>
+          <li><a href="#motion-tokens" class="ds-sidebar__link">Motion Tokens</a></li>
+          <li class="ds-sidebar__divider" role="separator" aria-hidden="true"></li>
+          <li><a href="#components" class="ds-sidebar__link">Components</a></li>
+          <li><a href="#variation-browser" class="ds-sidebar__link">Variation Browser</a></li>
+          <li><a href="#code-view" class="ds-sidebar__link">Code View</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="ds-main">
+
+      <!-- ===== OVERVIEW ===== -->
+      <section id="overview" class="ds-section" aria-labelledby="overview-heading">
+        <h1 class="ds-section__heading" id="overview-heading">Design System</h1>
+        <p class="ds-section__desc">Tokens, components, and patterns powering SignalframeUX.</p>
+
+        <div class="ds-stats" role="list" aria-label="System overview">
+          <div class="ds-stat" role="listitem">
+            <div class="ds-stat__value">6</div>
+            <div class="ds-stat__label">Color Scales</div>
+          </div>
+          <div class="ds-stat" role="listitem">
+            <div class="ds-stat__value">8</div>
+            <div class="ds-stat__label">Type Sizes</div>
+          </div>
+          <div class="ds-stat" role="listitem">
+            <div class="ds-stat__value">16</div>
+            <div class="ds-stat__label">Spacing Steps</div>
+          </div>
+          <div class="ds-stat" role="listitem">
+            <div class="ds-stat__value">5</div>
+            <div class="ds-stat__label">Motion Curves</div>
+          </div>
+          <div class="ds-stat" role="listitem">
+            <div class="ds-stat__value">8</div>
+            <div class="ds-stat__label">Components</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== COLOR TOKENS ===== -->
+      <section id="color-tokens" class="ds-section" aria-labelledby="color-heading">
+        <h2 class="ds-section__heading" id="color-heading">Color Tokens</h2>
+        <p class="ds-section__desc">Core palette scales from 50 to 950. Toggle theme to see adaptability.</p>
+
+        <div class="ds-color-scale">
+          <p class="ds-color-scale__label">Primary</p>
+          <div class="ds-color-scale__row" role="img" aria-label="Primary color scale, 11 steps from 50 to 950">
+            <div class="ds-color-scale__step">50</div>
+            <div class="ds-color-scale__step">100</div>
+            <div class="ds-color-scale__step">200</div>
+            <div class="ds-color-scale__step">300</div>
+            <div class="ds-color-scale__step">400</div>
+            <div class="ds-color-scale__step">500</div>
+            <div class="ds-color-scale__step">600</div>
+            <div class="ds-color-scale__step">700</div>
+            <div class="ds-color-scale__step">800</div>
+            <div class="ds-color-scale__step">900</div>
+            <div class="ds-color-scale__step">950</div>
+          </div>
+        </div>
+
+        <div class="ds-color-scale">
+          <p class="ds-color-scale__label">Secondary</p>
+          <div class="ds-color-scale__row" role="img" aria-label="Secondary color scale, 11 steps">
+            <div class="ds-color-scale__step">50</div>
+            <div class="ds-color-scale__step">100</div>
+            <div class="ds-color-scale__step">200</div>
+            <div class="ds-color-scale__step">300</div>
+            <div class="ds-color-scale__step">400</div>
+            <div class="ds-color-scale__step">500</div>
+            <div class="ds-color-scale__step">600</div>
+            <div class="ds-color-scale__step">700</div>
+            <div class="ds-color-scale__step">800</div>
+            <div class="ds-color-scale__step">900</div>
+            <div class="ds-color-scale__step">950</div>
+          </div>
+        </div>
+
+        <div class="ds-color-scale">
+          <p class="ds-color-scale__label">Neutral</p>
+          <div class="ds-color-scale__row" role="img" aria-label="Neutral color scale, 11 steps">
+            <div class="ds-color-scale__step">50</div>
+            <div class="ds-color-scale__step">100</div>
+            <div class="ds-color-scale__step">200</div>
+            <div class="ds-color-scale__step">300</div>
+            <div class="ds-color-scale__step">400</div>
+            <div class="ds-color-scale__step">500</div>
+            <div class="ds-color-scale__step">600</div>
+            <div class="ds-color-scale__step">700</div>
+            <div class="ds-color-scale__step">800</div>
+            <div class="ds-color-scale__step">900</div>
+            <div class="ds-color-scale__step">950</div>
+          </div>
+        </div>
+
+        <div class="ds-token-grid">
+          <div class="ds-token-card">
+            <div class="ds-token-card__swatch"></div>
+            <div class="ds-token-card__name">Success</div>
+            <div class="ds-token-card__meta">H=145, 11 steps</div>
+          </div>
+          <div class="ds-token-card">
+            <div class="ds-token-card__swatch"></div>
+            <div class="ds-token-card__name">Warning</div>
+            <div class="ds-token-card__meta">H=85, 11 steps</div>
+          </div>
+          <div class="ds-token-card">
+            <div class="ds-token-card__swatch"></div>
+            <div class="ds-token-card__name">Error</div>
+            <div class="ds-token-card__meta">H=25, 11 steps</div>
+          </div>
+          <div class="ds-token-card">
+            <div class="ds-token-card__swatch"></div>
+            <div class="ds-token-card__name">Info</div>
+            <div class="ds-token-card__meta">H=250, 11 steps</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TYPOGRAPHY SCALE ===== -->
+      <section id="typography-scale" class="ds-section" aria-labelledby="type-heading">
+        <h2 class="ds-section__heading" id="type-heading">Typography Scale</h2>
+        <p class="ds-section__desc">Augmented fourth scale (1.414 ratio) across 8 sizes.</p>
+
+        <div class="ds-type-scale">
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">4xl</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-4xl);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">3xl</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-3xl);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">2xl</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-2xl);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">xl</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-xl);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">lg</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-lg);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">base</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-base);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">sm</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-sm);">Aa</span>
+          </div>
+          <div class="ds-type-sample">
+            <span class="ds-type-sample__label">xs</span>
+            <span class="ds-type-sample__text" style="font-size: var(--typography-fontSize-xs);">Aa</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SPACING SCALE ===== -->
+      <section id="spacing-scale" class="ds-section" aria-labelledby="spacing-heading">
+        <h2 class="ds-section__heading" id="spacing-heading">Spacing Scale</h2>
+        <p class="ds-section__desc">4px base unit, 16 steps from 0 to 80px.</p>
+
+        <div class="ds-spacing-scale">
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-1</span>
+            <div class="ds-spacing-sample__bar" style="width: 4px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-2</span>
+            <div class="ds-spacing-sample__bar" style="width: 8px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-4</span>
+            <div class="ds-spacing-sample__bar" style="width: 16px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-6</span>
+            <div class="ds-spacing-sample__bar" style="width: 24px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-8</span>
+            <div class="ds-spacing-sample__bar" style="width: 32px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-12</span>
+            <div class="ds-spacing-sample__bar" style="width: 48px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-16</span>
+            <div class="ds-spacing-sample__bar" style="width: 64px;"></div>
+          </div>
+          <div class="ds-spacing-sample">
+            <span class="ds-spacing-sample__label">--spacing-20</span>
+            <div class="ds-spacing-sample__bar" style="width: 80px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MOTION TOKENS ===== -->
+      <section id="motion-tokens" class="ds-section" aria-labelledby="motion-heading">
+        <h2 class="ds-section__heading" id="motion-heading">Motion Tokens</h2>
+        <p class="ds-section__desc">Duration and easing curves for transitions and animations.</p>
+
+        <div class="ds-motion-grid">
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Instant</div>
+            <div class="ds-motion-card__value">50ms</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Fast</div>
+            <div class="ds-motion-card__value">100ms</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Normal</div>
+            <div class="ds-motion-card__value">200ms</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Slow</div>
+            <div class="ds-motion-card__value">400ms</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Slower</div>
+            <div class="ds-motion-card__value">600ms</div>
+          </div>
+        </div>
+
+        <div class="ds-motion-grid">
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Default Easing</div>
+            <div class="ds-motion-card__value">ease(0.2,0,0,1)</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Ease In</div>
+            <div class="ds-motion-card__value">ease(0.4,0,1,1)</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Ease Out</div>
+            <div class="ds-motion-card__value">ease(0,0,0.2,1)</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Ease In-Out</div>
+            <div class="ds-motion-card__value">ease(0.4,0,0.2,1)</div>
+          </div>
+          <div class="ds-motion-card">
+            <div class="ds-motion-card__preview"></div>
+            <div class="ds-motion-card__name">Spring Bounce</div>
+            <div class="ds-motion-card__value">linear(...)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== COMPONENTS ===== -->
+      <section id="components" class="ds-section" aria-labelledby="components-heading">
+        <h2 class="ds-section__heading" id="components-heading">Components</h2>
+        <p class="ds-section__desc">Interactive component library with live examples.</p>
+
+        <div class="ds-component-grid">
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Button component preview">[Button Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Button</h3>
+              <p class="ds-component-card__meta">4 variants, 3 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Card component preview">[Card Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Card</h3>
+              <p class="ds-component-card__meta">3 variants, 2 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Input component preview">[Input Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Input</h3>
+              <p class="ds-component-card__meta">3 variants, 3 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Badge component preview">[Badge Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Badge</h3>
+              <p class="ds-component-card__meta">5 variants, 2 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Navigation component preview">[Navigation Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Navigation</h3>
+              <p class="ds-component-card__meta">2 variants, responsive</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Modal component preview">[Modal Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Modal</h3>
+              <p class="ds-component-card__meta">2 variants, 3 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Toast component preview">[Toast Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Toast</h3>
+              <p class="ds-component-card__meta">4 variants, auto-dismiss</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ds-component-card">
+            <div class="ds-component-card__preview" aria-label="Toggle component preview">[Toggle Component]</div>
+            <div class="ds-component-card__body">
+              <h3 class="ds-component-card__name">Toggle</h3>
+              <p class="ds-component-card__meta">2 variants, 2 sizes</p>
+              <div class="ds-component-card__actions">
+                <button class="ds-pill" type="button">Preview</button>
+                <button class="ds-code-toggle" type="button" aria-expanded="false">&lt;/&gt; Code</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== VARIATION BROWSER ===== -->
+      <section id="variation-browser" class="ds-section" aria-labelledby="variation-heading">
+        <h2 class="ds-section__heading" id="variation-heading">Variation Browser</h2>
+        <p class="ds-section__desc">Explore component sizes, states, and theme adaptability.</p>
+
+        <div class="ds-variation-browser" role="region" aria-label="Component variation browser">
+          <div class="ds-variation-browser__toolbar">
+            <span class="ds-variation-browser__toolbar-label">Size:</span>
+            <button class="ds-pill" type="button" aria-pressed="false">Small</button>
+            <button class="ds-pill" type="button" aria-pressed="true">Medium</button>
+            <button class="ds-pill" type="button" aria-pressed="false">Large</button>
+            <span class="ds-variation-browser__toolbar-label" style="margin-left: var(--spacing-4);">State:</span>
+            <button class="ds-pill" type="button" aria-pressed="true">Default</button>
+            <button class="ds-pill" type="button" aria-pressed="false">Hover</button>
+            <button class="ds-pill" type="button" aria-pressed="false">Focus</button>
+            <button class="ds-pill" type="button" aria-pressed="false">Disabled</button>
+          </div>
+          <div class="ds-variation-browser__canvas">
+            <div class="ds-variation-browser__placeholder">[Component Preview]</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CODE VIEW ===== -->
+      <section id="code-view" class="ds-section" aria-labelledby="code-heading">
+        <h2 class="ds-section__heading" id="code-heading">Code View</h2>
+        <p class="ds-section__desc">Toggle to reveal implementation details for any component.</p>
+
+        <div style="display: flex; align-items: center; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+          <button
+            class="ds-code-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="code-example"
+            data-code-toggle
+          >&lt;/&gt; Show Code</button>
+        </div>
+
+        <div
+          id="code-example"
+          class="ds-code-block"
+          role="region"
+          aria-label="Code snippet example"
+          aria-hidden="true"
+        >&lt;button class="sf-button sf-button--primary sf-button--md"&gt;
+  Label
+&lt;/button&gt;</div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="homepage.html">Work</a></li>
+        <li><a href="design-system.html">System</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <a href="#main-content" class="scroll-to-top" aria-label="Scroll to top">&uarr;</a>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    /* Theme toggle */
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        themeToggle.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+      });
+    }
+
+    /* Code view toggle */
+    const codeToggle = document.querySelector('[data-code-toggle]');
+    if (codeToggle) {
+      codeToggle.addEventListener('click', () => {
+        const target = document.getElementById(codeToggle.getAttribute('aria-controls'));
+        const expanded = codeToggle.getAttribute('aria-expanded') === 'true';
+        codeToggle.setAttribute('aria-expanded', !expanded);
+        target.setAttribute('aria-hidden', expanded);
+        codeToggle.textContent = expanded ? '</> Show Code' : '</> Hide Code';
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -9,6 +9,9 @@ Domain: strategy
 |------|------|-------|--------|---------|-------------|--------------|---------|
 | REC | Tool & MCP Recommendations | /pde:recommend | draft | v1 | WebSearch MCP | -- | 2026-03-31 |
 | CMP | Competitive Landscape Analysis | /pde:competitive | draft | v1 | WebSearch MCP | -- | 2026-03-31 |
+| OPP | Opportunity Evaluation | /pde:opportunity | draft | v1 | none | CMP | 2026-03-31 |
+| IDT | Ideation | /pde:ideate | draft | v1 | none | REC, CMP, OPP | 2026-03-31 |
+| BRF | Design Brief | /pde:brief | draft | v1 | none | -- | 2026-03-31 |
 
 Note: "Enhanced By" tracks MCP provenance (which MCPs contributed to artifact generation).
 Mockup artifacts include dependency links to parent wireframes for staleness cascading.

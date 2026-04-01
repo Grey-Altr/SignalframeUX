@@ -1,0 +1,317 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "$description": "SignalframeUX Design System Tokens — Portfolio PDE | Generated 2026-03-31",
+  "color": {
+    "$type": "color",
+    "primary": {
+      "50":  { "$value": "oklch(0.970 0.014 298)" },
+      "100": { "$value": "oklch(0.930 0.032 298)" },
+      "200": { "$value": "oklch(0.870 0.058 298)" },
+      "300": { "$value": "oklch(0.770 0.099 298)" },
+      "400": { "$value": "oklch(0.670 0.144 298)" },
+      "500": { "$value": "oklch(0.550 0.180 298)" },
+      "600": { "$value": "oklch(0.470 0.162 298)" },
+      "700": { "$value": "oklch(0.390 0.135 298)" },
+      "800": { "$value": "oklch(0.310 0.099 298)" },
+      "900": { "$value": "oklch(0.230 0.040 298)" },
+      "950": { "$value": "oklch(0.150 0.036 298)" }
+    },
+    "secondary": {
+      "50":  { "$value": "oklch(0.970 0.014 118)" },
+      "100": { "$value": "oklch(0.930 0.032 118)" },
+      "200": { "$value": "oklch(0.870 0.058 118)" },
+      "300": { "$value": "oklch(0.770 0.099 118)" },
+      "400": { "$value": "oklch(0.670 0.144 118)" },
+      "500": { "$value": "oklch(0.550 0.180 118)" },
+      "600": { "$value": "oklch(0.470 0.162 118)" },
+      "700": { "$value": "oklch(0.390 0.135 118)" },
+      "800": { "$value": "oklch(0.310 0.099 118)" },
+      "900": { "$value": "oklch(0.230 0.040 118)" },
+      "950": { "$value": "oklch(0.150 0.036 118)" }
+    },
+    "neutral": {
+      "50":  { "$value": "oklch(0.970 0.005 298)" },
+      "100": { "$value": "oklch(0.930 0.005 298)" },
+      "200": { "$value": "oklch(0.870 0.010 298)" },
+      "300": { "$value": "oklch(0.770 0.010 298)" },
+      "400": { "$value": "oklch(0.670 0.010 298)" },
+      "500": { "$value": "oklch(0.550 0.010 298)" },
+      "600": { "$value": "oklch(0.470 0.010 298)" },
+      "700": { "$value": "oklch(0.390 0.010 298)" },
+      "800": { "$value": "oklch(0.310 0.010 298)" },
+      "900": { "$value": "oklch(0.230 0.008 298)" },
+      "950": { "$value": "oklch(0.150 0.008 298)" }
+    },
+    "success": {
+      "50":  { "$value": "oklch(0.970 0.013 145)" },
+      "100": { "$value": "oklch(0.930 0.029 145)" },
+      "200": { "$value": "oklch(0.870 0.051 145)" },
+      "300": { "$value": "oklch(0.770 0.088 145)" },
+      "400": { "$value": "oklch(0.670 0.128 145)" },
+      "500": { "$value": "oklch(0.550 0.160 145)" },
+      "600": { "$value": "oklch(0.470 0.144 145)" },
+      "700": { "$value": "oklch(0.390 0.120 145)" },
+      "800": { "$value": "oklch(0.310 0.088 145)" },
+      "900": { "$value": "oklch(0.230 0.040 145)" },
+      "950": { "$value": "oklch(0.150 0.032 145)" }
+    },
+    "warning": {
+      "50":  { "$value": "oklch(0.970 0.012 85)" },
+      "100": { "$value": "oklch(0.930 0.027 85)" },
+      "200": { "$value": "oklch(0.870 0.048 85)" },
+      "300": { "$value": "oklch(0.770 0.083 85)" },
+      "400": { "$value": "oklch(0.670 0.120 85)" },
+      "500": { "$value": "oklch(0.550 0.150 85)" },
+      "600": { "$value": "oklch(0.470 0.135 85)" },
+      "700": { "$value": "oklch(0.390 0.112 85)" },
+      "800": { "$value": "oklch(0.310 0.083 85)" },
+      "900": { "$value": "oklch(0.230 0.040 85)" },
+      "950": { "$value": "oklch(0.150 0.030 85)" }
+    },
+    "error": {
+      "50":  { "$value": "oklch(0.970 0.014 25)" },
+      "100": { "$value": "oklch(0.930 0.032 25)" },
+      "200": { "$value": "oklch(0.870 0.058 25)" },
+      "300": { "$value": "oklch(0.770 0.099 25)" },
+      "400": { "$value": "oklch(0.670 0.144 25)" },
+      "500": { "$value": "oklch(0.550 0.180 25)" },
+      "600": { "$value": "oklch(0.470 0.162 25)" },
+      "700": { "$value": "oklch(0.390 0.135 25)" },
+      "800": { "$value": "oklch(0.310 0.099 25)" },
+      "900": { "$value": "oklch(0.230 0.040 25)" },
+      "950": { "$value": "oklch(0.150 0.036 25)" }
+    },
+    "info": {
+      "50":  { "$value": "oklch(0.970 0.011 250)" },
+      "100": { "$value": "oklch(0.930 0.025 250)" },
+      "200": { "$value": "oklch(0.870 0.045 250)" },
+      "300": { "$value": "oklch(0.770 0.077 250)" },
+      "400": { "$value": "oklch(0.670 0.112 250)" },
+      "500": { "$value": "oklch(0.550 0.140 250)" },
+      "600": { "$value": "oklch(0.470 0.126 250)" },
+      "700": { "$value": "oklch(0.390 0.105 250)" },
+      "800": { "$value": "oklch(0.310 0.077 250)" },
+      "900": { "$value": "oklch(0.230 0.040 250)" },
+      "950": { "$value": "oklch(0.150 0.028 250)" }
+    },
+    "harmony": {
+      "analogous-warm": {
+        "50":  { "$value": "oklch(0.970 0.014 328)" },
+        "100": { "$value": "oklch(0.930 0.032 328)" },
+        "200": { "$value": "oklch(0.870 0.058 328)" },
+        "300": { "$value": "oklch(0.770 0.099 328)" },
+        "400": { "$value": "oklch(0.670 0.144 328)" },
+        "500": { "$value": "oklch(0.550 0.180 328)" },
+        "600": { "$value": "oklch(0.470 0.162 328)" },
+        "700": { "$value": "oklch(0.390 0.135 328)" },
+        "800": { "$value": "oklch(0.310 0.099 328)" },
+        "900": { "$value": "oklch(0.230 0.040 328)" },
+        "950": { "$value": "oklch(0.150 0.036 328)" }
+      },
+      "analogous-cool": {
+        "50":  { "$value": "oklch(0.970 0.014 268)" },
+        "100": { "$value": "oklch(0.930 0.032 268)" },
+        "200": { "$value": "oklch(0.870 0.058 268)" },
+        "300": { "$value": "oklch(0.770 0.099 268)" },
+        "400": { "$value": "oklch(0.670 0.144 268)" },
+        "500": { "$value": "oklch(0.550 0.180 268)" },
+        "600": { "$value": "oklch(0.470 0.162 268)" },
+        "700": { "$value": "oklch(0.390 0.135 268)" },
+        "800": { "$value": "oklch(0.310 0.099 268)" },
+        "900": { "$value": "oklch(0.230 0.040 268)" },
+        "950": { "$value": "oklch(0.150 0.036 268)" }
+      },
+      "complementary": {
+        "50":  { "$value": "oklch(0.970 0.014 118)" },
+        "100": { "$value": "oklch(0.930 0.032 118)" },
+        "200": { "$value": "oklch(0.870 0.058 118)" },
+        "300": { "$value": "oklch(0.770 0.099 118)" },
+        "400": { "$value": "oklch(0.670 0.144 118)" },
+        "500": { "$value": "oklch(0.550 0.180 118)" },
+        "600": { "$value": "oklch(0.470 0.162 118)" },
+        "700": { "$value": "oklch(0.390 0.135 118)" },
+        "800": { "$value": "oklch(0.310 0.099 118)" },
+        "900": { "$value": "oklch(0.230 0.040 118)" },
+        "950": { "$value": "oklch(0.150 0.036 118)" }
+      },
+      "split-warm": {
+        "50":  { "$value": "oklch(0.970 0.014 88)" },
+        "100": { "$value": "oklch(0.930 0.032 88)" },
+        "200": { "$value": "oklch(0.870 0.058 88)" },
+        "300": { "$value": "oklch(0.770 0.099 88)" },
+        "400": { "$value": "oklch(0.670 0.144 88)" },
+        "500": { "$value": "oklch(0.550 0.180 88)" },
+        "600": { "$value": "oklch(0.470 0.162 88)" },
+        "700": { "$value": "oklch(0.390 0.135 88)" },
+        "800": { "$value": "oklch(0.310 0.099 88)" },
+        "900": { "$value": "oklch(0.230 0.040 88)" },
+        "950": { "$value": "oklch(0.150 0.036 88)" }
+      },
+      "split-cool": {
+        "50":  { "$value": "oklch(0.970 0.014 148)" },
+        "100": { "$value": "oklch(0.930 0.032 148)" },
+        "200": { "$value": "oklch(0.870 0.058 148)" },
+        "300": { "$value": "oklch(0.770 0.099 148)" },
+        "400": { "$value": "oklch(0.670 0.144 148)" },
+        "500": { "$value": "oklch(0.550 0.180 148)" },
+        "600": { "$value": "oklch(0.470 0.162 148)" },
+        "700": { "$value": "oklch(0.390 0.135 148)" },
+        "800": { "$value": "oklch(0.310 0.099 148)" },
+        "900": { "$value": "oklch(0.230 0.040 148)" },
+        "950": { "$value": "oklch(0.150 0.036 148)" }
+      },
+      "triadic-a": {
+        "50":  { "$value": "oklch(0.970 0.014 58)" },
+        "100": { "$value": "oklch(0.930 0.032 58)" },
+        "200": { "$value": "oklch(0.870 0.058 58)" },
+        "300": { "$value": "oklch(0.770 0.099 58)" },
+        "400": { "$value": "oklch(0.670 0.144 58)" },
+        "500": { "$value": "oklch(0.550 0.180 58)" },
+        "600": { "$value": "oklch(0.470 0.162 58)" },
+        "700": { "$value": "oklch(0.390 0.135 58)" },
+        "800": { "$value": "oklch(0.310 0.099 58)" },
+        "900": { "$value": "oklch(0.230 0.040 58)" },
+        "950": { "$value": "oklch(0.150 0.036 58)" }
+      },
+      "triadic-b": {
+        "50":  { "$value": "oklch(0.970 0.014 178)" },
+        "100": { "$value": "oklch(0.930 0.032 178)" },
+        "200": { "$value": "oklch(0.870 0.058 178)" },
+        "300": { "$value": "oklch(0.770 0.099 178)" },
+        "400": { "$value": "oklch(0.670 0.144 178)" },
+        "500": { "$value": "oklch(0.550 0.180 178)" },
+        "600": { "$value": "oklch(0.470 0.162 178)" },
+        "700": { "$value": "oklch(0.390 0.135 178)" },
+        "800": { "$value": "oklch(0.310 0.099 178)" },
+        "900": { "$value": "oklch(0.230 0.040 178)" },
+        "950": { "$value": "oklch(0.150 0.036 178)" }
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "display": { "$value": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+      "body":    { "$value": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+      "mono":    { "$value": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace" }
+    },
+    "fontSize": {
+      "$type": "dimension",
+      "xs":  { "$value": "0.500rem" },
+      "sm":  { "$value": "0.707rem" },
+      "base": { "$value": "1.000rem" },
+      "lg":  { "$value": "1.414rem" },
+      "xl":  { "$value": "2.000rem" },
+      "2xl": { "$value": "2.828rem" },
+      "3xl": { "$value": "4.000rem" },
+      "4xl": { "$value": "5.657rem" }
+    },
+    "fontWeight": {
+      "$type": "fontWeight",
+      "light":    { "$value": 300 },
+      "regular":  { "$value": 400 },
+      "medium":   { "$value": 500 },
+      "semibold": { "$value": 600 },
+      "bold":     { "$value": 700 }
+    },
+    "lineHeight": {
+      "$type": "number",
+      "tight":   { "$value": 1.1 },
+      "snug":    { "$value": 1.3 },
+      "normal":  { "$value": 1.5 },
+      "relaxed": { "$value": 1.625 },
+      "loose":   { "$value": 2.0 }
+    },
+    "letterSpacing": {
+      "$type": "dimension",
+      "tighter": { "$value": "-0.05em" },
+      "tight":   { "$value": "-0.025em" },
+      "normal":  { "$value": "0em" },
+      "wide":    { "$value": "0.025em" },
+      "wider":   { "$value": "0.05em" },
+      "widest":  { "$value": "0.1em" }
+    }
+  },
+  "spacing": {
+    "$type": "dimension",
+    "0":  { "$value": "0px" },
+    "1":  { "$value": "4px" },
+    "2":  { "$value": "8px" },
+    "3":  { "$value": "12px" },
+    "4":  { "$value": "16px" },
+    "5":  { "$value": "20px" },
+    "6":  { "$value": "24px" },
+    "7":  { "$value": "28px" },
+    "8":  { "$value": "32px" },
+    "9":  { "$value": "36px" },
+    "10": { "$value": "40px" },
+    "12": { "$value": "48px" },
+    "14": { "$value": "56px" },
+    "16": { "$value": "64px" },
+    "20": { "$value": "80px" },
+    "semantic": {
+      "inset":      { "$value": "16px" },
+      "stack":      { "$value": "24px" },
+      "inline":     { "$value": "8px" },
+      "section":    { "$value": "64px" },
+      "page":       { "$value": "80px" },
+      "gutter":     { "$value": "32px" }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "xs": { "$value": "0 1px 2px 0 oklch(0.15 0.008 298 / 0.06)" },
+    "sm": { "$value": "0 1px 3px 0 oklch(0.15 0.008 298 / 0.10), 0 1px 2px -1px oklch(0.15 0.008 298 / 0.10)" },
+    "md": { "$value": "0 4px 6px -1px oklch(0.15 0.008 298 / 0.10), 0 2px 4px -2px oklch(0.15 0.008 298 / 0.10)" },
+    "lg": { "$value": "0 10px 15px -3px oklch(0.15 0.008 298 / 0.10), 0 4px 6px -4px oklch(0.15 0.008 298 / 0.10)" },
+    "xl": { "$value": "0 20px 25px -5px oklch(0.15 0.008 298 / 0.10), 0 8px 10px -6px oklch(0.15 0.008 298 / 0.10)" }
+  },
+  "border": {
+    "radius": {
+      "$type": "dimension",
+      "none": { "$value": "0px" },
+      "xs":   { "$value": "2px" },
+      "sm":   { "$value": "4px" },
+      "md":   { "$value": "8px" },
+      "lg":   { "$value": "12px" },
+      "xl":   { "$value": "16px" },
+      "full": { "$value": "9999px" }
+    },
+    "width": {
+      "$type": "dimension",
+      "thin":    { "$value": "1px" },
+      "medium":  { "$value": "2px" },
+      "thick":   { "$value": "4px" }
+    },
+    "style": {
+      "$type": "strokeStyle",
+      "default": { "$value": "solid" }
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "instant":  { "$value": "50ms" },
+      "fast":     { "$value": "100ms" },
+      "normal":   { "$value": "200ms" },
+      "slow":     { "$value": "400ms" },
+      "slower":   { "$value": "600ms" }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "default":    { "$value": "cubic-bezier(0.2, 0, 0, 1)" },
+      "in":         { "$value": "cubic-bezier(0.4, 0, 1, 1)" },
+      "out":        { "$value": "cubic-bezier(0, 0, 0.2, 1)" },
+      "in-out":     { "$value": "cubic-bezier(0.4, 0, 0.2, 1)" },
+      "spring-bounce": { "$value": "linear(0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191, 0.25, 0.316, 0.391, 0.473, 0.562, 0.66, 0.765, 0.878, 1.0, 1.025, 1.042, 1.05, 1.05, 1.042, 1.028, 1.009, 0.988, 0.965, 0.945, 0.928, 0.916, 0.908, 0.906, 0.91, 0.918, 0.931, 0.947, 0.965, 0.984, 1.0)" }
+    },
+    "delay": {
+      "$type": "duration",
+      "none":    { "$value": "0ms" },
+      "short":   { "$value": "50ms" },
+      "medium":  { "$value": "150ms" },
+      "long":    { "$value": "300ms" },
+      "stagger": { "$value": "75ms" }
+    }
+  }
+}

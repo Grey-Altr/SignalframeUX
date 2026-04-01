@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GET_STARTED — SignalframeUX™</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Electrolize&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@900&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --white: #FFFFFF; --black: #000000; --yellow: #FFE500;
+    --magenta: #FF0090; --green: #00FF00; --red: #E91E63;
+    --gray: #888888; --dark: #111111; --text: #333333;
+  }
+
+  /* ── FEEDBACK SYSTEM: Tokens & Keyframes ── */
+  :root {
+    --ease-spring: linear(
+      0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191,
+      0.25, 0.316, 0.391, 0.473, 0.562, 0.66, 0.765, 0.878,
+      1.0, 1.025, 1.042, 1.05, 1.05, 1.042, 1.028, 1.009,
+      0.988, 0.965, 0.945, 0.928, 0.916, 0.908, 0.906, 0.91,
+      0.918, 0.931, 0.947, 0.965, 0.984, 1.0
+    );
+    --ease-hover: cubic-bezier(0.3, 0.7, 0.4, 1.5);
+    --ease-snap: cubic-bezier(0.68, -0.2, 0.27, 1.2);
+  }
+  @keyframes sf-focus-expand {
+    from { outline-offset: 0px; outline-color: rgba(255,0,144,0.4); }
+    to   { outline-offset: 3px; outline-color: rgba(255,0,144,1); }
+  }
+  @keyframes sf-shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-2px); }
+    80%      { transform: translateX(2px); }
+  }
+  @keyframes sf-flash-invert {
+    0%, 100% { filter: invert(0); }
+    15%      { filter: invert(1); }
+  }
+
+  /* ── FEEDBACK: Click pop — snap wider then back ── */
+  @keyframes sf-click-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  body {
+    background: var(--white); color: var(--black);
+    font-family: 'Electrolize', 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 12px; line-height: 1.5; overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--white); border-bottom: 3px solid var(--black);
+    padding: 16px 0px 16px 24px; display: flex; justify-content: space-between;
+    align-items: center; text-transform: uppercase;
+    letter-spacing: 0.15em; font-size: 15px; font-weight: 700;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+  }
+  .nav-logo {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 48px; line-height: 1; letter-spacing: -0.02em;
+    color: var(--black); text-decoration: none;
+    display: flex; align-items: center; gap: 0;
+    margin-right: 32px; flex-shrink: 0;
+  }
+  .nav-logo .logo-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: logo-char-in 0.4s forwards;
+  }
+  .nav-logo .logo-char:nth-child(1) { animation-delay: 0.1s; }
+  .nav-logo .logo-char:nth-child(2) { animation-delay: 0.2s; }
+  .nav-logo .logo-char:nth-child(4) { animation-delay: 0.3s; }
+  .nav-logo .logo-char:nth-child(5) { animation-delay: 0.4s; }
+  .nav-logo .logo-char:nth-child(6) { animation-delay: 0.5s; }
+  .nav-logo .logo-char:nth-child(7) { animation-delay: 0.6s; }
+  .nav-logo .logo-slash {
+    color: var(--magenta);
+    font-size: 36px;
+    opacity: 0;
+    transform: translateY(-8px);
+    animation: logo-slash-in 0.6s 0.8s forwards;
+  }
+  @keyframes logo-char-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes logo-slash-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .nav-logo:hover .logo-char {
+    animation: logo-glitch 0.15s steps(2) infinite;
+  }
+  .nav-logo:hover .logo-slash {
+    animation: logo-slash-pulse 0.4s ease infinite;
+  }
+  @keyframes logo-glitch {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-1px, 1px); color: var(--magenta); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); color: var(--magenta); }
+    100% { transform: translate(0, 0); }
+  }
+  @keyframes logo-slash-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  nav a { color: var(--black); text-decoration: none; margin-right: 20px; }
+  nav a::before { content: none; }
+  nav a:hover, nav a.active { color: var(--magenta); }
+
+  /* FEEDBACK: Nav underline draws left→right */
+  nav a {
+    position: relative;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background: var(--magenta);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 200ms ease-out;
+  }
+  nav a:hover::after {
+    transform: scaleX(1);
+  }
+  nav a:not(:hover)::after {
+    transform-origin: right;
+  }
+
+  .nav-clock {
+    display: flex; align-items: center;
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 48px; letter-spacing: -0.02em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+    min-width: 8ch; margin-right: -6px;
+    margin-left: auto;
+  }
+  .nav-clock .clock-char {
+    display: inline-block;
+    width: 0.45em; margin-right: 0.04em;
+    text-align: center;
+    text-align: right;
+  }
+
+  /* ── HERO (Manifesto style — single column, TDR About energy) ── */
+  .start-hero {
+    margin-top: 80px;
+    background: var(--black);
+    color: var(--white);
+    padding: 80px 48px;
+    border-bottom: 4px solid var(--black);
+  }
+  .start-hero h1 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 120px; text-transform: uppercase;
+    line-height: 0.9; margin-bottom: 24px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 -1px 0 rgba(0,0,0,0.3);
+  }
+  .start-hero h1 span { color: var(--magenta); }
+  .start-hero .subtitle {
+    font-size: 16px; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 0.2em;
+    max-width: 600px;
+  }
+  .start-hero .time-est {
+    margin-top: 24px; font-size: 11px;
+    color: var(--magenta); text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* Hero char animation */
+  .start-hero h1 .char-wrap {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+  .start-hero h1 .char-wrap .char-inner {
+    display: inline-block;
+  }
+
+  /* ── STEP SECTIONS ── */
+  .step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    border-bottom: 3px solid var(--black);
+    min-height: 200px;
+  }
+
+  .step-number {
+    background: var(--black);
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 48px;
+    border-right: 3px solid var(--black);
+    writing-mode: horizontal-tb;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.05);
+    transition: background 200ms ease, color 200ms ease;
+  }
+  .step-number:hover { background: var(--magenta); }
+
+  .step-content {
+    padding: 40px 48px;
+  }
+
+  .step-content h2 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 48px; text-transform: uppercase;
+    line-height: 1; margin-bottom: 16px;
+  }
+
+  .step-content p {
+    font-size: 13px; line-height: 1.8;
+    color: var(--text); max-width: 600px;
+    margin-bottom: 20px;
+  }
+
+  .step-content .code-block {
+    background: var(--dark); color: var(--green);
+    padding: 20px 24px; margin: 16px 0;
+    font-size: 13px; line-height: 1.7;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .step-content .code-block::before {
+    content: 'TERMINAL™';
+    position: absolute; top: 6px; right: 10px;
+    font-size: 8px; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 0.3em;
+  }
+  .kw { color: var(--magenta); }
+  .str { color: var(--yellow); }
+  .fn { color: var(--green); }
+  .cm { color: #555; }
+  .cn { color: #FF6B6B; }
+
+  .step-content .note {
+    font-size: 11px; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 12px 16px; border-left: 3px solid var(--magenta);
+    margin-top: 16px;
+  }
+
+  /* Alternate step styles */
+  .step.yellow .step-number {
+    background: var(--yellow); color: var(--text);
+  }
+
+  .step.yellow .step-content {
+    background: var(--yellow);
+    position: relative;
+  }
+  .step.yellow .step-content::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .step.yellow .step-content h2 { color: var(--text); }
+  .step.yellow .step-content p { color: var(--text); }
+
+  /* ── CHECKLIST ── */
+  .checklist {
+    border-bottom: 3px solid var(--black);
+    padding: 40px 48px;
+  }
+  .checklist h2 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 48px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .checklist-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px; text-transform: uppercase;
+    letter-spacing: 0.08em;
+    will-change: transform;
+    transition: transform 600ms var(--ease-spring);
+  }
+  .checklist-item:hover { transform: translateY(-1px); transition: transform 200ms var(--ease-hover); }
+  .checklist-item:active { transform: translateY(1px) scale(0.98); transition: transform 34ms linear; }
+  .checklist-item .check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--black);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .checklist-item.done .check {
+    background: var(--magenta); border-color: var(--magenta);
+    color: var(--white);
+  }
+  .checklist-item .label { flex: 1; }
+  .checklist-item .status {
+    font-size: 9px; color: var(--gray);
+    letter-spacing: 0.15em;
+  }
+
+  /* ── NEXT STEPS SECTION ── */
+  .next-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 3px solid var(--black);
+  }
+  .next-card {
+    padding: 40px 32px;
+    border-right: 3px solid var(--black);
+    will-change: transform;
+    transition: transform 600ms var(--ease-spring), background 100ms ease, border-color 100ms ease;
+  }
+  .next-card:last-child { border-right: none; }
+  .next-card:hover { background: var(--black); color: var(--white); transform: translateY(-2px); border-color: var(--magenta); transition: transform 200ms var(--ease-hover), background 100ms ease, border-color 100ms ease; }
+  .next-card:active { animation: sf-click-pop 250ms var(--ease-spring); }
+  .next-card:hover h3 { color: var(--magenta); }
+  .next-card:hover p { color: var(--gray); }
+  .next-card h3 {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 15px; text-transform: uppercase;
+    margin-bottom: 12px; transition: color 0.15s;
+  }
+  .next-card p {
+    font-size: 12px; color: var(--text);
+    line-height: 1.7; transition: color 0.15s;
+  }
+  .next-card .arrow {
+    margin-top: 16px; font-size: 11px;
+    color: var(--magenta); text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  /* ── COMMUNITY BAND (yellow TDR) ── */
+  .community-band {
+    background: var(--yellow);
+    padding: 40px 48px;
+    border-bottom: 3px solid var(--black);
+    position: relative;
+  }
+  .community-band::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .community-band h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: 48px; text-transform: uppercase;
+    color: var(--text); margin-bottom: 12px;
+  }
+  .community-band p {
+    font-size: 14px; line-height: 1.7;
+    color: var(--text); max-width: 700px;
+  }
+  .community-band a { color: var(--red); text-decoration: none; }
+  .community-band .links {
+    margin-top: 20px; display: flex; gap: 16px;
+    position: relative; z-index: 1;
+  }
+  .community-band .links a {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    padding: 12px 24px; background: var(--text);
+    color: var(--yellow); text-decoration: none;
+    transition: all 0.15s;
+  }
+  .community-band .links a:hover {
+    background: var(--black); color: var(--magenta);
+  }
+
+  footer {
+    padding: 40px 48px; border-top: 4px solid var(--black);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer .footer-brand {
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 32px; text-transform: uppercase;
+  }
+  footer .footer-copy {
+    font-size: 9px; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 0.15em;
+  }
+
+  .vhs-badge {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--black); color: var(--white);
+    padding: 8px 16px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; z-index: 200;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .vhs-badge::before { content: '◉◉'; color: var(--magenta); font-size: 14px; }
+
+  /* ── CUSTOM CROSSHAIR CURSOR ── */
+  body, body * { cursor: none !important; }
+  .sf-cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 28px; height: 28px;
+    pointer-events: none;
+    z-index: 10000;
+    mix-blend-mode: exclusion;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transition: left 0.12s cubic-bezier(0.22, 1, 0.36, 1), top 0.12s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s;
+    opacity: 0.7;
+  }
+  .sf-cursor::before,
+  .sf-cursor::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    background: linear-gradient(#FF0090 42%, transparent 42%, transparent 58%, #FF0090 58%);
+    transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sf-cursor::before {
+    width: 1px; height: 20px;
+    transform: translate(-50%, -50%);
+  }
+  .sf-cursor::after {
+    width: 20px; height: 1px;
+    transform: translate(-50%, -50%);
+  }
+  /* Hover: rotate 45deg, gap opens in center */
+  .sf-cursor.active {
+    transform: translate(-50%, -50%) rotate(45deg);
+    opacity: 1;
+  }
+  .sf-cursor.active::before {
+    background: linear-gradient(#FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
+  }
+  .sf-cursor.active::after {
+    background: linear-gradient(to right, #FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
+  }
+  @media (pointer: coarse) {
+    body, body * { cursor: auto !important; }
+    .sf-cursor { display: none !important; }
+  }
+
+  /* ── SCROLL PROGRESS BAR ── */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; height: 2px; z-index: 101;
+    background: var(--magenta); width: 0%; transition: none;
+    pointer-events: none;
+  }
+
+  /* ── MAGNETIC NAV ITEMS ── */
+  nav a { transition: transform 0.2s ease, color 0.15s; display: inline-block; }
+
+  /* ── BORDER DRAW HOVER ON NEXT CARDS ── */
+  .next-card { position: relative; overflow: hidden; }
+  .next-card .border-line {
+    position: absolute; background: var(--magenta);
+  }
+  .next-card .border-top { top: 0; left: 0; width: 0; height: 2px; }
+  .next-card .border-right { top: 0; right: 0; width: 2px; height: 0; }
+  .next-card .border-bottom { bottom: 0; right: 0; width: 0; height: 2px; }
+  .next-card .border-left { bottom: 0; left: 0; width: 2px; height: 0; }
+  .next-card .border-top { transition: width 0.1s 0s ease; }
+  .next-card .border-right { transition: height 0.1s 0.1s ease; }
+  .next-card .border-bottom { transition: width 0.1s 0.2s ease; }
+  .next-card .border-left { transition: height 0.1s 0.3s ease; }
+  .next-card:hover .border-top { width: 100%; }
+  .next-card:hover .border-right { height: 100%; }
+  .next-card:hover .border-bottom { width: 100%; }
+  .next-card:hover .border-left { height: 100%; }
+
+  /* ── CHECKLIST CHECK ANIMATION ── */
+  @keyframes check-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,0,144,0.3); }
+    50% { box-shadow: 0 0 0 4px rgba(255,0,144,0.3); }
+    100% { box-shadow: 0 0 0 0 rgba(255,0,144,0); }
+  }
+
+  /* ── COMMUNITY BAND MARQUEE ── */
+  .community-marquee {
+    height: 32px; overflow: hidden; position: relative; z-index: 1;
+    background: var(--yellow); color: var(--text); margin-bottom: 0;
+  }
+  .community-marquee .marquee-track {
+    display: flex; white-space: nowrap;
+    animation: marquee-scroll 12s linear infinite;
+    font-family: 'Anton', Impact, sans-serif;
+    font-size: 16px; text-transform: uppercase;
+    letter-spacing: 0.15em; line-height: 32px;
+  }
+  .community-marquee .marquee-track span {
+    display: inline-block; padding-right: 48px;
+  }
+  @keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* FEEDBACK: Focus ring expansion */
+  a:focus-visible, button:focus-visible, [role="button"]:focus-visible,
+  .filter:focus-visible, .tab:focus-visible {
+    outline: 2px solid var(--magenta);
+    outline-offset: 3px;
+    animation: sf-focus-expand 200ms ease-out both;
+  }
+  a:focus:not(:focus-visible), button:focus:not(:focus-visible) { outline: none; }
+
+  /* ── REDUCED MOTION ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition-duration: 0ms !important;
+      animation-duration: 0ms !important;
+    }
+    .start-hero h1 .char-wrap .char-inner {
+      transform: none !important;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    .step-number,
+    .step-content h2,
+    .checklist-item,
+    .next-card {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .community-band {
+      transform: none !important;
+    }
+    .sf-cursor { display: none; }
+    body { cursor: auto !important; }
+    .scroll-progress { display: none; }
+    nav a { transition: none !important; transform: none !important; }
+    .next-card .border-line { transition: none !important; }
+    .next-card:hover .border-top,
+    .next-card:hover .border-right,
+    .next-card:hover .border-bottom,
+    .next-card:hover .border-left { transition: none !important; }
+    .community-marquee .marquee-track { animation: none !important; }
+  }
+
+  /* ── DARK MODE TOGGLE ── */
+  /* ── DARK MODE — Full Site ── */
+  /* ── Dark mode fade transition ── */
+  body, body * { transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; }
+  body.dark { background: #0a0a0a; color: #ffffff; }
+  body.dark nav { background: #0a0a0a; border-bottom-color: #333; }
+  body.dark nav a, body.dark .nav-logo, body.dark .nav-logo .logo-char { color: #fff; }
+  body.dark .nav-clock { color: #fff; }
+    display: flex; align-items: center;
+  body.dark .hero-right { background: #111; }
+  body.dark .hero-right .manifesto { color: #fff; }
+  body.dark .hero-cta .secondary { color: #fff; border-color: #fff; }
+  body.dark .layer-card:first-child { background: #111; color: #fff; }
+  body.dark .layer-card:first-child .layer-label { color: #fff; }
+  body.dark .layer-card:first-child .layer-tags span { color: #888; border-color: #888; }
+  body.dark .stat { border-color: #333; }
+  body.dark .stat-number { color: #fff; }
+  body.dark .code-left { background: #111; }
+  body.dark .code-left h2 { color: #fff; }
+  body.dark .code-left p { color: #888; }
+  body.dark .code-right { border-left-color: #333; }
+  body.dark .comp-cell { border-color: #333; }
+  body.dark .comp-cell:hover { background: #222; }
+  body.dark .comp-cell .comp-preview { border-color: #444; }
+  body.dark .comp-name { color: #fff; }
+  body.dark section { border-color: #333; }
+  body.dark .hero { border-color: #333; }
+  body.dark .dual-layer { border-color: #333; }
+  body.dark .stats-band { border-color: #333; }
+  body.dark .code-section { border-color: #333; }
+  body.dark .component-preview { border-color: #333; }
+  body.dark .component-preview h2 { color: #fff; border-color: #333; }
+  body.dark footer { border-color: #333; }
+  body.dark .footer-brand { color: #fff; }
+  body.dark .page-header { border-color: #333; }
+  body.dark .page-header h1 { color: #fff; }
+  body.dark .filter-bar { border-color: #333; }
+  body.dark .filter-bar .filter { border-color: #333; color: #fff; }
+  body.dark .filter-bar .search { color: #fff; }
+  body.dark .token-tabs { border-color: #333; }
+  body.dark .token-tabs .tab { border-color: #333; color: #fff; }
+  body.dark .token-tabs .tab:hover { background: #222; }
+  body.dark .section-header { color: #fff; border-color: #333; }
+  body.dark .spacing-row { border-color: #222; }
+  body.dark .spacing-row .token-value { color: #888; }
+  body.dark .spacing-row .token-px { color: #555; }
+  body.dark .spacing-header { background: #222; }
+  body.dark .type-row { border-color: #222; }
+  body.dark .type-row .type-sample { color: #fff; }
+  body.dark .type-row .type-meta { color: #555; }
+  body.dark .motion-row { border-color: #222; }
+  body.dark .motion-row .motion-value { color: #555; }
+  body.dark .motion-row .motion-dot { background: #fff; }
+  body.dark .color-scale { border-color: #333; }
+  body.dark .api-content { background: #111; border-color: #333; }
+  body.dark .api-content h1, body.dark .api-content h2 { color: #fff; }
+  body.dark .api-content h2 { border-top-color: #333; }
+  body.dark .api-content .description { color: #888; }
+  body.dark .props-table td { border-color: #222; color: #fff; }
+  body.dark .props-table .prop-type { background: #222; color: #888; }
+  body.dark .breadcrumb { color: #555; }
+  body.dark .start-hero { background: #000; }
+  body.dark .step-content { background: #111; }
+  body.dark .step-content h2 { color: #fff; }
+  body.dark .step-content p { color: #888; }
+  body.dark .step-content .note { color: #888; }
+  body.dark .step { border-color: #333; }
+  body.dark .checklist { border-color: #333; }
+  body.dark .checklist h2 { color: #fff; }
+  body.dark .checklist-item { border-color: #222; color: #fff; }
+  body.dark .next-steps { border-color: #333; }
+  body.dark .next-card { border-color: #333; }
+  body.dark .next-card h3 { color: #fff; }
+  body.dark .next-card p { color: #888; }
+  body.dark .next-card:hover { background: #222; }
+  body.dark .vhs-badge { background: #222; }
+  body.dark .detail-hint { background: #FFE500; }
+  body.dark .hero-version { color: #555; }
+  body.dark .sf-mode-toggle { border-color: #555; }
+  body.dark .sf-toggle-knob { left: 24px !important; background: #FF0090 !important; }
+  body.dark .sf-mode-label { color: #555; }
+  /* Fix: white-bg elements go dark */
+  body.dark .hero-right { background: #111 !important; }
+  body.dark .hero-right .manifesto { color: #fff; }
+  body.dark .hero-right .manifesto em { color: #FF0090; }
+  body.dark .hero-right .manifesto .tm { color: #555; }
+  body.dark .hero-cta .primary { background: #fff; color: #000; border-color: #fff; }
+  body.dark .hero-cta .primary:hover { background: #FF0090; color: #fff; border-color: #FF0090; }
+  body.dark .hero-cta .secondary { background: transparent; color: #fff; border-color: #fff; }
+  body.dark .layer-card:first-child { background: #111 !important; color: #fff; }
+  body.dark .layer-card:first-child .layer-label { color: #fff; }
+  body.dark .layer-card:first-child .layer-desc { color: #ccc; }
+  body.dark .layer-card:first-child .layer-tags span { color: #888; border-color: #555; }
+  body.dark .code-left { background: #111 !important; }
+  body.dark .code-left h2, body.dark .code-left p { color: #ccc; }
+  body.dark .comp-cell:not(.black) { background: #111; }
+  body.dark .comp-cell:not(.black) .comp-name { color: #fff; }
+  body.dark .comp-cell:not(.black):hover { background: #222; }
+  body.dark .comp-cell .comp-preview { border-color: #333; }
+  body.dark .stat { background: #0a0a0a; }
+  body.dark .stat-number { color: #fff; }
+  body.dark footer { background: #0a0a0a !important; }
+  body.dark .footer-brand { color: #fff; }
+  body.dark .page-header { background: #0a0a0a !important; }
+  body.dark .page-header h1 { color: #fff; }
+  body.dark .step-content { background: #111 !important; }
+  body.dark .step-content h2 { color: #fff; }
+  body.dark .step-content p { color: #ccc; }
+  body.dark .checklist { background: #111 !important; }
+  body.dark .checklist h2 { color: #fff; }
+  body.dark .checklist-item { color: #fff; border-color: #333; }
+  body.dark .next-card { background: #111 !important; }
+  body.dark .next-card h3 { color: #fff; }
+  body.dark .next-card p { color: #888; }
+  body.dark .next-card:hover { background: #222 !important; }
+  body.dark .api-content { background: #111 !important; }
+  body.dark .api-content h1, body.dark .api-content h2 { color: #fff; }
+  body.dark .api-content h2 { border-top-color: #333; }
+  body.dark .api-content .description { color: #ccc; }
+  body.dark .props-table td { border-color: #333; color: #fff; }
+  body.dark .props-table .prop-type { background: #222; color: #888; }
+  body.dark .filter-bar .filter { color: #fff; }
+  body.dark .filter-bar .search { color: #fff; background: transparent; }
+  body.dark .token-tabs .tab { color: #fff; }
+  body.dark .spacing-row .token-value, body.dark .spacing-row .token-px { color: #888; }
+  body.dark .type-row .type-sample { color: #fff; }
+  body.dark .type-row .type-meta { color: #555; }
+  body.dark .motion-row .motion-dot { background: #fff; }
+  body.dark .motion-row .motion-value { color: #555; }
+  body.dark .section-header { color: #fff; }
+  body.dark .breadcrumb { color: #555; }
+  .nav-right { display: flex; align-items: center; gap: 24px; margin-left: auto; } .sf-mode-wrap { display: flex; align-items: center; gap: 10px; }
+  .sf-mode-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray); transition: color 0.6s ease; }
+  .sf-mode-toggle {
+    width: 42px; height: 20px; border: 2px solid var(--black); background: transparent;
+    position: relative; flex-shrink: 0;
+    transition: border-color 0.6s ease;
+  }
+  .sf-toggle-knob {
+    position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+    background: var(--black); transition: left 0.3s cubic-bezier(0.16,1,0.3,1), background 0.3s ease;
+  }
+  body.dark .sf-toggle-knob { left: 24px; background: var(--magenta); }
+
+  /* ══════════════════════════════════════════════════════════════
+     RESPONSIVE — Fluid scaling for all screen sizes
+     ══════════════════════════════════════════════════════════════ */
+
+  /* ── Fluid typography base ── */
+  html {
+    font-size: clamp(10px, 1.2vw, 16px);
+  }
+
+  /* ── Nav: fluid sizing ── */
+  nav {
+    padding: clamp(10px, 1.5vw, 16px) clamp(12px, 2vw, 24px);
+    font-size: clamp(10px, 1.3vw, 15px);
+  }
+  .nav-logo {
+    font-size: clamp(28px, 4vw, 48px) !important;
+    margin-right: clamp(16px, 2.5vw, 32px);
+  }
+  .nav-logo .logo-slash {
+    font-size: clamp(20px, 3vw, 36px) !important;
+  }
+  .nav-clock {
+    font-size: clamp(28px, 4vw, 48px) !important;
+  }
+  nav a {
+    margin-right: clamp(8px, 1.5vw, 20px);
+  }
+
+  /* ── Section padding: fluid ── */
+  .hero-left, .hero-right, .layer-card, .code-left,
+  .page-header h1, .step-content, .start-hero,
+  .api-content, .api-nav {
+    padding: clamp(24px, 5vw, 60px) clamp(20px, 4vw, 48px);
+  }
+
+  /* ── Hero title: fluid ── */
+  .hero-title, .start-hero h1 {
+    font-size: clamp(48px, 11vw, 140px) !important;
+  }
+  .hero-title .field {
+    font-size: clamp(40px, 9vw, 120px) !important;
+  }
+  .hero-title .field::before {
+    font-size: clamp(28px, 6vw, 80px) !important;
+  }
+
+  /* ── Page headers: fluid ── */
+  .page-header h1 {
+    font-size: clamp(40px, 9vw, 120px) !important;
+  }
+  .page-header .page-meta strong {
+    font-size: clamp(24px, 4vw, 48px) !important;
+  }
+
+  /* ── Section headers: fluid ── */
+  .section-header, .layer-label, .code-left h2 {
+    font-size: clamp(32px, 6vw, 80px) !important;
+  }
+
+  /* ── Step numbers: fluid ── */
+  .step-number {
+    font-size: clamp(24px, 4vw, 48px) !important;
+  }
+  .step-content h2 {
+    font-size: clamp(24px, 4vw, 48px) !important;
+  }
+
+  /* ── Stats: fluid ── */
+  .stat-number {
+    font-size: clamp(36px, 6vw, 72px) !important;
+  }
+  .stat {
+    padding: clamp(16px, 3vw, 40px) clamp(12px, 2.5vw, 32px);
+  }
+
+  /* ── Manifesto text: fluid ── */
+  .hero-right .manifesto {
+    font-size: clamp(16px, 2.5vw, 28px) !important;
+  }
+
+  /* ── Hero subtitle and script lines: fluid ── */
+  .hero-subtitle {
+    font-size: clamp(10px, 1.2vw, 13px) !important;
+  }
+  .hero-katakana, .hero-farsi, .hero-mandarin {
+    font-size: clamp(12px, 1.5vw, 18px) !important;
+  }
+
+  /* ── Footer: fluid ── */
+  footer {
+    padding: clamp(20px, 3vw, 40px) clamp(20px, 4vw, 48px);
+  }
+  footer .footer-brand {
+    font-size: clamp(20px, 3vw, 32px) !important;
+  }
+  footer .footer-byline {
+    font-size: clamp(12px, 1.5vw, 20px) !important;
+  }
+  footer .footer-links {
+    font-size: clamp(8px, 1vw, 10px) !important;
+  }
+  footer .footer-copy {
+    font-size: clamp(7px, 0.8vw, 9px) !important;
+  }
+
+  /* ── VHS badge: fluid ── */
+  .vhs-badge {
+    font-size: clamp(8px, 1vw, 11px) !important;
+    padding: clamp(4px, 0.8vw, 8px) clamp(8px, 1.2vw, 16px);
+  }
+
+  /* ── Grids: collapse on small screens ── */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr !important;
+    }
+    .dual-layer {
+      grid-template-columns: 1fr !important;
+    }
+    .layer-card:first-child {
+      border-right: none !important;
+      border-bottom: 4px solid var(--black);
+    }
+    .code-section {
+      grid-template-columns: 1fr !important;
+    }
+    .code-right {
+      border-left: none !important;
+      border-top: 4px solid var(--black);
+    }
+    .stats-band {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .comp-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    .comp-cell:nth-child(2n) {
+      border-right: none !important;
+    }
+    .page-header {
+      grid-template-columns: 1fr !important;
+    }
+    .page-header .page-meta {
+      text-align: left !important;
+      padding-top: 0 !important;
+    }
+    /* API 3-panel → stack */
+    .api-layout {
+      grid-template-columns: 1fr !important;
+    }
+    .api-nav {
+      border-right: none !important;
+      border-bottom: 3px solid var(--black);
+    }
+    .api-preview {
+      border-left: none !important;
+      border-top: 3px solid var(--black);
+    }
+    /* Token scales: hide labels, full width */
+    .color-scale {
+      grid-template-columns: repeat(12, 1fr) !important;
+    }
+    .scale-name {
+      display: none !important;
+    }
+    /* Steps: full width */
+    .step {
+      grid-template-columns: 60px 1fr !important;
+    }
+    .step-number {
+      font-size: clamp(20px, 3vw, 36px) !important;
+    }
+    /* Marquee */
+    .marquee-band, .sf-marquee-band, .community-marquee {
+      height: clamp(32px, 4vw, 48px);
+    }
+    .marquee-track span {
+      font-size: clamp(10px, 1.2vw, 14px) !important;
+    }
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .nav-clock {
+      font-size: clamp(20px, 6vw, 36px) !important;
+      min-width: auto !important;
+    }
+    .nav-logo {
+      font-size: clamp(24px, 7vw, 36px) !important;
+    }
+    nav a {
+      font-size: clamp(8px, 2.5vw, 12px) !important;
+      margin-right: clamp(6px, 2vw, 12px);
+    }
+    .hero-title, .start-hero h1 {
+      font-size: clamp(36px, 14vw, 80px) !important;
+    }
+    .hero-title .field {
+      font-size: clamp(30px, 12vw, 70px) !important;
+    }
+    .page-header h1 {
+      font-size: clamp(32px, 12vw, 72px) !important;
+    }
+    .stats-band {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .comp-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .filter-bar, .token-tabs {
+      flex-wrap: wrap;
+    }
+    .filter-bar .filter, .token-tabs .tab {
+      flex: 1 1 auto;
+      text-align: center;
+    }
+    .yellow-band p, .manifesto {
+      font-size: clamp(14px, 3.5vw, 22px) !important;
+    }
+    /* Next cards stack */
+    .next-steps {
+      grid-template-columns: 1fr !important;
+    }
+    /* Checklist full width */
+    .checklist {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .nav-clock {
+      display: none !important;
+    }
+    .comp-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .stats-band {
+      grid-template-columns: 1fr !important;
+    }
+    .stat {
+      border-right: none !important;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="sf-cursor" id="sf-cursor"></div>
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<nav>
+  <a href="mockup-homepage.html" class="nav-logo"><span class="logo-char">S</span><span class="logo-char">F</span><span class="logo-slash">//</span><span class="logo-char">U</span><span class="logo-char">X</span></a>
+  <div>
+    <a href="mockup-homepage.html">HOME</a>
+    <a href="mockup-components.html">COMPONENTS</a>
+    <a href="mockup-api.html">API</a>
+    <a href="mockup-tokens.html">TOKENS</a>
+    <a href="#" class="active">START</a>
+  </div>
+  <div class="nav-right"><div class="sf-mode-wrap"><span class="sf-mode-label">LIGHT</span><div class="sf-mode-toggle" id="modeToggle" onclick="document.body.classList.toggle('dark')"><div class="sf-toggle-knob"></div></div><span class="sf-mode-label">DARK</span></div>
+  </div><div class="nav-clock" id="clock">00:00:00</div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="start-hero">
+  <h1>GET<br><span>STARTED</span></h1>
+  <div class="subtitle">
+    FROM ZERO TO SIGNAL//FRAME™ IN 5 MINUTES.
+    ACCEPT THE INTERFACE INTO YOUR LIFE.
+  </div>
+  <div class="time-est">• ESTIMATED TIME: 5 MIN • クイックスタート™</div>
+</section>
+
+<!-- ═══ STEP 1: INSTALL ═══ -->
+<div class="step">
+  <div class="step-number">01</div>
+  <div class="step-content">
+    <h2>INSTALL</h2>
+    <p>
+      ADD SIGNALFRAMEUX™ TO YOUR PROJECT. THE CORE PACKAGE INCLUDES
+      ALL SIGNAL LAYER COMPONENTS, TOKENS, AND THE API SURFACE.
+      FIELD LAYER IS INCLUDED BUT OPT-IN.
+    </p>
+    <div class="code-block">
+<span class="cm"># NPM</span>
+<span class="fn">npm</span> install <span class="str">@sfux/core @sfux/components @sfux/tokens</span>
+
+<span class="cm"># PNPM (RECOMMENDED)</span>
+<span class="fn">pnpm</span> add <span class="str">@sfux/core @sfux/components @sfux/tokens</span>
+
+<span class="cm"># FIELD LAYER (OPTIONAL)</span>
+<span class="fn">pnpm</span> add <span class="str">@sfux/field</span>
+    </div>
+    <div class="note">
+      REQUIRES REACT 18+ AND TYPESCRIPT 5+. TAILWINDCSS IS OPTIONAL BUT RECOMMENDED.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 2: INITIALIZE ═══ -->
+<div class="step">
+  <div class="step-number">02</div>
+  <div class="step-content">
+    <h2>INITIALIZE</h2>
+    <p>
+      WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT
+      TO SET YOUR THEME, TOKEN MODE, AND FIELD LAYER PREFERENCES.
+    </p>
+    <div class="code-block">
+<span class="kw">import</span> { <span class="fn">SFUXProvider</span>, <span class="fn">createSignalframeUX</span> } <span class="kw">from</span> <span class="str">'@sfux/core'</span>
+
+<span class="kw">const</span> config = <span class="fn">createSignalframeUX</span>({
+  <span class="cn">theme</span>: <span class="str">'dark'</span>,
+  <span class="cn">tokens</span>: <span class="str">'oklch'</span>,
+  <span class="cn">field</span>: { <span class="cn">enabled</span>: <span class="kw">true</span> }
+})
+
+<span class="kw">export default function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="fn">SFUXProvider</span> <span class="cn">config</span>={config}&gt;
+      &lt;<span class="fn">YourApp</span> /&gt;
+    &lt;/<span class="fn">SFUXProvider</span>&gt;
+  )
+}
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 3: USE COMPONENTS (yellow TDR variant) ═══ -->
+<div class="step yellow">
+  <div class="step-number">03</div>
+  <div class="step-content">
+    <h2>USE_COMPONENTS</h2>
+    <p>
+      IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY
+      INHERIT YOUR THEME AND TOKEN CONFIGURATION. SIGNAL
+      COMPONENTS ARE DETERMINISTIC. FIELD VARIANTS ADD
+      GENERATIVE EFFECTS ON TOP.
+    </p>
+    <div class="code-block">
+<span class="kw">import</span> { <span class="fn">Button</span>, <span class="fn">Card</span>, <span class="fn">Input</span> } <span class="kw">from</span> <span class="str">'@sfux/components'</span>
+
+<span class="kw">function</span> <span class="fn">Dashboard</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="fn">Card</span>&gt;
+      &lt;<span class="fn">Input</span> <span class="cn">placeholder</span>=<span class="str">"SEARCH SIGNALS..."</span> /&gt;
+      &lt;<span class="fn">Button</span> <span class="cn">variant</span>=<span class="str">"signal"</span>&gt;
+        •TRANSMIT
+      &lt;/<span class="fn">Button</span>&gt;
+      &lt;<span class="fn">Button</span> <span class="cn">variant</span>=<span class="str">"field"</span> <span class="cn">fieldEffect</span>=<span class="str">"shimmer"</span>&gt;
+        ENGAGE FIELD
+      &lt;/<span class="fn">Button</span>&gt;
+    &lt;/<span class="fn">Card</span>&gt;
+  )
+}
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 4: FIELD LAYER ═══ -->
+<div class="step">
+  <div class="step-number">04</div>
+  <div class="step-content">
+    <h2>ACTIVATE_FIELD</h2>
+    <p>
+      THE FIELD LAYER IS THE GENERATIVE EXPRESSION SYSTEM.
+      ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT,
+      AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE
+      WITH THE SIGNAL LAYER'S READABILITY.
+    </p>
+    <div class="code-block">
+<span class="kw">import</span> { <span class="fn">NoiseBG</span>, <span class="fn">GlitchText</span> } <span class="kw">from</span> <span class="str">'@sfux/field'</span>
+
+&lt;<span class="fn">NoiseBG</span>
+  <span class="cn">intensity</span>={<span class="cn">0.3</span>}
+  <span class="cn">reactive</span>=<span class="str">"cursor"</span>
+  <span class="cn">color</span>=<span class="str">"oklch(0.6 0.28 330)"</span>
+/&gt;
+
+&lt;<span class="fn">GlitchText</span> <span class="cn">trigger</span>=<span class="str">"hover"</span>&gt;
+  SIGNAL//FRAME™
+&lt;/<span class="fn">GlitchText</span>&gt;
+    </div>
+    <div class="note">
+      FIELD EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION.
+      USE fieldIntensity TO CONTROL VISUAL WEIGHT.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 5: DEPLOY ═══ -->
+<div class="step">
+  <div class="step-number">05</div>
+  <div class="step-content">
+    <h2>DEPLOY</h2>
+    <p>
+      SIGNALFRAMEUX™ IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR
+      NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP
+      THE COMPONENTS YOU USE. FIELD LAYER IS CODE-SPLIT
+      AND LOADED ON DEMAND.
+    </p>
+    <div class="code-block">
+<span class="cm"># BUILD FOR PRODUCTION</span>
+<span class="fn">pnpm</span> build
+
+<span class="cm"># BUNDLE ANALYSIS</span>
+<span class="fn">pnpm</span> analyze
+
+<span class="cm"># CORE: ~12KB GZIPPED</span>
+<span class="cm"># COMPONENTS: ~3KB PER COMPONENT (AVG)</span>
+<span class="cm"># FIELD: ~8KB BASE + ~2KB PER EFFECT</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHECKLIST ═══ -->
+<div class="checklist">
+  <h2>SETUP_CHECKLIST</h2>
+  <div class="checklist-item done">
+    <div class="check">✓</div>
+    <div class="label">INSTALL @SFUX/CORE AND DEPENDENCIES</div>
+    <div class="status">COMPLETE</div>
+  </div>
+  <div class="checklist-item done">
+    <div class="check">✓</div>
+    <div class="label">WRAP APP IN SFUXPROVIDER</div>
+    <div class="status">COMPLETE</div>
+  </div>
+  <div class="checklist-item done">
+    <div class="check">✓</div>
+    <div class="label">IMPORT AND USE SIGNAL COMPONENTS</div>
+    <div class="status">COMPLETE</div>
+  </div>
+  <div class="checklist-item">
+    <div class="check"></div>
+    <div class="label">CONFIGURE OKLCH TOKEN OVERRIDES</div>
+    <div class="status">OPTIONAL</div>
+  </div>
+  <div class="checklist-item">
+    <div class="check"></div>
+    <div class="label">ENABLE FIELD LAYER EFFECTS</div>
+    <div class="status">OPTIONAL</div>
+  </div>
+  <div class="checklist-item">
+    <div class="check"></div>
+    <div class="label">SET UP STORYBOOK FOR DEVELOPMENT</div>
+    <div class="status">RECOMMENDED</div>
+  </div>
+</div>
+
+<!-- ═══ NEXT STEPS ═══ -->
+<div class="next-steps">
+  <div class="next-card">
+    <span class="border-line border-top"></span><span class="border-line border-right"></span><span class="border-line border-bottom"></span><span class="border-line border-left"></span>
+    <h3>BROWSE COMPONENTS</h3>
+    <p>EXPLORE ALL 340+ SIGNAL AND FIELD COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.</p>
+    <div class="arrow">→ COMPONENT LIBRARY</div>
+  </div>
+  <div class="next-card">
+    <span class="border-line border-top"></span><span class="border-line border-right"></span><span class="border-line border-bottom"></span><span class="border-line border-left"></span>
+    <h3>API REFERENCE</h3>
+    <p>DIVE INTO THE FULL API — PROPS, HOOKS, TOKENS, AND THE PROGRAMMABLE SURFACE.</p>
+    <div class="arrow">→ API DOCS</div>
+  </div>
+  <div class="next-card">
+    <span class="border-line border-top"></span><span class="border-line border-right"></span><span class="border-line border-bottom"></span><span class="border-line border-left"></span>
+    <h3>TOKEN EXPLORER</h3>
+    <p>VISUALIZE AND CUSTOMIZE THE OKLCH COLOR SCALES, SPACING, TYPE, AND MOTION TOKENS.</p>
+    <div class="arrow">→ TOKEN EXPLORER</div>
+  </div>
+</div>
+
+<!-- ═══ COMMUNITY ═══ -->
+<div class="community-band">
+  <div class="community-marquee">
+    <div class="marquee-track">
+      <span>OPEN SOURCE // BUILT BY ENGINEERS // WORK BUILD SIGNAL REPEAT //</span>
+      <span>OPEN SOURCE // BUILT BY ENGINEERS // WORK BUILD SIGNAL REPEAT //</span>
+      <span>OPEN SOURCE // BUILT BY ENGINEERS // WORK BUILD SIGNAL REPEAT //</span>
+      <span>OPEN SOURCE // BUILT BY ENGINEERS // WORK BUILD SIGNAL REPEAT //</span>
+    </div>
+  </div>
+  <h2>JOIN THE SIGNAL™</h2>
+  <p>
+    SignalframeUX™ is open source. Built by people who believe design systems
+    should be <a href="#">programmable surfaces</a>, not static pattern libraries.
+    Work. Build. Signal. Repeat.™
+  </p>
+  <div class="links">
+    <a href="#">GITHUB</a>
+    <a href="#">STORYBOOK</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">SF//UX™<div class="footer-byline">By GREY ALT+R</div></div>
+  <div class="footer-copy">HTTPS://SIGNALFRAMEUX.DEV © 2026</div>
+</footer>
+
+<div class="vhs-badge">SF//UX</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── CLOCK ── */
+  function updateClock() {
+    var now = new Date();
+    document.getElementById('clock').textContent =
+      String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0') + ':' +
+      String(now.getSeconds()).padStart(2,'0');
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  /* ── REDUCED MOTION CHECK ── */
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  /* ── UTILITY: SCRAMBLE TEXT ── */
+  var GLITCH_CHARS = '!<>-_\\/[]{}—=+*^?#';
+
+  function scrambleText(el, finalText, duration, cb) {
+    var start = performance.now();
+    var len = finalText.length;
+    function frame(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      var result = '';
+      for (var i = 0; i < len; i++) {
+        if (finalText[i] === ' ') { result += ' '; continue; }
+        if (progress > (i / len) * 0.8 + 0.2) {
+          result += finalText[i];
+        } else {
+          result += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+        }
+      }
+      el.textContent = result;
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = finalText;
+        if (cb) cb();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ── UTILITY: NUMBER SCRAMBLE ── */
+  function scrambleNumber(el, finalNum, duration) {
+    var start = performance.now();
+    function frame(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      if (progress < 1) {
+        el.textContent = String(Math.floor(Math.random() * 10)) + String(Math.floor(Math.random() * 10));
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = finalNum;
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ── 1. HERO TITLE SPLIT-TEXT ANIMATION ── */
+  var heroH1 = document.querySelector('.start-hero h1');
+  if (heroH1) {
+    /* Build wrapped chars via DOM methods (no innerHTML) */
+    while (heroH1.firstChild) heroH1.removeChild(heroH1.firstChild);
+
+    var lines = [
+      { text: 'GET', color: null },
+      { text: 'STARTED', color: 'var(--magenta)' }
+    ];
+
+    lines.forEach(function(line, lineIdx) {
+      if (lineIdx > 0) heroH1.appendChild(document.createElement('br'));
+
+      var wrapper = document.createDocumentFragment();
+      if (line.color) {
+        var colorSpan = document.createElement('span');
+        colorSpan.style.color = line.color;
+        for (var i = 0; i < line.text.length; i++) {
+          var charWrap = document.createElement('span');
+          charWrap.className = 'char-wrap';
+          var charInner = document.createElement('span');
+          charInner.className = 'char-inner';
+          charInner.style.display = 'inline-block';
+          charInner.style.transform = 'translateY(100%)';
+          charInner.textContent = line.text[i];
+          charWrap.appendChild(charInner);
+          colorSpan.appendChild(charWrap);
+        }
+        wrapper.appendChild(colorSpan);
+      } else {
+        for (var j = 0; j < line.text.length; j++) {
+          var cw = document.createElement('span');
+          cw.className = 'char-wrap';
+          var ci = document.createElement('span');
+          ci.className = 'char-inner';
+          ci.style.display = 'inline-block';
+          ci.style.transform = 'translateY(100%)';
+          ci.textContent = line.text[j];
+          cw.appendChild(ci);
+          wrapper.appendChild(cw);
+        }
+      }
+      heroH1.appendChild(wrapper);
+    });
+
+    /* Animate each char sliding up */
+    var allChars = heroH1.querySelectorAll('.char-inner');
+    allChars.forEach(function(ch, i) {
+      setTimeout(function() {
+        ch.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        ch.style.transform = 'translateY(0)';
+      }, 100 + i * 30);
+    });
+  }
+
+  /* ── INTERSECTION OBSERVER FACTORY ── */
+  function onVisible(selector, callback, options) {
+    var els = document.querySelectorAll(selector);
+    if (!els.length) return;
+    var opts = Object.assign({ threshold: 0.2, rootMargin: '0px' }, options || {});
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          callback(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, opts);
+    els.forEach(function(el) { observer.observe(el); });
+  }
+
+  /* ── 2. STEP NUMBER SCRAMBLE ── */
+  onVisible('.step', function(stepEl) {
+    var numEl = stepEl.querySelector('.step-number');
+    if (!numEl) return;
+    var finalNum = numEl.textContent.trim();
+    scrambleNumber(numEl, finalNum, 500);
+  });
+
+  /* ── 3. STEP HEADING SCRAMBLE-REVEAL ── */
+  onVisible('.step', function(stepEl) {
+    var headingEl = stepEl.querySelector('.step-content h2');
+    if (!headingEl) return;
+    var finalText = headingEl.textContent.trim();
+    scrambleText(headingEl, finalText, 400);
+  });
+
+  /* ── 4. FIRST CODE BLOCK TYPEWRITER ── */
+  (function() {
+    var firstCodeBlock = document.querySelector('.step .code-block');
+    if (!firstCodeBlock) return;
+
+    /* Parse existing DOM into a flat list of text chars and tag-open/close markers */
+    var snapshot = [];
+    function walk(node) {
+      if (node.nodeType === 3) { /* text */
+        for (var i = 0; i < node.textContent.length; i++) {
+          snapshot.push({ type: 'char', value: node.textContent[i], parent: node.parentNode });
+        }
+      } else if (node.nodeType === 1) { /* element */
+        snapshot.push({ type: 'open', node: node });
+        var child = node.firstChild;
+        while (child) { walk(child); child = child.nextSibling; }
+        snapshot.push({ type: 'close', node: node });
+      }
+    }
+    /* Walk children only (not the code-block itself) */
+    var origChildren = [];
+    var child = firstCodeBlock.firstChild;
+    while (child) { origChildren.push(child); child = child.nextSibling; }
+    origChildren.forEach(function(c) { walk(c); });
+
+    /* Store the original nodes for replay */
+    var origNodes = Array.from(firstCodeBlock.childNodes).map(function(n) { return n.cloneNode(true); });
+
+    /* Clear and prepare for typewriter */
+    while (firstCodeBlock.firstChild) firstCodeBlock.removeChild(firstCodeBlock.firstChild);
+
+    /* Extract plain text for typewriting */
+    var plainChars = snapshot.filter(function(s) { return s.type === 'char'; });
+    var totalChars = plainChars.length;
+    var charIdx = 0;
+    var typewriterStarted = false;
+
+    onVisible('.step:first-of-type', function() {
+      if (typewriterStarted) return;
+      typewriterStarted = true;
+
+      /* Restore original DOM but hide all text */
+      origNodes.forEach(function(n) { firstCodeBlock.appendChild(n.cloneNode(true)); });
+
+      /* Collect all text nodes in order */
+      var textNodes = [];
+      function findTextNodes(node) {
+        if (node.nodeType === 3) {
+          textNodes.push({ node: node, full: node.textContent });
+          node.textContent = '';
+        } else {
+          var c = node.firstChild;
+          while (c) { findTextNodes(c); c = c.nextSibling; }
+        }
+      }
+      var ch = firstCodeBlock.firstChild;
+      while (ch) { findTextNodes(ch); ch = ch.nextSibling; }
+
+      /* Type one character at a time across all text nodes */
+      var tIdx = 0;
+      var cIdx = 0;
+      function typeNext() {
+        if (tIdx >= textNodes.length) return;
+        var tn = textNodes[tIdx];
+        tn.node.textContent += tn.full[cIdx];
+        cIdx++;
+        if (cIdx >= tn.full.length) { tIdx++; cIdx = 0; }
+        if (tIdx < textNodes.length) {
+          setTimeout(typeNext, 12);
+        }
+      }
+      typeNext();
+    });
+  })();
+
+  /* ── 5. CHECKLIST ITEMS STAGGER ── */
+  var checklistItems = document.querySelectorAll('.checklist-item');
+  checklistItems.forEach(function(item) {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(-20px)';
+    item.style.transition = 'none';
+  });
+
+  onVisible('.checklist', function(checklistEl) {
+    var items = checklistEl.querySelectorAll('.checklist-item');
+    items.forEach(function(item, i) {
+      setTimeout(function() {
+        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+
+        /* Flash magenta on done checkmarks */
+        if (item.classList.contains('done')) {
+          var checkEl = item.querySelector('.check');
+          if (checkEl) {
+            setTimeout(function() {
+              checkEl.style.transition = 'box-shadow 0.15s ease';
+              checkEl.style.boxShadow = '0 0 12px 4px rgba(255,0,144,0.6)';
+              setTimeout(function() {
+                checkEl.style.boxShadow = 'none';
+              }, 300);
+            }, 100);
+          }
+        }
+      }, i * 80);
+    });
+  });
+
+  /* ── 6. NEXT STEPS CARDS STAGGER FADE-IN ── */
+  var nextCards = document.querySelectorAll('.next-card');
+  nextCards.forEach(function(card) {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(24px)';
+    card.style.transition = 'none';
+  });
+
+  onVisible('.next-steps', function(sectionEl) {
+    var cards = sectionEl.querySelectorAll('.next-card');
+    cards.forEach(function(card, i) {
+      setTimeout(function() {
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, i * 120);
+    });
+  });
+
+  /* ── 7. COMMUNITY BAND PARALLAX ── */
+  var communityBand = document.querySelector('.community-band');
+  if (communityBand) {
+    window.addEventListener('scroll', function() {
+      var rect = communityBand.getBoundingClientRect();
+      var viewH = window.innerHeight;
+      if (rect.top < viewH && rect.bottom > 0) {
+        var offset = (rect.top - viewH) * 0.06;
+        communityBand.style.transform = 'translateY(' + offset + 'px)';
+      }
+    }, { passive: true });
+  }
+
+  /* ── 8. NAV LINK SCRAMBLE ON HOVER ── */
+  var navLinks = document.querySelectorAll('nav a');
+  navLinks.forEach(function(link) {
+    var originalText = link.textContent;
+    var isScrambling = false;
+    link.addEventListener('mouseenter', function() {
+      if (isScrambling) return;
+      isScrambling = true;
+      scrambleText(link, originalText, 300, function() {
+        isScrambling = false;
+      });
+    });
+  });
+
+  /* Old cursor block removed — standardized cursor JS at bottom of page */
+
+  /* ── 10. SCROLL PROGRESS BAR ── */
+  (function() {
+    var bar = document.getElementById('scroll-progress');
+    if (!bar) return;
+    window.addEventListener('scroll', function() {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = pct + '%';
+    }, { passive: true });
+  })();
+
+  /* ── 11. MAGNETIC NAV ITEMS ── */
+  (function() {
+    var RADIUS = 60;
+    var MAX_DISP = 6;
+    var links = document.querySelectorAll('nav a');
+    links.forEach(function(link) {
+      link.addEventListener('mousemove', function(e) {
+        var rect = link.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = e.clientX - cx;
+        var dy = e.clientY - cy;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < RADIUS) {
+          var strength = (1 - dist / RADIUS);
+          var tx = dx * strength * (MAX_DISP / RADIUS * 2);
+          var ty = dy * strength * (MAX_DISP / RADIUS * 2);
+          link.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+        }
+      });
+      link.addEventListener('mouseleave', function() {
+        link.style.transform = 'translate(0,0)';
+      });
+    });
+  })();
+
+  /* ── 12. CHECKLIST CHECK PULSE ANIMATION ── */
+  (function() {
+    onVisible('.checklist', function(checklistEl) {
+      var doneItems = checklistEl.querySelectorAll('.checklist-item.done');
+      doneItems.forEach(function(item, i) {
+        var checkEl = item.querySelector('.check');
+        if (!checkEl) return;
+        setTimeout(function() {
+          checkEl.style.animation = 'check-pulse 0.3s ease';
+          checkEl.addEventListener('animationend', function() {
+            checkEl.style.animation = '';
+          }, { once: true });
+        }, i * 150);
+      });
+    });
+  })();
+
+})();
+  // Dark mode toggle
+  (function(){
+    var toggle = document.getElementById("modeToggle");
+    if (!toggle) return;
+    toggle.addEventListener("click", function(){
+      document.body.classList.toggle("dark");
+    });
+  })();
+</script>
+<script>
+  // ── FEEDBACK: Flash invert on clickable elements ──
+  (function() {
+    document.querySelectorAll('.next-card, .checklist-item, a[href]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        if (el.tagName === 'A') e.preventDefault();
+        el.style.animation = 'none'; void el.offsetHeight; el.style.animation = 'sf-click-pop 250ms var(--ease-spring)';
+        el.addEventListener('animationend', function() { el.style.animation = ''; }, { once: true });
+      });
+    });
+  })();
+
+  /* ── FEEDBACK: Click pop — snap wider then back ── */
+  @keyframes sf-click-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+</script>
+<script>
+  // ── Custom Cursor with lag ──
+  (function() {
+    if (matchMedia('(pointer: coarse)').matches) return;
+    var cursor = document.getElementById('sf-cursor') || document.getElementById('sfCursor');
+    if (!cursor) return;
+    var mx = 0, my = 0;
+    document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+    (function raf() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+      requestAnimationFrame(raf);
+    })();
+    var interactives = 'a, button, .comp-cell, .filter, .tab, .next-card, .checklist-item, .nav-item, .rendered-btn, .color-swatch, input, textarea, [role="button"]';
+    document.addEventListener('mouseover', function(e) {
+      if (e.target.closest(interactives)) cursor.classList.add('active');
+    });
+    document.addEventListener('mouseout', function(e) {
+      if (e.target.closest(interactives)) cursor.classList.remove('active');
+    });
+  })();
+</script>
+</body>
+</html>

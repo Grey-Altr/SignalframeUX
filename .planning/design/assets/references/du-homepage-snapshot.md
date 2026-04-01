@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - iframe [ref=e4]:
+        
+      - generic [ref=e5]:
+        - text: DU-VHS
+        - img "du" [ref=e6]
+    - generic [ref=e7]:
+      - search [ref=e9]:
+        - generic [ref=e10]: Search
+        - textbox "Search" [ref=e11]:
+          - /placeholder: Search …
+      - generic [ref=e13]: 
+    - img "invert colors" [ref=e15]
+    - banner [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e19]
+        - generic [ref=e49]
+    - generic [ref=e65]:
+      - generic [ref=e66]:
+        - generic [ref=e67]
+        - generic [ref=e73]
+      - generic [ref=e151]:
+        - generic [ref=e154]: • detund™ informatics.
+        - listitem [ref=e156]
+        - generic [ref=e158]
+        - generic [ref=e164]
+    - generic [ref=e173]:
+      - generic:
+        - generic
+      - iframe [ref=e174]:
+        
+      - iframe [ref=e175]:
+        - link "Post" [ref=f27e4] [cursor=pointer]:
+          - /url: https://twitter.com/intent/tweet?hashtags=detund&original_referer=https%3A%2F%2Fdetroitunderground.net%2F&ref_src=twsrc%5Etfw%7Ctwcamp%5Ebuttonembed%7Ctwterm%5Eshare%7Ctwgr%5E&related=djkero&text=Detroit%20Underground%E2%84%A2%20%3F%E3%83%87%E3%83%88%E3%83%AD%E3%82%A4%E3%83%88%20%E3%82%A2%E3%83%B3%E3%83%80%E3%83%BC%E3%82%B0%E3%83%A9%E3%82%A6%E3%83%B3%E3%83%89%20%7C%20Detroit%20Underground%E2%84%A2%20%7C%20DETUND%E2%84%A2&url=https%3A%2F%2Fdetroitunderground.net%2F&via=djkero
+          - generic [ref=f27e6]: Post
+      - iframe [ref=e176]:
+        
+    - contentinfo [ref=e180]:
+      - link "https://detroitunderground.net © 2026" [ref=e182] [cursor=pointer]:
+        - /url: http://detroitunderground.net/screensaver-preview/DetUnd1024.swf
+  - iframe [ref=e183]:
+    

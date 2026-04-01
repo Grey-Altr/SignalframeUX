@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIGNALFRAME_UX // TOKEN_EXPLORER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Public+Sans:wght@300;400;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0A0A1A;
+            color: #e3e0f8;
+            font-family: 'Public Sans', sans-serif;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(139, 92, 246, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .mono { font-family: 'IBM Plex Mono', monospace; }
+        .headline { font-family: 'Space Grotesk', sans-serif; }
+        .pixel-border {
+            box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.2);
+        }
+        .oklch-grid {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+        }
+        .scanline {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.3), transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#ff516a",
+                        "on-primary": "#3c0091",
+                        "primary-fixed-dim": "#d0bcff",
+                        "inverse-primary": "#6d3bd7",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-primary-fixed-variant": "#5516be",
+                        "surface-container": "#1e1e2f",
+                        "error": "#ffb4ab",
+                        "surface": "#121222",
+                        "on-secondary-container": "#00515d",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "surface-container-low": "#1a1a2b",
+                        "secondary": "#22D3EE",
+                        "outline-variant": "#494454",
+                        "outline": "#958ea0",
+                        "inverse-on-surface": "#2f2f40",
+                        "on-tertiary": "#67001b",
+                        "surface-tint": "#d0bcff",
+                        "on-secondary-fixed": "#001f25",
+                        "surface-variant": "#333345",
+                        "surface-container-lowest": "#0c0c1d",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#333345",
+                        "surface-dim": "#121222",
+                        "on-background": "#e3e0f8",
+                        "on-secondary": "#00363e",
+                        "on-tertiary-container": "#5b0017",
+                        "surface-container-high": "#29283a",
+                        "on-error": "#690005",
+                        "background": "#121222",
+                        "secondary-fixed-dim": "#2fd9f4",
+                        "primary-container": "#8B5CF6",
+                        "on-primary-container": "#340080",
+                        "tertiary": "#ffb2b7",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "secondary-container": "#00cbe6",
+                        "on-primary-fixed": "#23005c",
+                        "inverse-surface": "#e3e0f8",
+                        "primary": "#8B5CF6",
+                        "on-secondary-fixed-variant": "#004e5a",
+                        "primary-fixed": "#e9ddff",
+                        "surface-bright": "#38374a",
+                        "secondary-fixed": "#a2eeff",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-surface": "#e3e0f8",
+                        "on-tertiary-fixed": "#40000d",
+                        "on-error-container": "#ffdad6"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Public Sans"],
+                        "label": ["IBM Plex Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0.1rem", "lg": "0.25rem", "xl": "0.4rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="min-h-screen pb-20 overflow-x-hidden">
+<!-- HEADER / TopNavBar -->
+<header class="bg-[#0A0A1A] text-[#8B5CF6] font-['Space_Grotesk'] uppercase tracking-tighter text-sm docked full-width top-0 border-b-2 border-[#22D3EE]/20 transition-all duration-75 ease-in-out flex justify-between items-center w-full px-4 h-14 sticky z-50">
+<div class="text-xl font-black text-[#8B5CF6] tracking-widest">SIGNALFRAME_UX</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-400 font-mono hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] px-2 py-1" href="#">DOCS</a>
+<a class="text-slate-400 font-mono hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] px-2 py-1" href="#">API</a>
+<a class="text-[#22D3EE] border-b-2 border-[#22D3EE] pb-1 font-mono" href="#">SHOWCASE</a>
+<a class="text-slate-400 font-mono hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] px-2 py-1" href="#">NPM</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined hover:bg-[#8B5CF6]/10 p-1" data-icon="terminal">terminal</button>
+<button class="material-symbols-outlined hover:bg-[#8B5CF6]/10 p-1" data-icon="settings">settings</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-12">
+<!-- PAGE TITLE -->
+<section class="mb-12 border-l-4 border-[#F43F5E] pl-6 relative">
+<div class="scanline"></div>
+<h1 class="headline text-6xl font-black tracking-tighter mb-2">TOKEN_EXPLORER</h1>
+<p class="mono text-secondary text-sm tracking-widest uppercase flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary animate-pulse"></span>
+                7 token categories. Every value is an OKLCH-derived CSS custom property.
+            </p>
+</section>
+<!-- TABS -->
+<div class="flex flex-wrap gap-1 mb-12 border-b border-white/10">
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest bg-secondary text-on-surface-variant font-bold border-t border-x border-[#22D3EE]">Color</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Typography</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Spacing</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Border</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Shadow</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Motion</button>
+<button class="px-6 py-3 mono text-xs uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-colors">Semantic</button>
+</div>
+<!-- COLOR SECTION -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Explanation Card -->
+<div class="lg:col-span-4 space-y-6">
+<div class="p-6 border border-white/10 bg-surface-container-lowest relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 text-[8px] mono text-white/20">SYS_LOG_09</div>
+<h3 class="mono text-secondary text-xs font-bold mb-4 uppercase tracking-[0.2em]">OKLCH Color System</h3>
+<p class="text-sm text-slate-400 mb-6 leading-relaxed">
+                        All colors derived from OKLCH color space. Designed for perceptual uniformity across the entire spectrum.
+                    </p>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-[10px] mono border-b border-white/5 pb-1">
+<span class="text-slate-500">SEED HUE</span>
+<span class="text-white">298° (VIOLET)</span>
+</div>
+<div class="flex justify-between items-center text-[10px] mono border-b border-white/5 pb-1">
+<span class="text-slate-500">CHROMA</span>
+<span class="text-white">0.18</span>
+</div>
+<div class="flex justify-between items-center text-[10px] mono border-b border-white/5 pb-1">
+<span class="text-slate-500">STEPS</span>
+<span class="text-white">11 SCALES / HUE</span>
+</div>
+</div>
+</div>
+<div class="p-6 border border-white/10 bg-[#0A0A1A]">
+<h3 class="mono text-secondary text-xs font-bold mb-6 uppercase tracking-[0.2em]">Semantic Mapping</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-[#0A0A1A] border border-white/20"></div>
+<div class="flex-1">
+<div class="mono text-[10px] text-white">--color-bg</div>
+<div class="mono text-[9px] text-slate-500">oklch(12% 0.02 298)</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-[#121222] border border-white/20"></div>
+<div class="flex-1">
+<div class="mono text-[10px] text-white">--color-surface</div>
+<div class="mono text-[9px] text-slate-500">oklch(18% 0.03 298)</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-secondary border border-white/20"></div>
+<div class="flex-1">
+<div class="mono text-[10px] text-white">--color-accent</div>
+<div class="mono text-[9px] text-slate-500">oklch(82% 0.16 190)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Color Scales -->
+<div class="lg:col-span-8 space-y-12">
+<!-- Scale Row Utility -->
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-white/10 pb-2">
+<span class="headline text-2xl font-bold tracking-tight">PRIMARY</span>
+<span class="mono text-[10px] text-slate-500">HUE: 298°</span>
+</div>
+<div class="oklch-grid gap-1">
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#f3edff] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">50</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#e9ddff] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">100</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#d1bcff] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">200</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#b490ff] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">300</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#9a67ff] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">400</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#8b5cf6] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">500</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#7c3aed] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">600</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#6d28d9] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">700</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#5b21b6] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">800</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#4c1d95] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">900</div>
+</div>
+<div class="group cursor-crosshair">
+<div class="h-20 bg-[#2e1065] mb-2"></div>
+<div class="mono text-[8px] text-slate-500 text-center opacity-0 group-hover:opacity-100 transition-opacity">950</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-white/10 pb-2">
+<span class="headline text-2xl font-bold tracking-tight">SECONDARY</span>
+<span class="mono text-[10px] text-slate-500">HUE: 190°</span>
+</div>
+<div class="oklch-grid gap-1">
+<div class="h-20 bg-[#ecfeff]"></div>
+<div class="h-20 bg-[#cffafe]"></div>
+<div class="h-20 bg-[#a5f3fc]"></div>
+<div class="h-20 bg-[#67e8f9]"></div>
+<div class="h-20 bg-[#22d3ee]"></div>
+<div class="h-20 bg-[#06b6d4]"></div>
+<div class="h-20 bg-[#0891b2]"></div>
+<div class="h-20 bg-[#0e7490]"></div>
+<div class="h-20 bg-[#155e75]"></div>
+<div class="h-20 bg-[#164e63]"></div>
+<div class="h-20 bg-[#083344]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-white/10 pb-2">
+<span class="headline text-2xl font-bold tracking-tight">ERROR</span>
+<span class="mono text-[10px] text-slate-500">HUE: 25°</span>
+</div>
+<div class="oklch-grid gap-1">
+<div class="h-20 bg-[#fef2f2]"></div>
+<div class="h-20 bg-[#fee2e2]"></div>
+<div class="h-20 bg-[#fecaca]"></div>
+<div class="h-20 bg-[#fca5a5]"></div>
+<div class="h-20 bg-[#f87171]"></div>
+<div class="h-20 bg-[#ef4444]"></div>
+<div class="h-20 bg-[#dc2626]"></div>
+<div class="h-20 bg-[#b91c1c]"></div>
+<div class="h-20 bg-[#991b1b]"></div>
+<div class="h-20 bg-[#7f1d1d]"></div>
+<div class="h-20 bg-[#450a0a]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-white/10 pb-2">
+<span class="headline text-2xl font-bold tracking-tight">NEUTRAL</span>
+<span class="mono text-[10px] text-slate-500">HUE: 298° DESAT</span>
+</div>
+<div class="oklch-grid gap-1">
+<div class="h-20 bg-[#f8f9fa]"></div>
+<div class="h-20 bg-[#e9ecef]"></div>
+<div class="h-20 bg-[#dee2e6]"></div>
+<div class="h-20 bg-[#ced4da]"></div>
+<div class="h-20 bg-[#adb5bd]"></div>
+<div class="h-20 bg-[#6c757d]"></div>
+<div class="h-20 bg-[#495057]"></div>
+<div class="h-20 bg-[#343a40]"></div>
+<div class="h-20 bg-[#212529]"></div>
+<div class="h-20 bg-[#15171a]"></div>
+<div class="h-20 bg-[#0a0a0b]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- TYPOGRAPHY SECTION -->
+<section class="mt-24 pt-12 border-t border-white/10">
+<div class="flex items-center gap-4 mb-12">
+<span class="bg-[#F43F5E] text-white mono text-xs px-2 py-1">CAT_02</span>
+<h2 class="headline text-4xl font-bold uppercase tracking-tight">Typography_Engine</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="space-y-8">
+<div class="p-8 border border-white/10 bg-surface-container-low group hover:border-secondary transition-colors">
+<div class="mono text-[10px] text-secondary mb-4">HEADLINE_SCALE: 1.414 (Major Second)</div>
+<div class="space-y-6">
+<div class="flex items-baseline gap-4">
+<span class="mono text-[10px] text-slate-500 w-12 text-right">4XL</span>
+<span class="headline text-6xl font-black">AB_01</span>
+</div>
+<div class="flex items-baseline gap-4">
+<span class="mono text-[10px] text-slate-500 w-12 text-right">3XL</span>
+<span class="headline text-4xl font-bold">SIGNALFRAME</span>
+</div>
+<div class="flex items-baseline gap-4">
+<span class="mono text-[10px] text-slate-500 w-12 text-right">2XL</span>
+<span class="headline text-2xl font-bold">DENSITY MATRIX</span>
+</div>
+<div class="flex items-baseline gap-4">
+<span class="mono text-[10px] text-slate-500 w-12 text-right">XL</span>
+<span class="headline text-xl font-medium">Underground DNA</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-1 gap-6">
+<div class="p-6 bg-white/5 border-l-2 border-primary">
+<h4 class="mono text-[10px] text-slate-500 mb-2 uppercase">Display / Space Grotesk</h4>
+<p class="headline text-xl">The quick brown fox jumps over the lazy dog.</p>
+<div class="mt-4 mono text-[10px] text-primary">WEIGHTS: 300, 400, 500, 700</div>
+</div>
+<div class="p-6 bg-white/5 border-l-2 border-secondary">
+<h4 class="mono text-[10px] text-slate-500 mb-2 uppercase">Body / Public Sans</h4>
+<p class="font-body text-base leading-relaxed">Systematic interface design requires a neutral foundation. Public Sans provides the clarity needed for complex data density.</p>
+<div class="mt-4 mono text-[10px] text-secondary">WEIGHTS: 300, 400, 600</div>
+</div>
+<div class="p-6 bg-white/5 border-l-2 border-tertiary-container">
+<h4 class="mono text-[10px] text-slate-500 mb-2 uppercase">Data / IBM Plex Mono</h4>
+<p class="mono text-sm">DEF_TOKEN(id="TYP_01", val="1.414rem");</p>
+<div class="mt-4 mono text-[10px] text-tertiary-container">WEIGHTS: 400, 500</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SPACING SECTION -->
+<section class="mt-24 pt-12 border-t border-white/10">
+<div class="flex items-center gap-4 mb-12">
+<span class="bg-[#F43F5E] text-white mono text-xs px-2 py-1">CAT_03</span>
+<h2 class="headline text-4xl font-bold uppercase tracking-tight">Space_Modular</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-1 h-12 bg-secondary"></div>
+<p class="mono text-sm max-w-md">Linear scaling system based on 4px base increment. Optimized for grid-based deterministic layouts.</p>
+</div>
+<div class="space-y-2">
+<!-- Spacing Bars -->
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">4PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[4px] border-r border-secondary"></div>
+<span class="mono text-[10px] ml-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">--space-xs</span>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">8PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[8px] border-r border-secondary"></div>
+<span class="mono text-[10px] ml-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">--space-sm</span>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">12PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[12px] border-r border-secondary"></div>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">16PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[16px] border-r border-secondary"></div>
+<span class="mono text-[10px] ml-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">--space-md</span>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">24PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[24px] border-r border-secondary"></div>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">32PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[32px] border-r border-secondary"></div>
+<span class="mono text-[10px] ml-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">--space-lg</span>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">48PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[48px] border-r border-secondary"></div>
+</div>
+<div class="flex items-center group">
+<span class="mono text-[10px] w-12 text-slate-500">64PX</span>
+<div class="h-4 bg-secondary/20 group-hover:bg-secondary w-[64px] border-r border-secondary"></div>
+<span class="mono text-[10px] ml-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">--space-xl</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-6 border border-white/5 relative">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #22D3EE 0, #22D3EE 1px, transparent 0, transparent 10%); background-size: 10px 10px;"></div>
+<h4 class="mono text-[10px] text-white mb-6 uppercase tracking-widest underline decoration-secondary">Semantic Spacing</h4>
+<div class="space-y-6">
+<div>
+<div class="mono text-[10px] text-slate-500 mb-1">--spacing-gutter</div>
+<div class="h-6 w-full bg-[#1e1e2f] border border-secondary flex items-center px-3 mono text-[10px]">24px</div>
+</div>
+<div>
+<div class="mono text-[10px] text-slate-500 mb-1">--spacing-section</div>
+<div class="h-6 w-full bg-[#1e1e2f] border border-secondary flex items-center px-3 mono text-[10px]">96px</div>
+</div>
+<div>
+<div class="mono text-[10px] text-slate-500 mb-1">--spacing-inset</div>
+<div class="h-6 w-full bg-[#1e1e2f] border border-secondary flex items-center px-3 mono text-[10px]">16px (Uniform)</div>
+</div>
+<div class="pt-4 border-t border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="info">info</span>
+<span class="mono text-[9px] text-slate-400">Values snapped to 8pt subgrid for composite components.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- VISUAL MAPPING / ASYMMETRIC DECORATION -->
+<div class="mt-32 relative h-48 border border-white/5 bg-[#0A0A1A] overflow-hidden hidden md:block">
+<div class="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+<svg height="100%" viewbox="0 0 1000 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0,100 L200,100 L250,50 L500,50 L550,150 L800,150 L850,100 L1000,100" fill="none" stroke="#8B5CF6" stroke-width="0.5"></path>
+<rect fill="#22D3EE" height="10" width="10" x="245" y="45"></rect>
+<rect fill="#22D3EE" height="10" width="10" x="545" y="145"></rect>
+<text class="mono text-[8px] fill-[#8B5CF6]" x="10" y="20">FREQ_MODULATOR_01.TOKEN</text>
+<text class="mono text-[8px] fill-[#F43F5E]" x="10" y="190">ERROR_BOUNDARY_CRITICAL</text>
+</svg>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="text-center px-12 py-6 border border-secondary/30 backdrop-blur-sm">
+<span class="mono text-xs text-secondary tracking-[0.5em] font-bold">SIGNAL_STRENGTH_100%</span>
+</div>
+</div>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="bg-[#0A0A1A] text-[#8B5CF6] font-mono text-[10px] tracking-tight uppercase docked full-width bottom-0 border-t border-slate-800 transition-all duration-75 cursor-crosshair flex justify-between items-center w-full px-6 py-2 fixed z-50">
+<div class="text-[#F43F5E] font-bold">©2024 SIGNALFRAME_LABS [DETROIT_UNDERGROUND_DNA]</div>
+<div class="flex items-center gap-6">
+<a class="text-slate-500 hover:text-white hover:bg-slate-800 px-2 py-0.5 transition-colors" href="#">GITHUB</a>
+<a class="text-slate-500 hover:text-white hover:bg-slate-800 px-2 py-0.5 transition-colors" href="#">DISCORD</a>
+<a class="text-slate-500 hover:text-white hover:bg-slate-800 px-2 py-0.5 transition-colors" href="#">LICENSE</a>
+<a class="text-[#22D3EE] font-bold" href="#">STATUS: STABLE</a>
+</div>
+</footer>
+</body></html>

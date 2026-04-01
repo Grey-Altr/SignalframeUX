@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — SignalframeUX Lofi Wireframe</title>
+  <link rel="stylesheet" href="../../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      /* === Reset === */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* === Base === */
+      body.pde-layout--lofi {
+        font-family: var(--typography-fontFamily-body);
+        font-size: var(--typography-fontSize-base);
+        line-height: var(--typography-lineHeight-normal);
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        min-height: 100vh;
+      }
+
+      /* === Skip Link === */
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: var(--spacing-4);
+        z-index: 1000;
+        padding: var(--spacing-2) var(--spacing-4);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        font-weight: var(--typography-fontWeight-semibold);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+      }
+      .skip-link:focus {
+        top: var(--spacing-4);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Wireframe Placeholder === */
+      .wf-placeholder {
+        border: 2px dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+        font-family: var(--typography-fontFamily-mono);
+        background: var(--color-bg-subtle);
+      }
+
+      /* === Header === */
+      .wf-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-4) var(--spacing-semantic-gutter);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-surface);
+      }
+
+      .wf-logo {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+      .wf-logo:hover,
+      .wf-logo:focus-visible {
+        color: var(--color-accent-hover);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-xs);
+      }
+
+      .wf-nav {
+        display: flex;
+        gap: var(--spacing-6);
+        align-items: center;
+      }
+
+      .wf-nav a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-medium);
+        padding: var(--spacing-1) var(--spacing-2);
+        border-radius: var(--border-radius-sm);
+        transition: color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .wf-nav a:hover {
+        color: var(--color-text);
+      }
+      .wf-nav a:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      .wf-nav a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--typography-fontWeight-semibold);
+      }
+
+      /* === Theme Toggle === */
+      .wf-theme-toggle {
+        appearance: none;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface-raised);
+        color: var(--color-text-secondary);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        padding: var(--spacing-1) var(--spacing-3);
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        transition: background var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .wf-theme-toggle:hover {
+        background: var(--color-bg-muted);
+        color: var(--color-text);
+      }
+      .wf-theme-toggle:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Main Layout === */
+      .wf-main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: var(--spacing-semantic-page) var(--spacing-semantic-gutter);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-semantic-section);
+      }
+
+      /* === Section Heading === */
+      .wf-section-heading {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-accent);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-widest);
+        margin-bottom: var(--spacing-6);
+      }
+
+      /* === Identity Section === */
+      .wf-identity {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--spacing-semantic-gutter);
+        align-items: start;
+      }
+
+      .wf-portrait {
+        width: 200px;
+        height: 200px;
+      }
+
+      .wf-identity-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-4);
+      }
+
+      .wf-name {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-2xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-tight);
+        color: var(--color-text);
+      }
+
+      .wf-title {
+        font-size: var(--typography-fontSize-lg);
+        color: var(--color-text-secondary);
+        font-weight: var(--typography-fontWeight-regular);
+      }
+
+      .wf-bio-text {
+        border: 2px dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-4);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        line-height: var(--typography-lineHeight-relaxed);
+        background: var(--color-bg-subtle);
+        min-height: 80px;
+      }
+
+      /* === Availability Indicator === */
+      .wf-availability {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        padding: var(--spacing-2) var(--spacing-4);
+        border: 1px solid var(--color-success-700);
+        border-radius: var(--border-radius-full);
+        background: oklch(0.23 0.04 145 / 0.3);
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-medium);
+        color: var(--color-success-400);
+      }
+      .wf-availability-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--border-radius-full);
+        background: var(--color-success-400);
+        animation: pulse 2s var(--motion-easing-in-out) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* === Social Links === */
+      .wf-social-links {
+        display: flex;
+        gap: var(--spacing-3);
+        list-style: none;
+      }
+      .wf-social-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        text-decoration: none;
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default),
+                    color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .wf-social-links a:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+      }
+      .wf-social-links a:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Timeline === */
+      .wf-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+        padding-left: var(--spacing-8);
+      }
+      .wf-timeline::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--color-border);
+      }
+
+      .wf-timeline-item {
+        position: relative;
+        padding: var(--spacing-4) 0;
+        padding-left: var(--spacing-4);
+      }
+      .wf-timeline-item::before {
+        content: '';
+        position: absolute;
+        left: calc(-1 * var(--spacing-8) + 3px);
+        top: calc(var(--spacing-4) + 6px);
+        width: 10px;
+        height: 10px;
+        border-radius: var(--border-radius-full);
+        border: 2px solid var(--color-accent);
+        background: var(--color-bg);
+      }
+      .wf-timeline-item:first-child::before {
+        background: var(--color-accent);
+      }
+
+      .wf-timeline-date {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        margin-bottom: var(--spacing-1);
+      }
+
+      .wf-timeline-role {
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-1);
+      }
+
+      .wf-timeline-org {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-secondary);
+      }
+
+      .wf-timeline-desc {
+        border: 1px dashed var(--color-border-subtle);
+        border-radius: var(--border-radius-sm);
+        padding: var(--spacing-2) var(--spacing-3);
+        margin-top: var(--spacing-2);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        background: var(--color-bg-subtle);
+      }
+
+      /* === Skills Matrix === */
+      .wf-skills-matrix {
+        display: grid;
+        grid-template-columns: auto repeat(4, 1fr);
+        gap: 1px;
+        background: var(--color-border-subtle);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius-md);
+        overflow: hidden;
+      }
+
+      .wf-skills-matrix-header {
+        background: var(--color-surface-raised);
+        padding: var(--spacing-3) var(--spacing-4);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-wider);
+        text-align: center;
+      }
+      .wf-skills-matrix-header:first-child {
+        text-align: left;
+      }
+
+      .wf-skills-matrix-label {
+        background: var(--color-surface);
+        padding: var(--spacing-3) var(--spacing-4);
+        font-weight: var(--typography-fontWeight-medium);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text);
+        white-space: nowrap;
+      }
+
+      .wf-skills-matrix-cell {
+        background: var(--color-surface);
+        padding: var(--spacing-3) var(--spacing-4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .wf-skill-level {
+        display: flex;
+        gap: 3px;
+      }
+      .wf-skill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--border-radius-full);
+        border: 1px solid var(--color-border);
+        background: transparent;
+      }
+      .wf-skill-dot--filled {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+      }
+
+      /* === CTA Section === */
+      .wf-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--spacing-4);
+        padding: var(--spacing-semantic-section) var(--spacing-semantic-gutter);
+        border: 2px dashed var(--color-border);
+        border-radius: var(--border-radius-lg);
+        background: var(--color-bg-subtle);
+      }
+
+      .wf-cta-heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-xl);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-text);
+      }
+
+      .wf-cta-text {
+        color: var(--color-text-secondary);
+        max-width: 480px;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .wf-cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        padding: var(--spacing-3) var(--spacing-6);
+        border: 2px dashed var(--color-accent);
+        border-radius: var(--border-radius-sm);
+        color: var(--color-accent);
+        font-family: var(--typography-fontFamily-mono);
+        font-weight: var(--typography-fontWeight-semibold);
+        text-decoration: none;
+        transition: background var(--motion-duration-fast) var(--motion-easing-default),
+                    color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .wf-cta-link:hover {
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+      }
+      .wf-cta-link:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Footer === */
+      .wf-footer {
+        border-top: 1px solid var(--color-border);
+        padding: var(--spacing-6) var(--spacing-semantic-gutter);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+      }
+      .wf-footer a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+      }
+      .wf-footer a:hover {
+        color: var(--color-accent);
+      }
+      .wf-footer a:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-xs);
+      }
+
+      /* === Responsive === */
+      @media (max-width: 640px) {
+        .wf-identity {
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+        }
+        .wf-portrait {
+          width: 160px;
+          height: 160px;
+        }
+        .wf-identity-content {
+          align-items: center;
+        }
+        .wf-social-links {
+          justify-content: center;
+        }
+        .wf-skills-matrix {
+          grid-template-columns: auto repeat(4, 1fr);
+          font-size: var(--typography-fontSize-xs);
+        }
+        .wf-skills-matrix-header,
+        .wf-skills-matrix-label,
+        .wf-skills-matrix-cell {
+          padding: var(--spacing-2);
+        }
+        .wf-header {
+          flex-direction: column;
+          gap: var(--spacing-3);
+        }
+        .wf-nav {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .wf-footer {
+          flex-direction: column;
+          gap: var(--spacing-3);
+          text-align: center;
+        }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--lofi">
+
+  <!-- Skip to main -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header class="wf-header" role="banner">
+    <a href="homepage.html" class="wf-logo" aria-label="SignalframeUX home">SfUX</a>
+    <nav class="wf-nav" aria-label="Primary navigation">
+      <a href="homepage.html">Work</a>
+      <a href="about.html" aria-current="page">About</a>
+      <a href="case-study.html">Case Studies</a>
+      <a href="design-system.html">System</a>
+      <a href="contact.html">Contact</a>
+      <button
+        class="wf-theme-toggle"
+        type="button"
+        aria-label="Toggle color theme"
+        onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'"
+      >Light/Dark</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="wf-main" role="main">
+
+    <!-- Identity Section -->
+    <section aria-labelledby="identity-heading">
+      <h2 id="identity-heading" class="wf-section-heading">Identity</h2>
+      <div class="wf-identity">
+        <div class="wf-placeholder wf-portrait" role="img" aria-label="Portrait photo placeholder">
+          400x400<br>Portrait Photo
+        </div>
+        <div class="wf-identity-content">
+          <h1 class="wf-name">Name</h1>
+          <p class="wf-title">Title &mdash; Design Engineer</p>
+
+          <div class="wf-availability" role="status" aria-live="polite">
+            <span class="wf-availability-dot" aria-hidden="true"></span>
+            Available for work
+          </div>
+
+          <div class="wf-bio-text" aria-label="Bio paragraph placeholder">
+            Bio paragraph placeholder &mdash; 2-3 sentences on background, approach, and what drives this person. Covers the intersection of design and engineering.
+          </div>
+
+          <ul class="wf-social-links" aria-label="Social and professional links">
+            <li><a href="#" aria-label="GitHub">GH</a></li>
+            <li><a href="#" aria-label="LinkedIn">LI</a></li>
+            <li><a href="#" aria-label="Dribbble">DR</a></li>
+            <li><a href="#" aria-label="Twitter / X">X</a></li>
+            <li><a href="#" aria-label="Resume / CV">CV</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section aria-labelledby="experience-heading">
+      <h2 id="experience-heading" class="wf-section-heading">Experience</h2>
+      <div class="wf-timeline" role="list" aria-label="Experience timeline">
+
+        <article class="wf-timeline-item" role="listitem">
+          <p class="wf-timeline-date">2024 &mdash; Present</p>
+          <p class="wf-timeline-role">Role Title</p>
+          <p class="wf-timeline-org">Company / Client Name</p>
+          <div class="wf-timeline-desc">Description placeholder &mdash; key responsibilities and impact</div>
+        </article>
+
+        <article class="wf-timeline-item" role="listitem">
+          <p class="wf-timeline-date">2021 &mdash; 2024</p>
+          <p class="wf-timeline-role">Role Title</p>
+          <p class="wf-timeline-org">Company / Client Name</p>
+          <div class="wf-timeline-desc">Description placeholder &mdash; key responsibilities and impact</div>
+        </article>
+
+        <article class="wf-timeline-item" role="listitem">
+          <p class="wf-timeline-date">2018 &mdash; 2021</p>
+          <p class="wf-timeline-role">Role Title</p>
+          <p class="wf-timeline-org">Company / Client Name</p>
+          <div class="wf-timeline-desc">Description placeholder &mdash; key responsibilities and impact</div>
+        </article>
+
+        <article class="wf-timeline-item" role="listitem">
+          <p class="wf-timeline-date">2015 &mdash; 2018</p>
+          <p class="wf-timeline-role">Role Title</p>
+          <p class="wf-timeline-org">Company / Client Name</p>
+          <div class="wf-timeline-desc">Description placeholder &mdash; key responsibilities and impact</div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Skills Matrix -->
+    <section aria-labelledby="skills-heading">
+      <h2 id="skills-heading" class="wf-section-heading">Skills Matrix</h2>
+      <div class="wf-skills-matrix" role="table" aria-label="Skills proficiency matrix across design and engineering">
+
+        <!-- Header Row -->
+        <div class="wf-skills-matrix-header" role="columnheader">Skill</div>
+        <div class="wf-skills-matrix-header" role="columnheader">Design</div>
+        <div class="wf-skills-matrix-header" role="columnheader">Eng</div>
+        <div class="wf-skills-matrix-header" role="columnheader">Strategy</div>
+        <div class="wf-skills-matrix-header" role="columnheader">Ship</div>
+
+        <!-- Row: Design Systems -->
+        <div class="wf-skills-matrix-label" role="rowheader">Design Systems</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+
+        <!-- Row: UI Engineering -->
+        <div class="wf-skills-matrix-label" role="rowheader">UI Engineering</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 3 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+
+        <!-- Row: Prototyping -->
+        <div class="wf-skills-matrix-label" role="rowheader">Prototyping</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+
+        <!-- Row: Interaction Design -->
+        <div class="wf-skills-matrix-label" role="rowheader">Interaction Design</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 5 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 3 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+
+        <!-- Row: Accessibility -->
+        <div class="wf-skills-matrix-label" role="rowheader">Accessibility</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 3 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+
+        <!-- Row: Motion & Animation -->
+        <div class="wf-skills-matrix-label" role="rowheader">Motion &amp; Animation</div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Design: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Engineering: 4 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Strategy: 3 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span><span class="wf-skill-dot"></span></div>
+        </div>
+        <div class="wf-skills-matrix-cell" role="cell" aria-label="Shipping: 3 of 5">
+          <div class="wf-skill-level"><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot wf-skill-dot--filled"></span><span class="wf-skill-dot"></span><span class="wf-skill-dot"></span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA: Contact -->
+    <section aria-labelledby="cta-heading" class="wf-cta">
+      <h2 id="cta-heading" class="wf-cta-heading">Let&rsquo;s work together</h2>
+      <p class="wf-cta-text">CTA placeholder &mdash; brief call to action for hiring managers or collaborators</p>
+      <a href="contact.html" class="wf-cta-link">Get in Touch &rarr;</a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="wf-footer" role="contentinfo">
+    <span>&copy; 2026 SignalframeUX</span>
+    <nav aria-label="Footer navigation">
+      <a href="homepage.html">Work</a> &middot;
+      <a href="about.html">About</a> &middot;
+      <a href="design-system.html">System</a> &middot;
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

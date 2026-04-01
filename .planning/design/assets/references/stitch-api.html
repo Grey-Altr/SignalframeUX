@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&amp;family=Public+Sans:wght@300;400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "inverse-primary": "#6d3bd7",
+            "on-surface": "#e3e0f8",
+            "surface-container-low": "#1a1a2b",
+            "secondary-fixed-dim": "#2fd9f4",
+            "on-background": "#e3e0f8",
+            "on-secondary": "#00363e",
+            "inverse-surface": "#e3e0f8",
+            "on-tertiary-container": "#5b0017",
+            "surface-container": "#1e1e2f",
+            "primary-fixed": "#e9ddff",
+            "tertiary-fixed-dim": "#ffb2b7",
+            "primary-container": "#a078ff",
+            "tertiary": "#ffb2b7",
+            "surface-dim": "#121222",
+            "surface-bright": "#38374a",
+            "secondary-fixed": "#a2eeff",
+            "on-tertiary-fixed-variant": "#92002a",
+            "outline-variant": "#494454",
+            "outline": "#958ea0",
+            "on-secondary-fixed-variant": "#004e5a",
+            "secondary-container": "#00cbe6",
+            "background": "#0A0A1A",
+            "surface-container-highest": "#333345",
+            "on-secondary-container": "#00515d",
+            "on-secondary-fixed": "#001f25",
+            "on-error": "#690005",
+            "surface-variant": "#333345",
+            "primary-fixed-dim": "#d0bcff",
+            "tertiary-fixed": "#ffdadb",
+            "surface": "#121222",
+            "on-tertiary-fixed": "#40000d",
+            "on-primary": "#3c0091",
+            "on-primary-fixed-variant": "#5516be",
+            "error": "#ffb4ab",
+            "on-primary-container": "#340080",
+            "on-primary-fixed": "#23005c",
+            "surface-container-high": "#29283a",
+            "secondary": "#22D3EE",
+            "surface-container-lowest": "#0c0c1d",
+            "on-tertiary": "#67001b",
+            "primary": "#8B5CF6",
+            "tertiary-container": "#ff516a",
+            "surface-tint": "#d0bcff",
+            "on-error-container": "#ffdad6",
+            "error-container": "#93000a",
+            "on-surface-variant": "#cbc3d7",
+            "inverse-on-surface": "#2f2f40"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Public Sans", "sans-serif"],
+            "label": ["Space Mono", "monospace"],
+            "mono": ["Space Mono", "monospace"]
+          },
+          borderRadius: {"DEFAULT": "0px", "lg": "4px", "xl": "4px", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0A0A1A;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1A1A2E;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #8B5CF6;
+    }
+    .halftone-bg {
+      background-image: radial-gradient(#1A1A2E 1px, transparent 0);
+      background-size: 10px 10px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-secondary selection:text-on-secondary">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-6 h-16 w-full sticky top-0 z-50 bg-[#0A0A1A] border-b border-violet-900/30 font-['Space_Grotesk'] tracking-tight">
+<div class="text-xl font-black tracking-tighter text-white uppercase cursor-crosshair transition-all active:opacity-70">
+      SignalframeUX
+    </div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-slate-400 font-mono text-sm hover:text-violet-400 transition-colors duration-200" href="#">DOCS</a>
+<a class="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-mono text-sm hover:text-violet-400 transition-colors duration-200" href="#">API</a>
+<a class="text-slate-400 font-mono text-sm hover:text-violet-400 transition-colors duration-200" href="#">SHOWCASE</a>
+<a class="text-slate-400 font-mono text-sm hover:text-violet-400 transition-colors duration-200" href="#">NPM</a>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-surface-container-lowest border border-violet-900/20 text-xs font-mono pl-8 pr-2 py-1 focus:ring-1 focus:ring-cyan-400 outline-none w-32" placeholder="CMD+K" type="text"/>
+</div>
+<button class="material-symbols-outlined text-white hover:text-violet-400 transition-colors" data-icon="menu">menu</button>
+</div>
+</nav>
+<div class="flex min-h-screen">
+<!-- SideNavBar (Left) -->
+<aside class="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] overflow-y-auto py-8 bg-[#0A0A1A] border-r border-violet-900/20 z-40 custom-scrollbar">
+<div class="px-6 mb-8">
+<div class="text-lg font-bold text-violet-500 font-mono">API_v1.0</div>
+<div class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-mono">SIGNALFRAME_CORE</div>
+</div>
+<div class="space-y-6">
+<div>
+<div class="px-6 mb-2 text-[10px] text-violet-400/50 font-mono uppercase tracking-widest">@signalframeux/core</div>
+<div class="flex flex-col">
+<a class="text-cyan-400 bg-cyan-950/20 border-l-2 border-cyan-400 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="terminal">terminal</span>createSignalframeUX
+            </a>
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="api">api</span>useSignalframe
+            </a>
+</div>
+</div>
+<div>
+<div class="px-6 mb-2 text-[10px] text-violet-400/50 font-mono uppercase tracking-widest">Theme API</div>
+<div class="flex flex-col">
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="palette">palette</span>theme.set
+            </a>
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="extension">extension</span>theme.extend
+            </a>
+</div>
+</div>
+<div>
+<div class="px-6 mb-2 text-[10px] text-violet-400/50 font-mono uppercase tracking-widest">Field API</div>
+<div class="flex flex-col">
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="grain">grain</span>field.setSeed
+            </a>
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="density_medium">density_medium</span>field.setDensity
+            </a>
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="toggle_on">toggle_on</span>field.enable
+            </a>
+</div>
+</div>
+<div>
+<div class="px-6 mb-2 text-[10px] text-violet-400/50 font-mono uppercase tracking-widest">Motion API</div>
+<div class="flex flex-col">
+<a class="text-slate-500 hover:text-slate-300 hover:bg-violet-950/10 pl-4 py-2 font-mono text-xs uppercase tracking-widest transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-2 text-[14px]" data-icon="speed">speed</span>motion.setSpeed
+            </a>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content (Center) -->
+<main class="ml-64 mr-64 flex-1 halftone-bg min-h-screen">
+<div class="max-w-4xl mx-auto px-8 py-12">
+<!-- Hero Section -->
+<header class="mb-16 relative">
+<div class="absolute -top-6 -left-6 w-12 h-12 border-t-2 border-l-2 border-secondary opacity-30"></div>
+<div class="text-[10px] font-mono text-secondary mb-4 tracking-[0.4em] uppercase">SYSTEM.API.REFERENCE</div>
+<h1 class="text-7xl font-black font-headline tracking-tighter text-white uppercase mb-6 leading-none">
+            API_REFERENCE
+          </h1>
+<p class="text-xl font-light text-slate-400 max-w-2xl leading-relaxed">
+            Programmable design. Every token, component, and field is controllable via a single API. Built for deterministic visual systems.
+          </p>
+</header>
+<!-- Function Signature -->
+<section class="mb-12" id="signature">
+<div class="bg-surface-container-lowest border border-violet-900/30 p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 blur-3xl rounded-full"></div>
+<code class="text-2xl font-mono text-cyan-400 block break-words">
+              createSignalframeUX(config: <span class="text-violet-400">SignalframeConfig</span>): <span class="text-secondary">SignalframeInstance</span>
+</code>
+</div>
+</section>
+<!-- TypeScript Interface -->
+<section class="mb-16" id="interfaces">
+<h2 class="text-xs font-mono uppercase tracking-widest text-violet-400 mb-6 border-b border-violet-900/20 pb-2">Interfaces // SignalframeConfig</h2>
+<div class="bg-surface-container-low p-6 font-mono text-sm leading-relaxed border border-violet-900/10">
+<div class="text-slate-500 mb-2">// Configuration object for library initialization</div>
+<div class="text-white">interface <span class="text-violet-400">SignalframeConfig</span> {</div>
+<div class="pl-6 py-1">
+<span class="text-secondary">target</span>: <span class="text-primary-fixed-dim">HTMLElement</span> | <span class="text-primary-fixed-dim">string</span>;<br/>
+<span class="text-secondary">theme?</span>: <span class="text-primary-fixed-dim">'dark' | 'light' | 'auto'</span>;<br/>
+<span class="text-secondary">seed?</span>: <span class="text-primary-fixed-dim">number</span>;<br/>
+<span class="text-secondary">density?</span>: <span class="text-primary-fixed-dim">0 | 0.5 | 1</span>;<br/>
+<span class="text-secondary">motion?</span>: <span class="text-primary-fixed-dim">boolean</span>;
+            </div>
+<div class="text-white">}</div>
+</div>
+</section>
+<!-- Parameters Table -->
+<section class="mb-16" id="parameters">
+<h2 class="text-xs font-mono uppercase tracking-widest text-violet-400 mb-6 border-b border-violet-900/20 pb-2">Parameters</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-mono text-xs border-collapse">
+<thead>
+<tr class="border-b border-violet-900/40 text-slate-500">
+<th class="py-3 px-4 font-normal uppercase tracking-tighter">Name</th>
+<th class="py-3 px-4 font-normal uppercase tracking-tighter">Type</th>
+<th class="py-3 px-4 font-normal uppercase tracking-tighter">Default</th>
+<th class="py-3 px-4 font-normal uppercase tracking-tighter">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-violet-900/10">
+<td class="py-4 px-4 text-secondary">target</td>
+<td class="py-4 px-4 text-slate-400">string</td>
+<td class="py-4 px-4 text-slate-600">null</td>
+<td class="py-4 px-4 text-slate-300">DOM selector or element to attach the renderer</td>
+</tr>
+<tr class="border-b border-violet-900/10">
+<td class="py-4 px-4 text-secondary">theme</td>
+<td class="py-4 px-4 text-slate-400">enum</td>
+<td class="py-4 px-4 text-slate-600">'dark'</td>
+<td class="py-4 px-4 text-slate-300">Initial visual theme mode</td>
+</tr>
+<tr class="border-b border-violet-900/10">
+<td class="py-4 px-4 text-secondary">seed</td>
+<td class="py-4 px-4 text-slate-400">number</td>
+<td class="py-4 px-4 text-slate-600">Math.random()</td>
+<td class="py-4 px-4 text-slate-300">Determines the parametric pattern generation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Interactive Playground -->
+<section class="mb-16" id="playground">
+<h2 class="text-xs font-mono uppercase tracking-widest text-violet-400 mb-6 border-b border-violet-900/20 pb-2">Interactive_Playground</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 bg-surface-container-lowest border border-violet-900/30 overflow-hidden h-[400px]">
+<!-- Editor -->
+<div class="border-r border-violet-900/30 flex flex-col">
+<div class="bg-surface-container-high px-4 py-2 text-[10px] font-mono flex justify-between items-center text-slate-400 border-b border-violet-900/30">
+<span>main.ts</span>
+<span class="text-cyan-400">EDITABLE</span>
+</div>
+<div class="flex-1 p-6 font-mono text-sm">
+<span class="text-violet-400">import</span> { createSignalframeUX } <span class="text-violet-400">from</span> <span class="text-secondary">'@sf/core'</span>;<br/><br/>
+<span class="text-slate-500">// Initialize the field</span><br/>
+<span class="text-violet-400">const</span> ux = createSignalframeUX({<br/>
+                  target: <span class="text-secondary">'#canvas-v1'</span>,<br/>
+                  theme: <span class="text-secondary">'dark'</span>,<br/>
+                  seed: <span class="text-primary-fixed-dim">1042</span>,<br/>
+                  density: <span class="text-primary-fixed-dim">0.5</span><br/>
+                });
+              </div>
+</div>
+<!-- Preview -->
+<div class="relative bg-black flex items-center justify-center group overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-700" data-alt="abstract procedural circuit board pattern with glowing cyan lines and violet nodes on a dark textured background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1JeIDcMAit8wrBQQ8yOpfp8LkaHOUrbNykHUjvCaB8sCIXY5zKeXps0BhX9nVnsZOlL6dBbHvrHx_Bqhq51IHYPTCWw7oVeR_ttqLfvEDImqgVk28cCj9kkx6OE-eVUdcaUQr3vXSbxGHEbglBO5FYzVMCQQVlQgZlwkCLrPpX7Rsv0gJe2spAcFCBW4sPg_Bx13OPKmAZDYMaA6k6s2pNLPFBUGOw0xxRTJe3IpnzFagi01htOZzCwPg3aaD5xubhMEgHu0hT7Y"/>
+<div class="absolute inset-0 pointer-events-none border-[20px] border-black/50"></div>
+<div class="absolute bottom-4 right-4 bg-secondary text-on-secondary px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest">
+                PREVIEW_LIVE
+              </div>
+</div>
+</div>
+</section>
+<!-- Related APIs Grid -->
+<section class="mb-16" id="related">
+<h2 class="text-xs font-mono uppercase tracking-widest text-violet-400 mb-8 border-b border-violet-900/20 pb-2">Related_Functions</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-low p-6 border border-violet-900/10 hover:border-violet-500 transition-colors group cursor-pointer">
+<div class="text-secondary font-mono text-xs mb-4">useSignalframe()</div>
+<p class="text-slate-400 text-xs font-mono leading-relaxed mb-4">React hook for accessing current Signalframe context and state updates.</p>
+<span class="text-[10px] font-mono text-violet-400 group-hover:pl-2 transition-all">READ_MORE -&gt;</span>
+</div>
+<div class="bg-surface-container-low p-6 border border-violet-900/10 hover:border-violet-500 transition-colors group cursor-pointer">
+<div class="text-secondary font-mono text-xs mb-4">theme.set()</div>
+<p class="text-slate-400 text-xs font-mono leading-relaxed mb-4">Dynamically update the system color scheme and contrast ratios.</p>
+<span class="text-[10px] font-mono text-violet-400 group-hover:pl-2 transition-all">READ_MORE -&gt;</span>
+</div>
+<div class="bg-surface-container-low p-6 border border-violet-900/10 hover:border-violet-500 transition-colors group cursor-pointer">
+<div class="text-secondary font-mono text-xs mb-4">field.setSeed()</div>
+<p class="text-slate-400 text-xs font-mono leading-relaxed mb-4">Regenerate the procedural background layout using a new entropy seed.</p>
+<span class="text-[10px] font-mono text-violet-400 group-hover:pl-2 transition-all">READ_MORE -&gt;</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Right Sidebar (Navigation) -->
+<aside class="fixed right-0 top-16 w-64 h-[calc(100vh-4rem)] p-8 border-l border-violet-900/20 bg-[#0A0A1A] z-40">
+<div class="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500 mb-6">On_this_page</div>
+<ul class="space-y-4 font-mono text-[11px] text-slate-400">
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors">
+<span class="w-2 h-2 bg-cyan-400 mr-3"></span>INTRODUCTION
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors pl-5">
+          SIGNATURE
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors pl-5">
+          INTERFACES
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors pl-5">
+          PARAMETERS
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors pl-5">
+          RETURN_VALUE
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors pl-5">
+          PLAYGROUND
+        </li>
+<li class="hover:text-cyan-400 cursor-pointer flex items-center transition-colors">
+<span class="w-1.5 h-1.5 border border-slate-600 mr-3"></span>RELATED_APIS
+        </li>
+</ul>
+<div class="mt-12 p-4 bg-violet-900/10 border border-violet-900/30">
+<div class="text-[10px] font-mono text-violet-400 mb-2">PRO_TIP</div>
+<p class="text-[10px] text-slate-500 leading-normal font-mono">Use 'field.setDensity(1)' for high-information density environments. Use '0' for focused workflows.</p>
+</div>
+</aside>
+</div>
+<!-- Footer -->
+<footer class="w-full py-4 px-6 flex justify-between items-center border-t border-[#1A1A2E] bg-[#0A0A1A] font-mono text-[10px] uppercase z-50 relative">
+<div class="flex items-center space-x-4">
+<div class="font-black text-white">SIGNALFRAMEUX</div>
+<div class="text-slate-600">©2024 SIGNALFRAME_LABS</div>
+</div>
+<div class="flex space-x-6">
+<a class="text-slate-600 hover:text-cyan-300 transition-opacity hover:opacity-80" href="#">GITHUB</a>
+<a class="text-slate-600 hover:text-cyan-300 transition-opacity hover:opacity-80" href="#">DISCORD</a>
+<a class="text-slate-600 hover:text-cyan-300 transition-opacity hover:opacity-80" href="#">LICENSE</a>
+<a class="text-cyan-400 hover:text-cyan-300 transition-opacity hover:opacity-80 flex items-center" href="#">
+<span class="w-1 h-1 bg-cyan-400 rounded-full mr-2"></span>STATUS: NORMAL
+      </a>
+</div>
+</footer>
+</body></html>

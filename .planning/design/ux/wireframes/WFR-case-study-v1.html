@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Study — SignalframeUX Wireframe v1</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      /* --- Reset & Base --- */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body.pde-layout--lofi {
+        font-family: var(--typography-fontFamily-body);
+        font-size: var(--typography-fontSize-base);
+        line-height: var(--typography-lineHeight-normal);
+        color: var(--color-text);
+        background: var(--color-bg);
+        min-height: 100vh;
+      }
+
+      /* --- Skip Link --- */
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: var(--spacing-4);
+        z-index: 1000;
+        padding: var(--spacing-2) var(--spacing-4);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        font-weight: var(--typography-fontWeight-semibold);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+      }
+
+      .skip-link:focus {
+        top: var(--spacing-4);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* --- Layout --- */
+      .page-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-semantic-gutter);
+      }
+
+      /* --- Header --- */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--color-bg);
+        border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-4) 0;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-4);
+      }
+
+      .site-logo {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+
+      .nav-list {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-6);
+        align-items: center;
+      }
+
+      .nav-list a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        transition: color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .nav-list a:hover,
+      .nav-list a:focus {
+        color: var(--color-accent);
+      }
+
+      .nav-list a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--typography-fontWeight-semibold);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3);
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .btn-icon:hover,
+      .btn-icon:focus {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .kbd {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        border: var(--border-width-thin) solid var(--color-border);
+        border-radius: var(--border-radius-xs);
+        padding: 1px 4px;
+        background: var(--color-bg-subtle);
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+      }
+      .mobile-menu-toggle:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+      }
+
+      /* --- Main Content --- */
+      .main-content {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: var(--spacing-semantic-page) var(--spacing-semantic-gutter);
+      }
+
+      /* --- Chapter Header / Prologue --- */
+      .chapter-prologue {
+        margin-bottom: var(--spacing-semantic-section);
+        padding-bottom: var(--spacing-semantic-section);
+        border-bottom: 1px solid var(--color-border-subtle);
+      }
+
+      .chapter-number {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-accent);
+        letter-spacing: var(--typography-letterSpacing-widest);
+        text-transform: uppercase;
+        margin-bottom: var(--spacing-4);
+      }
+
+      .chapter-title {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-3xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-tight);
+        letter-spacing: var(--typography-letterSpacing-tighter);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-8);
+      }
+
+      .chapter-meta {
+        display: flex;
+        gap: var(--spacing-8);
+        margin-bottom: var(--spacing-semantic-stack);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+      }
+
+      .chapter-meta dt {
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text-secondary);
+        margin-bottom: var(--spacing-1);
+      }
+
+      .chapter-meta dd {
+        margin-left: 0;
+      }
+
+      .problem-statement {
+        font-size: var(--typography-fontSize-lg);
+        line-height: var(--typography-lineHeight-relaxed);
+        color: var(--color-text-secondary);
+        max-width: 72ch;
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .constraints-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-3);
+        list-style: none;
+      }
+
+      .constraints-list li {
+        padding: var(--spacing-1) var(--spacing-3);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+      }
+
+      /* --- Section Shared --- */
+      .chapter-section {
+        margin-bottom: var(--spacing-semantic-section);
+      }
+
+      .section-label {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        font-weight: var(--typography-fontWeight-semibold);
+        letter-spacing: var(--typography-letterSpacing-widest);
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin-bottom: var(--spacing-3);
+      }
+
+      .section-heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-snug);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .section-body {
+        color: var(--color-text-secondary);
+        line-height: var(--typography-lineHeight-relaxed);
+        margin-bottom: var(--spacing-semantic-stack);
+        max-width: 72ch;
+      }
+
+      /* --- Placeholder Boxes --- */
+      .placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-width-medium) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        background: var(--color-bg-subtle);
+        color: var(--color-text-muted);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        text-align: center;
+        padding: var(--spacing-4);
+      }
+
+      .placeholder--hero {
+        height: 320px;
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .placeholder--medium {
+        height: 240px;
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .placeholder--wide {
+        height: 400px;
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .placeholder--code {
+        height: 200px;
+        margin-bottom: var(--spacing-semantic-stack);
+        background: var(--color-bg-muted);
+        font-family: var(--typography-fontFamily-mono);
+      }
+
+      .placeholder--demo {
+        height: 360px;
+        margin-bottom: var(--spacing-semantic-stack);
+        border-color: var(--color-accent);
+        border-style: dashed;
+      }
+
+      /* --- Before / After Grid --- */
+      .before-after {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-semantic-gutter);
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .before-after__label {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-widest);
+        color: var(--color-text-muted);
+        margin-bottom: var(--spacing-2);
+      }
+
+      .before-after .placeholder {
+        height: 280px;
+      }
+
+      /* --- Exploration Gallery --- */
+      .exploration-gallery {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-semantic-gutter);
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .exploration-gallery .placeholder {
+        height: 200px;
+      }
+
+      /* --- Metrics Grid --- */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-semantic-gutter);
+        margin-bottom: var(--spacing-semantic-stack);
+      }
+
+      .metric-card {
+        padding: var(--spacing-semantic-inset);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        background: var(--color-surface);
+        text-align: center;
+      }
+
+      .metric-card__value {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-2xl);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        line-height: var(--typography-lineHeight-tight);
+        margin-bottom: var(--spacing-2);
+      }
+
+      .metric-card__label {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-muted);
+      }
+
+      /* --- Chapter Nav --- */
+      .chapter-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--spacing-semantic-section);
+        border-top: 1px solid var(--color-border-subtle);
+        margin-top: var(--spacing-semantic-section);
+      }
+
+      .chapter-nav__link {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-1);
+        text-decoration: none;
+        padding: var(--spacing-4);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        min-width: 200px;
+        transition: border-color var(--motion-duration-normal) var(--motion-easing-default);
+      }
+
+      .chapter-nav__link:hover {
+        border-color: var(--color-accent);
+      }
+
+      .chapter-nav__link:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .chapter-nav__link--next {
+        text-align: right;
+      }
+
+      .chapter-nav__direction {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-widest);
+        color: var(--color-text-muted);
+      }
+
+      .chapter-nav__title {
+        font-size: var(--typography-fontSize-base);
+        font-weight: var(--typography-fontWeight-medium);
+        color: var(--color-text);
+      }
+
+      /* --- Footer --- */
+      .site-footer {
+        border-top: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-8) 0;
+        margin-top: var(--spacing-semantic-section);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links a {
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .footer-links a:hover,
+      .footer-links a:focus {
+        color: var(--color-accent);
+      }
+
+      .footer-copy {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+      }
+
+      /* --- Noscript fallback --- */
+      .noscript-fallback {
+        display: none;
+      }
+
+      .demo-js-note {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        font-style: italic;
+        margin-top: var(--spacing-2);
+      }
+
+      /* Scroll to top */
+      .scroll-to-top {
+        position: fixed;
+        bottom: var(--spacing-6);
+        right: var(--spacing-6);
+        width: 40px;
+        height: 40px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        background: var(--color-surface);
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        z-index: 50;
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .scroll-to-top:hover,
+      .scroll-to-top:focus-visible {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* --- Responsive --- */
+      @media (max-width: 768px) {
+        .chapter-title {
+          font-size: var(--typography-fontSize-2xl);
+        }
+
+        .chapter-meta {
+          flex-direction: column;
+          gap: var(--spacing-4);
+        }
+
+        .before-after {
+          grid-template-columns: 1fr;
+        }
+
+        .exploration-gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .chapter-nav {
+          flex-direction: column;
+          gap: var(--spacing-4);
+        }
+
+        .chapter-nav__link {
+          width: 100%;
+          min-width: auto;
+        }
+
+        .chapter-nav__link--next {
+          text-align: left;
+        }
+      }
+
+      @media (max-width: 639px) {
+        .nav-list {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .main-content {
+          padding: var(--spacing-semantic-stack) var(--spacing-4);
+        }
+
+        .chapter-title {
+          font-size: var(--typography-fontSize-xl);
+        }
+
+        .section-heading {
+          font-size: var(--typography-fontSize-lg);
+        }
+
+        .placeholder--hero {
+          height: 200px;
+        }
+
+        .placeholder--wide {
+          height: 260px;
+        }
+
+        .placeholder--demo {
+          height: 240px;
+        }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--lofi">
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ====== HEADER ====== -->
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="homepage.html" aria-current="page">Work</a></li>
+          <li><a href="design-system.html">System</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette (Cmd+K)" title="Command Palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle title="Toggle dark/light theme">T</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== MAIN ====== -->
+  <main id="main" class="main-content">
+
+    <!-- === 1. PROLOGUE === -->
+    <section class="chapter-prologue" aria-labelledby="chapter-title">
+      <p class="chapter-number" aria-label="Chapter number">Chapter 01</p>
+      <h1 class="chapter-title" id="chapter-title">Chapter Title</h1>
+
+      <dl class="chapter-meta">
+        <div>
+          <dt>Role</dt>
+          <dd>Role Label</dd>
+        </div>
+        <div>
+          <dt>Timeline</dt>
+          <dd>Timeline Label</dd>
+        </div>
+        <div>
+          <dt>Stack</dt>
+          <dd>Stack Label</dd>
+        </div>
+        <div>
+          <dt>Team</dt>
+          <dd>Team Label</dd>
+        </div>
+      </dl>
+
+      <div class="placeholder placeholder--hero" aria-label="Hero image placeholder">960 x 320 Hero Image</div>
+
+      <p class="problem-statement">Problem Statement</p>
+
+      <ul class="constraints-list" aria-label="Project constraints">
+        <li>Constraint A</li>
+        <li>Constraint B</li>
+        <li>Constraint C</li>
+        <li>Constraint D</li>
+      </ul>
+    </section>
+
+    <!-- === 2. DESIGN EXPLORATION === -->
+    <section class="chapter-section" aria-labelledby="exploration-heading">
+      <p class="section-label">Phase 01</p>
+      <h2 class="section-heading" id="exploration-heading">Design Exploration</h2>
+      <p class="section-body">Design Phase</p>
+
+      <div class="exploration-gallery" aria-label="Design exploration artifacts">
+        <div class="placeholder" aria-label="Exploration sketch A">440 x 200 Sketch A</div>
+        <div class="placeholder" aria-label="Exploration sketch B">440 x 200 Sketch B</div>
+        <div class="placeholder" aria-label="Exploration sketch C">440 x 200 Wireframe A</div>
+        <div class="placeholder" aria-label="Exploration sketch D">440 x 200 Wireframe B</div>
+      </div>
+
+      <p class="section-body">Design Phase</p>
+
+      <!-- Before / After -->
+      <div class="before-after" aria-label="Before and after comparison">
+        <div>
+          <p class="before-after__label">Before</p>
+          <div class="placeholder" aria-label="Before state">400 x 280 Before</div>
+        </div>
+        <div>
+          <p class="before-after__label">After</p>
+          <div class="placeholder" aria-label="After state">400 x 280 After</div>
+        </div>
+      </div>
+
+      <noscript>
+        <div class="placeholder placeholder--medium" aria-label="Static before/after fallback">800 x 240 Before/After (Static Fallback)</div>
+      </noscript>
+    </section>
+
+    <!-- === 3. INTERACTIVE DEMO === -->
+    <section class="chapter-section" aria-labelledby="demo-heading">
+      <p class="section-label">Phase 02</p>
+      <h2 class="section-heading" id="demo-heading">Interactive Component Demo</h2>
+      <p class="section-body">Interactive Demo Description</p>
+
+      <div class="placeholder placeholder--demo" role="region" aria-label="Interactive demo area">
+        Interactive Demo Area<br>(Client Component, Progressive Enhancement)
+      </div>
+      <p class="demo-js-note">Requires JavaScript. Falls back to static screenshot below.</p>
+
+      <noscript>
+        <div class="placeholder placeholder--medium noscript-fallback" style="display:flex" aria-label="Static demo fallback">
+          800 x 240 Static Demo Fallback (No JS)
+        </div>
+      </noscript>
+
+      <div class="placeholder placeholder--medium" aria-label="Component detail view">800 x 240 Component Detail</div>
+    </section>
+
+    <!-- === 4. ENGINEERING EXECUTION === -->
+    <section class="chapter-section" aria-labelledby="engineering-heading">
+      <p class="section-label">Phase 03</p>
+      <h2 class="section-heading" id="engineering-heading">Engineering Execution</h2>
+      <p class="section-body">Engineering Phase</p>
+
+      <div class="placeholder placeholder--code" role="region" aria-label="Code block placeholder">Code Block — Component Implementation</div>
+
+      <p class="section-body">Engineering Phase</p>
+
+      <div class="placeholder placeholder--code" role="region" aria-label="Code block placeholder">Code Block — Performance Optimization</div>
+
+      <div class="placeholder placeholder--medium" aria-label="Architecture diagram">800 x 240 Architecture Diagram</div>
+    </section>
+
+    <!-- === 5. OUTCOMES === -->
+    <section class="chapter-section" aria-labelledby="outcomes-heading">
+      <p class="section-label">Results</p>
+      <h2 class="section-heading" id="outcomes-heading">Impact &amp; Outcomes</h2>
+      <p class="section-body">Outcomes Summary</p>
+
+      <div class="metrics-grid" aria-label="Impact metrics">
+        <div class="metric-card">
+          <p class="metric-card__value">Metric A</p>
+          <p class="metric-card__label">Metric Label</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-card__value">Metric B</p>
+          <p class="metric-card__label">Metric Label</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-card__value">Metric C</p>
+          <p class="metric-card__label">Metric Label</p>
+        </div>
+      </div>
+
+      <p class="section-body">Outcomes Reflection</p>
+    </section>
+
+    <!-- === CHAPTER NAVIGATION === -->
+    <nav class="chapter-nav" aria-label="Chapter navigation">
+      <a href="case-study.html?chapter=prev" class="chapter-nav__link chapter-nav__link--prev" aria-label="Previous chapter">
+        <span class="chapter-nav__direction">&larr; Previous</span>
+        <span class="chapter-nav__title">Previous Chapter Title</span>
+      </a>
+      <a href="case-study.html?chapter=next" class="chapter-nav__link chapter-nav__link--next" aria-label="Next chapter">
+        <span class="chapter-nav__direction">Next &rarr;</span>
+        <span class="chapter-nav__title">Next Chapter Title</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="homepage.html">Work</a></li>
+        <li><a href="design-system.html">System</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <a href="#main" class="scroll-to-top" aria-label="Scroll to top">&uarr;</a>
+
+</body>
+</html>

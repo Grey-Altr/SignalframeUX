@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- WIREFRAME-SOURCE: WFR-about-v1.html | Generated: 2026-03-31 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — SignalframeUX Hi-Fi Mockup</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/ScrollTrigger.min.js"></script>
+  <style>
+    @layer tokens, mockup-layout, components, states, animations, utilities;
+
+    @layer tokens {
+      :root {
+        --hifi-bg: var(--color-bg, oklch(0.15 0.02 298));
+        --hifi-surface: var(--color-surface, oklch(0.20 0.02 298));
+        --hifi-surface-raised: var(--color-surface-raised, oklch(0.25 0.02 298));
+        --hifi-accent: var(--color-accent, oklch(0.55 0.18 298));
+        --hifi-accent-hover: var(--color-accent-hover, oklch(0.65 0.18 298));
+        --hifi-text: var(--color-text, oklch(0.93 0.01 298));
+        --hifi-text-secondary: var(--color-text-secondary, oklch(0.65 0.03 298));
+        --hifi-text-muted: var(--color-text-muted, oklch(0.50 0.02 298));
+        --hifi-border: var(--color-border, oklch(0.30 0.03 298));
+        --hifi-border-subtle: var(--color-border-subtle, oklch(0.25 0.02 298));
+        --hifi-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --hifi-font: 'Inter', var(--typography-fontFamily-body, system-ui, sans-serif);
+        --hifi-mono: var(--typography-fontFamily-mono, ui-monospace, monospace);
+      }
+    }
+
+    @layer mockup-layout {
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body.pde-layout--hifi {
+        font-family: var(--hifi-font);
+        font-size: var(--typography-fontSize-base, 1rem);
+        line-height: var(--typography-lineHeight-normal, 1.5);
+        color: var(--hifi-text);
+        background: var(--hifi-bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page-container { max-width: 1280px; margin: 0 auto; padding: 0 var(--spacing-semantic-gutter, 32px); }
+      .wf-main {
+        max-width: 960px; margin: 0 auto;
+        padding: var(--spacing-semantic-page, 80px) var(--spacing-semantic-gutter, 32px);
+        display: flex; flex-direction: column; gap: var(--spacing-semantic-section, 64px);
+      }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    }
+
+    @layer components {
+      /* Skip Link */
+      .skip-link {
+        position: absolute; top: -100%; left: var(--spacing-4, 16px);
+        z-index: 1000; padding: var(--spacing-2, 8px) var(--spacing-4, 16px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: 600; text-decoration: none; border-radius: var(--border-radius-sm, 4px);
+      }
+      .skip-link:focus { top: var(--spacing-4, 16px); outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+
+      /* Header */
+      .site-header {
+        position: sticky; top: 0; z-index: 100;
+        background: oklch(0.15 0.02 298 / 0.85);
+        backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid var(--hifi-border-subtle);
+        padding: var(--spacing-4, 16px) 0;
+      }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4, 16px); }
+      .site-logo { font-family: var(--hifi-font); font-size: var(--typography-fontSize-lg, 1.414rem); font-weight: 700; color: var(--hifi-accent); text-decoration: none; letter-spacing: -0.025em; }
+      .site-logo:hover { opacity: 0.8; }
+      .nav-list { display: flex; list-style: none; gap: var(--spacing-6, 24px); align-items: center; }
+      .nav-link { color: var(--hifi-text-secondary); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); font-variation-settings: 'wght' 400; transition: color 100ms, font-variation-settings 200ms var(--hifi-spring); }
+      .nav-link:hover, .nav-link:focus { color: var(--hifi-accent); font-variation-settings: 'wght' 700; }
+      .nav-link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 4px; }
+      .nav-link[aria-current="page"] { color: var(--hifi-accent); font-variation-settings: 'wght' 600; }
+      .header-actions { display: flex; align-items: center; gap: var(--spacing-3, 12px); }
+      .btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--hifi-border); border-radius: 4px; background: var(--hifi-surface); color: var(--hifi-text-secondary); cursor: pointer; font-family: var(--hifi-mono); font-size: 0.5rem; transition: border-color 100ms, transform 200ms var(--hifi-spring); }
+      .btn-icon:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: scale(1.05); }
+      .btn-icon:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .btn-icon:active { transform: scale(0.95); }
+      .btn-icon[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .btn-icon[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .mobile-menu-toggle { display: none; }
+      .kbd { font-family: var(--hifi-mono); font-size: 0.5rem; color: var(--hifi-text-muted); border: 1px solid var(--hifi-border); border-radius: 2px; padding: 1px 5px; background: var(--hifi-surface); }
+
+      /* Section eyebrow */
+      .section-eyebrow { font-family: var(--hifi-mono); font-size: var(--typography-fontSize-xs, 0.5rem); font-weight: 600; color: var(--hifi-accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--spacing-6, 24px); }
+
+      /* Identity */
+      .identity { display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-semantic-gutter, 32px); align-items: start; }
+      .portrait {
+        width: 280px; height: 280px;
+        border-radius: var(--border-radius-lg, 12px);
+        background: linear-gradient(135deg, oklch(0.20 0.04 298), oklch(0.25 0.06 298));
+        border: 1px solid var(--hifi-border-subtle);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--hifi-text-muted); font-family: var(--hifi-mono); font-size: var(--typography-fontSize-sm, 0.707rem);
+        overflow: hidden; position: relative;
+      }
+      .portrait::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 40% 40%, oklch(0.55 0.18 298 / 0.1), transparent 70%); }
+
+      .identity-content { display: flex; flex-direction: column; gap: var(--spacing-4, 16px); }
+      .identity-name { font-family: var(--hifi-font); font-size: var(--typography-fontSize-2xl, 2.828rem); font-weight: 700; line-height: 1.1; color: var(--hifi-text); letter-spacing: -0.025em; }
+      .identity-title { font-size: var(--typography-fontSize-lg, 1.414rem); color: var(--hifi-text-secondary); font-weight: 300; }
+      .identity-bio { color: var(--hifi-text-secondary); line-height: var(--typography-lineHeight-relaxed, 1.625); max-width: 52ch; }
+
+      /* Availability badge */
+      .availability-badge {
+        display: inline-flex; align-items: center; gap: var(--spacing-2, 8px);
+        padding: var(--spacing-2, 8px) var(--spacing-4, 16px);
+        border: 1px solid var(--color-success-700, oklch(0.39 0.120 145));
+        border-radius: var(--border-radius-full, 9999px);
+        background: oklch(0.23 0.04 145 / 0.3);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        font-weight: 500; color: var(--color-success-400, oklch(0.67 0.128 145));
+      }
+      .availability-badge__dot {
+        width: 8px; height: 8px; border-radius: var(--border-radius-full, 9999px);
+        background: var(--color-success-400, oklch(0.67 0.128 145));
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+
+      /* Social links */
+      .social-links { display: flex; gap: var(--spacing-3, 12px); list-style: none; }
+      .social-links a {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 40px; height: 40px;
+        border: 1px solid var(--hifi-border); border-radius: var(--border-radius-sm, 4px);
+        color: var(--hifi-text-muted); font-family: var(--hifi-mono); font-size: 0.5rem;
+        text-decoration: none;
+        transition: border-color 100ms, color 100ms, transform 200ms var(--hifi-spring);
+      }
+      .social-links a:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: translateY(-2px); }
+      .social-links a:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .social-links a:active { transform: translateY(0) scale(0.95); }
+      .social-links a[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .social-links a[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+
+      /* Timeline */
+      /* VISUAL-HOOK: timeline-trace — Timeline dots illuminate sequentially as the section enters view, tracing the career path like a circuit board -->
+      .timeline {
+        display: flex; flex-direction: column; gap: 0;
+        position: relative; padding-left: var(--spacing-8, 32px);
+      }
+      .timeline::before {
+        content: ''; position: absolute; left: 7px; top: 0; bottom: 0;
+        width: 2px; background: var(--hifi-border);
+      }
+      .timeline-item {
+        position: relative;
+        padding: var(--spacing-4, 16px) 0 var(--spacing-4, 16px) var(--spacing-4, 16px);
+      }
+      .timeline-item::before {
+        content: ''; position: absolute;
+        left: calc(-1 * var(--spacing-8, 32px) + 3px);
+        top: calc(var(--spacing-4, 16px) + 6px);
+        width: 10px; height: 10px;
+        border-radius: var(--border-radius-full, 9999px);
+        border: 2px solid var(--hifi-border);
+        background: var(--hifi-bg);
+        transition: border-color 400ms var(--motion-easing-default, ease), background 400ms var(--motion-easing-default, ease);
+      }
+      .timeline-item.is-active::before {
+        border-color: var(--hifi-accent);
+        background: var(--hifi-accent);
+        box-shadow: 0 0 8px oklch(0.55 0.18 298 / 0.4);
+      }
+      .timeline-item:first-child::before { background: var(--hifi-accent); border-color: var(--hifi-accent); box-shadow: 0 0 8px oklch(0.55 0.18 298 / 0.4); }
+
+      .timeline-date { font-family: var(--hifi-mono); font-size: 0.5rem; color: var(--hifi-text-muted); margin-bottom: 4px; letter-spacing: 0.05em; }
+      .timeline-role { font-weight: 600; color: var(--hifi-text); margin-bottom: 4px; }
+      .timeline-org { font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-secondary); }
+      .timeline-desc {
+        border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-sm, 4px);
+        padding: var(--spacing-2, 8px) var(--spacing-3, 12px); margin-top: var(--spacing-2, 8px);
+        font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-muted);
+        line-height: var(--typography-lineHeight-relaxed, 1.625); background: var(--hifi-surface);
+      }
+
+      /* Skills matrix */
+      .skills-matrix {
+        display: grid; grid-template-columns: auto repeat(4, 1fr);
+        gap: 1px; background: var(--hifi-border-subtle);
+        border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px);
+        overflow: hidden;
+      }
+      .skills-matrix__header {
+        background: var(--hifi-surface-raised);
+        padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
+        font-family: var(--hifi-mono); font-size: 0.5rem; font-weight: 600;
+        color: var(--hifi-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+        text-align: center;
+      }
+      .skills-matrix__header:first-child { text-align: left; }
+      .skills-matrix__label {
+        background: var(--hifi-surface);
+        padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
+        font-weight: 500; font-size: var(--typography-fontSize-sm, 0.707rem);
+        color: var(--hifi-text); white-space: nowrap;
+      }
+      .skills-matrix__cell {
+        background: var(--hifi-surface);
+        padding: var(--spacing-3, 12px) var(--spacing-4, 16px);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .skill-level { display: flex; gap: 3px; }
+      .skill-dot {
+        width: 8px; height: 8px;
+        border-radius: var(--border-radius-full, 9999px);
+        border: 1px solid var(--hifi-border);
+        background: transparent;
+        transition: background 300ms, border-color 300ms;
+      }
+      .skill-dot--filled { background: var(--hifi-accent); border-color: var(--hifi-accent); }
+
+      /* CTA */
+      .cta-section {
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        gap: var(--spacing-4, 16px);
+        padding: var(--spacing-semantic-section, 64px) var(--spacing-semantic-gutter, 32px);
+        border: 1px solid var(--hifi-border-subtle);
+        border-radius: var(--border-radius-lg, 12px);
+        background: var(--hifi-surface);
+      }
+      .cta-heading { font-family: var(--hifi-font); font-size: var(--typography-fontSize-xl, 2rem); font-weight: 700; color: var(--hifi-text); letter-spacing: -0.025em; }
+      .cta-text { color: var(--hifi-text-secondary); max-width: 480px; }
+      .cta-button {
+        display: inline-flex; align-items: center; gap: var(--spacing-2, 8px);
+        padding: var(--spacing-3, 12px) var(--spacing-8, 32px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: 600; text-decoration: none;
+        border-radius: var(--border-radius-md, 8px); border: none; cursor: pointer;
+        transition: all 200ms var(--hifi-spring);
+      }
+      .cta-button:hover { background: var(--hifi-accent-hover); transform: translateY(-2px) scale(1.03); box-shadow: 0 0 24px 4px oklch(0.55 0.18 298 / 0.25); }
+      .cta-button:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .cta-button:active { transform: translateY(0) scale(0.98); }
+      .cta-button[aria-busy="true"] { opacity: 0.6; pointer-events: none; }
+      .cta-button[aria-disabled="true"] { opacity: 0.35; pointer-events: none; cursor: not-allowed; }
+      .cta-button[aria-invalid="true"] { border: 2px solid var(--color-error-400); }
+
+      /* Footer */
+      .site-footer { border-top: 1px solid var(--hifi-border-subtle); padding: var(--spacing-8, 32px) 0; margin-top: var(--spacing-semantic-section, 64px); }
+      .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4, 16px); }
+      .footer-links { display: flex; list-style: none; gap: var(--spacing-4, 16px); }
+      .footer-links a { color: var(--hifi-text-muted); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); transition: color 100ms; }
+      .footer-links a:hover { color: var(--hifi-accent); }
+      .footer-copy { font-size: 0.5rem; color: var(--hifi-text-muted); }
+    }
+
+    @layer states {
+      [data-state="loading"] { display: none; }
+      [data-state="error"] { display: none; }
+      [data-state="empty"] { display: none; }
+    }
+
+    @layer animations {
+      @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.9); }
+      }
+
+      .gsap-reveal { opacity: 0; transform: translateY(30px); }
+
+      @supports (animation-timeline: scroll()) {
+        .scroll-reveal {
+          animation: fade-in-up 0.6s ease-out both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 30%;
+        }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+      }
+    }
+
+    @layer utilities {
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        .gsap-reveal { opacity: 1; transform: none; }
+        .availability-badge__dot { animation: none; }
+      }
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) { --hifi-bg: var(--color-bg); --hifi-surface: var(--color-surface); --hifi-text: var(--color-text); --hifi-accent: var(--color-accent); }
+      }
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+        .nav-list { display: none; }
+        .identity { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+        .portrait { width: 200px; height: 200px; }
+        .identity-content { align-items: center; }
+      }
+      @media (max-width: 768px) {
+        .skills-matrix { font-size: var(--typography-fontSize-sm, 0.707rem); }
+        .skills-matrix__header, .skills-matrix__label, .skills-matrix__cell { padding: var(--spacing-2, 8px); }
+      }
+      @media (min-width: 1024px) {
+        .wf-main { padding-left: var(--spacing-16, 64px); padding-right: var(--spacing-16, 64px); }
+      }
+      @media (min-width: 1280px) {
+        .page-container { padding: 0 var(--spacing-16, 64px); }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--hifi">
+
+  <!-- VISUAL-HOOK: timeline-trace — Timeline dots illuminate sequentially as the section enters view, tracing the career path like a circuit board -->
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="mockup-homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="mockup-homepage.html" class="nav-link">Work</a></li>
+          <li><a href="mockup-design-system.html" class="nav-link">System</a></li>
+          <li><a href="mockup-about.html" class="nav-link" aria-current="page">About</a></li>
+          <li><a href="mockup-contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle>T</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wf-main" data-state="default">
+
+    <!-- Identity -->
+    <section aria-labelledby="identity-heading">
+      <p class="section-eyebrow gsap-reveal">About</p>
+      <div class="identity gsap-reveal">
+        <div class="portrait" aria-label="Portrait placeholder">280 &times; 280</div>
+        <div class="identity-content">
+          <h1 class="identity-name" id="identity-heading">SignalframeUX</h1>
+          <p class="identity-title">Design Engineer</p>
+          <p class="identity-bio">I build design systems and interfaces where systematic thinking meets engineering craft. My practice bridges the gap between design intent and production reality, ensuring every pixel serves both aesthetic and functional purpose.</p>
+          <div class="availability-badge" role="status" aria-live="polite">
+            <span class="availability-badge__dot" aria-hidden="true"></span>
+            <span>Available for projects</span>
+          </div>
+          <ul class="social-links" aria-label="Social profiles">
+            <li><a href="https://github.com/signalframeUX" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in new tab)">GH</a></li>
+            <li><a href="https://linkedin.com/in/signalframeUX" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in new tab)">LI</a></li>
+            <li><a href="https://x.com/signalframeUX" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter (opens in new tab)">X</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section aria-labelledby="experience-heading">
+      <p class="section-eyebrow gsap-reveal">Experience</p>
+      <h2 class="sr-only" id="experience-heading">Experience Timeline</h2>
+      <div class="timeline gsap-reveal" role="list" aria-label="Career timeline">
+        <div class="timeline-item" role="listitem">
+          <p class="timeline-date">2024 &mdash; Present</p>
+          <p class="timeline-role">Design Engineer, Independent</p>
+          <p class="timeline-org">SignalframeUX</p>
+          <p class="timeline-desc">Building design systems and narrative-driven portfolios that demonstrate engineering capability through construction. Token-first approach with OKLCH color science.</p>
+        </div>
+        <div class="timeline-item" role="listitem">
+          <p class="timeline-date">2022 &mdash; 2024</p>
+          <p class="timeline-role">Senior Design Engineer</p>
+          <p class="timeline-org">Product Studio</p>
+          <p class="timeline-desc">Led design system architecture for B2B SaaS products. Established component libraries, design tokens, and documentation standards. Shipped 40+ components.</p>
+        </div>
+        <div class="timeline-item" role="listitem">
+          <p class="timeline-date">2020 &mdash; 2022</p>
+          <p class="timeline-role">UI Engineer</p>
+          <p class="timeline-org">Digital Agency</p>
+          <p class="timeline-desc">Built responsive interfaces and interactive prototypes for enterprise clients. Focused on accessibility and performance optimization.</p>
+        </div>
+        <div class="timeline-item" role="listitem">
+          <p class="timeline-date">2018 &mdash; 2020</p>
+          <p class="timeline-role">Product Designer</p>
+          <p class="timeline-org">Startup</p>
+          <p class="timeline-desc">End-to-end product design for consumer applications. User research, wireframing, prototyping, and design handoff. First exposure to design systems.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Matrix -->
+    <section aria-labelledby="skills-heading">
+      <p class="section-eyebrow gsap-reveal">Capabilities</p>
+      <h2 class="sr-only" id="skills-heading">Skills Matrix</h2>
+      <div class="skills-matrix gsap-reveal" role="table" aria-label="Skills by discipline">
+        <div class="skills-matrix__header" role="columnheader">Skill</div>
+        <div class="skills-matrix__header" role="columnheader">Design</div>
+        <div class="skills-matrix__header" role="columnheader">Eng</div>
+        <div class="skills-matrix__header" role="columnheader">Strategy</div>
+        <div class="skills-matrix__header" role="columnheader">Ship</div>
+
+        <div class="skills-matrix__label" role="rowheader">Design Systems</div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+
+        <div class="skills-matrix__label" role="rowheader">UI/UX Design</div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+
+        <div class="skills-matrix__label" role="rowheader">Frontend Engineering</div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+
+        <div class="skills-matrix__label" role="rowheader">Interaction Design</div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+
+        <div class="skills-matrix__label" role="rowheader">Accessibility</div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot"></span></div></div>
+        <div class="skills-matrix__cell" role="cell"><div class="skill-level"><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span><span class="skill-dot skill-dot--filled"></span></div></div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section gsap-reveal" aria-labelledby="cta-heading">
+      <h2 id="cta-heading" class="cta-heading">Let's build something together</h2>
+      <p class="cta-text">I'm always interested in design engineering challenges. Whether it's a design system, a product interface, or a creative collaboration.</p>
+      <a href="mockup-contact.html" class="cta-button">Get in Touch</a>
+    </section>
+
+  </main>
+
+  <!-- State variants -->
+  <div data-state="loading" class="wf-main" style="text-align:center;padding:200px 32px;" aria-live="polite"><p style="color:var(--hifi-text-muted)">Loading...</p></div>
+  <div data-state="error" class="wf-main" style="text-align:center;padding:200px 32px;" role="alert"><p style="color:var(--color-error-400,#ef4444)">Error loading page.</p></div>
+  <div data-state="empty" class="wf-main" style="text-align:center;padding:200px 32px;"><p style="color:var(--hifi-text-muted)">No content.</p></div>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="mockup-homepage.html">Work</a></li>
+        <li><a href="mockup-design-system.html">System</a></li>
+        <li><a href="mockup-about.html">About</a></li>
+        <li><a href="mockup-contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    (function() {
+      var t = document.querySelector('[data-theme-toggle]');
+      if (!t) return;
+      t.addEventListener('click', function() {
+        var h = document.documentElement, n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        h.setAttribute('data-theme', n); t.setAttribute('aria-pressed', n === 'dark');
+      });
+    })();
+
+    // GSAP
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero entrance
+      var heroTl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.7 } });
+      var heroEls = document.querySelectorAll('section:first-of-type .gsap-reveal');
+      heroEls.forEach(function(el, i) { heroTl.to(el, { opacity: 1, y: 0 }, 0.15 * i); });
+
+      // Timeline-trace: sequential dot illumination
+      var timelineItems = document.querySelectorAll('.timeline-item');
+      timelineItems.forEach(function(item, i) {
+        ScrollTrigger.create({
+          trigger: item,
+          start: 'top 75%',
+          onEnter: function() {
+            gsap.delayedCall(i * 0.15, function() {
+              item.classList.add('is-active');
+            });
+          }
+        });
+      });
+
+      // Remaining gsap reveals
+      document.querySelectorAll('.gsap-reveal').forEach(function(el) {
+        if (el.closest('section:first-of-type')) return;
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

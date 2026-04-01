@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- WIREFRAME-SOURCE: WFR-case-study-v1.html | Generated: 2026-03-31 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Study — SignalframeUX Hi-Fi Mockup</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/ScrollTrigger.min.js"></script>
+  <style>
+    @layer tokens, mockup-layout, components, states, animations, utilities;
+
+    @layer tokens {
+      :root {
+        --hifi-bg: var(--color-bg, oklch(0.15 0.02 298));
+        --hifi-surface: var(--color-surface, oklch(0.20 0.02 298));
+        --hifi-surface-raised: var(--color-surface-raised, oklch(0.25 0.02 298));
+        --hifi-accent: var(--color-accent, oklch(0.55 0.18 298));
+        --hifi-accent-hover: var(--color-accent-hover, oklch(0.65 0.18 298));
+        --hifi-text: var(--color-text, oklch(0.93 0.01 298));
+        --hifi-text-secondary: var(--color-text-secondary, oklch(0.65 0.03 298));
+        --hifi-text-muted: var(--color-text-muted, oklch(0.50 0.02 298));
+        --hifi-border: var(--color-border, oklch(0.30 0.03 298));
+        --hifi-border-subtle: var(--color-border-subtle, oklch(0.25 0.02 298));
+        --hifi-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --hifi-font: 'Inter', var(--typography-fontFamily-body, system-ui, sans-serif);
+        --hifi-mono: var(--typography-fontFamily-mono, ui-monospace, monospace);
+      }
+    }
+
+    @layer mockup-layout {
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body.pde-layout--hifi {
+        font-family: var(--hifi-font);
+        font-size: var(--typography-fontSize-base, 1rem);
+        line-height: var(--typography-lineHeight-normal, 1.5);
+        color: var(--hifi-text);
+        background: var(--hifi-bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-semantic-gutter, 32px);
+      }
+
+      .main-content {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: var(--spacing-semantic-page, 80px) var(--spacing-semantic-gutter, 32px);
+      }
+
+      .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+      }
+    }
+
+    @layer components {
+      /* === Skip Link === */
+      .skip-link {
+        position: absolute; top: -100%; left: var(--spacing-4, 16px);
+        z-index: 1000; padding: var(--spacing-2, 8px) var(--spacing-4, 16px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: var(--typography-fontWeight-semibold, 600);
+        text-decoration: none; border-radius: var(--border-radius-sm, 4px);
+        transition: top var(--motion-duration-fast, 100ms) var(--motion-easing-out);
+      }
+      .skip-link:focus { top: var(--spacing-4, 16px); outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+
+      /* === Progress Ribbon === */
+      /* VISUAL-HOOK: chapter-progress-ribbon — A thin accent-colored progress indicator at the top of the viewport that fills as the reader scrolls through the case study chapters -->
+      .progress-ribbon {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--hifi-accent), var(--color-primary-300, oklch(0.77 0.099 298)));
+        z-index: 200;
+        transition: width 50ms linear;
+      }
+
+      /* === Header === */
+      .site-header {
+        position: sticky; top: 0; z-index: 100;
+        background: oklch(0.15 0.02 298 / 0.85);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: var(--border-width-thin, 1px) solid var(--hifi-border-subtle);
+        padding: var(--spacing-4, 16px) 0;
+      }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4, 16px); }
+      .site-logo {
+        font-family: var(--hifi-font); font-size: var(--typography-fontSize-lg, 1.414rem);
+        font-weight: var(--typography-fontWeight-bold, 700); color: var(--hifi-accent);
+        text-decoration: none; letter-spacing: var(--typography-letterSpacing-tight, -0.025em);
+      }
+      .site-logo:hover { opacity: 0.8; }
+      .nav-list { display: flex; list-style: none; gap: var(--spacing-6, 24px); align-items: center; }
+      .nav-link {
+        color: var(--hifi-text-secondary); text-decoration: none;
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        font-variation-settings: 'wght' 400;
+        transition: color var(--motion-duration-fast, 100ms) var(--motion-easing-default),
+                    font-variation-settings var(--motion-duration-normal, 200ms) var(--hifi-spring);
+      }
+      .nav-link:hover, .nav-link:focus { color: var(--hifi-accent); font-variation-settings: 'wght' 700; }
+      .nav-link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 4px; border-radius: 2px; }
+      .nav-link[aria-current="page"] { color: var(--hifi-accent); font-variation-settings: 'wght' 600; }
+      .header-actions { display: flex; align-items: center; gap: var(--spacing-3, 12px); }
+      .btn-icon {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 36px; height: 36px;
+        border: var(--border-width-thin, 1px) solid var(--hifi-border);
+        border-radius: var(--border-radius-sm, 4px);
+        background: var(--hifi-surface); color: var(--hifi-text-secondary);
+        cursor: pointer; font-family: var(--hifi-mono); font-size: var(--typography-fontSize-xs, 0.5rem);
+        transition: border-color var(--motion-duration-fast, 100ms) var(--motion-easing-default),
+                    transform var(--motion-duration-normal, 200ms) var(--hifi-spring);
+      }
+      .btn-icon:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: scale(1.05); }
+      .btn-icon:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .btn-icon:active { transform: scale(0.95); }
+      .btn-icon[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .btn-icon[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .mobile-menu-toggle { display: none; }
+      .kbd {
+        font-family: var(--hifi-mono); font-size: var(--typography-fontSize-xs, 0.5rem);
+        color: var(--hifi-text-muted); border: var(--border-width-thin, 1px) solid var(--hifi-border);
+        border-radius: var(--border-radius-xs, 2px); padding: 1px 5px; background: var(--hifi-surface);
+      }
+
+      /* === Prologue === */
+      .chapter-prologue {
+        margin-bottom: var(--spacing-semantic-section, 64px);
+        padding-bottom: var(--spacing-semantic-section, 64px);
+        border-bottom: 1px solid var(--hifi-border-subtle);
+      }
+
+      .chapter-number {
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        color: var(--hifi-accent);
+        letter-spacing: var(--typography-letterSpacing-widest, 0.1em);
+        text-transform: uppercase;
+        margin-bottom: var(--spacing-4, 16px);
+        font-weight: var(--typography-fontWeight-semibold, 600);
+      }
+
+      .chapter-title {
+        font-family: var(--hifi-font);
+        font-size: clamp(2rem, 5vw, var(--typography-fontSize-3xl, 4rem));
+        font-weight: var(--typography-fontWeight-bold, 700);
+        line-height: var(--typography-lineHeight-tight, 1.1);
+        letter-spacing: var(--typography-letterSpacing-tighter, -0.05em);
+        color: var(--hifi-text);
+        margin-bottom: var(--spacing-8, 32px);
+      }
+
+      .chapter-meta {
+        display: flex; gap: var(--spacing-8, 32px);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        color: var(--hifi-text-muted);
+        flex-wrap: wrap;
+      }
+      .chapter-meta dt {
+        font-weight: var(--typography-fontWeight-semibold, 600);
+        color: var(--hifi-text-secondary);
+        margin-bottom: var(--spacing-1, 4px);
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-xs, 0.5rem);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-wider, 0.05em);
+      }
+      .chapter-meta dd { margin-left: 0; }
+
+      .hero-image {
+        width: 100%; height: 360px;
+        background: linear-gradient(135deg, oklch(0.20 0.04 298), oklch(0.25 0.06 298));
+        border-radius: var(--border-radius-lg, 12px);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+        border: 1px solid var(--hifi-border-subtle);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--hifi-text-muted); font-family: var(--hifi-mono); font-size: var(--typography-fontSize-sm, 0.707rem);
+        overflow: hidden; position: relative;
+      }
+      .hero-image::before {
+        content: ''; position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 30% 50%, oklch(0.55 0.18 298 / 0.08) 0%, transparent 70%);
+      }
+
+      .problem-statement {
+        font-size: var(--typography-fontSize-lg, 1.414rem);
+        line-height: var(--typography-lineHeight-relaxed, 1.625);
+        color: var(--hifi-text-secondary);
+        max-width: 72ch;
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+      }
+
+      .constraints-list {
+        display: flex; flex-wrap: wrap; gap: var(--spacing-3, 12px); list-style: none;
+      }
+      .constraints-list li {
+        padding: var(--spacing-1, 4px) var(--spacing-4, 16px);
+        border: var(--border-width-thin, 1px) solid var(--hifi-border);
+        border-radius: var(--border-radius-full, 9999px);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        color: var(--hifi-text-muted);
+        font-family: var(--hifi-mono);
+        transition: border-color var(--motion-duration-fast, 100ms) var(--motion-easing-default);
+      }
+      .constraints-list li:hover { border-color: var(--hifi-accent); color: var(--hifi-text-secondary); }
+
+      /* === Chapter Sections === */
+      .chapter-section { margin-bottom: var(--spacing-semantic-section, 64px); }
+
+      .section-label {
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-xs, 0.5rem);
+        font-weight: var(--typography-fontWeight-semibold, 600);
+        letter-spacing: var(--typography-letterSpacing-widest, 0.1em);
+        text-transform: uppercase;
+        color: var(--hifi-accent);
+        margin-bottom: var(--spacing-3, 12px);
+      }
+
+      .section-heading {
+        font-family: var(--hifi-font);
+        font-size: clamp(1.5rem, 3vw, var(--typography-fontSize-xl, 2rem));
+        font-weight: var(--typography-fontWeight-bold, 700);
+        line-height: var(--typography-lineHeight-snug, 1.3);
+        color: var(--hifi-text);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+        letter-spacing: var(--typography-letterSpacing-tight, -0.025em);
+      }
+
+      .section-body {
+        color: var(--hifi-text-secondary);
+        line-height: var(--typography-lineHeight-relaxed, 1.625);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+        max-width: 72ch;
+      }
+
+      /* === Placeholder visuals === */
+      .visual-block {
+        width: 100%; border-radius: var(--border-radius-lg, 12px);
+        border: 1px solid var(--hifi-border-subtle);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--hifi-text-muted); font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+        overflow: hidden; position: relative;
+      }
+      .visual-block--medium { height: 240px; background: linear-gradient(135deg, var(--hifi-surface) 0%, oklch(0.20 0.04 298) 100%); }
+      .visual-block--wide { height: 400px; background: linear-gradient(135deg, var(--hifi-surface) 0%, oklch(0.20 0.04 298) 100%); }
+      .visual-block--code {
+        height: 200px;
+        background: oklch(0.12 0.01 298);
+        font-family: var(--hifi-mono);
+        border-color: oklch(0.25 0.03 298);
+      }
+      .visual-block--demo {
+        height: 360px;
+        background: linear-gradient(135deg, oklch(0.18 0.03 298), oklch(0.22 0.05 298));
+        border-color: oklch(0.55 0.18 298 / 0.3);
+      }
+
+      /* === Before/After === */
+      .before-after {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-semantic-gutter, 32px);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+      }
+      .before-after__label {
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-xs, 0.5rem);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-widest, 0.1em);
+        color: var(--hifi-text-muted);
+        margin-bottom: var(--spacing-2, 8px);
+        font-weight: var(--typography-fontWeight-semibold, 600);
+      }
+      .before-after .visual-block { height: 280px; background: linear-gradient(135deg, var(--hifi-surface), oklch(0.22 0.03 298)); }
+
+      /* === Exploration Gallery === */
+      .exploration-gallery {
+        display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-semantic-gutter, 32px);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+      }
+      .exploration-gallery .visual-block { height: 200px; background: linear-gradient(135deg, var(--hifi-surface), oklch(0.22 0.03 298)); margin-bottom: 0; }
+
+      /* === Metrics === */
+      .metrics-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-semantic-gutter, 32px);
+        margin-bottom: var(--spacing-semantic-stack, 24px);
+      }
+      .metric-card {
+        padding: var(--spacing-6, 24px);
+        border: var(--border-width-thin, 1px) solid var(--hifi-border-subtle);
+        border-radius: var(--border-radius-lg, 12px);
+        background: var(--hifi-surface);
+        text-align: center;
+        transition: border-color var(--motion-duration-normal, 200ms) var(--motion-easing-default),
+                    transform var(--motion-duration-normal, 200ms) var(--hifi-spring);
+      }
+      .metric-card:hover { border-color: var(--hifi-accent); transform: translateY(-2px); }
+      .metric-card__value {
+        font-family: var(--hifi-font);
+        font-size: var(--typography-fontSize-2xl, 2.828rem);
+        font-weight: var(--typography-fontWeight-bold, 700);
+        color: var(--hifi-accent);
+        line-height: var(--typography-lineHeight-tight, 1.1);
+        margin-bottom: var(--spacing-2, 8px);
+      }
+      .metric-card__label {
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        color: var(--hifi-text-muted);
+      }
+
+      /* === Chapter Nav === */
+      .chapter-nav {
+        display: flex; justify-content: space-between; align-items: center;
+        padding-top: var(--spacing-semantic-section, 64px);
+        border-top: 1px solid var(--hifi-border-subtle);
+        margin-top: var(--spacing-semantic-section, 64px);
+      }
+      .chapter-nav__link {
+        display: flex; flex-direction: column; gap: var(--spacing-1, 4px);
+        text-decoration: none; padding: var(--spacing-4, 16px) var(--spacing-6, 24px);
+        border: var(--border-width-thin, 1px) solid var(--hifi-border-subtle);
+        border-radius: var(--border-radius-lg, 12px);
+        min-width: 220px;
+        background: var(--hifi-surface);
+        transition: border-color var(--motion-duration-normal, 200ms) var(--motion-easing-default),
+                    transform var(--motion-duration-normal, 200ms) var(--hifi-spring);
+      }
+      .chapter-nav__link:hover { border-color: var(--hifi-accent); transform: translateY(-2px); }
+      .chapter-nav__link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .chapter-nav__link--next { text-align: right; }
+      .chapter-nav__direction {
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-xs, 0.5rem);
+        text-transform: uppercase;
+        letter-spacing: var(--typography-letterSpacing-widest, 0.1em);
+        color: var(--hifi-text-muted);
+      }
+      .chapter-nav__title {
+        font-size: var(--typography-fontSize-base, 1rem);
+        font-weight: var(--typography-fontWeight-medium, 500);
+        color: var(--hifi-text);
+      }
+
+      /* === Footer === */
+      .site-footer {
+        border-top: var(--border-width-thin, 1px) solid var(--hifi-border-subtle);
+        padding: var(--spacing-8, 32px) 0;
+        margin-top: var(--spacing-semantic-section, 64px);
+      }
+      .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4, 16px); }
+      .footer-links { display: flex; list-style: none; gap: var(--spacing-4, 16px); }
+      .footer-links a { color: var(--hifi-text-muted); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); transition: color var(--motion-duration-fast, 100ms); }
+      .footer-links a:hover { color: var(--hifi-accent); }
+      .footer-copy { font-size: var(--typography-fontSize-xs, 0.5rem); color: var(--hifi-text-muted); }
+
+      .scroll-to-top {
+        position: fixed; bottom: var(--spacing-6, 24px); right: var(--spacing-6, 24px);
+        width: 40px; height: 40px;
+        border: var(--border-width-thin, 1px) solid var(--hifi-border);
+        border-radius: var(--border-radius-full, 9999px);
+        background: var(--hifi-surface); color: var(--hifi-text-muted);
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); z-index: 50;
+        transition: all var(--motion-duration-fast, 100ms) var(--hifi-spring);
+      }
+      .scroll-to-top:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: translateY(-2px); }
+    }
+
+    @layer states {
+      [data-state="loading"] { display: none; }
+      [data-state="error"] { display: none; }
+      [data-state="empty"] { display: none; }
+    }
+
+    @layer animations {
+      .gsap-reveal { opacity: 0; transform: translateY(30px); }
+
+      @supports (animation-timeline: scroll()) {
+        .scroll-reveal {
+          animation: fade-in-up 0.6s ease-out both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 30%;
+        }
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      }
+    }
+
+    @layer utilities {
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .gsap-reveal { opacity: 1; transform: none; }
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) {
+          --hifi-bg: var(--color-bg); --hifi-surface: var(--color-surface);
+          --hifi-text: var(--color-text); --hifi-accent: var(--color-accent);
+        }
+      }
+
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+        .nav-list { display: none; }
+      }
+
+      @media (max-width: 768px) {
+        .chapter-title { font-size: var(--typography-fontSize-2xl, 2.828rem); }
+        .chapter-meta { flex-direction: column; gap: var(--spacing-4, 16px); }
+        .before-after { grid-template-columns: 1fr; }
+        .exploration-gallery { grid-template-columns: 1fr; }
+        .metrics-grid { grid-template-columns: 1fr; }
+        .chapter-nav { flex-direction: column; gap: var(--spacing-4, 16px); }
+        .chapter-nav__link { width: 100%; min-width: auto; }
+        .chapter-nav__link--next { text-align: left; }
+      }
+
+      @media (min-width: 1024px) {
+        .main-content { padding-left: var(--spacing-16, 64px); padding-right: var(--spacing-16, 64px); }
+      }
+
+      @media (min-width: 1280px) {
+        .page-container { padding: 0 var(--spacing-16, 64px); }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--hifi">
+
+  <!-- VISUAL-HOOK: chapter-progress-ribbon — A thin accent-colored progress indicator at the top of the viewport that fills as the reader scrolls through the case study chapters -->
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="progress-ribbon" id="progressRibbon" aria-hidden="true"></div>
+
+  <!-- ====== HEADER ====== -->
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="mockup-homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="mockup-homepage.html" class="nav-link" aria-current="page">Work</a></li>
+          <li><a href="mockup-design-system.html" class="nav-link">System</a></li>
+          <li><a href="mockup-about.html" class="nav-link">About</a></li>
+          <li><a href="mockup-contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette" title="Command Palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle>T</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== MAIN ====== -->
+  <main id="main" class="main-content" data-state="default">
+
+    <!-- === 1. PROLOGUE === -->
+    <section class="chapter-prologue" aria-labelledby="chapter-title">
+      <p class="chapter-number gsap-reveal" aria-label="Chapter number">Chapter 01</p>
+      <h1 class="chapter-title gsap-reveal" id="chapter-title">Building the Foundation</h1>
+
+      <dl class="chapter-meta gsap-reveal">
+        <div><dt>Role</dt><dd>Design Engineer</dd></div>
+        <div><dt>Timeline</dt><dd>Q1 2026 &mdash; 6 weeks</dd></div>
+        <div><dt>Stack</dt><dd>CSS Custom Properties, OKLCH, Next.js</dd></div>
+        <div><dt>Team</dt><dd>Solo (Design + Engineering)</dd></div>
+      </dl>
+
+      <div class="hero-image gsap-reveal" aria-label="Case study hero image">SignalframeUX Design System Hero</div>
+
+      <p class="problem-statement gsap-reveal">Design portfolios rarely demonstrate engineering depth. I needed a token-first design system that could power an entire portfolio while serving as proof-of-work for systematic design engineering.</p>
+
+      <ul class="constraints-list gsap-reveal" aria-label="Project constraints">
+        <li>WCAG 2.2 AA minimum</li>
+        <li>Zero JavaScript for core layout</li>
+        <li>OKLCH perceptual uniformity</li>
+        <li>Progressive enhancement</li>
+      </ul>
+    </section>
+
+    <!-- === 2. DESIGN EXPLORATION === -->
+    <section class="chapter-section" aria-labelledby="exploration-heading">
+      <p class="section-label gsap-reveal">Phase 01</p>
+      <h2 class="section-heading gsap-reveal" id="exploration-heading">Design Exploration</h2>
+      <p class="section-body gsap-reveal">Starting from color science fundamentals, I explored OKLCH color spaces to build a perceptually uniform palette. The hue angle 298 (violet) anchors the primary scale, with systematic lightness steps ensuring consistent contrast ratios.</p>
+
+      <div class="exploration-gallery gsap-reveal" aria-label="Design exploration artifacts">
+        <div class="visual-block" aria-label="Color space exploration">Color Space Exploration</div>
+        <div class="visual-block" aria-label="Typography scale study">Typography Scale Study</div>
+        <div class="visual-block" aria-label="Spacing system wireframe">Spacing System Wireframe</div>
+        <div class="visual-block" aria-label="Component anatomy sketch">Component Anatomy Sketch</div>
+      </div>
+
+      <p class="section-body gsap-reveal">The before/after comparison reveals how systematic token application transforms raw layouts into cohesive, branded interfaces.</p>
+
+      <div class="before-after gsap-reveal" aria-label="Before and after comparison">
+        <div>
+          <p class="before-after__label">Before</p>
+          <div class="visual-block" aria-label="Before: unstyled layout">Raw HTML Layout</div>
+        </div>
+        <div>
+          <p class="before-after__label">After</p>
+          <div class="visual-block" aria-label="After: token-powered layout">Token-Powered Layout</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === 3. INTERACTIVE DEMO === -->
+    <section class="chapter-section" aria-labelledby="demo-heading">
+      <p class="section-label gsap-reveal">Phase 02</p>
+      <h2 class="section-heading gsap-reveal" id="demo-heading">Interactive Token Explorer</h2>
+      <p class="section-body gsap-reveal">An interactive demo allowing visitors to manipulate design tokens in real-time, seeing how changes cascade through the component hierarchy. Built with progressive enhancement: core content is static, interactivity enhances.</p>
+
+      <div class="visual-block visual-block--demo gsap-reveal" role="region" aria-label="Interactive demo area">
+        Interactive Token Explorer Demo<br><small>Progressively enhanced component</small>
+      </div>
+
+      <div class="visual-block visual-block--medium gsap-reveal" aria-label="Component detail view">Component Cascade Visualization</div>
+    </section>
+
+    <!-- === 4. ENGINEERING EXECUTION === -->
+    <section class="chapter-section" aria-labelledby="engineering-heading">
+      <p class="section-label gsap-reveal">Phase 03</p>
+      <h2 class="section-heading gsap-reveal" id="engineering-heading">Engineering Execution</h2>
+      <p class="section-body gsap-reveal">The token system compiles from a single JSON source to CSS custom properties, with automatic dark mode inversion, contrast-checked semantic aliases, and typed TypeScript exports.</p>
+
+      <div class="visual-block visual-block--code gsap-reveal" role="region" aria-label="Token compilation pipeline">
+        tokens.json &rarr; tokens-to-css &rarr; tokens.css + tokens.ts
+      </div>
+
+      <p class="section-body gsap-reveal">Performance was non-negotiable. The entire token system adds less than 4KB gzipped, with zero layout shift and sub-100ms paint times on 3G throttled connections.</p>
+
+      <div class="visual-block visual-block--code gsap-reveal" role="region" aria-label="Performance metrics code">
+        Lighthouse: Performance 99 | Accessibility 100 | Best Practices 100
+      </div>
+
+      <div class="visual-block visual-block--medium gsap-reveal" aria-label="Architecture diagram">CSS Architecture: @layer cascade diagram</div>
+    </section>
+
+    <!-- === 5. OUTCOMES === -->
+    <section class="chapter-section" aria-labelledby="outcomes-heading">
+      <p class="section-label gsap-reveal">Results</p>
+      <h2 class="section-heading gsap-reveal" id="outcomes-heading">Impact &amp; Outcomes</h2>
+      <p class="section-body gsap-reveal">The design system now powers every page of this portfolio, demonstrating that systematic design engineering produces measurable, maintainable results.</p>
+
+      <div class="metrics-grid gsap-reveal" aria-label="Impact metrics">
+        <div class="metric-card">
+          <p class="metric-card__value">47</p>
+          <p class="metric-card__label">Design Tokens</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-card__value">100</p>
+          <p class="metric-card__label">Accessibility Score</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-card__value">3.8KB</p>
+          <p class="metric-card__label">Token CSS (gzipped)</p>
+        </div>
+      </div>
+
+      <p class="section-body gsap-reveal">This case study itself is built on the system it describes. Every color, spacing value, and typographic decision you see is a token at work.</p>
+    </section>
+
+    <!-- === CHAPTER NAVIGATION === -->
+    <nav class="chapter-nav gsap-reveal" aria-label="Chapter navigation">
+      <a href="mockup-homepage.html" class="chapter-nav__link chapter-nav__link--prev" aria-label="Previous: Homepage">
+        <span class="chapter-nav__direction">&larr; Previous</span>
+        <span class="chapter-nav__title">Homepage</span>
+      </a>
+      <a href="mockup-case-study.html" class="chapter-nav__link chapter-nav__link--next" aria-label="Next chapter: Engineering Delight">
+        <span class="chapter-nav__direction">Next &rarr;</span>
+        <span class="chapter-nav__title">Engineering Delight</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <!-- State variants (hidden) -->
+  <div data-state="loading" class="main-content" style="text-align:center;padding:200px 32px;" aria-live="polite"><p style="color:var(--hifi-text-muted)">Loading case study...</p></div>
+  <div data-state="error" class="main-content" style="text-align:center;padding:200px 32px;" role="alert"><p style="color:var(--color-error-400,#ef4444)">Failed to load case study.</p></div>
+  <div data-state="empty" class="main-content" style="text-align:center;padding:200px 32px;"><p style="color:var(--hifi-text-muted)">No case study content found.</p></div>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="mockup-homepage.html">Work</a></li>
+        <li><a href="mockup-design-system.html">System</a></li>
+        <li><a href="mockup-about.html">About</a></li>
+        <li><a href="mockup-contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <a href="#main" class="scroll-to-top" aria-label="Scroll to top">&uarr;</a>
+
+  <script>
+    // Theme toggle
+    (function() {
+      var toggle = document.querySelector('[data-theme-toggle]');
+      if (!toggle) return;
+      toggle.addEventListener('click', function() {
+        var html = document.documentElement;
+        var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        toggle.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
+      });
+    })();
+
+    // Progress ribbon
+    (function() {
+      var ribbon = document.getElementById('progressRibbon');
+      if (!ribbon) return;
+      window.addEventListener('scroll', function() {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        var pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+        ribbon.style.width = pct + '%';
+      }, { passive: true });
+    })();
+
+    // GSAP entrance choreography
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Prologue entrance: chapter number -> title -> meta -> hero (reading order)
+      var prologueTimeline = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.7 } });
+      var prologueEls = document.querySelectorAll('.chapter-prologue .gsap-reveal');
+      prologueEls.forEach(function(el, i) {
+        prologueTimeline.to(el, { opacity: 1, y: 0 }, 0.12 * i);
+      });
+
+      // Scroll-triggered for remaining sections
+      document.querySelectorAll('.chapter-section .gsap-reveal, .chapter-nav.gsap-reveal').forEach(function(el) {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

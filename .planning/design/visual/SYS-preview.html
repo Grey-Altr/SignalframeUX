@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignalframeUX Design System Preview</title>
+  <link rel="stylesheet" href="../assets/tokens.css">
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--typography-fontFamily-body);
+      font-size: var(--typography-fontSize-base);
+      line-height: var(--typography-lineHeight-normal);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 40px;
+      transition: background 200ms, color 200ms;
+    }
+
+    h1, h2, h3 { font-family: var(--typography-fontFamily-display); }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .preview-header h1 {
+      font-size: var(--typography-fontSize-2xl);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: var(--typography-fontSize-sm);
+      color: var(--color-text);
+      transition: all 100ms;
+    }
+    .theme-toggle:hover { background: var(--color-bg-muted); }
+
+    section { margin-bottom: 64px; }
+    section > h2 {
+      font-size: var(--typography-fontSize-xl);
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: -0.025em;
+    }
+
+    /* Color Swatches */
+    .palette { margin-bottom: 24px; }
+    .palette-label {
+      font-size: var(--typography-fontSize-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      color: var(--color-text-secondary);
+    }
+    .swatch-row {
+      display: flex;
+      gap: 4px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .swatch {
+      flex: 1;
+      height: 56px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      color: oklch(0.97 0.005 298);
+    }
+    .swatch.light-text { color: oklch(0.15 0.008 298); }
+
+    /* Typography Scale */
+    .type-specimen { margin-bottom: 16px; }
+    .type-specimen .label {
+      font-size: var(--typography-fontSize-xs);
+      color: var(--color-text-muted);
+      font-family: var(--typography-fontFamily-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 2px;
+    }
+
+    /* Spacing Bars */
+    .spacing-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .spacing-bar {
+      height: 20px;
+      background: var(--color-primary-400);
+      border-radius: 4px;
+      opacity: 0.8;
+    }
+    .spacing-label {
+      font-family: var(--typography-fontFamily-mono);
+      font-size: var(--typography-fontSize-xs);
+      color: var(--color-text-muted);
+      min-width: 80px;
+    }
+
+    /* Shadow Cards */
+    .shadow-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .shadow-card {
+      padding: 24px 16px;
+      background: var(--color-surface);
+      border-radius: 12px;
+      text-align: center;
+      font-family: var(--typography-fontFamily-mono);
+      font-size: var(--typography-fontSize-sm);
+      color: var(--color-text-secondary);
+    }
+
+    /* Component Demos */
+    .component-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .demo-box {
+      padding: 24px;
+      background: var(--color-surface-raised);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: 12px;
+    }
+    .demo-box h3 {
+      font-size: var(--typography-fontSize-lg);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    /* Inline component styles for preview */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-family: var(--typography-fontFamily-body);
+      font-size: var(--typography-fontSize-base);
+      font-weight: 500;
+      line-height: 1.3;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 100ms;
+    }
+    .btn-primary {
+      background: var(--color-primary-500);
+      color: var(--color-neutral-50);
+      border-color: var(--color-primary-500);
+    }
+    .btn-primary:hover { background: var(--color-primary-600); border-color: var(--color-primary-600); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-primary-500);
+      border-color: var(--color-primary-300);
+    }
+    .btn-secondary:hover { background: var(--color-primary-50); }
+    .btn-sm { padding: 4px 12px; font-size: var(--typography-fontSize-sm); border-radius: 4px; }
+    .btn-lg { padding: 12px 24px; font-size: var(--typography-fontSize-lg); border-radius: 12px; }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border-subtle);
+      font-weight: 600;
+    }
+    .card-body { padding: 20px; }
+    .card-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--color-border-subtle);
+    }
+
+    .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .field label {
+      font-size: var(--typography-fontSize-sm);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+    .field input {
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: var(--typography-fontSize-base);
+      color: var(--color-text);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      transition: border-color 100ms;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--color-primary-500);
+      box-shadow: 0 0 0 3px oklch(0.55 0.18 298 / 0.15);
+    }
+    .field .error-msg {
+      font-size: 10px;
+      color: var(--color-error-500);
+    }
+    .field input.input-error { border-color: var(--color-error-500); }
+
+    [data-theme="dark"] .btn-primary {
+      background: var(--color-primary-400);
+      border-color: var(--color-primary-400);
+      color: var(--color-neutral-950);
+    }
+    [data-theme="dark"] .btn-secondary {
+      color: var(--color-primary-300);
+      border-color: var(--color-primary-700);
+    }
+    [data-theme="dark"] .field input {
+      background: var(--color-neutral-900);
+      border-color: var(--color-neutral-700);
+      color: var(--color-neutral-50);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-header">
+    <h1>SignalframeUX Design System</h1>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span id="theme-icon">&#9790;</span>
+      <span id="theme-label">Dark Mode</span>
+    </button>
+  </div>
+
+  <!-- COLOR PALETTES -->
+  <section>
+    <h2>Color Palettes</h2>
+
+    <div class="palette">
+      <div class="palette-label">Primary (H=298)</div>
+      <div class="swatch-row">
+        <div class="swatch light-text" style="background: var(--color-primary-50)">50</div>
+        <div class="swatch light-text" style="background: var(--color-primary-100)">100</div>
+        <div class="swatch light-text" style="background: var(--color-primary-200)">200</div>
+        <div class="swatch light-text" style="background: var(--color-primary-300)">300</div>
+        <div class="swatch" style="background: var(--color-primary-400)">400</div>
+        <div class="swatch" style="background: var(--color-primary-500)">500</div>
+        <div class="swatch" style="background: var(--color-primary-600)">600</div>
+        <div class="swatch" style="background: var(--color-primary-700)">700</div>
+        <div class="swatch" style="background: var(--color-primary-800)">800</div>
+        <div class="swatch" style="background: var(--color-primary-900)">900</div>
+        <div class="swatch" style="background: var(--color-primary-950)">950</div>
+      </div>
+    </div>
+
+    <div class="palette">
+      <div class="palette-label">Secondary (H=118)</div>
+      <div class="swatch-row">
+        <div class="swatch light-text" style="background: var(--color-secondary-50)">50</div>
+        <div class="swatch light-text" style="background: var(--color-secondary-100)">100</div>
+        <div class="swatch light-text" style="background: var(--color-secondary-200)">200</div>
+        <div class="swatch light-text" style="background: var(--color-secondary-300)">300</div>
+        <div class="swatch" style="background: var(--color-secondary-400)">400</div>
+        <div class="swatch" style="background: var(--color-secondary-500)">500</div>
+        <div class="swatch" style="background: var(--color-secondary-600)">600</div>
+        <div class="swatch" style="background: var(--color-secondary-700)">700</div>
+        <div class="swatch" style="background: var(--color-secondary-800)">800</div>
+        <div class="swatch" style="background: var(--color-secondary-900)">900</div>
+        <div class="swatch" style="background: var(--color-secondary-950)">950</div>
+      </div>
+    </div>
+
+    <div class="palette">
+      <div class="palette-label">Neutral (H=298, desaturated)</div>
+      <div class="swatch-row">
+        <div class="swatch light-text" style="background: var(--color-neutral-50)">50</div>
+        <div class="swatch light-text" style="background: var(--color-neutral-100)">100</div>
+        <div class="swatch light-text" style="background: var(--color-neutral-200)">200</div>
+        <div class="swatch light-text" style="background: var(--color-neutral-300)">300</div>
+        <div class="swatch" style="background: var(--color-neutral-400)">400</div>
+        <div class="swatch" style="background: var(--color-neutral-500)">500</div>
+        <div class="swatch" style="background: var(--color-neutral-600)">600</div>
+        <div class="swatch" style="background: var(--color-neutral-700)">700</div>
+        <div class="swatch" style="background: var(--color-neutral-800)">800</div>
+        <div class="swatch" style="background: var(--color-neutral-900)">900</div>
+        <div class="swatch" style="background: var(--color-neutral-950)">950</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section>
+    <h2>Typography Scale (Augmented Fourth 1.414)</h2>
+
+    <div class="type-specimen">
+      <div class="label">4xl -- 5.657rem</div>
+      <div style="font-size: var(--typography-fontSize-4xl); font-weight: 700; line-height: 1.1; letter-spacing: -0.05em;">Display</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">3xl -- 4.000rem</div>
+      <div style="font-size: var(--typography-fontSize-3xl); font-weight: 700; line-height: 1.1; letter-spacing: -0.05em;">Headline</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">2xl -- 2.828rem</div>
+      <div style="font-size: var(--typography-fontSize-2xl); font-weight: 600; line-height: 1.1; letter-spacing: -0.025em;">Title Large</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">xl -- 2.000rem</div>
+      <div style="font-size: var(--typography-fontSize-xl); font-weight: 600; line-height: 1.3; letter-spacing: -0.025em;">Heading Large</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">lg -- 1.414rem</div>
+      <div style="font-size: var(--typography-fontSize-lg); font-weight: 600; line-height: 1.3;">Heading Medium</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">base -- 1.000rem</div>
+      <div style="font-size: var(--typography-fontSize-base); line-height: 1.5;">Body text renders at 16px base size. This is the default for long-form reading in case studies and narrative content throughout the portfolio.</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">sm -- 0.707rem</div>
+      <div style="font-size: var(--typography-fontSize-sm); line-height: 1.5;">Small body text for captions and metadata</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">xs -- 0.500rem</div>
+      <div style="font-size: var(--typography-fontSize-xs); line-height: 1.5; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Overline / Caption</div>
+    </div>
+    <div class="type-specimen">
+      <div class="label">mono</div>
+      <div style="font-family: var(--typography-fontFamily-mono); font-size: var(--typography-fontSize-sm); line-height: 1.625;">const designSystem = "SignalframeUX";</div>
+    </div>
+  </section>
+
+  <!-- SPACING -->
+  <section>
+    <h2>Spacing Scale (4px base)</h2>
+    <div class="spacing-row"><span class="spacing-label">--space-1: 4px</span><div class="spacing-bar" style="width: 4px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-2: 8px</span><div class="spacing-bar" style="width: 8px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-3: 12px</span><div class="spacing-bar" style="width: 12px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-4: 16px</span><div class="spacing-bar" style="width: 16px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-5: 20px</span><div class="spacing-bar" style="width: 20px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-6: 24px</span><div class="spacing-bar" style="width: 24px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-8: 32px</span><div class="spacing-bar" style="width: 32px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-10: 40px</span><div class="spacing-bar" style="width: 40px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-12: 48px</span><div class="spacing-bar" style="width: 48px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-16: 64px</span><div class="spacing-bar" style="width: 64px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">--space-20: 80px</span><div class="spacing-bar" style="width: 80px;"></div></div>
+  </section>
+
+  <!-- SHADOWS -->
+  <section>
+    <h2>Elevation / Shadows</h2>
+    <div class="shadow-grid">
+      <div class="shadow-card" style="box-shadow: var(--shadow-xs);">xs</div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-sm);">sm</div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-md);">md</div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-lg);">lg</div>
+      <div class="shadow-card" style="box-shadow: var(--shadow-xl);">xl</div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section>
+    <h2>Components</h2>
+    <div class="component-grid">
+
+      <!-- Buttons -->
+      <div class="demo-box">
+        <h3>Buttons</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-primary" disabled style="opacity:0.5;cursor:not-allowed;">Disabled</button>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="demo-box">
+        <h3>Card</h3>
+        <div class="card">
+          <div class="card-header">Card Header</div>
+          <div class="card-body">
+            <p style="color: var(--color-text-secondary);">Card body content with supporting text for a portfolio case study summary.</p>
+          </div>
+          <div class="card-footer" style="display: flex; gap: 8px;">
+            <button class="btn btn-primary btn-sm">View Case Study</button>
+            <button class="btn btn-secondary btn-sm">Share</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="demo-box">
+        <h3>Input / Field</h3>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label>Name (error state)</label>
+          <input type="text" class="input-error" value="J" style="border-color: var(--color-error-500);">
+          <span class="error-msg">Name must be at least 2 characters</span>
+        </div>
+      </div>
+
+      <!-- Borders & Radii -->
+      <div class="demo-box">
+        <h3>Border Radii</h3>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-none);display:flex;align-items:center;justify-content:center;font-size:10px;">none</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-xs);display:flex;align-items:center;justify-content:center;font-size:10px;">xs</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-sm);display:flex;align-items:center;justify-content:center;font-size:10px;">sm</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:10px;">md</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-lg);display:flex;align-items:center;justify-content:center;font-size:10px;">lg</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-xl);display:flex;align-items:center;justify-content:center;font-size:10px;">xl</div>
+          <div style="width:48px;height:48px;background:var(--color-primary-200);border-radius:var(--border-radius-full);display:flex;align-items:center;justify-content:center;font-size:10px;">full</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.getElementById('theme-icon').textContent = next === 'dark' ? '\u2600' : '\u263E';
+      document.getElementById('theme-label').textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
+    }
+  </script>
+
+</body>
+</html>

@@ -14,11 +14,13 @@ Schema: 1.0
 | Property | Value |
 |----------|-------|
 | Project | {project_name} |
-| Product Type | {software/hardware/hybrid} |
-| Platform | {web} |
+| Product Type | software |
+| Platform | web |
 | Output Root | {output_root} |
 | Created | 2026-03-31 |
 | Last Updated | 2026-03-31 |
+| Design System | v1 |
+| Type Scale Ratio | Augmented Fourth (1.414) |
 
 <!-- Platform: ios, android, web, desktop, or comma-separated. Default: web -->
 <!-- Set by --platform flag or auto-detected. Persists for subsequent skill runs. -->
@@ -36,11 +38,17 @@ Schema: 1.0
 |----------|--------|------------|--------|
 | REC | strategy | -- | current |
 | CMP | strategy | BRF (optional) | current |
-<!-- Tracks cross-domain dependencies for staleness cascading -->
-<!-- Example: -->
-<!-- | WFR-login-lofi | ux | SYS v1 | current | -->
-<!-- | MCK-login | visual | WFR-login-hifi v1, SYS v2 | current | -->
-<!-- | HND-login | handoff | MCK-login v1, WFR-login-hifi v1, SYS v2 | current | -->
+| OPP | strategy | CMP (optional) | current |
+| IDT | strategy | REC (auto), CMP (optional), OPP (optional) | current |
+| BRF | strategy | -- | current |
+| SYS | visual | BRF | current |
+| FLW | ux | BRF (optional) | current |
+| WFR | ux | FLW, SYS (optional) | current |
+| CRT | review | WFR | current |
+| ITR | review | WFR, CRT | current |
+| MCK | ux | WFR (soft), SYS (soft) | current |
+| HIG | review | MCK (soft), BRF (soft) | current |
+| HND | review | MCK, HIG, CRT, ITR | current |
 
 ## Domain Files
 
@@ -61,12 +69,19 @@ Schema: 1.0
 | MCP Availability | {snapshot -- auto-updated on every skill run} |
 
 ## Decision Log
-<!-- Skills append their decisions here on completion -->
-<!-- Format: ### [Skill Code] - [Date] -->
-<!-- [Decision description and rationale] -->
-
-| REC | recommendations complete, 12 tools across 5 categories | 2026-03-31 |
+| REC | recommendations complete, 15 tools across 6 categories | 2026-03-31 |
 | CMP | competitive analysis complete, scope standard, 4 competitors analyzed | 2026-03-31 |
+| OPP | opportunity scoring complete, 4 candidates, Now/Next/Later buckets assigned | 2026-03-31 |
+| IDT | ideation complete, 6 directions diverged, The Narrative Arc recommended | 2026-03-31 |
+| BRF | brief complete, product type detected as software | 2026-03-31 |
+| SYS | design system generated, 7 token categories | 2026-03-31 |
+| FLW | user flows complete, 5 journeys mapped, 7 error states, 15 decision points | 2026-03-31 |
+| WFR | wireframes complete, lofi fidelity, 5 screens, tokens available | 2026-03-31 |
+| CRT | critique complete, design group, B+ grade, 29 findings (4 critical, 14 major) | 2026-03-31 |
+| ITR | iteration v1 applied, 21 applied, 5 deferred | 2026-03-31 |
+| MCK | hi-fi mockup complete, 5 screens, v1 | 2026-03-31 |
+| HIG | HIG audit complete, WCAG 2.2 AA, project-tailored guidelines | 2026-03-31 |
+| HND | handoff complete, 5 screens, implementation spec v1 | 2026-03-31 |
 
 ---
 
@@ -76,12 +91,17 @@ Schema: 1.0
 |----------|---------|--------|------|
 | REC-recommendations-v1 | v1 | Created by /pde:recommend | 2026-03-31 |
 | CMP-competitive-v1 | v1 | Created by /pde:competitive | 2026-03-31 |
-<!-- Populated as artifacts are created/iterated -->
-<!-- Example: -->
-<!-- | SYS-tokens | v1 | Created by /pde:system | 2026-03-10 | -->
-<!-- | WFR-login-lofi | v1 | Created by /pde:wireframe | 2026-03-10 | -->
-<!-- | SYS-tokens | v2 | Updated after critique feedback | 2026-03-11 | -->
-<!-- | WFR-login-lofi | v2 | Refreshed (stale: SYS v1->v2) | 2026-03-11 | -->
+| OPP-opportunity-v1 | v1 | Created by /pde:opportunity | 2026-03-31 |
+| IDT-ideation-v1 | v1 | Created by /pde:ideate | 2026-03-31 |
+| BRF-brief-v1 | v1 | Created by /pde:brief | 2026-03-31 |
+| SYS-tokens.json | v1 | Created by /pde:system | 2026-03-31 |
+| FLW-user-flows-v1 | v1 | Created by /pde:flows | 2026-03-31 |
+| WFR-wireframes-lofi | v1 | Created by /pde:wireframe | 2026-03-31 |
+| CRT-critique-v1 | v1 | Created by /pde:critique | 2026-03-31 |
+| ITR-changelog-v1.md | v1 | Created by /pde:iterate | 2026-03-31 |
+| MCK-mockup-spec-v1 | v1 | Created by /pde:mockup | 2026-03-31 |
+| HIG-guidelines-v1 | v1 | Created by /pde:hig | 2026-03-31 |
+| HND-handoff-v1 | v1 | Created by /pde:handoff | 2026-03-31 |
 
 ---
 

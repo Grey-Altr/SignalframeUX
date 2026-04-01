@@ -1,0 +1,347 @@
+/* ============================================================================
+   tokens.css — SignalframeUX Unified Design Tokens
+   Generated: 2026-03-31
+   Source: SYS-tokens.json via pde-tools tokens-to-css
+   ============================================================================ */
+
+/* === BASE TOKENS (Light Mode / :root) === */
+:root {
+  /* --- Color: Primary (H=298) --- */
+  --color-primary-50: oklch(0.970 0.014 298);
+  --color-primary-100: oklch(0.930 0.032 298);
+  --color-primary-200: oklch(0.870 0.058 298);
+  --color-primary-300: oklch(0.770 0.099 298);
+  --color-primary-400: oklch(0.670 0.144 298);
+  --color-primary-500: oklch(0.550 0.180 298);
+  --color-primary-600: oklch(0.470 0.162 298);
+  --color-primary-700: oklch(0.390 0.135 298);
+  --color-primary-800: oklch(0.310 0.099 298);
+  --color-primary-900: oklch(0.230 0.040 298);
+  --color-primary-950: oklch(0.150 0.036 298);
+
+  /* --- Color: Secondary (H=118) --- */
+  --color-secondary-50: oklch(0.970 0.014 118);
+  --color-secondary-100: oklch(0.930 0.032 118);
+  --color-secondary-200: oklch(0.870 0.058 118);
+  --color-secondary-300: oklch(0.770 0.099 118);
+  --color-secondary-400: oklch(0.670 0.144 118);
+  --color-secondary-500: oklch(0.550 0.180 118);
+  --color-secondary-600: oklch(0.470 0.162 118);
+  --color-secondary-700: oklch(0.390 0.135 118);
+  --color-secondary-800: oklch(0.310 0.099 118);
+  --color-secondary-900: oklch(0.230 0.040 118);
+  --color-secondary-950: oklch(0.150 0.036 118);
+
+  /* --- Color: Neutral (H=298) --- */
+  --color-neutral-50: oklch(0.970 0.005 298);
+  --color-neutral-100: oklch(0.930 0.005 298);
+  --color-neutral-200: oklch(0.870 0.010 298);
+  --color-neutral-300: oklch(0.770 0.010 298);
+  --color-neutral-400: oklch(0.670 0.010 298);
+  --color-neutral-500: oklch(0.550 0.010 298);
+  --color-neutral-600: oklch(0.470 0.010 298);
+  --color-neutral-700: oklch(0.390 0.010 298);
+  --color-neutral-800: oklch(0.310 0.010 298);
+  --color-neutral-900: oklch(0.230 0.008 298);
+  --color-neutral-950: oklch(0.150 0.008 298);
+
+  /* --- Color: Success (H=145) --- */
+  --color-success-50: oklch(0.970 0.013 145);
+  --color-success-100: oklch(0.930 0.029 145);
+  --color-success-200: oklch(0.870 0.051 145);
+  --color-success-300: oklch(0.770 0.088 145);
+  --color-success-400: oklch(0.670 0.128 145);
+  --color-success-500: oklch(0.550 0.160 145);
+  --color-success-600: oklch(0.470 0.144 145);
+  --color-success-700: oklch(0.390 0.120 145);
+  --color-success-800: oklch(0.310 0.088 145);
+  --color-success-900: oklch(0.230 0.040 145);
+  --color-success-950: oklch(0.150 0.032 145);
+
+  /* --- Color: Warning (H=85) --- */
+  --color-warning-50: oklch(0.970 0.012 85);
+  --color-warning-100: oklch(0.930 0.027 85);
+  --color-warning-200: oklch(0.870 0.048 85);
+  --color-warning-300: oklch(0.770 0.083 85);
+  --color-warning-400: oklch(0.670 0.120 85);
+  --color-warning-500: oklch(0.550 0.150 85);
+  --color-warning-600: oklch(0.470 0.135 85);
+  --color-warning-700: oklch(0.390 0.112 85);
+  --color-warning-800: oklch(0.310 0.083 85);
+  --color-warning-900: oklch(0.230 0.040 85);
+  --color-warning-950: oklch(0.150 0.030 85);
+
+  /* --- Color: Error (H=25) --- */
+  --color-error-50: oklch(0.970 0.014 25);
+  --color-error-100: oklch(0.930 0.032 25);
+  --color-error-200: oklch(0.870 0.058 25);
+  --color-error-300: oklch(0.770 0.099 25);
+  --color-error-400: oklch(0.670 0.144 25);
+  --color-error-500: oklch(0.550 0.180 25);
+  --color-error-600: oklch(0.470 0.162 25);
+  --color-error-700: oklch(0.390 0.135 25);
+  --color-error-800: oklch(0.310 0.099 25);
+  --color-error-900: oklch(0.230 0.040 25);
+  --color-error-950: oklch(0.150 0.036 25);
+
+  /* --- Color: Info (H=250) --- */
+  --color-info-50: oklch(0.970 0.011 250);
+  --color-info-100: oklch(0.930 0.025 250);
+  --color-info-200: oklch(0.870 0.045 250);
+  --color-info-300: oklch(0.770 0.077 250);
+  --color-info-400: oklch(0.670 0.112 250);
+  --color-info-500: oklch(0.550 0.140 250);
+  --color-info-600: oklch(0.470 0.126 250);
+  --color-info-700: oklch(0.390 0.105 250);
+  --color-info-800: oklch(0.310 0.077 250);
+  --color-info-900: oklch(0.230 0.040 250);
+  --color-info-950: oklch(0.150 0.028 250);
+
+  /* --- Color: Harmony Analogous Warm (H=328) --- */
+  --color-harmony-analogous-warm-50: oklch(0.970 0.014 328);
+  --color-harmony-analogous-warm-100: oklch(0.930 0.032 328);
+  --color-harmony-analogous-warm-200: oklch(0.870 0.058 328);
+  --color-harmony-analogous-warm-300: oklch(0.770 0.099 328);
+  --color-harmony-analogous-warm-400: oklch(0.670 0.144 328);
+  --color-harmony-analogous-warm-500: oklch(0.550 0.180 328);
+  --color-harmony-analogous-warm-600: oklch(0.470 0.162 328);
+  --color-harmony-analogous-warm-700: oklch(0.390 0.135 328);
+  --color-harmony-analogous-warm-800: oklch(0.310 0.099 328);
+  --color-harmony-analogous-warm-900: oklch(0.230 0.040 328);
+  --color-harmony-analogous-warm-950: oklch(0.150 0.036 328);
+
+  /* --- Color: Harmony Analogous Cool (H=268) --- */
+  --color-harmony-analogous-cool-50: oklch(0.970 0.014 268);
+  --color-harmony-analogous-cool-100: oklch(0.930 0.032 268);
+  --color-harmony-analogous-cool-200: oklch(0.870 0.058 268);
+  --color-harmony-analogous-cool-300: oklch(0.770 0.099 268);
+  --color-harmony-analogous-cool-400: oklch(0.670 0.144 268);
+  --color-harmony-analogous-cool-500: oklch(0.550 0.180 268);
+  --color-harmony-analogous-cool-600: oklch(0.470 0.162 268);
+  --color-harmony-analogous-cool-700: oklch(0.390 0.135 268);
+  --color-harmony-analogous-cool-800: oklch(0.310 0.099 268);
+  --color-harmony-analogous-cool-900: oklch(0.230 0.040 268);
+  --color-harmony-analogous-cool-950: oklch(0.150 0.036 268);
+
+  /* --- Color: Harmony Complementary (H=118) --- */
+  --color-harmony-complementary-50: oklch(0.970 0.014 118);
+  --color-harmony-complementary-100: oklch(0.930 0.032 118);
+  --color-harmony-complementary-200: oklch(0.870 0.058 118);
+  --color-harmony-complementary-300: oklch(0.770 0.099 118);
+  --color-harmony-complementary-400: oklch(0.670 0.144 118);
+  --color-harmony-complementary-500: oklch(0.550 0.180 118);
+  --color-harmony-complementary-600: oklch(0.470 0.162 118);
+  --color-harmony-complementary-700: oklch(0.390 0.135 118);
+  --color-harmony-complementary-800: oklch(0.310 0.099 118);
+  --color-harmony-complementary-900: oklch(0.230 0.040 118);
+  --color-harmony-complementary-950: oklch(0.150 0.036 118);
+
+  /* --- Color: Harmony Split Warm (H=88) --- */
+  --color-harmony-split-warm-50: oklch(0.970 0.014 88);
+  --color-harmony-split-warm-100: oklch(0.930 0.032 88);
+  --color-harmony-split-warm-200: oklch(0.870 0.058 88);
+  --color-harmony-split-warm-300: oklch(0.770 0.099 88);
+  --color-harmony-split-warm-400: oklch(0.670 0.144 88);
+  --color-harmony-split-warm-500: oklch(0.550 0.180 88);
+  --color-harmony-split-warm-600: oklch(0.470 0.162 88);
+  --color-harmony-split-warm-700: oklch(0.390 0.135 88);
+  --color-harmony-split-warm-800: oklch(0.310 0.099 88);
+  --color-harmony-split-warm-900: oklch(0.230 0.040 88);
+  --color-harmony-split-warm-950: oklch(0.150 0.036 88);
+
+  /* --- Color: Harmony Split Cool (H=148) --- */
+  --color-harmony-split-cool-50: oklch(0.970 0.014 148);
+  --color-harmony-split-cool-100: oklch(0.930 0.032 148);
+  --color-harmony-split-cool-200: oklch(0.870 0.058 148);
+  --color-harmony-split-cool-300: oklch(0.770 0.099 148);
+  --color-harmony-split-cool-400: oklch(0.670 0.144 148);
+  --color-harmony-split-cool-500: oklch(0.550 0.180 148);
+  --color-harmony-split-cool-600: oklch(0.470 0.162 148);
+  --color-harmony-split-cool-700: oklch(0.390 0.135 148);
+  --color-harmony-split-cool-800: oklch(0.310 0.099 148);
+  --color-harmony-split-cool-900: oklch(0.230 0.040 148);
+  --color-harmony-split-cool-950: oklch(0.150 0.036 148);
+
+  /* --- Color: Harmony Triadic A (H=58) --- */
+  --color-harmony-triadic-a-50: oklch(0.970 0.014 58);
+  --color-harmony-triadic-a-100: oklch(0.930 0.032 58);
+  --color-harmony-triadic-a-200: oklch(0.870 0.058 58);
+  --color-harmony-triadic-a-300: oklch(0.770 0.099 58);
+  --color-harmony-triadic-a-400: oklch(0.670 0.144 58);
+  --color-harmony-triadic-a-500: oklch(0.550 0.180 58);
+  --color-harmony-triadic-a-600: oklch(0.470 0.162 58);
+  --color-harmony-triadic-a-700: oklch(0.390 0.135 58);
+  --color-harmony-triadic-a-800: oklch(0.310 0.099 58);
+  --color-harmony-triadic-a-900: oklch(0.230 0.040 58);
+  --color-harmony-triadic-a-950: oklch(0.150 0.036 58);
+
+  /* --- Color: Harmony Triadic B (H=178) --- */
+  --color-harmony-triadic-b-50: oklch(0.970 0.014 178);
+  --color-harmony-triadic-b-100: oklch(0.930 0.032 178);
+  --color-harmony-triadic-b-200: oklch(0.870 0.058 178);
+  --color-harmony-triadic-b-300: oklch(0.770 0.099 178);
+  --color-harmony-triadic-b-400: oklch(0.670 0.144 178);
+  --color-harmony-triadic-b-500: oklch(0.550 0.180 178);
+  --color-harmony-triadic-b-600: oklch(0.470 0.162 178);
+  --color-harmony-triadic-b-700: oklch(0.390 0.135 178);
+  --color-harmony-triadic-b-800: oklch(0.310 0.099 178);
+  --color-harmony-triadic-b-900: oklch(0.230 0.040 178);
+  --color-harmony-triadic-b-950: oklch(0.150 0.036 178);
+
+  /* --- Typography --- */
+  --typography-fontFamily-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --typography-fontFamily-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --typography-fontFamily-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+  --typography-fontSize-xs: 0.500rem;
+  --typography-fontSize-sm: 0.707rem;
+  --typography-fontSize-base: 1.000rem;
+  --typography-fontSize-lg: 1.414rem;
+  --typography-fontSize-xl: 2.000rem;
+  --typography-fontSize-2xl: 2.828rem;
+  --typography-fontSize-3xl: 4.000rem;
+  --typography-fontSize-4xl: 5.657rem;
+  --typography-fontWeight-light: 300;
+  --typography-fontWeight-regular: 400;
+  --typography-fontWeight-medium: 500;
+  --typography-fontWeight-semibold: 600;
+  --typography-fontWeight-bold: 700;
+  --typography-lineHeight-tight: 1.1;
+  --typography-lineHeight-snug: 1.3;
+  --typography-lineHeight-normal: 1.5;
+  --typography-lineHeight-relaxed: 1.625;
+  --typography-lineHeight-loose: 2;
+  --typography-letterSpacing-tighter: -0.05em;
+  --typography-letterSpacing-tight: -0.025em;
+  --typography-letterSpacing-normal: 0em;
+  --typography-letterSpacing-wide: 0.025em;
+  --typography-letterSpacing-wider: 0.05em;
+  --typography-letterSpacing-widest: 0.1em;
+
+  /* --- Spacing --- */
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-semantic-inset: 16px;
+  --spacing-semantic-stack: 24px;
+  --spacing-semantic-inline: 8px;
+  --spacing-semantic-section: 64px;
+  --spacing-semantic-page: 80px;
+  --spacing-semantic-gutter: 32px;
+
+  /* --- Shadows --- */
+  --shadow-xs: 0 1px 2px 0 oklch(0.15 0.008 298 / 0.06);
+  --shadow-sm: 0 1px 3px 0 oklch(0.15 0.008 298 / 0.10), 0 1px 2px -1px oklch(0.15 0.008 298 / 0.10);
+  --shadow-md: 0 4px 6px -1px oklch(0.15 0.008 298 / 0.10), 0 2px 4px -2px oklch(0.15 0.008 298 / 0.10);
+  --shadow-lg: 0 10px 15px -3px oklch(0.15 0.008 298 / 0.10), 0 4px 6px -4px oklch(0.15 0.008 298 / 0.10);
+  --shadow-xl: 0 20px 25px -5px oklch(0.15 0.008 298 / 0.10), 0 8px 10px -6px oklch(0.15 0.008 298 / 0.10);
+
+  /* --- Borders --- */
+  --border-radius-none: 0px;
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 4px;
+  --border-style-default: solid;
+
+  /* --- Motion --- */
+  --motion-duration-instant: 50ms;
+  --motion-duration-fast: 100ms;
+  --motion-duration-normal: 200ms;
+  --motion-duration-slow: 400ms;
+  --motion-duration-slower: 600ms;
+  --motion-easing-default: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-spring-bounce: linear(0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191, 0.25, 0.316, 0.391, 0.473, 0.562, 0.66, 0.765, 0.878, 1.0, 1.025, 1.042, 1.05, 1.05, 1.042, 1.028, 1.009, 0.988, 0.965, 0.945, 0.928, 0.916, 0.908, 0.906, 0.91, 0.918, 0.931, 0.947, 0.965, 0.984, 1.0);
+  --motion-delay-none: 0ms;
+  --motion-delay-short: 50ms;
+  --motion-delay-medium: 150ms;
+  --motion-delay-long: 300ms;
+  --motion-delay-stagger: 75ms;
+
+  /* --- Semantic Aliases --- */
+  --color-bg:             var(--color-neutral-50);
+  --color-bg-subtle:      var(--color-neutral-100);
+  --color-bg-muted:       var(--color-neutral-200);
+  --color-surface:        var(--color-neutral-50);
+  --color-surface-raised: var(--color-neutral-100);
+  --color-border:         var(--color-neutral-300);
+  --color-border-subtle:  var(--color-neutral-200);
+  --color-text:           var(--color-neutral-950);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-muted:     var(--color-neutral-500);
+  --color-text-inverse:   var(--color-neutral-50);
+  --color-accent:         var(--color-primary-500);
+  --color-accent-hover:   var(--color-primary-600);
+  --color-accent-subtle:  var(--color-primary-100);
+  --color-focus-ring:     var(--color-primary-400);
+}
+
+/* === DARK MODE === */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:             var(--color-neutral-950);
+    --color-bg-subtle:      var(--color-neutral-900);
+    --color-bg-muted:       var(--color-neutral-800);
+    --color-surface:        var(--color-neutral-900);
+    --color-surface-raised: var(--color-neutral-800);
+    --color-border:         var(--color-neutral-700);
+    --color-border-subtle:  var(--color-neutral-800);
+    --color-text:           var(--color-neutral-50);
+    --color-text-secondary: var(--color-neutral-400);
+    --color-text-muted:     var(--color-neutral-500);
+    --color-text-inverse:   var(--color-neutral-950);
+    --color-accent:         var(--color-primary-400);
+    --color-accent-hover:   var(--color-primary-300);
+    --color-accent-subtle:  var(--color-primary-900);
+    --color-focus-ring:     var(--color-primary-500);
+
+    --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.20);
+    --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.30), 0 1px 2px -1px oklch(0 0 0 / 0.30);
+    --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.30), 0 2px 4px -2px oklch(0 0 0 / 0.30);
+    --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.30), 0 4px 6px -4px oklch(0 0 0 / 0.30);
+    --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.30), 0 8px 10px -6px oklch(0 0 0 / 0.30);
+  }
+}
+
+[data-theme="dark"] {
+  --color-bg:             var(--color-neutral-950);
+  --color-bg-subtle:      var(--color-neutral-900);
+  --color-bg-muted:       var(--color-neutral-800);
+  --color-surface:        var(--color-neutral-900);
+  --color-surface-raised: var(--color-neutral-800);
+  --color-border:         var(--color-neutral-700);
+  --color-border-subtle:  var(--color-neutral-800);
+  --color-text:           var(--color-neutral-50);
+  --color-text-secondary: var(--color-neutral-400);
+  --color-text-muted:     var(--color-neutral-500);
+  --color-text-inverse:   var(--color-neutral-950);
+  --color-accent:         var(--color-primary-400);
+  --color-accent-hover:   var(--color-primary-300);
+  --color-accent-subtle:  var(--color-primary-900);
+  --color-focus-ring:     var(--color-primary-500);
+
+  --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.20);
+  --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.30), 0 1px 2px -1px oklch(0 0 0 / 0.30);
+  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.30), 0 2px 4px -2px oklch(0 0 0 / 0.30);
+  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.30), 0 4px 6px -4px oklch(0 0 0 / 0.30);
+  --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.30), 0 8px 10px -6px oklch(0 0 0 / 0.30);
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIGNALFRAME_UX // GETTING_STARTED</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&amp;family=Public+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#00515d",
+                        "surface-bright": "#38374a",
+                        "tertiary": "#ffb2b7",
+                        "surface-container-highest": "#333345",
+                        "on-primary-container": "#340080",
+                        "surface-tint": "#d0bcff",
+                        "surface-hint": "#8B5CF6",
+                        "primary-fixed": "#e9ddff",
+                        "surface-dim": "#121222",
+                        "secondary-container": "#00cbe6",
+                        "primary-fixed-dim": "#d0bcff",
+                        "inverse-surface": "#e3e0f8",
+                        "on-tertiary-container": "#5b0017",
+                        "on-secondary-fixed": "#001f25",
+                        "surface-container": "#1e1e2f",
+                        "background": "#0A0A1A",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "error": "#ffb4ab",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1a1a2b",
+                        "on-tertiary": "#67001b",
+                        "secondary-fixed": "#a2eeff",
+                        "on-secondary-fixed-variant": "#004e5a",
+                        "outline": "#958ea0",
+                        "on-surface": "#e3e0f8",
+                        "outline-variant": "#494454",
+                        "on-primary": "#3c0091",
+                        "surface-variant": "#333345",
+                        "inverse-on-surface": "#2f2f40",
+                        "secondary-fixed-dim": "#2fd9f4",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-background": "#e3e0f8",
+                        "on-error": "#690005",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#5516be",
+                        "primary": "#8B5CF6",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-secondary": "#00363e",
+                        "on-tertiary-fixed-variant": "#92002a",
+                        "on-primary-fixed": "#23005c",
+                        "tertiary-container": "#ff516a",
+                        "surface-container-lowest": "#0c0c1d",
+                        "secondary": "#22D3EE",
+                        "inverse-primary": "#6d3bd7",
+                        "on-tertiary-fixed": "#40000d",
+                        "primary-container": "#a078ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "4px", "xl": "4px", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .bg-noise { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); opacity: 0.05; }
+        .syntax-purple { color: #8B5CF6; }
+        .syntax-cyan { color: #22D3EE; }
+        .syntax-white { color: #FFFFFF; }
+        .syntax-gray { color: #64748b; }
+    </style>
+</head>
+<body class="bg-[#0A0A1A] text-on-surface font-body selection:bg-secondary selection:text-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-14 bg-[#0A0A1A] border-b-2 border-[#8B5CF6]/20">
+<div class="text-xl font-black tracking-widest text-[#8B5CF6] font-['Space_Grotesk']">SIGNALFRAME_UX</div>
+<div class="hidden md:flex items-center gap-8 font-mono uppercase tracking-tighter text-xs">
+<a class="text-[#22D3EE] border-b-2 border-[#22D3EE] pb-1 cursor-crosshair transition-colors duration-150" href="#">DOCS</a>
+<a class="text-slate-400 hover:text-[#22D3EE] cursor-crosshair transition-colors duration-150" href="#">API</a>
+<a class="text-slate-400 hover:text-[#22D3EE] cursor-crosshair transition-colors duration-150" href="#">SHOWCASE</a>
+<a class="text-slate-400 hover:text-[#22D3EE] cursor-crosshair transition-colors duration-150" href="#">NPM</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#8B5CF6] hover:text-[#22D3EE] cursor-crosshair">terminal</button>
+<button class="material-symbols-outlined text-[#8B5CF6] hover:text-[#22D3EE] cursor-crosshair">settings</button>
+</div>
+</nav>
+<main class="relative pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+<!-- Background Noise Layer -->
+<div class="fixed inset-0 bg-noise pointer-events-none"></div>
+<!-- Header Section -->
+<header class="relative z-10 mb-20 border-l-4 border-[#22D3EE] pl-8">
+<h1 class="font-headline font-black text-6xl md:text-9xl leading-none tracking-[calc(-0.05em)] text-white">
+                GETTING_STARTED
+            </h1>
+<p class="font-mono text-lg md:text-xl text-[#22D3EE] mt-4 opacity-80 uppercase">
+                From zero to Signal//Field in under 5 minutes.
+            </p>
+</header>
+<!-- Step-by-Step Installation -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-32">
+<!-- Step 1 -->
+<div class="border border-[#8B5CF6]/20 bg-surface-container/50 backdrop-blur-sm p-6 relative">
+<span class="absolute -top-4 -left-4 bg-secondary text-background font-mono font-bold px-3 py-1 text-2xl">01</span>
+<h3 class="font-mono font-bold text-[#8B5CF6] uppercase mb-4 text-sm tracking-widest">INSTALL</h3>
+<div class="bg-surface-container-lowest p-4 rounded-sm font-mono text-sm border-l-2 border-[#8B5CF6]">
+<span class="syntax-purple">npm</span> <span class="syntax-white">install</span> <span class="syntax-cyan">@signalframeux/core @signalframeux/react</span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="border border-[#8B5CF6]/20 bg-surface-container/50 backdrop-blur-sm p-6 relative">
+<span class="absolute -top-4 -left-4 bg-secondary text-background font-mono font-bold px-3 py-1 text-2xl">02</span>
+<h3 class="font-mono font-bold text-[#8B5CF6] uppercase mb-4 text-sm tracking-widest">INITIALIZE</h3>
+<div class="bg-surface-container-lowest p-4 rounded-sm font-mono text-sm border-l-2 border-[#8B5CF6]">
+<span class="syntax-purple">const</span> <span class="syntax-white">config</span> = <span class="syntax-white">createSignalframeUX({</span><br/>
+                      <span class="syntax-white">theme:</span> <span class="syntax-cyan">'dark'</span>,<br/>
+                      <span class="syntax-white">grid:</span> <span class="syntax-purple">true</span><br/>
+<span class="syntax-white">});</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="border border-[#8B5CF6]/20 bg-surface-container/50 backdrop-blur-sm p-6 relative">
+<span class="absolute -top-4 -left-4 bg-secondary text-background font-mono font-bold px-3 py-1 text-2xl">03</span>
+<h3 class="font-mono font-bold text-[#8B5CF6] uppercase mb-4 text-sm tracking-widest">USE COMPONENTS</h3>
+<div class="bg-surface-container-lowest p-4 rounded-sm font-mono text-sm border-l-2 border-[#8B5CF6]">
+<span class="syntax-purple">&lt;Button</span> <span class="syntax-white">fieldEffect=</span><span class="syntax-cyan">"glow"</span><span class="syntax-purple">&gt;</span><br/>
+                      <span class="syntax-white">SYSTEM_READY</span><br/>
+<span class="syntax-purple">&lt;/Button&gt;</span>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="border border-[#8B5CF6]/20 bg-surface-container/50 backdrop-blur-sm p-6 relative">
+<span class="absolute -top-4 -left-4 bg-secondary text-background font-mono font-bold px-3 py-1 text-2xl">04</span>
+<h3 class="font-mono font-bold text-[#8B5CF6] uppercase mb-4 text-sm tracking-widest">ENABLE FIELD LAYER</h3>
+<div class="bg-surface-container-lowest p-4 rounded-sm font-mono text-sm border-l-2 border-[#8B5CF6]">
+<span class="syntax-white">field.</span><span class="syntax-purple">setSeed</span><span class="syntax-white">(</span><span class="syntax-cyan">42</span><span class="syntax-white">);</span><br/>
+<span class="syntax-white">field.</span><span class="syntax-purple">enable</span><span class="syntax-white">();</span>
+</div>
+</div>
+</section>
+<!-- Live Preview -->
+<section class="mb-32">
+<div class="group relative overflow-hidden bg-surface-container-lowest border-2 border-[#8B5CF6]/50 p-12 flex flex-col items-center justify-center min-h-[300px]">
+<!-- Decorative Grid Background -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#22D3EE 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
+<h4 class="font-mono text-[10px] tracking-widest text-[#22D3EE] mb-8 uppercase opacity-50">ENVIRONMENT_SIMULATION // ALPHA_01</h4>
+<button class="relative px-12 py-5 bg-primary text-on-primary font-headline font-black tracking-widest text-xl border-4 border-primary hover:bg-transparent hover:text-primary transition-all duration-300 shadow-[0_0_40px_rgba(139,92,246,0.3)] group-hover:shadow-[0_0_60px_rgba(139,92,246,0.5)]">
+                    SYSTEM READY
+                </button>
+<div class="mt-8 flex gap-4 font-mono text-[9px] text-[#22D3EE]">
+<span>CPU: 0.04%</span>
+<span>FPS: 144</span>
+<span>LATENCY: 1.2MS</span>
+</div>
+</div>
+</section>
+<!-- Framework Guides -->
+<section class="mb-32">
+<h2 class="font-headline font-bold text-4xl mb-12 text-white border-b border-white/10 pb-4 flex items-center gap-4">
+<span class="material-symbols-outlined">category</span> FRAMEWORK_GUIDES
+            </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- React + Vite -->
+<div class="bg-surface-container p-6 border border-white/5 hover:border-[#22D3EE]/50 transition-colors">
+<h5 class="font-mono text-[#22D3EE] text-xs font-bold mb-4">REACT + VITE</h5>
+<div class="bg-black/50 p-3 rounded font-mono text-[10px] text-slate-400 mb-4 overflow-x-auto">
+                        npm create vite@latest --template react-ts
+                    </div>
+<a class="font-mono text-[10px] text-white hover:text-[#22D3EE] underline uppercase tracking-tighter" href="#">View Snippet →</a>
+</div>
+<!-- Next.js -->
+<div class="bg-surface-container p-6 border border-white/5 hover:border-[#22D3EE]/50 transition-colors">
+<h5 class="font-mono text-[#22D3EE] text-xs font-bold mb-4">NEXT.JS</h5>
+<div class="bg-black/50 p-3 rounded font-mono text-[10px] text-slate-400 mb-4 overflow-x-auto">
+                        npx create-next-app@latest --app
+                    </div>
+<a class="font-mono text-[10px] text-white hover:text-[#22D3EE] underline uppercase tracking-tighter" href="#">View Snippet →</a>
+</div>
+<!-- Astro -->
+<div class="bg-surface-container p-6 border border-white/5 hover:border-[#22D3EE]/50 transition-colors">
+<h5 class="font-mono text-[#22D3EE] text-xs font-bold mb-4">ASTRO</h5>
+<div class="bg-black/50 p-3 rounded font-mono text-[10px] text-slate-400 mb-4 overflow-x-auto">
+                        npm create astro@latest
+                    </div>
+<a class="font-mono text-[10px] text-white hover:text-[#22D3EE] underline uppercase tracking-tighter" href="#">View Snippet →</a>
+</div>
+<!-- Vanilla JS -->
+<div class="bg-surface-container p-6 border border-white/5 hover:border-[#22D3EE]/50 transition-colors">
+<h5 class="font-mono text-[#22D3EE] text-xs font-bold mb-4">VANILLA JS</h5>
+<div class="bg-black/50 p-3 rounded font-mono text-[10px] text-slate-400 mb-4 overflow-x-auto">
+                        npm install @signalframeux/core
+                    </div>
+<a class="font-mono text-[10px] text-white hover:text-[#22D3EE] underline uppercase tracking-tighter" href="#">View Snippet →</a>
+</div>
+</div>
+</section>
+<!-- What's Next -->
+<section class="mb-12">
+<h2 class="font-headline font-bold text-4xl mb-12 text-white flex items-center gap-4">
+<span class="material-symbols-outlined">rocket_launch</span> WHAT'S_NEXT
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<a class="group block p-8 bg-[#8B5CF6]/5 border border-[#8B5CF6]/30 hover:bg-[#8B5CF6]/10 transition-all" href="#">
+<h3 class="font-headline font-black text-2xl text-white mb-2">Explore Components →</h3>
+<p class="font-mono text-xs text-slate-500 group-hover:text-[#8B5CF6]">Access the library of 50+ deterministic UI primitives.</p>
+</a>
+<a class="group block p-8 bg-[#22D3EE]/5 border border-[#22D3EE]/30 hover:bg-[#22D3EE]/10 transition-all" href="#">
+<h3 class="font-headline font-black text-2xl text-white mb-2">Read the API →</h3>
+<p class="font-mono text-xs text-slate-500 group-hover:text-[#22D3EE]">Deep dive into the parametric field layer controllers.</p>
+</a>
+<a class="group block p-8 bg-white/5 border border-white/10 hover:bg-white/10 transition-all" href="#">
+<h3 class="font-headline font-black text-2xl text-white mb-2">Browse Tokens →</h3>
+<p class="font-mono text-xs text-slate-500 group-hover:text-white">Customize the design system variables for your project.</p>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full px-6 py-4 flex justify-between items-center bg-[#0A0A1A] border-t border-[#22D3EE]/30">
+<div class="font-mono text-[10px] leading-none uppercase text-slate-500 select-none">
+            (C) 2024 SIGNALFRAME_UX // SYSTEM_STATUS: OPERATIONAL
+        </div>
+<div class="flex gap-6 font-mono text-[10px] leading-none uppercase">
+<a class="text-slate-500 hover:bg-[#22D3EE] hover:text-[#0A0A1A] transition-colors" href="#">CHANGELOG</a>
+<a class="text-slate-500 hover:bg-[#22D3EE] hover:text-[#0A0A1A] transition-colors" href="#">SECURITY</a>
+<a class="text-[#F43F5E] hover:bg-[#22D3EE] hover:text-[#0A0A1A] transition-colors" href="#">TELEMETRY</a>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SignalframeUX | COMPONENT_LIBRARY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Public+Sans:wght@300;400;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#1a1a2b",
+              "secondary-fixed-dim": "#2fd9f4",
+              "on-secondary-fixed": "#001f25",
+              "outline": "#958ea0",
+              "on-primary-fixed-variant": "#5516be",
+              "surface-container-highest": "#333345",
+              "outline-variant": "#494454",
+              "on-tertiary-fixed-variant": "#92002a",
+              "on-error-container": "#ffdad6",
+              "secondary-container": "#00cbe6",
+              "surface-container": "#1e1e2f",
+              "tertiary-fixed-dim": "#ffb2b7",
+              "surface-container-high": "#29283a",
+              "surface-bright": "#38374a",
+              "error-container": "#93000a",
+              "surface-dim": "#121222",
+              "on-secondary-fixed-variant": "#004e5a",
+              "on-secondary": "#00363e",
+              "inverse-on-surface": "#2f2f40",
+              "surface-tint": "#d0bcff",
+              "on-secondary-container": "#00515d",
+              "on-primary-fixed": "#23005c",
+              "tertiary-container": "#ff516a",
+              "secondary-fixed": "#a2eeff",
+              "primary": "#d0bcff",
+              "surface": "#121222",
+              "primary-container": "#a078ff",
+              "on-surface": "#e3e0f8",
+              "inverse-surface": "#e3e0f8",
+              "surface-variant": "#333345",
+              "secondary": "#5de6ff",
+              "inverse-primary": "#6d3bd7",
+              "on-tertiary-fixed": "#40000d",
+              "tertiary": "#ffb2b7",
+              "primary-fixed-dim": "#d0bcff",
+              "background": "#121222",
+              "on-primary": "#3c0091",
+              "on-tertiary-container": "#5b0017",
+              "on-primary-container": "#340080",
+              "on-background": "#e3e0f8",
+              "surface-container-lowest": "#0c0c1d",
+              "error": "#ffb4ab",
+              "primary-fixed": "#e9ddff",
+              "on-tertiary": "#67001b",
+              "on-surface-variant": "#cbc3d7",
+              "tertiary-fixed": "#ffdadb",
+              "on-error": "#690005"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Public Sans"],
+              "label": ["IBM Plex Mono"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0A0A1A;
+            color: #e3e0f8;
+            background-image: radial-gradient(circle at 2px 2px, rgba(139, 92, 246, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .mono { font-family: 'IBM Plex Mono', monospace; }
+        .glass-panel {
+            background: rgba(26, 26, 43, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .technical-border {
+            position: relative;
+        }
+        .technical-border::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 8px; height: 8px;
+            border-top: 2px solid #22D3EE;
+            border-left: 2px solid #22D3EE;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(34, 211, 238, 0.2), transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#0A0A1A] bg-opacity-90 backdrop-blur-md border-b-2 border-violet-500">
+<div class="flex items-center gap-8">
+<span class="text-xl font-black text-white tracking-widest font-headline">SFUX</span>
+<div class="hidden md:flex gap-6">
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors" href="#">DOCS</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors" href="#">API</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-violet-400 font-bold border-b border-violet-400" href="#">SHOWCASE</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors" href="#">NPM</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<code class="bg-surface-container-highest px-3 py-1 rounded text-secondary-fixed-dim text-xs font-mono">npm install signalframe-ux</code>
+<button class="material-symbols-outlined text-white/60 hover:text-white">search</button>
+</div>
+</nav>
+<div class="flex pt-16 min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex flex-col pt-8 z-40 bg-[#0A0A1A] border-r border-white/10">
+<div class="px-6 mb-8">
+<h3 class="font-mono text-[10px] uppercase tracking-widest text-white font-bold">COMPONENTS</h3>
+<p class="font-mono text-[8px] text-violet-400">[SYSTEM_RESOURCES]</p>
+</div>
+<nav class="flex flex-col">
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-cyan-400 bg-cyan-400/5 border-l-2 border-cyan-400" href="#">
+<span class="material-symbols-outlined text-sm">category</span> Core
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-white/40 hover:bg-violet-500/5 hover:text-violet-300" href="#">
+<span class="material-symbols-outlined text-sm">grid_view</span> Layout
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-white/40 hover:bg-violet-500/5 hover:text-violet-300" href="#">
+<span class="material-symbols-outlined text-sm">database</span> Data
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-white/40 hover:bg-violet-500/5 hover:text-violet-300" href="#">
+<span class="material-symbols-outlined text-sm">explore</span> Navigation
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-white/40 hover:bg-violet-500/5 hover:text-violet-300" href="#">
+<span class="material-symbols-outlined text-sm">grain</span> Field
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-white/40 hover:bg-violet-500/5 hover:text-violet-300" href="#">
+<span class="material-symbols-outlined text-sm">animation</span> Motion
+                </a>
+</nav>
+<div class="mt-auto p-6 border-t border-white/5">
+<div class="bg-surface-container-low p-4 rounded-sm border border-outline-variant/30">
+<div class="text-[8px] font-mono text-outline mb-1">SYSTEM_STATUS</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(93,230,255,0.6)]"></div>
+<span class="text-[10px] font-mono text-on-surface">READY_STABLE</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 p-8 lg:p-12 overflow-y-auto">
+<!-- Header Section -->
+<header class="mb-12 border-b border-white/10 pb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary-container text-on-primary-container text-[10px] font-mono px-2 py-0.5 rounded">v2.4.0-alpha</span>
+<span class="text-outline text-[10px] font-mono">// BUILD_ID: 88AF2</span>
+</div>
+<h1 class="text-6xl md:text-8xl font-headline font-black tracking-tighter text-white uppercase leading-none">
+                            Component <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Library</span>
+</h1>
+<p class="mt-6 text-on-surface-variant max-w-2xl text-lg leading-relaxed">
+                            340+ components across Signal and Field layers. Every element is accessible, themeable, and API-driven for high-performance interfaces.
+                        </p>
+</div>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-wider text-sm flex items-center gap-2 hover:bg-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">bolt</span> Quick Start
+                        </button>
+</div>
+</div>
+</header>
+<!-- Component Detail Panel (Button Expanded) -->
+<section class="mb-16">
+<div class="flex items-center gap-3 mb-6">
+<span class="w-2 h-8 bg-secondary"></span>
+<h2 class="font-mono text-xl uppercase tracking-widest text-white">Featured: Button</h2>
+<span class="text-outline font-mono text-xs">[CORE/INTERACTIVE]</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Preview Area -->
+<div class="lg:col-span-8 space-y-8">
+<div class="glass-panel p-8 technical-border">
+<div class="flex flex-wrap gap-6 items-center justify-center min-h-[200px] border border-dashed border-white/10 rounded-sm relative overflow-hidden">
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#22D3EE 0.5px, transparent 0.5px); background-size: 10px 10px;"></div>
+<button class="bg-primary text-on-primary px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest transition-all hover:shadow-[0_0_15px_rgba(208,188,255,0.4)]">Primary</button>
+<button class="border border-secondary text-secondary px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest hover:bg-secondary/10">Secondary</button>
+<button class="text-white/60 px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest hover:text-white">Ghost</button>
+<button class="bg-error-container text-on-error-container px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest border border-error/20">Danger</button>
+<button class="bg-primary/50 text-white/50 px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest cursor-not-allowed" disabled="">Disabled</button>
+<button class="bg-secondary text-on-secondary px-6 py-2 font-mono text-xs uppercase font-bold tracking-widest flex items-center gap-2">
+<span class="w-3 h-3 border-2 border-on-secondary border-t-transparent animate-spin rounded-full"></span> Loading
+                                </button>
+</div>
+</div>
+<!-- Props Table -->
+<div class="bg-surface-container-low border border-white/10 overflow-hidden">
+<div class="bg-surface-container-high px-4 py-2 border-b border-white/10 flex justify-between">
+<span class="font-mono text-[10px] text-white/40 uppercase">Property Specification</span>
+<span class="font-mono text-[10px] text-cyan-400">JSON_SCHEMA_V1</span>
+</div>
+<table class="w-full text-left font-mono text-[11px]">
+<thead class="text-white/40 border-b border-white/5">
+<tr>
+<th class="px-4 py-3 uppercase tracking-wider">Prop</th>
+<th class="px-4 py-3 uppercase tracking-wider">Type</th>
+<th class="px-4 py-3 uppercase tracking-wider">Default</th>
+<th class="px-4 py-3 uppercase tracking-wider">Description</th>
+</tr>
+</thead>
+<tbody class="text-on-surface-variant divide-y divide-white/5">
+<tr>
+<td class="px-4 py-3 text-secondary">variant</td>
+<td class="px-4 py-3 text-tertiary">'primary' | 'secondary' | 'ghost'</td>
+<td class="px-4 py-3">'primary'</td>
+<td class="px-4 py-3">Visual style of the button</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-secondary">fieldEffect</td>
+<td class="px-4 py-3 text-tertiary">'glow' | 'noise' | 'none'</td>
+<td class="px-4 py-3">'none'</td>
+<td class="px-4 py-3">Parametric background layer effect</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-secondary">loading</td>
+<td class="px-4 py-3 text-tertiary">boolean</td>
+<td class="px-4 py-3">false</td>
+<td class="px-4 py-3">Replaces content with a spinner</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Column: Code & Layers -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Code Tab -->
+<div class="bg-[#050510] border border-white/10 rounded-sm">
+<div class="flex border-b border-white/10">
+<button class="px-4 py-2 text-[10px] font-mono text-cyan-400 border-b border-cyan-400 bg-white/5 uppercase">React</button>
+<button class="px-4 py-2 text-[10px] font-mono text-white/40 uppercase">Tailwind</button>
+</div>
+<div class="p-4 overflow-x-auto">
+<pre class="font-mono text-[12px] text-white/80 leading-relaxed"><span class="text-primary-container">&lt;Button</span>
+  <span class="text-secondary">variant</span>=<span class="text-tertiary">"primary"</span>
+  <span class="text-secondary">fieldEffect</span>=<span class="text-tertiary">"glow"</span>
+<span class="text-primary-container">&gt;</span>
+  Get Started
+<span class="text-primary-container">&lt;/Button&gt;</span></pre>
+</div>
+</div>
+<!-- Dual Layer View -->
+<div class="bg-surface-container border border-white/10 p-5 rounded-sm">
+<h4 class="font-mono text-[10px] text-white uppercase tracking-widest mb-4">Signal vs Field Layer</h4>
+<div class="space-y-4">
+<div class="relative pl-4 border-l-2 border-primary">
+<div class="text-[10px] font-mono text-primary font-bold mb-1 uppercase">SignalProps</div>
+<p class="text-[11px] text-on-surface-variant leading-tight">Functional properties controlling logic, accessibility, and routing.</p>
+</div>
+<div class="relative pl-4 border-l-2 border-secondary">
+<div class="text-[10px] font-mono text-secondary font-bold mb-1 uppercase">FieldProps</div>
+<p class="text-[11px] text-on-surface-variant leading-tight">Generative styling parameters for noise, gradients, and textures.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Grid of Component Cards -->
+<section class="mb-24">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<span class="w-2 h-8 bg-primary"></span>
+<h2 class="font-mono text-xl uppercase tracking-widest text-white">Browser_Modules</h2>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-white/10 text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">grid_view</span></button>
+<button class="w-8 h-8 flex items-center justify-center border border-white/10 text-white/40 hover:text-white"><span class="material-symbols-outlined text-sm">list</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/DATA/TABLE</span>
+<span class="text-primary material-symbols-outlined">table_chart</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 flex items-center justify-center border border-white/5 relative overflow-hidden">
+<div class="w-3/4 space-y-2 opacity-40">
+<div class="h-1 bg-white/20 w-full"></div>
+<div class="h-1 bg-white/10 w-full"></div>
+<div class="h-1 bg-white/10 w-full"></div>
+</div>
+<div class="absolute bottom-2 right-2 text-[8px] font-mono text-white/20">PREVIEW_GEN_3</div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">DataTable</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Virtualized grid with complex filtering and headless state.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 12 VARIANTS</span>
+<span>14.2KB GZIP</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/FIELD/ANIM</span>
+<span class="text-primary material-symbols-outlined">grain</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 overflow-hidden border border-white/5 relative">
+<div class="absolute inset-0 opacity-30" style="background: radial-gradient(circle at 30% 70%, #8B5CF6 0%, transparent 50%), radial-gradient(circle at 70% 30%, #22D3EE 0%, transparent 50%);"></div>
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">AnimatedField</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Generative background layer using WebGL noise kernels.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 5 VARIANTS</span>
+<span>3.8KB GZIP</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/CORE/MODAL</span>
+<span class="text-primary material-symbols-outlined">layers</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 flex items-center justify-center border border-white/5 relative">
+<div class="w-1/2 h-2/3 border border-secondary/40 bg-secondary/5 rounded-sm flex flex-col p-2 gap-1">
+<div class="w-1/3 h-1 bg-secondary/40"></div>
+<div class="w-full h-1 bg-white/10"></div>
+<div class="w-2/3 h-1 bg-white/10"></div>
+</div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">Dialog</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Accessible overlay with focus trapping and field blurring.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 8 VARIANTS</span>
+<span>8.1KB GZIP</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/INPUT/TEXT</span>
+<span class="text-primary material-symbols-outlined">edit_square</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 flex items-center justify-center border border-white/5 p-4">
+<div class="w-full border-b border-white/20 py-1 text-[10px] font-mono text-white/30">_TYPE_HERE_</div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">TextField</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Validated input with floating labels and error signals.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 15 VARIANTS</span>
+<span>2.2KB GZIP</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/CORE/CARD</span>
+<span class="text-primary material-symbols-outlined">rectangle</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 overflow-hidden border border-white/5 flex items-center justify-center relative">
+<div class="w-20 h-20 bg-gradient-to-tr from-primary/20 to-secondary/20 border border-white/10"></div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">Surface</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Base container with semantic layering and elevation.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 6 VARIANTS</span>
+<span>1.1KB GZIP</span>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="glass-panel group hover:border-secondary transition-colors">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="font-mono text-[10px] text-white/40 tracking-widest">UI/LAYOUT/GRID</span>
+<span class="text-primary material-symbols-outlined">grid_view</span>
+</div>
+<div class="h-32 bg-[#050510] rounded-sm mb-4 flex items-center justify-center border border-white/5 relative">
+<div class="grid grid-cols-3 grid-rows-2 gap-1 w-2/3 h-2/3 opacity-20">
+<div class="bg-white"></div><div class="bg-white"></div><div class="bg-white"></div>
+<div class="bg-white"></div><div class="bg-white"></div><div class="bg-white"></div>
+</div>
+</div>
+<h3 class="font-mono text-sm text-white font-bold mb-1 uppercase">BentoGrid</h3>
+<p class="text-xs text-on-surface-variant mb-4 h-8 overflow-hidden">Responsive asymmetric grid for dashboard compositions.</p>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] font-mono text-white/40">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 4 VARIANTS</span>
+<span>4.5KB GZIP</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#0A0A1A] border-t border-white/10 relative z-50">
+<div class="flex flex-col gap-1">
+<span class="text-lg font-bold text-white font-headline">SFUX</span>
+<span class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">©2024 SIGNALFRAME_UX [TERMINAL_OUT]</span>
+</div>
+<div class="flex gap-8">
+<a class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-violet-400" href="#">GITHUB</a>
+<a class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-violet-400" href="#">DISCORD</a>
+<a class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-violet-400" href="#">LICENSE</a>
+<a class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-400" href="#">STATUS</a>
+</div>
+<div class="flex items-center gap-2 font-mono text-[8px] text-white/20">
+<span>PING: 14ms</span>
+<span class="w-1 h-1 bg-white/20 rounded-full"></span>
+<span>Uptime: 99.99%</span>
+</div>
+</footer>
+</body></html>

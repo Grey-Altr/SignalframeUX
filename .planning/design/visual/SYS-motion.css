@@ -1,0 +1,125 @@
+/* ============================================================================
+   SYS-motion.css — SignalframeUX Design System Motion & Interaction Feedback
+   Generated: 2026-03-31 | Updated: 2026-03-31
+   Philosophy: "Industrial Tactility" — every interaction feels like operating
+   a well-machined instrument. Fast in, slow out. Mechanical, not decorative.
+   ============================================================================ */
+
+:root {
+  /* --- Durations (5 levels) --- */
+  --duration-instant: 50ms;
+  --duration-fast:    100ms;
+  --duration-normal:  200ms;
+  --duration-slow:    400ms;
+  --duration-slower:  600ms;
+
+  /* --- Easings (7 curves) --- */
+  --ease-default:  cubic-bezier(0.2, 0, 0, 1);
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring:   linear(
+    0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191,
+    0.25, 0.316, 0.391, 0.473, 0.562, 0.66, 0.765, 0.878,
+    1.0, 1.025, 1.042, 1.05, 1.05, 1.042, 1.028, 1.009,
+    0.988, 0.965, 0.945, 0.928, 0.916, 0.908, 0.906, 0.91,
+    0.918, 0.931, 0.947, 0.965, 0.984, 1.0
+  );
+  /* Hover overshoot — slight "rising to meet you" feel */
+  --ease-hover:    cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  /* Snap — used for toggle snaps, instant state switches */
+  --ease-snap:     cubic-bezier(0.68, -0.2, 0.27, 1.2);
+
+  /* --- Delays (5 levels) --- */
+  --delay-none:    0ms;
+  --delay-short:   50ms;
+  --delay-medium:  150ms;
+  --delay-long:    300ms;
+  --delay-stagger: 75ms;
+
+  /* =========================================================================
+     INTERACTION FEEDBACK TOKENS
+     ========================================================================= */
+
+  /* --- Press Response ---
+     The most important micro-interaction: fast snap down, slow spring back.
+     Asymmetric timing mimics physical key switches / mixing console buttons. */
+  --press-scale:       0.97;
+  --press-y:           1px;
+  --press-duration:    34ms;   /* near-instant snap */
+  --release-duration:  var(--duration-slow);   /* 400ms spring back */
+  --release-ease:      var(--ease-spring);
+
+  /* --- Hover Response ---
+     Elements rise to meet the cursor. Slow settle on exit. */
+  --hover-lift:           -2px;
+  --hover-duration:       var(--duration-normal);  /* 200ms */
+  --hover-ease:           var(--ease-hover);
+  --hover-exit-duration:  var(--duration-slower);  /* 600ms — glacial settle */
+  --hover-exit-ease:      var(--ease-default);
+
+  /* --- Focus Response ---
+     Expanding outline — Wipeout HUD targeting energy. */
+  --focus-ring-width:     2px;
+  --focus-ring-offset:    3px;
+  --focus-expand-duration: var(--duration-normal);
+
+  /* --- Error Feedback ---
+     Tight mechanical shake. Decaying oscillation, not cartoon wiggle. */
+  --shake-amplitude:  4px;
+  --shake-duration:   300ms;
+
+  /* --- Scroll Entrance ---
+     Reading-order cascade for content entering the viewport. */
+  --entrance-stagger:   var(--delay-stagger);    /* 75ms between siblings */
+  --entrance-duration:  var(--duration-normal);   /* 200ms per element */
+  --entrance-distance:  20px;                     /* translateY offset */
+
+  /* --- Feedback Flash ---
+     Brief color inversion on confirm actions. VHS glitch aesthetic. */
+  --flash-duration: 150ms;
+
+  /* --- Scanline ---
+     Loading skeleton animation. 2px magenta band sweeps top-to-bottom. */
+  --scanline-duration: 1.5s;
+
+  /* --- Toggle Snap ---
+     Hard mechanical switch feel with slight pull-back. */
+  --toggle-duration: var(--duration-fast);  /* 100ms */
+  --toggle-ease:     var(--ease-snap);
+
+  /* --- Cursor Follow ---
+     Custom cursor lag for physical weight feel. Desktop only. */
+  --cursor-size:        8px;
+  --cursor-hover-size:  40px;
+  --cursor-follow-speed: 150ms;
+}
+
+/* === Reduced Motion ===
+   All durations and delays collapse to 0. Animations become instant state
+   changes. Feedback is preserved through color/opacity (not motion). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant:     0ms;
+    --duration-fast:        0ms;
+    --duration-normal:      0ms;
+    --duration-slow:        0ms;
+    --duration-slower:      0ms;
+    --delay-short:          0ms;
+    --delay-medium:         0ms;
+    --delay-long:           0ms;
+    --delay-stagger:        0ms;
+    --press-duration:       0ms;
+    --release-duration:     0ms;
+    --hover-duration:       0ms;
+    --hover-exit-duration:  0ms;
+    --focus-expand-duration: 0ms;
+    --shake-duration:       0ms;
+    --entrance-duration:    0ms;
+    --entrance-distance:    0px;
+    --flash-duration:       0ms;
+    --scanline-duration:    0ms;
+    --toggle-duration:      0ms;
+    --cursor-follow-speed:  0ms;
+  }
+}

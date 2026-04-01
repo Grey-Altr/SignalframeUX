@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — SignalframeUX Lofi Wireframe</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      /* --- Reset --- */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* --- Base --- */
+      body.pde-layout--lofi {
+        font-family: var(--typography-fontFamily-body);
+        font-size: var(--typography-fontSize-base);
+        line-height: var(--typography-lineHeight-normal);
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Skip Link --- */
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: var(--spacing-4);
+        padding: var(--spacing-2) var(--spacing-4);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        border-radius: var(--border-radius-sm);
+        font-weight: var(--typography-fontWeight-semibold);
+        text-decoration: none;
+        z-index: 1000;
+        transition: top var(--motion-duration-fast) var(--motion-easing-out);
+      }
+
+      .skip-link:focus {
+        top: var(--spacing-4);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* --- Header --- */
+      .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-4) var(--spacing-semantic-gutter);
+        border-bottom: var(--border-width-thin) dashed var(--color-border);
+      }
+
+      .site-logo {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        text-decoration: none;
+        letter-spacing: var(--typography-letterSpacing-wide);
+        text-transform: uppercase;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-6);
+      }
+
+      .site-nav a {
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        transition: color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .site-nav a:hover,
+      .site-nav a:focus-visible {
+        color: var(--color-accent);
+      }
+
+      .site-nav a[aria-current="page"] {
+        color: var(--color-text);
+        font-weight: var(--typography-fontWeight-semibold);
+      }
+
+      /* --- Theme Toggle --- */
+      .theme-toggle {
+        appearance: none;
+        background: var(--color-surface-raised);
+        border: var(--border-width-thin) solid var(--color-border);
+        border-radius: var(--border-radius-sm);
+        color: var(--color-text-secondary);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        padding: var(--spacing-1) var(--spacing-2);
+        cursor: pointer;
+        transition: color var(--motion-duration-fast) var(--motion-easing-default),
+                    border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus-visible {
+        color: var(--color-text);
+        border-color: var(--color-accent);
+        outline: none;
+      }
+
+      /* --- Main --- */
+      .main-content {
+        flex: 1;
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: var(--spacing-semantic-page) var(--spacing-semantic-gutter);
+      }
+
+      /* --- Page Header --- */
+      .page-header {
+        margin-bottom: var(--spacing-semantic-section);
+      }
+
+      .page-title {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-2xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-tight);
+        letter-spacing: var(--typography-letterSpacing-tight);
+        margin-bottom: var(--spacing-6);
+      }
+
+      .page-subtitle {
+        font-size: var(--typography-fontSize-lg);
+        color: var(--color-text-secondary);
+        line-height: var(--typography-lineHeight-snug);
+        max-width: 48ch;
+      }
+
+      /* --- Availability Indicator --- */
+      .availability {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-3);
+        padding: var(--spacing-3) var(--spacing-5);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        margin-bottom: var(--spacing-semantic-section);
+      }
+
+      .availability-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--border-radius-full);
+        flex-shrink: 0;
+      }
+
+      .availability-dot[data-status="available"] {
+        background-color: var(--color-success-400);
+        box-shadow: 0 0 0 3px var(--color-success-400 / 0.25);
+      }
+
+      .availability-dot[data-status="selective"] {
+        background-color: var(--color-warning-400);
+        box-shadow: 0 0 0 3px var(--color-warning-400 / 0.25);
+      }
+
+      .availability-dot[data-status="booked"] {
+        background-color: var(--color-error-400);
+        box-shadow: 0 0 0 3px var(--color-error-400 / 0.25);
+      }
+
+      .availability-label {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-secondary);
+        letter-spacing: var(--typography-letterSpacing-wide);
+      }
+
+      .availability-status {
+        font-weight: var(--typography-fontWeight-semibold);
+        color: var(--color-text);
+      }
+
+      /* --- Contact Methods --- */
+      .contact-methods {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-4);
+        margin-bottom: var(--spacing-semantic-section);
+      }
+
+      .contact-method {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--spacing-5) var(--spacing-6);
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-md);
+        text-decoration: none;
+        color: var(--color-text);
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default),
+                    background-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .contact-method:hover,
+      .contact-method:focus-visible {
+        border-color: var(--color-accent);
+        background-color: var(--color-bg-subtle);
+        outline: none;
+      }
+
+      .contact-method:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .contact-method-info {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-1);
+      }
+
+      .contact-method-label {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        letter-spacing: var(--typography-letterSpacing-widest);
+        text-transform: uppercase;
+      }
+
+      .contact-method-value {
+        font-size: var(--typography-fontSize-base);
+        font-weight: var(--typography-fontWeight-medium);
+      }
+
+      .contact-method-arrow {
+        font-family: var(--typography-fontFamily-mono);
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+        transition: transform var(--motion-duration-fast) var(--motion-easing-default),
+                    color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .contact-method:hover .contact-method-arrow {
+        transform: translateX(4px);
+        color: var(--color-accent);
+      }
+
+      /* --- CTA Section --- */
+      .cta-section {
+        border: var(--border-width-medium) dashed var(--color-border);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-10) var(--spacing-8);
+        text-align: center;
+      }
+
+      .cta-heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-semibold);
+        margin-bottom: var(--spacing-3);
+      }
+
+      .cta-text {
+        color: var(--color-text-secondary);
+        font-size: var(--typography-fontSize-sm);
+        margin-bottom: var(--spacing-6);
+        max-width: 40ch;
+        margin-inline: auto;
+      }
+
+      .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        padding: var(--spacing-3) var(--spacing-6);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        font-weight: var(--typography-fontWeight-semibold);
+        letter-spacing: var(--typography-letterSpacing-wide);
+        text-decoration: none;
+        border-radius: var(--border-radius-sm);
+        border: none;
+        cursor: pointer;
+        transition: background-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .cta-button:hover,
+      .cta-button:focus-visible {
+        background: var(--color-accent-hover);
+        outline: none;
+      }
+
+      .cta-button:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* --- Footer --- */
+      .site-footer {
+        margin-top: auto;
+        padding: var(--spacing-6) var(--spacing-semantic-gutter);
+        border-top: var(--border-width-thin) dashed var(--color-border);
+        text-align: center;
+      }
+
+      .footer-text {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        letter-spacing: var(--typography-letterSpacing-wide);
+      }
+
+      /* --- Responsive --- */
+      @media (max-width: 640px) {
+        .site-header {
+          flex-wrap: wrap;
+          gap: var(--spacing-3);
+        }
+
+        .site-nav {
+          gap: var(--spacing-4);
+        }
+
+        .page-title {
+          font-size: var(--typography-fontSize-xl);
+        }
+
+        .main-content {
+          padding: var(--spacing-semantic-section) var(--spacing-4);
+        }
+
+        .cta-section {
+          padding: var(--spacing-8) var(--spacing-5);
+        }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--lofi">
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <a href="homepage.html" class="site-logo" aria-label="SignalframeUX home">SfUX</a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="homepage.html">Work</a>
+      <a href="case-study.html">Case Studies</a>
+      <a href="design-system.html">System</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" aria-current="page">Contact</a>
+      <button class="theme-toggle" type="button" aria-label="Toggle color theme">[theme]</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main" class="main-content" role="main">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">Get in Touch</h1>
+      <p class="page-subtitle">Design engineer focused on systematic, accessible interfaces. Open to collaboration, consulting, and full-time roles.</p>
+    </header>
+
+    <!-- Availability Indicator -->
+    <section aria-label="Current availability">
+      <div class="availability" role="status" aria-live="polite">
+        <span class="availability-dot" data-status="available" aria-hidden="true"></span>
+        <span class="availability-label">
+          Status: <span class="availability-status">Available for projects</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- Contact Methods -->
+    <section aria-labelledby="contact-methods-heading">
+      <h2 id="contact-methods-heading" class="sr-only">Contact Methods</h2>
+      <div class="contact-methods">
+        <a href="mailto:hello@signalframe.ux" class="contact-method" aria-label="Send email to hello@signalframe.ux">
+          <div class="contact-method-info">
+            <span class="contact-method-label">Email</span>
+            <span class="contact-method-value">hello@signalframe.ux</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">-&gt;</span>
+        </a>
+
+        <a href="https://linkedin.com/in/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">LinkedIn</span>
+            <span class="contact-method-value">linkedin.com/in/signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">-&gt;</span>
+        </a>
+
+        <a href="https://github.com/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">GitHub</span>
+            <span class="contact-method-value">github.com/signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">-&gt;</span>
+        </a>
+
+        <a href="https://x.com/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter) profile (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">X / Twitter</span>
+            <span class="contact-method-value">@signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" aria-labelledby="cta-heading">
+      <h2 id="cta-heading" class="cta-heading">Have a project in mind?</h2>
+      <p class="cta-text">I respond within 24 hours. Let's discuss how design engineering can move your product forward.</p>
+      <a href="mailto:hello@signalframe.ux?subject=Project%20Inquiry" class="cta-button">
+        Start a Conversation
+      </a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-text">SignalframeUX -- lofi wireframe -- contact</p>
+  </footer>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    (function () {
+      const toggle = document.querySelector('.theme-toggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', function () {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        toggle.textContent = '[' + next + ']';
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,533 @@
+/* ============================================================================
+   SYS-feedback.css — SignalframeUX Interaction Feedback System
+   Generated: 2026-03-31
+   Requires: SYS-motion.css (tokens), SYS-colors.css (color refs)
+
+   This file provides:
+   1. Keyframe animations for all feedback patterns
+   2. Utility classes (.sf-*) composable onto any element
+   3. Pseudo-element based effects (scanlines, progress bars, flash)
+
+   Philosophy: "Industrial Tactility" — mechanical, flat, earned.
+   No confetti. No bounce. No emoji. Motion IS the feedback.
+   ============================================================================ */
+
+
+/* ============================================================================
+   KEYFRAME ANIMATIONS
+   ============================================================================ */
+
+/* --- Press spring-back (applied via release transition, not keyframe) --- */
+/* Press uses transition, not animation. See .sf-pressable below. */
+
+/* --- Focus ring expansion --- */
+@keyframes sf-focus-expand {
+  from {
+    outline-offset: 0px;
+    outline-color: oklch(0.65 0.29 350 / 0.4);
+  }
+  to {
+    outline-offset: var(--focus-ring-offset, 3px);
+    outline-color: oklch(0.65 0.29 350 / 1);
+  }
+}
+
+/* --- Error shake — tight mechanical rejection --- */
+@keyframes sf-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(calc(-1 * var(--shake-amplitude, 4px))); }
+  40%      { transform: translateX(var(--shake-amplitude, 4px)); }
+  60%      { transform: translateX(calc(-0.5 * var(--shake-amplitude, 4px))); }
+  80%      { transform: translateX(calc(0.5 * var(--shake-amplitude, 4px))); }
+}
+
+/* --- Confirm flash — brief color inversion (VHS glitch) --- */
+@keyframes sf-flash-invert {
+  0%, 100% { filter: invert(0); }
+  15%      { filter: invert(1); }
+}
+
+/* --- Scanline sweep — loading skeleton --- */
+@keyframes sf-scanline {
+  0%   { top: -2px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* --- Entrance fade up --- */
+@keyframes sf-entrance-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--entrance-distance, 20px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Underline draw (left to right) --- */
+@keyframes sf-underline-draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* --- Border draw (for code blocks / cards) --- */
+@keyframes sf-border-draw {
+  0%   { clip-path: inset(0 100% 100% 0); }
+  25%  { clip-path: inset(0 0 100% 0); }
+  50%  { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* --- Scroll progress fill --- */
+@keyframes sf-scroll-fill {
+  to { width: 100%; }
+}
+
+/* --- Separator rule grow --- */
+@keyframes sf-rule-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* --- Cursor blink (block cursor for inputs) --- */
+@keyframes sf-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* --- Pulse (subtle attention draw, used sparingly) --- */
+@keyframes sf-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+
+/* --- Wipe transition (page/section transitions) --- */
+@keyframes sf-wipe-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes sf-wipe-out {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+
+/* ============================================================================
+   UTILITY CLASSES — Composable Feedback Behaviors
+   ============================================================================ */
+
+/* --- .sf-pressable ---
+   The core interaction. Every clickable element gets this.
+   - Hover: lifts up with slight overshoot
+   - Active: snaps down instantly
+   - Release: springs back slowly
+   Asymmetric timing = satisfying. */
+
+.sf-pressable {
+  will-change: transform;
+  transition:
+    transform var(--hover-exit-duration) var(--hover-exit-ease);
+}
+
+.sf-pressable:hover:not([aria-disabled="true"]):not([aria-busy="true"]) {
+  transform: translateY(var(--hover-lift));
+  transition:
+    transform var(--hover-duration) var(--hover-ease);
+}
+
+.sf-pressable:active:not([aria-disabled="true"]):not([aria-busy="true"]) {
+  transform: translateY(var(--press-y)) scale(var(--press-scale));
+  transition:
+    transform var(--press-duration) linear;
+}
+
+/* After release: the default transition (slow + spring) handles the return */
+
+
+/* --- .sf-hoverable ---
+   Lift-only hover. For elements that aren't clickable but should
+   respond to cursor presence (cards, previews). */
+
+.sf-hoverable {
+  will-change: transform;
+  transition:
+    transform var(--hover-exit-duration) var(--hover-exit-ease);
+}
+
+.sf-hoverable:hover {
+  transform: translateY(var(--hover-lift));
+  transition:
+    transform var(--hover-duration) var(--hover-ease);
+}
+
+
+/* --- .sf-focusable ---
+   Expanding focus ring. Outline grows outward from element. */
+
+.sf-focusable:focus-visible {
+  outline: var(--focus-ring-width) solid oklch(0.65 0.29 350);
+  outline-offset: var(--focus-ring-offset);
+  animation: sf-focus-expand var(--focus-expand-duration) var(--ease-out) both;
+}
+
+/* Kill outline on mouse click but keep for keyboard */
+.sf-focusable:focus:not(:focus-visible) {
+  outline: none;
+}
+
+
+/* --- .sf-flash ---
+   Color inversion flash on action. VHS glitch aesthetic.
+   Apply via JS: element.classList.add('sf-flash--active') */
+
+.sf-flash--active {
+  animation: sf-flash-invert var(--flash-duration) var(--ease-out) 1;
+}
+
+
+/* --- .sf-shake ---
+   Error rejection. Tight mechanical oscillation.
+   Apply via JS: element.classList.add('sf-shake--active') */
+
+.sf-shake--active {
+  animation: sf-shake var(--shake-duration) var(--ease-default) 1;
+}
+
+
+/* --- .sf-entrance ---
+   Scroll-triggered entrance. Starts invisible, animates in.
+   Pair with IntersectionObserver or GSAP ScrollTrigger. */
+
+.sf-entrance {
+  opacity: 0;
+  transform: translateY(var(--entrance-distance));
+}
+
+.sf-entrance--visible {
+  animation: sf-entrance-up var(--entrance-duration) var(--ease-out) both;
+}
+
+
+/* --- .sf-entrance-stagger ---
+   Parent container. Children get staggered delays.
+   Uses nth-child for CSS-only stagger (up to 12 children). */
+
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(1)  { animation-delay: calc(0 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(2)  { animation-delay: calc(1 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(3)  { animation-delay: calc(2 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(4)  { animation-delay: calc(3 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(5)  { animation-delay: calc(4 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(6)  { animation-delay: calc(5 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(7)  { animation-delay: calc(6 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(8)  { animation-delay: calc(7 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(9)  { animation-delay: calc(8 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(10) { animation-delay: calc(9 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(11) { animation-delay: calc(10 * var(--entrance-stagger)); }
+.sf-entrance-stagger > .sf-entrance--visible:nth-child(12) { animation-delay: calc(11 * var(--entrance-stagger)); }
+
+/* For grids > 12 items, use GSAP ScrollTrigger.batch() instead */
+
+
+/* --- .sf-skeleton ---
+   Loading skeleton with magenta scanline sweep.
+   Place on any container that will be replaced by real content. */
+
+.sf-skeleton {
+  position: relative;
+  overflow: hidden;
+  border: var(--border-thin) var(--border-style) var(--color-border, oklch(0.770 0.010 298));
+  background: var(--color-surface, oklch(0.970 0.005 298));
+}
+
+.sf-skeleton::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: oklch(0.65 0.29 350); /* magenta */
+  animation: sf-scanline var(--scanline-duration) var(--ease-in-out) infinite;
+}
+
+
+/* --- .sf-link-draw ---
+   Underline draws left-to-right on hover. Typewriter feel. */
+
+.sf-link-draw {
+  position: relative;
+  text-decoration: none;
+}
+
+.sf-link-draw::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.sf-link-draw:hover::after {
+  transform: scaleX(1);
+}
+
+.sf-link-draw:not(:hover)::after {
+  transform-origin: right;
+}
+
+
+/* --- .sf-rule-entrance ---
+   Horizontal separator that grows from left on scroll entrance. */
+
+.sf-rule-entrance {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.sf-rule-entrance--visible {
+  animation: sf-rule-grow var(--duration-slow) var(--ease-out) both;
+}
+
+
+/* --- .sf-toggle ---
+   Hard mechanical snap toggle. Pull-back-before-snap easing. */
+
+.sf-toggle__thumb {
+  transition: transform var(--toggle-duration) var(--toggle-ease);
+}
+
+.sf-toggle[aria-checked="true"] .sf-toggle__thumb {
+  transform: translateX(var(--sf-toggle-travel, 20px));
+}
+
+
+/* --- .sf-scroll-progress ---
+   Page scroll progress bar. 2px magenta at viewport top. */
+
+.sf-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: oklch(0.65 0.29 350); /* magenta */
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* CSS scroll-driven animation (progressive enhancement) */
+@supports (animation-timeline: scroll()) {
+  .sf-scroll-progress {
+    animation: sf-scroll-fill linear both;
+    animation-timeline: scroll();
+  }
+}
+
+
+/* --- .sf-invert-hover ---
+   Full color inversion on hover. Hard switch. For primary buttons. */
+
+.sf-invert-hover {
+  transition:
+    color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default);
+}
+
+.sf-invert-hover:hover:not([aria-disabled="true"]) {
+  color: var(--sf-invert-bg, oklch(0.970 0.005 298));
+  background-color: var(--sf-invert-fg, oklch(0.150 0.008 298));
+}
+
+
+/* --- .sf-border-thicken ---
+   Border thickens on hover. Ghost button / outlined element pattern. */
+
+.sf-border-thicken {
+  border-width: var(--border-thin);
+  transition: border-width var(--duration-fast) var(--ease-default);
+}
+
+.sf-border-thicken:hover:not([aria-disabled="true"]) {
+  border-width: var(--border-medium);
+}
+
+
+/* --- .sf-nav-indicator ---
+   Sliding active indicator for navigation items.
+   The indicator bar moves between items via inline --sf-nav-x. */
+
+.sf-nav-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: oklch(0.65 0.29 350); /* magenta */
+  transition: transform var(--duration-normal) var(--ease-spring),
+              width var(--duration-normal) var(--ease-spring);
+  will-change: transform, width;
+}
+
+
+/* ============================================================================
+   VALIDATION FEEDBACK
+   ============================================================================ */
+
+/* --- Error state on inputs --- */
+.sf-input-error {
+  border-color: var(--color-error-500, oklch(0.550 0.180 25)) !important;
+  animation: sf-shake var(--shake-duration) var(--ease-default) 1;
+}
+
+/* --- Success flash (brief green border, then back to default) --- */
+@keyframes sf-success-border {
+  0%   { border-color: var(--color-success-500, oklch(0.550 0.160 145)); }
+  100% { border-color: var(--color-border, oklch(0.770 0.010 298)); }
+}
+
+.sf-input-success {
+  animation: sf-success-border 1.5s var(--ease-out) both;
+}
+
+/* --- Error message slide-in (emerges from below the input) --- */
+.sf-error-msg {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--duration-normal) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.sf-error-msg--visible {
+  max-height: 3em;
+  opacity: 1;
+}
+
+
+/* ============================================================================
+   COPY-TO-CLIPBOARD FEEDBACK
+   ============================================================================ */
+
+/* Button label swaps inline — no toast needed */
+.sf-copy-label,
+.sf-copy-label--done {
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+
+.sf-copy[data-copied="true"] .sf-copy-label {
+  opacity: 0;
+  position: absolute;
+}
+
+.sf-copy[data-copied="true"] .sf-copy-label--done {
+  opacity: 1;
+}
+
+.sf-copy:not([data-copied="true"]) .sf-copy-label--done {
+  opacity: 0;
+  position: absolute;
+}
+
+
+/* ============================================================================
+   BUTTON LOADING STATE
+   ============================================================================ */
+
+/* Progress bar that fills across the bottom edge of a button */
+.sf-btn-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.sf-btn-progress::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: oklch(0.65 0.29 350); /* magenta */
+  transition: width 2s var(--ease-out);
+}
+
+.sf-btn-progress[aria-busy="true"]::after {
+  width: 90%; /* Stops at 90% until actual completion */
+}
+
+.sf-btn-progress[data-complete="true"]::after {
+  width: 100%;
+  transition: width var(--duration-fast) linear;
+}
+
+
+/* ============================================================================
+   PAGE TRANSITION WIPE
+   ============================================================================ */
+
+.sf-page-wipe {
+  position: fixed;
+  inset: 0;
+  background: oklch(0.150 0.008 298); /* near-black */
+  z-index: 10000;
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+
+/* ============================================================================
+   AMBIENT: IDLE STANDBY
+   ============================================================================ */
+
+/* Faint scanline overlay after 60s idle. Triggered via JS class toggle. */
+@keyframes sf-idle-scan {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
+.sf-idle-overlay {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 3px,
+    oklch(0.65 0.29 350 / 0.015) 3px,
+    oklch(0.65 0.29 350 / 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity var(--duration-slower) var(--ease-in-out);
+}
+
+.sf-idle-overlay--active {
+  opacity: 1;
+  animation: sf-idle-scan 8s linear infinite;
+}
+
+
+/* ============================================================================
+   DISABLED STATE (universal)
+   ============================================================================ */
+
+[aria-disabled="true"],
+.sf-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Strip all transforms and animations from disabled elements */
+[aria-disabled="true"] *,
+.sf-disabled * {
+  animation: none !important;
+  transition: none !important;
+}

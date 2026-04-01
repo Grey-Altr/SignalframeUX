@@ -1,0 +1,23 @@
+/* ============================================================================
+   SYS-borders.css — SignalframeUX Design System Borders
+   Generated: 2026-03-31
+   ============================================================================ */
+
+:root {
+  /* --- Border Radii (7 steps) --- */
+  --radius-none: 0px;
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* --- Border Widths (3 steps) --- */
+  --border-thin:   1px;
+  --border-medium: 2px;
+  --border-thick:  4px;
+
+  /* --- Border Style (1 default) --- */
+  --border-style: solid;
+}

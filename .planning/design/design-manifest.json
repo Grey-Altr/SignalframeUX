@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "projectName": "string -- project name from design brief",
-  "productType": "software | hardware | hybrid",
+  "projectName": "Portfolio",
+  "productType": "software",
   "outputRoot": "string -- path to output directory (e.g., ./pde-output or .planning/design)",
   "mode": "standalone | pde-integrated",
-  "generatedAt": "2026-03-31T19:23:58.690Z",
-  "updatedAt": "2026-03-31T19:34:50.314Z",
+  "generatedAt": "2026-03-31T19:51:11.876Z",
+  "updatedAt": "2026-03-31T22:48:37.793Z",
   "artifacts": {
     "REC": {
       "code": "REC",
@@ -24,8 +24,80 @@
       "path": ".planning/design/strategy/CMP-competitive-v1.md",
       "status": "draft",
       "version": "1"
+    },
+    "OPP": {
+      "code": "OPP",
+      "name": "Opportunity Evaluation",
+      "type": "opportunity",
+      "domain": "strategy",
+      "path": ".planning/design/strategy/OPP-opportunity-v1.md",
+      "status": "draft",
+      "version": "1"
+    },
+    "IDT": {
+      "code": "IDT",
+      "name": "Ideation",
+      "type": "ideation",
+      "domain": "strategy",
+      "path": ".planning/design/strategy/IDT-ideation-v1.md",
+      "status": "draft",
+      "version": "1"
+    },
+    "BRF": {
+      "code": "BRF",
+      "name": "Design Brief",
+      "type": "brief",
+      "domain": "strategy",
+      "path": ".planning/design/strategy/BRF-brief-v1.md",
+      "status": "draft",
+      "version": "1"
+    },
+    "SYS": {
+      "code": "SYS",
+      "name": "Design System",
+      "type": "design-system",
+      "domain": "visual",
+      "path": ".planning/design/visual/SYS-tokens.json",
+      "status": "draft",
+      "version": "1"
+    },
+    "ITR": {
+      "code": "ITR",
+      "name": "Design Iteration",
+      "type": "iteration",
+      "domain": "review",
+      "path": ".planning/design/review/ITR-changelog-v1.md",
+      "status": "complete",
+      "version": "1"
+    },
+    "MCK": {
+      "code": "MCK",
+      "name": "Hi-Fi Mockup",
+      "type": "mockup",
+      "domain": "ux",
+      "path": ".planning/design/ux/mockups/",
+      "status": "draft",
+      "version": "2"
+    },
+    "HIG": {
+      "code": "HIG",
+      "name": "Human Interface Guidelines",
+      "type": "hig",
+      "domain": "review",
+      "path": ".planning/design/review/HIG-guidelines-v1.md",
+      "status": "complete",
+      "version": "1"
+    },
+    "HND": {
+      "code": "HND",
+      "name": "Implementation Handoff",
+      "type": "handoff",
+      "domain": "review",
+      "path": ".planning/design/review/HND-handoff-v1.md",
+      "status": "complete",
+      "version": "1"
     }
   },
   "tokenDependencyMap": {},
-  "designCoverage": "{\"hasDesignSystem\":false,\"hasWireframes\":false,\"hasFlows\":false,\"hasHardwareSpec\":false,\"hasCritique\":false,\"hasIterate\":false,\"hasHandoff\":false,\"hasIdeation\":false,\"hasCompetitive\":true,\"hasOpportunity\":false,\"hasMockup\":false,\"hasHigAudit\":false,\"hasRecommendations\":true}"
+  "designCoverage": "{\"hasDesignSystem\":true,\"hasWireframes\":true,\"hasFlows\":true,\"hasHardwareSpec\":false,\"hasCritique\":true,\"hasIterate\":true,\"hasHandoff\":true,\"hasIdeation\":true,\"hasCompetitive\":true,\"hasOpportunity\":true,\"hasMockup\":true,\"hasHigAudit\":true,\"hasRecommendations\":true}"
 }

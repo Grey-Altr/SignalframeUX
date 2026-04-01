@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- WIREFRAME-SOURCE: WFR-design-system-v1.html | Generated: 2026-03-31 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System — SignalframeUX Hi-Fi Mockup</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/ScrollTrigger.min.js"></script>
+  <style>
+    @layer tokens, mockup-layout, components, states, animations, utilities;
+
+    @layer tokens {
+      :root {
+        --hifi-bg: var(--color-bg, oklch(0.15 0.02 298));
+        --hifi-surface: var(--color-surface, oklch(0.20 0.02 298));
+        --hifi-surface-raised: var(--color-surface-raised, oklch(0.25 0.02 298));
+        --hifi-accent: var(--color-accent, oklch(0.55 0.18 298));
+        --hifi-accent-hover: var(--color-accent-hover, oklch(0.65 0.18 298));
+        --hifi-accent-subtle: var(--color-accent-subtle, oklch(0.23 0.04 298));
+        --hifi-text: var(--color-text, oklch(0.93 0.01 298));
+        --hifi-text-secondary: var(--color-text-secondary, oklch(0.65 0.03 298));
+        --hifi-text-muted: var(--color-text-muted, oklch(0.50 0.02 298));
+        --hifi-border: var(--color-border, oklch(0.30 0.03 298));
+        --hifi-border-subtle: var(--color-border-subtle, oklch(0.25 0.02 298));
+        --hifi-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --hifi-font: 'Inter', var(--typography-fontFamily-body, system-ui, sans-serif);
+        --hifi-mono: var(--typography-fontFamily-mono, ui-monospace, monospace);
+      }
+    }
+
+    @layer mockup-layout {
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body.pde-layout--hifi {
+        font-family: var(--hifi-font);
+        font-size: var(--typography-fontSize-base, 1rem);
+        line-height: var(--typography-lineHeight-normal, 1.5);
+        color: var(--hifi-text);
+        background: var(--hifi-bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page-container { max-width: 1280px; margin: 0 auto; padding: 0 var(--spacing-semantic-gutter, 32px); }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    }
+
+    @layer components {
+      /* Skip Link */
+      .skip-link {
+        position: absolute; top: -100%; left: var(--spacing-4, 16px);
+        z-index: 1000; padding: var(--spacing-2, 8px) var(--spacing-4, 16px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: 600; text-decoration: none; border-radius: var(--border-radius-sm, 4px);
+      }
+      .skip-link:focus { top: var(--spacing-4, 16px); outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+
+      /* Header */
+      .site-header {
+        position: sticky; top: 0; z-index: 100;
+        background: oklch(0.15 0.02 298 / 0.85);
+        backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid var(--hifi-border-subtle);
+        padding: var(--spacing-4, 16px) 0;
+      }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4, 16px); }
+      .site-logo { font-family: var(--hifi-font); font-size: var(--typography-fontSize-lg, 1.414rem); font-weight: 700; color: var(--hifi-accent); text-decoration: none; letter-spacing: -0.025em; }
+      .site-logo:hover { opacity: 0.8; }
+      .nav-list { display: flex; list-style: none; gap: var(--spacing-6, 24px); align-items: center; }
+      .nav-link { color: var(--hifi-text-secondary); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); font-variation-settings: 'wght' 400; transition: color 100ms, font-variation-settings 200ms var(--hifi-spring); }
+      .nav-link:hover, .nav-link:focus { color: var(--hifi-accent); font-variation-settings: 'wght' 700; }
+      .nav-link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 4px; }
+      .nav-link[aria-current="page"] { color: var(--hifi-accent); font-variation-settings: 'wght' 600; }
+      .header-actions { display: flex; align-items: center; gap: var(--spacing-3, 12px); }
+      .btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--hifi-border); border-radius: 4px; background: var(--hifi-surface); color: var(--hifi-text-secondary); cursor: pointer; font-family: var(--hifi-mono); font-size: 0.5rem; transition: border-color 100ms, transform 200ms var(--hifi-spring); }
+      .btn-icon:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: scale(1.05); }
+      .btn-icon:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .btn-icon:active { transform: scale(0.95); }
+      .btn-icon[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .btn-icon[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .mobile-menu-toggle { display: none; }
+      .kbd { font-family: var(--hifi-mono); font-size: 0.5rem; color: var(--hifi-text-muted); border: 1px solid var(--hifi-border); border-radius: 2px; padding: 1px 5px; background: var(--hifi-surface); }
+
+      /* Two-column layout */
+      .ds-layout { display: grid; grid-template-columns: 1fr; min-height: calc(100vh - 60px); }
+
+      /* Sidebar */
+      .ds-sidebar {
+        padding: var(--spacing-6, 24px) var(--spacing-4, 16px);
+        border-right: 1px solid var(--hifi-border-subtle);
+        background: var(--hifi-surface);
+      }
+      .ds-sidebar__title { font-size: var(--typography-fontSize-sm, 0.707rem); font-weight: 600; color: var(--hifi-text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-4, 16px); }
+      .ds-sidebar__list { list-style: none; display: flex; flex-direction: column; gap: var(--spacing-1, 4px); }
+      .ds-sidebar__link { display: block; padding: var(--spacing-2, 8px) var(--spacing-3, 12px); color: var(--hifi-text-secondary); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); border-radius: var(--border-radius-sm, 4px); border: 1px solid transparent; transition: all 100ms; }
+      .ds-sidebar__link:hover, .ds-sidebar__link:focus-visible { color: var(--hifi-accent); background: var(--hifi-accent-subtle); outline: none; }
+      .ds-sidebar__link[aria-current="true"] { color: var(--hifi-accent); background: var(--hifi-accent-subtle); font-weight: 500; }
+      .ds-sidebar__divider { height: 1px; background: var(--hifi-border-subtle); margin: var(--spacing-3, 12px) 0; }
+
+      /* Main content */
+      .ds-main { padding: var(--spacing-8, 32px) var(--spacing-6, 24px); max-width: 960px; }
+
+      /* Stats */
+      .ds-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--spacing-4, 16px); margin-bottom: var(--spacing-8, 32px); }
+      .ds-stat { border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px); padding: var(--spacing-5, 20px); background: var(--hifi-surface); text-align: center; transition: border-color 200ms, transform 200ms var(--hifi-spring); }
+      .ds-stat:hover { border-color: var(--hifi-accent); transform: translateY(-2px); }
+      .ds-stat__value { font-family: var(--hifi-font); font-size: var(--typography-fontSize-xl, 2rem); font-weight: 700; color: var(--hifi-accent); }
+      .ds-stat__label { font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-muted); margin-top: 4px; }
+
+      /* Sections */
+      .ds-section { margin-bottom: var(--spacing-semantic-section, 64px); }
+      .ds-section__heading { font-family: var(--hifi-font); font-size: var(--typography-fontSize-xl, 2rem); font-weight: 700; line-height: 1.1; color: var(--hifi-text); margin-bottom: var(--spacing-2, 8px); letter-spacing: -0.025em; }
+      .ds-section__desc { font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-muted); margin-bottom: var(--spacing-6, 24px); }
+
+      /* Color scales */
+      .ds-color-scale { margin-bottom: var(--spacing-6, 24px); }
+      .ds-color-scale__label { font-size: var(--typography-fontSize-sm, 0.707rem); font-weight: 600; color: var(--hifi-text); margin-bottom: var(--spacing-2, 8px); }
+      .ds-color-scale__row { display: flex; gap: 2px; border-radius: var(--border-radius-md, 8px); overflow: hidden; }
+      .ds-color-swatch {
+        flex: 1; height: 48px; display: flex; align-items: flex-end; justify-content: center;
+        padding-bottom: 4px; font-size: 0.5rem; font-family: var(--hifi-mono); color: oklch(0.93 0.01 298);
+        position: relative; cursor: pointer;
+        transition: transform 200ms var(--hifi-spring);
+      }
+      /* VISUAL-HOOK: token-pulse — Token swatch cards emit a subtle radial pulse animation when hovered, suggesting the token is "alive" and powering the system -->
+      .ds-color-swatch:hover { transform: scaleY(1.15); z-index: 1; }
+      .ds-color-swatch:hover::after {
+        content: ''; position: absolute; inset: -4px;
+        border-radius: 4px; border: 2px solid var(--hifi-accent);
+        animation: token-pulse 0.6s ease-out;
+      }
+      .ds-color-swatch--dark { color: oklch(0.93 0.01 298); }
+      .ds-color-swatch--light { color: oklch(0.15 0.02 298); }
+
+      /* Token cards */
+      .ds-token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--spacing-4, 16px); margin-bottom: var(--spacing-6, 24px); }
+      .ds-token-card {
+        border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px);
+        padding: var(--spacing-4, 16px); background: var(--hifi-surface);
+        transition: border-color 200ms, transform 200ms var(--hifi-spring);
+      }
+      .ds-token-card:hover { border-color: var(--hifi-accent); transform: translateY(-2px); }
+      .ds-token-card__swatch { width: 100%; height: 48px; border-radius: var(--border-radius-sm, 4px); margin-bottom: var(--spacing-3, 12px); border: 1px solid var(--hifi-border-subtle); }
+      .ds-token-card__name { font-size: var(--typography-fontSize-sm, 0.707rem); font-weight: 500; color: var(--hifi-text); }
+      .ds-token-card__meta { font-size: 0.5rem; color: var(--hifi-text-muted); font-family: var(--hifi-mono); margin-top: 4px; }
+
+      /* Type scale */
+      .ds-type-scale { display: flex; flex-direction: column; gap: var(--spacing-4, 16px); margin-bottom: var(--spacing-6, 24px); }
+      .ds-type-sample { display: flex; align-items: baseline; gap: var(--spacing-4, 16px); padding: var(--spacing-3, 12px) var(--spacing-4, 16px); border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-md, 8px); background: var(--hifi-surface); }
+      .ds-type-sample__label { flex-shrink: 0; width: 70px; font-size: 0.5rem; color: var(--hifi-text-muted); font-family: var(--hifi-mono); }
+      .ds-type-sample__text { color: var(--hifi-text); font-family: var(--hifi-font); }
+
+      /* Spacing scale */
+      .ds-spacing-scale { display: flex; flex-direction: column; gap: var(--spacing-3, 12px); margin-bottom: var(--spacing-6, 24px); }
+      .ds-spacing-sample { display: flex; align-items: center; gap: var(--spacing-4, 16px); }
+      .ds-spacing-sample__label { flex-shrink: 0; width: 80px; font-size: 0.5rem; color: var(--hifi-text-muted); font-family: var(--hifi-mono); text-align: right; }
+      .ds-spacing-sample__bar { height: 16px; background: linear-gradient(90deg, var(--hifi-accent), oklch(0.55 0.18 298 / 0.3)); border-radius: 2px; }
+
+      /* Motion tokens */
+      .ds-motion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--spacing-4, 16px); margin-bottom: var(--spacing-6, 24px); }
+      .ds-motion-card {
+        border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px);
+        padding: var(--spacing-4, 16px); background: var(--hifi-surface); text-align: center;
+        transition: border-color 200ms;
+      }
+      .ds-motion-card:hover { border-color: var(--hifi-accent); }
+      .ds-motion-card__preview { width: 100%; height: 32px; background: var(--hifi-surface-raised); border-radius: 4px; margin-bottom: var(--spacing-3, 12px); overflow: hidden; position: relative; }
+      .ds-motion-card__preview::after { content: ''; position: absolute; left: 0; top: 0; width: 30%; height: 100%; background: var(--hifi-accent); border-radius: 4px; }
+      .ds-motion-card:hover .ds-motion-card__preview::after { width: 100%; }
+      .ds-motion-card__name { font-size: var(--typography-fontSize-sm, 0.707rem); font-weight: 500; color: var(--hifi-text); }
+      .ds-motion-card__value { font-size: 0.5rem; color: var(--hifi-text-muted); font-family: var(--hifi-mono); margin-top: 4px; }
+
+      /* Component cards */
+      .ds-component-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-6, 24px); margin-bottom: var(--spacing-6, 24px); }
+      .ds-component-card {
+        border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px);
+        background: var(--hifi-surface); overflow: hidden;
+        transition: border-color 200ms, transform 200ms var(--hifi-spring);
+      }
+      .ds-component-card:hover { border-color: var(--hifi-accent); transform: translateY(-4px); }
+      .ds-component-card__preview {
+        width: 100%; height: 120px;
+        background: linear-gradient(135deg, oklch(0.18 0.03 298), oklch(0.22 0.05 298));
+        border-bottom: 1px solid var(--hifi-border-subtle);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--hifi-text-muted); font-size: var(--typography-fontSize-sm, 0.707rem);
+      }
+      .ds-component-card__body { padding: var(--spacing-4, 16px); }
+      .ds-component-card__name { font-size: 1rem; font-weight: 600; color: var(--hifi-text); margin-bottom: 4px; }
+      .ds-component-card__meta { font-size: 0.5rem; color: var(--hifi-text-muted); }
+      .ds-component-card__actions { display: flex; gap: var(--spacing-2, 8px); margin-top: var(--spacing-3, 12px); padding-top: var(--spacing-3, 12px); border-top: 1px solid var(--hifi-border-subtle); }
+
+      /* Pills */
+      .ds-pill {
+        display: inline-block; padding: 4px 12px;
+        border: 1px solid var(--hifi-border); border-radius: var(--border-radius-full, 9999px);
+        font-size: 0.5rem; color: var(--hifi-text-muted); font-family: var(--hifi-mono);
+        cursor: pointer; transition: all 100ms var(--hifi-spring); background: transparent;
+      }
+      .ds-pill:hover, .ds-pill:focus { border-color: var(--hifi-accent); color: var(--hifi-accent); background: var(--hifi-accent-subtle); }
+      .ds-pill:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .ds-pill[aria-pressed="true"], .ds-pill--active { border-color: var(--hifi-accent); color: var(--hifi-accent); background: var(--hifi-accent-subtle); }
+      .ds-pill[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .ds-pill[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .ds-pill[aria-invalid="true"] { border-color: var(--color-error-400, oklch(0.67 0.144 25)); }
+
+      /* Variation browser */
+      .ds-variation-browser { border: 1px solid var(--hifi-border-subtle); border-radius: var(--border-radius-lg, 12px); background: var(--hifi-surface); margin-bottom: var(--spacing-6, 24px); overflow: hidden; }
+      .ds-variation-browser__toolbar { display: flex; align-items: center; gap: var(--spacing-3, 12px); padding: var(--spacing-3, 12px) var(--spacing-4, 16px); border-bottom: 1px solid var(--hifi-border-subtle); background: var(--hifi-surface-raised); flex-wrap: wrap; }
+      .ds-variation-browser__toolbar-label { font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-muted); }
+      .ds-variation-browser__preview { padding: var(--spacing-8, 32px); display: flex; align-items: center; justify-content: center; min-height: 160px; background: oklch(0.12 0.01 298); }
+      .ds-variation-browser__preview-placeholder { width: 200px; height: 48px; border-radius: 8px; background: var(--hifi-accent); display: flex; align-items: center; justify-content: center; color: var(--color-text-inverse, #fff); font-weight: 600; font-size: var(--typography-fontSize-sm, 0.707rem); }
+
+      /* Code toggle */
+      .ds-code-toggle { display: flex; align-items: center; gap: var(--spacing-2, 8px); padding: var(--spacing-3, 12px) var(--spacing-4, 16px); border-top: 1px solid var(--hifi-border-subtle); cursor: pointer; background: none; border-left: none; border-right: none; border-bottom: none; width: 100%; color: var(--hifi-text-muted); font-family: var(--hifi-mono); font-size: 0.5rem; text-align: left; transition: color 100ms; }
+      .ds-code-toggle:hover { color: var(--hifi-accent); }
+      .ds-code-toggle:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: -2px; }
+      .ds-code-block { padding: var(--spacing-4, 16px); background: oklch(0.12 0.01 298); font-family: var(--hifi-mono); font-size: 0.5rem; color: var(--hifi-text-secondary); white-space: pre-wrap; line-height: 1.6; display: none; }
+      .ds-code-block[aria-hidden="false"] { display: block; }
+
+      /* Footer */
+      .site-footer { border-top: 1px solid var(--hifi-border-subtle); padding: var(--spacing-8, 32px) 0; }
+      .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4, 16px); }
+      .footer-links { display: flex; list-style: none; gap: var(--spacing-4, 16px); }
+      .footer-links a { color: var(--hifi-text-muted); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); transition: color 100ms; }
+      .footer-links a:hover { color: var(--hifi-accent); }
+      .footer-copy { font-size: 0.5rem; color: var(--hifi-text-muted); }
+    }
+
+    @layer states {
+      [data-state="loading"] { display: none; }
+      [data-state="error"] { display: none; }
+      [data-state="empty"] { display: none; }
+    }
+
+    @layer animations {
+      @keyframes token-pulse {
+        0% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(1.3); }
+      }
+
+      .gsap-reveal { opacity: 0; transform: translateY(30px); }
+
+      @supports (animation-timeline: scroll()) {
+        .scroll-reveal {
+          animation: fade-in-up 0.6s ease-out both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 30%;
+        }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+      }
+    }
+
+    @layer utilities {
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        .gsap-reveal { opacity: 1; transform: none; }
+      }
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) { --hifi-bg: var(--color-bg); --hifi-surface: var(--color-surface); --hifi-text: var(--color-text); --hifi-accent: var(--color-accent); }
+      }
+      @media (max-width: 639px) { .mobile-menu-toggle { display: inline-flex; } .nav-list { display: none; } }
+      @media (min-width: 768px) { .ds-layout { grid-template-columns: 240px 1fr; } }
+      @media (max-width: 767px) {
+        .ds-sidebar { border-right: none; border-bottom: 1px solid var(--hifi-border-subtle); padding: var(--spacing-4, 16px); }
+        .ds-sidebar__list { flex-direction: row; flex-wrap: wrap; gap: var(--spacing-2, 8px); }
+      }
+      @media (min-width: 1024px) { .ds-main { padding: var(--spacing-10, 40px) var(--spacing-8, 32px); } }
+      @media (min-width: 1280px) { .page-container { padding: 0 var(--spacing-16, 64px); } }
+    }
+  </style>
+</head>
+<body class="pde-layout--hifi">
+
+  <!-- VISUAL-HOOK: token-pulse — Token swatch cards emit a subtle radial pulse animation when hovered, suggesting the token is "alive" and powering the system -->
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="mockup-homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="mockup-homepage.html" class="nav-link">Work</a></li>
+          <li><a href="mockup-design-system.html" class="nav-link" aria-current="page">System</a></li>
+          <li><a href="mockup-about.html" class="nav-link">About</a></li>
+          <li><a href="mockup-contact.html" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle>T</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="ds-layout" data-state="default">
+    <aside class="ds-sidebar" role="complementary" aria-label="Design system navigation">
+      <p class="ds-sidebar__title">Tokens &amp; Components</p>
+      <nav aria-label="Design system sections">
+        <ul class="ds-sidebar__list">
+          <li><a href="#overview" class="ds-sidebar__link" aria-current="true">Overview</a></li>
+          <li><a href="#color" class="ds-sidebar__link">Color</a></li>
+          <li><a href="#typography" class="ds-sidebar__link">Typography</a></li>
+          <li><a href="#spacing" class="ds-sidebar__link">Spacing</a></li>
+          <li><a href="#motion" class="ds-sidebar__link">Motion</a></li>
+          <li class="ds-sidebar__divider" role="separator"></li>
+          <li><a href="#components" class="ds-sidebar__link">Components</a></li>
+          <li><a href="#variations" class="ds-sidebar__link">Variation Browser</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="ds-main">
+
+      <!-- Overview -->
+      <section class="ds-section" id="overview" aria-labelledby="overview-heading">
+        <h1 class="ds-section__heading gsap-reveal" id="overview-heading">Design System</h1>
+        <p class="ds-section__desc gsap-reveal">A token-first design system built on OKLCH color science, fluid typography, and systematic spacing. Every value is a design decision.</p>
+
+        <div class="ds-stats gsap-reveal">
+          <div class="ds-stat"><p class="ds-stat__value">47</p><p class="ds-stat__label">Design Tokens</p></div>
+          <div class="ds-stat"><p class="ds-stat__value">12</p><p class="ds-stat__label">Components</p></div>
+          <div class="ds-stat"><p class="ds-stat__value">5</p><p class="ds-stat__label">Motion Curves</p></div>
+          <div class="ds-stat"><p class="ds-stat__value">2</p><p class="ds-stat__label">Themes</p></div>
+        </div>
+      </section>
+
+      <!-- Color -->
+      <section class="ds-section" id="color" aria-labelledby="color-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="color-heading">Color</h2>
+        <p class="ds-section__desc gsap-reveal">Built on OKLCH for perceptual uniformity. Primary hue angle: 298 (violet).</p>
+
+        <div class="ds-color-scale gsap-reveal">
+          <p class="ds-color-scale__label">Primary (H=298)</p>
+          <div class="ds-color-scale__row">
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.97 0.014 298)" title="primary-50">50</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.93 0.032 298)" title="primary-100">100</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.87 0.058 298)" title="primary-200">200</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.77 0.099 298)" title="primary-300">300</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.67 0.144 298)" title="primary-400">400</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.55 0.180 298)" title="primary-500">500</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.47 0.162 298)" title="primary-600">600</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.39 0.135 298)" title="primary-700">700</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.31 0.099 298)" title="primary-800">800</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.23 0.040 298)" title="primary-900">900</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.15 0.036 298)" title="primary-950">950</div>
+          </div>
+        </div>
+
+        <div class="ds-color-scale gsap-reveal">
+          <p class="ds-color-scale__label">Neutral (H=298)</p>
+          <div class="ds-color-scale__row">
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.97 0.005 298)" title="neutral-50">50</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.93 0.005 298)" title="neutral-100">100</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.87 0.010 298)" title="neutral-200">200</div>
+            <div class="ds-color-swatch ds-color-swatch--light" style="background:oklch(0.77 0.010 298)" title="neutral-300">300</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.67 0.010 298)" title="neutral-400">400</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.55 0.010 298)" title="neutral-500">500</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.47 0.010 298)" title="neutral-600">600</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.39 0.010 298)" title="neutral-700">700</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.31 0.010 298)" title="neutral-800">800</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.23 0.008 298)" title="neutral-900">900</div>
+            <div class="ds-color-swatch ds-color-swatch--dark" style="background:oklch(0.15 0.008 298)" title="neutral-950">950</div>
+          </div>
+        </div>
+
+        <div class="ds-token-grid gsap-reveal">
+          <div class="ds-token-card"><div class="ds-token-card__swatch" style="background:var(--color-success-400,oklch(0.67 0.128 145))"></div><p class="ds-token-card__name">Success</p><p class="ds-token-card__meta">H=145</p></div>
+          <div class="ds-token-card"><div class="ds-token-card__swatch" style="background:var(--color-warning-400,oklch(0.67 0.120 85))"></div><p class="ds-token-card__name">Warning</p><p class="ds-token-card__meta">H=85</p></div>
+          <div class="ds-token-card"><div class="ds-token-card__swatch" style="background:var(--color-error-400,oklch(0.67 0.144 25))"></div><p class="ds-token-card__name">Error</p><p class="ds-token-card__meta">H=25</p></div>
+          <div class="ds-token-card"><div class="ds-token-card__swatch" style="background:var(--color-info-400,oklch(0.67 0.112 250))"></div><p class="ds-token-card__name">Info</p><p class="ds-token-card__meta">H=250</p></div>
+        </div>
+      </section>
+
+      <!-- Typography -->
+      <section class="ds-section" id="typography" aria-labelledby="type-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="type-heading">Typography</h2>
+        <p class="ds-section__desc gsap-reveal">Inter variable font with augmented fourth scale (ratio 1.414). Weight axis: 100-900.</p>
+
+        <div class="ds-type-scale gsap-reveal">
+          <div class="ds-type-sample"><span class="ds-type-sample__label">4xl / 5.657</span><span class="ds-type-sample__text" style="font-size:3rem;font-weight:700;line-height:1.1">Display</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">3xl / 4.000</span><span class="ds-type-sample__text" style="font-size:2.5rem;font-weight:700;line-height:1.1">Heading 1</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">2xl / 2.828</span><span class="ds-type-sample__text" style="font-size:2rem;font-weight:600;line-height:1.1">Heading 2</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">xl / 2.000</span><span class="ds-type-sample__text" style="font-size:1.5rem;font-weight:600;line-height:1.3">Heading 3</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">lg / 1.414</span><span class="ds-type-sample__text" style="font-size:1.2rem;font-weight:400;line-height:1.5">Lead text</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">base / 1.000</span><span class="ds-type-sample__text" style="font-size:1rem;font-weight:400">Body text</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">sm / 0.707</span><span class="ds-type-sample__text" style="font-size:0.707rem;font-weight:400">Small text</span></div>
+          <div class="ds-type-sample"><span class="ds-type-sample__label">xs / 0.500</span><span class="ds-type-sample__text" style="font-size:0.5rem;font-weight:400">Caption</span></div>
+        </div>
+      </section>
+
+      <!-- Spacing -->
+      <section class="ds-section" id="spacing" aria-labelledby="spacing-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="spacing-heading">Spacing</h2>
+        <p class="ds-section__desc gsap-reveal">4px base unit, linear scale. Semantic tokens for layout patterns.</p>
+        <div class="ds-spacing-scale gsap-reveal">
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-1</span><div class="ds-spacing-sample__bar" style="width:4px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-2</span><div class="ds-spacing-sample__bar" style="width:8px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-4</span><div class="ds-spacing-sample__bar" style="width:16px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-6</span><div class="ds-spacing-sample__bar" style="width:24px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-8</span><div class="ds-spacing-sample__bar" style="width:32px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-12</span><div class="ds-spacing-sample__bar" style="width:48px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-16</span><div class="ds-spacing-sample__bar" style="width:64px"></div></div>
+          <div class="ds-spacing-sample"><span class="ds-spacing-sample__label">--spacing-20</span><div class="ds-spacing-sample__bar" style="width:80px"></div></div>
+        </div>
+      </section>
+
+      <!-- Motion -->
+      <section class="ds-section" id="motion" aria-labelledby="motion-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="motion-heading">Motion</h2>
+        <p class="ds-section__desc gsap-reveal">Duration and easing tokens with spring physics for interactive elements.</p>
+        <div class="ds-motion-grid gsap-reveal">
+          <div class="ds-motion-card"><div class="ds-motion-card__preview" style="--dur:50ms"></div><p class="ds-motion-card__name">Instant</p><p class="ds-motion-card__value">50ms</p></div>
+          <div class="ds-motion-card"><div class="ds-motion-card__preview" style="--dur:100ms"></div><p class="ds-motion-card__name">Fast</p><p class="ds-motion-card__value">100ms</p></div>
+          <div class="ds-motion-card"><div class="ds-motion-card__preview" style="--dur:200ms"></div><p class="ds-motion-card__name">Normal</p><p class="ds-motion-card__value">200ms</p></div>
+          <div class="ds-motion-card"><div class="ds-motion-card__preview" style="--dur:400ms"></div><p class="ds-motion-card__name">Slow</p><p class="ds-motion-card__value">400ms</p></div>
+          <div class="ds-motion-card"><div class="ds-motion-card__preview" style="--dur:600ms"></div><p class="ds-motion-card__name">Slower</p><p class="ds-motion-card__value">600ms</p></div>
+        </div>
+      </section>
+
+      <!-- Components -->
+      <section class="ds-section" id="components" aria-labelledby="components-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="components-heading">Components</h2>
+        <p class="ds-section__desc gsap-reveal">Production-ready components built on the token foundation.</p>
+        <div class="ds-component-grid gsap-reveal">
+          <div class="ds-component-card"><div class="ds-component-card__preview">Button</div><div class="ds-component-card__body"><p class="ds-component-card__name">Button</p><p class="ds-component-card__meta">3 variants &middot; 7 states</p><div class="ds-component-card__actions"><button class="ds-pill ds-pill--active" aria-pressed="true">Primary</button><button class="ds-pill">Secondary</button><button class="ds-pill">Ghost</button></div></div></div>
+          <div class="ds-component-card"><div class="ds-component-card__preview">Card</div><div class="ds-component-card__body"><p class="ds-component-card__name">Card</p><p class="ds-component-card__meta">2 variants &middot; 5 states</p><div class="ds-component-card__actions"><button class="ds-pill ds-pill--active" aria-pressed="true">Default</button><button class="ds-pill">Featured</button></div></div></div>
+          <div class="ds-component-card"><div class="ds-component-card__preview">Navigation</div><div class="ds-component-card__body"><p class="ds-component-card__name">Navigation</p><p class="ds-component-card__meta">2 variants &middot; Responsive</p><div class="ds-component-card__actions"><button class="ds-pill ds-pill--active" aria-pressed="true">Desktop</button><button class="ds-pill">Mobile</button></div></div></div>
+          <div class="ds-component-card"><div class="ds-component-card__preview">Tag / Pill</div><div class="ds-component-card__body"><p class="ds-component-card__name">Tag / Pill</p><p class="ds-component-card__meta">4 variants &middot; 7 states</p><div class="ds-component-card__actions"><button class="ds-pill ds-pill--active" aria-pressed="true">Default</button><button class="ds-pill">Active</button><button class="ds-pill">Accent</button></div></div></div>
+        </div>
+      </section>
+
+      <!-- Variation Browser -->
+      <section class="ds-section" id="variations" aria-labelledby="variations-heading">
+        <h2 class="ds-section__heading gsap-reveal" id="variations-heading">Variation Browser</h2>
+        <p class="ds-section__desc gsap-reveal">Explore component variants by size and state.</p>
+        <div class="ds-variation-browser gsap-reveal">
+          <div class="ds-variation-browser__toolbar">
+            <span class="ds-variation-browser__toolbar-label">Size:</span>
+            <button class="ds-pill" aria-pressed="false">sm</button>
+            <button class="ds-pill ds-pill--active" aria-pressed="true">md</button>
+            <button class="ds-pill" aria-pressed="false">lg</button>
+            <span class="ds-variation-browser__toolbar-label" style="margin-left:12px">State:</span>
+            <button class="ds-pill ds-pill--active" aria-pressed="true">Default</button>
+            <button class="ds-pill" aria-pressed="false">Hover</button>
+            <button class="ds-pill" aria-pressed="false">Focus</button>
+            <button class="ds-pill" aria-pressed="false">Disabled</button>
+          </div>
+          <div class="ds-variation-browser__preview">
+            <div class="ds-variation-browser__preview-placeholder">Button &mdash; md / default</div>
+          </div>
+          <button class="ds-code-toggle" aria-expanded="false" aria-controls="codeBlock">&lt;/&gt; View Code</button>
+          <div class="ds-code-block" id="codeBlock" aria-hidden="true">&lt;button class="btn-primary btn--md"&gt;
+  View Case Studies
+&lt;/button&gt;</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- State variants (hidden) -->
+  <div data-state="loading" style="padding:200px 32px;text-align:center;" aria-live="polite"><p style="color:var(--hifi-text-muted)">Loading design system...</p></div>
+  <div data-state="error" style="padding:200px 32px;text-align:center;" role="alert"><p style="color:var(--color-error-400,#ef4444)">Error loading design system.</p></div>
+  <div data-state="empty" style="padding:200px 32px;text-align:center;"><p style="color:var(--hifi-text-muted)">No tokens found.</p></div>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="mockup-homepage.html">Work</a></li>
+        <li><a href="mockup-design-system.html">System</a></li>
+        <li><a href="mockup-about.html">About</a></li>
+        <li><a href="mockup-contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    (function() {
+      var t = document.querySelector('[data-theme-toggle]');
+      if (!t) return;
+      t.addEventListener('click', function() {
+        var h = document.documentElement, n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        h.setAttribute('data-theme', n); t.setAttribute('aria-pressed', n === 'dark' ? 'true' : 'false');
+      });
+    })();
+
+    // Code toggle
+    (function() {
+      var btn = document.querySelector('.ds-code-toggle');
+      var block = document.getElementById('codeBlock');
+      if (!btn || !block) return;
+      btn.addEventListener('click', function() {
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        block.setAttribute('aria-hidden', expanded ? 'true' : 'false');
+      });
+    })();
+
+    // GSAP
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll('.gsap-reveal').forEach(function(el) {
+        gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

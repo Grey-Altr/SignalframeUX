@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- WIREFRAME-SOURCE: WFR-contact-v1.html | Generated: 2026-03-31 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — SignalframeUX Hi-Fi Mockup</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14/dist/ScrollTrigger.min.js"></script>
+  <style>
+    @layer tokens, mockup-layout, components, states, animations, utilities;
+
+    @layer tokens {
+      :root {
+        --hifi-bg: var(--color-bg, oklch(0.15 0.02 298));
+        --hifi-surface: var(--color-surface, oklch(0.20 0.02 298));
+        --hifi-surface-raised: var(--color-surface-raised, oklch(0.25 0.02 298));
+        --hifi-accent: var(--color-accent, oklch(0.55 0.18 298));
+        --hifi-accent-hover: var(--color-accent-hover, oklch(0.65 0.18 298));
+        --hifi-accent-subtle: var(--color-accent-subtle, oklch(0.23 0.04 298));
+        --hifi-text: var(--color-text, oklch(0.93 0.01 298));
+        --hifi-text-secondary: var(--color-text-secondary, oklch(0.65 0.03 298));
+        --hifi-text-muted: var(--color-text-muted, oklch(0.50 0.02 298));
+        --hifi-border: var(--color-border, oklch(0.30 0.03 298));
+        --hifi-border-subtle: var(--color-border-subtle, oklch(0.25 0.02 298));
+        --hifi-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --hifi-font: 'Inter', var(--typography-fontFamily-body, system-ui, sans-serif);
+        --hifi-mono: var(--typography-fontFamily-mono, ui-monospace, monospace);
+      }
+    }
+
+    @layer mockup-layout {
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body.pde-layout--hifi {
+        font-family: var(--hifi-font);
+        font-size: var(--typography-fontSize-base, 1rem);
+        line-height: var(--typography-lineHeight-normal, 1.5);
+        color: var(--hifi-text);
+        background: var(--hifi-bg);
+        min-height: 100vh;
+        display: flex; flex-direction: column;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page-container { max-width: 1280px; margin: 0 auto; padding: 0 var(--spacing-semantic-gutter, 32px); }
+      .main-content {
+        flex: 1; width: 100%; max-width: 640px;
+        margin: 0 auto; padding: var(--spacing-semantic-page, 80px) var(--spacing-semantic-gutter, 32px);
+      }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    }
+
+    @layer components {
+      /* Skip Link */
+      .skip-link {
+        position: absolute; top: -100%; left: var(--spacing-4, 16px);
+        z-index: 1000; padding: var(--spacing-2, 8px) var(--spacing-4, 16px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: 600; text-decoration: none; border-radius: var(--border-radius-sm, 4px);
+        transition: top 100ms;
+      }
+      .skip-link:focus { top: var(--spacing-4, 16px); outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+
+      /* Header */
+      .site-header {
+        position: sticky; top: 0; z-index: 100;
+        background: oklch(0.15 0.02 298 / 0.85);
+        backdrop-filter: blur(16px) saturate(180%);
+        border-bottom: 1px solid var(--hifi-border-subtle);
+        padding: var(--spacing-4, 16px) 0;
+      }
+      .header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4, 16px); }
+      .site-logo { font-family: var(--hifi-font); font-size: var(--typography-fontSize-lg, 1.414rem); font-weight: 700; color: var(--hifi-accent); text-decoration: none; letter-spacing: -0.025em; }
+      .site-logo:hover { opacity: 0.8; }
+      .nav-list { display: flex; list-style: none; gap: var(--spacing-6, 24px); align-items: center; }
+      .nav-link { color: var(--hifi-text-secondary); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); font-variation-settings: 'wght' 400; transition: color 100ms, font-variation-settings 200ms var(--hifi-spring); }
+      .nav-link:hover, .nav-link:focus { color: var(--hifi-accent); font-variation-settings: 'wght' 700; }
+      .nav-link:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 4px; }
+      .nav-link[aria-current="page"] { color: var(--hifi-accent); font-variation-settings: 'wght' 600; }
+      .header-actions { display: flex; align-items: center; gap: var(--spacing-3, 12px); }
+      .btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--hifi-border); border-radius: 4px; background: var(--hifi-surface); color: var(--hifi-text-secondary); cursor: pointer; font-family: var(--hifi-mono); font-size: 0.5rem; transition: border-color 100ms, transform 200ms var(--hifi-spring); }
+      .btn-icon:hover { border-color: var(--hifi-accent); color: var(--hifi-accent); transform: scale(1.05); }
+      .btn-icon:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .btn-icon:active { transform: scale(0.95); }
+      .btn-icon[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .btn-icon[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .mobile-menu-toggle { display: none; }
+      .kbd { font-family: var(--hifi-mono); font-size: 0.5rem; color: var(--hifi-text-muted); border: 1px solid var(--hifi-border); border-radius: 2px; padding: 1px 5px; background: var(--hifi-surface); }
+
+      /* Page header */
+      .page-header { margin-bottom: var(--spacing-semantic-section, 64px); }
+      .page-title {
+        font-family: var(--hifi-font);
+        font-size: clamp(2rem, 4vw, var(--typography-fontSize-2xl, 2.828rem));
+        font-weight: 700; line-height: 1.1;
+        letter-spacing: -0.025em;
+        margin-bottom: var(--spacing-6, 24px);
+      }
+      .page-subtitle { font-size: var(--typography-fontSize-lg, 1.414rem); color: var(--hifi-text-secondary); line-height: 1.3; max-width: 48ch; font-weight: 300; }
+
+      /* Availability */
+      /* VISUAL-HOOK: availability-heartbeat — The availability status dot pulses with a heartbeat rhythm, suggesting the designer is actively present and responsive -->
+      .availability {
+        display: inline-flex; align-items: center; gap: var(--spacing-3, 12px);
+        padding: var(--spacing-3, 12px) var(--spacing-5, 20px);
+        border: 1px solid var(--color-success-700, oklch(0.39 0.120 145));
+        border-radius: var(--border-radius-lg, 12px);
+        margin-bottom: var(--spacing-semantic-section, 64px);
+        background: oklch(0.23 0.04 145 / 0.15);
+      }
+      .availability-dot {
+        width: 12px; height: 12px;
+        border-radius: var(--border-radius-full, 9999px);
+        flex-shrink: 0;
+      }
+      .availability-dot[data-status="available"] {
+        background: var(--color-success-400, oklch(0.67 0.128 145));
+        box-shadow: 0 0 0 3px oklch(0.67 0.128 145 / 0.2);
+        animation: heartbeat 1.8s ease-in-out infinite;
+      }
+      .availability-dot[data-status="selective"] {
+        background: var(--color-warning-400, oklch(0.67 0.120 85));
+        box-shadow: 0 0 0 3px oklch(0.67 0.120 85 / 0.2);
+        animation: heartbeat 1.8s ease-in-out infinite;
+      }
+      .availability-dot[data-status="booked"] {
+        background: var(--color-error-400, oklch(0.67 0.144 25));
+        box-shadow: 0 0 0 3px oklch(0.67 0.144 25 / 0.2);
+      }
+      .availability-label { font-family: var(--hifi-mono); font-size: var(--typography-fontSize-sm, 0.707rem); color: var(--hifi-text-secondary); letter-spacing: 0.025em; }
+      .availability-status { font-weight: 600; color: var(--hifi-text); }
+
+      /* Contact methods */
+      .contact-methods { display: flex; flex-direction: column; gap: var(--spacing-4, 16px); margin-bottom: var(--spacing-semantic-section, 64px); }
+
+      .contact-method {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: var(--spacing-5, 20px) var(--spacing-6, 24px);
+        border: 1px solid var(--hifi-border-subtle);
+        border-radius: var(--border-radius-lg, 12px);
+        text-decoration: none; color: var(--hifi-text);
+        background: var(--hifi-surface);
+        transition: border-color 150ms var(--motion-easing-default, ease),
+                    background-color 150ms var(--motion-easing-default, ease),
+                    transform 200ms var(--hifi-spring);
+      }
+      .contact-method:hover {
+        border-color: var(--hifi-accent);
+        background: var(--hifi-surface-raised);
+        transform: translateY(-2px);
+      }
+      .contact-method:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      .contact-method:active { transform: translateY(0) scale(0.99); }
+      .contact-method[aria-busy="true"] { opacity: 0.5; pointer-events: none; }
+      .contact-method[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
+      .contact-method[aria-invalid="true"] { border-color: var(--color-error-400); }
+
+      .contact-method--primary {
+        border-color: oklch(0.55 0.18 298 / 0.4);
+        background: linear-gradient(135deg, var(--hifi-surface), oklch(0.18 0.03 298));
+      }
+      .contact-method--primary:hover {
+        border-color: var(--hifi-accent);
+        background: linear-gradient(135deg, var(--hifi-surface-raised), oklch(0.20 0.04 298));
+      }
+
+      .contact-method-info { display: flex; flex-direction: column; gap: var(--spacing-1, 4px); }
+      .contact-method-label {
+        font-family: var(--hifi-mono);
+        font-size: var(--typography-fontSize-xs, 0.5rem);
+        color: var(--hifi-text-muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .contact-method-value { font-size: 1rem; font-weight: 500; }
+      .contact-method-arrow {
+        font-family: var(--hifi-mono);
+        color: var(--hifi-text-muted);
+        font-size: var(--typography-fontSize-sm, 0.707rem);
+        transition: transform 150ms var(--hifi-spring), color 150ms;
+      }
+      .contact-method:hover .contact-method-arrow { transform: translateX(6px); color: var(--hifi-accent); }
+
+      /* CTA */
+      .cta-section {
+        border: 1px solid var(--hifi-border-subtle);
+        border-radius: var(--border-radius-lg, 12px);
+        padding: var(--spacing-10, 40px) var(--spacing-8, 32px);
+        text-align: center;
+        background: var(--hifi-surface);
+      }
+      .cta-heading { font-family: var(--hifi-font); font-size: var(--typography-fontSize-lg, 1.414rem); font-weight: 600; margin-bottom: var(--spacing-3, 12px); letter-spacing: -0.025em; }
+      .cta-text { color: var(--hifi-text-secondary); font-size: var(--typography-fontSize-sm, 0.707rem); margin-bottom: var(--spacing-6, 24px); max-width: 40ch; margin-inline: auto; }
+      .cta-button {
+        display: inline-flex; align-items: center; gap: var(--spacing-2, 8px);
+        padding: var(--spacing-3, 12px) var(--spacing-8, 32px);
+        background: var(--hifi-accent); color: var(--color-text-inverse, #fff);
+        font-weight: 600; text-decoration: none;
+        border-radius: var(--border-radius-md, 8px); border: none; cursor: pointer;
+        transition: all 200ms var(--hifi-spring);
+      }
+      .cta-button:hover { background: var(--hifi-accent-hover); transform: translateY(-2px) scale(1.03); box-shadow: 0 0 24px 4px oklch(0.55 0.18 298 / 0.25); }
+      .cta-button:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      .cta-button:active { transform: translateY(0) scale(0.98); }
+      .cta-button[aria-busy="true"] { opacity: 0.6; pointer-events: none; }
+      .cta-button[aria-disabled="true"] { opacity: 0.35; pointer-events: none; cursor: not-allowed; }
+
+      /* Footer */
+      .site-footer { border-top: 1px solid var(--hifi-border-subtle); padding: var(--spacing-8, 32px) 0; margin-top: auto; }
+      .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-4, 16px); }
+      .footer-links { display: flex; list-style: none; gap: var(--spacing-4, 16px); }
+      .footer-links a { color: var(--hifi-text-muted); text-decoration: none; font-size: var(--typography-fontSize-sm, 0.707rem); transition: color 100ms; }
+      .footer-links a:hover { color: var(--hifi-accent); }
+      .footer-copy { font-size: 0.5rem; color: var(--hifi-text-muted); }
+    }
+
+    @layer states {
+      [data-state="loading"] { display: none; }
+      [data-state="error"] { display: none; }
+      [data-state="empty"] { display: none; }
+    }
+
+    @layer animations {
+      @keyframes heartbeat {
+        0% { transform: scale(1); }
+        15% { transform: scale(1.25); }
+        25% { transform: scale(1); }
+        35% { transform: scale(1.15); }
+        45% { transform: scale(1); }
+        100% { transform: scale(1); }
+      }
+
+      .gsap-reveal { opacity: 0; transform: translateY(30px); }
+
+      @supports (animation-timeline: scroll()) {
+        .scroll-reveal {
+          animation: fade-in-up 0.6s ease-out both;
+          animation-timeline: view();
+          animation-range: entry 0% entry 30%;
+        }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+      }
+    }
+
+    @layer utilities {
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        .gsap-reveal { opacity: 1; transform: none; }
+        .availability-dot { animation: none; }
+      }
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) { --hifi-bg: var(--color-bg); --hifi-surface: var(--color-surface); --hifi-text: var(--color-text); --hifi-accent: var(--color-accent); }
+      }
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+        .nav-list { display: none; }
+      }
+      @media (max-width: 640px) {
+        .page-title { font-size: var(--typography-fontSize-xl, 2rem); }
+        .main-content { padding: var(--spacing-semantic-section, 64px) var(--spacing-4, 16px); }
+        .cta-section { padding: var(--spacing-8, 32px) var(--spacing-5, 20px); }
+      }
+      @media (min-width: 768px) {
+        .contact-method { padding: var(--spacing-6, 24px) var(--spacing-8, 32px); }
+      }
+      @media (min-width: 1024px) { }
+      @media (min-width: 1280px) { .page-container { padding: 0 var(--spacing-16, 64px); } }
+    }
+  </style>
+</head>
+<body class="pde-layout--hifi">
+
+  <!-- VISUAL-HOOK: availability-heartbeat — The availability status dot pulses with a heartbeat rhythm, suggesting the designer is actively present and responsive -->
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="mockup-homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="mockup-homepage.html" class="nav-link">Work</a></li>
+          <li><a href="mockup-design-system.html" class="nav-link">System</a></li>
+          <li><a href="mockup-about.html" class="nav-link">About</a></li>
+          <li><a href="mockup-contact.html" class="nav-link" aria-current="page">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle>T</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="main-content" data-state="default">
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title gsap-reveal">Get in Touch</h1>
+      <p class="page-subtitle gsap-reveal">Design engineer focused on systematic, accessible interfaces. Open to collaboration, consulting, and full-time roles.</p>
+    </header>
+
+    <!-- Availability -->
+    <section aria-label="Current availability" class="gsap-reveal">
+      <div class="availability" role="status" aria-live="polite">
+        <span class="availability-dot" data-status="available" aria-hidden="true"></span>
+        <span class="availability-label">
+          Status: <span class="availability-status">Available for projects</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- Contact Methods -->
+    <section aria-labelledby="contact-methods-heading" class="gsap-reveal">
+      <h2 id="contact-methods-heading" class="sr-only">Contact Methods</h2>
+      <div class="contact-methods">
+        <a href="mailto:hello@signalframe.ux" class="contact-method contact-method--primary" aria-label="Send email to hello@signalframe.ux">
+          <div class="contact-method-info">
+            <span class="contact-method-label">Email &mdash; Preferred</span>
+            <span class="contact-method-value">hello@signalframe.ux</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+
+        <a href="https://linkedin.com/in/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">LinkedIn</span>
+            <span class="contact-method-value">linkedin.com/in/signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+
+        <a href="https://github.com/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">GitHub</span>
+            <span class="contact-method-value">github.com/signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+
+        <a href="https://x.com/signalframeUX" class="contact-method" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter (opens in new tab)">
+          <div class="contact-method-info">
+            <span class="contact-method-label">X / Twitter</span>
+            <span class="contact-method-value">@signalframeUX</span>
+          </div>
+          <span class="contact-method-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section gsap-reveal" aria-labelledby="cta-heading">
+      <h2 id="cta-heading" class="cta-heading">Have a project in mind?</h2>
+      <p class="cta-text">I respond within 24 hours. Let's discuss how design engineering can move your product forward.</p>
+      <a href="mailto:hello@signalframe.ux?subject=Project%20Inquiry" class="cta-button">Start a Conversation</a>
+    </section>
+
+  </main>
+
+  <!-- State variants -->
+  <div data-state="loading" class="main-content" style="text-align:center;padding:200px 32px;" aria-live="polite"><p style="color:var(--hifi-text-muted)">Loading...</p></div>
+  <div data-state="error" class="main-content" style="text-align:center;padding:200px 32px;" role="alert"><p style="color:var(--color-error-400,#ef4444)">Error loading contact page.</p></div>
+  <div data-state="empty" class="main-content" style="text-align:center;padding:200px 32px;"><p style="color:var(--hifi-text-muted)">No contact methods available.</p></div>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="mockup-homepage.html">Work</a></li>
+        <li><a href="mockup-design-system.html">System</a></li>
+        <li><a href="mockup-about.html">About</a></li>
+        <li><a href="mockup-contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    (function() {
+      var t = document.querySelector('[data-theme-toggle]');
+      if (!t) return;
+      t.addEventListener('click', function() {
+        var h = document.documentElement, n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        h.setAttribute('data-theme', n); t.setAttribute('aria-pressed', n === 'dark' ? 'true' : 'false');
+      });
+    })();
+
+    // GSAP entrance: title -> subtitle -> availability -> methods -> CTA (reading order)
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof gsap === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      var tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.7 } });
+      var els = document.querySelectorAll('.gsap-reveal');
+      els.forEach(function(el, i) {
+        tl.to(el, { opacity: 1, y: 0 }, 0.12 * i);
+      });
+    });
+  </script>
+
+</body>
+</html>

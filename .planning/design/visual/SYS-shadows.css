@@ -1,0 +1,45 @@
+/* ============================================================================
+   SYS-shadows.css — SignalframeUX Design System Elevation
+   Generated: 2026-03-31
+   Color space: OKLCH (neutral-950 base)
+   ============================================================================ */
+
+:root {
+  /* --- Elevation Levels --- */
+  --shadow-xs: 0 1px 2px 0 oklch(0.150 0.008 298 / 0.06);
+  --shadow-sm: 0 1px 3px 0 oklch(0.150 0.008 298 / 0.10),
+               0 1px 2px -1px oklch(0.150 0.008 298 / 0.10);
+  --shadow-md: 0 4px 6px -1px oklch(0.150 0.008 298 / 0.10),
+               0 2px 4px -2px oklch(0.150 0.008 298 / 0.10);
+  --shadow-lg: 0 10px 15px -3px oklch(0.150 0.008 298 / 0.10),
+               0 4px 6px -4px oklch(0.150 0.008 298 / 0.10);
+  --shadow-xl: 0 20px 25px -5px oklch(0.150 0.008 298 / 0.10),
+               0 8px 10px -6px oklch(0.150 0.008 298 / 0.10);
+}
+
+/* === Dark Mode Shadows (deeper, more opaque) === */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --shadow-xs: 0 1px 2px 0 oklch(0.000 0 0 / 0.20);
+    --shadow-sm: 0 1px 3px 0 oklch(0.000 0 0 / 0.30),
+                 0 1px 2px -1px oklch(0.000 0 0 / 0.30);
+    --shadow-md: 0 4px 6px -1px oklch(0.000 0 0 / 0.30),
+                 0 2px 4px -2px oklch(0.000 0 0 / 0.30);
+    --shadow-lg: 0 10px 15px -3px oklch(0.000 0 0 / 0.30),
+                 0 4px 6px -4px oklch(0.000 0 0 / 0.30);
+    --shadow-xl: 0 20px 25px -5px oklch(0.000 0 0 / 0.30),
+                 0 8px 10px -6px oklch(0.000 0 0 / 0.30);
+  }
+}
+
+[data-theme="dark"] {
+  --shadow-xs: 0 1px 2px 0 oklch(0.000 0 0 / 0.20);
+  --shadow-sm: 0 1px 3px 0 oklch(0.000 0 0 / 0.30),
+               0 1px 2px -1px oklch(0.000 0 0 / 0.30);
+  --shadow-md: 0 4px 6px -1px oklch(0.000 0 0 / 0.30),
+               0 2px 4px -2px oklch(0.000 0 0 / 0.30);
+  --shadow-lg: 0 10px 15px -3px oklch(0.000 0 0 / 0.30),
+               0 4px 6px -4px oklch(0.000 0 0 / 0.30);
+  --shadow-xl: 0 20px 25px -5px oklch(0.000 0 0 / 0.30),
+               0 8px 10px -6px oklch(0.000 0 0 / 0.30);
+}

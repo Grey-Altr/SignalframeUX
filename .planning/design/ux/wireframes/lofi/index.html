@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignalframeUX — Wireframe Index (Lo-fi)</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        font-family: var(--font-family-sans, system-ui, -apple-system, sans-serif);
+        background: var(--color-neutral-950, #0a0a0a);
+        color: var(--color-neutral-100, #e5e5e5);
+        line-height: 1.5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      [data-theme="light"] body {
+        background: var(--color-neutral-50, #fafafa);
+        color: var(--color-neutral-900, #1a1a1a);
+      }
+
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: 0;
+        padding: 0.5rem 1rem;
+        background: var(--color-primary-500);
+        color: white;
+        z-index: 1000;
+        text-decoration: none;
+      }
+      .skip-link:focus { top: 0; }
+
+      header {
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--color-neutral-800, #333);
+      }
+
+      [data-theme="light"] header {
+        border-bottom-color: var(--color-neutral-200, #ddd);
+      }
+
+      .logo {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-primary-400, #a78bfa);
+        text-decoration: none;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .theme-toggle {
+        background: none;
+        border: 1px solid var(--color-neutral-700, #444);
+        color: var(--color-neutral-300, #ccc);
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: 1px dashed var(--color-neutral-600, #555);
+        color: var(--color-neutral-400, #999);
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem;
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .page-header {
+        margin-bottom: 2rem;
+      }
+
+      .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .page-header p {
+        color: var(--color-neutral-400, #999);
+        font-size: 0.9375rem;
+      }
+
+      .meta-bar {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .meta-item {
+        font-size: 0.8125rem;
+        color: var(--color-neutral-500, #777);
+      }
+
+      .meta-item strong {
+        color: var(--color-neutral-300, #ccc);
+      }
+
+      [data-theme="light"] .meta-item strong {
+        color: var(--color-neutral-700, #555);
+      }
+
+      .screen-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (min-width: 640px) {
+        .screen-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
+      @media (min-width: 1024px) {
+        .screen-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+
+      .screen-card {
+        border: 1px dashed var(--color-neutral-700, #444);
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: border-color 0.2s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .screen-card:hover {
+        border-color: var(--color-primary-500, #8b5cf6);
+      }
+
+      .screen-card:focus-visible {
+        outline: 2px solid var(--color-primary-500, #8b5cf6);
+        outline-offset: 2px;
+      }
+
+      .screen-preview {
+        aspect-ratio: 16 / 10;
+        background: var(--color-neutral-900, #171717);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-neutral-600, #555);
+        font-size: 0.8125rem;
+        border-bottom: 1px dashed var(--color-neutral-800, #333);
+      }
+
+      [data-theme="light"] .screen-preview {
+        background: var(--color-neutral-100, #f0f0f0);
+        color: var(--color-neutral-400, #999);
+      }
+
+      .screen-info {
+        padding: 1rem;
+      }
+
+      .screen-info h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .screen-info p {
+        font-size: 0.8125rem;
+        color: var(--color-neutral-500, #777);
+      }
+
+      .screen-number {
+        font-size: 0.6875rem;
+        color: var(--color-neutral-600, #555);
+        margin-top: 0.5rem;
+      }
+
+      footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--color-neutral-800, #333);
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--color-neutral-600, #555);
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout pde-layout--lofi">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <header role="banner">
+    <a href="index.html" class="logo" aria-current="page">SignalframeUX</a>
+    <div class="header-actions">
+      <span class="badge">Lo-fi</span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" aria-pressed="false">Theme</button>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <div class="page-header">
+      <h1>Wireframe Index</h1>
+      <p>SignalframeUX — Design Engineering Portfolio</p>
+      <div class="meta-bar">
+        <span class="meta-item"><strong>Fidelity:</strong> Lo-fi</span>
+        <span class="meta-item"><strong>Screens:</strong> 5</span>
+        <span class="meta-item"><strong>Tokens:</strong> Available (tokens.css)</span>
+        <span class="meta-item"><strong>Generated:</strong> 2026-03-31</span>
+      </div>
+    </div>
+
+    <div class="screen-grid">
+      <a href="homepage.html" class="screen-card">
+        <div class="screen-preview">1440 x 900 — Homepage</div>
+        <div class="screen-info">
+          <h2>Homepage</h2>
+          <p>Narrative arc entry point — hero, case study cards, professional section, contact CTA</p>
+          <div class="screen-number">Screen 1 of 5</div>
+        </div>
+      </a>
+
+      <a href="case-study.html" class="screen-card">
+        <div class="screen-preview">1440 x 900 — Case Study</div>
+        <div class="screen-info">
+          <h2>Case Study</h2>
+          <p>Chapter page — problem context, design exploration, interactive demos, outcomes</p>
+          <div class="screen-number">Screen 2 of 5</div>
+        </div>
+      </a>
+
+      <a href="design-system.html" class="screen-card">
+        <div class="screen-preview">1440 x 900 — Design System</div>
+        <div class="screen-info">
+          <h2>Design System Showcase</h2>
+          <p>Token explorer, component showcase, theme toggle, code view</p>
+          <div class="screen-number">Screen 3 of 5</div>
+        </div>
+      </a>
+
+      <a href="about.html" class="screen-card">
+        <div class="screen-preview">1440 x 900 — About</div>
+        <div class="screen-info">
+          <h2>About</h2>
+          <p>Professional bio, experience timeline, skills matrix, availability</p>
+          <div class="screen-number">Screen 4 of 5</div>
+        </div>
+      </a>
+
+      <a href="contact.html" class="screen-card">
+        <div class="screen-preview">1440 x 900 — Contact</div>
+        <div class="screen-info">
+          <h2>Contact</h2>
+          <p>Availability indicator, contact methods, engagement CTA</p>
+          <div class="screen-number">Screen 5 of 5</div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <p>Generated by PDE-OS /pde:wireframe | 2026-03-31 | Lo-fi fidelity | Tokens: available</p>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').setAttribute('aria-pressed', next === 'dark' ? 'false' : 'true');
+    }
+  </script>
+</body>
+</html>

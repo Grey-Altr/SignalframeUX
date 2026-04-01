@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage — SignalframeUX Wireframe v1</title>
+  <link rel="stylesheet" href="../../assets/tokens.css">
+  <style>
+    @layer wireframe {
+      /* === Reset === */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* === Body === */
+      body {
+        font-family: var(--typography-fontFamily-body);
+        font-size: var(--typography-fontSize-base);
+        line-height: var(--typography-lineHeight-normal);
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        min-height: 100vh;
+      }
+
+      /* === Skip Link === */
+      .skip-link {
+        position: absolute;
+        top: calc(-1 * var(--spacing-16));
+        left: var(--spacing-4);
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        padding: var(--spacing-2) var(--spacing-4);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--typography-fontSize-sm);
+        z-index: 1000;
+        text-decoration: none;
+        transition: top var(--motion-duration-fast) var(--motion-easing-out);
+      }
+
+      .skip-link:focus {
+        top: var(--spacing-4);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Layout === */
+      .page-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-semantic-gutter);
+      }
+
+      /* === Placeholder Box === */
+      .placeholder {
+        border: 2px dashed var(--color-border);
+        background: var(--color-bg-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+        font-family: var(--typography-fontFamily-mono);
+        border-radius: var(--border-radius-md);
+      }
+
+      /* === Annotation Label === */
+      .label {
+        display: block;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        letter-spacing: var(--typography-letterSpacing-wider);
+        text-transform: uppercase;
+        margin-bottom: var(--spacing-2);
+      }
+
+      /* === Section Divider === */
+      .section-divider {
+        border: none;
+        border-top: 1px solid var(--color-border-subtle);
+        margin: var(--spacing-semantic-section) 0;
+      }
+
+      /* === Header === */
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--color-bg);
+        border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-4) 0;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-4);
+      }
+
+      .site-logo {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-bold);
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+
+      .nav-list {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-6);
+        align-items: center;
+      }
+
+      .nav-list a {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        transition: color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .nav-list a:hover,
+      .nav-list a:focus {
+        color: var(--color-accent);
+      }
+
+      .nav-list a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--typography-fontWeight-semibold);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-3);
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .btn-icon:hover,
+      .btn-icon:focus {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .kbd {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        border: var(--border-width-thin) solid var(--color-border);
+        border-radius: var(--border-radius-xs);
+        padding: 1px 4px;
+        background: var(--color-bg-subtle);
+      }
+
+      /* Mobile menu toggle */
+      .mobile-menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-sm);
+        background: var(--color-surface);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+      }
+      .mobile-menu-toggle:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+      @media (max-width: 639px) {
+        .mobile-menu-toggle { display: inline-flex; }
+      }
+
+      /* === Hero Section === */
+      .hero {
+        padding: var(--spacing-semantic-page) 0 var(--spacing-semantic-section);
+        text-align: center;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-8);
+      }
+
+      .hero-title {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-4xl);
+        font-weight: var(--typography-fontWeight-bold);
+        line-height: var(--typography-lineHeight-tight);
+        letter-spacing: var(--typography-letterSpacing-tighter);
+        color: var(--color-text);
+      }
+
+      .hero-subtitle {
+        font-size: var(--typography-fontSize-xl);
+        color: var(--color-text-secondary);
+        line-height: var(--typography-lineHeight-snug);
+        max-width: 640px;
+      }
+
+      .hero-cta-row {
+        display: flex;
+        gap: var(--spacing-4);
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .btn-primary, .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        padding: var(--spacing-3) var(--spacing-6);
+        border-radius: var(--border-radius-md);
+        font-size: var(--typography-fontSize-base);
+        font-weight: var(--typography-fontWeight-medium);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all var(--motion-duration-fast) var(--motion-easing-default);
+      }
+
+      .btn-primary {
+        background: var(--color-accent);
+        color: var(--color-text-inverse);
+        border: var(--border-width-medium) solid var(--color-accent);
+      }
+
+      .btn-primary:hover,
+      .btn-primary:focus {
+        background: var(--color-accent-hover);
+        border-color: var(--color-accent-hover);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--color-text-secondary);
+        border: var(--border-width-medium) dashed var(--color-border);
+      }
+
+      .btn-secondary:hover,
+      .btn-secondary:focus {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .scroll-prompt {
+        margin-top: var(--spacing-10);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-2);
+        color: var(--color-text-muted);
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .scroll-arrow {
+        width: 24px;
+        height: 24px;
+        border: 2px dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      /* === Narrative Arc: Problem Section === */
+      .narrative-section {
+        padding: var(--spacing-semantic-section) 0;
+      }
+
+      .narrative-section .section-heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-2xl);
+        font-weight: var(--typography-fontWeight-semibold);
+        line-height: var(--typography-lineHeight-tight);
+        color: var(--color-text);
+        margin-bottom: var(--spacing-6);
+      }
+
+      .narrative-section .section-body {
+        font-size: var(--typography-fontSize-lg);
+        color: var(--color-text-secondary);
+        max-width: 720px;
+        margin-bottom: var(--spacing-8);
+      }
+
+      /* === Case Study Cards === */
+      .case-studies-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-semantic-gutter);
+      }
+
+      .case-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        border: var(--border-width-thin) solid var(--color-border-subtle);
+        border-radius: var(--border-radius-lg);
+        background: var(--color-surface);
+        overflow: hidden;
+        transition: border-color var(--motion-duration-normal) var(--motion-easing-default),
+                    box-shadow var(--motion-duration-normal) var(--motion-easing-default);
+      }
+
+      .case-card:hover,
+      .case-card:focus {
+        border-color: var(--color-accent);
+        box-shadow: var(--shadow-lg);
+        outline: none;
+      }
+
+      .case-card:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      .case-card-thumbnail {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+
+      .case-card-content {
+        padding: var(--spacing-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-3);
+      }
+
+      .case-card-chapter {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-accent);
+        letter-spacing: var(--typography-letterSpacing-widest);
+        text-transform: uppercase;
+      }
+
+      .case-card-title {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-xl);
+        font-weight: var(--typography-fontWeight-semibold);
+        line-height: var(--typography-lineHeight-snug);
+      }
+
+      .case-card-desc {
+        color: var(--color-text-secondary);
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .case-card-tags {
+        display: flex;
+        gap: var(--spacing-2);
+        flex-wrap: wrap;
+      }
+
+      .tag {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+        border: var(--border-width-thin) dashed var(--color-border);
+        padding: var(--spacing-1) var(--spacing-2);
+        border-radius: var(--border-radius-sm);
+      }
+
+      /* === Professional Section === */
+      .professional-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-semantic-gutter);
+      }
+
+      .pro-block {
+        padding: var(--spacing-6);
+        border: var(--border-width-thin) solid var(--color-border-subtle);
+        border-radius: var(--border-radius-lg);
+        background: var(--color-surface);
+      }
+
+      .pro-block--availability {
+        border-color: var(--color-accent);
+        border-style: dashed;
+      }
+
+      .pro-block-title {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-lg);
+        font-weight: var(--typography-fontWeight-semibold);
+        margin-bottom: var(--spacing-4);
+      }
+
+      .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-2);
+        list-style: none;
+      }
+
+      .skills-list li {
+        font-family: var(--typography-fontFamily-mono);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-secondary);
+        border: var(--border-width-thin) dashed var(--color-border);
+        padding: var(--spacing-1) var(--spacing-3);
+        border-radius: var(--border-radius-sm);
+      }
+
+      .availability-indicator {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-2);
+        font-size: var(--typography-fontSize-sm);
+        color: var(--color-text-secondary);
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--border-radius-full);
+        border: 2px dashed var(--color-border);
+        flex-shrink: 0;
+      }
+
+      /* === Contact CTA === */
+      .contact-cta {
+        text-align: center;
+        padding: var(--spacing-semantic-page) 0;
+      }
+
+      .contact-cta .section-heading {
+        font-family: var(--typography-fontFamily-display);
+        font-size: var(--typography-fontSize-2xl);
+        font-weight: var(--typography-fontWeight-semibold);
+        margin-bottom: var(--spacing-4);
+      }
+
+      .contact-cta .section-body {
+        color: var(--color-text-secondary);
+        max-width: 480px;
+        margin: 0 auto var(--spacing-8);
+      }
+
+      /* === Footer === */
+      .site-footer {
+        border-top: var(--border-width-thin) solid var(--color-border-subtle);
+        padding: var(--spacing-8) 0;
+        margin-top: var(--spacing-semantic-section);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links {
+        display: flex;
+        list-style: none;
+        gap: var(--spacing-4);
+      }
+
+      .footer-links a {
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+      }
+
+      .footer-links a:hover,
+      .footer-links a:focus {
+        color: var(--color-accent);
+      }
+
+      .footer-copy {
+        font-size: var(--typography-fontSize-xs);
+        color: var(--color-text-muted);
+      }
+
+      /* Scroll to top */
+      .scroll-to-top {
+        position: fixed;
+        bottom: var(--spacing-6);
+        right: var(--spacing-6);
+        width: 40px;
+        height: 40px;
+        border: var(--border-width-thin) dashed var(--color-border);
+        border-radius: var(--border-radius-full);
+        background: var(--color-surface);
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: var(--typography-fontSize-sm);
+        z-index: 50;
+        transition: border-color var(--motion-duration-fast) var(--motion-easing-default);
+      }
+      .scroll-to-top:hover,
+      .scroll-to-top:focus-visible {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+      }
+
+      /* === Responsive: 640px === */
+      @media (min-width: 640px) {
+        .case-studies-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .professional-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* === Responsive: 768px === */
+      @media (min-width: 768px) {
+        .hero-title {
+          font-size: var(--typography-fontSize-4xl);
+        }
+
+        .case-card-content {
+          padding: var(--spacing-8);
+        }
+      }
+
+      /* === Responsive: 1024px === */
+      @media (min-width: 1024px) {
+        .case-studies-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .case-card--featured {
+          grid-column: 1 / -1;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .case-card--featured .case-card-thumbnail {
+          aspect-ratio: auto;
+          min-height: 320px;
+        }
+
+        .professional-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      /* === Responsive: 1280px === */
+      @media (min-width: 1280px) {
+        .page-container {
+          padding: 0 var(--spacing-16);
+        }
+      }
+
+      /* === Mobile nav collapse === */
+      @media (max-width: 639px) {
+        .nav-list {
+          display: none;
+        }
+
+        .hero-title {
+          font-size: var(--typography-fontSize-2xl);
+        }
+
+        .hero-subtitle {
+          font-size: var(--typography-fontSize-lg);
+        }
+      }
+    }
+  </style>
+</head>
+<body class="pde-layout--lofi">
+
+  <!-- Skip to main -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header" role="banner">
+    <div class="page-container header-inner">
+      <a href="homepage.html" class="site-logo" aria-label="SignalframeUX Home">SignalframeUX</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a href="homepage.html" aria-current="page">Work</a></li>
+          <li><a href="design-system.html">System</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+        <button class="btn-icon" type="button" aria-label="Open command palette (Cmd+K)" title="Command Palette"><kbd class="kbd">K</kbd></button>
+        <button class="btn-icon" type="button" aria-label="Toggle theme" aria-pressed="true" data-theme-toggle title="Toggle dark/light theme">T</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main id="main-content">
+
+    <!-- ---- Hero / Identity Statement ---- -->
+    <section class="hero page-container" aria-labelledby="hero-heading">
+      <span class="label" aria-hidden="true">Hero Section</span>
+      <h1 id="hero-heading" class="hero-title">Hero Title</h1>
+      <p class="hero-subtitle">Hero Subtitle &mdash; identity statement and value proposition</p>
+      <div class="placeholder" style="width: 100%; max-width: 480px; height: 120px; margin: var(--spacing-4) 0;">
+        Hero Visual Element — signature graphic / animated motif / typographic treatment
+      </div>
+      <div class="hero-cta-row">
+        <a href="case-study.html" class="btn-primary">Primary CTA</a>
+        <a href="about.html" class="btn-secondary">Secondary CTA</a>
+      </div>
+      <div class="scroll-prompt" aria-hidden="true">
+        <span>Scroll to explore</span>
+        <span class="scroll-arrow">&darr;</span>
+      </div>
+    </section>
+
+    <hr class="section-divider page-container">
+
+    <!-- ---- Narrative: Problem ---- -->
+    <section class="narrative-section page-container" aria-labelledby="problem-heading">
+      <span class="label" aria-hidden="true">Narrative Arc &mdash; Problem</span>
+      <h2 id="problem-heading" class="section-heading">Problem Statement</h2>
+      <p class="section-body">Problem description placeholder &mdash; establishes the challenge that the work addresses.</p>
+      <div class="placeholder" style="height: 200px; max-width: 720px;">
+        Illustration Placeholder &mdash; 720 &times; 200
+      </div>
+    </section>
+
+    <hr class="section-divider page-container">
+
+    <!-- ---- Narrative: Exploration ---- -->
+    <section class="narrative-section page-container" aria-labelledby="exploration-heading">
+      <span class="label" aria-hidden="true">Narrative Arc &mdash; Exploration</span>
+      <h2 id="exploration-heading" class="section-heading">Exploration Approach</h2>
+      <p class="section-body">Exploration summary placeholder &mdash; how the work was investigated and developed.</p>
+      <div class="placeholder" style="height: 200px; max-width: 720px;">
+        Process Diagram Placeholder &mdash; 720 &times; 200
+      </div>
+    </section>
+
+    <hr class="section-divider page-container">
+
+    <!-- ---- Narrative: Evidence / Case Study Cards ---- -->
+    <section class="narrative-section page-container" aria-labelledby="evidence-heading">
+      <span class="label" aria-hidden="true">Narrative Arc &mdash; Evidence (Case Study Chapters)</span>
+      <h2 id="evidence-heading" class="section-heading">Selected Work</h2>
+      <p class="section-body">Case study chapter cards &mdash; scroll-revealed evidence of design engineering craft.</p>
+
+      <div class="case-studies-grid">
+
+        <!-- Case Study 1 (Featured) -->
+        <a href="case-study.html" class="case-card case-card--featured" aria-label="Case Study 1: Chapter Title">
+          <div class="case-card-thumbnail placeholder">Thumbnail &mdash; 640 &times; 360</div>
+          <div class="case-card-content">
+            <span class="case-card-chapter">Chapter 01</span>
+            <h3 class="case-card-title">Case Study 1</h3>
+            <p class="case-card-desc">Brief description of the case study and its impact.</p>
+            <div class="case-card-tags">
+              <span class="tag">Tag 1</span>
+              <span class="tag">Tag 2</span>
+              <span class="tag">Tag 3</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Case Study 2 -->
+        <a href="case-study.html" class="case-card" aria-label="Case Study 2: Chapter Title">
+          <div class="case-card-thumbnail placeholder">Thumbnail &mdash; 640 &times; 360</div>
+          <div class="case-card-content">
+            <span class="case-card-chapter">Chapter 02</span>
+            <h3 class="case-card-title">Case Study 2</h3>
+            <p class="case-card-desc">Brief description of the case study and its impact.</p>
+            <div class="case-card-tags">
+              <span class="tag">Tag 1</span>
+              <span class="tag">Tag 2</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Case Study 3 -->
+        <a href="case-study.html" class="case-card" aria-label="Case Study 3: Chapter Title">
+          <div class="case-card-thumbnail placeholder">Thumbnail &mdash; 640 &times; 360</div>
+          <div class="case-card-content">
+            <span class="case-card-chapter">Chapter 03</span>
+            <h3 class="case-card-title">Case Study 3</h3>
+            <p class="case-card-desc">Brief description of the case study and its impact.</p>
+            <div class="case-card-tags">
+              <span class="tag">Tag 1</span>
+              <span class="tag">Tag 2</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <hr class="section-divider page-container">
+
+    <!-- ---- Professional Section ---- -->
+    <section class="narrative-section page-container" aria-labelledby="professional-heading">
+      <span class="label" aria-hidden="true">Professional Section</span>
+      <h2 id="professional-heading" class="section-heading">Skills &amp; Experience</h2>
+
+      <div class="professional-grid">
+
+        <!-- Skills Block -->
+        <div class="pro-block">
+          <h3 class="pro-block-title">Skills</h3>
+          <ul class="skills-list">
+            <li>Skill 1</li>
+            <li>Skill 2</li>
+            <li>Skill 3</li>
+            <li>Skill 4</li>
+            <li>Skill 5</li>
+            <li>Skill 6</li>
+          </ul>
+        </div>
+
+        <!-- Tools Block -->
+        <div class="pro-block">
+          <h3 class="pro-block-title">Tools</h3>
+          <ul class="skills-list">
+            <li>Tool 1</li>
+            <li>Tool 2</li>
+            <li>Tool 3</li>
+            <li>Tool 4</li>
+            <li>Tool 5</li>
+          </ul>
+        </div>
+
+        <!-- Availability Block -->
+        <div class="pro-block pro-block--availability">
+          <h3 class="pro-block-title">Availability</h3>
+          <div class="availability-indicator">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Availability Status Label</span>
+          </div>
+          <div style="margin-top: var(--spacing-4);">
+            <div class="placeholder" style="height: 80px;">
+              Resume / CV Placeholder &mdash; 200 &times; 80
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="section-divider page-container">
+
+    <!-- ---- Contact CTA ---- -->
+    <section class="contact-cta page-container" aria-labelledby="contact-heading">
+      <span class="label" aria-hidden="true">Contact CTA</span>
+      <h2 id="contact-heading" class="section-heading">Contact Heading</h2>
+      <p class="section-body">Brief prompt encouraging the visitor to get in touch.</p>
+      <div class="hero-cta-row">
+        <a href="contact.html" class="btn-primary">Contact CTA</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="page-container footer-inner">
+      <ul class="footer-links">
+        <li><a href="homepage.html">Work</a></li>
+        <li><a href="design-system.html">System</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 SignalframeUX</p>
+    </div>
+  </footer>
+
+  <a href="#main-content" class="scroll-to-top" aria-label="Scroll to top">&uarr;</a>
+
+</body>
+</html>

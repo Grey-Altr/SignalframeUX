@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SignalframeUX — Programmable Dual-Layer Design System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Public+Sans:wght@300;400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "tertiary-fixed-dim": "#ffb2b7",
+                "on-tertiary-container": "#5b0017",
+                "on-error": "#690005",
+                "surface-bright": "#38374a",
+                "secondary-container": "#00cbe6",
+                "tertiary-fixed": "#ffdadb",
+                "surface": "#0A0A1A",
+                "on-surface": "#e3e0f8",
+                "primary-fixed": "#e9ddff",
+                "on-secondary-fixed": "#001f25",
+                "on-background": "#e3e0f8",
+                "surface-container-lowest": "#0c0c1d",
+                "on-primary-container": "#340080",
+                "surface-container-highest": "#333345",
+                "inverse-on-surface": "#2f2f40",
+                "outline-variant": "#494454",
+                "on-primary-fixed-variant": "#5516be",
+                "tertiary": "#ffb2b7",
+                "surface-container-high": "#29283a",
+                "primary": "#d0bcff",
+                "on-tertiary": "#67001b",
+                "tertiary-container": "#ff516a",
+                "inverse-primary": "#6d3bd7",
+                "background": "#0A0A1A",
+                "on-secondary-container": "#00515d",
+                "on-tertiary-fixed": "#40000d",
+                "secondary-fixed": "#a2eeff",
+                "on-tertiary-fixed-variant": "#92002a",
+                "surface-dim": "#0A0A1A",
+                "on-primary": "#3c0091",
+                "primary-fixed-dim": "#d0bcff",
+                "error-container": "#93000a",
+                "outline": "#958ea0",
+                "secondary-fixed-dim": "#2fd9f4",
+                "on-primary-fixed": "#23005c",
+                "surface-container-low": "#1a1a2b",
+                "primary-container": "#a078ff",
+                "on-secondary": "#00363e",
+                "surface-variant": "#333345",
+                "on-surface-variant": "#cbc3d7",
+                "inverse-surface": "#e3e0f8",
+                "on-error-container": "#ffdad6",
+                "surface-tint": "#d0bcff",
+                "on-secondary-fixed-variant": "#004e5a",
+                "secondary": "#22D3EE",
+                "error": "#ffb4ab",
+                "surface-container": "#1e1e2f"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Public Sans"],
+                "label": ["JetBrains Mono"],
+                "mono": ["JetBrains Mono"]
+              },
+              borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.grain-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCS6jT_xz-fJyvNtyBLSNxQ8mfEo8oS3Kj6oz9_FLhVKBIsDAF4awvQHZaMjDHqKreg0bEKPSmq-kHJiHM0IEllCSFKIHwFJmvawJLpBf5__j-ojvaQOfVC3sesFQ7-3X_kix1wZXZKop_p8CSGR9Ts7TAY0391er7j6qew20bGj6SdPk8-lRvBMxMQuOaHRSshLdVl1h7vG-Tm9LgjEqkWx_TDNJwDw68S14DJ_zDWdrAxUBb1tBI6tn0FDfOYLCqNMGae56Fj7zo);
+    opacity: 0.05
+    }
+.asymmetric-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto auto
+    }
+::-webkit-scrollbar {
+    width: 4px
+    }
+::-webkit-scrollbar-track {
+    background: #0A0A1A
+    }
+::-webkit-scrollbar-thumb {
+    background: #333345
+    }</style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-secondary selection:text-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#0A0A1A] bg-opacity-90 backdrop-blur-md border-b-2 border-violet-500">
+<div class="text-xl font-black text-white tracking-widest font-mono">SFUX</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-mono uppercase tracking-tighter text-xs text-violet-400 font-bold border-b border-violet-400 translate-y-[1px] transition-transform duration-75" href="#">DOCS</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors hover:bg-violet-500/10" href="#">API</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors hover:bg-violet-500/10" href="#">SHOWCASE</a>
+<a class="font-mono uppercase tracking-tighter text-xs text-white/60 hover:text-white transition-colors hover:bg-violet-500/10" href="#">NPM</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:block px-3 py-1 border border-secondary/50 font-mono text-[10px] text-secondary tracking-wider uppercase">
+                npm install signalframe-ux
+            </div>
+<button class="material-symbols-outlined text-white p-2 hover:bg-white/10" data-icon="menu">menu</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative min-h-screen pt-32 pb-20 px-6 overflow-hidden flex flex-col justify-center">
+<!-- Generative Background Visual (Field Layer) -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-violet-500/20 to-transparent"></div>
+<div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, #333345 1px, transparent 0); background-size: 40px 40px;"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7">
+<div class="font-mono text-secondary text-xs tracking-[0.3em] mb-6 uppercase flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary animate-pulse"></span>
+                    System.Status: Operational_v2.4.0
+                </div>
+<h1 class="font-headline text-7xl md:text-[120px] font-black leading-none tracking-tighter text-white mb-8">
+                    SIGNAL <br/>
+<span class="text-transparent border-t-2 border-b-2 border-violet-500 py-2" style="-webkit-text-stroke: 1px #8B5CF6;">// FIELD</span>
+</h1>
+<p class="text-xl md:text-2xl font-light text-on-surface-variant max-w-xl mb-10 leading-relaxed">
+                    Deterministic interface. Generative expression. <br/>
+<span class="text-secondary font-mono text-lg">One programmable API for the future of digital surfaces.</span>
+</p>
+<div class="flex flex-wrap gap-4 mb-16">
+<button class="px-8 py-4 bg-violet-600 text-white font-mono font-bold uppercase tracking-widest hover:bg-violet-500 transition-all border border-violet-400">
+                        Get Started
+                    </button>
+<button class="px-8 py-4 border border-secondary text-secondary font-mono font-bold uppercase tracking-widest hover:bg-secondary/10 transition-all">
+                        View on GitHub
+                    </button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-[10px] text-white/40 tracking-widest uppercase border-t border-white/10 pt-8">
+<div>v2.4.0 <br/><span class="text-white/20">Current Release</span></div>
+<div>MIT License <br/><span class="text-white/20">Open Source</span></div>
+<div>12.3k Stars <br/><span class="text-white/20">GitHub Growth</span></div>
+<div>340+ Components <br/><span class="text-white/20">Full Ecosystem</span></div>
+</div>
+</div>
+<div class="lg:col-span-5 relative">
+<!-- Technical Snippet Card -->
+<div class="bg-[#121222] border-2 border-white/10 p-1 mb-6 relative group">
+<div class="absolute -top-3 -left-3 px-2 py-0.5 bg-violet-500 text-[10px] font-mono text-white">CONFIG.INIT</div>
+<div class="border border-white/5 p-6 bg-[#0c0c1d]">
+<pre class="font-mono text-sm text-cyan-400 leading-relaxed"><span class="text-violet-400">import</span> { SFUX } <span class="text-violet-400">from</span> <span class="text-rose-400">'@sfux/core'</span>;
+
+<span class="text-white/40">// Initialize programmable layer</span>
+<span class="text-violet-400">const</span> app = <span class="text-secondary">createSignalframeUX</span>({
+  theme: <span class="text-rose-400">'dark'</span>,
+  field: {
+    seed: <span class="text-rose-400">42</span>,
+    density: <span class="text-rose-400">0.7</span>,
+    noise: <span class="text-rose-400">'perlin'</span>
+  }
+});</pre>
+</div>
+</div>
+<!-- Abstract Visual -->
+<div class="h-64 border-2 border-violet-500/30 flex items-center justify-center relative overflow-hidden bg-[#0A0A1A]">
+<img class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" data-alt="abstract geometric composition with sharp fine lines, vector circles and technical grid patterns on a dark deep background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBxleraQwvFb_uc-awsHns4oPECQtM_OlXILQ3375ULerRu_YG2HO3jQ8Sg_CTuvPq-nGgWm1fFsk4kaLi0k-xoHSY_RohLgr7uSdj1WP1FXApuLJod0X2W3fxb3Vm7JiS7zZ29G8xO0XOXvBqaCAlpvaVo6cUxZ6NmCIzSVbW5U-jvzukhQz92phwWCSqhyAP8Te6J9ozjv_SPQysyxyFzcQ6iLkyT_YqVsfEBuStRc41LPjFcFcEDuVZDUUhQ_cCKZqOwDjpDaE"/>
+<div class="relative z-10 w-full h-full flex items-center justify-center">
+<div class="w-48 h-48 border border-secondary/50 rounded-full flex items-center justify-center animate-spin-slow" style="animation: spin 20s linear infinite;">
+<div class="w-32 h-32 border border-violet-500/50 flex items-center justify-center">
+<div class="w-16 h-16 bg-secondary/20 border border-secondary"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Bar -->
+<div class="w-full bg-violet-600/10 border-y border-violet-500/30 py-4 overflow-hidden whitespace-nowrap">
+<div class="flex gap-12 justify-center items-center font-mono text-[11px] text-violet-400 uppercase tracking-[0.3em]">
+<span>340+ Components</span>
+<span class="text-white/20">/</span>
+<span>7 Token Categories</span>
+<span class="text-white/20">/</span>
+<span>&lt;4KB Core</span>
+<span class="text-white/20">/</span>
+<span>100% Accessible</span>
+<span class="text-white/20">/</span>
+<span>TypeScript-First</span>
+</div>
+</div>
+<!-- Dual Layer Section -->
+<section class="py-24 px-6 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10">
+<!-- Signal Layer -->
+<div class="bg-[#0A0A1A] p-12 flex flex-col justify-between group hover:bg-white/5 transition-colors">
+<div>
+<h3 class="font-headline text-4xl font-bold text-white mb-4">SIGNAL LAYER</h3>
+<p class="text-on-surface-variant font-mono text-sm leading-relaxed mb-8">
+                        The deterministic logic layer. Pixel-perfect, high-contrast, Swiss-inspired UI components. Optimized for clarity and functional density.
+                    </p>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-10 bg-surface-container-highest border border-white/10 flex items-center px-4 font-mono text-[10px] uppercase">Button.Primary</div>
+<div class="h-10 bg-[#0A0A1A] border border-secondary flex items-center px-4 font-mono text-[10px] uppercase text-secondary">Input.Active</div>
+<div class="h-10 border border-white/10 flex items-center px-4 font-mono text-[10px] uppercase">Toggle.Off</div>
+<div class="h-10 bg-violet-500 flex items-center px-4 font-mono text-[10px] uppercase text-white font-bold">Alert.System</div>
+</div>
+</div>
+<div class="mt-12 flex justify-between items-end">
+<span class="font-mono text-[10px] text-white/20">DATA_REF: SIGNAL_001</span>
+<button class="material-symbols-outlined text-white" data-icon="arrow_forward">arrow_forward</button>
+</div>
+</div>
+<!-- Field Layer -->
+<div class="bg-[#0A0A1A] p-12 flex flex-col justify-between group hover:bg-violet-900/10 transition-colors relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<img class="w-full h-full object-cover grayscale" data-alt="digital noise texture with fine static and monochromatic grain pattern for a technical aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6B2fKeJMr58QGAdVUH1fLYeen8bgxZLLYN8J97L1mmZ8lJzTaryiJJUqV52oaAJJO9UrrXQZdYJZ1gzIBQhXrCWLkVgIuWW67RY5c2CbhtjRwkzOMWt_r95MQKy7NLkgkX5UlfhscAWglvDR3J6tg8xTp5pZHBAbYT6JYjj1J1JObaQi772Kp7dt7_sVWcwolnVisThnqZmeS63u-MlbYACckdO4jAMYC6fxdIdu50HIQ5o0DnQbMTSGIvvDm2iQ-6hSwrh2s5UY"/>
+</div>
+<div class="relative z-10">
+<h3 class="font-headline text-4xl font-bold text-violet-400 mb-4">FIELD LAYER</h3>
+<p class="text-on-surface-variant font-mono text-sm leading-relaxed mb-8">
+                        The generative expressive layer. Parametric backgrounds, noise fields, and procedural textures that respond to state and environment.
+                    </p>
+<div class="aspect-video border border-violet-500/30 bg-[#0c0c1d] overflow-hidden flex items-center justify-center">
+<div class="w-full h-full opacity-30 bg-gradient-to-tr from-violet-500 to-cyan-500 blur-3xl"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="grid grid-cols-8 gap-2">
+<div class="w-4 h-4 bg-violet-500/40"></div>
+<div class="w-4 h-4 bg-violet-500/20"></div>
+<div class="w-4 h-4 bg-violet-500/60"></div>
+<div class="w-4 h-4 bg-secondary/30"></div>
+<div class="w-4 h-4 bg-violet-500/10"></div>
+<div class="w-4 h-4 bg-secondary/50"></div>
+<div class="w-4 h-4 bg-violet-500/30"></div>
+<div class="w-4 h-4 bg-violet-500/50"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-between items-end relative z-10">
+<span class="font-mono text-[10px] text-violet-400/40">DATA_REF: FIELD_PROC_88</span>
+<button class="material-symbols-outlined text-violet-400" data-icon="auto_awesome">auto_awesome</button>
+</div>
+</div>
+</div>
+</section>
+<!-- API Showcase -->
+<section class="py-24 px-6 bg-[#121222]">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-baseline mb-16 gap-4">
+<h2 class="font-headline text-5xl font-bold text-white tracking-tight">API_COMMAND_CENTER</h2>
+<span class="font-mono text-xs text-secondary tracking-widest uppercase">Full control over every design token</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<div class="space-y-6">
+<!-- API Block 1 -->
+<div class="bg-[#0A0A1A] border-l-4 border-violet-500 p-6">
+<div class="flex justify-between mb-4">
+<span class="font-mono text-[10px] text-white/40 uppercase">01. Dynamic State</span>
+<span class="px-2 py-0.5 bg-violet-500/20 text-violet-400 font-mono text-[10px]">HOOK</span>
+</div>
+<code class="font-mono text-sm block">
+<span class="text-violet-400">const</span> { setField } = <span class="text-secondary">useSignalframe</span>();<br/>
+<span class="text-white/40">// Adjust grain density based on motion</span><br/>
+<span class="text-secondary">setField</span>({ noise: <span class="text-rose-400">0.85</span> });
+                        </code>
+</div>
+<!-- API Block 2 -->
+<div class="bg-[#0A0A1A] border-l-4 border-secondary p-6">
+<div class="flex justify-between mb-4">
+<span class="font-mono text-[10px] text-white/40 uppercase">02. Theme Injection</span>
+<span class="px-2 py-0.5 bg-secondary/20 text-secondary font-mono text-[10px]">CORE</span>
+</div>
+<code class="font-mono text-sm block">
+<span class="text-violet-400">theme</span>.<span class="text-secondary">set</span>({<br/>
+                              primary: <span class="text-rose-400">'#8B5CF6'</span>,<br/>
+                              mode: <span class="text-rose-400">'industrial'</span><br/>
+                            });
+                        </code>
+</div>
+<!-- API Block 3 -->
+<div class="bg-[#0A0A1A] border-l-4 border-white/20 p-6">
+<div class="flex justify-between mb-4">
+<span class="font-mono text-[10px] text-white/40 uppercase">03. Procedural Seed</span>
+<span class="px-2 py-0.5 bg-white/10 text-white/60 font-mono text-[10px]">MATH</span>
+</div>
+<code class="font-mono text-sm block">
+<span class="text-violet-400">field</span>.<span class="text-secondary">setSeed</span>(<span class="text-rose-400">Math.random()</span>);
+                        </code>
+</div>
+</div>
+<div class="relative bg-black border-2 border-white/5 flex flex-col">
+<div class="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-[#0c0c1d]">
+<div class="flex gap-1.5">
+<div class="w-2 h-2 rounded-full bg-rose-500/50"></div>
+<div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+<div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+</div>
+<span class="font-mono text-[9px] text-white/40 tracking-widest">PREVIEW_V_PORT</span>
+</div>
+<div class="flex-grow p-8 flex items-center justify-center relative overflow-hidden">
+<!-- Preview Mockup -->
+<div class="relative z-10 w-full max-w-sm bg-[#121222] border border-white/20 shadow-2xl p-6">
+<div class="flex justify-between items-center mb-8">
+<div class="w-12 h-2 bg-violet-500"></div>
+<div class="flex gap-2">
+<div class="w-2 h-2 bg-white/20"></div>
+<div class="w-2 h-2 bg-white/20"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="h-4 bg-white/5 w-3/4"></div>
+<div class="h-4 bg-white/5 w-1/2"></div>
+<div class="h-24 border border-dashed border-white/10 mt-6 flex items-center justify-center">
+<span class="font-mono text-[10px] text-white/20">PROCEDURAL_RENDER_AREA</span>
+</div>
+</div>
+</div>
+<!-- Blurred background effect -->
+<div class="absolute inset-0 bg-gradient-to-br from-violet-900/40 via-transparent to-cyan-900/40 mix-blend-color-dodge"></div>
+<div class="absolute inset-0 pointer-events-none grain-texture"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#0A0A1A] border-t border-white/10">
+<div class="flex flex-col md:flex-row items-center gap-6">
+<div class="text-lg font-bold text-white font-mono">SFUX</div>
+<div class="flex gap-6 font-mono text-[10px] uppercase tracking-[0.2em]">
+<a class="text-white/40 hover:text-violet-400 transition-colors" href="#">GITHUB</a>
+<a class="text-white/40 hover:text-violet-400 transition-colors" href="#">DISCORD</a>
+<a class="text-white/40 hover:text-violet-400 transition-colors" href="#">LICENSE</a>
+<a class="text-white/40 hover:text-violet-400 transition-colors" href="#">STATUS</a>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-400">©2024 SIGNALFRAME_UX [TERMINAL_OUT]</div>
+<div class="font-mono text-[8px] text-white/20">BUILT WITH SIGNALFRAME_UX CORE V2.4</div>
+</div>
+</footer>
+</body></html>
