@@ -37,7 +37,7 @@ export function DualLayer() {
       <div className="bg-foreground px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)]">
         <h2
           className="text-[clamp(48px,6vw,80px)] leading-none tracking-[-0.02em] text-primary mb-6"
-          style={{ fontFamily: "var(--font-anton)", fontStyle: "italic" }}
+          style={{ fontFamily: "var(--font-anton)",  }}
         >
           //FRAME
         </h2>
