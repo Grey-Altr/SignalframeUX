@@ -119,7 +119,7 @@ const TYPE_SCALE = [
   { name: "H3", sample: "TOKEN EXPLORER", font: "inherit", size: 22, weight: 700, meta: "ELECTROLIZE \u00b7 22PX \u00b7 700" },
   { name: "BODY", sample: "Deterministic interface. Generative expression.", font: "inherit", size: 14, weight: 400, meta: "ELECTROLIZE \u00b7 14PX \u00b7 400" },
   { name: "CAPTION", sample: "FRAME LAYER \u00b7 V2.1.0", font: "inherit", size: 11, weight: 700, meta: "ELECTROLIZE \u00b7 11PX \u00b7 700", uppercase: true },
-  { name: "CODE", sample: "const sfux = createSignalframeUX()", font: "'JetBrains Mono', monospace", size: 13, weight: 400, meta: "JETBRAINS MONO \u00b7 13PX \u00b7 400", code: true },
+  { name: "CODE", sample: "const sfux = createSignalframeUX()", font: "var(--font-mono)", size: 13, weight: 400, meta: "JETBRAINS MONO · 13PX · 400", code: true },
 ];
 
 /* ── MOTION DATA ── */

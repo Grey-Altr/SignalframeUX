@@ -579,7 +579,7 @@ export function APIExplorer() {
             className="relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px] transition-colors duration-200"
             style={{
               background:
-                previewTheme === "LIGHT" ? "oklch(0.97 0 0)"
+                previewTheme === "LIGHT" ? "var(--sf-preview-light-bg)"
                 : previewTheme === "FRAME" ? "var(--color-primary)"
                 : undefined,
             }}

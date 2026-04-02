@@ -111,6 +111,10 @@
   /* ── Decorative Preview Tokens ── */
   --sf-waveform-bg: oklch(0.25 0.05 350);
   --sf-waveform-harmonic: oklch(0.45 0.15 350);
+  --sf-preview-light-bg: oklch(0.97 0 0);
+  --sf-text-shadow-light: oklch(1 0 0 / 0.05);
+  --sf-text-shadow-dark: oklch(0 0 0 / 0.3);
+  --sf-halftone-dot: oklch(1 0 0 / 0.3);
 
   /* ── Motion Tokens ── */
   --duration-instant: 34ms;

@@ -20,7 +20,7 @@ export function Footer() {
     <footer className="border-t-[3px] border-foreground">
       <div className="px-6 py-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-8 md:gap-12 items-start">
             {/* Brand */}
             <div className="md:mt-1.5">
               <span
@@ -37,7 +37,7 @@ export function Footer() {
             </div>
 
             {/* Links */}
-            <div className="mx-auto">
+            <div>
               <h3 className="text-[11px] font-mono uppercase tracking-wider text-foreground mb-3">
                 DOCS
               </h3>
@@ -49,7 +49,7 @@ export function Footer() {
               </ul>
             </div>
 
-            <div className="mx-auto">
+            <div>
               <h3 className="text-[11px] font-mono uppercase tracking-wider text-foreground mb-3">
                 RESOURCES
               </h3>

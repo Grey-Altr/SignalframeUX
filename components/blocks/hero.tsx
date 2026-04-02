@@ -17,7 +17,7 @@ export function Hero() {
           style={{
             clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
             background:
-              "radial-gradient(circle, transparent 30%, oklch(1 0 0 / 0.3) 30%, oklch(1 0 0 / 0.3) 32%, transparent 32%), radial-gradient(circle, transparent 30%, oklch(1 0 0 / 0.3) 30%, oklch(1 0 0 / 0.3) 32%, transparent 32%)",
+              "radial-gradient(circle, transparent 30%, var(--sf-halftone-dot) 30%, var(--sf-halftone-dot) 32%, transparent 32%), radial-gradient(circle, transparent 30%, var(--sf-halftone-dot) 30%, var(--sf-halftone-dot) 32%, transparent 32%)",
             backgroundSize: "8px 8px",
             backgroundPosition: "0 0, 4px 4px",
             filter: "contrast(2)",
@@ -38,7 +38,7 @@ export function Hero() {
             aria-label="SignalframeUX"
             className="sf-display text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background dark:text-foreground uppercase"
             style={{
-              textShadow: "0 1px 0 oklch(1 0 0 / 0.05), 0 -1px 0 oklch(0 0 0 / 0.3)",
+              textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
             }}
           >
             <span data-anim="hero-char" suppressHydrationWarning>S</span><span data-anim="hero-char" suppressHydrationWarning>I</span><span data-anim="hero-char" suppressHydrationWarning>G</span><span data-anim="hero-char" suppressHydrationWarning>N</span><span data-anim="hero-char" suppressHydrationWarning>A</span><span data-anim="hero-char" suppressHydrationWarning>L</span>
