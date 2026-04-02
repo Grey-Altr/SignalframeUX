@@ -1,13 +1,10 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFCard, SFCardHeader, SFCardTitle, SFCardContent } from "@/components/sf/sf-card";
 import { SFBadge } from "@/components/sf/sf-badge";
 import { GRAIN_SVG } from "@/lib/grain";
-import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf/sf-tabs";
+import { PreviewTabs } from "@/components/blocks/preview-tabs";
 
 /* ── Live preview renderers for each component cell ──
  * These use actual SF primitives (SFButton, SFCard, etc.) for rich demos.
@@ -39,7 +36,7 @@ function PreviewCard() {
         <SFCardTitle>CARD</SFCardTitle>
       </SFCardHeader>
       <SFCardContent>
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Modular container</p>
+        <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-wider">Modular container</p>
       </SFCardContent>
     </SFCard>
   );
@@ -48,11 +45,11 @@ function PreviewCard() {
 function PreviewModal() {
   return (
     <div className="w-[75%] max-w-[180px] border-2 border-foreground bg-background text-foreground p-3">
-      <p className="text-[10px] font-bold uppercase tracking-wider mb-2">CONFIRM ACTION</p>
-      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-3">Are you sure?</p>
+      <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider mb-2">CONFIRM ACTION</p>
+      <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-wider mb-3">Are you sure?</p>
       <div className="flex gap-1">
-        <SFButton intent="primary" size="sm" className="text-[10px] px-2 py-1">YES</SFButton>
-        <SFButton intent="ghost" size="sm" className="text-[10px] px-2 py-1">NO</SFButton>
+        <SFButton intent="primary" size="sm" className="text-[var(--text-xs)] px-2 py-1">YES</SFButton>
+        <SFButton intent="ghost" size="sm" className="text-[var(--text-xs)] px-2 py-1">NO</SFButton>
       </div>
     </div>
   );
@@ -60,17 +57,17 @@ function PreviewModal() {
 
 function PreviewTable() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-foreground text-[11px] uppercase tracking-wider">
+    <div className="w-[80%] max-w-[200px] border-2 border-foreground text-[var(--text-sm)] uppercase tracking-wider">
       <div className="bg-foreground text-background px-2 py-1.5 flex dark:bg-[var(--sf-dark-surface)] dark:text-foreground">
         <span className="flex-1">TOKEN</span>
         <span className="flex-1 text-right">VALUE</span>
       </div>
       <div className="px-2 py-1.5 flex border-b border-foreground/20">
-        <span className="flex-1 text-muted-foreground">primary</span>
+        <span className="flex-1 opacity-60">primary</span>
         <span className="flex-1 text-right text-primary">#FF0090</span>
       </div>
       <div className="px-2 py-1.5 flex">
-        <span className="flex-1 text-muted-foreground">yellow</span>
+        <span className="flex-1 opacity-60">yellow</span>
         <span className="flex-1 text-right text-[var(--sf-yellow)]">#E5C800</span>
       </div>
     </div>
@@ -82,8 +79,8 @@ function PreviewToast() {
     <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground p-3 flex items-start gap-2">
       <span className="text-primary text-sm">◉</span>
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-wider">DEPLOYED</p>
-        <p className="text-[10px] uppercase tracking-wider opacity-60 mt-0.5">Build #4201 live</p>
+        <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider">DEPLOYED</p>
+        <p className="text-[var(--text-xs)] uppercase tracking-wider opacity-60 mt-0.5">Build #4201 live</p>
       </div>
     </div>
   );
@@ -98,7 +95,7 @@ function PreviewNoiseBg() {
           backgroundImage: GRAIN_SVG,
         }}
       />
-      <p className="absolute bottom-1 left-2 text-[10px] text-[var(--sf-dim-text)] uppercase tracking-wider">
+      <p className="absolute bottom-1 left-2 text-[var(--text-xs)] text-[var(--sf-dim-text)] uppercase tracking-wider">
         FRACTAL NOISE
       </p>
     </div>
@@ -156,34 +153,20 @@ function PreviewGlitchText() {
 function PreviewDropdown() {
   return (
     <div className="w-[80%] max-w-[180px]">
-      <div className="border-2 border-foreground px-3 py-1.5 flex items-center justify-between text-[10px] uppercase tracking-wider">
+      <div className="border-2 border-foreground px-3 py-1.5 flex items-center justify-between text-[var(--text-xs)] uppercase tracking-wider">
         <span>SELECT</span>
         <span className="text-muted-foreground">▾</span>
       </div>
       <div className="border-2 border-t-0 border-foreground">
-        <div className="px-3 py-1 text-[11px] uppercase tracking-wider bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground">OPTION A</div>
-        <div className="px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">OPTION B</div>
-        <div className="px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">OPTION C</div>
+        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground">OPTION A</div>
+        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider text-muted-foreground">OPTION B</div>
+        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider text-muted-foreground">OPTION C</div>
       </div>
-    </div>
-  );
-}
-
-function PreviewTabs() {
-  return (
-    <div className="w-[80%] max-w-[200px]">
-      <SFTabs defaultValue="signal">
-        <SFTabsList>
-          <SFTabsTrigger value="signal" className="text-[11px]">SIGNAL</SFTabsTrigger>
-          <SFTabsTrigger value="frame" className="text-[11px]">FRAME</SFTabsTrigger>
-        </SFTabsList>
-      </SFTabs>
     </div>
   );
 }
 
 function PreviewWaveform() {
-  // Generate smooth sine-based waveform paths
   const w = 180;
   const h = 60;
   const mid = h / 2;
@@ -202,14 +185,12 @@ function PreviewWaveform() {
   return (
     <div className="w-[85%] max-w-[200px] h-[60px] relative">
       <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" preserveAspectRatio="none">
-        {/* Background amplitude envelope */}
         <polyline
           points={wave(3, 22, 0)}
           fill="none"
           stroke="var(--sf-waveform-bg)"
           strokeWidth="0.5"
         />
-        {/* Main waveform */}
         <polyline
           points={wave(5, 18, 0.5)}
           fill="none"
@@ -218,7 +199,6 @@ function PreviewWaveform() {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Harmonic overlay */}
         <polyline
           points={wave(11, 6, 1.2)}
           fill="none"
@@ -226,7 +206,6 @@ function PreviewWaveform() {
           strokeWidth="0.7"
           opacity="0.6"
         />
-        {/* Center line */}
         <line x1="0" y1={mid} x2={w} y2={mid} stroke="var(--sf-subtle-border)" strokeWidth="0.5" strokeDasharray="3 3" />
       </svg>
     </div>
@@ -265,8 +244,6 @@ const COMPONENTS = [
 ];
 
 export function ComponentGrid() {
-  const [hoveredCell, setHoveredCell] = useState<string | null>(null);
-
   return (
     <section className="border-b-4 border-foreground">
       {/* Section header */}
@@ -282,7 +259,6 @@ export function ComponentGrid() {
       <div className="grid grid-cols-2 md:grid-cols-4">
         {COMPONENTS.map((comp) => {
           const isBlack = comp.bg === "black";
-          const isHovered = hoveredCell === comp.id;
           const Preview = PREVIEW_MAP[comp.id];
 
           return (
@@ -291,19 +267,15 @@ export function ComponentGrid() {
               href="/components"
               data-anim="comp-cell"
               aria-label={`${comp.name} component`}
-              suppressHydrationWarning
-              className="relative border-r-2 border-b-2 border-foreground group no-underline"
+              className="relative border-r-2 border-b-2 border-foreground group no-underline hover:border-primary transition-colors duration-150"
               style={{
                 aspectRatio: "1",
                 backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--sf-cell-light-bg)",
                 color: "var(--color-foreground)",
-                borderColor: isHovered ? "var(--color-primary)" : undefined,
               }}
-              onMouseEnter={() => setHoveredCell(comp.id)}
-              onMouseLeave={() => setHoveredCell(null)}
             >
               {/* Index */}
-              <span className="absolute top-3 left-3 text-[11px] uppercase tracking-[0.15em] opacity-40">
+              <span className={`absolute top-3 left-3 text-[var(--text-sm)] uppercase tracking-[0.15em] ${isBlack ? "opacity-60" : "opacity-40"}`}>
                 {comp.id}
               </span>
 
@@ -313,10 +285,10 @@ export function ComponentGrid() {
               </div>
 
               {/* Name + Layer label */}
-              <span className="absolute bottom-3 left-3 text-[11px] uppercase tracking-[0.15em] font-bold opacity-60">
+              <span className={`absolute bottom-3 left-3 text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold ${isBlack ? "opacity-80" : "opacity-60"}`}>
                 {comp.name}
               </span>
-              <span className="absolute bottom-3 right-3 text-[10px] uppercase tracking-[0.15em] opacity-40">
+              <span className={`absolute bottom-3 right-3 text-[var(--text-xs)] uppercase tracking-[0.15em] ${isBlack ? "opacity-60" : "opacity-40"}`}>
                 {comp.layer}
               </span>
             </Link>

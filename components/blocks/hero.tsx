@@ -39,10 +39,10 @@ export function Hero() {
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
             }}
           >
-            <span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>S</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>I</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>G</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>N</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>A</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>L</span>
+            <span aria-hidden="true" data-anim="hero-char">S</span><span aria-hidden="true" data-anim="hero-char">I</span><span aria-hidden="true" data-anim="hero-char">G</span><span aria-hidden="true" data-anim="hero-char">N</span><span aria-hidden="true" data-anim="hero-char">A</span><span aria-hidden="true" data-anim="hero-char">L</span>
             <span className="block text-primary text-[clamp(40px,9vw,120px)]">
               <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(28px,6vw,80px)]">//</span>
-              <span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>F</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>R</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>A</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>M</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>E</span>
+              <span aria-hidden="true" data-anim="hero-char">F</span><span aria-hidden="true" data-anim="hero-char">R</span><span aria-hidden="true" data-anim="hero-char">A</span><span aria-hidden="true" data-anim="hero-char">M</span><span aria-hidden="true" data-anim="hero-char">E</span>
             </span>
           </h1>
         </div>
@@ -68,7 +68,7 @@ export function Hero() {
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" suppressHydrationWarning className="sf-hero-deferred mt-8 text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
+        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-8 text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
           DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.<br />
           THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
         </p>
@@ -77,7 +77,7 @@ export function Hero() {
       {/* Right — White panel */}
       <div className="bg-background px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative">
         {/* Manifesto */}
-        <p data-anim="hero-copy" suppressHydrationWarning className="sf-hero-deferred text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
+        <p data-anim="hero-copy" className="text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
           Accept the interface into your life.
           <span className="text-[14px] align-super text-muted-foreground">™</span>{" "}
           A dual-layer design system that separates{" "}
@@ -91,7 +91,6 @@ export function Hero() {
           <Link
             href="/start"
             data-anim="cta-btn"
-            suppressHydrationWarning
             className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             GET STARTED
@@ -100,7 +99,6 @@ export function Hero() {
           <Link
             href="https://github.com/signalframeux"
             data-anim="cta-btn"
-            suppressHydrationWarning
             className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             VIEW ON GITHUB

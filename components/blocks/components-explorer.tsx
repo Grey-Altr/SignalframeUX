@@ -39,10 +39,10 @@ interface ComponentEntry {
 function PreviewButton() {
   return (
     <div className="flex gap-1.5">
-      <span className="inline-block h-5 border border-current text-[10px] px-2.5 py-0.5 uppercase">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-2.5 py-0.5 uppercase">
         PRIMARY
       </span>
-      <span className="inline-block h-5 border border-current text-[10px] px-2.5 py-0.5 uppercase">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-2.5 py-0.5 uppercase">
         GHOST
       </span>
     </div>
@@ -111,9 +111,10 @@ function PreviewTabs() {
 }
 
 function PreviewBadge({ color, text }: { color: string; text: string }) {
+  const needsDarkText = color === "var(--sf-green)" || color === "var(--sf-yellow)";
   return (
     <span
-      className="inline-block px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-primary-foreground"
+      className={`inline-block px-2.5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-primary-foreground"}`}
       style={{ background: color }}
     >
       {text}
@@ -123,7 +124,7 @@ function PreviewBadge({ color, text }: { color: string; text: string }) {
 
 function PreviewTable() {
   return (
-    <span className="text-[10px] font-mono tracking-wide">
+    <span className="text-[var(--text-xs)] font-mono tracking-wide">
       ID--NAME--STATUS
     </span>
   );
@@ -177,7 +178,7 @@ function PreviewGlitch() {
     <div className="relative">
       <span className="text-base uppercase sf-display">ABC</span>
       <span
-        className="absolute left-0.5 top-px text-base uppercase sf-display text-primary"
+        className="absolute left-0.5 top-px text-base uppercase sf-display text-[var(--sf-primary-on-dark)]"
         style={{ clipPath: "inset(30% 0 30% 0)" }}
       >
         ABC
@@ -277,11 +278,9 @@ export function ComponentsExplorer() {
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
-  // Flip.getState() returns an opaque FlipState — no public type exported by GSAP
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const flipStateRef = useRef<any>(null);
+  const flipStateRef = useRef<ReturnType<typeof import("gsap/Flip").Flip.getState> | null>(null);
   const gsapRef = useRef<FlipModule | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -420,8 +419,8 @@ export function ComponentsExplorer() {
             onClick={() => handleFilter(cat)}
             aria-pressed={activeFilter === cat}
             data-filter={cat}
-            className={`border-0 border-r-2 border-foreground rounded-none px-5 py-3.5 text-[11px] tracking-[0.15em] h-auto ${
-              activeFilter === cat ? "text-primary" : ""
+            className={`border-0 border-r-2 border-foreground rounded-none px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
+              activeFilter === cat ? "text-[var(--sf-primary-on-dark)]" : ""
             }`}
           >
             {cat}
@@ -433,9 +432,9 @@ export function ComponentsExplorer() {
           aria-label="Search components"
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[11px] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
+          className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
-        <div className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[11px] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center">
+        <div className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center">
           {resultCount} RESULTS
         </div>
         {/* Filter indicator bar */}
@@ -443,24 +442,23 @@ export function ComponentsExplorer() {
       </div>
 
       {/* ── Component Grid ── */}
-      <div
+      <ul
         ref={gridRef}
-        role="grid"
+        role="list"
         aria-label="Component library"
         onKeyDown={handleGridKeyDown}
-        className="grid grid-cols-2 lg:grid-cols-4"
+        className="grid grid-cols-2 lg:grid-cols-4 list-none m-0 p-0"
       >
         {filtered.map((comp, i) => {
           const styles = variantStyles[comp.variant];
           const isYellow = comp.variant === "yellow";
 
           return (
-            <div
+            <li
               key={comp.index}
               data-flip-id={comp.index}
-              role="gridcell"
               tabIndex={i === focusedIndex ? 0 : -1}
-              aria-label={`${comp.name} — ${comp.category}, ${comp.version}`}
+              aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
               className={`flip-card group relative overflow-hidden p-5 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
@@ -479,7 +477,7 @@ export function ComponentsExplorer() {
                 />
               )}
 
-              <div className="text-[11px] text-muted-foreground uppercase tracking-[0.2em]">
+              <div className={`text-[var(--text-sm)] uppercase tracking-[0.2em] ${comp.variant === "black" ? "opacity-60" : "text-muted-foreground"}`}>
                 {comp.index} · {comp.category}
               </div>
 
@@ -490,7 +488,7 @@ export function ComponentsExplorer() {
               </div>
 
               <div
-                className={`w-full h-12 border flex items-center justify-center text-[10px] transition-colors duration-150 mt-2 mb-2 ${
+                className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-150 mt-2 mb-2 ${
                   comp.variant === "black"
                     ? "border-[var(--sf-subtle-border)] group-hover:border-primary"
                     : comp.variant === "yellow"
@@ -502,21 +500,21 @@ export function ComponentsExplorer() {
                 {comp.preview}
               </div>
 
-              <div className="flex justify-between text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+              <div className={`flex justify-between text-[var(--text-sm)] uppercase tracking-[0.15em] ${comp.variant === "black" ? "opacity-60" : "text-muted-foreground"}`}>
                 <span>{comp.subcategory}</span>
                 <span>{comp.version}</span>
               </div>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
 
       {/* ── Detail Hint Bar ── */}
-      <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[11px] font-bold uppercase tracking-[0.15em]">
+      <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">
         <span>
           BROWSE COMPONENTS ABOVE · VIEW FULL API REFERENCE →
         </span>
-        <a href="/reference" className="text-primary sf-link-draw">
+        <a href="/reference" className="text-foreground sf-link-draw underline underline-offset-4">
           API REFERENCE
         </a>
       </div>

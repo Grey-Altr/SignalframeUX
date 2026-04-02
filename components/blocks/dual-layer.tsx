@@ -3,7 +3,7 @@ const SIGNAL_TAGS = ["GENERATIVE", "PARAMETRIC", "DATA-DRIVEN", "CANVAS", "SHADE
 
 export function DualLayer() {
   return (
-    <section data-anim="section-reveal" suppressHydrationWarning className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
+    <section data-anim="section-reveal" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — FRAME (white, structural) */}
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground relative">
         <h2
@@ -11,7 +11,7 @@ export function DualLayer() {
         >
           FRAME
         </h2>
-        <p className="text-[13px] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-foreground/70">
+        <p className="text-[var(--text-base)] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-foreground/70">
           THE STRUCTURAL LOGIC LAYER. GRID CONTROL.
           STYLE CONTROL. TYPOGRAPHY. SEMANTIC TOKENS.
           EVERYTHING THE USER READS AND NAVIGATES.
@@ -22,8 +22,7 @@ export function DualLayer() {
             <span
               key={tag}
               data-anim="tag"
-              suppressHydrationWarning
-              className="border border-foreground px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-foreground inline-block hover:border-2 hover:px-[11px] hover:py-[5px]"
+                           className="border border-foreground px-3 py-1.5 text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground inline-block"
             >
               {tag}
             </span>
@@ -38,7 +37,7 @@ export function DualLayer() {
         >
           //SIGNAL
         </h2>
-        <p className="text-[13px] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-[var(--sf-dim-text)] dark:text-muted-foreground">
+        <p className="text-[var(--text-base)] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-[var(--sf-dim-text)] dark:text-muted-foreground">
           THE GENERATIVE EXPRESSION LAYER. PARAMETRIC NOISE.
           DATA-REACTIVE VISUALS. CANVAS OVERLAYS.
           EVERYTHING THE USER FEELS BUT DOESN&apos;T CLICK.
@@ -49,8 +48,7 @@ export function DualLayer() {
             <span
               key={tag}
               data-anim="tag"
-              suppressHydrationWarning
-              className="border border-[var(--sf-subtle-border)] dark:border-[var(--sf-dim-text)] px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[var(--sf-dim-text)] dark:text-muted-foreground inline-block"
+                           className="border border-[var(--sf-subtle-border)] dark:border-[var(--sf-dim-text)] px-3 py-1.5 text-[var(--text-xs)] uppercase tracking-[0.15em] text-[var(--sf-dim-text)] dark:text-muted-foreground inline-block"
             >
               {tag}
             </span>

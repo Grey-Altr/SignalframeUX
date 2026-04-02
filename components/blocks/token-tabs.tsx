@@ -174,7 +174,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-primary"
+            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>
@@ -183,7 +183,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-primary"
+            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>

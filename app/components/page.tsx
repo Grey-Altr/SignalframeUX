@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
+
+export const metadata: Metadata = {
+  title: "Components — SIGNALFRAME//UX",
+  description: "Browse 340+ Signal and Frame components with live previews, filtering, and code examples.",
+};
 
 export default function ComponentsPage() {
   return (

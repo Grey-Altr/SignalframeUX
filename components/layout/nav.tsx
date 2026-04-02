@@ -118,6 +118,10 @@ function LiveClock() {
   }, []);
 
   useEffect(() => {
+    // Skip clock on mobile where it's hidden (sm:block)
+    const mql = window.matchMedia("(min-width: 640px)");
+    if (!mql.matches) return;
+
     // Initialize with scramble on load
     const initial = getTimeString();
     prevTimeRef.current = initial;
@@ -152,8 +156,6 @@ function LiveClock() {
     }, 1000);
 
     function startScrambleLoop() {
-      let lastTickTime = 0;
-
       function tick(now: number) {
         const scrambles = scrambleRef.current;
         if (scrambles.size === 0) {

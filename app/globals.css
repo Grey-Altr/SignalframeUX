@@ -19,7 +19,7 @@
   --color-card-foreground: oklch(0.145 0 0);
   --color-popover: oklch(1 0 0);
   --color-popover-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.65 0.29 350);
+  --color-primary: oklch(0.55 0.28 350);
   --color-primary-foreground: oklch(0.985 0 0);
   --color-secondary: oklch(0.970 0.005 298);
   --color-secondary-foreground: oklch(0.205 0 0);
@@ -30,20 +30,20 @@
   --color-destructive: oklch(0.550 0.180 25);
   --color-border: oklch(0.205 0 0);
   --color-input: oklch(0.205 0 0);
-  --color-ring: oklch(0.65 0.29 350);
+  --color-ring: oklch(0.55 0.28 350);
 
   /* ── Sidebar Colors (shadcn compat) ── */
   --color-sidebar: oklch(0.985 0 0);
   --color-sidebar-foreground: oklch(0.145 0 0);
-  --color-sidebar-primary: oklch(0.65 0.29 350);
+  --color-sidebar-primary: oklch(0.55 0.28 350);
   --color-sidebar-primary-foreground: oklch(0.985 0 0);
   --color-sidebar-accent: oklch(0.930 0.005 298);
   --color-sidebar-accent-foreground: oklch(0.205 0 0);
   --color-sidebar-border: oklch(0.205 0 0);
-  --color-sidebar-ring: oklch(0.65 0.29 350);
+  --color-sidebar-ring: oklch(0.55 0.28 350);
 
   /* ── Chart Colors ── */
-  --color-chart-1: oklch(0.65 0.29 350);
+  --color-chart-1: oklch(0.55 0.28 350);
   --color-chart-2: oklch(0.91 0.18 98);
   --color-chart-3: oklch(0.85 0.25 145);
   --color-chart-4: oklch(0.550 0.010 298);
@@ -66,17 +66,19 @@
   --font-heading: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-display: "Anton", "Impact", sans-serif;
 
-  /* ── Type Scale: Augmented Fourth (1.414) ──
-     Available for adoption — currently most components use clamp() or text-[Npx].
-     Prefer these tokens for new components to establish consistent vertical rhythm. */
-  --text-xs: 0.500rem;
-  --text-sm: 0.707rem;
-  --text-base: 1.000rem;
-  --text-lg: 1.414rem;
-  --text-xl: 2.000rem;
-  --text-2xl: 2.828rem;
-  --text-3xl: 4.000rem;
-  --text-4xl: 5.657rem;
+  /* ── Type Scale: Industrial Minor Third (1.2) ──
+     Tighter ratio than augmented-fourth to match the DU/TDR dense label aesthetic.
+     Use these tokens for new components; existing clamp() values for display type are intentional. */
+  --text-2xs: 0.563rem;  /* 9px — micro labels, copy buttons */
+  --text-xs: 0.625rem;   /* 10px — tag pills, stat labels */
+  --text-sm: 0.688rem;   /* 11px — nav, footer, grid metadata */
+  --text-base: 0.813rem; /* 13px — body copy, descriptions */
+  --text-md: 1.000rem;   /* 16px — hero body, prominent copy */
+  --text-lg: 1.125rem;   /* 18px — section intros */
+  --text-xl: 1.500rem;   /* 24px — subheadings */
+  --text-2xl: 2.000rem;  /* 32px — section titles */
+  --text-3xl: 3.000rem;  /* 48px — page headers */
+  --text-4xl: 5.000rem;  /* 80px — display type */
 }
 
 /* ── Runtime font override (next/font uses hashed names) ── */
@@ -107,6 +109,7 @@
   --sf-subtle-border: oklch(0.3 0 0);
   --sf-dim-text: oklch(0.52 0 0);
   --sf-muted-text-dark: oklch(0.65 0 0);
+  --sf-primary-on-dark: oklch(0.72 0.25 350); /* AA-safe magenta for dark surfaces */
 
   /* ── Decorative Preview Tokens ── */
   --sf-waveform-bg: oklch(0.25 0.05 350);
@@ -177,12 +180,12 @@
   --color-input: oklch(0.400 0 0);
   --color-sidebar: oklch(0.205 0 0);
   --color-sidebar-foreground: oklch(0.985 0 0);
-  --color-sidebar-primary: oklch(0.65 0.29 350);
+  --color-sidebar-primary: oklch(0.55 0.28 350);
   --color-sidebar-primary-foreground: oklch(0.985 0 0);
   --color-sidebar-accent: oklch(0.269 0 0);
   --color-sidebar-accent-foreground: oklch(0.985 0 0);
   --color-sidebar-border: oklch(0.400 0 0);
-  --color-sidebar-ring: oklch(0.65 0.29 350);
+  --color-sidebar-ring: oklch(0.55 0.28 350);
   --sf-cell-light-bg: oklch(0.145 0 0);
 }
 
@@ -741,8 +744,8 @@
     to bottom,
     transparent 0px,
     transparent 3px,
-    rgba(0, 0, 0, 0.03) 3px,
-    rgba(0, 0, 0, 0.03) 4px
+    oklch(0 0 0 / 0.03) 3px,
+    oklch(0 0 0 / 0.03) 4px
   );
   opacity: var(--vhs-crt-opacity, 0.6);
 }

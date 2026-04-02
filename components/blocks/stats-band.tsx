@@ -7,7 +7,7 @@ const STATS = [
 
 export function StatsBand() {
   return (
-    <section aria-label="Key statistics" data-anim="section-reveal" suppressHydrationWarning className="grid grid-cols-2 md:grid-cols-4 border-b-4 border-foreground">
+    <section aria-label="Key statistics" data-anim="section-reveal" className="grid grid-cols-2 md:grid-cols-4 border-b-4 border-foreground">
       {STATS.map((stat, i) => (
         <div
           key={stat.label}
@@ -21,13 +21,12 @@ export function StatsBand() {
             className={`sf-display text-[clamp(48px,5vw,72px)] leading-none ${
               stat.accent ? "text-primary" : "text-foreground"
             }`}
-            suppressHydrationWarning
-            aria-label={`${stat.value === "∞" ? "Infinite" : stat.value} ${stat.label.toLowerCase()}`}
+                       aria-label={`${stat.value === "∞" ? "Infinite" : stat.value} ${stat.label.toLowerCase()}`}
             {...(!stat.accent ? { "data-anim": "stat-number", "data-target": stat.value } : {})}
           >
             {stat.value}
           </div>
-          <div className={`mt-3 text-[10px] uppercase tracking-[0.25em] font-bold ${
+          <div className={`mt-3 text-[var(--text-xs)] uppercase tracking-[0.25em] font-bold ${
             stat.accent ? "text-background dark:text-muted-foreground" : "text-muted-foreground"
           }`}>
             {stat.label}

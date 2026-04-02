@@ -140,6 +140,7 @@ export function HeroMesh({ className }: { className?: string }) {
 
       // Draw lines using grid topology (right neighbor + bottom neighbor only)
       // This is O(n) instead of O(n^2)
+      // Canvas API requires rgb/hex — oklch not supported. White is correct: mesh always sits on dark hero panel.
       ctx.strokeStyle = `rgba(255, 255, 255, ${LINE_OPACITY})`;
       ctx.lineWidth = 0.5;
       ctx.beginPath();
