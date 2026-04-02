@@ -85,7 +85,9 @@ export {
   SFSelect,
   SFSelectTrigger,
   SFSelectContent,
+  SFSelectGroup,
   SFSelectItem,
+  SFSelectLabel,
   SFSelectValue,
 } from "./sf-select";
 export { SFCheckbox } from "./sf-checkbox";

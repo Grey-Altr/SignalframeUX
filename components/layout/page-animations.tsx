@@ -16,8 +16,11 @@ export function PageAnimations() {
     const clickCleanups: Array<() => void> = [];
     let ctx: gsap.Context;
 
+    let cancelled = false;
+
     async function init() {
       const { initReducedMotion } = await import("@/lib/gsap-plugins");
+      if (cancelled) return;
       cleanupMotion = initReducedMotion();
 
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -37,6 +40,7 @@ export function PageAnimations() {
     init();
 
     return () => {
+      cancelled = true;
       ctx?.revert();
       clickCleanups.forEach((fn) => fn());
       cleanupMotion?.();
@@ -114,10 +118,10 @@ async function initHeroAnimations() {
       .to(heroCopy, { opacity: 1, duration: 0.1 });
   }
 
-  // ── 4. CTA button entrance ──
-  gsap.from("[data-anim='cta-btn']", {
-    y: 20,
-    opacity: 0,
+  // ── 4. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
+  gsap.to("[data-anim='cta-btn']", {
+    y: 0,
+    opacity: 1,
     duration: 0.5,
     ease: "power2.out",
     stagger: 0.1,
@@ -127,17 +131,19 @@ async function initHeroAnimations() {
 
 /** Core ScrollTrigger animations — use gsap-core only */
 function initCoreAnimations(clickCleanups: Array<() => void>) {
-  // ── Section reveals ──
+  // ── Section reveals (initial state set via CSS [data-anim="section-reveal"]) ──
   document.querySelectorAll("[data-anim='section-reveal']").forEach((el) => {
-    gsap.from(el, {
-      y: 40,
-      opacity: 0,
-      duration: 0.7,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        once: true,
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 85%",
+      once: true,
+      onEnter: () => {
+        gsap.to(el, {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power2.out",
+        });
       },
     });
   });
@@ -174,7 +180,7 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
     });
   });
 
-  // ── Component grid converge on scroll ──
+  // ── Component grid converge on scroll (opacity:0 set via CSS [data-anim="comp-cell"]) ──
   const cells = document.querySelectorAll("[data-anim='comp-cell']");
   if (cells.length) {
     const cols = 4;
@@ -182,19 +188,20 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
     const rows = Math.ceil(cells.length / cols);
     const centerRow = (rows - 1) / 2;
 
-    cells.forEach((cell, i) => {
-      const col = i % cols;
-      const row = Math.floor(i / cols);
-      const dx = (col - centerCol) * 120;
-      const dy = (row - centerRow) * 80;
-      gsap.set(cell, { opacity: 0, x: dx, y: dy, scale: 0.85 });
-    });
-
     ScrollTrigger.create({
       trigger: cells[0],
       start: "top 90%",
       once: true,
       onEnter: () => {
+        // Set offsets inside onEnter — avoids hydration mismatch from gsap.set()
+        cells.forEach((cell, i) => {
+          const col = i % cols;
+          const row = Math.floor(i / cols);
+          const dx = (col - centerCol) * 120;
+          const dy = (row - centerRow) * 80;
+          gsap.set(cell, { x: dx, y: dy, scale: 0.85 });
+        });
+
         gsap.to(cells, {
           opacity: 1,
           x: 0,
@@ -208,32 +215,32 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
     });
   }
 
-  // ── Tag pill entrance ──
+  // ── Tag pill entrance (initial state set via CSS [data-anim="tag"]) ──
   document.querySelectorAll("[data-anim='tag']").forEach((el) => {
-    gsap.from(el, {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.3,
-      ease: "back.out(1.7)",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 90%",
-        once: true,
+    ScrollTrigger.create({
+      trigger: el,
+      start: "top 90%",
+      once: true,
+      onEnter: () => {
+        gsap.to(el, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.3,
+          ease: "back.out(1.7)",
+        });
       },
     });
   });
 
-  // ── Yellow band parallax ──
+  // ── Yellow band parallax (pure ScrollTrigger — avoids GSAP transform cache injection) ──
   const band = document.querySelector("[data-anim='yellow-band']") as HTMLElement;
   if (band) {
-    gsap.to(band, {
-      y: -30,
-      ease: "none",
-      scrollTrigger: {
-        trigger: band,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
+    ScrollTrigger.create({
+      trigger: band,
+      start: "top bottom",
+      end: "bottom top",
+      onUpdate: (self) => {
+        band.style.transform = `translateY(${-30 * self.progress}px)`;
       },
     });
   }

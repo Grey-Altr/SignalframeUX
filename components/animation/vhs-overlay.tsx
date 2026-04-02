@@ -27,47 +27,52 @@ export function VHSOverlay() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
+    // Scoped timeline for pause/resume — only VHS animations, not global
+    const vhsTl = gsap.timeline();
+    let killed = false;
+
     const ctx = gsap.context(() => {
       // Bright scanline — travels down viewport (delayed 10s on load)
       if (scanRef.current) {
-        gsap.to(scanRef.current, {
+        vhsTl.to(scanRef.current, {
           y: "100vh",
           duration: 14,
           ease: "none",
           repeat: -1,
           delay: 10,
-        });
+        }, 0);
       }
 
       // Slow scanline — 6x slower, subtler (delayed 10s on load)
       if (scanSlowRef.current) {
-        gsap.to(scanSlowRef.current, {
+        vhsTl.to(scanSlowRef.current, {
           y: "100vh",
           duration: 84,
           ease: "none",
           repeat: -1,
           delay: 10,
-        });
+        }, 0);
       }
 
       // Noise flicker — subtle opacity variation
       if (noiseRef.current) {
-        gsap.to(noiseRef.current, {
+        vhsTl.to(noiseRef.current, {
           opacity: "random(0.03, 0.07)",
           duration: 0.5,
           repeat: -1,
           yoyo: true,
           repeatDelay: 0.3,
           ease: "none",
-        });
+        }, 0);
       }
 
-      // Static burst — rare flash of heavier noise (every 8-15s)
+      // Static burst — rare flash of heavier noise (every 12-15s)
       if (burstRef.current) {
         function scheduleBurst() {
+          if (killed) return;
           const delay = gsap.utils.random(12, 25);
           gsap.delayedCall(delay, () => {
-            if (!burstRef.current) return;
+            if (killed || !burstRef.current) return;
             gsap.to(burstRef.current, {
               opacity: gsap.utils.random(0.015, 0.035),
               duration: 0.2,
@@ -87,9 +92,10 @@ export function VHSOverlay() {
       // Glitch — aggressive horizontal slice displacement (every 12-25s)
       if (glitchRef.current) {
         function scheduleGlitch() {
+          if (killed) return;
           const delay = gsap.utils.random(25, 50);
           gsap.delayedCall(delay, () => {
-            if (!glitchRef.current) return;
+            if (killed || !glitchRef.current) return;
             const el = glitchRef.current;
 
             // Fire a rapid burst of 3-6 slice displacements
@@ -126,18 +132,20 @@ export function VHSOverlay() {
       }
     });
 
-    // Pause all VHS animations when tab is hidden to save CPU/GPU
+    // Pause only VHS animations when tab is hidden to save CPU/GPU
     const onVisibilityChange = () => {
       if (document.hidden) {
-        gsap.globalTimeline.pause();
+        vhsTl.pause();
       } else {
-        gsap.globalTimeline.resume();
+        vhsTl.resume();
       }
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
+      killed = true;
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      vhsTl.kill();
       ctx.revert();
     };
   }, []);

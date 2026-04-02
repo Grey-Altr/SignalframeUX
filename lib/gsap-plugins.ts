@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
-import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { Flip } from "gsap/Flip";
 import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
@@ -13,7 +12,6 @@ gsap.registerPlugin(
   ScrollTrigger,
   SplitText,
   ScrambleTextPlugin,
-  DrawSVGPlugin,
   Flip,
   CustomEase,
   useGSAP
@@ -31,12 +29,13 @@ CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
  * Call once from a client component's useEffect — not at module scope.
  * Returns a cleanup function that removes the matchMedia listener.
  */
-let motionInitialized = false;
 let motionCleanup: (() => void) | null = null;
 
 export function initReducedMotion(): () => void {
-  if (motionInitialized || typeof window === "undefined") return () => {};
-  motionInitialized = true;
+  if (typeof window === "undefined") return () => {};
+
+  // Clean up previous listener before re-initializing (safe under Strict Mode double-invoke)
+  motionCleanup?.();
 
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
@@ -51,7 +50,6 @@ export function initReducedMotion(): () => void {
 
   motionCleanup = () => {
     prefersReduced.removeEventListener("change", handler);
-    motionInitialized = false;
     motionCleanup = null;
   };
 

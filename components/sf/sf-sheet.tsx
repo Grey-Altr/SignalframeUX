@@ -57,7 +57,7 @@ function SFSheetFooter({
 }: React.ComponentProps<typeof SheetFooter>) {
   return (
     <SheetFooter
-      className={cn("border-t-2 border-foreground pt-4", className)}
+      className={cn("border-t-2 border-foreground bg-muted/30 pt-4", className)}
       {...props}
     />
   );

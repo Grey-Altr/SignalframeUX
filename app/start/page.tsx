@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "From zero to Signal//Frame in 5 minutes. Install, initialize, and deploy.",
 };
 
-const STEPS = [
+const STEPS: Array<{ number: string; title: string; description: string; code: CodeLine[]; note: string | null; highlight: boolean }> = [
   {
     number: "01",
     title: "INSTALL",
@@ -262,7 +262,7 @@ export default function StartPage() {
               >
                 {step.description}
               </p>
-              <CodeBlock lines={step.code as CodeLine[]} />
+              <CodeBlock lines={step.code} />
               {step.note && (
                 <div className="mt-4 text-[11px] text-muted-foreground uppercase tracking-[0.1em] py-3 px-4 border-l-[3px] border-primary">
                   {step.note}
@@ -349,6 +349,7 @@ export default function StartPage() {
           {/* Marquee */}
           <div className="h-8 overflow-hidden relative z-[var(--z-above-bg)]">
             <div
+              aria-hidden="true"
               className="flex whitespace-nowrap uppercase tracking-[0.15em] leading-8 text-foreground sf-display text-[16px]"
               style={{ animation: "sf-marquee-scroll 12s linear infinite" }}
             >
@@ -376,16 +377,16 @@ export default function StartPage() {
               , not static pattern libraries. Work. Build. Signal. Repeat.&trade;
             </p>
             <div className="mt-5 flex gap-4">
-              <a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer">
-                <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+              <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+                <a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer">
                   GITHUB
-                </SFButton>
-              </a>
-              <a href="https://github.com/signalframeux/storybook" target="_blank" rel="noopener noreferrer">
-                <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+                </a>
+              </SFButton>
+              <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+                <a href="https://github.com/signalframeux/storybook" target="_blank" rel="noopener noreferrer">
                   STORYBOOK
-                </SFButton>
-              </a>
+                </a>
+              </SFButton>
             </div>
           </div>
         </section>

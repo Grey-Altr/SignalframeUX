@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const anton = localFont({
-  src: "./fonts/Anton-Regular.ttf",
+  src: "./fonts/Anton-Regular.woff2",
   variable: "--font-anton",
   display: "swap",
 });
@@ -69,7 +69,7 @@ export default function RootLayout({
           }}
         />
         <noscript>
-          <style>{`.sf-hero-deferred, .sf-anim-hidden { opacity: 1 !important; transform: none !important; }`}</style>
+          <style>{`.sf-hero-deferred, .sf-anim-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"] { opacity: 1 !important; transform: none !important; }`}</style>
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden">

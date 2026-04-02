@@ -82,6 +82,7 @@ function Line({
   if (comment) {
     return (
       <div>
+        {spaces && <span>{spaces}</span>}
         <span style={{ color: "var(--sf-dim-text)" }}>{comment}</span>
       </div>
     );

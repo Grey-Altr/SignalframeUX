@@ -8,7 +8,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-6">
+    <main id="main-content" className="min-h-screen flex items-center justify-center bg-background px-6">
       <div className="text-center max-w-md">
         <div
           className="sf-display text-[clamp(48px,8vw,80px)] text-destructive mb-2"
@@ -25,6 +25,6 @@ export default function Error({
           TRY AGAIN
         </button>
       </div>
-    </div>
+    </main>
   );
 }

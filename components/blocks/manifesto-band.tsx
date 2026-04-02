@@ -136,6 +136,15 @@ export function ManifestoBand() {
     const section = sectionRef.current;
     if (!section) return;
 
+    // Respect reduced motion — reveal all words immediately
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      wordIndices.forEach((segIndex) => {
+        const el = wordRefs.current[segIndex];
+        if (el) el.style.opacity = "1";
+      });
+      return;
+    }
+
     // Initial pass
     handleScroll();
 

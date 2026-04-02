@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, SplitText, useGSAP } from "@/lib/gsap-plugins";
+import { gsap, SplitText, useGSAP } from "@/lib/gsap-split";
 
 interface SplitHeadlineProps {
   text: string;

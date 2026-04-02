@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-6">
+    <main id="main-content" className="min-h-screen flex items-center justify-center bg-background px-6">
       <div className="text-center max-w-md">
         <div
           className="sf-display text-[clamp(64px,12vw,120px)] text-foreground leading-none mb-2"
@@ -19,6 +19,6 @@ export default function NotFound() {
           RETURN TO BASE
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

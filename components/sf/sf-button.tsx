@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const sfButtonVariants = cva(
-  "font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer",
+  "font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-[var(--duration-normal)] ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer",
   {
     variants: {
       intent: {

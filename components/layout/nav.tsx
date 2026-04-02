@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -99,7 +99,7 @@ const NAV_LINK_ANIM = {
   duration: 500,
 } as const;
 
-function LiveClock() {
+const LiveClock = memo(function LiveClock() {
   const [display, setDisplay] = useState<string[]>([]);
   const prevTimeRef = useRef("");
   const scrambleRef = useRef<Map<number, { frame: number; target: string }>>(
@@ -207,6 +207,8 @@ function LiveClock() {
 
   return (
     <span
+      role="timer"
+      aria-live="off"
       className="sf-display text-[clamp(28px,4vw,48px)] leading-none tracking-tight tabular-nums"
       style={{
         fontVariantNumeric: "tabular-nums",
@@ -225,9 +227,9 @@ function LiveClock() {
       ))}
     </span>
   );
-}
+});
 
-function DarkModeToggle() {
+const DarkModeToggle = memo(function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   const [renderPhase, setRenderPhase] = useState(0);
   const lightText = useScrambleText("LIGHT", 600, 400);
@@ -291,7 +293,7 @@ function DarkModeToggle() {
       </span>
     </div>
   );
-}
+});
 
 const LOGO_TARGET = ["S", "F", "//", "U", "X"];
 const ASCII_CHARS = "!@#$%^&*<>{}[]|/\\~`+=_-";
@@ -303,13 +305,21 @@ const LOGO_ANIM = {
 
 type LogoPhase = "enter" | "ascii" | "scramble" | "settled" | "flicker" | "done";
 
-function LogoMark() {
+const LogoMark = memo(function LogoMark() {
   const [chars, setChars] = useState(LOGO_TARGET);
   const [phase, setPhase] = useState<LogoPhase>("enter");
   const [flickerOn, setFlickerOn] = useState(false);
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    // Respect reduced motion — show final state immediately
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setChars(LOGO_TARGET);
+      setPhase("done");
+      setFlickerOn(true);
+      return;
+    }
+
     // Start scrambled after mount (skip slash position)
     setChars(LOGO_TARGET.map((c, i) => i === 2 ? c : ASCII_CHARS[Math.floor(Math.random() * ASCII_CHARS.length)]));
     const settled = new Set<number>();
@@ -436,7 +446,7 @@ function LogoMark() {
 
     </Link>
   );
-}
+});
 
 export function Nav() {
   const pathname = usePathname();
@@ -458,7 +468,7 @@ export function Nav() {
               label={link.label}
               ariaLabel={link.ariaLabel}
               delay={NAV_LINK_ANIM.baseDelay + i * NAV_LINK_ANIM.stagger}
-              isActive={link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)}
+              isActive={link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/")}
             />
           ))}
         </div>

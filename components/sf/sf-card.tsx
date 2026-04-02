@@ -18,7 +18,7 @@ function SFCard({ className, hoverable = true, ...props }: SFCardProps) {
       className={cn(
         "border-2 border-foreground bg-background shadow-none",
         hoverable &&
-          "transition-colors duration-100 hover:border-primary",
+          "transition-colors duration-[var(--duration-fast)] hover:border-primary",
         className
       )}
       {...props}
@@ -57,11 +57,25 @@ function SFCardDescription({
   );
 }
 
+function SFCardContent({
+  className,
+  ...props
+}: React.ComponentProps<typeof CardContent>) {
+  return <CardContent className={cn("p-4", className)} {...props} />;
+}
+
+function SFCardFooter({
+  className,
+  ...props
+}: React.ComponentProps<typeof CardFooter>) {
+  return <CardFooter className={cn("p-4 pt-0", className)} {...props} />;
+}
+
 export {
   SFCard,
   SFCardHeader,
   SFCardTitle,
   SFCardDescription,
-  CardContent as SFCardContent,
-  CardFooter as SFCardFooter,
+  SFCardContent,
+  SFCardFooter,
 };

@@ -34,15 +34,16 @@ export function Hero() {
           <h1
             data-anim="hero-title"
             aria-label="SignalframeUX"
+            suppressHydrationWarning
             className="sf-display text-[clamp(48px,11vw,140px)] leading-[0.85] tracking-[-0.03em] text-background dark:text-foreground uppercase"
             style={{
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
             }}
           >
-            <span aria-hidden="true" data-anim="hero-char">S</span><span aria-hidden="true" data-anim="hero-char">I</span><span aria-hidden="true" data-anim="hero-char">G</span><span aria-hidden="true" data-anim="hero-char">N</span><span aria-hidden="true" data-anim="hero-char">A</span><span aria-hidden="true" data-anim="hero-char">L</span>
+            <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span>
             <span className="block text-primary text-[clamp(40px,9vw,120px)]">
               <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(28px,6vw,80px)]">//</span>
-              <span aria-hidden="true" data-anim="hero-char">F</span><span aria-hidden="true" data-anim="hero-char">R</span><span aria-hidden="true" data-anim="hero-char">A</span><span aria-hidden="true" data-anim="hero-char">M</span><span aria-hidden="true" data-anim="hero-char">E</span>
+              <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">F</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">R</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">M</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">E</span>
             </span>
           </h1>
         </div>
@@ -96,14 +97,16 @@ export function Hero() {
             GET STARTED
             <span className="bd-span" aria-hidden="true" />
           </Link>
-          <Link
+          <a
             href="https://github.com/signalframeux"
+            target="_blank"
+            rel="noopener noreferrer"
             data-anim="cta-btn"
             className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             VIEW ON GITHUB
             <span className="bd-span" aria-hidden="true" />
-          </Link>
+          </a>
         </div>
 
         {/* Version tag */}

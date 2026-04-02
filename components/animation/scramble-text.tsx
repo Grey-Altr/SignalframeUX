@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap-plugins";
+import { gsap, useGSAP } from "@/lib/gsap-split";
 
 const SF_CHARS = "!<>-_\\/[]{}—=+*^?#01シグナル";
 
@@ -20,7 +20,22 @@ export function ScrambleText({
 }: ScrambleTextProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
-  const { contextSafe } = useGSAP({ scope: ref });
+  const { contextSafe } = useGSAP(
+    () => {
+      if (trigger === "load" && ref.current) {
+        gsap.from(ref.current, {
+          duration: 1,
+          scrambleText: {
+            text: "",
+            chars,
+            revealDelay: 0.5,
+            speed: 0.3,
+          },
+        });
+      }
+    },
+    { scope: ref, dependencies: [trigger] }
+  );
 
   const handleHover = contextSafe(() => {
     gsap.to(ref.current!, {
@@ -32,20 +47,6 @@ export function ScrambleText({
         speed: 0.4,
       },
     });
-  });
-
-  useGSAP(() => {
-    if (trigger === "load" && ref.current) {
-      gsap.from(ref.current, {
-        duration: 1,
-        scrambleText: {
-          text: "",
-          chars,
-          revealDelay: 0.5,
-          speed: 0.3,
-        },
-      });
-    }
   });
 
   return (

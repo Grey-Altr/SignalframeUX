@@ -64,11 +64,11 @@ function PreviewTable() {
       </div>
       <div className="px-2 py-1.5 flex border-b border-foreground/20">
         <span className="flex-1 opacity-60">primary</span>
-        <span className="flex-1 text-right text-primary">#FF0090</span>
+        <span className="flex-1 text-right text-primary">oklch(.55 .28 350)</span>
       </div>
       <div className="px-2 py-1.5 flex">
         <span className="flex-1 opacity-60">yellow</span>
-        <span className="flex-1 text-right text-[var(--sf-yellow)]">#E5C800</span>
+        <span className="flex-1 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</span>
       </div>
     </div>
   );
@@ -105,7 +105,7 @@ function PreviewNoiseBg() {
 function PreviewParticleMesh() {
   return (
     <div className="w-[80%] max-w-[180px] h-[60px] relative">
-      <svg viewBox="0 0 180 60" className="w-full h-full">
+      <svg aria-hidden="true" viewBox="0 0 180 60" className="w-full h-full">
         {/* Grid dots */}
         {Array.from({ length: 24 }).map((_, i) => {
           const x = 15 + (i % 6) * 30;
@@ -184,7 +184,7 @@ function PreviewWaveform() {
 
   return (
     <div className="w-[85%] max-w-[200px] h-[60px] relative">
-      <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-full" preserveAspectRatio="none">
+      <svg aria-hidden="true" viewBox={`0 0 ${w} ${h}`} className="w-full h-full" preserveAspectRatio="none">
         <polyline
           points={wave(3, 22, 0)}
           fill="none"

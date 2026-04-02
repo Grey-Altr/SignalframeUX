@@ -9,9 +9,8 @@ export default function Loading() {
         </div>
         <div className="w-48 h-[2px] bg-muted mx-auto overflow-hidden">
           <div
-            className="h-full bg-primary"
+            className="h-full bg-primary sf-skeleton"
             style={{
-              animation: "sf-skeleton-sweep 1.2s ease-in-out infinite",
               width: "30%",
             }}
           />

@@ -107,6 +107,7 @@ function ScrollToTop() {
       const show = window.scrollY > window.innerHeight;
       btnRef.current.style.opacity = show ? "1" : "0";
       btnRef.current.style.pointerEvents = show ? "auto" : "none";
+      btnRef.current.tabIndex = show ? 0 : -1;
       btnRef.current.style.transform = show
         ? "translateY(0)"
         : "translateY(12px)";
@@ -120,6 +121,7 @@ function ScrollToTop() {
   return (
     <button
       ref={btnRef}
+      tabIndex={-1}
       onClick={() => {
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });

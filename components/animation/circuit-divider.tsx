@@ -91,7 +91,7 @@ export function CircuitDivider({
   }, []);
 
   return (
-    <div className={`circuit-divider relative w-full opacity-[0.06] ${className}`}>
+    <div aria-hidden="true" className={`circuit-divider relative w-full opacity-[0.06] ${className}`}>
       {variant === "default" && <DefaultCircuit ref={svgRef} />}
       {variant === "complex" && <ComplexCircuit ref={svgRef} />}
       {variant === "minimal" && <MinimalCircuit ref={svgRef} />}

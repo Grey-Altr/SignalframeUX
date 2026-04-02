@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   SFTabs,
   SFTabsList,
@@ -165,7 +165,8 @@ const BREAKPOINT_TOKENS = [
 
 export function TokenTabs() {
   const [showAll, setShowAll] = useState(false);
-  const visibleScales = showAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
+  const deferredShowAll = React.useDeferredValue(showAll);
+  const visibleScales = deferredShowAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
 
   return (
     <SFTabs defaultValue="COLOR">
@@ -208,6 +209,7 @@ export function TokenTabs() {
           </p>
           <div className="h-8 overflow-hidden relative mt-5 border-t border-foreground/10 border-b border-b-foreground/10">
             <div
+              aria-hidden="true"
               className="flex items-center h-full whitespace-nowrap animate-marquee"
             >
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">

@@ -10,13 +10,17 @@ export function SFSeparator({
   weight = "normal",
   ...props
 }: SFSeparatorProps) {
+  const isVertical = props.orientation === "vertical";
   return (
     <Separator
       className={cn(
         "bg-foreground",
-        weight === "thin" && "h-px",
-        weight === "normal" && "h-[2px]",
-        weight === "heavy" && "h-[3px]",
+        !isVertical && weight === "thin" && "h-px",
+        !isVertical && weight === "normal" && "h-[2px]",
+        !isVertical && weight === "heavy" && "h-[3px]",
+        isVertical && weight === "thin" && "w-px",
+        isVertical && weight === "normal" && "w-[2px]",
+        isVertical && weight === "heavy" && "w-[3px]",
         className
       )}
       {...props}

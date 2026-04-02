@@ -71,7 +71,12 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     resize();
-    window.addEventListener("resize", resize);
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    function debouncedResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    }
+    window.addEventListener("resize", debouncedResize);
 
     function onMouseMove(e: MouseEvent) {
       if (!canvas) return;
@@ -88,8 +93,10 @@ export function HeroMesh({ className }: { className?: string }) {
       }
     }
 
-    // Listen on document so z-index children don't block events
-    document.addEventListener("mousemove", onMouseMove);
+    // Listen on document so z-index children don't block events — gated by visibility
+    if (visibleRef.current) {
+      document.addEventListener("mousemove", onMouseMove);
+    }
 
     const startTime = performance.now();
 
@@ -175,13 +182,19 @@ export function HeroMesh({ className }: { className?: string }) {
       animRef.current = requestAnimationFrame(draw);
     }
 
-    // IntersectionObserver — pause RAF when canvas is offscreen
+    // IntersectionObserver — pause RAF and mousemove when canvas is offscreen
     const observer = new IntersectionObserver(
       ([entry]) => {
         visibleRef.current = entry.isIntersecting;
-        if (entry.isIntersecting && !reducedMotionRef.current) {
-          cancelAnimationFrame(animRef.current);
-          animRef.current = requestAnimationFrame(draw);
+        if (entry.isIntersecting) {
+          document.addEventListener("mousemove", onMouseMove);
+          if (!reducedMotionRef.current) {
+            cancelAnimationFrame(animRef.current);
+            animRef.current = requestAnimationFrame(draw);
+          }
+        } else {
+          document.removeEventListener("mousemove", onMouseMove);
+          mouseRef.current = { x: -9999, y: -9999 };
         }
       },
       { threshold: 0 }
@@ -198,7 +211,8 @@ export function HeroMesh({ className }: { className?: string }) {
     return () => {
       observer.disconnect();
       cancelAnimationFrame(animRef.current);
-      window.removeEventListener("resize", resize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", debouncedResize);
       document.removeEventListener("mousemove", onMouseMove);
       mql.removeEventListener("change", motionHandler);
     };

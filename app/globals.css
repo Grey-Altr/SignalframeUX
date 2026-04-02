@@ -187,6 +187,15 @@
   --color-sidebar-border: oklch(0.400 0 0);
   --color-sidebar-ring: oklch(0.55 0.28 350);
   --sf-cell-light-bg: oklch(0.145 0 0);
+
+  /* ── SF Extension Dark Overrides ── */
+  --sf-subtle-border: oklch(0.4 0 0);
+  --sf-dim-text: oklch(0.65 0 0);
+  --sf-halftone-dot: oklch(1 0 0 / 0.15);
+  --sf-text-shadow-light: oklch(1 0 0 / 0.02);
+  --sf-text-shadow-dark: oklch(0 0 0 / 0.5);
+  --sf-preview-light-bg: oklch(0.2 0 0);
+  --sf-inset-shadow-color: oklch(0 0 0 / 0.4);
 }
 
 /* ── Theme Switch Transition (applied temporarily during toggle) ── */
@@ -211,10 +220,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    transition:
-      background-color 0.4s ease,
-      color 0.4s ease,
-      border-color 0.4s ease;
   }
 }
 
@@ -428,10 +433,25 @@
   opacity: 0;
 }
 
-/* ── Scroll-triggered reveal classes ── */
+/* ── Scroll-triggered reveal classes (CSS initial states prevent hydration mismatches) ── */
 .sf-anim-hidden {
   opacity: 0 !important;
   transform: translateY(24px) !important;
+}
+[data-anim="section-reveal"] {
+  opacity: 0;
+  transform: translateY(40px);
+}
+[data-anim="tag"] {
+  opacity: 0;
+  transform: scale(0.8);
+}
+[data-anim="comp-cell"] {
+  opacity: 0;
+}
+[data-anim="cta-btn"] {
+  opacity: 0;
+  transform: translateY(20px);
 }
 .sf-anim-visible {
   opacity: 1 !important;

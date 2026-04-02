@@ -11,6 +11,8 @@ export function CopyButton() {
     navigator.clipboard.writeText(INSTALL_CMD).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      // Clipboard API unavailable — silent fallback
     });
   }
 
@@ -18,7 +20,8 @@ export function CopyButton() {
     <button
       type="button"
       onClick={handleCopy}
-      aria-label="Copy install command"
+      aria-label={copied ? "Copied to clipboard" : "Copy install command"}
+      aria-live="polite"
       className="absolute -top-2.5 right-3 bg-primary text-primary-foreground px-2 py-0.5 text-[var(--text-2xs)] font-bold uppercase tracking-[0.2em] cursor-pointer border-none hover:brightness-110 transition-all duration-150"
     >
       {copied ? "COPIED" : "COPY"}

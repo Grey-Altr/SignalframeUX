@@ -254,15 +254,17 @@ function FilterIndicator({
     const indicator = indicatorRef.current;
     if (!bar || !indicator) return;
 
-    const activeBtn = bar.querySelector<HTMLElement>(
-      `button[data-filter="${activeFilter}"]`
-    );
-    if (!activeBtn) return;
+    requestAnimationFrame(() => {
+      const activeBtn = bar.querySelector<HTMLElement>(
+        `button[data-filter="${activeFilter}"]`
+      );
+      if (!activeBtn) return;
 
-    const barRect = bar.getBoundingClientRect();
-    const btnRect = activeBtn.getBoundingClientRect();
-    indicator.style.width = `${btnRect.width}px`;
-    indicator.style.transform = `translateX(${btnRect.left - barRect.left}px)`;
+      const barRect = bar.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+      indicator.style.width = `${btnRect.width}px`;
+      indicator.style.transform = `translateX(${btnRect.left - barRect.left}px)`;
+    });
   }, [activeFilter, filterBarRef]);
 
   return (
@@ -444,7 +446,7 @@ export function ComponentsExplorer() {
       {/* ── Component Grid ── */}
       <ul
         ref={gridRef}
-        role="list"
+        role="grid"
         aria-label="Component library"
         onKeyDown={handleGridKeyDown}
         className="grid grid-cols-2 lg:grid-cols-4 list-none m-0 p-0"
