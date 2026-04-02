@@ -227,12 +227,6 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  /* Deprecated alias — use .sf-ui-text instead */
-  .sf-mono {
-    font-family: var(--font-sans);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
   .sf-caption {
     font-size: 10px;
     font-weight: 700;

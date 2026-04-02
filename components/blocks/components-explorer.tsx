@@ -279,6 +279,7 @@ export function ComponentsExplorer() {
   const [focusedIndex, setFocusedIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
+  // Flip.getState() returns an opaque FlipState — no public type exported by GSAP
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flipStateRef = useRef<any>(null);
   const gsapRef = useRef<FlipModule | null>(null);
