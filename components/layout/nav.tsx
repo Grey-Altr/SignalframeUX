@@ -388,7 +388,7 @@ function LogoMark() {
   return (
     <Link
       href="/"
-      aria-label="SignalframeUX home"
+      aria-label="SF//UX, go to homepage"
       className="sf-logo sf-display no-underline shrink-0 mr-[clamp(8px,1.2vw,16px)] flex items-baseline gap-0 text-foreground"
       style={{
         fontSize: "clamp(28px,4vw,48px)",

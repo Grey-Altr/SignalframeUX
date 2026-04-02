@@ -41,10 +41,10 @@ export function Hero() {
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
             }}
           >
-            <span data-anim="hero-char" suppressHydrationWarning>S</span><span data-anim="hero-char" suppressHydrationWarning>I</span><span data-anim="hero-char" suppressHydrationWarning>G</span><span data-anim="hero-char" suppressHydrationWarning>N</span><span data-anim="hero-char" suppressHydrationWarning>A</span><span data-anim="hero-char" suppressHydrationWarning>L</span>
+            <span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>S</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>I</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>G</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>N</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>A</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>L</span>
             <span className="block text-primary text-[clamp(40px,9vw,120px)]">
-              <span className="text-[var(--sf-dim-text)] text-[clamp(28px,6vw,80px)]">//</span>
-              <span data-anim="hero-char" suppressHydrationWarning>F</span><span data-anim="hero-char" suppressHydrationWarning>R</span><span data-anim="hero-char" suppressHydrationWarning>A</span><span data-anim="hero-char" suppressHydrationWarning>M</span><span data-anim="hero-char" suppressHydrationWarning>E</span>
+              <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(28px,6vw,80px)]">//</span>
+              <span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>F</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>R</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>A</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>M</span><span aria-hidden="true" data-anim="hero-char" suppressHydrationWarning>E</span>
             </span>
           </h1>
         </div>

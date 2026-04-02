@@ -121,9 +121,9 @@ export function ManifestoBand() {
       } else if (wordOrder < currentWordFloat) {
         // Partial fade for the "current" word
         const partial = currentWordFloat - wordOrder;
-        el.style.opacity = String(0.15 + 0.85 * partial);
+        el.style.opacity = String(0.35 + 0.65 * partial);
       } else {
-        el.style.opacity = "0.15";
+        el.style.opacity = "0.35";
       }
     });
   }, []);
@@ -173,7 +173,7 @@ export function ManifestoBand() {
                 ref={(el) => { wordRefs.current[i] = el; }}
                 data-anim="manifesto-word"
                 className="text-[11px] transition-opacity duration-150"
-                style={{ opacity: 0.2 }}
+                style={{ opacity: 0.35 }}
               >
                 {seg.text}
               </sup>
@@ -187,7 +187,7 @@ export function ManifestoBand() {
               ref={(el) => { wordRefs.current[i] = el; }}
               data-anim="manifesto-word"
               className="transition-opacity duration-150"
-              style={{ opacity: 0.2 }}
+              style={{ opacity: 0.35 }}
             >
               {seg.text}
             </span>

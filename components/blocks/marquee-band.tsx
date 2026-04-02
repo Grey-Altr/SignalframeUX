@@ -12,11 +12,11 @@ export function MarqueeBand() {
         className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
         aria-hidden="true"
       >
-        <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">
+        <span className="text-primary-foreground text-[18px] uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>
-        <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">
+        <span className="text-primary-foreground text-[18px] uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>

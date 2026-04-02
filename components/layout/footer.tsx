@@ -54,7 +54,7 @@ export function Footer() {
                 RESOURCES
               </h3>
               <ul className="space-y-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground">GitHub <span className="text-[9px] opacity-60">(opens in new tab)</span></a></li>
+                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground">GitHub <span className="text-[9px] text-muted-foreground">(opens in new tab)</span></a></li>
                 <li><Link href="/components" className="sf-link-draw hover:text-foreground">Registry</Link></li>
               </ul>
             </div>
