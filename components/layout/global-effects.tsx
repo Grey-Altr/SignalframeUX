@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap-core";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
 
@@ -100,17 +100,11 @@ function ScrollProgress() {
 /** Scroll-to-top button — appears after scrolling past 1 viewport */
 function ScrollToTop() {
   const btnRef = useRef<HTMLButtonElement>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     function onScroll() {
-      if (!btnRef.current) return;
-      const show = window.scrollY > window.innerHeight;
-      btnRef.current.style.opacity = show ? "1" : "0";
-      btnRef.current.style.pointerEvents = show ? "auto" : "none";
-      btnRef.current.tabIndex = show ? 0 : -1;
-      btnRef.current.style.transform = show
-        ? "translateY(0)"
-        : "translateY(12px)";
+      setVisible(window.scrollY > window.innerHeight);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -121,16 +115,16 @@ function ScrollToTop() {
   return (
     <button
       ref={btnRef}
-      tabIndex={-1}
+      tabIndex={visible ? 0 : -1}
       onClick={() => {
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
       }}
       className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[16px] font-bold hover:bg-foreground hover:text-background transition-all duration-200"
       style={{
-        opacity: 0,
-        pointerEvents: "none",
-        transform: "translateY(12px)",
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? "auto" : "none",
+        transform: visible ? "translateY(0)" : "translateY(12px)",
         transition:
           "opacity 0.2s ease, transform 0.2s ease, background-color 0.15s ease, color 0.15s ease",
       }}

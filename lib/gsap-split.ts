@@ -12,13 +12,9 @@ import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { CustomEase } from "gsap/CustomEase";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
+import { registerSFEasings } from "./gsap-easings";
 
-// SignalframeUX custom easings
-CustomEase.create(
-  "sf-snap",
-  "M0,0 C0.14,0 0.27,0.5 0.5,0.5 0.73,0.5 0.86,1 1,1"
-);
-CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
+registerSFEasings();
 
 export { gsap, ScrollTrigger, SplitText, CustomEase, useGSAP };

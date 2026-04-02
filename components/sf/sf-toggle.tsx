@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const sfToggleVariants = cva(
-  "rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-100",
+  "rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-[var(--duration-fast)]",
   {
     variants: {
       intent: {

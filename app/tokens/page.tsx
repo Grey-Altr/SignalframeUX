@@ -16,6 +16,7 @@ export default function TokensPage() {
         {/* ═══ PAGE HEADER ═══ */}
         <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">
           <h1
+            aria-label="Token Explorer"
             className="sf-display px-6 md:px-12 pt-10 pb-6"
             style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
           >

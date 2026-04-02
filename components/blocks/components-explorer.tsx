@@ -52,7 +52,7 @@ function PreviewButton() {
 function PreviewInput() {
   return (
     <div className="relative w-[80%] h-5 border border-current">
-      <span className="absolute left-1.5 top-px animate-pulse">|</span>
+      <span aria-hidden="true" className="absolute left-1.5 top-px animate-pulse">|</span>
     </div>
   );
 }
@@ -178,6 +178,7 @@ function PreviewGlitch() {
     <div className="relative">
       <span className="text-base uppercase sf-display">ABC</span>
       <span
+        aria-hidden="true"
         className="absolute left-0.5 top-px text-base uppercase sf-display text-[var(--sf-primary-on-dark)]"
         style={{ clipPath: "inset(30% 0 30% 0)" }}
       >
@@ -280,7 +281,7 @@ export function ComponentsExplorer() {
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const gridRef = useRef<HTMLUListElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const flipStateRef = useRef<ReturnType<typeof import("gsap/Flip").Flip.getState> | null>(null);
   const gsapRef = useRef<FlipModule | null>(null);
@@ -444,7 +445,7 @@ export function ComponentsExplorer() {
       </div>
 
       {/* ── Component Grid ── */}
-      <ul
+      <div
         ref={gridRef}
         role="grid"
         aria-label="Component library"
@@ -456,7 +457,8 @@ export function ComponentsExplorer() {
           const isYellow = comp.variant === "yellow";
 
           return (
-            <li
+            <div
+              role="gridcell"
               key={comp.index}
               data-flip-id={comp.index}
               tabIndex={i === focusedIndex ? 0 : -1}
@@ -506,10 +508,10 @@ export function ComponentsExplorer() {
                 <span>{comp.subcategory}</span>
                 <span>{comp.version}</span>
               </div>
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
 
       {/* ── Detail Hint Bar ── */}
       <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">

@@ -174,8 +174,7 @@ const BREAKPOINT_TOKENS = [
 
 export function TokenTabs() {
   const [showAll, setShowAll] = useState(false);
-  const deferredShowAll = React.useDeferredValue(showAll);
-  const visibleScales = deferredShowAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
+  const visibleScales = showAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
 
   return (
     <SFTabs defaultValue="COLOR">
@@ -330,7 +329,7 @@ export function TokenTabs() {
       {/* ═══ TYPOGRAPHY TAB ═══ */}
       <SFTabsContent value="TYPOGRAPHY" className="mt-0">
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-          TYPE_SCALE ( AUGMENTED FOURTH · 1.414 )
+          TYPE_SCALE ( MINOR THIRD · 1.2 )
         </div>
         <SFTable className="border-b-4 border-foreground">
           <SFTableHeader className="sr-only">
@@ -397,6 +396,7 @@ export function TokenTabs() {
                 </SFTableCell>
                 <SFTableCell className="py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
                   <div
+                    data-motion-preview
                     className="w-7 h-7 bg-foreground absolute top-[calc(50%-14px)]"
                     aria-hidden="true"
                     style={{

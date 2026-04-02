@@ -287,6 +287,8 @@ export default function StartPage() {
                 className="flex items-center gap-4 py-3 border-b border-border text-[13px] uppercase tracking-[0.08em]"
               >
                 <div
+                  role="img"
+                  aria-label={item.done ? "Complete" : "Incomplete"}
                   className={`w-5 h-5 border-2 flex items-center justify-center text-[14px] shrink-0 ${
                     item.done
                       ? "bg-primary border-primary text-primary-foreground"

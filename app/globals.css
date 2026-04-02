@@ -238,7 +238,7 @@
     letter-spacing: 0.05em;
   }
   .sf-caption {
-    font-size: 10px;
+    font-size: var(--text-xs);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
@@ -424,6 +424,22 @@
   .sf-entrance {
     opacity: 1;
     transform: none;
+  }
+
+  /* Reset CSS initial animation states so content is visible when GSAP bails */
+  [data-anim="section-reveal"],
+  [data-anim="tag"],
+  [data-anim="comp-cell"],
+  [data-anim="cta-btn"],
+  .sf-hero-deferred {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Motion preview boxes — show static instead of broken end-state */
+  [data-motion-preview] {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

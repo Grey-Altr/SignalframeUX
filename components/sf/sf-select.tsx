@@ -21,7 +21,7 @@ function SFSelectTrigger({
     <SelectTrigger
       className={cn(
         "rounded-none border-2 border-foreground bg-background font-mono uppercase tracking-wider text-xs",
-        "focus:ring-0 focus:ring-offset-0 focus:bg-foreground focus:text-background",
+        "focus:ring-0 focus:ring-offset-0 focus:bg-foreground focus:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         className
       )}
       {...props}

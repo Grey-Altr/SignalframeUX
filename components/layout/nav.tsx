@@ -197,8 +197,20 @@ const LiveClock = memo(function LiveClock() {
       rafRef.current = requestAnimationFrame(tick);
     }
 
+    // Pause RAF/interval when tab is hidden
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      } else if (scrambleRef.current.size > 0) {
+        startScrambleLoop();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibility);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -218,6 +230,7 @@ const LiveClock = memo(function LiveClock() {
       {display.map((char, i) => (
         <span
           key={i}
+          aria-hidden="true"
           className={`inline-block text-center leading-none ${
             char === ":" ? "w-[0.2em]" : "w-[0.48em]"
           }`}
@@ -272,7 +285,7 @@ const DarkModeToggle = memo(function DarkModeToggle() {
       </span>
       <button
         onClick={toggle}
-        className="relative w-[42px] h-[20px] border-2 border-foreground bg-transparent shrink-0 cursor-pointer"
+        className="relative w-[42px] h-[20px] border-2 border-foreground bg-transparent shrink-0 cursor-pointer p-[12px] -m-[12px]"
         aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={dark}
         style={{
@@ -494,9 +507,9 @@ export function Nav() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setSheetOpen(false)}
-                    aria-current={(link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)) ? "page" : undefined}
+                    aria-current={(link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/")) ? "page" : undefined}
                     className={`block py-3 px-4 border-b-2 border-foreground text-[13px] font-bold uppercase tracking-[0.15em] no-underline transition-colors ${
-                      (link.href === "/" ? pathname === "/" : pathname.startsWith(link.href))
+                      (link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/"))
                         ? "text-primary bg-foreground"
                         : "text-foreground hover:bg-foreground hover:text-background"
                     }`}

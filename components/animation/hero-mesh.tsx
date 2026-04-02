@@ -26,6 +26,7 @@ export function HeroMesh({ className }: { className?: string }) {
   const animRef = useRef<number>(0);
   const visibleRef = useRef(true);
   const reducedMotionRef = useRef(false);
+  const sizeRef = useRef({ w: 0, h: 0 });
 
   const buildGrid = useCallback((width: number, height: number) => {
     const nodes: Node[] = [];
@@ -67,6 +68,7 @@ export function HeroMesh({ className }: { className?: string }) {
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      sizeRef.current = { w, h };
       buildGrid(w, h);
     }
 
@@ -104,8 +106,7 @@ export function HeroMesh({ className }: { className?: string }) {
       if (!ctx || !canvas) return;
       // Skip drawing when offscreen — re-entry handled by IntersectionObserver
       if (!visibleRef.current) return;
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
+      const { w, h } = sizeRef.current;
       ctx.clearRect(0, 0, w, h);
 
       const elapsed = now - startTime;
@@ -170,14 +171,15 @@ export function HeroMesh({ className }: { className?: string }) {
       }
       ctx.stroke();
 
-      // Draw dots
+      // Draw dots — batched into single path for performance
       ctx.fillStyle = `rgba(255, 255, 255, ${DOT_OPACITY})`;
+      ctx.beginPath();
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        ctx.beginPath();
+        ctx.moveTo(n.x + DOT_RADIUS, n.y);
         ctx.arc(n.x, n.y, DOT_RADIUS, 0, Math.PI * 2);
-        ctx.fill();
       }
+      ctx.fill();
 
       animRef.current = requestAnimationFrame(draw);
     }

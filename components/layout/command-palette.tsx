@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   SFCommand,
@@ -34,16 +34,19 @@ interface CommandPaletteProps {
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const router = useRouter();
 
+  const openRef = useRef(open);
+  useEffect(() => { openRef.current = open; }, [open]);
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        onOpenChange(!open);
+        onOpenChange(!openRef.current);
       }
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open, onOpenChange]);
+  }, [onOpenChange]);
 
   const navigate = useCallback(
     (href: string) => {

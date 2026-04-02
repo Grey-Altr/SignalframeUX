@@ -10,10 +10,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
 import { CustomEase } from "gsap/CustomEase";
 
-gsap.registerPlugin(ScrollTrigger, Flip, CustomEase);
+import { registerSFEasings } from "./gsap-easings";
 
-// SignalframeUX custom easings (must be registered here for non-homepage routes)
-CustomEase.create("sf-snap", "M0,0 C0.14,0 0.27,0.5 0.5,0.5 0.73,0.5 0.86,1 1,1");
-CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
+gsap.registerPlugin(ScrollTrigger, Flip, CustomEase);
+registerSFEasings();
 
 export { gsap, ScrollTrigger, Flip, CustomEase };

@@ -16,6 +16,7 @@ export default function ComponentsPage() {
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
         <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
           <h1
+            aria-label="Components"
             className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
             style={{ fontSize: "clamp(60px, 9vw, 120px)" }}
           >

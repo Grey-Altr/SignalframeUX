@@ -135,12 +135,14 @@ function PreviewGlitchText() {
         GLITCH
       </span>
       <span
+        aria-hidden="true"
         className="sf-display absolute top-0 left-[2px] text-[18px] font-bold uppercase tracking-wider text-primary opacity-50"
         style={{ clipPath: "inset(30% 0 40% 0)" }}
       >
         GLITCH
       </span>
       <span
+        aria-hidden="true"
         className="sf-display absolute top-0 left-[-2px] text-[18px] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
         style={{ clipPath: "inset(60% 0 10% 0)" }}
       >

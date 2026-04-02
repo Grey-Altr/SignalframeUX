@@ -148,13 +148,20 @@ export function ManifestoBand() {
     // Initial pass
     handleScroll();
 
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleScroll, 150);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
+    window.addEventListener("resize", debouncedResize, { passive: true });
 
     return () => {
       cancelAnimationFrame(rafRef.current);
+      clearTimeout(resizeTimer);
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("resize", debouncedResize);
     };
   }, [handleScroll]);
 
@@ -187,7 +194,7 @@ export function ManifestoBand() {
                 ref={(el) => { wordRefs.current[i] = el; }}
                 data-anim="manifesto-word"
                 className="text-[11px] transition-opacity duration-150"
-                style={{ opacity: 0.35 }}
+                style={{ opacity: 0 }}
               >
                 {seg.text}
               </sup>
@@ -201,7 +208,7 @@ export function ManifestoBand() {
               ref={(el) => { wordRefs.current[i] = el; }}
               data-anim="manifesto-word"
               className="transition-opacity duration-150"
-              style={{ opacity: 0.35 }}
+              style={{ opacity: 0 }}
             >
               {seg.text}
             </span>

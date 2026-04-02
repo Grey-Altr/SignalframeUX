@@ -18,4 +18,19 @@ function SFScrollArea({
   );
 }
 
-export { SFScrollArea, ScrollBar as SFScrollBar };
+function SFScrollBar({
+  className,
+  ...props
+}: React.ComponentProps<typeof ScrollBar>) {
+  return (
+    <ScrollBar
+      className={cn(
+        "[&>div]:rounded-none",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export { SFScrollArea, SFScrollBar };

@@ -14,7 +14,7 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          className="inline-block border-2 border-foreground bg-foreground text-background px-6 py-3 text-[12px] font-bold uppercase tracking-[0.15em] no-underline hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+          className="inline-block border-2 border-foreground bg-foreground text-background px-6 py-3 text-[12px] font-bold uppercase tracking-[0.15em] no-underline hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         >
           RETURN TO BASE
         </Link>
