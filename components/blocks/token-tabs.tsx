@@ -231,12 +231,14 @@ export function TokenTabs() {
           </div>
           <button
             onClick={() => setShowAll((v) => !v)}
+            aria-expanded={showAll}
+            aria-controls="color-scale-grid"
             className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary border-2 border-foreground px-4 py-2 sf-pressable"
           >
             {showAll ? "SHOW CORE" : `SHOW ALL ${COLOR_SCALES.length}`}
           </button>
         </div>
-        <div className="overflow-x-auto relative">
+        <div id="color-scale-grid" className="overflow-x-auto relative">
           <div className="md:hidden text-[9px] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
             ← SCROLL →
           </div>
@@ -256,16 +258,18 @@ export function TokenTabs() {
                 return (
                   <div
                     key={sw.step}
+                    role="img"
+                    aria-label={`${scale.name} ${sw.step}: ${oklchStr}`}
                     className="group/swatch aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10 cursor-crosshair"
                     style={{
                       background: oklchStr,
                       color: isDark ? "#fafafa" : "#1a1a1a",
                     }}
                   >
-                    <span className="text-[10px] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 transition-opacity duration-100">
+                    <span className="text-[10px] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 transition-opacity duration-100" aria-hidden="true">
                       {sw.step}
                     </span>
-                    <span className="absolute inset-0 flex items-center justify-center text-[8px] font-mono font-bold opacity-0 group-hover/swatch:opacity-100 transition-opacity duration-100 px-0.5 text-center leading-tight">
+                    <span className="absolute inset-0 flex items-center justify-center text-[8px] font-mono font-bold opacity-0 group-hover/swatch:opacity-100 transition-opacity duration-100 px-0.5 text-center leading-tight" aria-hidden="true">
                       {oklchStr}
                     </span>
                   </div>
@@ -281,36 +285,33 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           SPACING_SCALE
         </div>
-        <div className="border-b-4 border-foreground">
-          <div className="grid grid-cols-[120px_200px_1fr_120px] bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-            <span className="p-2.5 px-4">TOKEN</span>
-            <span className="p-2.5 px-4">VALUE</span>
-            <span className="p-2.5 px-4">VISUAL</span>
-            <span className="p-2.5 px-4">PX</span>
-          </div>
-          {SPACING.map((s) => (
-            <div
-              key={s.name}
-              className="grid grid-cols-[120px_200px_1fr_120px] border-b border-border items-center"
-            >
-              <div className="p-3 px-4 font-bold text-[11px] uppercase text-primary">
-                {s.name}
-              </div>
-              <div className="p-3 px-4 text-[11px] text-muted-foreground">
-                {s.rem}
-              </div>
-              <div className="p-3 px-4">
-                <div
-                  className="h-4 bg-foreground transition-[width] duration-300"
-                  style={{ width: `${s.px}px` }}
-                />
-              </div>
-              <div className="p-3 px-4 text-[10px] text-muted-foreground text-right">
-                {s.px}px
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead>
+            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">TOKEN</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[200px]">VALUE</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold">VISUAL</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">PX</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SPACING.map((s) => (
+              <tr key={s.name} className="border-b border-border">
+                <td className="p-3 px-4 font-bold text-[11px] uppercase text-primary">{s.name}</td>
+                <td className="p-3 px-4 text-[11px] text-muted-foreground">{s.rem}</td>
+                <td className="p-3 px-4">
+                  <div
+                    className="h-4 bg-foreground transition-[width] duration-300"
+                    style={{ width: `${s.px}px` }}
+                    role="img"
+                    aria-label={`${s.px} pixels wide`}
+                  />
+                </td>
+                <td className="p-3 px-4 text-[10px] text-muted-foreground text-right">{s.px}px</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
 
       {/* ═══ TYPOGRAPHY TAB ═══ */}
@@ -318,42 +319,48 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           TYPE_SCALE ( AUGMENTED FOURTH · 1.414 )
         </div>
-        <div className="border-b-4 border-foreground">
-          {TYPE_SCALE.map((t) => (
-            <div
-              key={t.name}
-              className="grid grid-cols-[160px_1fr_200px] border-b border-border items-baseline"
-            >
-              <div className="p-5 px-4 text-[10px] uppercase tracking-[0.15em] text-primary font-bold">
-                {t.name}
-              </div>
-              <div
-                className="p-5 px-4 overflow-hidden whitespace-nowrap text-ellipsis"
-                style={{
-                  fontFamily: t.font,
-                  fontSize: `${t.size}px`,
-                  fontWeight: t.weight,
-                  lineHeight: 1,
-                  textTransform: t.uppercase ? "uppercase" : undefined,
-                  letterSpacing: t.uppercase ? "0.15em" : undefined,
-                  ...(t.code
-                    ? {
-                        color: "var(--sf-code-text)",
-                        background: "var(--sf-code-bg)",
-                        padding: "8px 12px",
-                        margin: "12px 16px",
-                      }
-                    : {}),
-                }}
-              >
-                {t.sample}
-              </div>
-              <div className="p-5 px-4 text-[11px] text-muted-foreground text-right uppercase tracking-[0.1em]">
-                {t.meta}
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead className="sr-only">
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Sample</th>
+              <th scope="col">Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            {TYPE_SCALE.map((t) => (
+              <tr key={t.name} className="border-b border-border align-baseline">
+                <td className="p-5 px-4 text-[10px] uppercase tracking-[0.15em] text-primary font-bold w-[160px]">
+                  {t.name}
+                </td>
+                <td
+                  className="p-5 px-4 overflow-hidden whitespace-nowrap text-ellipsis"
+                  style={{
+                    fontFamily: t.font,
+                    fontSize: `${t.size}px`,
+                    fontWeight: t.weight,
+                    lineHeight: 1,
+                    textTransform: t.uppercase ? "uppercase" : undefined,
+                    letterSpacing: t.uppercase ? "0.15em" : undefined,
+                    ...(t.code
+                      ? {
+                          color: "var(--sf-code-text)",
+                          background: "var(--sf-code-bg)",
+                          padding: "8px 12px",
+                          margin: "12px 16px",
+                        }
+                      : {}),
+                  }}
+                >
+                  {t.sample}
+                </td>
+                <td className="p-5 px-4 text-[11px] text-muted-foreground text-right uppercase tracking-[0.1em] w-[200px]">
+                  {t.meta}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
 
       {/* ═══ MOTION TAB ═══ */}
@@ -361,30 +368,37 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           MOTION_TOKENS
         </div>
-        <div className="border-b-4 border-foreground">
-          {MOTION_TOKENS.map((m, i) => (
-            <div
-              key={m.name}
-              className="grid grid-cols-[200px_1fr_200px] border-b border-border items-center py-4"
-            >
-              <div className="px-4 font-bold text-[11px] uppercase text-primary">
-                {m.name}
-              </div>
-              <div className="px-4 relative h-6">
-                <div
-                  className="w-7 h-7 bg-foreground absolute top-[-2px]"
-                  style={{
-                    animation: "sf-motion-slide 2s infinite alternate",
-                    animationTimingFunction: EASING_MAP[i],
-                  }}
-                />
-              </div>
-              <div className="px-4 text-[10px] text-muted-foreground text-right">
-                {m.css}
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead className="sr-only">
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Preview</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {MOTION_TOKENS.map((m, i) => (
+              <tr key={m.name} className="border-b border-border">
+                <td className="px-4 py-4 font-bold text-[11px] uppercase text-primary w-[200px]">
+                  {m.name}
+                </td>
+                <td className="px-4 py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
+                  <div
+                    className="w-7 h-7 bg-foreground absolute top-[calc(50%-14px)]"
+                    aria-hidden="true"
+                    style={{
+                      animation: "sf-motion-slide 2s infinite alternate",
+                      animationTimingFunction: EASING_MAP[i],
+                    }}
+                  />
+                </td>
+                <td className="px-4 py-4 text-[10px] text-muted-foreground text-right w-[200px]">
+                  {m.css}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
 
       {/* ═══ ELEVATION TAB ═══ */}
@@ -395,31 +409,43 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           SignalframeUX&trade; uses a debossed surface model — elements are pressed <em>into</em> the surface, not floated above it. Shadows create tactile depth without z-axis lift. This is a deliberate rejection of material elevation.
         </div>
-        <div className="border-b-4 border-foreground">
-          {ELEVATION_TOKENS.map((e) => (
-            <div
-              key={e.name}
-              className="grid grid-cols-[200px_1fr_280px] border-b border-border items-center"
-            >
-              <div className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em]">
-                {e.name}
-              </div>
-              <div className="p-5 px-6 flex items-center gap-6">
-                <div
-                  className="w-24 h-14 border-2 border-foreground bg-background"
-                  style={{ boxShadow: e.value }}
-                />
-                <div
-                  className="w-24 h-14 border-2 border-foreground bg-foreground"
-                  style={{ boxShadow: e.value }}
-                />
-              </div>
-              <div className="p-5 px-6 text-[10px] text-muted-foreground font-mono text-right">
-                {e.css}
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead className="sr-only">
+            <tr>
+              <th scope="col">Token</th>
+              <th scope="col">Preview</th>
+              <th scope="col">CSS Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ELEVATION_TOKENS.map((e) => (
+              <tr key={e.name} className="border-b border-border">
+                <td className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em] w-[200px]">
+                  {e.name}
+                </td>
+                <td className="p-5 px-6">
+                  <div className="flex items-center gap-6">
+                    <div
+                      className="w-24 h-14 border-2 border-foreground bg-background"
+                      style={{ boxShadow: e.value }}
+                      role="img"
+                      aria-label={`${e.name} shadow on light surface`}
+                    />
+                    <div
+                      className="w-24 h-14 border-2 border-foreground bg-foreground"
+                      style={{ boxShadow: e.value }}
+                      role="img"
+                      aria-label={`${e.name} shadow on dark surface`}
+                    />
+                  </div>
+                </td>
+                <td className="p-5 px-6 text-[10px] text-muted-foreground font-mono text-right w-[280px]">
+                  {e.css}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
 
       {/* ═══ RADIUS TAB ═══ */}
@@ -430,45 +456,50 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           Zero radius. Everywhere. Industrial edges communicate precision and intentionality. Rounded corners soften — SignalframeUX&trade; sharpens. Every element meets at 90°.
         </div>
-        <div className="border-b-4 border-foreground">
-          <div className="grid grid-cols-[200px_1fr_200px] bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-            <span className="p-2.5 px-6">TOKEN</span>
-            <span className="p-2.5 px-6">COMPARISON</span>
-            <span className="p-2.5 px-6">VALUE</span>
-          </div>
-          {RADIUS_TOKENS.map((r) => (
-            <div
-              key={r.name}
-              className="grid grid-cols-[200px_1fr_200px] border-b border-border items-center"
-            >
-              <div className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em]">
-                {r.name}
-              </div>
-              <div className="p-5 px-6 flex items-center gap-4">
-                {/* SF: sharp */}
-                <div className="flex flex-col items-center gap-1">
-                  <div
-                    className="w-14 h-10 border-2 border-foreground bg-primary/20"
-                    style={{ borderRadius: "0px" }}
-                  />
-                  <span className="text-[9px] text-primary font-bold uppercase">SF//UX</span>
-                </div>
-                {/* Typical: rounded */}
-                <div className="flex flex-col items-center gap-1">
-                  <div
-                    className="w-14 h-10 border border-border bg-muted"
-                    style={{ borderRadius: r.typical }}
-                  />
-                  <span className="text-[9px] text-muted-foreground uppercase">TYPICAL</span>
-                </div>
-              </div>
-              <div className="p-5 px-6 text-[10px] text-muted-foreground font-mono">
-                <span className="text-primary font-bold">0px</span>
-                <span className="ml-2 opacity-50">vs {r.typical}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead>
+            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
+              <th scope="col" className="p-2.5 px-6 text-left font-bold w-[200px]">TOKEN</th>
+              <th scope="col" className="p-2.5 px-6 text-left font-bold">COMPARISON</th>
+              <th scope="col" className="p-2.5 px-6 text-left font-bold w-[200px]">VALUE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RADIUS_TOKENS.map((r) => (
+              <tr key={r.name} className="border-b border-border">
+                <td className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em]">
+                  {r.name}
+                </td>
+                <td className="p-5 px-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-14 h-10 border-2 border-foreground bg-primary/20"
+                        style={{ borderRadius: "0px" }}
+                        role="img"
+                        aria-label="SF//UX: 0px radius"
+                      />
+                      <span className="text-[9px] text-primary font-bold uppercase">SF//UX</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-14 h-10 border border-border bg-muted"
+                        style={{ borderRadius: r.typical }}
+                        role="img"
+                        aria-label={`Typical: ${r.typical} radius`}
+                      />
+                      <span className="text-[9px] text-muted-foreground uppercase">TYPICAL</span>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-5 px-6 text-[10px] text-muted-foreground font-mono">
+                  <span className="text-primary font-bold">0px</span>
+                  <span className="ml-2 opacity-50">vs {r.typical}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
 
       {/* ═══ BREAKPOINTS TAB ═══ */}
@@ -479,38 +510,35 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           Mobile-first responsive tokens aligned with Tailwind CSS defaults. SignalframeUX&trade; layouts shift at these thresholds — grid columns collapse, type scales compress, and spacing tightens.
         </div>
-        <div className="border-b-4 border-foreground">
-          <div className="grid grid-cols-[120px_120px_1fr_160px] bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-            <span className="p-2.5 px-4">TOKEN</span>
-            <span className="p-2.5 px-4">MIN-WIDTH</span>
-            <span className="p-2.5 px-4">VISUAL</span>
-            <span className="p-2.5 px-4">USAGE</span>
-          </div>
-          {BREAKPOINT_TOKENS.map((bp) => (
-            <div
-              key={bp.name}
-              className="grid grid-cols-[120px_120px_1fr_160px] border-b border-border items-center"
-            >
-              <div className="p-3 px-4 font-bold text-[11px] uppercase text-primary">
-                {bp.name}
-              </div>
-              <div className="p-3 px-4 text-[11px] text-muted-foreground font-mono">
-                {bp.px}px
-              </div>
-              <div className="p-3 px-4">
-                <div className="relative h-4 bg-muted">
-                  <div
-                    className="h-full bg-foreground transition-[width] duration-300"
-                    style={{ width: `${(bp.px / 1536) * 100}%` }}
-                  />
-                </div>
-              </div>
-              <div className="p-3 px-4 text-[10px] text-muted-foreground uppercase tracking-[0.1em]">
-                {bp.usage}
-              </div>
-            </div>
-          ))}
-        </div>
+        <table className="w-full border-b-4 border-foreground border-collapse">
+          <thead>
+            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">TOKEN</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">MIN-WIDTH</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold">VISUAL</th>
+              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[160px]">USAGE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {BREAKPOINT_TOKENS.map((bp) => (
+              <tr key={bp.name} className="border-b border-border">
+                <td className="p-3 px-4 font-bold text-[11px] uppercase text-primary">{bp.name}</td>
+                <td className="p-3 px-4 text-[11px] text-muted-foreground font-mono">{bp.px}px</td>
+                <td className="p-3 px-4">
+                  <div className="relative h-4 bg-muted">
+                    <div
+                      className="h-full bg-foreground transition-[width] duration-300"
+                      style={{ width: `${(bp.px / 1536) * 100}%` }}
+                      role="img"
+                      aria-label={`${bp.px}px of 1536px`}
+                    />
+                  </div>
+                </td>
+                <td className="p-3 px-4 text-[10px] text-muted-foreground uppercase tracking-[0.1em]">{bp.usage}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </SFTabsContent>
     </SFTabs>
   );

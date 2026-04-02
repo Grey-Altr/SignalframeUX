@@ -1,5 +1,3 @@
-"use client";
-
 const MARQUEE_TEXT =
   "SIGNAL//FRAME™ // DESIGN SYSTEM // BUILT FOR ENGINEERS // SHIP FASTER // ACCEPT THE INTERFACE // ";
 
@@ -9,32 +7,20 @@ export function MarqueeBand() {
       className="bg-primary border-y-[3px] border-foreground overflow-hidden h-12 flex items-center group"
       aria-label="Scrolling marquee"
     >
+      <span className="sr-only">SIGNAL//FRAME™ — Design system built for engineers. Ship faster. Accept the interface.</span>
       <div
         className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
+        aria-hidden="true"
       >
         <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>
-        <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2" aria-hidden="true">
+        <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>
       </div>
-
-      <style jsx>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-marquee {
-          animation: marquee 20s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }

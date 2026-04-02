@@ -3,7 +3,9 @@
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -60,10 +62,34 @@ function SFSelectItem({
 
 const SFSelectValue = SelectValue;
 
+function SFSelectGroup({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectGroup>) {
+  return <SelectGroup className={cn("", className)} {...props} />;
+}
+
+function SFSelectLabel({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectLabel>) {
+  return (
+    <SelectLabel
+      className={cn(
+        "rounded-none font-mono uppercase tracking-wider text-[9px] text-muted-foreground px-2 py-1.5",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
 export {
   SFSelect,
   SFSelectTrigger,
   SFSelectContent,
+  SFSelectGroup,
   SFSelectItem,
+  SFSelectLabel,
   SFSelectValue,
 };

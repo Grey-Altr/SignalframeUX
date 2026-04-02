@@ -23,7 +23,7 @@ export function CodeSection() {
           TERMINAL™
         </div>
 
-        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4 text-[var(--sf-muted-text-dark)]">
+        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4 text-[var(--sf-muted-text-dark)]" aria-label="API initialization code example">
           <code>
             <Line comment="// INITIALIZE SIGNALFRAMEUX™" />
             <Line>

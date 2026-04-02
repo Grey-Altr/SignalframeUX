@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFBadge } from "@/components/sf/sf-badge";
-import { gsap, Flip } from "@/lib/gsap-plugins";
+type FlipModule = typeof import("@/lib/gsap-plugins");
 
 const CATEGORIES = [
   "ALL",
@@ -93,7 +93,7 @@ function PreviewModal() {
 function PreviewTabs() {
   return (
     <div className="flex w-[80%]">
-      <span className="flex-1 h-5 border border-current bg-current text-white text-[7px] flex items-center justify-center uppercase">
+      <span className="flex-1 h-5 border border-current bg-current text-background text-[7px] flex items-center justify-center uppercase">
         A
       </span>
       <span className="flex-1 h-5 border border-current text-[7px] flex items-center justify-center uppercase">
@@ -109,7 +109,7 @@ function PreviewTabs() {
 function PreviewBadge({ color, text }: { color: string; text: string }) {
   return (
     <span
-      className="inline-block px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-white"
+      className="inline-block px-2.5 py-0.5 text-[10px] uppercase tracking-wider text-primary-foreground"
       style={{ background: color }}
     >
       {text}
@@ -272,14 +272,24 @@ export function ComponentsExplorer() {
   const [activeFilter, setActiveFilter] = useState<Category>("ALL");
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [focusedIndex, setFocusedIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
-  const flipStateRef = useRef<Flip.FlipState | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const flipStateRef = useRef<any>(null);
+  const gsapRef = useRef<FlipModule | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // Lazy-load GSAP plugins on mount
+  useEffect(() => {
+    import("@/lib/gsap-plugins").then((mod) => {
+      gsapRef.current = mod;
+    });
+  }, []);
+
   const captureFlipState = useCallback(() => {
-    if (!gridRef.current) return;
-    flipStateRef.current = Flip.getState(
+    if (!gridRef.current || !gsapRef.current) return;
+    flipStateRef.current = gsapRef.current.Flip.getState(
       gridRef.current.querySelectorAll(".flip-card")
     );
   }, []);
@@ -320,8 +330,54 @@ export function ComponentsExplorer() {
   const resultCount =
     activeFilter === "ALL" && searchQuery === "" ? 340 : filtered.length;
 
+  // Reset focus index when filter/search changes
   useEffect(() => {
-    if (!flipStateRef.current || !gridRef.current) return;
+    setFocusedIndex(0);
+  }, [activeFilter, searchQuery]);
+
+  const handleGridKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const count = filtered.length;
+      if (count === 0) return;
+
+      // Detect columns from CSS grid (4 on lg+, 2 on smaller)
+      const cols = window.innerWidth >= 1024 ? 4 : 2;
+      let next = focusedIndex;
+
+      switch (e.key) {
+        case "ArrowRight":
+          next = Math.min(focusedIndex + 1, count - 1);
+          break;
+        case "ArrowLeft":
+          next = Math.max(focusedIndex - 1, 0);
+          break;
+        case "ArrowDown":
+          next = Math.min(focusedIndex + cols, count - 1);
+          break;
+        case "ArrowUp":
+          next = Math.max(focusedIndex - cols, 0);
+          break;
+        case "Home":
+          next = 0;
+          break;
+        case "End":
+          next = count - 1;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+      setFocusedIndex(next);
+      const cells = gridRef.current?.querySelectorAll<HTMLElement>(".flip-card");
+      cells?.[next]?.focus();
+    },
+    [focusedIndex, filtered.length]
+  );
+
+  useEffect(() => {
+    if (!flipStateRef.current || !gridRef.current || !gsapRef.current) return;
+    const { gsap, Flip } = gsapRef.current;
     const state = flipStateRef.current;
     flipStateRef.current = null;
 
@@ -382,8 +438,14 @@ export function ComponentsExplorer() {
       </div>
 
       {/* ── Component Grid ── */}
-      <div ref={gridRef} className="grid grid-cols-2 lg:grid-cols-4">
-        {filtered.map((comp) => {
+      <div
+        ref={gridRef}
+        role="grid"
+        aria-label="Component library"
+        onKeyDown={handleGridKeyDown}
+        className="grid grid-cols-2 lg:grid-cols-4"
+      >
+        {filtered.map((comp, i) => {
           const styles = variantStyles[comp.variant];
           const isYellow = comp.variant === "yellow";
 
@@ -391,7 +453,10 @@ export function ComponentsExplorer() {
             <div
               key={comp.index}
               data-flip-id={comp.index}
-              className={`flip-card group relative overflow-hidden p-5 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 ${styles.cell} ${styles.hoverCell}`}
+              role="gridcell"
+              tabIndex={i === focusedIndex ? 0 : -1}
+              aria-label={`${comp.name} — ${comp.category}, ${comp.version}`}
+              className={`flip-card group relative overflow-hidden p-5 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow
@@ -444,10 +509,10 @@ export function ComponentsExplorer() {
       {/* ── Detail Hint Bar ── */}
       <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[11px] font-bold uppercase tracking-[0.15em]">
         <span>
-          CLICK ANY COMPONENT TO VIEW PROPS, VARIANTS, AND CODE →
+          BROWSE COMPONENTS ABOVE · VIEW FULL API REFERENCE →
         </span>
         <a href="/reference" className="text-primary sf-link-draw">
-          VIEW ALL 340 COMPONENTS
+          API REFERENCE
         </a>
       </div>
     </>

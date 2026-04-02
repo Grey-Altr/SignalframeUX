@@ -22,7 +22,9 @@ import {
   SFSelect,
   SFSelectTrigger,
   SFSelectContent,
+  SFSelectGroup,
   SFSelectItem,
+  SFSelectLabel,
   SFSelectValue,
 } from "@/components/sf/sf-select";
 import { SharedCodeBlock as CodeBlock } from "@/components/blocks/shared-code-block";
@@ -317,9 +319,6 @@ export function APIExplorer() {
       const nextId = ALL_NAV_IDS[nextIdx];
       handleNavClick(nextId);
       // Focus the newly active button
-      const btn = sidebarRef.current?.querySelector<HTMLButtonElement>(
-        `button[aria-selected="true"]`
-      );
       // Need to wait for re-render
       requestAnimationFrame(() => {
         sidebarRef.current
@@ -357,11 +356,14 @@ export function APIExplorer() {
           </SFSelectTrigger>
           <SFSelectContent className="max-h-[50vh]">
             {NAV_SECTIONS.map((section) => (
-              section.items.map((item) => (
-                <SFSelectItem key={item.id} value={item.id} className="text-[11px] uppercase tracking-[0.08em]">
-                  {section.title} / {item.label}
-                </SFSelectItem>
-              ))
+              <SFSelectGroup key={section.title}>
+                <SFSelectLabel>{section.title}</SFSelectLabel>
+                {section.items.map((item) => (
+                  <SFSelectItem key={item.id} value={item.id} className="text-[11px] uppercase tracking-[0.08em]">
+                    {item.label}
+                  </SFSelectItem>
+                ))}
+              </SFSelectGroup>
             ))}
           </SFSelectContent>
         </SFSelect>
@@ -413,6 +415,7 @@ export function APIExplorer() {
       <div ref={contentRef} className="overflow-y-auto border-r-[3px] border-foreground py-10 px-6 md:px-12 h-auto md:h-[calc(100vh-var(--nav-height))] relative">
         {/* Scroll progress bar */}
         <div
+          aria-hidden="true"
           className="fixed top-[var(--nav-height)] left-[240px] right-[383px] h-[3px] z-20 origin-left hidden md:block pointer-events-none"
           style={{
             background: "var(--color-primary)",
@@ -426,14 +429,22 @@ export function APIExplorer() {
         </div>
 
         {activeNav !== "button" ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <h1 className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">{activeItem.label.toUpperCase()}</h1>
-            <SFBadge intent="outline" className="text-sm py-2 px-6 opacity-60">
-              DOCUMENTATION IN PROGRESS
+          <div className="flex flex-col items-center justify-center py-24 gap-6">
+            <h1 className="text-foreground sf-display text-[72px] leading-[0.95]">{activeItem.label.toUpperCase()}</h1>
+            <SFBadge intent="outline" className="text-[13px] py-2.5 px-8 opacity-50">
+              COMING SOON
             </SFBadge>
-            <p className="text-[12px] text-muted-foreground uppercase tracking-[0.1em] max-w-[400px] text-center mt-2">
-              SELECT <button type="button" onClick={() => handleNavClick("button")} className="text-primary underline">BUTTON</button> IN THE SIDEBAR FOR A FULL API REFERENCE EXAMPLE.
+            <p className="text-[12px] text-muted-foreground uppercase tracking-[0.1em] max-w-[400px] text-center leading-[1.8]">
+              THIS COMPONENT&apos;S API DOCUMENTATION IS UNDER CONSTRUCTION.
             </p>
+            <SFButton
+              intent="primary"
+              size="sm"
+              onClick={() => handleNavClick("button")}
+              className="text-[11px] tracking-[0.1em]"
+            >
+              VIEW BUTTON REFERENCE →
+            </SFButton>
           </div>
         ) : (
           <>
@@ -541,7 +552,7 @@ export function APIExplorer() {
       </div>
 
       {/* RIGHT PANEL — Live Preview */}
-      <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-[oklch(0.985_0_0)] hidden md:block">
+      <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-primary-foreground hidden md:block">
         <SFScrollArea className="h-full">
           <div className="flex items-center justify-between border-b border-[var(--sf-subtle-border)] p-4">
             <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
@@ -569,7 +580,7 @@ export function APIExplorer() {
             style={{
               background:
                 previewTheme === "LIGHT" ? "oklch(0.97 0 0)"
-                : previewTheme === "FRAME" ? "oklch(0.65 0.29 350)"
+                : previewTheme === "FRAME" ? "var(--color-primary)"
                 : undefined,
             }}
           >

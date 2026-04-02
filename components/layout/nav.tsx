@@ -19,6 +19,7 @@ function useScrambleText(target: string, delay: number, duration = 600) {
 
   useEffect(() => {
     // Skip on reduced motion or narrow viewports (nav links hidden below md)
+    if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.innerWidth < 768) return;
 
@@ -229,7 +230,6 @@ function DarkModeToggle() {
   const [dark, setDark] = useState(false);
   const [renderPhase, setRenderPhase] = useState(0);
   const lightText = useScrambleText("LIGHT", 600, 400);
-  const darkText = useScrambleText("DARK", 700, 400);
 
   useEffect(() => {
     // Sync state with what the blocking script set
@@ -286,7 +286,7 @@ function DarkModeToggle() {
         />
       </button>
       <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground" aria-hidden="true">
-        {darkText}
+        DARK
       </span>
     </div>
   );
@@ -433,60 +433,6 @@ function LogoMark() {
         })}
       </span>
 
-      <style jsx>{`
-        .sf-logo-char {
-          transform: translate(0, 0);
-          color: inherit;
-        }
-        .sf-logo:hover .sf-logo-char {
-          animation: logoGlitch 0.3s steps(2) infinite;
-        }
-        .sf-logo:not(:hover) .sf-logo-char {
-          animation: none;
-          transform: translate(0, 0);
-        }
-        .sf-logo:hover .sf-logo-slash {
-          animation: slashPulse 0.4s ease infinite;
-        }
-        .sf-logo:not(:hover) .sf-logo-slash {
-          animation: none;
-        }
-        @keyframes logoGlitch {
-          0% {
-            transform: translate(0, 0);
-            color: inherit;
-          }
-          20% {
-            transform: translate(-2px, 1px);
-            color: var(--color-primary);
-          }
-          40% {
-            transform: translate(1px, -1px);
-            color: inherit;
-          }
-          60% {
-            transform: translate(-1px, 2px);
-            color: inherit;
-          }
-          80% {
-            transform: translate(2px, -1px);
-            color: var(--color-primary);
-          }
-          100% {
-            transform: translate(0, 0);
-            color: inherit;
-          }
-        }
-        @keyframes slashPulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.3;
-          }
-        }
-      `}</style>
     </Link>
   );
 }
@@ -497,7 +443,7 @@ export function Nav() {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
-    <nav aria-label="Main navigation" className="fixed top-0 left-0 right-0 z-50 bg-background border-b-[3px] border-foreground">
+    <nav aria-label="Main navigation" className="fixed top-0 left-0 right-0 z-[var(--z-nav)] bg-background border-b-[3px] border-foreground">
       <div className="flex items-center px-[clamp(12px,2vw,24px)] py-[clamp(4px,1vw,8px)] text-[clamp(10px,1.3vw,15px)] font-bold uppercase tracking-[0.15em]">
         {/* Logo: SF//UX */}
         <LogoMark />

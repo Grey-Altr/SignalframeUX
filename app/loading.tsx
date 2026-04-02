@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center bg-background" role="status" aria-live="polite">
       <div className="text-center">
         <div
           className="sf-display text-[clamp(32px,5vw,48px)] text-foreground mb-4"

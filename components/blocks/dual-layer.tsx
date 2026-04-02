@@ -25,7 +25,7 @@ export function DualLayer() {
               key={tag}
               data-anim="tag"
               suppressHydrationWarning
-              className="sf-pressable border border-foreground px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-foreground cursor-default inline-block hover:border-2 hover:px-[11px] hover:py-[5px]"
+              className="border border-foreground px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-foreground inline-block hover:border-2 hover:px-[11px] hover:py-[5px]"
             >
               {tag}
             </span>

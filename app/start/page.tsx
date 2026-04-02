@@ -202,7 +202,7 @@ export default function StartPage() {
                 <span className="text-primary">STARTED</span>
               </h1>
               {/* Monogram watermark */}
-              <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/10 dark:text-foreground/10 select-none leading-none hidden md:block" aria-hidden="true">
+              <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/10 select-none leading-none hidden md:block" aria-hidden="true">
                 SF
               </span>
             </div>
