@@ -25,12 +25,12 @@ export function Hero() {
 
         {/* Magenta accent line */}
         <div
-          className="absolute bottom-10 left-[clamp(20px,4vw,48px)] w-[200px] h-[3px] bg-primary z-10"
+          className="absolute bottom-10 left-[clamp(20px,4vw,48px)] w-[200px] h-[3px] bg-primary z-[var(--z-content)]"
           aria-hidden="true"
         />
 
         {/* Title: SIGNAL//FRAME */}
-        <div className="relative z-10">
+        <div className="relative z-[var(--z-content)]">
           <h1
             data-anim="hero-title"
             aria-label="SignalframeUX"
@@ -48,7 +48,7 @@ export function Hero() {
         </div>
 
         {/* Multilingual text */}
-        <div className="relative z-10 mt-3">
+        <div className="relative z-[var(--z-content)] mt-3">
           <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-bold">
             シグナルフレーム™
           </p>
@@ -68,7 +68,7 @@ export function Hero() {
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" suppressHydrationWarning className="sf-hero-deferred mt-8 text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-10">
+        <p data-anim="hero-subtitle" suppressHydrationWarning className="sf-hero-deferred mt-8 text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
           DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.<br />
           THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
         </p>

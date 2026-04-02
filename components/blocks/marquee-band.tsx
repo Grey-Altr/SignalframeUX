@@ -4,7 +4,7 @@ const MARQUEE_TEXT =
 export function MarqueeBand() {
   return (
     <section
-      className="bg-primary border-y-[3px] border-foreground overflow-hidden h-12 flex items-center group"
+      className="bg-primary border-y-4 border-foreground overflow-hidden h-12 flex items-center group"
       aria-label="Scrolling marquee"
     >
       <span className="sr-only">SIGNAL//FRAME™ — Design system built for engineers. Ship faster. Accept the interface.</span>

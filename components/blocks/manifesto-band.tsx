@@ -87,8 +87,11 @@ const wordIndices: number[] = SEGMENTS.reduce<number[]>((acc, seg, i) => {
 export function ManifestoBand() {
   const sectionRef = useRef<HTMLElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const rafRef = useRef<number>(0);
 
   const handleScroll = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
     const section = sectionRef.current;
     if (!section) return;
 
@@ -126,6 +129,7 @@ export function ManifestoBand() {
         el.style.opacity = "0.35";
       }
     });
+    });
   }, []);
 
   useEffect(() => {
@@ -139,6 +143,7 @@ export function ManifestoBand() {
     window.addEventListener("resize", handleScroll, { passive: true });
 
     return () => {
+      cancelAnimationFrame(rafRef.current);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
@@ -151,7 +156,7 @@ export function ManifestoBand() {
       suppressHydrationWarning
       className="sf-yellow-band sf-grain border-b-4 border-foreground py-6 px-[clamp(20px,4vw,48px)] relative overflow-hidden"
     >
-      <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-foreground relative z-10">
+      <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-foreground relative z-[var(--z-content)]">
         {SEGMENTS.map((seg, i) => {
           if (seg.type === "space") {
             return " ";

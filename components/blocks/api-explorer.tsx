@@ -649,7 +649,7 @@ export function APIExplorer() {
         <SFScrollArea className="h-full">
           <div className="flex items-center justify-between border-b border-[var(--sf-subtle-border)] p-4">
             <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              LIVE PREVIEW&trade;
+              CONTEXT&trade;
             </span>
             <div className="flex gap-2">
               {(["LIGHT", "DARK", "FRAME"] as const).map((label) => (

@@ -482,9 +482,9 @@ export function Nav() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setSheetOpen(false)}
-                    aria-current={pathname === link.href ? "page" : undefined}
+                    aria-current={(link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)) ? "page" : undefined}
                     className={`block py-3 px-4 border-b-2 border-foreground text-[13px] font-bold uppercase tracking-[0.15em] no-underline transition-colors ${
-                      pathname === link.href
+                      (link.href === "/" ? pathname === "/" : pathname.startsWith(link.href))
                         ? "text-primary bg-foreground"
                         : "text-foreground hover:bg-foreground hover:text-background"
                     }`}

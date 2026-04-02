@@ -136,6 +136,8 @@
   --nav-height: 83px;
 
   /* ── Z-Index Scale ── */
+  --z-above-bg: 1;
+  --z-content: 10;
   --z-nav: 50;
   --z-overlay: 100;
   --z-scroll-top: 200;

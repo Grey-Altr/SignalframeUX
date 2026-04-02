@@ -347,7 +347,7 @@ export default function StartPage() {
           />
 
           {/* Marquee */}
-          <div className="h-8 overflow-hidden relative z-[1]">
+          <div className="h-8 overflow-hidden relative z-[var(--z-above-bg)]">
             <div
               className="flex whitespace-nowrap uppercase tracking-[0.15em] leading-8 text-foreground sf-display text-[16px]"
               style={{ animation: "sf-marquee-scroll 12s linear infinite" }}
@@ -360,7 +360,7 @@ export default function StartPage() {
             </div>
           </div>
 
-          <div className="py-10 px-[clamp(20px,4vw,48px)] relative z-[1]">
+          <div className="py-10 px-[clamp(20px,4vw,48px)] relative z-[var(--z-above-bg)]">
             <h2
               className="sf-display text-foreground mb-3"
               style={{ fontSize: "clamp(24px, 4vw, 48px)" }}

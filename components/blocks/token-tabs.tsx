@@ -208,8 +208,7 @@ export function TokenTabs() {
           </p>
           <div className="h-8 overflow-hidden relative mt-5 border-t border-foreground/10 border-b border-b-foreground/10">
             <div
-              className="flex items-center h-full whitespace-nowrap"
-              style={{ animation: "sf-marquee-scroll 20s linear infinite" }}
+              className="flex items-center h-full whitespace-nowrap animate-marquee"
             >
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
                 PERCEPTUALLY UNIFORM // OKLCH COLOR SPACE // 588 TOKENS //
@@ -260,10 +259,11 @@ export function TokenTabs() {
                     key={sw.step}
                     role="img"
                     aria-label={`${scale.name} ${sw.step}: ${oklchStr}`}
-                    className="group/swatch aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10 cursor-crosshair"
+                    tabIndex={0}
+                    className="group/swatch aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10 cursor-crosshair focus:outline-2 focus:outline-primary focus:outline-offset-[-2px]"
                     style={{
                       background: oklchStr,
-                      color: isDark ? "#fafafa" : "#1a1a1a",
+                      color: isDark ? "var(--color-background)" : "var(--color-foreground)",
                     }}
                   >
                     <span className="text-[10px] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 transition-opacity duration-100" aria-hidden="true">
