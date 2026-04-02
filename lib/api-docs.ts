@@ -17,6 +17,11 @@ export interface UsageExample {
   code: string;
 }
 
+export interface PreviewHud {
+  lines: string[];
+  code: string;
+}
+
 export interface ComponentDoc {
   id: string;
   name: string;
@@ -29,6 +34,7 @@ export interface ComponentDoc {
   props: PropDef[];
   usage: UsageExample[];
   a11y: string[];
+  preview?: PreviewHud;
 }
 
 export const API_DOCS: Record<string, ComponentDoc> = {
@@ -777,3 +783,120 @@ export const API_DOCS: Record<string, ComponentDoc> = {
     a11y: ["SSR-SAFE — DEFAULTS TO 'MD' BEFORE HYDRATION", "NO LAYOUT SHIFT ON HYDRATION"],
   },
 };
+
+/** Preview HUD data for the right panel — keyed by doc ID */
+const PREVIEW_DATA: Record<string, PreviewHud> = {
+  createSignalframeUX: {
+    lines: ["SF//UX::CORE::INIT", "THEME: DARK | TOKENS: DEFAULT", "SIGNAL LAYER: ENABLED", "REDUCED MOTION: RESPECT"],
+    code: `const sfux = createSignalframeUX({\n  theme: 'dark',\n  signalLayer: true,\n})`,
+  },
+  useSignalframe: {
+    lines: ["SF//UX::HOOK::CONTEXT", "RETURNS: THEME, TOKENS, CONTROLS", "REACTIVE: YES | SSR: SAFE"],
+    code: `const { theme, tokens, setTheme }\n  = useSignalframe()`,
+  },
+  SFUXProvider: {
+    lines: ["SF//UX::CORE::PROVIDER", "WRAPS: APP ROOT", "SUPPLIES: THEME + TOKENS + SIGNAL"],
+    code: `<SFUXProvider instance={sfux}>\n  {children}\n</SFUXProvider>`,
+  },
+  defineTheme: {
+    lines: ["SF//UX::CORE::THEME", "BASE: DARK | EXTENDS: OKLCH TOKENS", "CONTRAST: VALIDATED AT BUILD"],
+    code: `const midnight = defineTheme({\n  name: 'midnight',\n  base: 'dark',\n})`,
+  },
+  input: {
+    lines: ["SF//UX::INPUT::RENDER", "VARIANT: FRAME | SIGNAL", "SCRAMBLE: ENABLED ON FOCUS", "VALIDATION: ARIA-INVALID"],
+    code: `<Input\n  variant="frame"\n  placeholder="ENTER SIGNAL..."\n  scramblePlaceholder\n/>`,
+  },
+  card: {
+    lines: ["SF//UX::CARD::RENDER", "VARIANT: FRAME | SIGNAL | OUTLINE", "HOVER: LIFT EFFECT", "SLOTS: HEADER + CONTENT + FOOTER"],
+    code: `<Card hoverable>\n  <CardHeader>\n    <CardTitle>DEPLOYMENT</CardTitle>\n  </CardHeader>\n</Card>`,
+  },
+  modal: {
+    lines: ["SF//UX::MODAL::RENDER", "SIZE: MD | FOCUS TRAP: ACTIVE", "BACKDROP: BLUR | ESC: CLOSE", "SIGNAL: GLITCH ENTRANCE"],
+    code: `<Modal\n  open={isOpen}\n  onClose={close}\n  title="CONFIRM"\n/>`,
+  },
+  table: {
+    lines: ["SF//UX::TABLE::RENDER", "COLUMNS: 4 | ROWS: DYNAMIC", "STICKY HEADER: OFF", "SORT: ARIA-SORT ATTRIBUTE"],
+    code: `<Table\n  columns={columns}\n  data={rows}\n  stickyHeader\n/>`,
+  },
+  tabs: {
+    lines: ["SF//UX::TABS::RENDER", "ACTIVE: SIGNAL | KEYBOARD: ARROWS", "INDICATOR: UNDERLINE SLIDE", "SCRAMBLE: ON SWITCH"],
+    code: `<Tabs defaultValue="signal">\n  <TabsList>\n    <TabsTrigger value="signal">\n      SIGNAL\n    </TabsTrigger>\n  </TabsList>\n</Tabs>`,
+  },
+  toast: {
+    lines: ["SF//UX::TOAST::RENDER", "VARIANT: SUCCESS | DURATION: 5000MS", "STACK: VERTICAL | DISMISS: AUTO", "SIGNAL: GLITCH ENTRANCE"],
+    code: `toast({\n  title: 'DEPLOYED',\n  description: 'Build #4201 live',\n  variant: 'success',\n})`,
+  },
+  dropdown: {
+    lines: ["SF//UX::DROPDOWN::RENDER", "ITEMS: 4 | ALIGN: START", "KEYBOARD: ARROWS + TYPE-AHEAD", "NESTED: SUBMENUS SUPPORTED"],
+    code: `<Dropdown\n  trigger={<Button>OPTIONS ▾</Button>}\n  items={menuItems}\n/>`,
+  },
+  drawer: {
+    lines: ["SF//UX::DRAWER::RENDER", "SIDE: RIGHT | SIZE: MD", "FOCUS TRAP: ACTIVE", "SIGNAL: GLITCH SLIDE"],
+    code: `<Drawer\n  open={isOpen}\n  onClose={close}\n  side="right"\n/>`,
+  },
+  badge: {
+    lines: ["SF//UX::BADGE::RENDER", "INTENT: PRIMARY | SIZE: SM", "MONO: UPPERCASE + 0.15EM", "RADIUS: 0PX"],
+    code: `<Badge intent="primary">NEW</Badge>\n<Badge intent="signal">BETA</Badge>`,
+  },
+  noisebg: {
+    lines: ["SF//UX::SIGNAL::NOISE", "OPACITY: 0.15 | SCALE: 1X", "ANIMATE: FLICKER | SPEED: 1X", "SVG GRAIN: FRACTAL TURB."],
+    code: `<NoiseBG\n  opacity={0.12}\n  animate\n  speed={1.5}\n/>`,
+  },
+  particlemesh: {
+    lines: ["SF//UX::SIGNAL::MESH", "PARTICLES: 80 | RADIUS: 150PX", "MOUSE FORCE: 28 | OPACITY: 0.45", "OBSERVER: PAUSE OFFSCREEN"],
+    code: `<ParticleMesh\n  particleCount={100}\n  mouseRadius={200}\n  mouseForce={35}\n/>`,
+  },
+  glitchtext: {
+    lines: ["SF//UX::SIGNAL::GLITCH", "LAYERS: 3 (PRIMARY/CYAN/YELLOW)", "INTENSITY: 0.5 | INTERVAL: 3000MS", "CLIP-PATH: INSET SLICING"],
+    code: `<GlitchText\n  text="ERROR 404"\n  intensity={0.8}\n  interval={2000}\n/>`,
+  },
+  waveform: {
+    lines: ["SF//UX::SIGNAL::WAVE", "FREQ: 5 | AMP: 18PX", "HARMONICS: 1 | REACTIVE: OFF", "SVG POLYLINE: SINE BASIS"],
+    code: `<Waveform\n  frequency={5}\n  amplitude={20}\n  color="var(--color-primary)"\n/>`,
+  },
+  reactivecanvas: {
+    lines: ["SF//UX::SIGNAL::CANVAS", "RAF LOOP: ACTIVE | OBSERVER: YES", "MOUSE TRACKING: ENABLED", "DRAW: USER CALLBACK"],
+    code: `<ReactiveCanvas\n  draw={(ctx, frame) => {\n    // CUSTOM RENDER\n  }}\n/>`,
+  },
+  colors: {
+    lines: ["SF//UX::TOKEN::COLOR", "SPACE: OKLCH | SCALES: 49", "PRIMARY: oklch(0.65 0.29 350)", "MODES: LIGHT + DARK"],
+    code: `/* CSS */\ncolor: var(--color-primary);\nbackground: var(--sf-dark-surface);\n\n/* TAILWIND */\nclassName="text-primary bg-foreground"`,
+  },
+  spacing: {
+    lines: ["SF//UX::TOKEN::SPACING", "GRID: 4PX BASE | STEPS: 8", "FLUID: CLAMP() BETWEEN BP", "TOUCH: 44PX MIN TARGET"],
+    code: `padding: var(--space-4);\nmargin: clamp(24px, 5vw, 48px);\ngap: var(--space-2);`,
+  },
+  typography: {
+    lines: ["SF//UX::TOKEN::TYPE", "DISPLAY: ANTON | BODY: ELECTROLIZE", "CODE: JETBRAINS MONO", "SCALE: 1.414 AUG. FOURTH"],
+    code: `<h1 className="sf-display">HEADLINE</h1>\n<p className="sf-ui-text">BODY</p>\n<code className="font-mono">CODE</code>`,
+  },
+  motion: {
+    lines: ["SF//UX::TOKEN::MOTION", "INSTANT: 100MS | FAST: 150MS", "NORMAL: 250MS | SLOW: 400MS", "EASE: SF-SNAP + SF-PUNCH"],
+    code: `transition:\n  transform var(--duration-normal)\n    var(--ease-spring),\n  opacity var(--duration-fast)\n    var(--ease-default);`,
+  },
+  elevation: {
+    lines: ["SF//UX::TOKEN::ELEVATION", "LAYERS: 7 (NAV→SKIP)", "SHADOWS: DEBOSS STYLE", "STACK: ORDERED BY FUNCTION"],
+    code: `z-index: var(--z-nav);     /* 50  */\nz-index: var(--z-overlay);  /* 100 */\nz-index: var(--z-cursor);   /* 500 */`,
+  },
+  useSignalEffect: {
+    lines: ["SF//UX::HOOK::SIGNAL", "EFFECT: GLITCH | TRIGGER: HOVER", "INTENSITY: 0.6 | MOTION: GATED", "CLEANUP: AUTOMATIC"],
+    code: `const ref = useSignalEffect(\n  'glitch',\n  { intensity: 0.6, trigger: 'hover' }\n)`,
+  },
+  useToken: {
+    lines: ["SF//UX::HOOK::TOKEN", "READ: CSS CUSTOM PROPERTY", "REACTIVE: THEME-AWARE", "TYPE: STRING RETURN"],
+    code: `const primary = useToken('--color-primary')\n// => "oklch(0.65 0.29 350)"`,
+  },
+  useMotion: {
+    lines: ["SF//UX::HOOK::MOTION", "REDUCED: BOOLEAN | DURATION: FN", "GATES: ALL JS ANIMATIONS", "MATCHMEDIA: LIVE LISTENER"],
+    code: `const { prefersReduced, duration }\n  = useMotion()\n\nif (prefersReduced) return`,
+  },
+  useBreakpoint: {
+    lines: ["SF//UX::HOOK::BREAKPOINT", "CURRENT: MD | MOBILE: FALSE", "DESKTOP: TRUE | SSR: SAFE", "LISTENER: MATCHMEDIA"],
+    code: `const { isMobile, breakpoint }\n  = useBreakpoint()\n\n// breakpoint: 'sm'|'md'|'lg'|'xl'|'2xl'`,
+  },
+};
+
+// Merge preview data into docs
+for (const [id, preview] of Object.entries(PREVIEW_DATA)) {
+  if (API_DOCS[id]) API_DOCS[id].preview = preview;
+}

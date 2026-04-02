@@ -644,7 +644,7 @@ export function APIExplorer() {
         )}
       </div>
 
-      {/* RIGHT PANEL — Live Preview */}
+      {/* RIGHT PANEL — Context-Aware Preview */}
       <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-primary-foreground hidden md:block">
         <SFScrollArea className="h-full">
           <div className="flex items-center justify-between border-b border-[var(--sf-subtle-border)] p-4">
@@ -677,43 +677,74 @@ export function APIExplorer() {
                 : undefined,
             }}
           >
+            {/* Context-aware HUD telemetry */}
             <div className={`absolute top-5 left-5 text-[10px] uppercase tracking-[0.2em] opacity-40 ${
               previewTheme === "LIGHT" ? "text-foreground" : "text-[var(--sf-code-text)]"
             }`}>
-              <div data-anim="hud-line">SF//UX::BUTTON::RENDER</div>
-              <div data-anim="hud-line">VARIANT: FRAME | GHOST | SIGNAL</div>
-              <div data-anim="hud-line">SIGNAL: SHIMMER @ 0.8</div>
+              {(activeNav === "button" ? [
+                "SF//UX::BUTTON::RENDER",
+                "VARIANT: FRAME | GHOST | SIGNAL",
+                "SIGNAL: SHIMMER @ 0.8",
+              ] : API_DOCS[activeNav]?.preview?.lines ?? [
+                `SF//UX::${activeItem.label.toUpperCase()}`,
+              ]).map((line, i) => (
+                <div key={`${activeNav}-${i}`} data-anim="hud-line">{line}</div>
+              ))}
               <div data-anim="hud-line">FPS: {hud.fps} | MEM: {hud.mem}MB</div>
             </div>
 
-            <div className="text-center mt-[60px]">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: FRAME</div>
-              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-background text-foreground border-background hover:bg-background/80 hover:text-foreground">GET STARTED</SFButton>
-            </div>
-            <div className="text-center">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: GHOST</div>
-              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="text-foreground border-foreground hover:bg-foreground hover:text-background">VIEW DOCS</SFButton>
-            </div>
-            <div className="text-center">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: SIGNAL (SHIMMER)</div>
-              <SFButton intent="primary" size="lg" data-anim="preview-btn" className="relative overflow-hidden">LAUNCH SEQUENCE</SFButton>
-            </div>
-            <div className="text-center">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: YELLOW (TDR)</div>
-              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground">
-                BUY ME&trade;
-              </SFButton>
-            </div>
+            {/* Context-aware preview content */}
+            {activeNav === "button" ? (
+              <>
+                <div className="text-center mt-[60px]">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: FRAME</div>
+                  <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-background text-foreground border-background hover:bg-background/80 hover:text-foreground">GET STARTED</SFButton>
+                </div>
+                <div className="text-center">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: GHOST</div>
+                  <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="text-foreground border-foreground hover:bg-foreground hover:text-background">VIEW DOCS</SFButton>
+                </div>
+                <div className="text-center">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: SIGNAL (SHIMMER)</div>
+                  <SFButton intent="primary" size="lg" data-anim="preview-btn" className="relative overflow-hidden">LAUNCH SEQUENCE</SFButton>
+                </div>
+                <div className="text-center">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: YELLOW (TDR)</div>
+                  <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground">
+                    BUY ME&trade;
+                  </SFButton>
+                </div>
+              </>
+            ) : (
+              <div className="w-full mt-[60px] flex flex-col items-center gap-8">
+                <div className="sf-display text-[48px] text-center leading-[0.95] text-muted-foreground/30">
+                  {activeItem.label.toUpperCase()}
+                </div>
+                <SFBadge intent="outline" className="text-[11px] border-[var(--sf-subtle-border)] text-muted-foreground">
+                  {API_DOCS[activeNav]?.layer ?? "FRAME"} · {API_DOCS[activeNav]?.version ?? "v2.0.0"}
+                </SFBadge>
+              </div>
+            )}
           </div>
 
-          <div className="w-full p-5 bg-[var(--sf-code-bg)] font-mono text-[11px] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)]">
-            <span className="text-muted-foreground">{"// CURRENTLY RENDERED"}</span>
-            {"\n"}&lt;<span className="text-primary">Button</span>
-            {"\n  "}<span className="text-[var(--sf-code-keyword)]">variant</span>=
-            <span className="text-[var(--sf-yellow)]">{'"signal"'}</span>
-            {"\n  "}<span className="text-[var(--sf-code-keyword)]">size</span>=
-            <span className="text-[var(--sf-yellow)]">{'"md"'}</span>
-            {"\n/>\n"}
+          {/* Context-aware code preview */}
+          <div className="w-full p-5 bg-[var(--sf-code-bg)] font-mono text-[11px] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)] whitespace-pre">
+            <span className="text-muted-foreground">{"// CURRENTLY VIEWING"}</span>
+            {"\n"}
+            {activeNav === "button" ? (
+              <>
+                &lt;<span className="text-primary">Button</span>
+                {"\n  "}<span className="text-[var(--sf-code-keyword)]">variant</span>=
+                <span className="text-[var(--sf-yellow)]">{'"signal"'}</span>
+                {"\n  "}<span className="text-[var(--sf-code-keyword)]">size</span>=
+                <span className="text-[var(--sf-yellow)]">{'"md"'}</span>
+                {"\n/>\n"}
+              </>
+            ) : (
+              <span className="text-[var(--sf-code-text)]">
+                {API_DOCS[activeNav]?.preview?.code ?? `// ${activeItem.label.toUpperCase()}`}
+              </span>
+            )}
           </div>
 
           {/* VHS badge */}
