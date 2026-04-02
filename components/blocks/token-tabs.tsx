@@ -7,6 +7,15 @@ import {
   SFTabsTrigger,
   SFTabsContent,
 } from "@/components/sf/sf-tabs";
+import {
+  SFTable,
+  SFTableHeader,
+  SFTableHead,
+  SFTableBody,
+  SFTableRow,
+  SFTableCell,
+} from "@/components/sf/sf-table";
+import { SFButton } from "@/components/sf/sf-button";
 import { SFBadge } from "@/components/sf/sf-badge";
 
 const CORE_SCALE_COUNT = 6;
@@ -230,14 +239,16 @@ export function TokenTabs() {
           <div className="sf-display" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
             COLOR_SCALES ( {COLOR_SCALES.length} )
           </div>
-          <button
+          <SFButton
+            intent="ghost"
+            size="sm"
             onClick={() => setShowAll((v) => !v)}
             aria-expanded={showAll}
             aria-controls="color-scale-grid"
-            className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary border-2 border-foreground px-4 py-2 sf-pressable"
+            className="text-[11px] text-primary sf-pressable"
           >
             {showAll ? "SHOW CORE" : `SHOW ALL ${COLOR_SCALES.length}`}
-          </button>
+          </SFButton>
         </div>
         <div id="color-scale-grid" className="overflow-x-auto relative">
           <div className="md:hidden text-[9px] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
@@ -287,33 +298,33 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           SPACING_SCALE
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead>
-            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">TOKEN</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[200px]">VALUE</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold">VISUAL</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">PX</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader>
+            <SFTableRow>
+              <SFTableHead className="w-[120px]">TOKEN</SFTableHead>
+              <SFTableHead className="w-[200px]">VALUE</SFTableHead>
+              <SFTableHead>VISUAL</SFTableHead>
+              <SFTableHead className="w-[120px]">PX</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {SPACING.map((s) => (
-              <tr key={s.name} className="border-b border-border">
-                <td className="p-3 px-4 font-bold text-[11px] uppercase text-primary">{s.name}</td>
-                <td className="p-3 px-4 text-[11px] text-muted-foreground">{s.rem}</td>
-                <td className="p-3 px-4">
+              <SFTableRow key={s.name}>
+                <SFTableCell className="font-bold text-[11px] text-primary">{s.name}</SFTableCell>
+                <SFTableCell className="text-[11px] text-muted-foreground">{s.rem}</SFTableCell>
+                <SFTableCell>
                   <div
                     className="h-4 bg-foreground transition-[width] duration-300"
                     style={{ width: `${s.px}px` }}
                     role="img"
                     aria-label={`${s.px} pixels wide`}
                   />
-                </td>
-                <td className="p-3 px-4 text-[10px] text-muted-foreground text-right">{s.px}px</td>
-              </tr>
+                </SFTableCell>
+                <SFTableCell className="text-[10px] text-muted-foreground text-right">{s.px}px</SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
 
       {/* ═══ TYPOGRAPHY TAB ═══ */}
@@ -321,22 +332,22 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           TYPE_SCALE ( AUGMENTED FOURTH · 1.414 )
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead className="sr-only">
-            <tr>
-              <th scope="col">Token</th>
-              <th scope="col">Sample</th>
-              <th scope="col">Specification</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader className="sr-only">
+            <SFTableRow>
+              <SFTableHead>Token</SFTableHead>
+              <SFTableHead>Sample</SFTableHead>
+              <SFTableHead>Specification</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {TYPE_SCALE.map((t) => (
-              <tr key={t.name} className="border-b border-border align-baseline">
-                <td className="p-5 px-4 text-[10px] uppercase tracking-[0.15em] text-primary font-bold w-[160px]">
+              <SFTableRow key={t.name} className="align-baseline">
+                <SFTableCell className="p-5 text-[10px] text-primary font-bold w-[160px]">
                   {t.name}
-                </td>
-                <td
-                  className="p-5 px-4 overflow-hidden whitespace-nowrap text-ellipsis"
+                </SFTableCell>
+                <SFTableCell
+                  className="p-5 overflow-hidden whitespace-nowrap text-ellipsis"
                   style={{
                     fontFamily: t.font,
                     fontSize: `${t.size}px`,
@@ -355,14 +366,14 @@ export function TokenTabs() {
                   }}
                 >
                   {t.sample}
-                </td>
-                <td className="p-5 px-4 text-[11px] text-muted-foreground text-right uppercase tracking-[0.1em] w-[200px]">
+                </SFTableCell>
+                <SFTableCell className="p-5 text-[11px] text-muted-foreground text-right w-[200px]">
                   {t.meta}
-                </td>
-              </tr>
+                </SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
 
       {/* ═══ MOTION TAB ═══ */}
@@ -370,21 +381,21 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           MOTION_TOKENS
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead className="sr-only">
-            <tr>
-              <th scope="col">Token</th>
-              <th scope="col">Preview</th>
-              <th scope="col">Value</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader className="sr-only">
+            <SFTableRow>
+              <SFTableHead>Token</SFTableHead>
+              <SFTableHead>Preview</SFTableHead>
+              <SFTableHead>Value</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {MOTION_TOKENS.map((m, i) => (
-              <tr key={m.name} className="border-b border-border">
-                <td className="px-4 py-4 font-bold text-[11px] uppercase text-primary w-[200px]">
+              <SFTableRow key={m.name}>
+                <SFTableCell className="py-4 font-bold text-[11px] text-primary w-[200px]">
                   {m.name}
-                </td>
-                <td className="px-4 py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
+                </SFTableCell>
+                <SFTableCell className="py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
                   <div
                     className="w-7 h-7 bg-foreground absolute top-[calc(50%-14px)]"
                     aria-hidden="true"
@@ -393,14 +404,14 @@ export function TokenTabs() {
                       animationTimingFunction: EASING_MAP[i],
                     }}
                   />
-                </td>
-                <td className="px-4 py-4 text-[10px] text-muted-foreground text-right w-[200px]">
+                </SFTableCell>
+                <SFTableCell className="py-4 text-[10px] text-muted-foreground text-right w-[200px]">
                   {m.css}
-                </td>
-              </tr>
+                </SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
 
       {/* ═══ ELEVATION TAB ═══ */}
@@ -411,21 +422,21 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           SignalframeUX&trade; uses a debossed surface model — elements are pressed <em>into</em> the surface, not floated above it. Shadows create tactile depth without z-axis lift. This is a deliberate rejection of material elevation.
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead className="sr-only">
-            <tr>
-              <th scope="col">Token</th>
-              <th scope="col">Preview</th>
-              <th scope="col">CSS Value</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader className="sr-only">
+            <SFTableRow>
+              <SFTableHead>Token</SFTableHead>
+              <SFTableHead>Preview</SFTableHead>
+              <SFTableHead>CSS Value</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {ELEVATION_TOKENS.map((e) => (
-              <tr key={e.name} className="border-b border-border">
-                <td className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em] w-[200px]">
+              <SFTableRow key={e.name}>
+                <SFTableCell className="p-5 px-6 font-bold text-[11px] text-primary w-[200px]">
                   {e.name}
-                </td>
-                <td className="p-5 px-6">
+                </SFTableCell>
+                <SFTableCell className="p-5 px-6">
                   <div className="flex items-center gap-6">
                     <div
                       className="w-24 h-14 border-2 border-foreground bg-background"
@@ -440,14 +451,14 @@ export function TokenTabs() {
                       aria-label={`${e.name} shadow on dark surface`}
                     />
                   </div>
-                </td>
-                <td className="p-5 px-6 text-[10px] text-muted-foreground font-mono text-right w-[280px]">
+                </SFTableCell>
+                <SFTableCell className="p-5 px-6 text-[10px] text-muted-foreground font-mono text-right w-[280px]">
                   {e.css}
-                </td>
-              </tr>
+                </SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
 
       {/* ═══ RADIUS TAB ═══ */}
@@ -458,21 +469,21 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           Zero radius. Everywhere. Industrial edges communicate precision and intentionality. Rounded corners soften — SignalframeUX&trade; sharpens. Every element meets at 90°.
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead>
-            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-              <th scope="col" className="p-2.5 px-6 text-left font-bold w-[200px]">TOKEN</th>
-              <th scope="col" className="p-2.5 px-6 text-left font-bold">COMPARISON</th>
-              <th scope="col" className="p-2.5 px-6 text-left font-bold w-[200px]">VALUE</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader>
+            <SFTableRow>
+              <SFTableHead className="px-6 w-[200px]">TOKEN</SFTableHead>
+              <SFTableHead className="px-6">COMPARISON</SFTableHead>
+              <SFTableHead className="px-6 w-[200px]">VALUE</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {RADIUS_TOKENS.map((r) => (
-              <tr key={r.name} className="border-b border-border">
-                <td className="p-5 px-6 font-bold text-[11px] uppercase text-primary tracking-[0.1em]">
+              <SFTableRow key={r.name}>
+                <SFTableCell className="p-5 px-6 font-bold text-[11px] text-primary">
                   {r.name}
-                </td>
-                <td className="p-5 px-6">
+                </SFTableCell>
+                <SFTableCell className="p-5 px-6">
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center gap-1">
                       <div
@@ -493,15 +504,15 @@ export function TokenTabs() {
                       <span className="text-[9px] text-muted-foreground uppercase">TYPICAL</span>
                     </div>
                   </div>
-                </td>
-                <td className="p-5 px-6 text-[10px] text-muted-foreground font-mono">
+                </SFTableCell>
+                <SFTableCell className="p-5 px-6 text-[10px] text-muted-foreground font-mono">
                   <span className="text-primary font-bold">0px</span>
                   <span className="ml-2 opacity-50">vs {r.typical}</span>
-                </td>
-              </tr>
+                </SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
 
       {/* ═══ BREAKPOINTS TAB ═══ */}
@@ -512,21 +523,21 @@ export function TokenTabs() {
         <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
           Mobile-first responsive tokens aligned with Tailwind CSS defaults. SignalframeUX&trade; layouts shift at these thresholds — grid columns collapse, type scales compress, and spacing tightens.
         </div>
-        <table className="w-full border-b-4 border-foreground border-collapse">
-          <thead>
-            <tr className="bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-bold">
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">TOKEN</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[120px]">MIN-WIDTH</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold">VISUAL</th>
-              <th scope="col" className="p-2.5 px-4 text-left font-bold w-[160px]">USAGE</th>
-            </tr>
-          </thead>
-          <tbody>
+        <SFTable className="border-b-4 border-foreground">
+          <SFTableHeader>
+            <SFTableRow>
+              <SFTableHead className="w-[120px]">TOKEN</SFTableHead>
+              <SFTableHead className="w-[120px]">MIN-WIDTH</SFTableHead>
+              <SFTableHead>VISUAL</SFTableHead>
+              <SFTableHead className="w-[160px]">USAGE</SFTableHead>
+            </SFTableRow>
+          </SFTableHeader>
+          <SFTableBody>
             {BREAKPOINT_TOKENS.map((bp) => (
-              <tr key={bp.name} className="border-b border-border">
-                <td className="p-3 px-4 font-bold text-[11px] uppercase text-primary">{bp.name}</td>
-                <td className="p-3 px-4 text-[11px] text-muted-foreground font-mono">{bp.px}px</td>
-                <td className="p-3 px-4">
+              <SFTableRow key={bp.name}>
+                <SFTableCell className="font-bold text-[11px] text-primary">{bp.name}</SFTableCell>
+                <SFTableCell className="text-[11px] text-muted-foreground font-mono">{bp.px}px</SFTableCell>
+                <SFTableCell>
                   <div className="relative h-4 bg-muted">
                     <div
                       className="h-full bg-foreground transition-[width] duration-300"
@@ -535,12 +546,12 @@ export function TokenTabs() {
                       aria-label={`${bp.px}px of 1536px`}
                     />
                   </div>
-                </td>
-                <td className="p-3 px-4 text-[10px] text-muted-foreground uppercase tracking-[0.1em]">{bp.usage}</td>
-              </tr>
+                </SFTableCell>
+                <SFTableCell className="text-[10px] text-muted-foreground">{bp.usage}</SFTableCell>
+              </SFTableRow>
             ))}
-          </tbody>
-        </table>
+          </SFTableBody>
+        </SFTable>
       </SFTabsContent>
     </SFTabs>
   );
