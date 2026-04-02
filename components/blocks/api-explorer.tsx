@@ -128,7 +128,7 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
         {doc.description}
       </p>
 
-      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
+      <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
       <CodeBlock label="TSX" className="my-4">
         <span className="text-primary">import</span>
         {" { "}<span className="text-[var(--sf-code-text)]">{doc.importName}</span>{" } "}
@@ -136,7 +136,7 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
         <span className="text-[var(--sf-yellow)]">{`'${doc.importPath}'`}</span>
       </CodeBlock>
 
-      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
+      <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">
         {doc.layer === "HOOK" ? "RETURNS" : doc.layer === "TOKEN" ? "TOKENS" : "PROPS"}
       </h2>
       <SFTable className="mb-6">
@@ -167,7 +167,7 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
         </SFTableBody>
       </SFTable>
 
-      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">USAGE</h2>
+      <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">USAGE</h2>
       {doc.usage.length === 1 ? (
         <CodeBlock label="TSX" className="my-4">
           <span className="text-[var(--sf-code-text)]">{doc.usage[0].code}</span>
@@ -189,7 +189,7 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
         </SFTabs>
       )}
 
-      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">ACCESSIBILITY</h2>
+      <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">ACCESSIBILITY</h2>
       <CodeBlock label="INFO" className="my-4">
         <span className="text-muted-foreground">
           {doc.a11y.map((line, i) => (
@@ -552,7 +552,7 @@ export function APIExplorer() {
           EFFECTS LAYER ON TOP WITHOUT BREAKING ACCESSIBILITY.
         </p>
 
-        <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
+        <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
         <div data-anim="api-import-code">
         <CodeBlock label="TSX" className="my-4">
           <span className="text-primary">import</span>
@@ -569,7 +569,7 @@ export function APIExplorer() {
         </CodeBlock>
         </div>
 
-        <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">PROPS</h2>
+        <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">PROPS</h2>
         <SFTable className="mb-6">
           <SFTableHeader>
             <SFTableRow>
@@ -598,7 +598,7 @@ export function APIExplorer() {
           </SFTableBody>
         </SFTable>
 
-        <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">USAGE</h2>
+        <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">USAGE</h2>
         <SFTabs defaultValue="frame">
           <SFTabsList className="border-b-0 mb-0">
             <SFTabsTrigger value="frame">FRAME (DEFAULT)</SFTabsTrigger>
@@ -630,7 +630,7 @@ export function APIExplorer() {
           </SFTabsContent>
         </SFTabs>
 
-        <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">ACCESSIBILITY</h2>
+        <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">ACCESSIBILITY</h2>
         <CodeBlock label="INFO" className="my-4">
           <span className="text-muted-foreground">
             WCAG 2.1 AA COMPLIANT{"\n"}

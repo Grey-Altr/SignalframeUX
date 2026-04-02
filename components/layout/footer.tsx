@@ -41,11 +41,11 @@ export function Footer() {
               <h3 className="text-[11px] font-mono uppercase tracking-wider text-foreground mb-3">
                 DOCS
               </h3>
-              <ul className="space-y-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><Link href="/start" className="sf-link-draw hover:text-foreground">Getting Started</Link></li>
-                <li><Link href="/components" className="sf-link-draw hover:text-foreground">Components</Link></li>
-                <li><Link href="/tokens" className="sf-link-draw hover:text-foreground">Tokens</Link></li>
-                <li><Link href="/reference" className="sf-link-draw hover:text-foreground">API Reference</Link></li>
+              <ul className="space-y-0 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                <li><Link href="/start" className="sf-link-draw hover:text-foreground py-2 inline-block">Getting Started</Link></li>
+                <li><Link href="/components" className="sf-link-draw hover:text-foreground py-2 inline-block">Components</Link></li>
+                <li><Link href="/tokens" className="sf-link-draw hover:text-foreground py-2 inline-block">Tokens</Link></li>
+                <li><Link href="/reference" className="sf-link-draw hover:text-foreground py-2 inline-block">API Reference</Link></li>
               </ul>
             </div>
 
@@ -53,9 +53,9 @@ export function Footer() {
               <h3 className="text-[11px] font-mono uppercase tracking-wider text-foreground mb-3">
                 RESOURCES
               </h3>
-              <ul className="space-y-2 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground">GitHub <span className="text-[9px] text-muted-foreground">(opens in new tab)</span></a></li>
-                <li><Link href="/components" className="sf-link-draw hover:text-foreground">Registry</Link></li>
+              <ul className="space-y-0 text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-2 inline-block">GitHub <span className="text-[9px] text-muted-foreground">(opens in new tab)</span></a></li>
+                <li><Link href="/components" className="sf-link-draw hover:text-foreground py-2 inline-block">Registry</Link></li>
               </ul>
             </div>
 
