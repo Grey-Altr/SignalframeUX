@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { SFBadge } from "@/components/sf/sf-badge";
 import { SFButton } from "@/components/sf/sf-button";
 import {
@@ -26,6 +26,8 @@ import {
   SFSelectValue,
 } from "@/components/sf/sf-select";
 import { SharedCodeBlock as CodeBlock } from "@/components/blocks/shared-code-block";
+
+const SF_SCRAMBLE_CHARS = "SIGNAL//01フレーム▓░▒";
 
 /* ── Sidebar nav structure ── */
 const NAV_SECTIONS = [
@@ -108,8 +110,181 @@ const ALL_NAV_IDS = NAV_SECTIONS.flatMap((s) => s.items.map((i) => i.id));
 
 export function APIExplorer() {
   const [activeNav, setActiveNav] = useState("button");
+  const [previewTheme, setPreviewTheme] = useState<"LIGHT" | "DARK" | "FRAME">("DARK");
+  const [hud, setHud] = useState({ fps: 60, mem: 2.4 });
+  const [scrollProgress, setScrollProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
+
+  // HUD telemetry — update every 2s with slight jitter
+  useEffect(() => {
+    const id = setInterval(() => {
+      setHud({
+        fps: 58 + Math.floor(Math.random() * 5),
+        mem: +(2.1 + Math.random() * 0.8).toFixed(1),
+      });
+    }, 2000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Scroll progress on center panel
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const handler = () => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      const max = scrollHeight - clientHeight;
+      setScrollProgress(max > 0 ? scrollTop / max : 0);
+    };
+    el.addEventListener("scroll", handler, { passive: true });
+    return () => el.removeEventListener("scroll", handler);
+  }, []);
+
+  // GSAP animations — nav stagger, H1 split-text, typewriter, HUD lines, button scramble, magnetic cursor
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let ctx: { revert: () => void } | null = null;
+    const magnetCleanups: Array<() => void> = [];
+    const scrambleCleanups: Array<() => void> = [];
+
+    import("@/lib/gsap-plugins").then(({ gsap, SplitText }) => {
+      ctx = gsap.context(() => {
+        // ── 1. Nav items stagger fade-in (#9) ──
+        const navItems = sidebarRef.current?.querySelectorAll("button");
+        if (navItems?.length) {
+          gsap.from(navItems, {
+            x: -20,
+            opacity: 0,
+            duration: 0.35,
+            stagger: 0.04,
+            ease: "power2.out",
+            delay: 0.2,
+          });
+        }
+
+        // ── 2. H1 split-text reveal (#10) ──
+        const h1 = document.querySelector("[data-anim='api-h1']");
+        if (h1) {
+          const split = SplitText.create(h1, { type: "chars" });
+          gsap.from(split.chars, {
+            y: "100%",
+            opacity: 0,
+            duration: 0.45,
+            stagger: 0.03,
+            ease: "power3.out",
+            delay: 0.4,
+          });
+        }
+
+        // ── 3. Typewriter on import code block (#11) ──
+        const codeBlock = document.querySelector("[data-anim='api-import-code']");
+        if (codeBlock) {
+          const original = codeBlock.textContent || "";
+          const el = codeBlock as HTMLElement;
+          el.style.overflow = "hidden";
+          gsap.fromTo(
+            { length: 0 },
+            { length: 0 },
+            {
+              length: original.length,
+              duration: original.length * 0.015,
+              ease: "none",
+              delay: 0.8,
+              onUpdate() {
+                // Clip visible text via CSS clip-path based on char progress
+                const progress = this.targets()[0].length / original.length;
+                el.style.clipPath = `inset(0 ${(1 - progress) * 100}% 0 0)`;
+              },
+              onComplete() {
+                el.style.clipPath = "none";
+              },
+            }
+          );
+        }
+
+        // ── 4. HUD line stagger (#12) ──
+        const hudLines = document.querySelectorAll("[data-anim='hud-line']");
+        if (hudLines.length) {
+          gsap.from(hudLines, {
+            opacity: 0,
+            x: -10,
+            duration: 0.3,
+            stagger: 0.2,
+            delay: 0.6,
+            ease: "power2.out",
+          });
+        }
+
+        // ── 5. Button scramble on hover (#13) ──
+        const previewButtons = document.querySelectorAll("[data-anim='preview-btn']");
+        previewButtons.forEach((btn) => {
+          const el = btn as HTMLElement;
+          const originalText = el.textContent || "";
+          const onEnter = () => {
+            gsap.to(el, {
+              duration: 0.25,
+              scrambleText: {
+                text: originalText,
+                chars: SF_SCRAMBLE_CHARS,
+                speed: 0.5,
+              },
+            });
+          };
+          el.addEventListener("mouseenter", onEnter);
+          scrambleCleanups.push(() => el.removeEventListener("mouseenter", onEnter));
+        });
+
+        // ── 6. Click pop on preview buttons (#25) ──
+        previewButtons.forEach((btn) => {
+          const el = btn as HTMLElement;
+          const onClick = () => {
+            gsap.fromTo(el, { scale: 1 }, { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" });
+          };
+          el.addEventListener("click", onClick);
+          scrambleCleanups.push(() => el.removeEventListener("click", onClick));
+        });
+
+        // ── 7. Magnetic cursor on nav items (#14) ──
+        const navBtns = sidebarRef.current?.querySelectorAll("button");
+        navBtns?.forEach((btn) => {
+          const onMove = (e: MouseEvent) => {
+            const rect = btn.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = e.clientX - cx;
+            const dy = e.clientY - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const radius = 60;
+            if (dist < radius) {
+              const strength = (1 - dist / radius) * 6;
+              gsap.to(btn, {
+                x: (dx / dist) * strength,
+                y: (dy / dist) * strength,
+                duration: 0.3,
+                ease: "power2.out",
+              });
+            }
+          };
+          const onLeave = () => {
+            gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+          };
+          btn.addEventListener("mousemove", onMove);
+          btn.addEventListener("mouseleave", onLeave);
+          magnetCleanups.push(() => {
+            btn.removeEventListener("mousemove", onMove);
+            btn.removeEventListener("mouseleave", onLeave);
+          });
+        });
+      });
+    });
+
+    return () => {
+      ctx?.revert();
+      magnetCleanups.forEach((fn) => fn());
+      scrambleCleanups.forEach((fn) => fn());
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleNavClick(id: string) {
     setActiveNav(id);
@@ -235,7 +410,16 @@ export function APIExplorer() {
       </nav>
 
       {/* CENTER PANEL — Documentation */}
-      <div ref={contentRef} className="overflow-y-auto border-r-[3px] border-foreground py-10 px-6 md:px-12 h-auto md:h-[calc(100vh-var(--nav-height))]">
+      <div ref={contentRef} className="overflow-y-auto border-r-[3px] border-foreground py-10 px-6 md:px-12 h-auto md:h-[calc(100vh-var(--nav-height))] relative">
+        {/* Scroll progress bar */}
+        <div
+          className="fixed top-[var(--nav-height)] left-[240px] right-[383px] h-[3px] z-20 origin-left hidden md:block pointer-events-none"
+          style={{
+            background: "var(--color-primary)",
+            transform: `scaleX(${scrollProgress})`,
+            transition: "transform 50ms linear",
+          }}
+        />
         <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-6">
           <span className="text-primary">API</span> /{" "}
           <span className="text-primary">{activeItem.section}</span> / {activeItem.label.toUpperCase()}
@@ -253,7 +437,7 @@ export function APIExplorer() {
           </div>
         ) : (
           <>
-        <h1 className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">BUTTON</h1>
+        <h1 data-anim="api-h1" className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">BUTTON</h1>
         <SFBadge intent="signal" className="mb-6 text-[11px] tracking-[0.1em]">
           FRAME LAYER · v2.1.0 · STABLE
         </SFBadge>
@@ -265,6 +449,7 @@ export function APIExplorer() {
         </p>
 
         <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
+        <div data-anim="api-import-code">
         <CodeBlock label="TSX" className="my-4">
           <span className="text-primary">import</span>
           {" { "}<span className="text-[var(--sf-code-text)]">Button</span>{" } "}
@@ -278,6 +463,7 @@ export function APIExplorer() {
           <span className="text-primary">from</span>{" "}
           <span className="text-[var(--sf-yellow)]">{"'@sfux/components/Button'"}</span>
         </CodeBlock>
+        </div>
 
         <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">PROPS</h2>
         <SFTable className="mb-6">
@@ -362,13 +548,14 @@ export function APIExplorer() {
               LIVE PREVIEW&trade;
             </span>
             <div className="flex gap-2">
-              {["LIGHT", "DARK", "FRAME"].map((label, i) => (
+              {(["LIGHT", "DARK", "FRAME"] as const).map((label) => (
                 <SFButton
                   key={label}
-                  intent={i === 0 ? "primary" : "ghost"}
+                  intent={previewTheme === label ? "primary" : "ghost"}
                   size="sm"
+                  onClick={() => setPreviewTheme(label)}
                   className={`text-[11px] h-6 px-2.5 ${
-                    i !== 0 ? "border-[var(--sf-subtle-border)] text-muted-foreground" : ""
+                    previewTheme !== label ? "border-[var(--sf-subtle-border)] text-muted-foreground" : ""
                   }`}
                 >
                   {label}
@@ -377,29 +564,39 @@ export function APIExplorer() {
             </div>
           </div>
 
-          <div className="relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px]">
-            <div className="absolute top-5 left-5 text-[10px] uppercase tracking-[0.2em] text-[var(--sf-code-text)] opacity-40">
-              <div>SF//UX::BUTTON::RENDER</div>
-              <div>VARIANT: FRAME | GHOST | SIGNAL</div>
-              <div>SIGNAL: SHIMMER @ 0.8</div>
-              <div>FPS: 60 | MEM: 2.4MB</div>
+          <div
+            className="relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px] transition-colors duration-200"
+            style={{
+              background:
+                previewTheme === "LIGHT" ? "oklch(0.97 0 0)"
+                : previewTheme === "FRAME" ? "oklch(0.65 0.29 350)"
+                : undefined,
+            }}
+          >
+            <div className={`absolute top-5 left-5 text-[10px] uppercase tracking-[0.2em] opacity-40 ${
+              previewTheme === "LIGHT" ? "text-foreground" : "text-[var(--sf-code-text)]"
+            }`}>
+              <div data-anim="hud-line">SF//UX::BUTTON::RENDER</div>
+              <div data-anim="hud-line">VARIANT: FRAME | GHOST | SIGNAL</div>
+              <div data-anim="hud-line">SIGNAL: SHIMMER @ 0.8</div>
+              <div data-anim="hud-line">FPS: {hud.fps} | MEM: {hud.mem}MB</div>
             </div>
 
             <div className="text-center mt-[60px]">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: FRAME</div>
-              <SFButton intent="ghost" size="lg" className="bg-background text-foreground border-background hover:bg-background/80 hover:text-foreground">GET STARTED</SFButton>
+              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-background text-foreground border-background hover:bg-background/80 hover:text-foreground">GET STARTED</SFButton>
             </div>
             <div className="text-center">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: GHOST</div>
-              <SFButton intent="ghost" size="lg" className="text-foreground border-foreground hover:bg-foreground hover:text-background">VIEW DOCS</SFButton>
+              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="text-foreground border-foreground hover:bg-foreground hover:text-background">VIEW DOCS</SFButton>
             </div>
             <div className="text-center">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: SIGNAL (SHIMMER)</div>
-              <SFButton intent="primary" size="lg" className="relative overflow-hidden">LAUNCH SEQUENCE</SFButton>
+              <SFButton intent="primary" size="lg" data-anim="preview-btn" className="relative overflow-hidden">LAUNCH SEQUENCE</SFButton>
             </div>
             <div className="text-center">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: YELLOW (TDR)</div>
-              <SFButton intent="ghost" size="lg" className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground">
+              <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground">
                 BUY ME&trade;
               </SFButton>
             </div>
@@ -413,6 +610,12 @@ export function APIExplorer() {
             {"\n  "}<span className="text-[var(--sf-code-keyword)]">size</span>=
             <span className="text-[var(--sf-yellow)]">{'"md"'}</span>
             {"\n/>\n"}
+          </div>
+
+          {/* VHS badge */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground opacity-40">
+            <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+            <span>SF//UX</span>
           </div>
         </SFScrollArea>
       </aside>

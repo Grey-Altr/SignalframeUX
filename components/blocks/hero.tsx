@@ -14,8 +14,8 @@ export function Hero() {
         {/* Halftone decorative circle */}
         <div
           className="absolute -top-20 -right-20 w-[400px] h-[400px] opacity-[0.15]"
-          style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
           style={{
+            clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
             background:
               "radial-gradient(circle, transparent 30%, oklch(1 0 0 / 0.3) 30%, oklch(1 0 0 / 0.3) 32%, transparent 32%), radial-gradient(circle, transparent 30%, oklch(1 0 0 / 0.3) 30%, oklch(1 0 0 / 0.3) 32%, transparent 32%)",
             backgroundSize: "8px 8px",

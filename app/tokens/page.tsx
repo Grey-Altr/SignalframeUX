@@ -24,7 +24,7 @@ export default function TokensPage() {
             EXPLORER
           </h1>
           <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-            OKLCH COLOR SPACE · 48 SCALES
+            OKLCH COLOR SPACE · 49 SCALES
           </div>
         </div>
 

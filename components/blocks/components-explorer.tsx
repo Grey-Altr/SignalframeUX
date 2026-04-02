@@ -234,11 +234,46 @@ const variantStyles: Record<
   },
 };
 
+/* ── Sliding filter indicator ── */
+function FilterIndicator({
+  filterBarRef,
+  activeFilter,
+}: {
+  filterBarRef: React.RefObject<HTMLDivElement | null>;
+  activeFilter: Category;
+}) {
+  const indicatorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bar = filterBarRef.current;
+    const indicator = indicatorRef.current;
+    if (!bar || !indicator) return;
+
+    const activeBtn = bar.querySelector<HTMLElement>(
+      `button[data-filter="${activeFilter}"]`
+    );
+    if (!activeBtn) return;
+
+    const barRect = bar.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+    indicator.style.width = `${btnRect.width}px`;
+    indicator.style.transform = `translateX(${btnRect.left - barRect.left}px)`;
+  }, [activeFilter, filterBarRef]);
+
+  return (
+    <div
+      ref={indicatorRef}
+      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
+    />
+  );
+}
+
 export function ComponentsExplorer() {
   const [activeFilter, setActiveFilter] = useState<Category>("ALL");
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
+  const filterBarRef = useRef<HTMLDivElement>(null);
   const flipStateRef = useRef<Flip.FlipState | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -315,7 +350,7 @@ export function ComponentsExplorer() {
   return (
     <>
       {/* ── Filter Bar ── */}
-      <div className="flex flex-wrap border-b-[3px] border-foreground">
+      <div ref={filterBarRef} className="relative flex flex-wrap border-b-[3px] border-foreground">
         {CATEGORIES.map((cat) => (
           <SFButton
             key={cat}
@@ -323,6 +358,7 @@ export function ComponentsExplorer() {
             size="sm"
             onClick={() => handleFilter(cat)}
             aria-pressed={activeFilter === cat}
+            data-filter={cat}
             className={`border-0 border-r-2 border-foreground rounded-none px-5 py-3.5 text-[11px] tracking-[0.15em] h-auto ${
               activeFilter === cat ? "text-primary" : ""
             }`}
@@ -338,12 +374,11 @@ export function ComponentsExplorer() {
           onChange={(e) => handleSearch(e.target.value)}
           className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[11px] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
-        <SFBadge
-          intent="outline"
-          className="border-0 border-l-2 border-foreground rounded-none px-5 py-3.5 h-auto text-[11px] tracking-[0.15em] text-muted-foreground"
-        >
+        <div className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[11px] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center">
           {resultCount} RESULTS
-        </SFBadge>
+        </div>
+        {/* Filter indicator bar */}
+        <FilterIndicator filterBarRef={filterBarRef} activeFilter={activeFilter} />
       </div>
 
       {/* ── Component Grid ── */}
@@ -409,11 +444,11 @@ export function ComponentsExplorer() {
       {/* ── Detail Hint Bar ── */}
       <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[11px] font-bold uppercase tracking-[0.15em]">
         <span>
-          {resultCount} FRAME + SIGNAL PRIMITIVES FOR EVERY SURFACE
+          CLICK ANY COMPONENT TO VIEW PROPS, VARIANTS, AND CODE →
         </span>
-        <span className="text-primary">
-          340 COMPONENTS
-        </span>
+        <a href="/reference" className="text-primary sf-link-draw">
+          VIEW ALL 340 COMPONENTS
+        </a>
       </div>
     </>
   );
