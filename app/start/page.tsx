@@ -1,16 +1,24 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFBadge } from "@/components/sf/sf-badge";
 import { SFSeparator } from "@/components/sf/sf-separator";
 import Link from "next/link";
+import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
+import { GRAIN_BG_STYLE } from "@/lib/grain";
+
+export const metadata: Metadata = {
+  title: "Get Started — SIGNALFRAME//UX",
+  description: "From zero to Signal//Frame in 5 minutes. Install, initialize, and deploy.",
+};
 
 const STEPS = [
   {
     number: "01",
     title: "INSTALL",
     description:
-      "ADD SIGNALFRAMEUX\u2122 TO YOUR PROJECT. THE CORE PACKAGE INCLUDES ALL SIGNAL LAYER COMPONENTS, TOKENS, AND THE API SURFACE. FRAME LAYER IS INCLUDED BUT OPT-IN.",
+      "ADD SIGNALFRAMEUX\u2122 TO YOUR PROJECT. THE CORE PACKAGE INCLUDES ALL FRAME LAYER COMPONENTS, TOKENS, AND THE API SURFACE. SIGNAL LAYER IS INCLUDED BUT OPT-IN.",
     code: [
       { type: "comment", text: "# NPM" },
       { type: "line", parts: [{ text: "npm", cls: "fn" }, { text: " install " }, { text: "@sfux/core @sfux/components @sfux/tokens", cls: "str" }] },
@@ -18,8 +26,8 @@ const STEPS = [
       { type: "comment", text: "# PNPM (RECOMMENDED)" },
       { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " add " }, { text: "@sfux/core @sfux/components @sfux/tokens", cls: "str" }] },
       { type: "blank" },
-      { type: "comment", text: "# FRAME LAYER (OPTIONAL)" },
-      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " add " }, { text: "@sfux/frame", cls: "str" }] },
+      { type: "comment", text: "# SIGNAL LAYER (OPTIONAL)" },
+      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " add " }, { text: "@sfux/signal", cls: "str" }] },
     ],
     note: "REQUIRES REACT 18+ AND TYPESCRIPT 5+. TAILWINDCSS IS OPTIONAL BUT RECOMMENDED.",
     highlight: false,
@@ -28,14 +36,14 @@ const STEPS = [
     number: "02",
     title: "INITIALIZE",
     description:
-      "WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT TO SET YOUR THEME, TOKEN MODE, AND FRAME LAYER PREFERENCES.",
+      "WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT TO SET YOUR THEME, TOKEN MODE, AND SIGNAL LAYER PREFERENCES.",
     code: [
       { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "SFUXProvider", cls: "fn" }, { text: ", " }, { text: "createSignalframeUX", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/core'", cls: "str" }] },
       { type: "blank" },
       { type: "line", parts: [{ text: "const", cls: "kw" }, { text: " config = " }, { text: "createSignalframeUX", cls: "fn" }, { text: "({" }] },
       { type: "line", parts: [{ text: "  " }, { text: "theme", cls: "cn" }, { text: ": " }, { text: "'dark'", cls: "str" }, { text: "," }] },
       { type: "line", parts: [{ text: "  " }, { text: "tokens", cls: "cn" }, { text: ": " }, { text: "'oklch'", cls: "str" }, { text: "," }] },
-      { type: "line", parts: [{ text: "  " }, { text: "frame", cls: "cn" }, { text: ": { " }, { text: "enabled", cls: "cn" }, { text: ": " }, { text: "true", cls: "kw" }, { text: " }" }] },
+      { type: "line", parts: [{ text: "  " }, { text: "signal", cls: "cn" }, { text: ": { " }, { text: "enabled", cls: "cn" }, { text: ": " }, { text: "true", cls: "kw" }, { text: " }" }] },
       { type: "line", parts: [{ text: "})" }] },
       { type: "blank" },
       { type: "line", parts: [{ text: "export default function", cls: "kw" }, { text: " " }, { text: "App", cls: "fn" }, { text: "() {" }] },
@@ -53,7 +61,7 @@ const STEPS = [
     number: "03",
     title: "USE_COMPONENTS",
     description:
-      "IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY INHERIT YOUR THEME AND TOKEN CONFIGURATION. SIGNAL COMPONENTS ARE DETERMINISTIC. FRAME VARIANTS ADD GENERATIVE EFFECTS ON TOP.",
+      "IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY INHERIT YOUR THEME AND TOKEN CONFIGURATION. FRAME COMPONENTS ARE STRUCTURAL. SIGNAL VARIANTS ADD GENERATIVE EFFECTS ON TOP.",
     code: [
       { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "Button", cls: "fn" }, { text: ", " }, { text: "Card", cls: "fn" }, { text: ", " }, { text: "Input", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/components'", cls: "str" }] },
       { type: "blank" },
@@ -64,7 +72,7 @@ const STEPS = [
       { type: "line", parts: [{ text: "      <" }, { text: "Button", cls: "fn" }, { text: " " }, { text: "variant", cls: "cn" }, { text: "=" }, { text: '"signal"', cls: "str" }, { text: ">" }] },
       { type: "line", parts: [{ text: "        \u2022TRANSMIT" }] },
       { type: "line", parts: [{ text: "      </" }, { text: "Button", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "      <" }, { text: "Button", cls: "fn" }, { text: " " }, { text: "variant", cls: "cn" }, { text: "=" }, { text: '"frame"', cls: "str" }, { text: " " }, { text: "frameEffect", cls: "cn" }, { text: "=" }, { text: '"shimmer"', cls: "str" }, { text: ">" }] },
+      { type: "line", parts: [{ text: "      <" }, { text: "Button", cls: "fn" }, { text: " " }, { text: "variant", cls: "cn" }, { text: "=" }, { text: '"signal"', cls: "str" }, { text: " " }, { text: "signalEffect", cls: "cn" }, { text: "=" }, { text: '"shimmer"', cls: "str" }, { text: ">" }] },
       { type: "line", parts: [{ text: "        ENGAGE FRAME" }] },
       { type: "line", parts: [{ text: "      </" }, { text: "Button", cls: "fn" }, { text: ">" }] },
       { type: "line", parts: [{ text: "    </" }, { text: "Card", cls: "fn" }, { text: ">" }] },
@@ -78,9 +86,9 @@ const STEPS = [
     number: "04",
     title: "ACTIVATE_FRAME",
     description:
-      "THE FRAME LAYER IS THE GENERATIVE EXPRESSION SYSTEM. ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT, AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE WITH THE SIGNAL LAYER\u2019S READABILITY.",
+      "THE SIGNAL LAYER IS THE GENERATIVE EXPRESSION SYSTEM. ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT, AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE WITH THE FRAME LAYER\u2019S READABILITY.",
     code: [
-      { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "NoiseBG", cls: "fn" }, { text: ", " }, { text: "GlitchText", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/frame'", cls: "str" }] },
+      { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "NoiseBG", cls: "fn" }, { text: ", " }, { text: "GlitchText", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/signal'", cls: "str" }] },
       { type: "blank" },
       { type: "line", parts: [{ text: "<" }, { text: "NoiseBG", cls: "fn" }] },
       { type: "line", parts: [{ text: "  " }, { text: "intensity", cls: "cn" }, { text: "={" }, { text: "0.3", cls: "cn" }, { text: "}" }] },
@@ -92,14 +100,14 @@ const STEPS = [
       { type: "line", parts: [{ text: "  SIGNAL//FRAME\u2122" }] },
       { type: "line", parts: [{ text: "</" }, { text: "GlitchText", cls: "fn" }, { text: ">" }] },
     ],
-    note: "FRAME EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION. USE frameIntensity TO CONTROL VISUAL WEIGHT.",
+    note: "SIGNAL EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION. USE signalIntensity TO CONTROL VISUAL WEIGHT.",
     highlight: false,
   },
   {
     number: "05",
     title: "DEPLOY",
     description:
-      "SIGNALFRAMEUX\u2122 IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. FRAME LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
+      "SIGNALFRAMEUX\u2122 IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. SIGNAL LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
     code: [
       { type: "comment", text: "# BUILD FOR PRODUCTION" },
       { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " build" }] },
@@ -119,15 +127,15 @@ const STEPS = [
 const CHECKLIST = [
   { label: "INSTALL @SFUX/CORE AND DEPENDENCIES", done: true, status: "COMPLETE" },
   { label: "WRAP APP IN SFUXPROVIDER", done: true, status: "COMPLETE" },
-  { label: "IMPORT AND USE SIGNAL COMPONENTS", done: true, status: "COMPLETE" },
+  { label: "IMPORT AND USE FRAME COMPONENTS", done: true, status: "COMPLETE" },
   { label: "CONFIGURE OKLCH TOKEN OVERRIDES", done: false, status: "OPTIONAL" },
-  { label: "ENABLE FRAME LAYER EFFECTS", done: false, status: "OPTIONAL" },
+  { label: "ENABLE SIGNAL LAYER EFFECTS", done: false, status: "OPTIONAL" },
   { label: "SET UP STORYBOOK FOR DEVELOPMENT", done: false, status: "RECOMMENDED" },
 ];
 
 const NEXT_CARDS = [
   { title: "BROWSE COMPONENTS", description: "EXPLORE ALL 340+ SIGNAL AND FRAME COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.", arrow: "COMPONENT LIBRARY", href: "/components" },
-  { title: "API REFERENCE", description: "DIVE INTO THE FULL API \u2014 PROPS, HOOKS, TOKENS, AND THE PROGRAMMABLE SURFACE.", arrow: "API DOCS", href: "/api" },
+  { title: "API REFERENCE", description: "DIVE INTO THE FULL API \u2014 PROPS, HOOKS, TOKENS, AND THE PROGRAMMABLE SURFACE.", arrow: "API DOCS", href: "/reference" },
   { title: "TOKEN EXPLORER", description: "VISUALIZE AND CUSTOMIZE THE OKLCH COLOR SCALES, SPACING, TYPE, AND MOTION TOKENS.", arrow: "TOKEN EXPLORER", href: "/tokens" },
 ];
 
@@ -140,17 +148,14 @@ type CodeLine =
 const COLOR_MAP: Record<string, string> = {
   kw: "text-primary",
   str: "text-[var(--sf-yellow)]",
-  fn: "text-[oklch(0.6_0.28_145)]",
+  fn: "text-[var(--sf-code-text)]",
   cm: "text-muted-foreground",
-  cn: "text-[oklch(0.7_0.15_25)]",
+  cn: "text-[var(--sf-code-keyword)]",
 };
 
 function CodeBlock({ lines }: { lines: CodeLine[] }) {
   return (
-    <div className="relative bg-[oklch(0.12_0_0)] p-5 pr-6 font-mono text-[13px] leading-[1.7] overflow-x-auto shadow-[inset_0_1px_3px_oklch(0_0_0/0.15)]">
-      <span className="absolute top-1.5 right-2.5 text-[8px] text-muted-foreground uppercase tracking-[0.3em]">
-        TERMINAL&trade;
-      </span>
+    <SharedCodeBlock label="TERMINAL™" className="text-[13px]">
       <code>
         {lines.map((line, i) => {
           if (line.type === "blank") return <br key={i} />;
@@ -161,7 +166,7 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
               </div>
             );
           return (
-            <div key={i} className="text-[oklch(0.6_0.28_145)]">
+            <div key={i} className="text-[var(--sf-code-text)]">
               {line.parts.map((part, j) => {
                 if (!part.cls) return <span key={j}>{part.text}</span>;
                 return (
@@ -174,36 +179,41 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
           );
         })}
       </code>
-    </div>
+    </SharedCodeBlock>
   );
 }
-
-const GRAIN_BG_STYLE = {
-  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-  backgroundSize: "150px 150px",
-};
 
 export default function StartPage() {
   return (
     <>
       <Nav />
-      <main className="mt-[83px]">
+      <main id="main-content" className="mt-[var(--nav-height)]">
         {/* ═══ HERO ═══ */}
-        <section className="bg-foreground text-background py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)] border-b-4 border-foreground">
-          <h1
-            className="sf-display text-[clamp(48px,11vw,120px)] mb-6"
-          >
-            GET
-            <br />
-            <span className="text-primary">STARTED</span>
-          </h1>
-          <p className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] max-w-[600px] leading-[1.5]">
-            FROM ZERO TO SIGNAL//FRAME&trade; IN 5 MINUTES. ACCEPT THE
-            INTERFACE INTO YOUR LIFE.
-          </p>
-          <p className="mt-6 text-[11px] text-primary uppercase tracking-[0.15em]">
-            &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
-          </p>
+        <section className="bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
+          {/* Yellow accent bar */}
+          <div className="h-[6px] bg-[var(--sf-yellow)]" aria-hidden="true" />
+          <div className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]">
+            <div className="flex items-start justify-between">
+              <h1
+                className="sf-display text-[clamp(48px,11vw,120px)] mb-6"
+              >
+                GET
+                <br />
+                <span className="text-primary">STARTED</span>
+              </h1>
+              {/* Monogram watermark */}
+              <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/10 dark:text-foreground/10 select-none leading-none hidden md:block" aria-hidden="true">
+                SF
+              </span>
+            </div>
+            <p className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] max-w-[600px] leading-[1.5]">
+              FROM ZERO TO SIGNAL//FRAME&trade; IN 5 MINUTES. ACCEPT THE
+              INTERFACE INTO YOUR LIFE.
+            </p>
+            <p className="mt-6 text-[11px] text-primary uppercase tracking-[0.15em]">
+              &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
+            </p>
+          </div>
         </section>
 
         {/* ═══ STEPS ═══ */}
@@ -238,9 +248,7 @@ export default function StartPage() {
                 />
               )}
               <h2
-                className={`sf-display leading-none mb-4 ${
-                  step.highlight ? "text-foreground" : "text-foreground"
-                }`}
+                className="sf-display leading-none mb-4 text-foreground"
                 style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
               >
                 {step.title}
@@ -290,7 +298,7 @@ export default function StartPage() {
                 <div className="flex-1">{item.label}</div>
                 <SFBadge
                   intent={item.done ? "primary" : "outline"}
-                  className="text-[9px]"
+                  className="text-[11px]"
                 >
                   {item.status}
                 </SFBadge>
@@ -362,18 +370,22 @@ export default function StartPage() {
             <p className="text-[14px] leading-[1.7] text-foreground max-w-[700px]">
               SignalframeUX&trade; is open source. Built by people who believe
               design systems should be{" "}
-              <a href="#" className="text-primary no-underline hover:underline">
+              <Link href="/components" className="text-primary no-underline hover:underline">
                 programmable surfaces
-              </a>
+              </Link>
               , not static pattern libraries. Work. Build. Signal. Repeat.&trade;
             </p>
             <div className="mt-5 flex gap-4">
-              <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
-                GITHUB
-              </SFButton>
-              <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
-                STORYBOOK
-              </SFButton>
+              <a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer">
+                <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+                  GITHUB
+                </SFButton>
+              </a>
+              <a href="https://github.com/signalframeux/storybook" target="_blank" rel="noopener noreferrer">
+                <SFButton intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
+                  STORYBOOK
+                </SFButton>
+              </a>
             </div>
           </div>
         </section>

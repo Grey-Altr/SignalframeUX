@@ -22,7 +22,7 @@
   --color-secondary: oklch(0.970 0.005 298);
   --color-secondary-foreground: oklch(0.205 0 0);
   --color-muted: oklch(0.930 0.005 298);
-  --color-muted-foreground: oklch(0.550 0.010 298);
+  --color-muted-foreground: oklch(0.460 0.010 298);
   --color-accent: oklch(0.930 0.005 298);
   --color-accent-foreground: oklch(0.205 0 0);
   --color-destructive: oklch(0.550 0.180 25);
@@ -60,11 +60,13 @@
 
   /* ── Typography (literal font names — NOT var() refs) ── */
   --font-sans: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
-  --font-mono: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-heading: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-display: "Anton", "Impact", sans-serif;
 
-  /* ── Type Scale: Augmented Fourth (1.414) ── */
+  /* ── Type Scale: Augmented Fourth (1.414) ──
+     Available for adoption — currently most components use clamp() or text-[Npx].
+     Prefer these tokens for new components to establish consistent vertical rhythm. */
   --text-xs: 0.500rem;
   --text-sm: 0.707rem;
   --text-base: 1.000rem;
@@ -85,10 +87,24 @@
   --sf-yellow: oklch(0.91 0.18 98);
   --sf-green: oklch(0.85 0.25 145);
   --sf-clock: oklch(0.145 0 0);
+  --color-success: oklch(0.85 0.25 145);
+  --color-warning: oklch(0.91 0.18 98);
   --sf-grain-opacity: 0.03;
   --sf-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
   --sf-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
   --sf-deboss-shadow: 0 -1px 0 oklch(0 0 0 / 0.15);
+
+  /* ── Semantic Surface Tokens ── */
+  --sf-code-bg: oklch(0.12 0 0);
+  --sf-code-text: oklch(0.6 0.28 145);
+  --sf-code-keyword: oklch(0.7 0.15 25);
+  --sf-code-const: oklch(0.7 0.18 15);
+  --sf-dark-surface: oklch(0.2 0 0);
+  --sf-darker-surface: oklch(0.1 0 0);
+  --sf-darkest-surface: oklch(0.08 0 0);
+  --sf-subtle-border: oklch(0.3 0 0);
+  --sf-dim-text: oklch(0.5 0 0);
+  --sf-muted-text-dark: oklch(0.65 0 0);
 
   /* ── Motion Tokens ── */
   --duration-instant: 34ms;
@@ -103,6 +119,23 @@
   /* ── VHS Overlay Tokens ── */
   --vhs-crt-opacity: 0.2;
   --vhs-noise-opacity: 0.015;
+
+  /* ── Layout Tokens ── */
+  --nav-height: 83px;
+
+  /* ── Z-Index Scale ── */
+  --z-nav: 50;
+  --z-overlay: 100;
+  --z-scroll-top: 200;
+  --z-progress: 300;
+  --z-cursor: 500;
+  --z-vhs: 600;
+  --z-skip: 900;
+
+  /* ── Border Width Scale ── */
+  --border-element: 2px;
+  --border-divider: 3px;
+  --border-section: 4px;
 
   /* ── Press Feedback Tokens ── */
   --press-scale: 0.97;
@@ -123,7 +156,7 @@
   --color-secondary: oklch(0.269 0 0);
   --color-secondary-foreground: oklch(0.985 0 0);
   --color-muted: oklch(0.269 0 0);
-  --color-muted-foreground: oklch(0.708 0 0);
+  --color-muted-foreground: oklch(0.730 0 0);
   --color-accent: oklch(0.269 0 0);
   --color-accent-foreground: oklch(0.985 0 0);
   --color-border: oklch(0.400 0 0);
@@ -176,10 +209,22 @@
     border-width: 2px;
     border-color: var(--color-foreground);
   }
+  .sf-ui-text {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  /* Deprecated alias — use .sf-ui-text instead */
   .sf-mono {
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+  .sf-caption {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
   }
   .sf-display {
     font-family: var(--font-display);
@@ -357,6 +402,12 @@
   }
 }
 
+/* ── Hero deferred elements: hidden until GSAP animates them in.
+   <noscript> in layout.tsx overrides to opacity:1 for no-JS users. ── */
+.sf-hero-deferred {
+  opacity: 0;
+}
+
 /* ── Scroll-triggered reveal classes ── */
 .sf-anim-hidden {
   opacity: 0 !important;
@@ -407,6 +458,12 @@
   0% { transform: scale(1); }
   40% { transform: scale(1.08); }
   100% { transform: scale(1); }
+}
+
+/* ── Motion token slide animation ── */
+@keyframes sf-motion-slide {
+  from { left: 0; }
+  to { left: calc(100% - 28px); }
 }
 
 /* ── Marquee animation for community band ── */
@@ -480,4 +537,127 @@
     background-color var(--duration-normal) var(--ease-default),
     color var(--duration-normal) var(--ease-default),
     border-color var(--duration-normal) var(--ease-default);
+}
+
+/* ── Hero CTA border-draw animation ── */
+.hero-cta-btn {
+  transition:
+    transform var(--duration-glacial) var(--ease-spring),
+    color var(--duration-normal) var(--ease-default),
+    background-color var(--duration-normal) var(--ease-default),
+    border-color var(--duration-normal) var(--ease-default);
+}
+.hero-cta-btn:hover {
+  transform: translateY(var(--hover-y));
+  transition:
+    transform var(--duration-normal) var(--ease-hover),
+    color var(--duration-normal) var(--ease-default),
+    background-color var(--duration-normal) var(--ease-default),
+    border-color var(--duration-normal) var(--ease-default);
+}
+.hero-cta-btn.primary:hover {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  border-color: var(--color-foreground);
+}
+.hero-cta-btn.secondary:hover {
+  border-width: 3px;
+  padding: 13px 27px;
+}
+.bd-span {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-cta-btn::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; height: 3px; width: 0;
+  background: var(--color-primary);
+  transition: width var(--duration-fast) ease 0s;
+  z-index: 1;
+}
+.hero-cta-btn::after {
+  content: '';
+  position: absolute;
+  top: -2px; right: -2px; width: 3px; height: 0;
+  background: var(--color-primary);
+  transition: height var(--duration-fast) ease 0.1s;
+  z-index: 1;
+}
+.bd-span::before {
+  content: '';
+  position: absolute;
+  bottom: -2px; right: -2px; height: 3px; width: 0;
+  background: var(--color-primary);
+  transition: width var(--duration-fast) ease 0.2s;
+}
+.bd-span::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: -2px; width: 3px; height: 0;
+  background: var(--color-primary);
+  transition: height var(--duration-fast) ease 0.3s;
+}
+.hero-cta-btn:hover::before { width: calc(100% + 4px); }
+.hero-cta-btn:hover::after { height: calc(100% + 4px); }
+.hero-cta-btn:hover .bd-span::before { width: calc(100% + 4px); }
+.hero-cta-btn:hover .bd-span::after { height: calc(100% + 4px); }
+
+/* ── Custom Cursor ── */
+.sf-has-mouse body, .sf-has-mouse body * { cursor: none; }
+@media (pointer: coarse) {
+  body, body * { cursor: auto !important; }
+  .sf-cursor { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-cursor { display: none !important; }
+  body, body * { cursor: auto !important; }
+}
+.sf-cursor {
+  --cursor-scale: 1;
+  position: fixed;
+  top: -24px;
+  left: -24px;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  mix-blend-mode: exclusion;
+  transform: translate(0px, 0px);
+  transition: opacity var(--duration-normal);
+  opacity: 1;
+}
+.sf-cursor::before,
+.sf-cursor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: linear-gradient(var(--color-primary) 42%, transparent 42%, transparent 58%, var(--color-primary) 58%);
+  transition: transform var(--duration-slow) var(--ease-default),
+              background var(--duration-slow) var(--ease-default);
+}
+.sf-cursor::before {
+  width: 2px;
+  height: 36px;
+  transform: translate(-50%, -50%) scaleY(var(--cursor-scale));
+}
+.sf-cursor::after {
+  width: 36px;
+  height: 2px;
+  transform: translate(-50%, -50%) scaleX(var(--cursor-scale));
+}
+.sf-cursor.active { opacity: 1; }
+.sf-cursor.active::before {
+  transform: translate(-50%, -50%) rotate(45deg) scaleY(var(--cursor-scale));
+}
+.sf-cursor.active::after {
+  transform: translate(-50%, -50%) rotate(45deg) scaleX(var(--cursor-scale));
+}
+.sf-cursor.active::before {
+  background: linear-gradient(var(--color-primary) 30%, transparent 30%, transparent 70%, var(--color-primary) 70%);
+}
+.sf-cursor.active::after {
+  background: linear-gradient(to right, var(--color-primary) 30%, transparent 30%, transparent 70%, var(--color-primary) 70%);
 }

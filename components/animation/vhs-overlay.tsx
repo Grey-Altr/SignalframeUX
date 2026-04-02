@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { gsap } from "@/lib/gsap-plugins";
+import { gsap } from "@/lib/gsap-core";
 
 /**
  * VHS Overlay — ambient CRT texture with a touch of analog decay.
@@ -160,7 +160,7 @@ export function VHSOverlay() {
         .vhs-overlay {
           position: fixed;
           inset: 0;
-          z-index: 900;
+          z-index: var(--z-vhs);
           pointer-events: none;
           mix-blend-mode: normal;
         }

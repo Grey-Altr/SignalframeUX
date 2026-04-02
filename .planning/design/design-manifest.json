@@ -5,8 +5,26 @@
   "outputRoot": "string -- path to output directory (e.g., ./pde-output or .planning/design)",
   "mode": "standalone | pde-integrated",
   "generatedAt": "2026-03-31T19:51:11.876Z",
-  "updatedAt": "2026-03-31T22:48:37.793Z",
+  "updatedAt": "2026-04-01T00:00:00.000Z",
   "artifacts": {
+    "CRT-consistency": {
+      "code": "CRT",
+      "name": "Consistency Critique",
+      "type": "critique",
+      "domain": "review",
+      "focus": "consistency",
+      "path": ".planning/design/review/CRT-consistency-critique-v1.md",
+      "status": "complete",
+      "version": "1",
+      "score": 72,
+      "findings": {
+        "critical": 3,
+        "major": 11,
+        "minor": 8,
+        "nit": 5,
+        "total": 27
+      }
+    },
     "REC": {
       "code": "REC",
       "name": "Tool & MCP Recommendations",

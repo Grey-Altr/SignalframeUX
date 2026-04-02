@@ -70,7 +70,7 @@ function SFCommandGroup({
   return (
     <CommandGroup
       className={cn(
-        "**:[[cmdk-group-heading]]:font-mono **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-[0.2em] **:[[cmdk-group-heading]]:text-[9px]",
+        "**:[[cmdk-group-heading]]:font-mono **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-[0.2em] **:[[cmdk-group-heading]]:text-[11px]",
         className
       )}
       {...props}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap-plugins";
+import { gsap } from "@/lib/gsap-core";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
@@ -15,7 +15,12 @@ function CustomCursor() {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    let isActive = false;
+    // Only hide system cursor after mouse is detected (preserves keyboard user cursor)
+    function enableCursor() {
+      document.documentElement.classList.add("sf-has-mouse");
+      document.removeEventListener("mousemove", enableCursor);
+    }
+    document.addEventListener("mousemove", enableCursor);
 
     function onMove(e: MouseEvent) {
       if (!cursor) return;
@@ -54,80 +59,15 @@ function CustomCursor() {
     document.addEventListener("mousedown", onClick);
 
     return () => {
+      document.removeEventListener("mousemove", enableCursor);
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mousedown", onClick);
+      document.documentElement.classList.remove("sf-has-mouse");
     };
   }, []);
 
-  return (
-    <>
-      <div ref={cursorRef} className="sf-cursor" id="sf-cursor" />
-      <style jsx global>{`
-        body, body * { cursor: none !important; }
-        @media (pointer: coarse) {
-          body, body * { cursor: auto !important; }
-          .sf-cursor { display: none !important; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .sf-cursor { display: none !important; }
-          body, body * { cursor: auto !important; }
-        }
-      `}</style>
-      <style jsx>{`
-        .sf-cursor {
-          --cursor-scale: 1;
-          position: fixed;
-          top: -24px;
-          left: -24px;
-          width: 48px;
-          height: 48px;
-          pointer-events: none;
-          z-index: 10000;
-          mix-blend-mode: exclusion;
-          transform: translate(0px, 0px);
-          will-change: transform;
-          transition: opacity 0.2s;
-          opacity: 1;
-        }
-        .sf-cursor::before,
-        .sf-cursor::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          background: linear-gradient(#FF0090 42%, transparent 42%, transparent 58%, #FF0090 58%);
-          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                      background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .sf-cursor::before {
-          width: 2px;
-          height: 36px;
-          transform: translate(-50%, -50%) scaleY(var(--cursor-scale));
-        }
-        .sf-cursor::after {
-          width: 36px;
-          height: 2px;
-          transform: translate(-50%, -50%) scaleX(var(--cursor-scale));
-        }
-        .sf-cursor.active {
-          opacity: 1;
-        }
-        .sf-cursor.active::before {
-          transform: translate(-50%, -50%) rotate(45deg) scaleY(var(--cursor-scale));
-        }
-        .sf-cursor.active::after {
-          transform: translate(-50%, -50%) rotate(45deg) scaleX(var(--cursor-scale));
-        }
-        .sf-cursor.active::before {
-          background: linear-gradient(#FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
-        }
-        .sf-cursor.active::after {
-          background: linear-gradient(to right, #FF0090 30%, transparent 30%, transparent 70%, #FF0090 70%);
-        }
-      `}</style>
-    </>
-  );
+  return <div ref={cursorRef} className="sf-cursor" id="sf-cursor" />;
 }
 
 /** Scroll progress bar at the top of the viewport */
@@ -150,16 +90,59 @@ function ScrollProgress() {
   return (
     <div
       ref={barRef}
-      className="fixed top-0 left-0 h-[2px] w-full bg-primary z-[999] origin-left pointer-events-none"
+      aria-hidden="true"
+      className="fixed top-0 left-0 h-[2px] w-full bg-primary z-[var(--z-progress)] origin-left pointer-events-none"
       style={{ transform: "scaleX(0)" }}
     />
+  );
+}
+
+/** Scroll-to-top button — appears after scrolling past 1 viewport */
+function ScrollToTop() {
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function onScroll() {
+      if (!btnRef.current) return;
+      const show = window.scrollY > window.innerHeight;
+      btnRef.current.style.opacity = show ? "1" : "0";
+      btnRef.current.style.pointerEvents = show ? "auto" : "none";
+      btnRef.current.style.transform = show
+        ? "translateY(0)"
+        : "translateY(12px)";
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <button
+      ref={btnRef}
+      onClick={() => {
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+      }}
+      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[16px] font-bold hover:bg-foreground hover:text-background transition-all duration-200"
+      style={{
+        opacity: 0,
+        pointerEvents: "none",
+        transform: "translateY(12px)",
+        transition:
+          "opacity 0.2s ease, transform 0.2s ease, background-color 0.15s ease, color 0.15s ease",
+      }}
+      aria-label="Scroll to top"
+    >
+      ↑
+    </button>
   );
 }
 
 /** VHS-style fixed badge in bottom-right corner */
 function VHSBadge() {
   return (
-    <div className="fixed bottom-6 right-6 bg-foreground dark:bg-[oklch(0.2_0_0)] text-background dark:text-foreground px-4 py-2 text-[clamp(8px,1vw,11px)] font-bold uppercase tracking-[0.1em] z-[200] flex items-center gap-2">
+    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-2 text-[clamp(10px,1vw,11px)] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] flex items-center gap-2">
       <span className="text-primary text-sm">◉◉</span>
       SF//UX
     </div>
@@ -172,6 +155,7 @@ export function GlobalEffects() {
       <VHSOverlay />
       <CustomCursor />
       <ScrollProgress />
+      <ScrollToTop />
       <VHSBadge />
     </>
   );

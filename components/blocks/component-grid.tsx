@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFCard, SFCardHeader, SFCardTitle, SFCardContent } from "@/components/sf/sf-card";
 import { SFBadge } from "@/components/sf/sf-badge";
+import { GRAIN_SVG } from "@/lib/grain";
 import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf/sf-tabs";
 
 /* ── Live preview renderers for each component cell ── */
@@ -43,10 +45,10 @@ function PreviewModal() {
   return (
     <div className="w-[75%] max-w-[180px] border-2 border-foreground bg-background text-foreground p-3">
       <p className="text-[10px] font-bold uppercase tracking-wider mb-2">CONFIRM ACTION</p>
-      <p className="text-[8px] text-muted-foreground uppercase tracking-wider mb-3">Are you sure?</p>
+      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-3">Are you sure?</p>
       <div className="flex gap-1">
-        <SFButton intent="primary" size="sm" className="text-[8px] px-2 py-1">YES</SFButton>
-        <SFButton intent="ghost" size="sm" className="text-[8px] px-2 py-1">NO</SFButton>
+        <SFButton intent="primary" size="sm" className="text-[10px] px-2 py-1">YES</SFButton>
+        <SFButton intent="ghost" size="sm" className="text-[10px] px-2 py-1">NO</SFButton>
       </div>
     </div>
   );
@@ -54,8 +56,8 @@ function PreviewModal() {
 
 function PreviewTable() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-foreground text-[9px] uppercase tracking-wider">
-      <div className="bg-foreground text-background px-2 py-1.5 flex dark:bg-[oklch(0.2_0_0)] dark:text-foreground">
+    <div className="w-[80%] max-w-[200px] border-2 border-foreground text-[11px] uppercase tracking-wider">
+      <div className="bg-foreground text-background px-2 py-1.5 flex dark:bg-[var(--sf-dark-surface)] dark:text-foreground">
         <span className="flex-1">TOKEN</span>
         <span className="flex-1 text-right">VALUE</span>
       </div>
@@ -73,11 +75,11 @@ function PreviewTable() {
 
 function PreviewToast() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[oklch(0.2_0_0)] dark:text-foreground p-3 flex items-start gap-2">
+    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground p-3 flex items-start gap-2">
       <span className="text-primary text-sm">◉</span>
       <div>
         <p className="text-[10px] font-bold uppercase tracking-wider">DEPLOYED</p>
-        <p className="text-[8px] uppercase tracking-wider opacity-60 mt-0.5">Build #4201 live</p>
+        <p className="text-[10px] uppercase tracking-wider opacity-60 mt-0.5">Build #4201 live</p>
       </div>
     </div>
   );
@@ -85,14 +87,14 @@ function PreviewToast() {
 
 function PreviewNoiseBg() {
   return (
-    <div className="w-[80%] max-w-[180px] h-[60px] relative overflow-hidden border border-[oklch(0.3_0_0)]">
+    <div className="w-[80%] max-w-[180px] h-[60px] relative overflow-hidden border border-[var(--sf-subtle-border)]">
       <div
         className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundImage: GRAIN_SVG,
         }}
       />
-      <p className="absolute bottom-1 left-2 text-[8px] text-[oklch(0.5_0_0)] uppercase tracking-wider">
+      <p className="absolute bottom-1 left-2 text-[10px] text-[var(--sf-dim-text)] uppercase tracking-wider">
         FRACTAL NOISE
       </p>
     </div>
@@ -107,17 +109,17 @@ function PreviewParticleMesh() {
         {Array.from({ length: 24 }).map((_, i) => {
           const x = 15 + (i % 6) * 30;
           const y = 12 + Math.floor(i / 6) * 14;
-          return <circle key={i} cx={x} cy={y} r="1.5" fill="oklch(0.5 0 0)" />;
+          return <circle key={i} cx={x} cy={y} r="1.5" fill="var(--sf-dim-text)" />;
         })}
         {/* Connection lines */}
-        <line x1="15" y1="12" x2="45" y2="12" stroke="oklch(0.3 0 0)" strokeWidth="0.5" />
-        <line x1="45" y1="12" x2="75" y2="26" stroke="oklch(0.3 0 0)" strokeWidth="0.5" />
-        <line x1="75" y1="26" x2="105" y2="12" stroke="oklch(0.3 0 0)" strokeWidth="0.5" />
-        <line x1="105" y1="12" x2="135" y2="26" stroke="oklch(0.3 0 0)" strokeWidth="0.5" />
-        <line x1="135" y1="26" x2="165" y2="12" stroke="oklch(0.3 0 0)" strokeWidth="0.5" />
-        <line x1="15" y1="26" x2="45" y2="40" stroke="oklch(0.25 0 0)" strokeWidth="0.5" />
-        <line x1="45" y1="40" x2="75" y2="40" stroke="oklch(0.25 0 0)" strokeWidth="0.5" />
-        <line x1="105" y1="40" x2="135" y2="54" stroke="oklch(0.25 0 0)" strokeWidth="0.5" />
+        <line x1="15" y1="12" x2="45" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="45" y1="12" x2="75" y2="26" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="75" y1="26" x2="105" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="105" y1="12" x2="135" y2="26" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="135" y1="26" x2="165" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="15" y1="26" x2="45" y2="40" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="45" y1="40" x2="75" y2="40" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="105" y1="40" x2="135" y2="54" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
       </svg>
     </div>
   );
@@ -127,20 +129,19 @@ function PreviewGlitchText() {
   return (
     <div className="relative">
       <span
-        className="text-[18px] font-bold uppercase tracking-wider text-[oklch(0.7_0_0)]"
-        style={{ fontFamily: "var(--font-anton)" }}
+        className="sf-display text-[18px] font-bold uppercase tracking-wider text-[var(--sf-muted-text-dark)]"
       >
         GLITCH
       </span>
       <span
-        className="absolute top-0 left-[2px] text-[18px] font-bold uppercase tracking-wider text-primary opacity-50"
-        style={{ fontFamily: "var(--font-anton)", clipPath: "inset(30% 0 40% 0)" }}
+        className="sf-display absolute top-0 left-[2px] text-[18px] font-bold uppercase tracking-wider text-primary opacity-50"
+        style={{ clipPath: "inset(30% 0 40% 0)" }}
       >
         GLITCH
       </span>
       <span
-        className="absolute top-0 left-[-2px] text-[18px] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
-        style={{ fontFamily: "var(--font-anton)", clipPath: "inset(60% 0 10% 0)" }}
+        className="sf-display absolute top-0 left-[-2px] text-[18px] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
+        style={{ clipPath: "inset(60% 0 10% 0)" }}
       >
         GLITCH
       </span>
@@ -156,9 +157,9 @@ function PreviewDropdown() {
         <span className="text-muted-foreground">▾</span>
       </div>
       <div className="border-2 border-t-0 border-foreground">
-        <div className="px-3 py-1 text-[9px] uppercase tracking-wider bg-foreground text-background dark:bg-[oklch(0.2_0_0)] dark:text-foreground">OPTION A</div>
-        <div className="px-3 py-1 text-[9px] uppercase tracking-wider text-muted-foreground">OPTION B</div>
-        <div className="px-3 py-1 text-[9px] uppercase tracking-wider text-muted-foreground">OPTION C</div>
+        <div className="px-3 py-1 text-[11px] uppercase tracking-wider bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground">OPTION A</div>
+        <div className="px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">OPTION B</div>
+        <div className="px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">OPTION C</div>
       </div>
     </div>
   );
@@ -169,8 +170,8 @@ function PreviewTabs() {
     <div className="w-[80%] max-w-[200px]">
       <SFTabs defaultValue="signal">
         <SFTabsList>
-          <SFTabsTrigger value="signal" className="text-[9px]">SIGNAL</SFTabsTrigger>
-          <SFTabsTrigger value="frame" className="text-[9px]">FRAME</SFTabsTrigger>
+          <SFTabsTrigger value="signal" className="text-[11px]">SIGNAL</SFTabsTrigger>
+          <SFTabsTrigger value="frame" className="text-[11px]">FRAME</SFTabsTrigger>
         </SFTabsList>
       </SFTabs>
     </div>
@@ -208,7 +209,7 @@ function PreviewWaveform() {
         <polyline
           points={wave(5, 18, 0.5)}
           fill="none"
-          stroke="oklch(0.65 0.29 350)"
+          stroke="var(--color-primary)"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -222,7 +223,7 @@ function PreviewWaveform() {
           opacity="0.6"
         />
         {/* Center line */}
-        <line x1="0" y1={mid} x2={w} y2={mid} stroke="oklch(0.25 0 0)" strokeWidth="0.5" strokeDasharray="3 3" />
+        <line x1="0" y1={mid} x2={w} y2={mid} stroke="var(--sf-subtle-border)" strokeWidth="0.5" strokeDasharray="3 3" />
       </svg>
     </div>
   );
@@ -245,18 +246,18 @@ const PREVIEW_MAP: Record<string, () => React.ReactNode> = {
 };
 
 const COMPONENTS = [
-  { id: "001", name: "BUTTON", bg: "white", layer: "SIGNAL" },
-  { id: "002", name: "INPUT", bg: "black", layer: "SIGNAL" },
-  { id: "003", name: "CARD", bg: "white", layer: "SIGNAL" },
-  { id: "004", name: "MODAL", bg: "white", layer: "SIGNAL" },
-  { id: "005", name: "TABLE", bg: "white", layer: "SIGNAL" },
-  { id: "006", name: "TOAST", bg: "white", layer: "SIGNAL" },
-  { id: "007", name: "NOISE_BG", bg: "black", layer: "FRAME" },
-  { id: "008", name: "PARTICLE_MESH", bg: "black", layer: "FRAME" },
-  { id: "009", name: "GLITCH_TEXT", bg: "black", layer: "FRAME" },
-  { id: "010", name: "DROPDOWN", bg: "white", layer: "SIGNAL" },
-  { id: "011", name: "TABS", bg: "white", layer: "SIGNAL" },
-  { id: "012", name: "WAVEFORM", bg: "black", layer: "FRAME" },
+  { id: "001", name: "BUTTON", bg: "white", layer: "FRAME" },
+  { id: "002", name: "INPUT", bg: "black", layer: "FRAME" },
+  { id: "003", name: "CARD", bg: "white", layer: "FRAME" },
+  { id: "004", name: "MODAL", bg: "white", layer: "FRAME" },
+  { id: "005", name: "TABLE", bg: "white", layer: "FRAME" },
+  { id: "006", name: "TOAST", bg: "white", layer: "FRAME" },
+  { id: "007", name: "NOISE_BG", bg: "black", layer: "SIGNAL" },
+  { id: "008", name: "PARTICLE_MESH", bg: "black", layer: "SIGNAL" },
+  { id: "009", name: "GLITCH_TEXT", bg: "black", layer: "SIGNAL" },
+  { id: "010", name: "DROPDOWN", bg: "white", layer: "FRAME" },
+  { id: "011", name: "TABS", bg: "white", layer: "FRAME" },
+  { id: "012", name: "WAVEFORM", bg: "black", layer: "SIGNAL" },
 ];
 
 export function ComponentGrid() {
@@ -267,8 +268,7 @@ export function ComponentGrid() {
       {/* Section header */}
       <div className="px-6 md:px-12 pt-16 pb-6 border-b-2 border-foreground">
         <h2
-          className="text-[clamp(36px,5vw,64px)] leading-none text-foreground"
-          style={{ fontFamily: "var(--font-anton)" }}
+          className="sf-display text-[clamp(36px,5vw,64px)] leading-none text-foreground"
         >
           BROWSE_COMPONENTS ( 12 / 340 )
         </h2>
@@ -282,21 +282,24 @@ export function ComponentGrid() {
           const Preview = PREVIEW_MAP[comp.id];
 
           return (
-            <div
+            <Link
               key={comp.id}
+              href="/components"
               data-anim="comp-cell"
-              className="relative border-r-2 border-b-2 border-foreground cursor-pointer group"
+              aria-label={`${comp.name} component`}
+              suppressHydrationWarning
+              className="relative border-r-2 border-b-2 border-foreground group no-underline"
               style={{
                 aspectRatio: "1",
-                backgroundColor: isBlack ? "oklch(0.1 0 0)" : "var(--color-background)",
-                color: isBlack ? "oklch(0.95 0 0)" : "var(--color-foreground)",
-                borderColor: isHovered ? "oklch(0.65 0.29 350)" : undefined,
+                backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--color-background)",
+                color: "var(--color-foreground)",
+                borderColor: isHovered ? "var(--color-primary)" : undefined,
               }}
               onMouseEnter={() => setHoveredCell(comp.id)}
               onMouseLeave={() => setHoveredCell(null)}
             >
               {/* Index */}
-              <span className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.15em] opacity-40">
+              <span className="absolute top-3 left-3 text-[11px] uppercase tracking-[0.15em] opacity-40">
                 {comp.id}
               </span>
 
@@ -306,13 +309,13 @@ export function ComponentGrid() {
               </div>
 
               {/* Name + Layer label */}
-              <span className="absolute bottom-3 left-3 text-[9px] uppercase tracking-[0.15em] font-bold opacity-60">
+              <span className="absolute bottom-3 left-3 text-[11px] uppercase tracking-[0.15em] font-bold opacity-60">
                 {comp.name}
               </span>
-              <span className="absolute bottom-3 right-3 text-[8px] uppercase tracking-[0.15em] opacity-40">
+              <span className="absolute bottom-3 right-3 text-[10px] uppercase tracking-[0.15em] opacity-40">
                 {comp.layer}
               </span>
-            </div>
+            </Link>
           );
         })}
       </div>

@@ -226,6 +226,134 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "circuit-divider",
+      "type": "registry:ui",
+      "title": "Circuit Divider",
+      "description": "DrawSVG circuit-board divider with animated paths and junction dots",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/animation/circuit-divider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "vhs-overlay",
+      "type": "registry:ui",
+      "title": "VHS Overlay",
+      "description": "CRT scanlines, noise flicker, glitch bursts, and chromatic aberration overlay",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/animation/vhs-overlay.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hero-mesh",
+      "type": "registry:ui",
+      "title": "Hero Mesh",
+      "description": "Interactive mesh grid background that responds to cursor movement",
+      "files": [
+        {
+          "path": "components/animation/hero-mesh.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scramble-text",
+      "type": "registry:ui",
+      "title": "Scramble Text",
+      "description": "Text scramble/decode animation effect for headings and labels",
+      "files": [
+        {
+          "path": "components/animation/scramble-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-label",
+      "type": "registry:ui",
+      "title": "SF Label",
+      "description": "Mono uppercase label with wider tracking",
+      "registryDependencies": ["label"],
+      "files": [
+        {
+          "path": "components/sf/sf-label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-select",
+      "type": "registry:ui",
+      "title": "SF Select",
+      "description": "Brutalist select with 2px borders, no radius, inverted focus state",
+      "registryDependencies": ["select"],
+      "files": [
+        {
+          "path": "components/sf/sf-select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-checkbox",
+      "type": "registry:ui",
+      "title": "SF Checkbox",
+      "description": "Square checkbox with 2px borders, primary checked state",
+      "registryDependencies": ["checkbox"],
+      "files": [
+        {
+          "path": "components/sf/sf-checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-radio-group",
+      "type": "registry:ui",
+      "title": "SF Radio Group",
+      "description": "Square radio buttons with 2px borders, no radius",
+      "registryDependencies": ["radio-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-switch",
+      "type": "registry:ui",
+      "title": "SF Switch",
+      "description": "Square switch with 2px borders, primary checked state",
+      "registryDependencies": ["switch"],
+      "files": [
+        {
+          "path": "components/sf/sf-switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sf-textarea",
+      "type": "registry:ui",
+      "title": "SF Textarea",
+      "description": "Brutalist textarea with bottom border only, mono uppercase text",
+      "registryDependencies": ["textarea"],
+      "files": [
+        {
+          "path": "components/sf/sf-textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

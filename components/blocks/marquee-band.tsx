@@ -10,10 +10,7 @@ export function MarqueeBand() {
       aria-label="Scrolling marquee"
     >
       <div
-        className="flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
-        style={{
-          fontFamily: "var(--font-anton)",
-        }}
+        className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
       >
         <span className="text-background text-[18px] uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}

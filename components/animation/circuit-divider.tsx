@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap-plugins";
+import { gsap, ScrollTrigger } from "@/lib/gsap-core";
 
 /**
  * CircuitDivider — PCB-style SVG trace that draws on scroll.

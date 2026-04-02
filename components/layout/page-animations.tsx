@@ -1,21 +1,20 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap-plugins";
+import { useEffect } from "react";
+import { gsap, ScrollTrigger, SplitText, initReducedMotion } from "@/lib/gsap-plugins";
 
 /**
  * PageAnimations — wires up all page-level GSAP animations.
  * Respects prefers-reduced-motion (handled globally in gsap-plugins.ts).
  */
 export function PageAnimations() {
-  const hasRun = useRef(false);
-
   useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
+    const cleanupMotion = initReducedMotion();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return cleanupMotion;
+    }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
+    const clickCleanups: Array<() => void> = [];
     const ctx = gsap.context(() => {
       // ── 1. Hero headline — SplitText char reveal ──
       const heroTitle = document.querySelector("[data-anim='hero-title']");
@@ -28,10 +27,10 @@ export function PageAnimations() {
         gsap.to(split.chars, {
           y: 0,
           opacity: 1,
-          duration: 0.45,
+          duration: 0.35,
           ease: "power3.out",
-          stagger: 0.025,
-          delay: 0.5,
+          stagger: 0.02,
+          delay: 0.3,
           onComplete: () => revealMultilingual(),
         });
       }
@@ -44,8 +43,8 @@ export function PageAnimations() {
         const subtitle = document.querySelector("[data-anim='hero-subtitle']") as HTMLElement;
 
         const elements = [kata, farsi, mandarin].filter(Boolean);
-        elements.forEach((el) => gsap.set(el, { opacity: 0 }));
-        if (subtitle) gsap.set(subtitle, { opacity: 0, y: 20 });
+        // opacity: 0 is set via .sf-hero-deferred CSS class
+        if (subtitle) gsap.set(subtitle, { y: 20 });
 
         const tl = gsap.timeline({ delay: 0.2 });
 
@@ -69,10 +68,11 @@ export function PageAnimations() {
         }
       }
 
-      // ── 3. Hero copy flicker-in after 3.5s ──
+      // ── 3. Hero copy flicker-in after 1.6s ──
       const heroCopy = document.querySelector("[data-anim='hero-copy']");
       if (heroCopy) {
-        const flickerTl = gsap.timeline({ delay: 3.5 });
+        // opacity: 0 is set via .sf-hero-deferred CSS class
+        const flickerTl = gsap.timeline({ delay: 1.6 });
         flickerTl
           .to(heroCopy, { opacity: 0.15, duration: 0.06 })
           .to(heroCopy, { opacity: 0, duration: 0.04 })
@@ -92,7 +92,7 @@ export function PageAnimations() {
         duration: 0.5,
         ease: "power2.out",
         stagger: 0.1,
-        delay: 4.2,
+        delay: 2.0,
       });
 
       // ── 4. Section reveals with ScrollTrigger ──
@@ -211,17 +211,23 @@ export function PageAnimations() {
       // ── 9. Click-pop on interactive elements ──
       const popSelectors = "[data-anim='comp-cell'], [data-anim='cta-btn'], [data-anim='tag']";
       document.querySelectorAll(popSelectors).forEach((el) => {
-        el.addEventListener("click", () => {
+        const handler = () => {
           gsap.fromTo(
             el,
             { scale: 1 },
             { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" }
           );
-        });
+        };
+        el.addEventListener("click", handler);
+        clickCleanups.push(() => el.removeEventListener("click", handler));
       });
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      clickCleanups.forEach((fn) => fn());
+      cleanupMotion();
+    };
   }, []);
 
   return null;

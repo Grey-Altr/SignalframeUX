@@ -65,7 +65,7 @@ function SFDropdownMenuLabel({
   return (
     <DropdownMenuLabel
       className={cn(
-        "font-mono uppercase tracking-[0.2em] text-[9px] text-muted-foreground",
+        "font-mono uppercase tracking-[0.2em] text-[11px] text-muted-foreground",
         className
       )}
       {...props}

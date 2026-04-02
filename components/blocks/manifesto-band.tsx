@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 
 /* ── Link style constant (kept DRY) ── */
 const LINK_CLASS =
-  "text-[#E91E63] no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-[#E91E63] after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100";
+  "text-primary no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100";
 
 /* ── Manifesto content definition ── */
 type Segment =
@@ -34,7 +35,7 @@ const SEGMENTS: Segment[] = [
   { type: "space" },
   { type: "word", text: "a" },
   { type: "space" },
-  { type: "link", text: "programmable surface", href: "#" },
+  { type: "link", text: "programmable surface", href: "/start" },
   { type: "word", text: "." },
   { type: "space" },
   // "Build. Ship. Signal. Repeat.™"
@@ -61,33 +62,31 @@ const SEGMENTS: Segment[] = [
   { type: "word", text: "nowhere." },
   { type: "space" },
   // Links row
-  { type: "link", text: "340+ components", href: "#" },
+  { type: "link", text: "340+ components", href: "/components" },
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
-  { type: "link", text: "OKLCH tokens", href: "#" },
+  { type: "link", text: "OKLCH tokens", href: "/tokens" },
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
-  { type: "link", text: "API-first", href: "#" },
+  { type: "link", text: "API-first", href: "/reference" },
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
-  { type: "link", text: "React + TypeScript", href: "#" },
+  { type: "link", text: "React + TypeScript", href: "/start" },
   { type: "word", text: "." },
 ];
+
+// Collect only the word-type indices (not links, not spaces) — static, derived from SEGMENTS
+const wordIndices: number[] = SEGMENTS.reduce<number[]>((acc, seg, i) => {
+  if (seg.type === "word" || seg.type === "sup") acc.push(i);
+  return acc;
+}, []);
 
 export function ManifestoBand() {
   const sectionRef = useRef<HTMLElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
-  // Collect only the word-type indices (not links, not spaces)
-  const wordIndices: number[] = [];
-  SEGMENTS.forEach((seg, i) => {
-    if (seg.type === "word" || seg.type === "sup") {
-      wordIndices.push(i);
-    }
-  });
 
   const handleScroll = useCallback(() => {
     const section = sectionRef.current;
@@ -127,7 +126,7 @@ export function ManifestoBand() {
         el.style.opacity = "0.15";
       }
     });
-  }, [wordIndices]);
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -149,9 +148,10 @@ export function ManifestoBand() {
     <section
       ref={sectionRef}
       data-anim="yellow-band"
-      className="sf-yellow-band sf-grain border-b-4 border-foreground py-10 px-[clamp(20px,4vw,48px)] relative overflow-hidden"
+      suppressHydrationWarning
+      className="sf-yellow-band sf-grain border-b-4 border-foreground py-6 px-[clamp(20px,4vw,48px)] relative overflow-hidden"
     >
-      <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-[#333] relative z-10">
+      <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-foreground relative z-10">
         {SEGMENTS.map((seg, i) => {
           if (seg.type === "space") {
             return " ";
@@ -160,9 +160,9 @@ export function ManifestoBand() {
           if (seg.type === "link") {
             // Links always full opacity
             return (
-              <a key={i} href={seg.href} className={LINK_CLASS}>
+              <Link key={i} href={seg.href} className={LINK_CLASS}>
                 {seg.text}
-              </a>
+              </Link>
             );
           }
 
@@ -173,7 +173,7 @@ export function ManifestoBand() {
                 ref={(el) => { wordRefs.current[i] = el; }}
                 data-anim="manifesto-word"
                 className="text-[11px] transition-opacity duration-150"
-                style={{ opacity: 0.15 }}
+                style={{ opacity: 0.2 }}
               >
                 {seg.text}
               </sup>
@@ -187,7 +187,7 @@ export function ManifestoBand() {
               ref={(el) => { wordRefs.current[i] = el; }}
               data-anim="manifesto-word"
               className="transition-opacity duration-150"
-              style={{ opacity: 0.15 }}
+              style={{ opacity: 0.2 }}
             >
               {seg.text}
             </span>

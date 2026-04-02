@@ -26,17 +26,36 @@ CustomEase.create(
 );
 CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
 
-// Reduced motion: freeze all GSAP animations
-if (typeof window !== "undefined") {
+/**
+ * Initialize reduced-motion handling for GSAP.
+ * Call once from a client component's useEffect — not at module scope.
+ * Returns a cleanup function that removes the matchMedia listener.
+ */
+let motionInitialized = false;
+let motionCleanup: (() => void) | null = null;
+
+export function initReducedMotion(): () => void {
+  if (motionInitialized || typeof window === "undefined") return () => {};
+  motionInitialized = true;
+
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   );
   if (prefersReduced.matches) {
     gsap.globalTimeline.timeScale(0);
   }
-  prefersReduced.addEventListener("change", (e) => {
+  const handler = (e: MediaQueryListEvent) => {
     gsap.globalTimeline.timeScale(e.matches ? 0 : 1);
-  });
+  };
+  prefersReduced.addEventListener("change", handler);
+
+  motionCleanup = () => {
+    prefersReduced.removeEventListener("change", handler);
+    motionInitialized = false;
+    motionCleanup = null;
+  };
+
+  return motionCleanup;
 }
 
 export { gsap, ScrollTrigger, SplitText, Flip, CustomEase, useGSAP };

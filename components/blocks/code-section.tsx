@@ -1,15 +1,14 @@
 export function CodeSection() {
   return (
-    <section data-anim="section-reveal" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
+    <section data-anim="section-reveal" suppressHydrationWarning className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — Description */}
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground">
         <h2
-          className="text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-6"
-          style={{ fontFamily: "var(--font-anton)" }}
+          className="sf-display text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-6"
         >
           API_INIT
         </h2>
-        <p className="text-[13px] leading-[1.8] text-foreground/60 max-w-[440px]">
+        <p className="text-[13px] leading-[1.8] text-muted-foreground max-w-[440px]">
           SIGNALFRAMEUX OPERATES AS A PROGRAMMABLE API.
           INITIALIZE WITH A CONFIG OBJECT. EVERY TOKEN,
           COMPONENT, AND FRAME EFFECT IS ADDRESSABLE
@@ -18,13 +17,13 @@ export function CodeSection() {
       </div>
 
       {/* Right — Code block */}
-      <div className="bg-[#111] px-8 py-10 relative overflow-hidden" style={{ boxShadow: "inset 0 2px 12px rgba(0,0,0,0.5)" }}>
+      <div className="bg-[var(--sf-code-bg)] px-8 py-10 relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
         {/* Terminal label */}
-        <div className="absolute top-4 right-6 text-[9px] uppercase tracking-[0.2em] text-[#555] font-bold">
+        <div className="absolute top-4 right-6 text-[11px] uppercase tracking-[0.2em] text-[var(--sf-dim-text)] font-bold">
           TERMINAL™
         </div>
 
-        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4 text-[oklch(0.65_0_0)]">
+        <pre className="text-[13px] leading-[1.7] font-mono overflow-x-auto mt-4 text-[var(--sf-muted-text-dark)]">
           <code>
             <Line comment="// INITIALIZE SIGNALFRAMEUX™" />
             <Line>
@@ -83,7 +82,7 @@ function Line({
   if (comment) {
     return (
       <div>
-        <span style={{ color: "#555" }}>{comment}</span>
+        <span style={{ color: "var(--sf-dim-text)" }}>{comment}</span>
       </div>
     );
   }
@@ -97,7 +96,7 @@ function Line({
 }
 
 function Kw({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "oklch(0.65 0.29 350)" }}>{children}</span>;
+  return <span style={{ color: "var(--color-primary)" }}>{children}</span>;
 }
 
 function Str({ children }: { children: React.ReactNode }) {
@@ -105,9 +104,9 @@ function Str({ children }: { children: React.ReactNode }) {
 }
 
 function Fn({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "oklch(0.85 0.25 145)" }}>{children}</span>;
+  return <span style={{ color: "var(--sf-green)" }}>{children}</span>;
 }
 
 function Const({ children }: { children: React.ReactNode }) {
-  return <span style={{ color: "#FF6B6B" }}>{children}</span>;
+  return <span style={{ color: "var(--sf-code-const)" }}>{children}</span>;
 }

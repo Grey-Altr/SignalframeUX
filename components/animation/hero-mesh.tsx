@@ -24,6 +24,7 @@ export function HeroMesh({ className }: { className?: string }) {
   const nodesRef = useRef<Node[]>([]);
   const colsRef = useRef(0);
   const animRef = useRef<number>(0);
+  const visibleRef = useRef(true);
   const reducedMotionRef = useRef(false);
 
   const buildGrid = useCallback((width: number, height: number) => {
@@ -94,6 +95,8 @@ export function HeroMesh({ className }: { className?: string }) {
 
     function draw(now: number) {
       if (!ctx || !canvas) return;
+      // Skip drawing when offscreen — re-entry handled by IntersectionObserver
+      if (!visibleRef.current) return;
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
       ctx.clearRect(0, 0, w, h);
@@ -171,6 +174,19 @@ export function HeroMesh({ className }: { className?: string }) {
       animRef.current = requestAnimationFrame(draw);
     }
 
+    // IntersectionObserver — pause RAF when canvas is offscreen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !reducedMotionRef.current) {
+          cancelAnimationFrame(animRef.current);
+          animRef.current = requestAnimationFrame(draw);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     // For reduced motion, draw once statically
     if (reducedMotionRef.current) {
       draw(startTime);
@@ -179,6 +195,7 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
       document.removeEventListener("mousemove", onMouseMove);
