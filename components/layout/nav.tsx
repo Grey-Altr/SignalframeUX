@@ -14,48 +14,106 @@ import { CommandPalette } from "@/components/layout/command-palette";
 
 const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
 
+/**
+ * Shared scramble coordinator — single RAF loop drives all registered scramble instances.
+ * Eliminates 6 concurrent setIntervals (one per NavLink + DarkModeToggle).
+ */
+type ScrambleEntry = {
+  target: string;
+  delay: number;
+  duration: number;
+  settled: Set<number>;
+  startTime: number;
+  started: boolean;
+  done: boolean;
+  setText: (s: string) => void;
+};
+
+const scrambleRegistry = new Map<string, ScrambleEntry>();
+let scrambleRaf = 0;
+let scrambleMountTime = 0;
+
+function scrambleTick() {
+  const now = Date.now();
+  let allDone = true;
+
+  scrambleRegistry.forEach((entry) => {
+    if (entry.done) return;
+    allDone = false;
+
+    // Wait for staggered delay
+    if (!entry.started) {
+      if (now - scrambleMountTime < entry.delay) return;
+      entry.started = true;
+      entry.startTime = now;
+    }
+
+    const elapsed = now - entry.startTime;
+    const progress = Math.min(elapsed / entry.duration, 1);
+    const chars = entry.target.split("");
+
+    const result = chars.map((c, i) => {
+      if (c === " ") return " ";
+      const settleAt = (i / chars.length) * 0.7 + 0.3;
+      if (progress >= settleAt || entry.settled.has(i)) {
+        entry.settled.add(i);
+        return c;
+      }
+      return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
+    });
+
+    entry.setText(result.join(""));
+    if (entry.settled.size >= chars.filter(c => c !== " ").length) {
+      entry.done = true;
+    }
+  });
+
+  if (!allDone) {
+    scrambleRaf = requestAnimationFrame(scrambleTick);
+  } else {
+    scrambleRaf = 0;
+  }
+}
+
 function useScrambleText(target: string, delay: number, duration = 600) {
   const [text, setText] = useState(target);
+  const idRef = useRef(`${target}-${delay}`);
 
   useEffect(() => {
-    // Skip on reduced motion or narrow viewports (nav links hidden below md)
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.innerWidth < 768) return;
 
-    const chars = target.split("");
-    const settled = new Set<number>();
-    let interval: ReturnType<typeof setInterval>;
-    let timeout: ReturnType<typeof setTimeout>;
+    const id = idRef.current;
 
-    // Immediately scramble on mount
-    setText(chars.map(() => SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)]).join(""));
+    // Immediately show scrambled state
+    setText(target.split("").map((c) =>
+      c === " " ? " " : SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)]
+    ).join(""));
 
-    timeout = setTimeout(() => {
-      const startTime = Date.now();
-      interval = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+    // Register into shared loop
+    scrambleRegistry.set(id, {
+      target, delay, duration,
+      settled: new Set<number>(),
+      startTime: 0,
+      started: false,
+      done: false,
+      setText,
+    });
 
-        const result = chars.map((c, i) => {
-          if (c === " ") return " ";
-          const settleAt = (i / chars.length) * 0.7 + 0.3;
-          if (progress >= settleAt || settled.has(i)) {
-            settled.add(i);
-            return c;
-          }
-          return SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
-        });
-
-        setText(result.join(""));
-        if (settled.size >= chars.filter(c => c !== " ").length) {
-          clearInterval(interval);
-        }
-      }, 40);
-    }, delay);
+    // Start shared loop if first registration
+    if (scrambleRegistry.size === 1) {
+      scrambleMountTime = Date.now();
+    }
+    if (!scrambleRaf) {
+      scrambleRaf = requestAnimationFrame(scrambleTick);
+    }
 
     return () => {
-      clearTimeout(timeout);
-      clearInterval(interval!);
+      scrambleRegistry.delete(id);
+      if (scrambleRegistry.size === 0 && scrambleRaf) {
+        cancelAnimationFrame(scrambleRaf);
+        scrambleRaf = 0;
+      }
     };
   }, [target, delay, duration]);
 

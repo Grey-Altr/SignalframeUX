@@ -63,6 +63,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Blocking theme script — must run before first paint to prevent FOUC.
+            CSP: requires 'unsafe-inline' or a nonce. When deploying behind CSP headers,
+            add nonce={nonce} here and pass from middleware. No external input is interpolated;
+            content is a static string literal — safe from XSS. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()`,

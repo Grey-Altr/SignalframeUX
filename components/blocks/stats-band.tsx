@@ -18,15 +18,18 @@ export function StatsBand() {
           } ${stat.accent ? "bg-foreground dark:bg-[var(--sf-darker-surface)]" : ""}`}
         >
           <div
+            aria-hidden="true"
             className={`sf-display text-[clamp(48px,5vw,72px)] leading-none ${
               stat.accent ? "text-primary" : "text-foreground"
             }`}
-                       aria-label={`${stat.value === "∞" ? "Infinite" : stat.value} ${stat.label.toLowerCase()}`}
             {...(!stat.accent ? { "data-anim": "stat-number", "data-target": stat.value } : {})}
           >
             {stat.value}
           </div>
-          <div className={`mt-3 text-[var(--text-xs)] uppercase tracking-[0.25em] font-bold ${
+          <span className="sr-only">
+            {stat.value === "∞" ? "Infinite" : stat.value} {stat.label.toLowerCase()}
+          </span>
+          <div aria-hidden="true" className={`mt-3 text-[var(--text-xs)] uppercase tracking-[0.25em] font-bold ${
             stat.accent ? "text-background dark:text-muted-foreground" : "text-muted-foreground"
           }`}>
             {stat.label}
