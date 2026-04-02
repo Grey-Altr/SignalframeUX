@@ -28,6 +28,8 @@ import {
   SFSelectValue,
 } from "@/components/sf/sf-select";
 import { SharedCodeBlock as CodeBlock } from "@/components/blocks/shared-code-block";
+import { API_DOCS } from "@/lib/api-docs";
+import type { ComponentDoc } from "@/lib/api-docs";
 
 const SF_SCRAMBLE_CHARS = "SIGNAL//01フレーム▓░▒";
 
@@ -109,6 +111,95 @@ function findNavItem(id: string) {
 
 // Flat list of all nav item IDs for keyboard navigation
 const ALL_NAV_IDS = NAV_SECTIONS.flatMap((s) => s.items.map((i) => i.id));
+
+/** Data-driven documentation renderer — renders any ComponentDoc from api-docs.ts */
+function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
+  const layerLabel = doc.layer === "HOOK" ? "HOOK" : doc.layer === "TOKEN" ? "TOKEN" : `${doc.layer} LAYER`;
+  return (
+    <>
+      <h1 className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">
+        {doc.name.toUpperCase()}
+      </h1>
+      <SFBadge intent="signal" className="mb-6 text-[11px] tracking-[0.1em]">
+        {layerLabel} · {doc.version} · {doc.status}
+      </SFBadge>
+
+      <p className="text-sm leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
+        {doc.description}
+      </p>
+
+      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
+      <CodeBlock label="TSX" className="my-4">
+        <span className="text-primary">import</span>
+        {" { "}<span className="text-[var(--sf-code-text)]">{doc.importName}</span>{" } "}
+        <span className="text-primary">from</span>{" "}
+        <span className="text-[var(--sf-yellow)]">{`'${doc.importPath}'`}</span>
+      </CodeBlock>
+
+      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">
+        {doc.layer === "HOOK" ? "RETURNS" : doc.layer === "TOKEN" ? "TOKENS" : "PROPS"}
+      </h2>
+      <SFTable className="mb-6">
+        <SFTableHeader>
+          <SFTableRow>
+            <SFTableHead>{doc.layer === "TOKEN" ? "TOKEN" : "PROP"}</SFTableHead>
+            <SFTableHead>TYPE</SFTableHead>
+            <SFTableHead>DEFAULT</SFTableHead>
+            <SFTableHead>DESC</SFTableHead>
+          </SFTableRow>
+        </SFTableHeader>
+        <SFTableBody>
+          {doc.props.map((prop) => (
+            <SFTableRow key={prop.name}>
+              <SFTableCell className="text-primary font-bold">{prop.name}</SFTableCell>
+              <SFTableCell>
+                <code className="text-[10px] bg-muted px-1.5 py-0.5">{prop.type}</code>
+              </SFTableCell>
+              <SFTableCell className="text-muted-foreground">{prop.default}</SFTableCell>
+              <SFTableCell>
+                {prop.desc}
+                {prop.required && (
+                  <SFBadge intent="primary" className="ml-1.5 text-[10px] py-0 px-1 h-auto">REQ</SFBadge>
+                )}
+              </SFTableCell>
+            </SFTableRow>
+          ))}
+        </SFTableBody>
+      </SFTable>
+
+      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">USAGE</h2>
+      {doc.usage.length === 1 ? (
+        <CodeBlock label="TSX" className="my-4">
+          <span className="text-[var(--sf-code-text)]">{doc.usage[0].code}</span>
+        </CodeBlock>
+      ) : (
+        <SFTabs defaultValue={doc.usage[0].label}>
+          <SFTabsList className="border-b-0 mb-0">
+            {doc.usage.map((ex) => (
+              <SFTabsTrigger key={ex.label} value={ex.label}>{ex.label}</SFTabsTrigger>
+            ))}
+          </SFTabsList>
+          {doc.usage.map((ex) => (
+            <SFTabsContent key={ex.label} value={ex.label} className="mt-0">
+              <CodeBlock label="TSX" className="my-4">
+                <span className="text-[var(--sf-code-text)]">{ex.code}</span>
+              </CodeBlock>
+            </SFTabsContent>
+          ))}
+        </SFTabs>
+      )}
+
+      <h2 className="sf-display text-[32px] mt-12 mb-4 pt-6 border-t-2 border-foreground">ACCESSIBILITY</h2>
+      <CodeBlock label="INFO" className="my-4">
+        <span className="text-muted-foreground">
+          {doc.a11y.map((line, i) => (
+            <span key={i}>{i > 0 ? "\n" : ""}{i > 0 ? "• " : ""}{line}</span>
+          ))}
+        </span>
+      </CodeBlock>
+    </>
+  );
+}
 
 export function APIExplorer() {
   const [activeNav, setActiveNav] = useState("button");
@@ -428,7 +519,9 @@ export function APIExplorer() {
           <span className="text-primary">{activeItem.section}</span> / {activeItem.label.toUpperCase()}
         </div>
 
-        {activeNav !== "button" ? (
+        {activeNav !== "button" && API_DOCS[activeNav] ? (
+          <DataDrivenDoc doc={API_DOCS[activeNav]} />
+        ) : activeNav !== "button" ? (
           <div className="flex flex-col items-center justify-center py-24 gap-6">
             <h1 className="text-foreground sf-display text-[72px] leading-[0.95]">{activeItem.label.toUpperCase()}</h1>
             <SFBadge intent="outline" className="text-[13px] py-2.5 px-8 opacity-50">
