@@ -150,7 +150,7 @@ export function APIExplorer() {
     const magnetCleanups: Array<() => void> = [];
     const scrambleCleanups: Array<() => void> = [];
 
-    import("@/lib/gsap-plugins").then(({ gsap, SplitText }) => {
+    import("@/lib/gsap-split").then(({ gsap, SplitText }) => {
       ctx = gsap.context(() => {
         // ── 1. Nav items stagger fade-in (#9) ──
         const navItems = sidebarRef.current?.querySelectorAll("button");

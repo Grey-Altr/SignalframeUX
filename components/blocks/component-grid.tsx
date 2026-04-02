@@ -9,7 +9,11 @@ import { SFBadge } from "@/components/sf/sf-badge";
 import { GRAIN_SVG } from "@/lib/grain";
 import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf/sf-tabs";
 
-/* ── Live preview renderers for each component cell ── */
+/* ── Live preview renderers for each component cell ──
+ * These use actual SF primitives (SFButton, SFCard, etc.) for rich demos.
+ * The components-explorer.tsx has its own CSS-only preview set (lightweight thumbnails)
+ * — this is intentional: homepage previews are "live demos", explorer previews are "icon sketches".
+ */
 
 function PreviewButton() {
   return (
@@ -202,7 +206,7 @@ function PreviewWaveform() {
         <polyline
           points={wave(3, 22, 0)}
           fill="none"
-          stroke="oklch(0.25 0.05 350)"
+          stroke="var(--sf-waveform-bg)"
           strokeWidth="0.5"
         />
         {/* Main waveform */}
@@ -218,7 +222,7 @@ function PreviewWaveform() {
         <polyline
           points={wave(11, 6, 1.2)}
           fill="none"
-          stroke="oklch(0.45 0.15 350)"
+          stroke="var(--sf-waveform-harmonic)"
           strokeWidth="0.7"
           opacity="0.6"
         />

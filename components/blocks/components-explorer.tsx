@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFBadge } from "@/components/sf/sf-badge";
-type FlipModule = typeof import("@/lib/gsap-plugins");
+type FlipModule = typeof import("@/lib/gsap-flip");
 
 const CATEGORIES = [
   "ALL",
@@ -30,7 +30,11 @@ interface ComponentEntry {
   preview: React.ReactNode;
 }
 
-/* ── CSS-only preview components ── */
+/* ── CSS-only preview components ──
+ * Lightweight span/div sketches for the /components explorer grid.
+ * component-grid.tsx (homepage) has a separate set using live SF primitives for richer demos.
+ * The split is intentional: explorer needs compact thumbnails, homepage needs interactive previews.
+ */
 
 function PreviewButton() {
   return (
@@ -282,7 +286,7 @@ export function ComponentsExplorer() {
 
   // Lazy-load GSAP plugins on mount
   useEffect(() => {
-    import("@/lib/gsap-plugins").then((mod) => {
+    import("@/lib/gsap-flip").then((mod) => {
       gsapRef.current = mod;
     });
   }, []);

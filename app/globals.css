@@ -108,6 +108,10 @@
   --sf-dim-text: oklch(0.62 0 0);
   --sf-muted-text-dark: oklch(0.65 0 0);
 
+  /* ── Decorative Preview Tokens ── */
+  --sf-waveform-bg: oklch(0.25 0.05 350);
+  --sf-waveform-harmonic: oklch(0.45 0.15 350);
+
   /* ── Motion Tokens ── */
   --duration-instant: 34ms;
   --duration-fast: 100ms;
@@ -238,6 +242,14 @@
     color: var(--color-foreground);
     padding: 1.5rem 2rem;
   }
+
+  /* ── Border Width Utilities ── */
+  .sf-border-element { border-width: var(--border-element); }
+  .sf-border-divider { border-width: var(--border-divider); }
+  .sf-border-section { border-width: var(--border-section); }
+  .sf-border-b-element { border-bottom-width: var(--border-element); }
+  .sf-border-b-divider { border-bottom-width: var(--border-divider); }
+  .sf-border-b-section { border-bottom-width: var(--border-section); }
 
   /* ── Grain texture overlay ── */
   .sf-grain {
