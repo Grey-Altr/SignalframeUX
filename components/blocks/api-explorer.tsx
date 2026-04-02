@@ -413,7 +413,7 @@ export function APIExplorer() {
       // Need to wait for re-render
       requestAnimationFrame(() => {
         sidebarRef.current
-          ?.querySelector<HTMLButtonElement>(`button[aria-selected="true"]`)
+          ?.querySelector<HTMLButtonElement>(`button[aria-current="location"]`)
           ?.focus();
       });
     },
@@ -482,7 +482,7 @@ export function APIExplorer() {
                   key={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.id)}
-                  aria-selected={activeNav === item.id}
+                  aria-current={activeNav === item.id ? "location" : undefined}
                   className={`block w-full text-left no-underline uppercase transition-colors text-[11px] tracking-[0.08em] py-1.5 px-4 ${
                     activeNav === item.id
                       ? "text-primary bg-[var(--sf-dark-surface)] border-l-[3px] border-l-primary"
@@ -507,7 +507,7 @@ export function APIExplorer() {
         {/* Scroll progress bar */}
         <div
           aria-hidden="true"
-          className="fixed top-[var(--nav-height)] left-[240px] right-[383px] h-[3px] z-20 origin-left hidden md:block pointer-events-none"
+          className="fixed top-[var(--nav-height)] left-[240px] right-[383px] h-[3px] z-[var(--z-progress)] origin-left hidden md:block pointer-events-none"
           style={{
             background: "var(--color-primary)",
             transform: `scaleX(${scrollProgress})`,

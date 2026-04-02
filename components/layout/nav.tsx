@@ -19,7 +19,6 @@ function useScrambleText(target: string, delay: number, duration = 600) {
 
   useEffect(() => {
     // Skip on reduced motion or narrow viewports (nav links hidden below md)
-    if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.innerWidth < 768) return;
 

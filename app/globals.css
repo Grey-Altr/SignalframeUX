@@ -105,7 +105,7 @@
   --sf-darker-surface: oklch(0.1 0 0);
   --sf-darkest-surface: oklch(0.08 0 0);
   --sf-subtle-border: oklch(0.3 0 0);
-  --sf-dim-text: oklch(0.62 0 0);
+  --sf-dim-text: oklch(0.52 0 0);
   --sf-muted-text-dark: oklch(0.65 0 0);
 
   /* ── Decorative Preview Tokens ── */

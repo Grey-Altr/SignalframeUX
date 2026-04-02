@@ -1,0 +1,101 @@
+---
+Generated: "2026-04-02"
+Skill: /pde:critique (CRT)
+Version: v7
+Status: final
+Mode: "full"
+Groups Evaluated: "Visual Hierarchy, UX & Interaction, Accessibility, Consistency, Engineering, Performance"
+Enhanced By: "Full API docs (24 pages), context-aware preview panel, light mode pass, Lighthouse audit, architecture sweep, GSAP bundle fixes"
+---
+
+# Critique Report: SignalframeUX Implementation v7
+
+---
+
+## Summary Scorecard
+
+| Group | Score | Weight | Weighted |
+|-------|-------|--------|----------|
+| Visual Hierarchy & Composition | 91/100 | 1.5x | 136.5 |
+| UX & Interaction | 82/100 | 1.5x | 123 |
+| Accessibility | 91/100 | 2.0x | 182 |
+| Consistency | 93/100 | 1.0x | 93 |
+| Engineering Quality | 90/100 | 1.0x | 90 |
+| Performance | 91/100 | 1.0x | 91 |
+| **Composite** | | | **89/100** |
+
+**Overall:** B+ | 89/100 | Up from 88 in v6. Major gains: full API docs eliminate biggest UX gap, circuit-divider DrawSVG bug fixed, aria-selected→aria-current WCAG fix, --sf-dim-text contrast improved to AA compliance. Deeper v7 audit surfaced 3 runtime bugs that were silently degrading animations.
+
+---
+
+## Delta from v6
+
+| Group | v6 | v7 | Delta | Notes |
+|-------|----|----|-------|-------|
+| Visual Hierarchy | 91 | 91 | 0 | Stable — no regressions, minor border seam noted |
+| UX & Interaction | 88 | 82 | -6 | Preview panel "LIVE PREVIEW™" label misleading for 27/28 states (newly surfaced) |
+| Accessibility | 86 | 91 | +5 | aria-selected→aria-current fix, --sf-dim-text contrast improved, Lighthouse 89→92 |
+| Consistency | 93 | 93 | 0 | Stable — z-10 in hero noted, shadcn vendor z-50 accepted |
+| Engineering | 87 | 90 | +3 | circuit-divider DrawSVG bug fixed, sf-snap/sf-punch eases registered in gsap-flip, dead code removed |
+| Performance | 82 | 91 | +9 | feedback.ts dead file removed, correct GSAP bundles across all components |
+
+---
+
+## Fixes Applied This Session (Pre-Report)
+
+| Issue | Fix | File |
+|-------|-----|------|
+| circuit-divider uses drawSVG but imports gsap-core (silent failure) | Created gsap-draw.ts (core + DrawSVGPlugin), updated import | circuit-divider.tsx, lib/gsap-draw.ts |
+| sf-snap/sf-punch eases undefined in gsap-flip context | Added CustomEase + named eases to gsap-flip.ts | lib/gsap-flip.ts |
+| aria-selected invalid on `<button>` without role="tab" | Changed to aria-current="location" | api-explorer.tsx |
+| --sf-dim-text oklch(0.62) fails WCAG AA on white bg (~3:1) | Lowered to oklch(0.52) (~4.6:1 on white) | globals.css |
+| feedback.ts dead file (no imports anywhere) | Deleted | components/animation/feedback.ts |
+| typeof window guard redundant inside useEffect | Removed | nav.tsx |
+| z-20 on scroll progress bar bypasses token system | Changed to z-[var(--z-progress)] | api-explorer.tsx |
+
+---
+
+## Remaining Findings
+
+### Medium (3)
+
+| # | Group | Location | Issue | Suggestion |
+|---|-------|----------|-------|------------|
+| 1 | UX | api-explorer.tsx:719 | "LIVE PREVIEW™" label misleading — 27/28 states show only a faint label and version badge, not a live component preview | Rename to "CONTEXT" or "REFERENCE", or add per-component visual previews |
+| 2 | VH | token-tabs.tsx:266 | Swatch contrast text uses hardcoded `#fafafa`/`#1a1a1a` instead of tokens | Create --sf-text-on-dark / --sf-text-on-light tokens |
+| 3 | CON | hero.tsx, manifesto-band.tsx | `z-10` in first-party components bypasses z-index token system | Define --z-above-bg token, replace z-10 |
+
+### Low (6)
+
+| # | Group | Location | Issue |
+|---|-------|----------|-------|
+| 4 | VH | marquee-band.tsx:7 | border-y-[3px] top border conflicts with page-header border-b-4 above it (1px visual seam) |
+| 5 | A11Y | token-tabs.tsx:261 | role="img" swatches not keyboard-focusable (tabIndex missing) |
+| 6 | UX | nav.tsx:487 | Mobile sheet uses exact pathname match vs desktop startsWith |
+| 7 | PERF | manifesto-band.tsx:138 | Scroll handler mutates 20+ DOM nodes per frame without RAF throttle |
+| 8 | PERF | token-tabs.tsx:213 | Inline marquee animation without JS prefers-reduced-motion guard |
+| 9 | CON | start/page.tsx:350 | z-[1] bypasses z-index token system |
+
+---
+
+## v3 → v7 Trajectory
+
+| Metric | v3 | v4 | v5 | v6 | v7 | Trend |
+|--------|----|----|----|----|-----|-------|
+| Composite Score | 66 | 81 | 88 | 88 | 89 | +23 total |
+| Critical Findings | 6 | 0 | 0 | 0 | 0 | Resolved |
+| High Findings | 12 | 5 | 0 | 0 | 0 | Resolved (3 found + fixed pre-report) |
+| Medium Findings | 20 | 12 | 6 | 8 | 3 | -85% |
+| Low Findings | 15 | 6 | 7 | 9 | 6 | -60% |
+| Total Findings | 53 | 23 | 13 | 17 | 9 | -83% |
+| styled-jsx | 5 | 3 | 0 | 0 | 0 | Eliminated |
+| Hardcoded oklch (styling) | 20+ | 1 | 0 | 0 | 0 | Eliminated |
+| API placeholder pages | 23 | 23 | 23 | 23 | 0 | Eliminated |
+| GSAP bundle tiers | 1 | 2 | 2 | 3 | 5 | core/flip/split/draw/plugins |
+| Lighthouse A11Y | — | — | — | 89 | 92 | +3 |
+| Lighthouse Best Practices | — | — | — | 100 | 100 | Perfect |
+
+---
+
+*Generated by PDE-OS /pde:critique (CRT) | 2026-04-02 | Mode: full*
+*Previous: CRT-critique-v6.md (88/100 B+)*
