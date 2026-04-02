@@ -295,7 +295,7 @@ export function ComponentGrid() {
               className="relative border-r-2 border-b-2 border-foreground group no-underline"
               style={{
                 aspectRatio: "1",
-                backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--color-background)",
+                backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--sf-cell-light-bg)",
                 color: "var(--color-foreground)",
                 borderColor: isHovered ? "var(--color-primary)" : undefined,
               }}
