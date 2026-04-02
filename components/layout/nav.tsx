@@ -63,14 +63,14 @@ function useScrambleText(target: string, delay: number, duration = 600) {
   return text;
 }
 
-function NavLink({ href, label, delay, isActive }: { href: string; label: string; delay: number; isActive: boolean }) {
+function NavLink({ href, label, delay, isActive, ariaLabel }: { href: string; label: string; delay: number; isActive: boolean; ariaLabel?: string }) {
   const text = useScrambleText(label, delay, NAV_LINK_ANIM.duration);
 
   return (
     <Link
       href={href}
       data-anim="nav-link"
-      aria-label={label}
+      aria-label={ariaLabel ?? label}
       aria-current={isActive ? "page" : undefined}
       className={`nav-hover-link relative no-underline mr-[clamp(6px,1vw,14px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
     >
@@ -80,11 +80,11 @@ function NavLink({ href, label, delay, isActive }: { href: string; label: string
   );
 }
 
-const NAV_LINKS = [
+const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string }> = [
   { href: "/components", label: "COMPONENTS" },
   { href: "/reference", label: "API" },
   { href: "/tokens", label: "TOKENS" },
-  { href: "/start", label: "START" },
+  { href: "/start", label: "START", ariaLabel: "Get started with SignalframeUX" },
   { href: "https://github.com/signalframeux", label: "GITHUB" },
 ];
 
@@ -455,6 +455,7 @@ export function Nav() {
               key={link.href}
               href={link.href}
               label={link.label}
+              ariaLabel={link.ariaLabel}
               delay={NAV_LINK_ANIM.baseDelay + i * NAV_LINK_ANIM.stagger}
               isActive={link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)}
             />

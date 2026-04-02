@@ -10,7 +10,7 @@ export function SharedCodeBlock({
 }) {
   return (
     <div
-      className={`relative overflow-x-auto font-mono bg-[var(--sf-code-bg)] text-[var(--sf-code-text)] p-5 pr-6 text-[12px] leading-[1.7] shadow-[inset_0_2px_4px_oklch(0_0_0/0.2)] ${className ?? ""}`}
+      className={`relative overflow-x-auto font-mono bg-[var(--sf-code-bg)] text-[var(--sf-code-text)] p-5 pr-6 text-[12px] leading-[1.7] shadow-[inset_0_2px_4px_var(--sf-inset-shadow-color)] ${className ?? ""}`}
       role="region"
       aria-label={label ? `Code: ${label}` : "Code example"}
     >

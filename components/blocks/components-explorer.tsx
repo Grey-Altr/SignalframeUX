@@ -491,7 +491,7 @@ export function ComponentsExplorer() {
               <div
                 className={`w-full h-12 border flex items-center justify-center text-[10px] transition-colors duration-150 mt-2 mb-2 ${
                   comp.variant === "black"
-                    ? "border-[oklch(0.3_0_0)] group-hover:border-primary"
+                    ? "border-[var(--sf-subtle-border)] group-hover:border-primary"
                     : comp.variant === "yellow"
                       ? "border-foreground"
                       : "border-border/40 group-hover:border-primary"
