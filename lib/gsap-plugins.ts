@@ -52,4 +52,4 @@ export function initReducedMotion(): () => void {
   return motionCleanup;
 }
 
-export { gsap, ScrollTrigger, SplitText, Flip, CustomEase, useGSAP };
+export { gsap, ScrollTrigger, SplitText, ScrambleTextPlugin, Flip, CustomEase, useGSAP };

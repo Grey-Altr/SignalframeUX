@@ -3,6 +3,14 @@ import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFCard, SFCardHeader, SFCardTitle, SFCardContent } from "@/components/sf/sf-card";
 import { SFBadge } from "@/components/sf/sf-badge";
+import {
+  SFTable,
+  SFTableHeader,
+  SFTableHead,
+  SFTableBody,
+  SFTableRow,
+  SFTableCell,
+} from "@/components/sf/sf-table";
 import { GRAIN_SVG } from "@/lib/grain";
 import { PreviewTabs } from "@/components/blocks/preview-tabs";
 
@@ -57,20 +65,24 @@ function PreviewModal() {
 
 function PreviewTable() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-foreground text-[var(--text-sm)] uppercase tracking-wider">
-      <div className="bg-foreground text-background px-2 py-1.5 flex dark:bg-[var(--sf-dark-surface)] dark:text-foreground">
-        <span className="flex-1">TOKEN</span>
-        <span className="flex-1 text-right">VALUE</span>
-      </div>
-      <div className="px-2 py-1.5 flex border-b border-foreground/20">
-        <span className="flex-1 opacity-60">primary</span>
-        <span className="flex-1 text-right text-primary">oklch(.55 .28 350)</span>
-      </div>
-      <div className="px-2 py-1.5 flex">
-        <span className="flex-1 opacity-60">yellow</span>
-        <span className="flex-1 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</span>
-      </div>
-    </div>
+    <SFTable className="w-[80%] max-w-[200px] text-[var(--text-sm)] uppercase tracking-wider">
+      <SFTableHeader>
+        <SFTableRow>
+          <SFTableHead className="px-2 py-1.5">TOKEN</SFTableHead>
+          <SFTableHead className="px-2 py-1.5 text-right">VALUE</SFTableHead>
+        </SFTableRow>
+      </SFTableHeader>
+      <SFTableBody>
+        <SFTableRow>
+          <SFTableCell className="px-2 py-1.5 opacity-60">primary</SFTableCell>
+          <SFTableCell className="px-2 py-1.5 text-right text-primary">oklch(.55 .28 350)</SFTableCell>
+        </SFTableRow>
+        <SFTableRow>
+          <SFTableCell className="px-2 py-1.5 opacity-60">yellow</SFTableCell>
+          <SFTableCell className="px-2 py-1.5 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
+        </SFTableRow>
+      </SFTableBody>
+    </SFTable>
   );
 }
 
@@ -130,20 +142,20 @@ function PreviewGlitchText() {
   return (
     <div className="relative">
       <span
-        className="sf-display text-[18px] font-bold uppercase tracking-wider text-[var(--sf-muted-text-dark)]"
+        className="sf-display text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sf-muted-text-dark)]"
       >
         GLITCH
       </span>
       <span
         aria-hidden="true"
-        className="sf-display absolute top-0 left-[2px] text-[18px] font-bold uppercase tracking-wider text-primary opacity-50"
+        className="sf-display absolute top-0 left-[2px] text-[var(--text-lg)] font-bold uppercase tracking-wider text-primary opacity-50"
         style={{ clipPath: "inset(30% 0 40% 0)" }}
       >
         GLITCH
       </span>
       <span
         aria-hidden="true"
-        className="sf-display absolute top-0 left-[-2px] text-[18px] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
+        className="sf-display absolute top-0 left-[-2px] text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
         style={{ clipPath: "inset(60% 0 10% 0)" }}
       >
         GLITCH
@@ -276,8 +288,8 @@ export function ComponentGrid() {
                 color: "var(--color-foreground)",
               }}
             >
-              {/* Index */}
-              <span className={`absolute top-3 left-3 text-[var(--text-sm)] uppercase tracking-[0.15em] ${isBlack ? "opacity-60" : "opacity-40"}`}>
+              {/* Index — magenta numeral */}
+              <span className="absolute top-2 right-3 sf-display text-primary text-[clamp(24px,3vw,36px)] leading-none opacity-40 group-hover:opacity-80 transition-opacity duration-200">
                 {comp.id}
               </span>
 

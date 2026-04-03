@@ -3,10 +3,10 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFBadge } from "@/components/sf/sf-badge";
-import { SFSeparator } from "@/components/sf/sf-separator";
 import Link from "next/link";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
-import { GRAIN_BG_STYLE } from "@/lib/grain";
+import { Breadcrumb } from "@/components/layout/breadcrumb";
+
 
 export const metadata: Metadata = {
   title: "Get Started — SIGNALFRAME//UX",
@@ -149,13 +149,12 @@ const COLOR_MAP: Record<string, string> = {
   kw: "text-primary",
   str: "text-[var(--sf-yellow)]",
   fn: "text-[var(--sf-code-text)]",
-  cm: "text-muted-foreground",
   cn: "text-[var(--sf-code-keyword)]",
 };
 
 function CodeBlock({ lines }: { lines: CodeLine[] }) {
   return (
-    <SharedCodeBlock label="TERMINAL™" className="text-[13px]">
+    <SharedCodeBlock label="TERMINAL™" className="text-base">
       <code>
         {lines.map((line, i) => {
           if (line.type === "blank") return <br key={i} />;
@@ -188,6 +187,7 @@ export default function StartPage() {
     <>
       <Nav />
       <main id="main-content" className="mt-[var(--nav-height)]">
+        <Breadcrumb segments={[{ label: "GET STARTED" }]} />
         {/* ═══ HERO ═══ */}
         <section className="bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
           {/* Yellow accent bar */}
@@ -195,6 +195,7 @@ export default function StartPage() {
           <div className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]">
             <div className="flex items-start justify-between">
               <h1
+                data-anim="page-heading"
                 className="sf-display text-[clamp(48px,11vw,120px)] mb-6"
               >
                 GET
@@ -206,11 +207,11 @@ export default function StartPage() {
                 SF
               </span>
             </div>
-            <p className="text-[16px] text-muted-foreground uppercase tracking-[0.2em] max-w-[600px] leading-[1.5]">
+            <p className="text-md text-muted-foreground uppercase tracking-[0.2em] max-w-[600px] leading-[1.5]">
               FROM ZERO TO SIGNAL//FRAME&trade; IN 5 MINUTES. ACCEPT THE
               INTERFACE INTO YOUR LIFE.
             </p>
-            <p className="mt-6 text-[11px] text-primary uppercase tracking-[0.15em]">
+            <p className="mt-6 text-sm text-primary uppercase tracking-[0.15em]">
               &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
             </p>
           </div>
@@ -218,8 +219,9 @@ export default function StartPage() {
 
         {/* ═══ STEPS ═══ */}
         {STEPS.map((step) => (
-          <div
+          <section
             key={step.number}
+            aria-label={`Step ${step.number}: ${step.title}`}
             className="grid grid-cols-[60px_1fr] md:grid-cols-[80px_1fr] border-b-[3px] border-foreground min-h-[200px]"
           >
             {/* Step number column */}
@@ -237,16 +239,9 @@ export default function StartPage() {
             {/* Step content column */}
             <div
               className={`py-10 px-[clamp(20px,4vw,48px)] relative ${
-                step.highlight ? "bg-[var(--sf-yellow)]" : ""
+                step.highlight ? "bg-[var(--sf-yellow)] sf-grain" : ""
               }`}
             >
-              {/* Grain overlay for yellow step */}
-              {step.highlight && (
-                <div
-                  className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply"
-                  style={GRAIN_BG_STYLE}
-                />
-              )}
               <h2
                 className="sf-display leading-none mb-4 text-foreground"
                 style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
@@ -254,7 +249,7 @@ export default function StartPage() {
                 {step.title}
               </h2>
               <p
-                className={`text-[13px] leading-[1.8] max-w-[600px] mb-5 ${
+                className={`text-base leading-[1.8] max-w-[600px] mb-5 ${
                   step.highlight
                     ? "text-foreground"
                     : "text-muted-foreground"
@@ -264,12 +259,12 @@ export default function StartPage() {
               </p>
               <CodeBlock lines={step.code} />
               {step.note && (
-                <div className="mt-4 text-[11px] text-muted-foreground uppercase tracking-[0.1em] py-3 px-4 border-l-[3px] border-primary">
+                <div className="mt-4 text-sm text-muted-foreground uppercase tracking-[0.1em] py-3 px-4 border-l-[3px] border-primary">
                   {step.note}
                 </div>
               )}
             </div>
-          </div>
+          </section>
         ))}
 
         {/* ═══ CHECKLIST ═══ */}
@@ -284,12 +279,12 @@ export default function StartPage() {
             {CHECKLIST.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-4 py-3 border-b border-border text-[13px] uppercase tracking-[0.08em]"
+                className="flex items-center gap-4 py-3 border-b border-border text-base uppercase tracking-[0.08em]"
               >
                 <div
                   role="img"
                   aria-label={item.done ? "Complete" : "Incomplete"}
-                  className={`w-5 h-5 border-2 flex items-center justify-center text-[14px] shrink-0 ${
+                  className={`w-5 h-5 border-2 flex items-center justify-center text-sm shrink-0 ${
                     item.done
                       ? "bg-primary border-primary text-primary-foreground"
                       : "border-foreground"
@@ -300,7 +295,7 @@ export default function StartPage() {
                 <div className="flex-1">{item.label}</div>
                 <SFBadge
                   intent={item.done ? "primary" : "outline"}
-                  className="text-[11px]"
+                  className="text-sm"
                 >
                   {item.status}
                 </SFBadge>
@@ -327,13 +322,13 @@ export default function StartPage() {
               <span className="absolute bottom-0 right-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-100 delay-200" />
               <span className="absolute bottom-0 left-0 w-[2px] bg-primary h-0 group-hover:h-full transition-all duration-100 delay-300" />
 
-              <h3 className="sf-display text-[15px] mb-3 transition-colors duration-150 group-hover:text-primary">
+              <h3 className="sf-display text-base mb-3 transition-colors duration-150 group-hover:text-primary">
                 {card.title}
               </h3>
-              <p className="text-[12px] text-muted-foreground leading-[1.7] transition-colors duration-150">
+              <p className="text-xs text-muted-foreground leading-[1.7] transition-colors duration-150">
                 {card.description}
               </p>
-              <div className="mt-4 text-[11px] text-primary uppercase tracking-[0.15em]">
+              <div className="mt-4 text-sm text-primary uppercase tracking-[0.15em]">
                 &rarr; {card.arrow}
               </div>
             </Link>
@@ -341,18 +336,14 @@ export default function StartPage() {
         </div>
 
         {/* ═══ COMMUNITY BAND ═══ */}
-        <section className="sf-yellow-band border-b-[3px] border-foreground relative overflow-hidden">
-          {/* Grain overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply"
-            style={GRAIN_BG_STYLE}
-          />
+        <section className="sf-yellow-band sf-grain border-b-[3px] border-foreground relative overflow-hidden">
 
           {/* Marquee */}
+          <span className="sr-only">Open source. Built by engineers. Work. Build. Signal. Repeat.</span>
           <div className="h-8 overflow-hidden relative z-[var(--z-above-bg)]">
             <div
               aria-hidden="true"
-              className="flex whitespace-nowrap uppercase tracking-[0.15em] leading-8 text-foreground sf-display text-[16px]"
+              className="flex whitespace-nowrap uppercase tracking-[0.15em] leading-8 text-foreground sf-display text-md"
               style={{ animation: "sf-marquee-scroll 12s linear infinite" }}
             >
               {[...Array(4)].map((_, i) => (
@@ -370,7 +361,7 @@ export default function StartPage() {
             >
               JOIN THE SIGNAL&trade;
             </h2>
-            <p className="text-[14px] leading-[1.7] text-foreground max-w-[700px]">
+            <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
               SignalframeUX&trade; is open source. Built by people who believe
               design systems should be{" "}
               <Link href="/components" className="text-primary no-underline hover:underline">
@@ -382,11 +373,13 @@ export default function StartPage() {
               <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
                 <a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer">
                   GITHUB
+                  <span className="sr-only">(opens in new tab)</span>
                 </a>
               </SFButton>
               <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
                 <a href="https://github.com/signalframeux/storybook" target="_blank" rel="noopener noreferrer">
                   STORYBOOK
+                  <span className="sr-only">(opens in new tab)</span>
                 </a>
               </SFButton>
             </div>

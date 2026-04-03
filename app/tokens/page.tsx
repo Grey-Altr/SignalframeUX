@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { TokenTabs } from "@/components/blocks/token-tabs";
+import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 export const metadata: Metadata = {
   title: "Token Explorer — SIGNALFRAME//UX",
@@ -13,9 +14,11 @@ export default function TokensPage() {
     <>
       <Nav />
       <main id="main-content" className="mt-[var(--nav-height)]">
+        <Breadcrumb segments={[{ label: "TOKENS" }]} />
         {/* ═══ PAGE HEADER ═══ */}
         <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">
           <h1
+            data-anim="page-heading"
             aria-label="Token Explorer"
             className="sf-display px-6 md:px-12 pt-10 pb-6"
             style={{ fontSize: "clamp(60px, 9vw, 100px)" }}

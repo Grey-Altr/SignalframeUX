@@ -7,23 +7,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { BorderDraw } from "@/components/animation/border-draw";
 
 interface SFCardProps extends React.ComponentProps<typeof Card> {
   hoverable?: boolean;
+  /** Use clockwise magenta border-draw instead of simple color hover */
+  borderDraw?: boolean;
 }
 
-function SFCard({ className, hoverable = true, ...props }: SFCardProps) {
-  return (
+function SFCard({ className, hoverable = false, borderDraw = false, ...props }: SFCardProps) {
+  const card = (
     <Card
       className={cn(
         "border-2 border-foreground bg-background shadow-none",
-        hoverable &&
-          "transition-colors duration-[var(--duration-fast)] hover:border-primary",
+        hoverable && !borderDraw &&
+          "sf-hoverable transition-colors duration-[var(--duration-fast)] hover:border-primary",
         className
       )}
       {...props}
     />
   );
+
+  if (borderDraw) {
+    return <BorderDraw>{card}</BorderDraw>;
+  }
+
+  return card;
 }
 
 function SFCardHeader({

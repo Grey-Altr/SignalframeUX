@@ -121,12 +121,15 @@ export function ManifestoBand() {
 
       if (wordOrder < currentWordFloat - 1) {
         el.style.opacity = "1";
+        el.style.transform = "translateY(0)";
       } else if (wordOrder < currentWordFloat) {
-        // Partial fade for the "current" word
+        // Partial fade + lift for the "current" word
         const partial = currentWordFloat - wordOrder;
         el.style.opacity = String(0.35 + 0.65 * partial);
+        el.style.transform = `translateY(${(1 - partial) * 3}px)`;
       } else {
         el.style.opacity = "0.35";
+        el.style.transform = "translateY(3px)";
       }
     });
     });
@@ -193,8 +196,8 @@ export function ManifestoBand() {
                 key={i}
                 ref={(el) => { wordRefs.current[i] = el; }}
                 data-anim="manifesto-word"
-                className="text-[11px] transition-opacity duration-150"
-                style={{ opacity: 0 }}
+                className="text-[var(--text-sm)]"
+                style={{ opacity: 0, transform: "translateY(3px)", display: "inline-block" }}
               >
                 {seg.text}
               </sup>
@@ -207,8 +210,7 @@ export function ManifestoBand() {
               key={i}
               ref={(el) => { wordRefs.current[i] = el; }}
               data-anim="manifesto-word"
-              className="transition-opacity duration-150"
-              style={{ opacity: 0 }}
+              style={{ opacity: 0, transform: "translateY(3px)", display: "inline-block" }}
             >
               {seg.text}
             </span>

@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback, memo } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo, memo, useId } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  SFSheet,
-  SFSheetTrigger,
-  SFSheetContent,
-  SFSheetHeader,
-  SFSheetTitle,
-} from "@/components/sf/sf-sheet";
 import { CommandPalette } from "@/components/layout/command-palette";
+import { NavOverlay } from "@/components/layout/nav-overlay";
+import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
+import { Magnetic } from "@/components/animation/magnetic";
 
 const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
 
@@ -29,21 +25,29 @@ type ScrambleEntry = {
   setText: (s: string) => void;
 };
 
-const scrambleRegistry = new Map<string, ScrambleEntry>();
-let scrambleRaf = 0;
-let scrambleMountTime = 0;
+/** Shared state survives HMR via globalThis — prevents orphaned RAF loops during dev reloads */
+const SCRAMBLE_KEY = "__sf_scramble" as const;
+type ScrambleState = { registry: Map<string, ScrambleEntry>; raf: number; mountTime: number };
+function getScrambleState(): ScrambleState {
+  const g = globalThis as unknown as Record<string, ScrambleState | undefined>;
+  if (!g[SCRAMBLE_KEY]) {
+    g[SCRAMBLE_KEY] = { registry: new Map(), raf: 0, mountTime: 0 };
+  }
+  return g[SCRAMBLE_KEY]!;
+}
 
 function scrambleTick() {
+  const s = getScrambleState();
   const now = Date.now();
   let allDone = true;
 
-  scrambleRegistry.forEach((entry) => {
+  s.registry.forEach((entry) => {
     if (entry.done) return;
     allDone = false;
 
     // Wait for staggered delay
     if (!entry.started) {
-      if (now - scrambleMountTime < entry.delay) return;
+      if (now - s.mountTime < entry.delay) return;
       entry.started = true;
       entry.startTime = now;
     }
@@ -69,21 +73,23 @@ function scrambleTick() {
   });
 
   if (!allDone) {
-    scrambleRaf = requestAnimationFrame(scrambleTick);
+    s.raf = requestAnimationFrame(scrambleTick);
   } else {
-    scrambleRaf = 0;
+    s.raf = 0;
   }
 }
 
 function useScrambleText(target: string, delay: number, duration = 600) {
   const [text, setText] = useState(target);
-  const idRef = useRef(`${target}-${delay}`);
+  const reactId = useId();
+  const idRef = useRef(reactId);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.innerWidth < 768) return;
 
     const id = idRef.current;
+    const s = getScrambleState();
 
     // Immediately show scrambled state
     setText(target.split("").map((c) =>
@@ -91,7 +97,7 @@ function useScrambleText(target: string, delay: number, duration = 600) {
     ).join(""));
 
     // Register into shared loop
-    scrambleRegistry.set(id, {
+    s.registry.set(id, {
       target, delay, duration,
       settled: new Set<number>(),
       startTime: 0,
@@ -101,18 +107,21 @@ function useScrambleText(target: string, delay: number, duration = 600) {
     });
 
     // Start shared loop if first registration
-    if (scrambleRegistry.size === 1) {
-      scrambleMountTime = Date.now();
+    if (s.registry.size === 1) {
+      s.mountTime = Date.now();
     }
-    if (!scrambleRaf) {
-      scrambleRaf = requestAnimationFrame(scrambleTick);
+    if (!s.raf) {
+      s.raf = requestAnimationFrame(scrambleTick);
     }
 
     return () => {
-      scrambleRegistry.delete(id);
-      if (scrambleRegistry.size === 0 && scrambleRaf) {
-        cancelAnimationFrame(scrambleRaf);
-        scrambleRaf = 0;
+      s.registry.delete(id);
+      if (s.registry.size === 0) {
+        if (s.raf) {
+          cancelAnimationFrame(s.raf);
+          s.raf = 0;
+        }
+        s.mountTime = 0;
       }
     };
   }, [target, delay, duration]);
@@ -120,29 +129,33 @@ function useScrambleText(target: string, delay: number, duration = 600) {
   return text;
 }
 
-function NavLink({ href, label, delay, isActive, ariaLabel }: { href: string; label: string; delay: number; isActive: boolean; ariaLabel?: string }) {
+const NavLink = memo(function NavLink({ href, label, delay, isActive, ariaLabel, external }: { href: string; label: string; delay: number; isActive: boolean; ariaLabel?: string; external?: boolean }) {
   const text = useScrambleText(label, delay, NAV_LINK_ANIM.duration);
+  const linkProps = external ? { target: "_blank" as const, rel: "noopener noreferrer" } : {};
 
   return (
-    <Link
-      href={href}
-      data-anim="nav-link"
-      aria-label={ariaLabel ?? label}
-      aria-current={isActive ? "page" : undefined}
-      className={`nav-hover-link relative no-underline mr-[clamp(6px,1vw,14px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
-    >
-      {text}
-      <span className="nav-hover-underline" />
-    </Link>
+    <Magnetic radius={50} strength={0.12} maxDisplacement={6}>
+      <Link
+        href={href}
+        data-anim="nav-link"
+        aria-label={ariaLabel ?? label}
+        aria-current={isActive ? "page" : undefined}
+        className={`nav-hover-link relative no-underline mr-[clamp(6px,1vw,14px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
+        {...linkProps}
+      >
+        {text}
+        <span className="nav-hover-underline" />
+      </Link>
+    </Magnetic>
   );
-}
+});
 
-const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string }> = [
+const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string; external?: boolean }> = [
   { href: "/components", label: "COMPONENTS" },
   { href: "/reference", label: "API" },
   { href: "/tokens", label: "TOKENS" },
   { href: "/start", label: "START", ariaLabel: "Get started with SignalframeUX" },
-  { href: "https://github.com/signalframeux", label: "GITHUB" },
+  { href: "https://github.com/signalframeux", label: "GITHUB", external: true },
 ];
 
 /** All scramble/animation timing constants in one place */
@@ -158,7 +171,7 @@ const NAV_LINK_ANIM = {
 } as const;
 
 const LiveClock = memo(function LiveClock() {
-  const [display, setDisplay] = useState<string[]>([]);
+  const [display, setDisplay] = useState<string[]>(["—","—",":","—","—",":","—","—"]);
   const prevTimeRef = useRef("");
   const scrambleRef = useRef<Map<number, { frame: number; target: string }>>(
     new Map()
@@ -214,7 +227,7 @@ const LiveClock = memo(function LiveClock() {
     }, 1000);
 
     function startScrambleLoop() {
-      function tick(now: number) {
+      function tick() {
         const scrambles = scrambleRef.current;
         if (scrambles.size === 0) {
           rafRef.current = 0;
@@ -255,19 +268,35 @@ const LiveClock = memo(function LiveClock() {
       rafRef.current = requestAnimationFrame(tick);
     }
 
-    // Pause RAF/interval when tab is hidden
+    // Pause RAF + interval when tab is hidden, resume on visible
+    const intervalRef = { id: interval };
     const onVisibility = () => {
       if (document.hidden) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = 0;
-      } else if (scrambleRef.current.size > 0) {
-        startScrambleLoop();
+        clearInterval(intervalRef.id);
+      } else {
+        // Resume interval — clear first to prevent stacking
+        clearInterval(intervalRef.id);
+        intervalRef.id = setInterval(() => {
+          const newTime = getTimeString();
+          const oldTime = prevTimeRef.current;
+          if (newTime === oldTime) return;
+          for (let i = 0; i < newTime.length; i++) {
+            if (newTime[i] !== oldTime[i] && newTime[i] !== ":") {
+              scrambleRef.current.set(i, { frame: 0, target: newTime[i] });
+            }
+          }
+          prevTimeRef.current = newTime;
+          if (!rafRef.current) startScrambleLoop();
+        }, 1000);
+        if (scrambleRef.current.size > 0) startScrambleLoop();
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalRef.id);
       document.removeEventListener("visibilitychange", onVisibility);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
@@ -313,17 +342,13 @@ const DarkModeToggle = memo(function DarkModeToggle() {
     const timeouts = phases.map((delay, i) =>
       setTimeout(() => setRenderPhase(i + 1), delay)
     );
-    return () => timeouts.forEach(clearTimeout);
+    // Fallback: ensure toggle is accessible even if animation doesn't complete
+    const fallback = setTimeout(() => setRenderPhase(7), 2000);
+    return () => { timeouts.forEach(clearTimeout); clearTimeout(fallback); };
   }, []);
 
   function toggle() {
-    const next = !dark;
-    setDark(next);
-    try { localStorage.setItem("sf-theme", next ? "dark" : "light"); } catch {}
-    const root = document.documentElement;
-    root.classList.add("sf-theme-transition");
-    root.classList.toggle("dark", next);
-    setTimeout(() => root.classList.remove("sf-theme-transition"), 400);
+    setDark((prev) => sharedToggleTheme(prev));
   }
 
   const renderOpacity = renderPhase === 0 ? 0 : renderPhase < 3 ? 0.15 : renderPhase < 5 ? 0.4 : renderPhase < 7 ? 0.7 : 1;
@@ -338,11 +363,13 @@ const DarkModeToggle = memo(function DarkModeToggle() {
         transition: "opacity 0.08s steps(2), filter 0.08s steps(2)",
       }}
     >
-      <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground" aria-hidden="true">
+      <span className="text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground" aria-hidden="true">
         {lightText}
       </span>
       <button
         onClick={toggle}
+        tabIndex={renderPhase > 0 ? 0 : -1}
+        aria-hidden={renderPhase === 0 ? true : undefined}
         className="relative w-[42px] h-[20px] border-2 border-foreground bg-transparent shrink-0 cursor-pointer p-[12px] -m-[12px]"
         aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={dark}
@@ -359,7 +386,7 @@ const DarkModeToggle = memo(function DarkModeToggle() {
           }}
         />
       </button>
-      <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground" aria-hidden="true">
+      <span className="text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground" aria-hidden="true">
         DARK
       </span>
     </div>
@@ -467,26 +494,31 @@ const LogoMark = memo(function LogoMark() {
     };
   }, []);
 
+  const linkStyle = useMemo(() => ({
+    fontSize: "clamp(28px,4vw,48px)",
+    lineHeight: 1 as const,
+    letterSpacing: "-0.02em",
+    width: "clamp(100px,14vw,180px)",
+  }), []);
+
+  const wrapperStyle = useMemo(() => ({
+    transform: phase === "enter" ? "translateY(-120%)" : "translateY(0)",
+    opacity: phase === "enter" ? 0 : 1,
+    transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease",
+    overflow: "visible" as const,
+  }), [phase]);
+
   return (
     <Link
       href="/"
       aria-label="SF//UX, go to homepage"
       className="sf-logo sf-display no-underline shrink-0 mr-[clamp(8px,1.2vw,16px)] flex items-baseline gap-0 text-foreground"
-      style={{
-        fontSize: "clamp(28px,4vw,48px)",
-        lineHeight: 1,
-        letterSpacing: "-0.02em",
-        width: "clamp(100px,14vw,180px)",
-      }}
+      style={linkStyle}
     >
       <span
         className="inline-flex items-baseline"
-        style={{
-          transform: phase === "enter" ? "translateY(-120%)" : "translateY(0)",
-          opacity: phase === "enter" ? 0 : 1,
-          transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease",
-          overflow: "visible",
-        }}
+        aria-hidden="true"
+        style={wrapperStyle}
       >
         {chars.map((char, i) => {
           const isSlash = i === 2;
@@ -519,10 +551,14 @@ const LogoMark = memo(function LogoMark() {
   );
 });
 
+function isActivePath(href: string, pathname: string) {
+  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
+}
+
 export function Nav() {
   const pathname = usePathname();
   const [commandOpen, setCommandOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [overlayOpen, setOverlayOpen] = useState(false);
 
   return (
     <nav aria-label="Main navigation" className="fixed top-0 left-0 right-0 z-[var(--z-nav)] bg-background border-b-[3px] border-foreground">
@@ -538,53 +574,36 @@ export function Nav() {
               href={link.href}
               label={link.label}
               ariaLabel={link.ariaLabel}
+              external={link.external}
               delay={NAV_LINK_ANIM.baseDelay + i * NAV_LINK_ANIM.stagger}
-              isActive={link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/")}
+              isActive={isActivePath(link.href, pathname)}
             />
           ))}
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile nav — full-screen overlay */}
         <div className="md:hidden ml-2">
-          <SFSheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SFSheetTrigger asChild>
-              <button
-                className="border-2 border-foreground px-2.5 py-1.5 text-[11px] uppercase tracking-wider font-bold"
-                aria-label="Open navigation menu"
-              >
-                MENU
-              </button>
-            </SFSheetTrigger>
-            <SFSheetContent side="right" className="w-[280px]">
-              <SFSheetHeader>
-                <SFSheetTitle className="sf-display text-2xl">SF//UX</SFSheetTitle>
-              </SFSheetHeader>
-              <div className="flex flex-col gap-0 mt-6">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setSheetOpen(false)}
-                    aria-current={(link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/")) ? "page" : undefined}
-                    className={`block py-3 px-4 border-b-2 border-foreground text-[13px] font-bold uppercase tracking-[0.15em] no-underline transition-colors ${
-                      (link.href === "/" ? pathname === "/" : pathname === link.href || pathname.startsWith(link.href + "/"))
-                        ? "text-primary bg-foreground"
-                        : "text-foreground hover:bg-foreground hover:text-background"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </SFSheetContent>
-          </SFSheet>
+          <button
+            onClick={() => setOverlayOpen(true)}
+            className="border-2 border-foreground px-2.5 py-1.5 text-[var(--text-sm)] uppercase tracking-wider font-bold"
+            aria-label="Open navigation menu"
+            aria-expanded={overlayOpen}
+          >
+            MENU
+          </button>
         </div>
+
+        <NavOverlay
+          open={overlayOpen}
+          onClose={() => setOverlayOpen(false)}
+          links={NAV_LINKS}
+        />
 
         {/* Right side: command palette trigger + dark mode toggle + clock */}
         <div className="flex items-center gap-[clamp(8px,1.5vw,24px)] ml-auto">
           <button
             onClick={() => setCommandOpen(true)}
-            className="hidden sm:flex items-center gap-1.5 border-2 border-foreground px-2 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:border-primary transition-colors duration-200"
+            className="hidden sm:flex items-center gap-1.5 border-2 border-foreground px-2 py-1 text-[var(--text-xs)] font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:border-primary transition-colors duration-200"
             aria-label="Open command palette (Cmd+K)"
           >
             <span className="text-primary">⌘</span>K

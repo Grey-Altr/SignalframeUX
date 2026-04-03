@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Electrolize, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
 import { PageAnimations } from "@/components/layout/page-animations";
+import { PageTransition } from "@/components/animation/page-transition";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
@@ -51,11 +53,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
+  // Static string literal for theme detection — no user input interpolated, safe from XSS.
+  const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()`;
+
   return (
     <html
       lang="en"
@@ -63,17 +70,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Blocking theme script — must run before first paint to prevent FOUC.
-            CSP: requires 'unsafe-inline' or a nonce. When deploying behind CSP headers,
-            add nonce={nonce} here and pass from middleware. No external input is interpolated;
-            content is a static string literal — safe from XSS. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()`,
-          }}
-        />
+        {/* Blocking theme script — prevents FOUC. CSP nonce injected from middleware. */}
+        {/* suppressHydrationWarning: browsers strip nonce from DOM after parsing (security feature),
+            so server="nonce-xxx" but client="" — this is expected, not a real mismatch. */}
+        <script nonce={nonce} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
-          <style>{`.sf-hero-deferred, .sf-anim-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"] { opacity: 1 !important; transform: none !important; }`}</style>
+          <style>{`.sf-hero-deferred, .sf-anim-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"], [data-anim="manifesto-word"] { opacity: 1 !important; transform: none !important; }`}</style>
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden">
@@ -90,6 +92,7 @@ export default function RootLayout({
         </TooltipProvider>
         <GlobalEffectsLazy />
         <PageAnimations />
+        <PageTransition />
       </body>
     </html>
   );

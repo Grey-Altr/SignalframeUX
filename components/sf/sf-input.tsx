@@ -8,8 +8,8 @@ export function SFInput({
   return (
     <Input
       className={cn(
-        "font-mono border-2 border-foreground bg-background",
-        "focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-0",
+        "sf-focusable sf-border-draw-focus font-mono uppercase tracking-wider text-xs border-2 border-foreground bg-background",
+        "focus-visible:ring-0",
         "placeholder:text-muted-foreground placeholder:uppercase placeholder:tracking-wider",
         className
       )}

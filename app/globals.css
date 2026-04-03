@@ -93,6 +93,7 @@
   --sf-clock: oklch(0.145 0 0);
   --color-success: oklch(0.85 0.25 145);
   --color-warning: oklch(0.91 0.18 98);
+  --sf-tracking-label: 0.15em;
   --sf-grain-opacity: 0.03;
   --sf-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
   --sf-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
@@ -189,6 +190,7 @@
   --sf-cell-light-bg: oklch(0.145 0 0);
 
   /* ── SF Extension Dark Overrides ── */
+  --sf-clock: oklch(0.985 0 0);
   --sf-subtle-border: oklch(0.4 0 0);
   --sf-dim-text: oklch(0.65 0 0);
   --sf-halftone-dot: oklch(1 0 0 / 0.15);
@@ -198,17 +200,10 @@
   --sf-inset-shadow-color: oklch(0 0 0 / 0.4);
 }
 
-/* ── Theme Switch Transition (applied temporarily during toggle) ── */
-.sf-theme-transition,
-.sf-theme-transition *,
-.sf-theme-transition *::before,
-.sf-theme-transition *::after {
-  transition: background-color 0.4s ease,
-              color 0.4s ease,
-              border-color 0.4s ease,
-              fill 0.4s ease,
-              stroke 0.4s ease !important;
-}
+/* ── Theme Switch: hard-cut (DU-style instant inversion) ──
+   The .sf-no-transition class is applied during toggle and removed
+   after two rAF ticks so the browser paints the new palette atomically.
+   See lib/theme.ts for the toggle implementation. */
 
 /* ══════════════════════════════════════════════════════════════
    BASE STYLES
@@ -288,6 +283,7 @@
   }
   .sf-pressable:active {
     transform: translateY(var(--press-y)) scale(var(--press-scale));
+    box-shadow: inset 0 2px 4px var(--sf-inset-shadow-color);
     transition-duration: var(--duration-instant);
     transition-timing-function: linear;
   }
@@ -306,6 +302,10 @@
   .sf-focusable:focus-visible {
     outline: var(--focus-ring-width) solid var(--color-ring);
     outline-offset: var(--focus-ring-offset);
+    animation: sf-focus-expand var(--duration-normal) var(--ease-default) both;
+  }
+  .sf-focusable:focus:not(:focus-visible) {
+    outline: none;
   }
 
   .sf-invert-hover {
@@ -372,6 +372,211 @@
   .sf-flash--active {
     animation: sf-flash 0.15s linear;
   }
+
+  /* ── Border thicken on hover (ghost buttons, outlined elements) ── */
+  .sf-border-thicken {
+    transition: border-width var(--duration-fast) var(--ease-default);
+  }
+  .sf-border-thicken:hover:not([aria-disabled="true"]) {
+    border-width: 3px;
+  }
+
+  /* ── Button loading progress bar ── */
+  .sf-btn-progress {
+    position: relative;
+    overflow: hidden;
+  }
+  .sf-btn-progress::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--color-primary);
+    transition: width 2s var(--ease-default);
+  }
+  .sf-btn-progress[aria-busy="true"]::after {
+    width: 90%;
+  }
+  .sf-btn-progress[data-complete="true"]::after {
+    width: 100%;
+    transition: width var(--duration-fast) linear;
+  }
+
+  /* ── Copy-to-clipboard inline label swap ── */
+  .sf-copy-label,
+  .sf-copy-label--done {
+    transition: opacity var(--duration-fast) var(--ease-default);
+  }
+  .sf-copy[data-copied="true"] .sf-copy-label {
+    opacity: 0;
+    position: absolute;
+  }
+  .sf-copy[data-copied="true"] .sf-copy-label--done {
+    opacity: 1;
+  }
+  .sf-copy:not([data-copied="true"]) .sf-copy-label--done {
+    opacity: 0;
+    position: absolute;
+  }
+
+  /* ── Input validation states ── */
+  .sf-input-error {
+    border-color: var(--color-destructive) !important;
+    animation: sf-shake 0.4s linear;
+  }
+  .sf-input-success {
+    animation: sf-success-border 1.5s var(--ease-default) both;
+  }
+
+  /* ���─ Error message slide-in ── */
+  .sf-error-msg {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition:
+      max-height var(--duration-normal) var(--ease-default),
+      opacity var(--duration-fast) var(--ease-default);
+  }
+  .sf-error-msg--visible {
+    max-height: 3em;
+    opacity: 1;
+  }
+
+  /* ── Separator rule entrance (scroll-triggered) ── */
+  .sf-rule-entrance {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .sf-rule-entrance--visible {
+    animation: sf-rule-grow var(--duration-slow) var(--ease-default) both;
+  }
+
+  /* ── Toggle snap easing ── */
+  .sf-toggle-snap {
+    transition: transform var(--duration-fast) cubic-bezier(0.68, -0.2, 0.27, 1.2);
+  }
+
+  /* ── Input border-draw on focus (clockwise magenta trace) ── */
+  .sf-border-draw-focus {
+    background-image:
+      linear-gradient(var(--color-primary), var(--color-primary)),
+      linear-gradient(var(--color-primary), var(--color-primary)),
+      linear-gradient(var(--color-primary), var(--color-primary)),
+      linear-gradient(var(--color-primary), var(--color-primary));
+    background-position: top left, top right, bottom right, bottom left;
+    background-repeat: no-repeat;
+    background-size: 0% 2px, 2px 0%, 0% 2px, 2px 0%;
+    transition:
+      background-size var(--duration-fast) var(--ease-default);
+  }
+  .sf-border-draw-focus:focus,
+  .sf-border-draw-focus:focus-within {
+    background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+    transition:
+      background-size var(--duration-slow) var(--ease-default);
+  }
+
+  /* ── Animated grain overlay (film-grain flicker) ── */
+  .sf-grain-animated::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+    background-size: 256px;
+    opacity: var(--sf-grain-opacity);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    animation: sf-grain-drift 0.8s steps(4) infinite;
+  }
+
+  /* ── Rotated sidebar label ── */
+  .sf-rotated-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.15em;
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── Theme hard-cut (disable all transitions during mode switch) ── */
+  .sf-no-transition,
+  .sf-no-transition *,
+  .sf-no-transition *::before,
+  .sf-no-transition *::after {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  /* ── Halftone text masking ── */
+  .sf-halftone-text {
+    background-image:
+      radial-gradient(circle, currentColor 30%, transparent 30%),
+      radial-gradient(circle, currentColor 30%, transparent 30%);
+    background-size: 6px 6px;
+    background-position: 0 0, 3px 3px;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Idle standby overlay ── */
+  .sf-idle-overlay {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      transparent 0px,
+      transparent 3px,
+      oklch(0.65 0.29 350 / 0.015) 3px,
+      oklch(0.65 0.29 350 / 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: var(--z-vhs);
+    opacity: 0;
+    transition: opacity var(--duration-glacial) var(--ease-default);
+  }
+  .sf-idle-overlay--active {
+    opacity: 1;
+    animation: sf-idle-scan 8s linear infinite;
+  }
+
+  /* ── Element hover vocabulary ── */
+  /* Code blocks: subtle green tint on border (matrix/terminal warmth) */
+  .sf-code-hover {
+    transition: border-color var(--duration-normal) var(--ease-default);
+  }
+  .sf-code-hover:hover {
+    border-color: oklch(0.55 0.16 145);
+  }
+
+  /* Icon buttons: scale + slight rotate on the icon only */
+  .sf-icon-hover > svg,
+  .sf-icon-hover > [data-icon] {
+    transition: transform var(--duration-normal) var(--ease-hover);
+  }
+  .sf-icon-hover:hover > svg,
+  .sf-icon-hover:hover > [data-icon] {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  /* ── Page transition wipe ── */
+  .sf-page-wipe {
+    position: fixed;
+    inset: 0;
+    background: var(--color-foreground);
+    z-index: 10000;
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -401,7 +606,46 @@
   100% { filter: invert(0); }
 }
 
-/* ══════════════════════════════════════════════════════════════
+@keyframes sf-focus-expand {
+  from {
+    outline-offset: 0px;
+    outline-color: oklch(0.55 0.28 350 / 0.4);
+  }
+  to {
+    outline-offset: var(--focus-ring-offset, 2px);
+    outline-color: oklch(0.55 0.28 350 / 1);
+  }
+}
+
+@keyframes sf-success-border {
+  0% { border-color: oklch(0.55 0.16 145); }
+  100% { border-color: var(--color-border); }
+}
+
+@keyframes sf-idle-scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100vh); }
+}
+
+@keyframes sf-rule-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes sf-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes sf-grain-drift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-5%, -5%); }
+  50% { transform: translate(3%, -3%); }
+  75% { transform: translate(-3%, 5%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ══════��═══════════════════════════════��═══════════════════════
    REDUCED MOTION
    ══════════════════════════════════════════════════════════════ */
 
@@ -424,6 +668,32 @@
   .sf-entrance {
     opacity: 1;
     transform: none;
+  }
+
+  .sf-rule-entrance {
+    transform: scaleX(1);
+  }
+
+  .sf-idle-overlay,
+  .sf-page-wipe {
+    display: none;
+  }
+
+  .sf-grain-animated::after {
+    animation: none !important;
+  }
+
+  .sf-border-draw-focus {
+    background-size: 0% 0px !important;
+  }
+  .sf-border-draw-focus:focus,
+  .sf-border-draw-focus:focus-within {
+    outline: 2px solid var(--color-primary);
+    background-size: 0% 0px !important;
+  }
+
+  .sf-focusable:focus-visible {
+    animation: none;
   }
 
   /* Reset CSS initial animation states so content is visible when GSAP bails */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { SFBadge } from "@/components/sf/sf-badge";
 import { SFButton } from "@/components/sf/sf-button";
 import {
@@ -30,8 +30,46 @@ import {
 import { SharedCodeBlock as CodeBlock } from "@/components/blocks/shared-code-block";
 import { API_DOCS } from "@/lib/api-docs";
 import type { ComponentDoc } from "@/lib/api-docs";
+import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 const SF_SCRAMBLE_CHARS = "SIGNAL//01フレーム▓░▒";
+
+/** Isolated HUD telemetry — updates every 2s without re-rendering the parent tree.
+ *  Pauses interval when the tab is hidden to avoid unnecessary background re-renders. */
+const HudTelemetry = memo(function HudTelemetry() {
+  const [hud, setHud] = useState({ fps: 60, mem: 2.4 });
+
+  useEffect(() => {
+    let id: ReturnType<typeof setInterval> | undefined;
+
+    function startInterval() {
+      id = setInterval(() => {
+        setHud({
+          fps: 58 + Math.floor(Math.random() * 5),
+          mem: +(2.1 + Math.random() * 0.8).toFixed(1),
+        });
+      }, 2000);
+    }
+
+    function onVisibility() {
+      if (document.hidden) {
+        clearInterval(id);
+        id = undefined;
+      } else if (!id) {
+        startInterval();
+      }
+    }
+
+    startInterval();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  return <div data-anim="hud-line">FPS: {hud.fps} | MEM: {hud.mem}MB</div>;
+});
 
 /* ── Sidebar nav structure ── */
 const NAV_SECTIONS = [
@@ -117,14 +155,14 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
   const layerLabel = doc.layer === "HOOK" ? "HOOK" : doc.layer === "TOKEN" ? "TOKEN" : `${doc.layer} LAYER`;
   return (
     <>
-      <h1 className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">
+      <h1 className="text-foreground sf-display leading-[0.95] mb-2" style={{ fontSize: "clamp(48px, 8vw, 72px)" }}>
         {doc.name.toUpperCase()}
       </h1>
-      <SFBadge intent="signal" className="mb-6 text-[11px] tracking-[0.1em]">
+      <SFBadge intent="signal" className="mb-6 text-[var(--text-sm)] tracking-[0.1em]">
         {layerLabel} · {doc.version} · {doc.status}
       </SFBadge>
 
-      <p className="text-sm leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
+      <p className="text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
         {doc.description}
       </p>
 
@@ -153,13 +191,13 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
             <SFTableRow key={prop.name}>
               <SFTableCell className="text-primary font-bold">{prop.name}</SFTableCell>
               <SFTableCell>
-                <code className="text-[10px] bg-muted px-1.5 py-0.5">{prop.type}</code>
+                <code className="text-[var(--text-xs)] bg-muted px-1.5 py-0.5">{prop.type}</code>
               </SFTableCell>
               <SFTableCell className="text-muted-foreground">{prop.default}</SFTableCell>
               <SFTableCell>
                 {prop.desc}
                 {prop.required && (
-                  <SFBadge intent="primary" className="ml-1.5 text-[10px] py-0 px-1 h-auto">REQ</SFBadge>
+                  <SFBadge intent="primary" className="ml-1.5 text-[var(--text-xs)] py-0 px-1 h-auto">REQ</SFBadge>
                 )}
               </SFTableCell>
             </SFTableRow>
@@ -204,44 +242,42 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
 export function APIExplorer() {
   const [activeNav, setActiveNav] = useState("button");
   const [previewTheme, setPreviewTheme] = useState<"LIGHT" | "DARK" | "FRAME">("DARK");
-  const [hud, setHud] = useState({ fps: 60, mem: 2.4 });
   const [scrollProgress, setScrollProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
 
-  // HUD telemetry — update every 2s with slight jitter
-  useEffect(() => {
-    const id = setInterval(() => {
-      setHud({
-        fps: 58 + Math.floor(Math.random() * 5),
-        mem: +(2.1 + Math.random() * 0.8).toFixed(1),
-      });
-    }, 2000);
-    return () => clearInterval(id);
-  }, []);
-
-  // Scroll progress on center panel
+  // Scroll progress on center panel — RAF-throttled
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
+    let rafId = 0;
     const handler = () => {
-      const { scrollTop, scrollHeight, clientHeight } = el;
-      const max = scrollHeight - clientHeight;
-      setScrollProgress(max > 0 ? scrollTop / max : 0);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        const max = scrollHeight - clientHeight;
+        setScrollProgress(max > 0 ? scrollTop / max : 0);
+      });
     };
     el.addEventListener("scroll", handler, { passive: true });
-    return () => el.removeEventListener("scroll", handler);
+    return () => {
+      el.removeEventListener("scroll", handler);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // GSAP animations — nav stagger, H1 split-text, typewriter, HUD lines, button scramble, magnetic cursor
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    let cancelled = false;
     let ctx: { revert: () => void } | null = null;
     const magnetCleanups: Array<() => void> = [];
     const scrambleCleanups: Array<() => void> = [];
 
     import("@/lib/gsap-split").then(({ gsap, SplitText }) => {
+      if (cancelled) return;
       ctx = gsap.context(() => {
         // ── 1. Nav items stagger fade-in (#9) ──
         const navItems = sidebarRef.current?.querySelectorAll("button");
@@ -338,10 +374,12 @@ export function APIExplorer() {
           scrambleCleanups.push(() => el.removeEventListener("click", onClick));
         });
 
-        // ── 7. Magnetic cursor on nav items (#14) ──
-        const navBtns = sidebarRef.current?.querySelectorAll("button");
-        navBtns?.forEach((btn) => {
+        // ── 7. Magnetic cursor on nav items (#14) — single delegated listener ──
+        const sidebar = sidebarRef.current;
+        if (sidebar) {
           const onMove = (e: MouseEvent) => {
+            const btn = (e.target as HTMLElement).closest<HTMLElement>("button");
+            if (!btn) return;
             const rect = btn.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
@@ -359,25 +397,31 @@ export function APIExplorer() {
               });
             }
           };
-          const onLeave = () => {
-            gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+          const onLeave = (e: MouseEvent) => {
+            const btn = (e.target as HTMLElement).closest<HTMLElement>("button");
+            if (btn) {
+              gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+            }
           };
-          btn.addEventListener("mousemove", onMove);
-          btn.addEventListener("mouseleave", onLeave);
+          sidebar.addEventListener("mousemove", onMove);
+          sidebar.addEventListener("mouseleave", onLeave, true);
           magnetCleanups.push(() => {
-            btn.removeEventListener("mousemove", onMove);
-            btn.removeEventListener("mouseleave", onLeave);
+            sidebar.removeEventListener("mousemove", onMove);
+            sidebar.removeEventListener("mouseleave", onLeave, true);
           });
-        });
+        }
       });
     });
 
     return () => {
+      cancelled = true;
       ctx?.revert();
       magnetCleanups.forEach((fn) => fn());
       scrambleCleanups.forEach((fn) => fn());
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Animations run once on mount — activeNav changes are handled by re-render, not re-animation.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleNavClick(id: string) {
     setActiveNav(id);
@@ -424,9 +468,11 @@ export function APIExplorer() {
 
   return (
     <div className="mt-[var(--nav-height)]">
+      <Breadcrumb segments={[{ label: "API REFERENCE" }]} />
       {/* Page Header */}
       <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
         <h1
+          data-anim="page-heading"
           className="sf-display px-6 md:px-12 pt-10 pb-6"
           style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
         >
@@ -434,7 +480,7 @@ export function APIExplorer() {
           <br />
           <span className="text-primary">REFERENCE</span>
         </h1>
-        <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+        <div className="px-6 md:px-12 pb-6 text-right text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground">
           PROPS · HOOKS · TOKENS · SURFACE
         </div>
       </header>
@@ -442,7 +488,7 @@ export function APIExplorer() {
       {/* MOBILE NAV — Select dropdown (visible below md) */}
       <div className="md:hidden border-b-[3px] border-foreground bg-foreground p-4">
         <SFSelect value={activeNav} onValueChange={handleNavClick}>
-          <SFSelectTrigger className="w-full bg-[var(--sf-dark-surface)] text-background border-[var(--sf-subtle-border)] text-[11px] uppercase tracking-[0.1em]">
+          <SFSelectTrigger className="w-full bg-[var(--sf-dark-surface)] text-background border-[var(--sf-subtle-border)] text-[var(--text-sm)] uppercase tracking-[0.1em]">
             <SFSelectValue />
           </SFSelectTrigger>
           <SFSelectContent className="max-h-[50vh]">
@@ -450,7 +496,7 @@ export function APIExplorer() {
               <SFSelectGroup key={section.title}>
                 <SFSelectLabel>{section.title}</SFSelectLabel>
                 {section.items.map((item) => (
-                  <SFSelectItem key={item.id} value={item.id} className="text-[11px] uppercase tracking-[0.08em]">
+                  <SFSelectItem key={item.id} value={item.id} className="text-[var(--text-sm)] uppercase tracking-[0.08em]">
                     {item.label}
                   </SFSelectItem>
                 ))}
@@ -460,7 +506,7 @@ export function APIExplorer() {
         </SFSelect>
       </div>
 
-      <div className="min-h-[calc(100vh-var(--nav-height))] grid grid-cols-1 md:grid-cols-[240px_1fr_380px]">
+      <div className="min-h-[calc(100vh-var(--nav-height))] grid grid-cols-1 md:grid-cols-[var(--api-sidebar-w)_1fr_var(--api-preview-w)]" style={{ "--api-sidebar-w": "240px", "--api-preview-w": "380px" } as React.CSSProperties}>
       {/* LEFT PANEL — API Navigation */}
       <nav
         ref={sidebarRef}
@@ -474,29 +520,32 @@ export function APIExplorer() {
           </div>
           {NAV_SECTIONS.map((section) => (
             <div key={section.title} className="border-b border-[var(--sf-dark-surface)] py-3">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground px-4 pb-2">
+              <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground px-4 pb-2">
                 {section.title}
               </div>
-              {section.items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleNavClick(item.id)}
-                  aria-current={activeNav === item.id ? "location" : undefined}
-                  className={`block w-full text-left no-underline uppercase transition-colors text-[11px] tracking-[0.08em] py-1.5 px-4 ${
-                    activeNav === item.id
-                      ? "text-primary bg-[var(--sf-dark-surface)] border-l-[3px] border-l-primary"
-                      : "text-[var(--sf-muted-text-dark)] hover:text-background hover:bg-[var(--sf-dark-surface)]"
-                  }`}
-                >
-                  {item.label}
-                  {"badge" in item && item.badge && (
-                    <SFBadge intent="primary" className="ml-1.5 text-[10px] py-0 px-1.5 h-auto">
-                      {item.badge}
-                    </SFBadge>
-                  )}
-                </button>
-              ))}
+              <ul role="list" className="list-none m-0 p-0">
+                {section.items.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={() => handleNavClick(item.id)}
+                      aria-current={activeNav === item.id ? "location" : undefined}
+                      className={`block w-full text-left no-underline uppercase transition-colors text-[var(--text-xs)] tracking-[0.08em] py-1.5 px-4 ${
+                        activeNav === item.id
+                          ? "text-primary bg-[var(--sf-dark-surface)] border-l-[3px] border-l-primary"
+                          : "text-[var(--sf-muted-text-dark)] hover:text-background hover:bg-[var(--sf-dark-surface)]"
+                      }`}
+                    >
+                      {item.label}
+                      {"badge" in item && item.badge && (
+                        <SFBadge intent="primary" className="ml-1.5 text-[var(--text-xs)] py-0 px-1.5 h-auto" aria-hidden="true">
+                          {item.badge}
+                        </SFBadge>
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </SFScrollArea>
@@ -507,14 +556,15 @@ export function APIExplorer() {
         {/* Scroll progress bar */}
         <div
           aria-hidden="true"
-          className="fixed top-[var(--nav-height)] left-[240px] right-[383px] h-[3px] z-[var(--z-progress)] origin-left hidden md:block pointer-events-none"
+          className="fixed top-[var(--nav-height)] left-[var(--api-sidebar-w)] h-[3px] z-[var(--z-progress)] origin-left hidden md:block pointer-events-none"
           style={{
+            right: "calc(var(--api-preview-w) + 3px)",
             background: "var(--color-primary)",
             transform: `scaleX(${scrollProgress})`,
             transition: "transform 50ms linear",
           }}
         />
-        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-6">
+        <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground mb-6">
           <span className="text-primary">API</span> /{" "}
           <span className="text-primary">{activeItem.section}</span> / {activeItem.label.toUpperCase()}
         </div>
@@ -523,30 +573,30 @@ export function APIExplorer() {
           <DataDrivenDoc doc={API_DOCS[activeNav]} />
         ) : activeNav !== "button" ? (
           <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <h1 className="text-foreground sf-display text-[72px] leading-[0.95]">{activeItem.label.toUpperCase()}</h1>
-            <SFBadge intent="outline" className="text-[13px] py-2.5 px-8 opacity-50">
+            <h1 className="text-foreground sf-display leading-[0.95]" style={{ fontSize: "clamp(48px, 8vw, 72px)" }}>{activeItem.label.toUpperCase()}</h1>
+            <SFBadge intent="outline" className="text-[var(--text-base)] py-2.5 px-8 opacity-50">
               COMING SOON
             </SFBadge>
-            <p className="text-[12px] text-muted-foreground uppercase tracking-[0.1em] max-w-[400px] text-center leading-[1.8]">
+            <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-[0.1em] max-w-[400px] text-center leading-[1.8]">
               THIS COMPONENT&apos;S API DOCUMENTATION IS UNDER CONSTRUCTION.
             </p>
             <SFButton
               intent="primary"
               size="sm"
               onClick={() => handleNavClick("button")}
-              className="text-[11px] tracking-[0.1em]"
+              className="text-[var(--text-sm)] tracking-[0.1em]"
             >
               VIEW BUTTON REFERENCE →
             </SFButton>
           </div>
         ) : (
           <>
-        <h1 data-anim="api-h1" className="text-foreground sf-display text-[72px] leading-[0.95] mb-2">BUTTON</h1>
-        <SFBadge intent="signal" className="mb-6 text-[11px] tracking-[0.1em]">
+        <h1 data-anim="api-h1" className="text-foreground sf-display leading-[0.95] mb-2" style={{ fontSize: "clamp(48px, 8vw, 72px)" }}>BUTTON</h1>
+        <SFBadge intent="signal" className="mb-6 text-[var(--text-sm)] tracking-[0.1em]">
           FRAME LAYER · v2.1.0 · STABLE
         </SFBadge>
 
-        <p className="text-sm leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
+        <p className="text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[580px] mb-8">
           THE PRIMARY INTERACTIVE ELEMENT. SUPPORTS SIGNAL (DETERMINISTIC)
           AND SIGNAL (GENERATIVE) VARIANTS. PROGRESSIVE ENHANCEMENT — SIGNAL
           EFFECTS LAYER ON TOP WITHOUT BREAKING ACCESSIBILITY.
@@ -584,13 +634,13 @@ export function APIExplorer() {
               <SFTableRow key={prop.name}>
                 <SFTableCell className="text-primary font-bold">{prop.name}</SFTableCell>
                 <SFTableCell>
-                  <code className="text-[10px] bg-muted px-1.5 py-0.5">{prop.type}</code>
+                  <code className="text-[var(--text-xs)] bg-muted px-1.5 py-0.5">{prop.type}</code>
                 </SFTableCell>
                 <SFTableCell className="text-muted-foreground">{prop.default}</SFTableCell>
                 <SFTableCell>
                   {prop.desc}
                   {prop.required && (
-                    <SFBadge intent="primary" className="ml-1.5 text-[10px] py-0 px-1 h-auto">REQ</SFBadge>
+                    <SFBadge intent="primary" className="ml-1.5 text-[var(--text-xs)] py-0 px-1 h-auto">REQ</SFBadge>
                   )}
                 </SFTableCell>
               </SFTableRow>
@@ -648,7 +698,7 @@ export function APIExplorer() {
       <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-primary-foreground hidden md:block">
         <SFScrollArea className="h-full">
           <div className="flex items-center justify-between border-b border-[var(--sf-subtle-border)] p-4">
-            <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground">
               CONTEXT&trade;
             </span>
             <div className="flex gap-2">
@@ -658,7 +708,7 @@ export function APIExplorer() {
                   intent={previewTheme === label ? "primary" : "ghost"}
                   size="sm"
                   onClick={() => setPreviewTheme(label)}
-                  className={`text-[11px] h-6 px-2.5 ${
+                  className={`text-[var(--text-sm)] h-6 px-2.5 ${
                     previewTheme !== label ? "border-[var(--sf-subtle-border)] text-muted-foreground" : ""
                   }`}
                 >
@@ -678,7 +728,7 @@ export function APIExplorer() {
             }}
           >
             {/* Context-aware HUD telemetry */}
-            <div className={`absolute top-5 left-5 text-[10px] uppercase tracking-[0.2em] opacity-40 ${
+            <div className={`absolute top-5 left-5 text-[var(--text-xs)] uppercase tracking-[0.2em] opacity-40 ${
               previewTheme === "LIGHT" ? "text-foreground" : "text-[var(--sf-code-text)]"
             }`}>
               {(activeNav === "button" ? [
@@ -690,26 +740,26 @@ export function APIExplorer() {
               ]).map((line, i) => (
                 <div key={`${activeNav}-${i}`} data-anim="hud-line">{line}</div>
               ))}
-              <div data-anim="hud-line">FPS: {hud.fps} | MEM: {hud.mem}MB</div>
+              <HudTelemetry />
             </div>
 
             {/* Context-aware preview content */}
             {activeNav === "button" ? (
               <>
                 <div className="text-center mt-[60px]">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: FRAME</div>
+                  <div className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: FRAME</div>
                   <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-background text-foreground border-background hover:bg-background/80 hover:text-foreground">GET STARTED</SFButton>
                 </div>
                 <div className="text-center">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: GHOST</div>
+                  <div className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: GHOST</div>
                   <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="text-foreground border-foreground hover:bg-foreground hover:text-background">VIEW DOCS</SFButton>
                 </div>
                 <div className="text-center">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: SIGNAL (SHIMMER)</div>
+                  <div className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: SIGNAL (SHIMMER)</div>
                   <SFButton intent="primary" size="lg" data-anim="preview-btn" className="relative overflow-hidden">LAUNCH SEQUENCE</SFButton>
                 </div>
                 <div className="text-center">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: YELLOW (TDR)</div>
+                  <div className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground mb-2">VARIANT: YELLOW (TDR)</div>
                   <SFButton intent="ghost" size="lg" data-anim="preview-btn" className="bg-[var(--sf-yellow)] text-foreground border-[var(--sf-yellow)] hover:bg-foreground hover:text-background hover:border-foreground">
                     BUY ME&trade;
                   </SFButton>
@@ -717,10 +767,10 @@ export function APIExplorer() {
               </>
             ) : (
               <div className="w-full mt-[60px] flex flex-col items-center gap-8">
-                <div className="sf-display text-[48px] text-center leading-[0.95] text-muted-foreground/30">
+                <div className="sf-display text-[var(--text-3xl)] text-center leading-[0.95] text-muted-foreground/30">
                   {activeItem.label.toUpperCase()}
                 </div>
-                <SFBadge intent="outline" className="text-[11px] border-[var(--sf-subtle-border)] text-muted-foreground">
+                <SFBadge intent="outline" className="text-[var(--text-sm)] border-[var(--sf-subtle-border)] text-muted-foreground">
                   {API_DOCS[activeNav]?.layer ?? "FRAME"} · {API_DOCS[activeNav]?.version ?? "v2.0.0"}
                 </SFBadge>
               </div>
@@ -728,7 +778,7 @@ export function APIExplorer() {
           </div>
 
           {/* Context-aware code preview */}
-          <div className="w-full p-5 bg-[var(--sf-code-bg)] font-mono text-[11px] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)] whitespace-pre">
+          <div className="w-full p-5 bg-[var(--sf-code-bg)] font-mono text-[var(--text-sm)] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)] whitespace-pre">
             <span className="text-muted-foreground">{"// CURRENTLY VIEWING"}</span>
             {"\n"}
             {activeNav === "button" ? (
@@ -748,7 +798,7 @@ export function APIExplorer() {
           </div>
 
           {/* VHS badge */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground opacity-40">
+          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground opacity-40">
             <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
             <span>SF//UX</span>
           </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
+import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 export const metadata: Metadata = {
   title: "Components — SIGNALFRAME//UX",
@@ -13,9 +14,11 @@ export default function ComponentsPage() {
     <>
       <Nav />
       <main id="main-content" className="mt-[var(--nav-height)]">
+        <Breadcrumb segments={[{ label: "COMPONENTS" }]} />
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
         <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
           <h1
+            data-anim="page-heading"
             aria-label="Components"
             className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
             style={{ fontSize: "clamp(60px, 9vw, 120px)" }}

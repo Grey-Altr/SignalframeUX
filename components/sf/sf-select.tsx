@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-const SFSelect = Select;
+function SFSelect(props: React.ComponentProps<typeof Select>) {
+  return <Select {...props} />;
+}
 
 function SFSelectTrigger({
   className,
@@ -20,8 +22,8 @@ function SFSelectTrigger({
   return (
     <SelectTrigger
       className={cn(
-        "rounded-none border-2 border-foreground bg-background font-mono uppercase tracking-wider text-xs",
-        "focus:ring-0 focus:ring-offset-0 focus:bg-foreground focus:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "sf-focusable sf-border-draw-focus rounded-none border-2 border-foreground bg-background font-mono uppercase tracking-wider text-xs",
+        "focus:ring-0 focus:ring-offset-0 focus-visible:ring-0",
         className
       )}
       {...props}
@@ -60,13 +62,12 @@ function SFSelectItem({
   );
 }
 
-const SFSelectValue = SelectValue;
+function SFSelectValue(props: React.ComponentProps<typeof SelectValue>) {
+  return <SelectValue {...props} />;
+}
 
-function SFSelectGroup({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectGroup>) {
-  return <SelectGroup className={cn("", className)} {...props} />;
+function SFSelectGroup(props: React.ComponentProps<typeof SelectGroup>) {
+  return <SelectGroup {...props} />;
 }
 
 function SFSelectLabel({
@@ -76,7 +77,7 @@ function SFSelectLabel({
   return (
     <SelectLabel
       className={cn(
-        "rounded-none font-mono uppercase tracking-wider text-[9px] text-muted-foreground px-2 py-1.5",
+        "rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-2 py-1.5",
         className
       )}
       {...props}
