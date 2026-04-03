@@ -148,7 +148,7 @@
   --z-scroll-top: 200;
   --z-progress: 300;
   --z-cursor: 500;
-  --z-vhs: 600;
+  --z-vhs: 99999;
   --z-skip: 900;
 
   /* ── Border Width Scale ── */

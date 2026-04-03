@@ -48,7 +48,10 @@ function triggerLocalWipe(container: HTMLElement, direction: number, onMid: () =
   wipeEl.style.transition = `transform ${WIPE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
   wipeEl.style.transform = "scaleY(1)";
 
+  let covered = false;
   const handleCover = () => {
+    if (covered) return;
+    covered = true;
     wipeEl!.removeEventListener("transitionend", handleCover);
     onMid();
 
@@ -58,8 +61,13 @@ function triggerLocalWipe(container: HTMLElement, direction: number, onMid: () =
 
     wipeEl!.style.transition = `transform ${WIPE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
     wipeEl!.style.transform = "scaleY(0)";
+
+    // Safety: force hide if transitionend doesn't fire on reveal
+    setTimeout(() => { wipeEl!.style.transform = "scaleY(0)"; }, WIPE_DURATION + 50);
   };
   wipeEl.addEventListener("transitionend", handleCover, { once: true });
+  // Safety: force cover callback if transitionend doesn't fire
+  setTimeout(handleCover, WIPE_DURATION + 50);
 }
 
 export function ColorCycleFrame({ children, className }: { children: React.ReactNode; className?: string }) {

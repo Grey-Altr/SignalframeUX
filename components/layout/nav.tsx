@@ -39,7 +39,7 @@ const NavLink = memo(function NavLink({ href, label, delay, isActive, ariaLabel,
         data-anim="nav-link"
         aria-label={ariaLabel ?? label}
         aria-current={isActive ? "page" : undefined}
-        className={`nav-hover-link relative no-underline mr-[clamp(20px,3.5vw,48px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
+        className={`nav-hover-link relative no-underline mr-[clamp(6px,1vw,14px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
         onMouseEnter={handleMouseEnter}
         {...linkProps}
       >
@@ -75,7 +75,7 @@ export function Nav() {
         <LogoMark />
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center shrink-0 -ml-[clamp(12px,2vw,24px)]">
+        <div className="hidden md:flex items-center shrink-0 -ml-[clamp(4px,0.5vw,8px)]">
           {NAV_LINKS.map((link, i) => (
             <NavLink
               key={link.href}

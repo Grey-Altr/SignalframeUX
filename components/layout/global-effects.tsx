@@ -160,8 +160,8 @@ function ScrollToTop() {
 /** VHS-style fixed badge in bottom-right corner */
 function VHSBadge() {
   return (
-    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-2 text-[var(--text-2xs)] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] hidden sm:flex items-center gap-2">
-      <span className="text-primary text-sm">◉◉</span>
+    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] hidden sm:flex items-center gap-1.5">
+      <span className="text-primary text-[10px]">◉◉</span>
       SF//UX
     </div>
   );
