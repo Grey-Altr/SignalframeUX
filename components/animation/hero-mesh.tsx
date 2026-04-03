@@ -11,12 +11,12 @@ interface Node {
 
 const GRID_SPACING = 40;
 const DOT_RADIUS = 1.2;
-const DOT_OPACITY = 0.3;
-const LINE_OPACITY = 0.08;
-const MOUSE_RADIUS = 150;
-const MOUSE_FORCE = 28;
-const SINE_AMPLITUDE = 3;
-const SINE_SPEED = 0.0008;
+const DOT_OPACITY = 0.15;
+const LINE_OPACITY = 0.04;
+const MOUSE_RADIUS = 120;
+const MOUSE_FORCE = 12;
+const SINE_AMPLITUDE = 1.5;
+const SINE_SPEED = 0.0004;
 
 export function HeroMesh({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);

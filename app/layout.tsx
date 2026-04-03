@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Electrolize, JetBrains_Mono } from "next/font/google";
+import { Electrolize, JetBrains_Mono, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
@@ -19,6 +19,12 @@ const electrolize = Electrolize({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -66,7 +72,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${electrolize.variable} ${anton.variable} ${jetbrainsMono.variable}`}
+      className={`${electrolize.variable} ${inter.variable} ${anton.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -79,7 +85,7 @@ export default async function RootLayout({
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden">
-        <a
+<a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[var(--z-skip)] focus:bg-primary focus:text-primary-foreground focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:uppercase focus:tracking-wider"
         >
@@ -90,6 +96,19 @@ export default async function RootLayout({
             {children}
           </LenisProvider>
         </TooltipProvider>
+        {/* White wipe-up reveal on page load */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 800,
+            background: "var(--color-background)",
+            transformOrigin: "top",
+            animation: "sf-load-wipe-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) 2s both",
+            pointerEvents: "none",
+          }}
+        />
         <GlobalEffectsLazy />
         <PageAnimations />
         <PageTransition />

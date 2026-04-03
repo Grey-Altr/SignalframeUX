@@ -18,14 +18,13 @@ export default function TokensPage() {
         {/* ═══ PAGE HEADER ═══ */}
         <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">
           <h1
-            data-anim="page-heading"
             aria-label="Token Explorer"
             className="sf-display px-6 md:px-12 pt-10 pb-6"
             style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
           >
-            TOKEN
+            <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>
             <br />
-            EXPLORER
+            <span data-anim="page-heading" suppressHydrationWarning>EXPLORER</span>
           </h1>
           <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
             OKLCH COLOR SPACE · 49 SCALES

@@ -19,7 +19,7 @@
   --color-card-foreground: oklch(0.145 0 0);
   --color-popover: oklch(1 0 0);
   --color-popover-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.55 0.28 350);
+  --color-primary: oklch(0.65 0.3 350);
   --color-primary-foreground: oklch(0.985 0 0);
   --color-secondary: oklch(0.970 0.005 298);
   --color-secondary-foreground: oklch(0.205 0 0);
@@ -30,20 +30,20 @@
   --color-destructive: oklch(0.550 0.180 25);
   --color-border: oklch(0.205 0 0);
   --color-input: oklch(0.205 0 0);
-  --color-ring: oklch(0.55 0.28 350);
+  --color-ring: oklch(0.65 0.3 350);
 
   /* ── Sidebar Colors (shadcn compat) ── */
   --color-sidebar: oklch(0.985 0 0);
   --color-sidebar-foreground: oklch(0.145 0 0);
-  --color-sidebar-primary: oklch(0.55 0.28 350);
+  --color-sidebar-primary: oklch(0.65 0.3 350);
   --color-sidebar-primary-foreground: oklch(0.985 0 0);
   --color-sidebar-accent: oklch(0.930 0.005 298);
   --color-sidebar-accent-foreground: oklch(0.205 0 0);
   --color-sidebar-border: oklch(0.205 0 0);
-  --color-sidebar-ring: oklch(0.55 0.28 350);
+  --color-sidebar-ring: oklch(0.65 0.3 350);
 
   /* ── Chart Colors ── */
-  --color-chart-1: oklch(0.55 0.28 350);
+  --color-chart-1: oklch(0.65 0.3 350);
   --color-chart-2: oklch(0.91 0.18 98);
   --color-chart-3: oklch(0.85 0.25 145);
   --color-chart-4: oklch(0.550 0.010 298);
@@ -61,9 +61,10 @@
   --radius-4xl: 0px;
 
   /* ── Typography (literal font names — NOT var() refs) ── */
-  --font-sans: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), "JetBrains Mono", "Courier New", "SF Mono", ui-monospace, monospace;
-  --font-heading: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+  --font-heading: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-electrolize: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
   --font-display: "Anton", "Impact", sans-serif;
 
   /* ── Type Scale: Industrial Minor Third (1.2) ──
@@ -103,14 +104,14 @@
   --sf-code-bg: oklch(0.12 0 0);
   --sf-code-text: oklch(0.6 0.28 145);
   --sf-code-keyword: oklch(0.7 0.15 25);
-  --sf-code-const: oklch(0.7 0.18 15);
+  --sf-code-const: oklch(0.7 0.18 350);
   --sf-dark-surface: oklch(0.2 0 0);
   --sf-darker-surface: oklch(0.1 0 0);
   --sf-darkest-surface: oklch(0.08 0 0);
   --sf-subtle-border: oklch(0.3 0 0);
   --sf-dim-text: oklch(0.52 0 0);
   --sf-muted-text-dark: oklch(0.65 0 0);
-  --sf-primary-on-dark: oklch(0.72 0.25 350); /* AA-safe magenta for dark surfaces */
+  --sf-primary-on-dark: oklch(0.78 0.28 350); /* AA-safe magenta for dark surfaces */
 
   /* ── Decorative Preview Tokens ── */
   --sf-waveform-bg: oklch(0.25 0.05 350);
@@ -142,7 +143,7 @@
   /* ── Z-Index Scale ── */
   --z-above-bg: 1;
   --z-content: 10;
-  --z-nav: 50;
+  --z-nav: 9999;
   --z-overlay: 100;
   --z-scroll-top: 200;
   --z-progress: 300;
@@ -181,12 +182,12 @@
   --color-input: oklch(0.400 0 0);
   --color-sidebar: oklch(0.205 0 0);
   --color-sidebar-foreground: oklch(0.985 0 0);
-  --color-sidebar-primary: oklch(0.55 0.28 350);
+  --color-sidebar-primary: oklch(0.65 0.3 350);
   --color-sidebar-primary-foreground: oklch(0.985 0 0);
   --color-sidebar-accent: oklch(0.269 0 0);
   --color-sidebar-accent-foreground: oklch(0.985 0 0);
   --color-sidebar-border: oklch(0.400 0 0);
-  --color-sidebar-ring: oklch(0.55 0.28 350);
+  --color-sidebar-ring: oklch(0.65 0.3 350);
   --sf-cell-light-bg: oklch(0.145 0 0);
 
   /* ── SF Extension Dark Overrides ── */
@@ -209,12 +210,166 @@
    BASE STYLES
    ══════════════════════════════════════════════════════════════ */
 
+/* Typewriter reveal for hero copy */
+.sf-typewriter {
+  opacity: 0;
+  animation: sf-typewriter-fade 2s ease-in-out 5s both;
+}
+
+@keyframes sf-typewriter-fade {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.sf-typewriter-feel {
+  position: relative;
+  z-index: 9998;
+  animation:
+    sf-feel-bloom-in 5s ease-out 0.3s both,
+    sf-feel-pulse 20s ease-in-out 1.8s infinite;
+}
+
+@keyframes sf-feel-bloom-in {
+  0%   { opacity: 0; }
+  40%  { opacity: 0.7; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+@keyframes sf-feel-pulse {
+}
+
+.sf-period-fade {
+  opacity: 0;
+  animation: sf-period-in 1s ease-out 8s both;
+}
+
+@keyframes sf-period-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes sf-typewriter-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes sf-feel-stutter {
+  0%   { opacity: 1; }
+  10%  { opacity: 0; }
+  15%  { opacity: 1; }
+  25%  { opacity: 0; }
+  30%  { opacity: 0.6; }
+  40%  { opacity: 0; }
+  45%  { opacity: 1; }
+  55%  { opacity: 0.3; }
+  60%  { opacity: 1; }
+  70%  { opacity: 0.8; }
+  75%  { opacity: 0; }
+  80%  { opacity: 1; }
+  90%  { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-typewriter, .sf-typewriter-feel { animation: none; opacity: 1; filter: none; }
+}
+
+.sf-clock-pixelize {
+  animation: sf-clock-px 0.8s steps(20) 2.2s both;
+}
+
+@keyframes sf-clock-px {
+  0%   { clip-path: inset(0 0 100% 0); opacity: 1; }
+  3%   { opacity: 0; }
+  7%   { clip-path: inset(0 0 93% 0); opacity: 1; }
+  10%  { opacity: 0; }
+  14%  { clip-path: inset(0 0 86% 0); opacity: 1; }
+  17%  { opacity: 0; }
+  21%  { clip-path: inset(0 0 79% 0); opacity: 1; }
+  24%  { opacity: 0; }
+  28%  { clip-path: inset(0 0 72% 0); opacity: 1; }
+  31%  { opacity: 0; }
+  35%  { clip-path: inset(0 0 65% 0); opacity: 1; }
+  38%  { opacity: 0; }
+  42%  { clip-path: inset(0 0 58% 0); opacity: 1; }
+  45%  { opacity: 0; }
+  49%  { clip-path: inset(0 0 51% 0); opacity: 1; }
+  52%  { opacity: 0; }
+  56%  { clip-path: inset(0 0 44% 0); opacity: 1; }
+  59%  { opacity: 0; }
+  63%  { clip-path: inset(0 0 37% 0); opacity: 1; }
+  66%  { opacity: 0; }
+  70%  { clip-path: inset(0 0 30% 0); opacity: 1; }
+  73%  { opacity: 0; }
+  77%  { clip-path: inset(0 0 23% 0); opacity: 1; }
+  80%  { opacity: 0; }
+  84%  { clip-path: inset(0 0 16% 0); opacity: 1; }
+  87%  { opacity: 0; }
+  91%  { clip-path: inset(0 0 9% 0); opacity: 1; }
+  94%  { opacity: 0; }
+  97%  { clip-path: inset(0 0 2% 0); opacity: 1; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-clock-pixelize { animation: none; clip-path: none; }
+}
+
+.sf-section-indicator-fade {
+  opacity: 0;
+  animation: sf-slow-fade-in 4s ease-in 7s both;
+}
+
+@keyframes sf-slow-fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-section-indicator-fade { animation: none; opacity: 1; }
+}
+
+.sf-nav-roll-up {
+  animation: sf-nav-roll-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 3.5s both;
+  transform-origin: top;
+}
+
+@keyframes sf-nav-roll-up {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-nav-roll-up { animation: none; }
+}
+
+@keyframes sf-load-wipe-up {
+  0%   { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="sf-load-wipe-up"] { animation: none !important; opacity: 0 !important; }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out;
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  }
+  #bg-shift-wrapper {
+    background-color: #fff;
+    transition-property: background-color;
+    transition-duration: 0.05s;
+    transition-timing-function: step-end;
+  }
+  .dark #bg-shift-wrapper {
+    background-color: var(--color-background);
   }
 }
 
@@ -223,7 +378,7 @@
    ══════════════════════════════════════════════════════════════ */
 
 @layer utilities {
-  .sf-border {
+.sf-border {
     border-width: 2px;
     border-color: var(--color-foreground);
   }
@@ -761,23 +916,43 @@
   transform: scaleX(0);
   transform-origin: left;
 }
-.nav-hover-link:hover .nav-hover-underline {
-  animation: nav-underline-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+.nav-hover-link:hover .nav-hover-underline[data-dir="left"],
+.nav-hover-link:hover .nav-hover-underline:not([data-dir]) {
+  animation: nav-underline-in-left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-.nav-hover-link:not(:hover) .nav-hover-underline {
-  animation: nav-underline-out 0.25s ease-out forwards;
+.nav-hover-link:hover .nav-hover-underline[data-dir="right"] {
+  animation: nav-underline-in-right 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.nav-hover-link:not(:hover) .nav-hover-underline[data-dir="left"],
+.nav-hover-link:not(:hover) .nav-hover-underline:not([data-dir]) {
+  animation: nav-underline-out-left 0.25s ease-out forwards;
+}
+.nav-hover-link:not(:hover) .nav-hover-underline[data-dir="right"] {
+  animation: nav-underline-out-right 0.25s ease-out forwards;
 }
 
-@keyframes nav-underline-out {
-  0% { transform: scaleX(1); transform-origin: right; }
-  100% { transform: scaleX(0); transform-origin: right; }
-}
-
-@keyframes nav-underline-in {
+@keyframes nav-underline-in-left {
   0% { transform: scaleX(0); transform-origin: left; }
   70% { transform: scaleX(1.04); transform-origin: left; }
   85% { transform: scaleX(0.98); transform-origin: left; }
   100% { transform: scaleX(1); transform-origin: left; }
+}
+
+@keyframes nav-underline-in-right {
+  0% { transform: scaleX(0); transform-origin: right; }
+  70% { transform: scaleX(1.04); transform-origin: right; }
+  85% { transform: scaleX(0.98); transform-origin: right; }
+  100% { transform: scaleX(1); transform-origin: right; }
+}
+
+@keyframes nav-underline-out-left {
+  0% { transform: scaleX(1); transform-origin: left; }
+  100% { transform: scaleX(0); transform-origin: left; }
+}
+
+@keyframes nav-underline-out-right {
+  0% { transform: scaleX(1); transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
 }
 
 @keyframes sf-click-pop {
@@ -929,13 +1104,17 @@
 .hero-cta-btn:hover .bd-span::before { width: calc(100% + 4px); }
 .hero-cta-btn:hover .bd-span::after { height: calc(100% + 4px); }
 
-/* ── Custom Cursor ── */
+/* ── Custom Cursor (disabled — using system default) ──
 .sf-has-mouse body, .sf-has-mouse body * { cursor: none; }
 @media (pointer: coarse) {
   body, body * { cursor: auto !important; }
   .sf-cursor { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .sf-cursor { display: none !important; }
+  body, body * { cursor: auto !important; }
+}
+@media (prefers-contrast: more) {
   .sf-cursor { display: none !important; }
   body, body * { cursor: auto !important; }
 }
@@ -948,7 +1127,6 @@
   height: 48px;
   pointer-events: none;
   z-index: var(--z-cursor);
-  mix-blend-mode: exclusion;
   transform: translate(0px, 0px);
   transition: opacity var(--duration-normal);
   opacity: 1;
@@ -964,13 +1142,13 @@
               background var(--duration-slow) var(--ease-default);
 }
 .sf-cursor::before {
-  width: 2px;
-  height: 36px;
+  width: 4px;
+  height: 64px;
   transform: translate(-50%, -50%) scaleY(var(--cursor-scale));
 }
 .sf-cursor::after {
-  width: 36px;
-  height: 2px;
+  width: 64px;
+  height: 4px;
   transform: translate(-50%, -50%) scaleX(var(--cursor-scale));
 }
 .sf-cursor.active { opacity: 1; }
@@ -986,6 +1164,7 @@
 .sf-cursor.active::after {
   background: linear-gradient(to right, var(--color-primary) 30%, transparent 30%, transparent 70%, var(--color-primary) 70%);
 }
+*/
 
 /* ══════════════════════════════════════════════════════════════
    MARQUEE BAND (migrated from styled-jsx)
@@ -999,36 +1178,175 @@
    LOGO MARK HOVER EFFECTS (migrated from styled-jsx)
    ══════════════════════════════════════════════════════════════ */
 
+.sf-hero-slash-enter {
+  animation: sf-hero-slash-enter 2s cubic-bezier(0.16, 1, 0.3, 1) 5s both;
+}
+
+@keyframes sf-hero-slash-enter {
+  0%   { transform: translateX(-200%); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-hero-slash-enter { animation: none; }
+}
+
 .sf-logo-char {
-  transform: translate(0, 0);
   color: inherit;
-}
-.sf-logo:hover .sf-logo-char {
-  animation: sf-logo-glitch 0.3s steps(2) infinite;
-}
-.sf-logo:not(:hover) .sf-logo-char {
-  animation: none;
   transform: translate(0, 0);
+  transition: transform 0.15s ease;
+}
+.sf-logo:hover .sf-logo-char:not(.sf-logo-slash) {
+  transform: translate(2px, -2px) scale(0.98);
 }
 .sf-logo:hover .sf-logo-slash {
-  animation: sf-slash-pulse 0.4s ease infinite;
-}
-.sf-logo:not(:hover) .sf-logo-slash {
-  animation: none;
+  transform: translate(0, 0);
 }
 
-@keyframes sf-logo-glitch {
-  0%   { transform: translate(0, 0); color: inherit; }
-  20%  { transform: translate(-2px, 1px); color: var(--color-primary); }
-  40%  { transform: translate(1px, -1px); color: inherit; }
-  60%  { transform: translate(-1px, 2px); color: inherit; }
-  80%  { transform: translate(2px, -1px); color: var(--color-primary); }
-  100% { transform: translate(0, 0); color: inherit; }
+/* ══════════════════════════════════════════════════════════════
+   COLOR STUTTER — 1s rapid flicker on accent color change
+   ══════════════════════════════════════════════════════════════ */
+
+.sf-color-stutter .text-primary,
+.sf-color-stutter .bg-primary,
+.sf-color-stutter .border-primary,
+.sf-color-stutter [class*="text-primary"],
+.sf-color-stutter .sf-logo-slash {
+  animation: sf-color-stutter 0.5s steps(1) forwards;
 }
 
-@keyframes sf-slash-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.3; }
+@keyframes sf-color-stutter {
+  0%   { opacity: 1; }
+  5%   { opacity: 0.3; }
+  8%   { opacity: 1; }
+  14%  { opacity: 0.1; }
+  17%  { opacity: 0.8; }
+  22%  { opacity: 0; }
+  25%  { opacity: 1; }
+  33%  { opacity: 0.4; }
+  36%  { opacity: 1; }
+  42%  { opacity: 0.2; }
+  44%  { opacity: 0.9; }
+  50%  { opacity: 0; }
+  52%  { opacity: 1; }
+  60%  { opacity: 0.5; }
+  63%  { opacity: 1; }
+  70%  { opacity: 0.7; }
+  72%  { opacity: 1; }
+  80%  { opacity: 0.85; }
+  85%  { opacity: 1; }
+  92%  { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-color-stutter .text-primary,
+  .sf-color-stutter .bg-primary,
+  .sf-color-stutter .border-primary,
+  .sf-color-stutter [class*="text-primary"],
+  .sf-color-stutter .sf-logo-slash {
+    animation: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GLITCH — multilingual hero text
+   ══════════════════════════════════════════════════════════════ */
+
+.sf-glitch {
+  position: relative;
+  z-index: 850;
+  animation: sf-glitch-skew 7.3s steps(1) infinite;
+}
+
+@keyframes sf-glitch-skew {
+  0%, 100% { clip-path: none; transform: none; }
+  7%       { clip-path: inset(72% 0 18% 0); transform: translateX(2px); }
+  7.004%   { clip-path: inset(20% 0 70% 0); transform: translateX(-2px); }
+  7.008%   { clip-path: inset(50% 0 42% 0); transform: translateX(1px); }
+  7.012%   { clip-path: none; transform: none; }
+  13%      { clip-path: inset(10% 0 82% 0); transform: translateX(-2px); }
+  13.004%  { clip-path: inset(85% 0 8% 0); transform: translateX(2px); }
+  13.008%  { clip-path: none; transform: none; }
+  27%      { clip-path: inset(88% 0 4% 0); transform: translateX(-1px); }
+  27.004%  { clip-path: inset(35% 0 58% 0); transform: translateX(2px); }
+  27.008%  { clip-path: inset(62% 0 30% 0); transform: translateX(-2px); }
+  27.012%  { clip-path: inset(8% 0 85% 0); transform: translateX(1px); }
+  27.016%  { clip-path: none; transform: none; }
+  34%      { clip-path: inset(22% 0 70% 0); transform: translateX(2px); }
+  34.004%  { clip-path: inset(55% 0 38% 0); transform: translateX(-2px); }
+  34.008%  { clip-path: inset(5% 0 90% 0); transform: translateX(1px); }
+  34.012%  { clip-path: inset(78% 0 15% 0); transform: translateX(-1px); }
+  34.016%  { clip-path: inset(42% 0 50% 0); transform: translateX(2px); }
+  34.02%   { clip-path: none; transform: none; }
+  51%      { clip-path: inset(63% 0 30% 0); transform: translateX(-2px); }
+  51.004%  { clip-path: inset(15% 0 78% 0); transform: translateX(2px); }
+  51.008%  { clip-path: none; transform: none; }
+  58%      { clip-path: inset(35% 0 58% 0); transform: translateX(2px); }
+  58.004%  { clip-path: inset(80% 0 12% 0); transform: translateX(-1px); }
+  58.008%  { clip-path: inset(48% 0 44% 0); transform: translateX(-2px); }
+  58.012%  { clip-path: none; transform: none; }
+  73%      { clip-path: inset(15% 0 77% 0); transform: translateX(-2px); }
+  73.004%  { clip-path: inset(92% 0 2% 0); transform: translateX(2px); }
+  73.008%  { clip-path: inset(28% 0 65% 0); transform: translateX(-1px); }
+  73.012%  { clip-path: inset(55% 0 38% 0); transform: translateX(2px); }
+  73.016%  { clip-path: inset(70% 0 22% 0); transform: translateX(-2px); }
+  73.02%   { clip-path: inset(12% 0 80% 0); transform: translateX(1px); }
+  73.024%  { clip-path: none; transform: none; }
+  89%      { clip-path: inset(58% 0 35% 0); transform: translateX(1px); }
+  89.004%  { clip-path: inset(25% 0 68% 0); transform: translateX(-2px); }
+  89.008%  { clip-path: none; transform: none; }
+}
+.sf-glitch::before,
+.sf-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.sf-glitch::before {
+  color: oklch(0.75 0.18 200);
+  opacity: 0.05;
+  animation: sf-glitch-1 2s steps(2) 3;
+  clip-path: inset(20% 0 40% 0);
+}
+.sf-glitch::after {
+  color: var(--color-primary);
+  opacity: 0.05;
+  animation: sf-glitch-2 2.5s steps(3) 3;
+  clip-path: inset(60% 0 10% 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-glitch {
+    animation: none;
+  }
+  .sf-glitch::before,
+  .sf-glitch::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@keyframes sf-glitch-1 {
+  0%   { transform: translate(0); }
+  20%  { transform: translate(-3px, 1px); }
+  40%  { transform: translate(2px, -1px); }
+  60%  { transform: translate(-1px, 2px); }
+  80%  { transform: translate(3px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes sf-glitch-2 {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(2px, 1px); }
+  50%  { transform: translate(-2px, -1px); }
+  75%  { transform: translate(1px, 2px); }
+  100% { transform: translate(0); }
 }
 
 /* ══════════════════════════════════════════════════════════════

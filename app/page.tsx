@@ -22,7 +22,7 @@ export default function HomePage() {
     <>
       <Nav />
       <main id="main-content" className="transition-none">
-        <div id="bg-shift-wrapper" style={{ transition: "background-color 0.05s step-end" }}>
+        <div id="bg-shift-wrapper">
           <div data-bg-shift="white" data-section="hero" data-section-label="HERO"><Hero /></div>
           <div data-bg-shift="black" data-section="manifesto" data-section-label="MANIFESTO" className="relative overflow-hidden">
             <GhostLabel text="MANIFEST" className="-left-4 top-1/2 -translate-y-1/2" />

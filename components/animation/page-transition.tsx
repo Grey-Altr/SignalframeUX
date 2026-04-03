@@ -32,7 +32,7 @@ export function PageTransition() {
     // Force reflow
     void wipe.offsetHeight;
 
-    wipe.style.transition = "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+    wipe.style.transition = "transform 0.08s cubic-bezier(0.4, 0, 0.2, 1)";
     wipe.style.transform = "scaleX(1)";
 
     // Phase 2: Wipe OUT (reveal new content)
@@ -47,7 +47,7 @@ export function PageTransition() {
       wipe.style.transformOrigin = "right";
       void wipe.offsetHeight;
 
-      wipe.style.transition = "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+      wipe.style.transition = "transform 0.08s cubic-bezier(0.4, 0, 0.2, 1)";
       wipe.style.transform = "scaleX(0)";
 
       const handleReveal = () => {

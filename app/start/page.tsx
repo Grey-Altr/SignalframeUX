@@ -194,13 +194,10 @@ export default function StartPage() {
           <div className="h-[6px] bg-[var(--sf-yellow)]" aria-hidden="true" />
           <div className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]">
             <div className="flex items-start justify-between">
-              <h1
-                data-anim="page-heading"
-                className="sf-display text-[clamp(48px,11vw,120px)] mb-6"
-              >
-                GET
+              <h1 className="sf-display text-[clamp(48px,11vw,120px)] mb-6">
+                <span data-anim="page-heading" suppressHydrationWarning>GET</span>
                 <br />
-                <span className="text-primary">STARTED</span>
+                <span data-anim="page-heading" className="text-primary" suppressHydrationWarning>STARTED</span>
               </h1>
               {/* Monogram watermark */}
               <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/15 select-none leading-none hidden md:block" aria-hidden="true">

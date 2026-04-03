@@ -75,7 +75,7 @@ function PreviewTable() {
       <SFTableBody>
         <SFTableRow>
           <SFTableCell className="px-2 py-1.5 opacity-60">primary</SFTableCell>
-          <SFTableCell className="px-2 py-1.5 text-right text-primary">oklch(.55 .28 350)</SFTableCell>
+          <SFTableCell className="px-2 py-1.5 text-right text-primary">oklch(.65 .3 350)</SFTableCell>
         </SFTableRow>
         <SFTableRow>
           <SFTableCell className="px-2 py-1.5 opacity-60">yellow</SFTableCell>

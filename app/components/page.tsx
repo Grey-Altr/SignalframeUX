@@ -18,14 +18,13 @@ export default function ComponentsPage() {
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
         <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
           <h1
-            data-anim="page-heading"
             aria-label="Components"
             className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
             style={{ fontSize: "clamp(60px, 9vw, 120px)" }}
           >
-            COMP
+            <span data-anim="page-heading" suppressHydrationWarning>COMP</span>
             <br />
-            ONENTS
+            <span data-anim="page-heading" suppressHydrationWarning>ONENTS</span>
           </h1>
           <div className="px-6 md:px-12 pb-6 text-right">
             <strong

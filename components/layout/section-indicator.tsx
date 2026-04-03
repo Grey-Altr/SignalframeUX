@@ -70,7 +70,7 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
 
   return (
     <div
-      className={`hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 z-[var(--z-content)] flex-col items-center ${className ?? ""}`}
+      className={`hidden md:flex fixed right-4 top-1/2 -translate-y-1/2 z-[var(--z-content)] flex-col items-center sf-section-indicator-fade ${className ?? ""}`}
       aria-label="Section navigation"
       role="navigation"
     >
@@ -88,6 +88,7 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
 
       {sections.map((section, i) => {
         const isActive = i === activeIndex;
+        const isEndpoint = i === 0 || i === sections.length - 1;
         return (
           <button
             key={section.id}
@@ -97,13 +98,28 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
             className="relative p-2 group"
             title={section.label}
           >
-            <span
-              className={`block rounded-full transition-all duration-200 ${
-                isActive
-                  ? "w-2.5 h-2.5 bg-primary scale-110"
-                  : "w-1.5 h-1.5 bg-foreground/30 group-hover:bg-foreground/60"
-              }`}
-            />
+            {isEndpoint ? (
+              <span
+                className={`block relative transition-all duration-200 ${
+                  isActive ? "w-2.5 h-2.5" : "w-1.5 h-1.5 group-hover:scale-125"
+                }`}
+              >
+                {/* Horizontal bar */}
+                <span className={`absolute top-1/2 left-0 w-full -translate-y-1/2 ${isActive ? "h-[2px] bg-primary" : "h-[1.5px] bg-foreground/30 group-hover:bg-foreground/60"}`} />
+                {/* Vertical bar */}
+                <span className={`absolute left-1/2 top-0 h-full -translate-x-1/2 ${isActive ? "w-[2px] bg-primary" : "w-[1.5px] bg-foreground/30 group-hover:bg-foreground/60"}`} />
+                {/* Fill center when active */}
+                {isActive && <span className="absolute inset-[25%] bg-primary" />}
+              </span>
+            ) : (
+              <span
+                className={`block rounded-full transition-all duration-200 ${
+                  isActive
+                    ? "w-2.5 h-2.5 bg-primary scale-110"
+                    : "w-1.5 h-1.5 bg-foreground/30 group-hover:bg-foreground/60"
+                }`}
+              />
+            )}
             {/* Label tooltip on hover */}
             <span
               className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[var(--text-2xs)] uppercase tracking-[0.15em] font-bold font-mono opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground pointer-events-none"

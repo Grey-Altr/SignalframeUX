@@ -472,13 +472,12 @@ export function APIExplorer() {
       {/* Page Header */}
       <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
         <h1
-          data-anim="page-heading"
           className="sf-display px-6 md:px-12 pt-10 pb-6"
           style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
         >
-          API
+          <span data-anim="page-heading" suppressHydrationWarning>API</span>
           <br />
-          <span className="text-primary">REFERENCE</span>
+          <span data-anim="page-heading" className="text-primary" suppressHydrationWarning>REFERENCE</span>
         </h1>
         <div className="px-6 md:px-12 pb-6 text-right text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground">
           PROPS · HOOKS · TOKENS · SURFACE

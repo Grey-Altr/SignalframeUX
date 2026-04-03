@@ -204,7 +204,7 @@ export function GlobalEffects() {
   return (
     <>
       <VHSOverlay />
-      <CustomCursor />
+      {/* <CustomCursor /> */}
       <ScrollProgress />
       <ScrollToTop />
       <VHSBadge />

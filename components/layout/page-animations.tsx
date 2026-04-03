@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap-core";
+import { triggerColorStutter } from "@/lib/color-stutter";
 
 /**
  * PageAnimations — wires up all page-level GSAP animations.
@@ -85,7 +86,7 @@ async function initHeroAnimations(
     duration: 0.35,
     ease: "power3.out",
     stagger: 0.02,
-    delay: 0.3,
+    delay: 2.3,
     onComplete: () => revealMultilingual(),
   });
 
@@ -99,7 +100,7 @@ async function initHeroAnimations(
     const elements = [kata, farsi, mandarin].filter(Boolean);
     if (subtitle) gsap.set(subtitle, { y: 20 });
 
-    const tl = gsap.timeline({ delay: 0.2 });
+    const tl = gsap.timeline({ delay: 2.2 });
 
     elements.forEach((el) => {
       const text = el.getAttribute("data-text") || el.textContent || "";
@@ -124,7 +125,7 @@ async function initHeroAnimations(
   // ── 3. Hero copy flicker-in after 1.6s ──
   const heroCopy = document.querySelector("[data-anim='hero-copy']");
   if (heroCopy) {
-    const flickerTl = gsap.timeline({ delay: 1.6 });
+    const flickerTl = gsap.timeline({ delay: 3.6 });
     flickerTl
       .to(heroCopy, { opacity: 0.15, duration: 0.06 })
       .to(heroCopy, { opacity: 0, duration: 0.04 })
@@ -137,6 +138,31 @@ async function initHeroAnimations(
       .to(heroCopy, { opacity: 1, duration: 0.1 });
   }
 
+  // ── 3b. Accent color cycle — flash through palette and land on magenta ──
+  const accentColors = [
+    "oklch(0.7 0.18 195)",   // Cyan
+    "oklch(0.75 0.3 140)",   // Lime
+    "oklch(0.75 0.18 75)",   // Amber
+    "oklch(0.65 0.22 25)",   // Coral
+    "oklch(0.55 0.25 290)",  // Violet
+    "oklch(0.55 0.25 10)",   // Red
+    "oklch(0.65 0.3 350)",   // Magenta (home)
+  ];
+  const root = document.documentElement;
+  const colorTl = gsap.timeline({ delay: 4.4 });
+  accentColors.forEach((color, i) => {
+    const isLast = i === accentColors.length - 1;
+    colorTl
+      .call(() => root.style.setProperty("--color-primary", "transparent"))
+      .to({}, { duration: 0.015 })
+      .call(() => {
+        root.style.setProperty("--color-primary", color);
+        if (isLast) triggerColorStutter();
+      })
+      .to({}, { duration: isLast ? 0 : 0.12 });
+  });
+
+
   // ── 4. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
   gsap.to("[data-anim='cta-btn']", {
     y: 0,
@@ -144,7 +170,7 @@ async function initHeroAnimations(
     duration: 0.5,
     ease: "power2.out",
     stagger: 0.1,
-    delay: 2.0,
+    delay: 4.0,
   });
 
   }); // end gsap.context
@@ -313,10 +339,17 @@ function applyBgShift(target: string | null) {
 
   const isDark = document.documentElement.classList.contains("dark");
   const palette: Record<string, string> = isDark
-    ? { white: "var(--color-background)", black: "oklch(0.08 0 0)", primary: "oklch(0.55 0.28 350)" }
-    : { white: "#fff", black: "oklch(0.145 0 0)", primary: "oklch(0.55 0.28 350)" };
+    ? { white: "var(--color-background)", black: "oklch(0.08 0 0)", primary: "oklch(0.65 0.3 350)" }
+    : { white: "#fff", black: "oklch(0.145 0 0)", primary: "oklch(0.65 0.3 350)" };
 
-  wrapper.style.backgroundColor = palette[target] || palette.white;
+  const color = palette[target] || palette.white;
+  // "white" is the CSS default — clear inline style instead of setting it
+  // to avoid creating a style attribute that triggers hydration mismatch
+  if (target === "white") {
+    wrapper.style.removeProperty("background-color");
+  } else {
+    wrapper.style.backgroundColor = color;
+  }
 }
 
 /** Page heading ScrambleText — lazy-loads ScrambleTextPlugin only when headings exist */
@@ -324,19 +357,22 @@ async function initPageHeadingScramble(headings: NodeListOf<Element>) {
   const { ScrambleTextPlugin } = await import("@/lib/gsap-plugins");
   if (!ScrambleTextPlugin) return;
 
-  headings.forEach((el, i) => {
-    const htmlEl = el as HTMLElement;
-    const originalText = htmlEl.textContent || "";
+  // Defer scramble until after hydration completes (setTimeout pushes past
+  // React's microtask-based hydration, unlike rAF which can fire before it)
+  setTimeout(() => {
+    headings.forEach((el, i) => {
+      const htmlEl = el as HTMLElement;
+      const originalText = htmlEl.textContent || "";
 
-    // Set initial scrambled state
-    gsap.to(htmlEl, {
-      duration: 0.8,
-      delay: 0.1 + i * 0.05,
-      scrambleText: {
-        text: originalText,
-        chars: "01!<>-_\\/[]{}—=+*^?#",
-        speed: 0.4,
-      },
+      gsap.to(htmlEl, {
+        duration: 0.8,
+        delay: 0.1 + i * 0.05,
+        scrambleText: {
+          text: originalText,
+          chars: "01!<>-_\\/[]{}—=+*^?#",
+          speed: 0.4,
+        },
+      });
     });
-  });
+  }, 0);
 }

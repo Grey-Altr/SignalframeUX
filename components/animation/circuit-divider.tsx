@@ -41,49 +41,48 @@ export function CircuitDivider({
       gsap.set(paths, { drawSVG: "0%" });
       gsap.set(dots, { scale: 0, transformOrigin: "center" });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: svg,
-          start: "top 80%",
-          once: true,
-        },
-      });
-
-      // Draw main trace first
       const mainPaths = svg.querySelectorAll<SVGPathElement>(".circuit-path--main");
       const branchPaths = svg.querySelectorAll<SVGPathElement>(".circuit-path--branch");
 
-      tl.to(mainPaths, {
-        drawSVG: "100%",
-        duration: 3,
-        ease: "power1.inOut",
-        stagger: 0.4,
+      // Main traces + branches: scrub-linked to scroll (wipes left as you scroll down)
+      const scrubTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: svg,
+          start: "top 90%",
+          end: "bottom 20%",
+          scrub: 1,
+        },
       });
 
-      // Draw branches slightly after
+      scrubTl.to(mainPaths, {
+        drawSVG: "100%",
+        duration: 1,
+        ease: "none",
+        stagger: 0.1,
+      });
+
       if (branchPaths.length) {
-        tl.to(
+        scrubTl.to(
           branchPaths,
           {
             drawSVG: "100%",
-            duration: 1.2,
-            ease: "power1.inOut",
-            stagger: 0.3,
+            duration: 0.6,
+            ease: "none",
+            stagger: 0.1,
           },
-          "-=1.5"
+          "-=0.5"
         );
       }
 
-      // Pop in junction dots
-      tl.to(
+      scrubTl.to(
         dots,
         {
           scale: 1,
-          duration: 0.35,
+          duration: 0.2,
           ease: "back.out(3)",
-          stagger: 0.12,
+          stagger: 0.05,
         },
-        "-=0.8"
+        "-=0.3"
       );
     });
 
