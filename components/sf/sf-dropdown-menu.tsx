@@ -37,10 +37,19 @@ function SFDropdownMenuContent({
   );
 }
 
-function SFDropdownMenuGroup(
-  props: React.ComponentProps<typeof DropdownMenuGroup>
-) {
-  return <DropdownMenuGroup {...props} />;
+function SFDropdownMenuGroup({
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuGroup>) {
+  return (
+    <DropdownMenuGroup
+      className={cn(
+        "**:[[data-slot=dropdown-menu-label]]:font-mono **:[[data-slot=dropdown-menu-label]]:uppercase **:[[data-slot=dropdown-menu-label]]:tracking-[0.15em]",
+        className
+      )}
+      {...props}
+    />
+  );
 }
 
 function SFDropdownMenuItem({
@@ -65,9 +74,21 @@ function SFDropdownMenuLabel({
   return (
     <DropdownMenuLabel
       className={cn(
-        "font-mono uppercase tracking-[0.15em] text-[11px] text-muted-foreground",
+        "font-mono uppercase tracking-[0.15em] text-[var(--text-xs)] text-muted-foreground",
         className
       )}
+      {...props}
+    />
+  );
+}
+
+function SFDropdownMenuShortcut({
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuShortcut>) {
+  return (
+    <DropdownMenuShortcut
+      className={cn("font-mono uppercase tracking-wider text-xs", className)}
       {...props}
     />
   );
@@ -79,7 +100,7 @@ function SFDropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuSeparator>) {
   return (
     <DropdownMenuSeparator
-      className={cn("bg-foreground h-[2px]", className)}
+      className={cn("bg-foreground h-[var(--border-element)]", className)}
       {...props}
     />
   );
@@ -93,5 +114,5 @@ export {
   SFDropdownMenuItem,
   SFDropdownMenuLabel,
   SFDropdownMenuSeparator,
-  DropdownMenuShortcut as SFDropdownMenuShortcut,
+  SFDropdownMenuShortcut,
 };

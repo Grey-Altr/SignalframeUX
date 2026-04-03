@@ -47,8 +47,16 @@ function SFCommandInput({
   );
 }
 
-function SFCommandList(props: React.ComponentProps<typeof CommandList>) {
-  return <CommandList {...props} />;
+function SFCommandList({
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandList>) {
+  return (
+    <CommandList
+      className={cn("font-mono text-xs", className)}
+      {...props}
+    />
+  );
 }
 
 function SFCommandEmpty({
@@ -70,7 +78,7 @@ function SFCommandGroup({
   return (
     <CommandGroup
       className={cn(
-        "**:[[cmdk-group-heading]]:font-mono **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-[0.15em] **:[[cmdk-group-heading]]:text-[11px]",
+        "**:[[cmdk-group-heading]]:font-mono **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-[0.15em] **:[[cmdk-group-heading]]:text-[var(--text-xs)]",
         className
       )}
       {...props}
@@ -93,13 +101,25 @@ function SFCommandItem({
   );
 }
 
+function SFCommandShortcut({
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandShortcut>) {
+  return (
+    <CommandShortcut
+      className={cn("font-mono uppercase tracking-wider text-xs", className)}
+      {...props}
+    />
+  );
+}
+
 function SFCommandSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof CommandSeparator>) {
   return (
     <CommandSeparator
-      className={cn("bg-foreground h-[2px]", className)}
+      className={cn("bg-foreground h-[var(--border-element)]", className)}
       {...props}
     />
   );
@@ -114,5 +134,5 @@ export {
   SFCommandGroup,
   SFCommandItem,
   SFCommandSeparator,
-  CommandShortcut as SFCommandShortcut,
+  SFCommandShortcut,
 };

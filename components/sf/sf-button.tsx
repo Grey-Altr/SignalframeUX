@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const sfButtonVariants = cva(
-  "font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-[var(--duration-normal)] ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer",
+  "sf-pressable sf-focusable font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-[var(--duration-normal)] ease-[var(--ease-default)] cursor-pointer",
   {
     variants: {
       intent: {
         primary:
           "bg-primary text-primary-foreground hover:bg-foreground hover:text-background",
         ghost:
-          "bg-transparent text-foreground hover:bg-foreground hover:text-background",
+          "sf-border-thicken bg-transparent text-foreground hover:bg-foreground hover:text-background",
         signal:
           "bg-foreground text-background border-primary hover:bg-primary hover:text-primary-foreground",
       },

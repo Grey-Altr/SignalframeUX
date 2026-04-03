@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
 import {
   SFCommand,
   SFCommandDialog,
@@ -67,14 +68,8 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   const toggleTheme = useCallback(() => {
     onOpenChange(false);
-    const root = document.documentElement;
-    const isDark = root.classList.contains("dark");
-    root.classList.add("sf-theme-transition");
-    root.classList.toggle("dark", !isDark);
-    try {
-      localStorage.setItem("sf-theme", isDark ? "light" : "dark");
-    } catch {}
-    setTimeout(() => root.classList.remove("sf-theme-transition"), 400);
+    const isDark = document.documentElement.classList.contains("dark");
+    sharedToggleTheme(isDark);
   }, [onOpenChange]);
 
   return (

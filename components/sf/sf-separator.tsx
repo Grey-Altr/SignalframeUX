@@ -1,3 +1,5 @@
+"use client";
+
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -16,11 +18,11 @@ export function SFSeparator({
       className={cn(
         "bg-foreground",
         !isVertical && weight === "thin" && "h-px",
-        !isVertical && weight === "normal" && "h-[2px]",
-        !isVertical && weight === "heavy" && "h-[3px]",
+        !isVertical && weight === "normal" && "h-[var(--border-element)]",
+        !isVertical && weight === "heavy" && "h-[var(--border-divider)]",
         isVertical && weight === "thin" && "w-px",
-        isVertical && weight === "normal" && "w-[2px]",
-        isVertical && weight === "heavy" && "w-[3px]",
+        isVertical && weight === "normal" && "w-[var(--border-element)]",
+        isVertical && weight === "heavy" && "w-[var(--border-divider)]",
         className
       )}
       {...props}

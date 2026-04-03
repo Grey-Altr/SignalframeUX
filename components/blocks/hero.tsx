@@ -80,7 +80,7 @@ export function Hero() {
         {/* Manifesto */}
         <p data-anim="hero-copy" className="text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
           Accept the interface into your life.
-          <span className="text-[14px] align-super text-muted-foreground">™</span>{" "}
+          <span className="text-sm align-super text-muted-foreground">™</span>{" "}
           A dual-layer design system that separates{" "}
           <span className="text-primary">what you see</span> from{" "}
           <span className="text-primary">what you feel</span>.{" "}
@@ -92,7 +92,7 @@ export function Hero() {
           <Link
             href="/start"
             data-anim="cta-btn"
-            className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
+            className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-7 py-3.5 text-xs font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             GET STARTED
             <span className="bd-span" aria-hidden="true" />
@@ -102,15 +102,16 @@ export function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             data-anim="cta-btn"
-            className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
+            className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-7 py-3.5 text-xs font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             VIEW ON GITHUB
+            <span className="sr-only">(opens in new tab)</span>
             <span className="bd-span" aria-hidden="true" />
           </a>
         </div>
 
         {/* Version tag */}
-        <div className="absolute bottom-6 right-6 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="absolute bottom-6 right-6 text-2xs uppercase tracking-[0.2em] text-muted-foreground">
           SF//UX v2.0.0 · 2026
         </div>
       </div>

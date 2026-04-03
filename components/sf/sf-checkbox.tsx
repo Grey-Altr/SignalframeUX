@@ -10,9 +10,9 @@ export function SFCheckbox({
   return (
     <Checkbox
       className={cn(
-        "rounded-none border-2 border-foreground",
+        "sf-focusable rounded-none border-2 border-foreground",
         "data-[state=checked]:bg-primary data-[state=checked]:border-primary",
-        "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
       {...props}

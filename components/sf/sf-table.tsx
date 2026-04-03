@@ -54,7 +54,7 @@ function SFTableRow({
   return (
     <TableRow
       className={cn(
-        "border-b border-foreground/20 hover:bg-muted/50",
+        "border-b border-foreground/20 hover:bg-muted/50 transition-colors duration-[var(--duration-fast)]",
         className
       )}
       {...props}
@@ -71,11 +71,15 @@ function SFTableCell({
   );
 }
 
+function SFTableBody({ className, ...props }: React.ComponentProps<typeof TableBody>) {
+  return <TableBody className={cn(className)} {...props} />;
+}
+
 export {
   SFTable,
   SFTableHeader,
   SFTableHead,
   SFTableRow,
   SFTableCell,
-  TableBody as SFTableBody,
+  SFTableBody,
 };

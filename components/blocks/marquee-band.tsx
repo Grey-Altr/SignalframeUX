@@ -9,14 +9,14 @@ export function MarqueeBand() {
     >
       <span className="sr-only">SIGNAL//FRAME™ — Design system built for engineers. Ship faster. Accept the interface.</span>
       <div
-        className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]"
+        className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
         aria-hidden="true"
       >
-        <span className="text-primary-foreground text-[18px] uppercase tracking-[0.15em] px-2">
+        <span className="text-primary-foreground text-lg uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>
-        <span className="text-primary-foreground text-[18px] uppercase tracking-[0.15em] px-2">
+        <span className="text-primary-foreground text-lg uppercase tracking-[0.15em] px-2">
           {MARQUEE_TEXT}
           {MARQUEE_TEXT}
         </span>

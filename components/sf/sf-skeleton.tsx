@@ -1,13 +1,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
-interface SFSkeletonProps extends React.ComponentProps<typeof Skeleton> {}
-
-export function SFSkeleton({ className, ...props }: SFSkeletonProps) {
+export function SFSkeleton({ className, ...props }: React.ComponentProps<typeof Skeleton>) {
   return (
     <Skeleton
+      role="status"
+      aria-label="Loading..."
       className={cn(
-        "rounded-none bg-muted animate-none sf-skeleton",
+        "rounded-none animate-none sf-skeleton",
         className
       )}
       {...props}

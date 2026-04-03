@@ -23,6 +23,7 @@ export function SplitHeadline({
   useGSAP(
     () => {
       if (!ref.current) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       SplitText.create(ref.current, {
         type: "chars",
         mask: "chars",
@@ -43,7 +44,7 @@ export function SplitHeadline({
   );
 
   return (
-    <Tag ref={ref as React.RefObject<HTMLHeadingElement>} className={className}>
+    <Tag ref={ref as unknown as React.RefObject<HTMLHeadingElement>} className={className}>
       {text}
     </Tag>
   );

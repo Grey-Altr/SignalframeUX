@@ -25,7 +25,7 @@ function SFScrollBar({
   return (
     <ScrollBar
       className={cn(
-        "[&>div]:rounded-none",
+        "rounded-none [&_[data-slot=scroll-area-scrollbar]]:rounded-none",
         className
       )}
       {...props}

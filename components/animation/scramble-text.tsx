@@ -23,6 +23,7 @@ export function ScrambleText({
   const { contextSafe } = useGSAP(
     () => {
       if (trigger === "load" && ref.current) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         gsap.from(ref.current, {
           duration: 1,
           scrambleText: {
@@ -38,7 +39,8 @@ export function ScrambleText({
   );
 
   const handleHover = contextSafe(() => {
-    gsap.to(ref.current!, {
+    if (!ref.current) return;
+    gsap.to(ref.current, {
       duration: 0.8,
       scrambleText: {
         text,
@@ -53,9 +55,11 @@ export function ScrambleText({
     <span
       ref={ref}
       className={className}
+      aria-label={text}
       onMouseEnter={trigger === "hover" ? handleHover : undefined}
+      onFocus={trigger === "hover" ? handleHover : undefined}
     >
-      {text}
+      <span aria-hidden="true">{text}</span>
     </span>
   );
 }

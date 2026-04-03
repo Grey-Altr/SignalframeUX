@@ -131,16 +131,16 @@ const TYPE_SCALE = [
   { name: "CODE", sample: "const sfux = createSignalframeUX()", font: "var(--font-mono)", size: 13, weight: 400, meta: "JETBRAINS MONO · 13PX · 400", code: true },
 ];
 
-/* ── MOTION DATA ── */
+/* ── MOTION DATA — values match globals.css motion tokens ── */
 const MOTION_TOKENS = [
-  { name: "EASE-DEFAULT", easing: "ease", duration: "200ms", css: "ease \u00b7 200ms" },
-  { name: "EASE-IN", easing: "ease-in", duration: "200ms", css: "ease-in \u00b7 200ms" },
-  { name: "EASE-OUT", easing: "ease-out", duration: "150ms", css: "ease-out \u00b7 150ms" },
-  { name: "SPRING", easing: "cubic-bezier(0.68,-0.55,0.27,1.55)", duration: "400ms", css: "cubic-bezier(0.68,-0.55,0.27,1.55) \u00b7 400ms" },
-  { name: "STEP", easing: "steps(8)", duration: "500ms", css: "steps(8) \u00b7 500ms" },
+  { name: "EASE-DEFAULT", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "200ms", css: "var(--ease-default) \u00b7 200ms" },
+  { name: "EASE-HOVER", easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", duration: "200ms", css: "var(--ease-hover) \u00b7 200ms" },
+  { name: "DURATION-FAST", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "100ms", css: "var(--ease-default) \u00b7 100ms" },
+  { name: "DURATION-NORMAL", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "200ms", css: "var(--ease-default) \u00b7 200ms" },
+  { name: "DURATION-SLOW", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "400ms", css: "var(--ease-default) \u00b7 400ms" },
 ];
 
-const EASING_MAP = ["ease", "ease-in", "ease-out", "cubic-bezier(0.68, -0.55, 0.27, 1.55)", "steps(8)"];
+// Easing is accessed directly from MOTION_TOKENS[i].easing in the render loop
 
 /* ── ELEVATION DATA ── */
 const ELEVATION_TOKENS = [
@@ -174,6 +174,7 @@ const BREAKPOINT_TOKENS = [
 
 export function TokenTabs() {
   const [showAll, setShowAll] = useState(false);
+  const [focusedSwatch, setFocusedSwatch] = useState<{ scale: number; step: number }>({ scale: 0, step: 0 });
   const visibleScales = showAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
 
   return (
@@ -183,7 +184,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
+            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>
@@ -192,7 +193,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[11px] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
+            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>
@@ -207,7 +208,7 @@ export function TokenTabs() {
           </h2>
           <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
             SignalframeUX&trade; uses{" "}
-            <code className="bg-foreground/10 px-1.5 py-0.5 text-[12px]">
+            <code className="bg-foreground/10 px-1.5 py-0.5 text-[var(--text-xs)]">
               oklch()
             </code>{" "}
             for perceptually uniform color. Every scale maintains consistent
@@ -220,7 +221,7 @@ export function TokenTabs() {
               aria-hidden="true"
               className="flex items-center h-full whitespace-nowrap animate-marquee"
             >
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground">
+              <span className="font-mono text-[var(--text-xs)] font-bold uppercase tracking-[0.15em] text-foreground">
                 PERCEPTUALLY UNIFORM // OKLCH COLOR SPACE // 588 TOKENS //
                 CONSISTENT ACROSS HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY
                 UNIFORM // OKLCH COLOR SPACE // 588 TOKENS // CONSISTENT ACROSS
@@ -244,44 +245,97 @@ export function TokenTabs() {
             onClick={() => setShowAll((v) => !v)}
             aria-expanded={showAll}
             aria-controls="color-scale-grid"
-            className="text-[11px] text-primary sf-pressable"
+            className="text-[var(--text-sm)] text-primary sf-pressable"
           >
             {showAll ? "SHOW CORE" : `SHOW ALL ${COLOR_SCALES.length}`}
           </SFButton>
         </div>
-        <div id="color-scale-grid" className="overflow-x-auto relative">
-          <div className="md:hidden text-[9px] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
+        <div id="color-scale-grid" role="grid" aria-label="Color scales" className="overflow-x-auto relative">
+          <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
             ← SCROLL →
           </div>
-          {visibleScales.map((scale) => (
+          {visibleScales.map((scale, scaleIdx) => (
             <div
               key={scale.name}
+              role="row"
               className="grid grid-cols-[120px_repeat(12,minmax(48px,1fr))] md:grid-cols-[200px_repeat(12,1fr)] border-b-2 border-foreground min-w-[700px]"
+              onKeyDown={(e) => {
+                const stepCount = scale.swatches.length;
+                const currentStep = focusedSwatch.scale === scaleIdx ? focusedSwatch.step : 0;
+                let next = currentStep;
+                switch (e.key) {
+                  case "ArrowRight": next = Math.min(currentStep + 1, stepCount - 1); break;
+                  case "ArrowLeft": next = Math.max(currentStep - 1, 0); break;
+                  case "Home": next = 0; break;
+                  case "End": next = stepCount - 1; break;
+                  case "ArrowDown": {
+                    e.preventDefault();
+                    const grid = e.currentTarget.parentElement;
+                    const rows = grid?.querySelectorAll<HTMLElement>("[role='row']");
+                    if (!rows) return;
+                    const rowArr = Array.from(rows);
+                    const curRowIdx = rowArr.indexOf(e.currentTarget);
+                    const nextRow = rowArr[curRowIdx + 1];
+                    if (!nextRow) return;
+                    const targetSwatch = nextRow.querySelectorAll<HTMLElement>("[data-swatch]")[currentStep];
+                    if (targetSwatch) {
+                      setFocusedSwatch({ scale: scaleIdx + 1, step: currentStep });
+                      targetSwatch.focus();
+                    }
+                    return;
+                  }
+                  case "ArrowUp": {
+                    e.preventDefault();
+                    const grid = e.currentTarget.parentElement;
+                    const rows = grid?.querySelectorAll<HTMLElement>("[role='row']");
+                    if (!rows) return;
+                    const rowArr = Array.from(rows);
+                    const curRowIdx = rowArr.indexOf(e.currentTarget);
+                    if (curRowIdx <= 0) return;
+                    const prevRow = rowArr[curRowIdx - 1];
+                    const targetSwatch = prevRow.querySelectorAll<HTMLElement>("[data-swatch]")[currentStep];
+                    if (targetSwatch) {
+                      setFocusedSwatch({ scale: scaleIdx - 1, step: currentStep });
+                      targetSwatch.focus();
+                    }
+                    return;
+                  }
+                  default: return;
+                }
+                e.preventDefault();
+                setFocusedSwatch({ scale: scaleIdx, step: next });
+                const row = e.currentTarget;
+                const swatches = row.querySelectorAll<HTMLElement>("[data-swatch]");
+                swatches[next]?.focus();
+              }}
             >
-              <div className="px-6 flex items-center text-[11px] font-bold uppercase tracking-[0.1em] border-r-2 border-foreground bg-foreground text-background">
+              <div role="rowheader" className="px-6 flex items-center text-[var(--text-sm)] font-bold uppercase tracking-[0.1em] border-r-2 border-foreground bg-foreground text-background">
                 {scale.name}
               </div>
-              {scale.swatches.map((sw) => {
+              {scale.swatches.map((sw, stepIdx) => {
                 const isDark = sw.l < 0.55;
                 const oklchStr = sw.c === 0
                   ? `oklch(${sw.l} 0 0)`
                   : `oklch(${sw.l} ${sw.c} ${sw.h})`;
+                const isFocused = focusedSwatch.scale === scaleIdx && focusedSwatch.step === stepIdx;
                 return (
                   <div
                     key={sw.step}
-                    role="img"
+                    data-swatch
+                    role="gridcell"
                     aria-label={`${scale.name} ${sw.step}: ${oklchStr}`}
-                    tabIndex={0}
+                    tabIndex={isFocused ? 0 : -1}
+                    onFocus={() => setFocusedSwatch({ scale: scaleIdx, step: stepIdx })}
                     className="group/swatch aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10 cursor-crosshair focus:outline-2 focus:outline-primary focus:outline-offset-[-2px]"
                     style={{
                       background: oklchStr,
                       color: isDark ? "var(--color-background)" : "var(--color-foreground)",
                     }}
                   >
-                    <span className="text-[10px] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 transition-opacity duration-100" aria-hidden="true">
+                    <span className="text-[var(--text-xs)] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 group-focus/swatch:opacity-0 transition-opacity duration-100" aria-hidden="true">
                       {sw.step}
                     </span>
-                    <span className="absolute inset-0 flex items-center justify-center text-[8px] font-mono font-bold opacity-0 group-hover/swatch:opacity-100 transition-opacity duration-100 px-0.5 text-center leading-tight" aria-hidden="true">
+                    <span className="absolute inset-0 flex items-center justify-center text-[var(--text-2xs)] font-mono font-bold opacity-0 group-hover/swatch:opacity-100 group-focus/swatch:opacity-100 transition-opacity duration-100 px-0.5 text-center leading-tight" aria-hidden="true">
                       {oklchStr}
                     </span>
                   </div>
@@ -309,8 +363,8 @@ export function TokenTabs() {
           <SFTableBody>
             {SPACING.map((s) => (
               <SFTableRow key={s.name}>
-                <SFTableCell className="font-bold text-[11px] text-primary">{s.name}</SFTableCell>
-                <SFTableCell className="text-[11px] text-muted-foreground">{s.rem}</SFTableCell>
+                <SFTableCell className="font-bold text-[var(--text-sm)] text-primary">{s.name}</SFTableCell>
+                <SFTableCell className="text-[var(--text-sm)] text-muted-foreground">{s.rem}</SFTableCell>
                 <SFTableCell>
                   <div
                     className="h-4 bg-foreground transition-[width] duration-300"
@@ -319,7 +373,7 @@ export function TokenTabs() {
                     aria-label={`${s.px} pixels wide`}
                   />
                 </SFTableCell>
-                <SFTableCell className="text-[10px] text-muted-foreground text-right">{s.px}px</SFTableCell>
+                <SFTableCell className="text-[var(--text-xs)] text-muted-foreground text-right">{s.px}px</SFTableCell>
               </SFTableRow>
             ))}
           </SFTableBody>
@@ -342,7 +396,7 @@ export function TokenTabs() {
           <SFTableBody>
             {TYPE_SCALE.map((t) => (
               <SFTableRow key={t.name} className="align-baseline">
-                <SFTableCell className="p-5 text-[10px] text-primary font-bold w-[160px]">
+                <SFTableCell className="p-5 text-[var(--text-xs)] text-primary font-bold w-[160px]">
                   {t.name}
                 </SFTableCell>
                 <SFTableCell
@@ -366,7 +420,7 @@ export function TokenTabs() {
                 >
                   {t.sample}
                 </SFTableCell>
-                <SFTableCell className="p-5 text-[11px] text-muted-foreground text-right w-[200px]">
+                <SFTableCell className="p-5 text-[var(--text-sm)] text-muted-foreground text-right w-[200px]">
                   {t.meta}
                 </SFTableCell>
               </SFTableRow>
@@ -391,7 +445,7 @@ export function TokenTabs() {
           <SFTableBody>
             {MOTION_TOKENS.map((m, i) => (
               <SFTableRow key={m.name}>
-                <SFTableCell className="py-4 font-bold text-[11px] text-primary w-[200px]">
+                <SFTableCell className="py-4 font-bold text-[var(--text-sm)] text-primary w-[200px]">
                   {m.name}
                 </SFTableCell>
                 <SFTableCell className="py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
@@ -401,11 +455,11 @@ export function TokenTabs() {
                     aria-hidden="true"
                     style={{
                       animation: "sf-motion-slide 2s infinite alternate",
-                      animationTimingFunction: EASING_MAP[i],
+                      animationTimingFunction: m.easing,
                     }}
                   />
                 </SFTableCell>
-                <SFTableCell className="py-4 text-[10px] text-muted-foreground text-right w-[200px]">
+                <SFTableCell className="py-4 text-[var(--text-xs)] text-muted-foreground text-right w-[200px]">
                   {m.css}
                 </SFTableCell>
               </SFTableRow>
@@ -419,7 +473,7 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           ELEVATION_SYSTEM
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
           SignalframeUX&trade; uses a debossed surface model — elements are pressed <em>into</em> the surface, not floated above it. Shadows create tactile depth without z-axis lift. This is a deliberate rejection of material elevation.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -433,7 +487,7 @@ export function TokenTabs() {
           <SFTableBody>
             {ELEVATION_TOKENS.map((e) => (
               <SFTableRow key={e.name}>
-                <SFTableCell className="p-5 px-6 font-bold text-[11px] text-primary w-[200px]">
+                <SFTableCell className="p-5 px-6 font-bold text-[var(--text-sm)] text-primary w-[200px]">
                   {e.name}
                 </SFTableCell>
                 <SFTableCell className="p-5 px-6">
@@ -452,7 +506,7 @@ export function TokenTabs() {
                     />
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6 text-[10px] text-muted-foreground font-mono text-right w-[280px]">
+                <SFTableCell className="p-5 px-6 text-[var(--text-xs)] text-muted-foreground font-mono text-right w-[280px]">
                   {e.css}
                 </SFTableCell>
               </SFTableRow>
@@ -466,7 +520,7 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           RADIUS_PHILOSOPHY
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
           Zero radius. Everywhere. Industrial edges communicate precision and intentionality. Rounded corners soften — SignalframeUX&trade; sharpens. Every element meets at 90°.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -480,7 +534,7 @@ export function TokenTabs() {
           <SFTableBody>
             {RADIUS_TOKENS.map((r) => (
               <SFTableRow key={r.name}>
-                <SFTableCell className="p-5 px-6 font-bold text-[11px] text-primary">
+                <SFTableCell className="p-5 px-6 font-bold text-[var(--text-sm)] text-primary">
                   {r.name}
                 </SFTableCell>
                 <SFTableCell className="p-5 px-6">
@@ -492,7 +546,7 @@ export function TokenTabs() {
                         role="img"
                         aria-label="SF//UX: 0px radius"
                       />
-                      <span className="text-[9px] text-primary font-bold uppercase">SF//UX</span>
+                      <span className="text-[var(--text-2xs)] text-primary font-bold uppercase">SF//UX</span>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div
@@ -501,11 +555,11 @@ export function TokenTabs() {
                         role="img"
                         aria-label={`Typical: ${r.typical} radius`}
                       />
-                      <span className="text-[9px] text-muted-foreground uppercase">TYPICAL</span>
+                      <span className="text-[var(--text-2xs)] text-muted-foreground uppercase">TYPICAL</span>
                     </div>
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6 text-[10px] text-muted-foreground font-mono">
+                <SFTableCell className="p-5 px-6 text-[var(--text-xs)] text-muted-foreground font-mono">
                   <span className="text-primary font-bold">0px</span>
                   <span className="ml-2 opacity-50">vs {r.typical}</span>
                 </SFTableCell>
@@ -520,7 +574,7 @@ export function TokenTabs() {
         <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           BREAKPOINT_SCALE
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[13px] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
           Mobile-first responsive tokens aligned with Tailwind CSS defaults. SignalframeUX&trade; layouts shift at these thresholds — grid columns collapse, type scales compress, and spacing tightens.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -535,8 +589,8 @@ export function TokenTabs() {
           <SFTableBody>
             {BREAKPOINT_TOKENS.map((bp) => (
               <SFTableRow key={bp.name}>
-                <SFTableCell className="font-bold text-[11px] text-primary">{bp.name}</SFTableCell>
-                <SFTableCell className="text-[11px] text-muted-foreground font-mono">{bp.px}px</SFTableCell>
+                <SFTableCell className="font-bold text-[var(--text-sm)] text-primary">{bp.name}</SFTableCell>
+                <SFTableCell className="text-[var(--text-sm)] text-muted-foreground font-mono">{bp.px}px</SFTableCell>
                 <SFTableCell>
                   <div className="relative h-4 bg-muted">
                     <div
@@ -547,7 +601,7 @@ export function TokenTabs() {
                     />
                   </div>
                 </SFTableCell>
-                <SFTableCell className="text-[10px] text-muted-foreground">{bp.usage}</SFTableCell>
+                <SFTableCell className="text-[var(--text-xs)] text-muted-foreground">{bp.usage}</SFTableCell>
               </SFTableRow>
             ))}
           </SFTableBody>

@@ -17,8 +17,8 @@ function SFRadioGroupItem({
   return (
     <RadioGroupItem
       className={cn(
-        "rounded-none border-2 border-foreground",
-        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "sf-focusable rounded-none border-2 border-foreground",
+        "focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
       {...props}

@@ -53,6 +53,10 @@ export function HeroMesh({ className }: { className?: string }) {
     reducedMotionRef.current = mql.matches;
     const motionHandler = (e: MediaQueryListEvent) => {
       reducedMotionRef.current = e.matches;
+      if (e.matches && animRef.current) {
+        cancelAnimationFrame(animRef.current);
+        animRef.current = 0;
+      }
     };
     mql.addEventListener("change", motionHandler);
 
@@ -95,10 +99,7 @@ export function HeroMesh({ className }: { className?: string }) {
       }
     }
 
-    // Listen on document so z-index children don't block events — gated by visibility
-    if (visibleRef.current) {
-      document.addEventListener("mousemove", onMouseMove);
-    }
+    // mousemove is managed exclusively by the IntersectionObserver below
 
     const startTime = performance.now();
 
@@ -181,7 +182,9 @@ export function HeroMesh({ className }: { className?: string }) {
       }
       ctx.fill();
 
-      animRef.current = requestAnimationFrame(draw);
+      if (!reducedMotionRef.current) {
+        animRef.current = requestAnimationFrame(draw);
+      }
     }
 
     // IntersectionObserver — pause RAF and mousemove when canvas is offscreen

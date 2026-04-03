@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "@/lib/gsap-core";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
 
@@ -73,18 +73,26 @@ function CustomCursor() {
 /** Scroll progress bar at the top of the viewport */
 function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     function onScroll() {
-      if (!barRef.current) return;
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      barRef.current.style.transform = `scaleX(${progress})`;
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        if (!barRef.current) return;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+        barRef.current.style.transform = `scaleX(${progress})`;
+      });
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
@@ -101,32 +109,46 @@ function ScrollProgress() {
 function ScrollToTop() {
   const btnRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
+  const visibleRef = useRef(false);
 
   useEffect(() => {
+    let rafId = 0;
     function onScroll() {
-      setVisible(window.scrollY > window.innerHeight);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const next = window.scrollY > window.innerHeight;
+        if (next !== visibleRef.current) {
+          visibleRef.current = next;
+          setVisible(next);
+        }
+      });
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
     <button
       ref={btnRef}
       tabIndex={visible ? 0 : -1}
+      aria-hidden={!visible}
       onClick={() => {
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
       }}
-      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[16px] font-bold hover:bg-foreground hover:text-background transition-all duration-200"
+      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-200"
       style={{
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
         transform: visible ? "translateY(0)" : "translateY(12px)",
         transition:
-          "opacity 0.2s ease, transform 0.2s ease, background-color 0.15s ease, color 0.15s ease",
+          "opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default), background-color var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default)",
       }}
       aria-label="Scroll to top"
     >
@@ -138,11 +160,44 @@ function ScrollToTop() {
 /** VHS-style fixed badge in bottom-right corner */
 function VHSBadge() {
   return (
-    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-2 text-[clamp(10px,1vw,11px)] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] flex items-center gap-2">
+    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-2 text-[var(--text-2xs)] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] hidden sm:flex items-center gap-2">
       <span className="text-primary text-sm">◉◉</span>
       SF//UX
     </div>
   );
+}
+
+/** Idle standby overlay — faint scanline drift after 60s of no interaction */
+function IdleOverlay() {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const IDLE_TIMEOUT = 60_000;
+
+  const resetIdle = useCallback(() => {
+    const el = overlayRef.current;
+    if (!el) return;
+    el.classList.remove("sf-idle-overlay--active");
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      el.classList.add("sf-idle-overlay--active");
+    }, IDLE_TIMEOUT);
+  }, []);
+
+  useEffect(() => {
+    // Respect reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const events = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"] as const;
+    events.forEach((e) => document.addEventListener(e, resetIdle, { passive: true }));
+    resetIdle(); // start the timer
+
+    return () => {
+      events.forEach((e) => document.removeEventListener(e, resetIdle));
+      clearTimeout(timerRef.current);
+    };
+  }, [resetIdle]);
+
+  return <div ref={overlayRef} className="sf-idle-overlay" aria-hidden="true" />;
 }
 
 export function GlobalEffects() {
@@ -153,6 +208,7 @@ export function GlobalEffects() {
       <ScrollProgress />
       <ScrollToTop />
       <VHSBadge />
+      <IdleOverlay />
     </>
   );
 }

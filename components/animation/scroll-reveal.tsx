@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-core";
+import { gsap, useGSAP } from "@/lib/gsap-core";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -21,6 +21,7 @@ export function ScrollReveal({
   useGSAP(
     () => {
       if (!ref.current) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const items = ref.current.children;
       if (items.length === 0) return;
 

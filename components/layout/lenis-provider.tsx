@@ -8,10 +8,10 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+
     // Skip smooth scroll if user prefers reduced motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
+    if (mql.matches) return;
 
     const lenis = new Lenis({
       duration: 1.2,
@@ -26,9 +26,20 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(500, 33);
+    gsap.ticker.lagSmoothing(0);
+
+    // Destroy Lenis if user enables reduced motion at runtime
+    const motionHandler = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        gsap.ticker.remove(tickerCallback);
+        lenis.destroy();
+        lenisRef.current = null;
+      }
+    };
+    mql.addEventListener("change", motionHandler);
 
     return () => {
+      mql.removeEventListener("change", motionHandler);
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;

@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const sfBadgeVariants = cva(
-  "font-mono uppercase tracking-wider text-xs border-0",
+  "font-mono uppercase tracking-wider text-xs",
   {
     variants: {
       intent: {
-        default: "bg-foreground text-background",
-        primary: "bg-primary text-primary-foreground",
+        default: "border-2 border-foreground bg-foreground text-background",
+        primary: "border-2 border-primary bg-primary text-primary-foreground",
         outline: "bg-transparent text-foreground border-2 border-foreground",
-        signal: "bg-[var(--sf-yellow)] text-foreground",
+        signal: "border-2 border-foreground bg-[var(--sf-yellow)] text-foreground",
       },
     },
     defaultVariants: {

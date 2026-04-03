@@ -1,23 +1,23 @@
 import Link from "next/link";
+import { SFButton } from "@/components/sf/sf-button";
 
 export default function NotFound() {
   return (
     <main id="main-content" className="min-h-screen flex items-center justify-center bg-background px-6">
       <div className="text-center max-w-md">
+        <h1 className="sr-only">404 — Page Not Found</h1>
         <div
+          aria-hidden="true"
           className="sf-display text-[clamp(64px,12vw,120px)] text-foreground leading-none mb-2"
         >
           4<span className="text-primary">0</span>4
         </div>
-        <p className="text-[13px] uppercase tracking-[0.1em] text-muted-foreground mb-8">
+        <p className="text-[var(--text-base)] uppercase tracking-[0.1em] text-muted-foreground mb-8">
           SIGNAL NOT FOUND. THE REQUESTED ROUTE DOES NOT EXIST.
         </p>
-        <Link
-          href="/"
-          className="inline-block border-2 border-foreground bg-foreground text-background px-6 py-3 text-[12px] font-bold uppercase tracking-[0.15em] no-underline hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-        >
-          RETURN TO BASE
-        </Link>
+        <SFButton asChild intent="signal">
+          <Link href="/">RETURN TO BASE</Link>
+        </SFButton>
       </div>
     </main>
   );

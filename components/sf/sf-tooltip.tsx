@@ -25,8 +25,12 @@ function SFTooltipContent({
   );
 }
 
+function SFTooltipTrigger(props: React.ComponentProps<typeof TooltipTrigger>) {
+  return <TooltipTrigger {...props} />;
+}
+
 export {
   SFTooltip,
   SFTooltipContent,
-  TooltipTrigger as SFTooltipTrigger,
+  SFTooltipTrigger,
 };

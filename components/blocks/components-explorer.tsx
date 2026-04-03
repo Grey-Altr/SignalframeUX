@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { SFButton } from "@/components/sf/sf-button";
 import { SFInput } from "@/components/sf/sf-input";
 import { SFBadge } from "@/components/sf/sf-badge";
-type FlipModule = typeof import("@/lib/gsap-flip");
+type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
 
 const CATEGORIES = [
   "ALL",
@@ -271,7 +271,7 @@ function FilterIndicator({
   return (
     <div
       ref={indicatorRef}
-      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
+      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-[width,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
     />
   );
 }
@@ -325,17 +325,16 @@ export function ComponentsExplorer() {
     return () => clearTimeout(debounceRef.current);
   }, []);
 
-  const filtered = COMPONENTS.filter((comp) => {
+  const filtered = useMemo(() => COMPONENTS.filter((comp) => {
     const matchesCategory =
       activeFilter === "ALL" || comp.filterTag === activeFilter;
     const matchesSearch =
       searchQuery === "" ||
       comp.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
-  });
+  }), [activeFilter, searchQuery]);
 
-  const resultCount =
-    activeFilter === "ALL" && searchQuery === "" ? 340 : filtered.length;
+  const resultCount = filtered.length;
 
   // Reset focus index when filter/search changes
   useEffect(() => {
@@ -347,8 +346,10 @@ export function ComponentsExplorer() {
       const count = filtered.length;
       if (count === 0) return;
 
-      // Detect columns from CSS grid (4 on lg+, 2 on smaller)
-      const cols = window.innerWidth >= 1024 ? 4 : 2;
+      // Detect columns from CSS grid computed style
+      const cols = gridRef.current
+        ? getComputedStyle(gridRef.current).gridTemplateColumns.split(" ").length
+        : 2;
       let next = focusedIndex;
 
       switch (e.key) {
@@ -384,6 +385,10 @@ export function ComponentsExplorer() {
 
   useEffect(() => {
     if (!flipStateRef.current || !gridRef.current || !gsapRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      flipStateRef.current = null;
+      return;
+    }
     const { gsap, Flip } = gsapRef.current;
     const state = flipStateRef.current;
     flipStateRef.current = null;
@@ -437,7 +442,12 @@ export function ComponentsExplorer() {
           onChange={(e) => handleSearch(e.target.value)}
           className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
-        <div className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
+        >
           {resultCount} RESULTS
         </div>
         {/* Filter indicator bar */}
@@ -447,7 +457,7 @@ export function ComponentsExplorer() {
       {/* ── Component Grid ── */}
       <div
         ref={gridRef}
-        role="grid"
+        role="listbox"
         aria-label="Component library"
         onKeyDown={handleGridKeyDown}
         className="grid grid-cols-2 lg:grid-cols-4 list-none m-0 p-0"
@@ -458,7 +468,8 @@ export function ComponentsExplorer() {
 
           return (
             <div
-              role="gridcell"
+              role="option"
+              aria-selected={i === focusedIndex}
               key={comp.index}
               data-flip-id={comp.index}
               tabIndex={i === focusedIndex ? 0 : -1}
@@ -481,12 +492,12 @@ export function ComponentsExplorer() {
                 />
               )}
 
-              <div className={`text-[var(--text-sm)] uppercase tracking-[0.2em] ${comp.variant === "black" ? "opacity-60" : "text-muted-foreground"}`}>
+              <div className={`text-[var(--text-sm)] uppercase tracking-[0.2em] ${comp.variant === "black" ? "text-[var(--sf-muted-text-dark)]" : "text-muted-foreground"}`}>
                 {comp.index} · {comp.category}
               </div>
 
               <div
-                className={`text-[15px] uppercase leading-none transition-colors duration-150 sf-display ${styles.titleHover}`}
+                className={`text-[var(--text-md)] uppercase leading-none transition-colors duration-150 sf-display ${styles.titleHover}`}
               >
                 {comp.name}
               </div>
@@ -504,7 +515,7 @@ export function ComponentsExplorer() {
                 {comp.preview}
               </div>
 
-              <div className={`flex justify-between text-[var(--text-sm)] uppercase tracking-[0.15em] ${comp.variant === "black" ? "opacity-60" : "text-muted-foreground"}`}>
+              <div className={`flex justify-between text-[var(--text-sm)] uppercase tracking-[0.15em] ${comp.variant === "black" ? "text-[var(--sf-muted-text-dark)]" : "text-muted-foreground"}`}>
                 <span>{comp.subcategory}</span>
                 <span>{comp.version}</span>
               </div>

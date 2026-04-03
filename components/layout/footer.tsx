@@ -11,7 +11,7 @@ export function Footer() {
             {/* Brand */}
             <div className="md:mt-1.5">
               <span
-                className="sf-display text-[30px] text-foreground"
+                className="sf-display text-2xl text-foreground"
               >
                 SF<span className="text-primary">//</span>UX
               </span>
@@ -41,7 +41,7 @@ export function Footer() {
                 RESOURCES
               </p>
               <ul className="space-y-0 text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-2 inline-block">GitHub <span className="text-[var(--text-2xs)] text-muted-foreground">(opens in new tab)</span></a></li>
+                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-2 inline-block">GitHub<span className="sr-only"> (opens in new tab)</span></a></li>
                 <li><Link href="/components" className="sf-link-draw hover:text-foreground py-2 inline-block">Registry</Link></li>
               </ul>
             </div>
