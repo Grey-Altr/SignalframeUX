@@ -75,7 +75,7 @@ export function Nav() {
         <LogoMark />
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center shrink-0 -ml-[clamp(4px,0.5vw,8px)]">
+        <div className="hidden md:flex items-center shrink-0 -ml-[calc(clamp(4px,0.5vw,8px)+96px)]">
           {NAV_LINKS.map((link, i) => (
             <NavLink
               key={link.href}

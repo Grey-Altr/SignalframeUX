@@ -106,7 +106,7 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
             {isEndpoint ? (
               <span
                 className={`block relative transition-all duration-200 ${
-                  isActive ? "w-2.5 h-2.5" : "w-1.5 h-1.5 group-hover:scale-125"
+                  isActive ? "w-1 h-1" : "w-0.5 h-0.5 group-hover:scale-125"
                 }`}
               >
                 {/* Horizontal bar */}
@@ -120,8 +120,8 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
               <span
                 className={`block rounded-full transition-all duration-200 ${
                   isActive
-                    ? "w-2.5 h-2.5 bg-primary scale-110"
-                    : "w-1.5 h-1.5 bg-foreground/30 group-hover:bg-foreground/60"
+                    ? "w-1 h-1 bg-primary scale-110"
+                    : "w-0.5 h-0.5 bg-foreground/30 group-hover:bg-foreground/60"
                 }`}
               />
             )}

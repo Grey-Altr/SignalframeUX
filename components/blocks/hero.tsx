@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="mt-[var(--nav-height)] grid grid-cols-1 md:grid-cols-2 h-[calc(100vh-var(--nav-height))] h-[calc(100dvh-var(--nav-height))] border-b-4 border-foreground overflow-hidden">
       {/* Left — Black panel */}
-      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative overflow-hidden">
+      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground pr-[clamp(16px,4vw,48px)] pl-[calc(clamp(16px,4vw,48px)-2em)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative overflow-hidden">
         {/* Canvas mesh background */}
         <HeroMesh className="absolute inset-0 z-0 opacity-[0.45]" />
 
@@ -39,21 +39,21 @@ export function Hero() {
             className="sf-display text-[clamp(58px,16.8vw,437px)] leading-[0.7] tracking-[-0.03em] text-background dark:text-foreground uppercase origin-top-left"
             style={{
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
-              transform: "scale(1.12)",
+              transform: "scale(1.176)",
             }}
           >
-            <ColorCycleFrame className="inline-block -mt-[34px] text-primary">
+            <ColorCycleFrame className="inline-block text-primary">
               <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span>
             </ColorCycleFrame>
-            <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.15em] relative z-10">
-              <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">//</span>
+            <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10">
+              <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">//</span>
               <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">F</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">R</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">M</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">E</span>
             </span>
           </h1>
         </div>
 
         {/* Multilingual text */}
-        <div className="relative z-[var(--z-content)] mt-[calc(clamp(4px,1vh,12px)+40px)] sf-jfm-flicker">
+        <div className="relative z-[var(--z-content)] mt-[calc(clamp(4px,1vh,12px)+60px)] ml-[1.5em] sf-jfm-flicker">
           <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(5.8px,0.77vw,11.5px)] font-bold">
             シグナルフレーム™
           </p>
@@ -73,17 +73,17 @@ export function Hero() {
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[clamp(8px,2vh,32px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,1vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
+        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[0.35em] ml-[calc(1.5em+4px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,1vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
           <span className="whitespace-nowrap">DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.</span><br />
-          THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
+          <span className="whitespace-nowrap">THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.</span>
         </p>
       </div>
 
       {/* Right — White panel */}
-      <div className="bg-background px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative">
+      <div className="bg-background px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative" style={{ paddingBottom: "calc(clamp(16px,3vh,60px) + 4.5em)" }}>
         {/* Manifesto */}
-        <p data-anim="hero-copy" className="text-[clamp(16px,2.8vw,36.4px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
-          something you can <span className="text-primary relative z-[5000]">feel</span>.
+        <p className="text-[clamp(16px,2.8vw,36.4px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
+          <span data-anim="hero-copy" style={{ opacity: 0 }}>a system you can </span><span data-anim="hero-feel" className="text-primary relative z-[5000]" style={{ opacity: 0, filter: "blur(20px)" }}>feel</span><span data-anim="hero-copy-dot" style={{ opacity: 0 }}>.</span>
         </p>
 
         {/* CTAs with border-draw animation */}

@@ -134,7 +134,7 @@ export function ColorCycleFrame({ children, className }: { children: React.React
       className={className}
       onMouseEnter={() => { hoveredRef.current = true; accumulatedRef.current = 0; }}
       onMouseLeave={() => { hoveredRef.current = false; accumulatedRef.current = 0; }}
-      style={{ cursor: "ns-resize", position: "relative", overflow: "hidden", verticalAlign: "bottom", lineHeight: "inherit" }}
+      style={{ cursor: "ns-resize", position: "relative", overflow: "clip", verticalAlign: "bottom", lineHeight: "inherit", marginTop: "-58px" }}
     >
       {children}
     </span>

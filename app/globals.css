@@ -360,6 +360,7 @@
   .sf-clock-pixelize { animation: none; clip-path: none; }
 }
 
+
 .sf-section-indicator-fade {
   opacity: 0;
   animation: sf-slow-fade-in 4s ease-in 7s both;
@@ -1404,10 +1405,10 @@
   pointer-events: none;
   mix-blend-mode: normal;
   animation: sf-vhs-ease-in 0.5s ease-in both;
-  filter: blur(0.6px) brightness(1.03);
+  filter: blur(0.8px) brightness(1.08) contrast(1.04);
 }
 .dark .vhs-overlay {
-  filter: blur(0.6px) brightness(1.04);
+  filter: blur(0.8px) brightness(1.1) contrast(1.05);
 }
 
 @keyframes sf-vhs-ease-in {

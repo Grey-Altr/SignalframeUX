@@ -59,7 +59,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
       style={{
         opacity: renderOpacity,
         filter: renderFilter,
-        transition: "opacity 0.08s steps(2), filter 0.08s steps(2)",
+        transition: "opacity 0.6s ease-in-out, filter 0.6s ease-in-out",
       }}
     >
       <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>

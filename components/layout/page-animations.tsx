@@ -74,6 +74,13 @@ async function initHeroAnimations(
 
   const ctx = gsap.context(() => {
 
+  // ── 0. Hero slashes — slide left to right ──
+  const slashes = document.querySelector("[data-anim='hero-slashes']");
+  if (slashes) {
+    gsap.set(slashes, { x: "-100vw" });
+    gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 1 });
+  }
+
   // ── 1. Hero headline — SplitText char reveal ──
   const split = SplitText.create("[data-anim='hero-char']", {
     type: "chars",
@@ -122,20 +129,18 @@ async function initHeroAnimations(
     }
   }
 
-  // ── 3. Hero copy flicker-in after 1.6s ──
+  // ── 3. Hero copy — "something you can" slow fade, "feel" blur bloom ──
   const heroCopy = document.querySelector("[data-anim='hero-copy']");
+  const heroFeel = document.querySelector("[data-anim='hero-feel']");
+  const heroDot = document.querySelector("[data-anim='hero-copy-dot']");
   if (heroCopy) {
-    const flickerTl = gsap.timeline({ delay: 3.6 });
-    flickerTl
-      .to(heroCopy, { opacity: 0.15, duration: 0.06 })
-      .to(heroCopy, { opacity: 0, duration: 0.04 })
-      .to(heroCopy, { opacity: 0.3, duration: 0.06 })
-      .to(heroCopy, { opacity: 0, duration: 0.05 })
-      .to(heroCopy, { opacity: 0.6, duration: 0.08 })
-      .to(heroCopy, { opacity: 0.2, duration: 0.04 })
-      .to(heroCopy, { opacity: 0.8, duration: 0.06 })
-      .to(heroCopy, { opacity: 0.5, duration: 0.03 })
-      .to(heroCopy, { opacity: 1, duration: 0.1 });
+    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.inOut", delay: 2 });
+  }
+  if (heroDot) {
+    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.inOut", delay: 6 });
+  }
+  if (heroFeel) {
+    gsap.to(heroFeel, { opacity: 1, filter: "blur(0px)", duration: 1, ease: "power2.out", delay: 0.5 });
   }
 
   // ── 3b. Accent color cycle — flash through palette and land on magenta ──
