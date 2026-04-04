@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SFSeparator } from "@/components/sf/sf-separator";
 import { CopyButton } from "@/components/layout/copy-button";
+import { BackToTop } from "@/components/layout/back-to-top";
 
 export function Footer() {
   return (
@@ -65,6 +66,8 @@ export function Footer() {
             <span>&copy; 2026 SIGNALFRAMEUX</span>
             <span>SIGNAL // FRAME</span>
           </div>
+
+          <BackToTop />
         </div>
       </div>
     </footer>

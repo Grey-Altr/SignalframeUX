@@ -4,15 +4,15 @@ import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 
 export function Hero() {
   return (
-    <section className="mt-[var(--nav-height)] grid grid-cols-1 md:grid-cols-2 min-h-[calc(100vh-var(--nav-height))] border-b-4 border-foreground">
+    <section className="mt-[var(--nav-height)] grid grid-cols-1 md:grid-cols-2 h-[calc(100vh-var(--nav-height))] h-[calc(100dvh-var(--nav-height))] border-b-4 border-foreground overflow-hidden">
       {/* Left — Black panel */}
-      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative overflow-hidden">
+      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative overflow-hidden">
         {/* Canvas mesh background */}
         <HeroMesh className="absolute inset-0 z-0 opacity-[0.45]" />
 
         {/* Halftone decorative circle */}
         <div
-          className="absolute -top-20 -right-20 w-[400px] h-[400px] opacity-[0.15]"
+          className="absolute -top-20 -right-20 w-[min(400px,50vw)] h-[min(400px,50vw)] opacity-[0.15]"
           style={{
             clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
             background:
@@ -26,7 +26,7 @@ export function Hero() {
 
         {/* Magenta accent line */}
         <div
-          className="absolute bottom-10 left-[clamp(20px,4vw,48px)] w-[200px] h-[3px] bg-primary z-[var(--z-content)]"
+          className="absolute bottom-[clamp(8px,2vh,40px)] left-[clamp(16px,4vw,48px)] w-[min(200px,30vw)] h-[3px] bg-primary z-[var(--z-content)]"
           aria-hidden="true"
         />
 
@@ -36,14 +36,14 @@ export function Hero() {
             data-anim="hero-title"
             aria-label="SignalframeUX"
             suppressHydrationWarning
-            className="sf-display text-[clamp(94px,21.5vw,273px)] leading-[0.85] tracking-[-0.03em] text-background dark:text-foreground uppercase"
+            className="sf-display text-[clamp(58px,16.8vw,437px)] leading-[0.7] tracking-[-0.03em] text-background dark:text-foreground uppercase"
             style={{
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
             }}
           >
-            <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span>
-            <span className="block text-primary text-[clamp(78px,17.6vw,234px)]">
-              <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(55px,11.7vw,156px)]">//</span>
+            <span className="inline-block mt-[10px]"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span></span>
+            <span className="block text-primary text-[clamp(48px,13.8vw,374px)] -mt-[2px] relative z-10">
+              <span aria-hidden="true" className="text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">//</span>
               <ColorCycleFrame className="inline-block">
                 <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">F</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">R</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">M</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">E</span>
               </ColorCycleFrame>
@@ -52,50 +52,45 @@ export function Hero() {
         </div>
 
         {/* Multilingual text */}
-        <div className="relative z-[var(--z-content)] mt-3">
-          <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-bold">
+        <div className="relative z-[var(--z-content)] mt-[clamp(4px,1vh,12px)]">
+          <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(9px,1.2vw,18px)] font-bold">
             シグナルフレーム™
           </p>
           <p
             lang="fa"
             data-anim="hero-farsi"
             data-text="سیگنال‌فریم™"
-            className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(14.4px,1.8vw,21.6px)] font-black -mt-[2px]"
+            className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(11px,1.5vw,21.6px)] font-black -mt-[2px]"
             dir="rtl"
             style={{ textAlign: "left" }}
           >
             سیگنال‌فریم™
           </p>
-          <p lang="zh" data-anim="hero-mandarin" data-text="信号框架™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(12px,1.5vw,18px)] font-black mt-2">
+          <p lang="zh" data-anim="hero-mandarin" data-text="信号框架™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(9px,1.2vw,18px)] font-black mt-[clamp(2px,0.5vh,8px)]">
             信号框架™
           </p>
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-8 text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(10px,1.2vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
+        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[clamp(8px,2vh,32px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,1vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
           DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.<br />
           THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.
         </p>
       </div>
 
       {/* Right — White panel */}
-      <div className="bg-background px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] flex flex-col justify-center relative">
+      <div className="bg-background px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative">
         {/* Manifesto */}
-        <p data-anim="hero-copy" className="text-[clamp(16px,2.5vw,28px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
-          Accept the interface into your life.
-          <span className="text-sm align-super text-muted-foreground">™</span>{" "}
-          A dual-layer design system that separates{" "}
-          <span className="text-primary">what you see</span> from{" "}
-          <span className="text-primary">what you feel</span>.{" "}
-          <span className="text-primary">340+</span> components. One API. Zero compromise.
+        <p data-anim="hero-copy" className="text-[clamp(16px,2.8vw,36.4px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
+          <span className="sf-hero-slow-fade">something you can</span> <span className="text-primary relative z-[5000]">feel</span>.
         </p>
 
         {/* CTAs with border-draw animation */}
-        <div className="flex gap-4 mt-10">
+        <div className="flex gap-[clamp(8px,1.5vw,16px)] mt-[clamp(16px,3vh,40px)]">
           <Link
             href="/start"
             data-anim="cta-btn"
-            className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-7 py-3.5 text-xs font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
+            className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-[clamp(16px,2vw,28px)] py-[clamp(8px,1.2vh,14px)] text-[clamp(9px,0.8vw,12px)] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             GET STARTED
             <span className="bd-span" aria-hidden="true" />
@@ -105,7 +100,7 @@ export function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             data-anim="cta-btn"
-            className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-7 py-3.5 text-xs font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
+            className="hero-cta-btn secondary relative inline-block no-underline bg-transparent text-foreground px-[clamp(16px,2vw,28px)] py-[clamp(8px,1.2vh,14px)] text-[clamp(9px,0.8vw,12px)] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
             VIEW ON GITHUB
             <span className="sr-only">(opens in new tab)</span>
@@ -114,7 +109,7 @@ export function Hero() {
         </div>
 
         {/* Version tag */}
-        <div className="absolute bottom-6 right-6 text-2xs uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="absolute bottom-[clamp(8px,1.5vh,24px)] right-[clamp(8px,1.5vw,24px)] text-[clamp(7px,0.7vw,10px)] uppercase tracking-[0.2em] text-muted-foreground">
           SF//UX v2.0.0 · 2026
         </div>
       </div>

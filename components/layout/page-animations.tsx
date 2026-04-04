@@ -266,12 +266,29 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
           y: 0,
           scale: 1,
           scaleY: 1,
-          duration: 0.8,
+          duration: 1.6,
+          delay: 0.5,
           ease: "power3.out",
-          stagger: { amount: 0.5, from: "center" },
+          stagger: { amount: 1.2, from: "center" },
         });
       },
     });
+
+    // Bounce cells on viewport resize
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        cells.forEach((cell, i) => {
+          gsap.fromTo(cell,
+            { scale: 0.96 },
+            { scale: 1, duration: 0.4, delay: i * 0.03, ease: "back.out(3)" }
+          );
+        });
+      }, 100);
+    };
+    window.addEventListener("resize", onResize);
+    clickCleanups.push(() => { window.removeEventListener("resize", onResize); clearTimeout(resizeTimer); });
   }
 
   // ── Tag pill entrance (initial state set via CSS [data-anim="tag"]) ──

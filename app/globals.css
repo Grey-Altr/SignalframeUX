@@ -221,6 +221,16 @@
   100% { opacity: 1; }
 }
 
+.sf-hero-slow-fade {
+  opacity: 0;
+  animation: sf-hero-slow-fade-in 10s ease-out both;
+}
+
+@keyframes sf-hero-slow-fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .sf-typewriter-feel {
   position: relative;
   z-index: 9998;
@@ -1359,6 +1369,16 @@
   z-index: var(--z-vhs);
   pointer-events: none;
   mix-blend-mode: normal;
+  animation: sf-vhs-ease-in 0.5s ease-in both;
+  filter: blur(0.6px) brightness(1.03);
+}
+.dark .vhs-overlay {
+  filter: blur(0.6px) brightness(1.04);
+}
+
+@keyframes sf-vhs-ease-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .vhs-crt {
@@ -1390,10 +1410,11 @@
   width: 100%;
   height: 2px;
   transform: translateY(-50%);
-  background: oklch(0.7 0.05 350 / 0.08);
+  background: oklch(0.7 0.05 350 / 0.04);
   box-shadow:
-    0 0 6px oklch(0.6 0.03 350 / 0.04),
-    0 0 16px oklch(0.6 0.03 350 / 0.02);
+    0 0 8px oklch(0.6 0.03 350 / 0.04),
+    0 0 20px oklch(0.6 0.03 350 / 0.025),
+    0 0 40px oklch(0.6 0.03 350 / 0.015);
 }
 .vhs-scanline::after {
   content: '';
@@ -1403,6 +1424,7 @@
   -webkit-backdrop-filter: contrast(1.15) saturate(1.35) brightness(1.06);
   mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeFlood x='0' y='0' width='2' height='2'/%3E%3CfeComposite width='2' height='2'/%3E%3CfeTile/%3E%3CfeComposite in='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#p");
 }
 
 .vhs-scanline--slow {

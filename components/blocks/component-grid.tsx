@@ -259,18 +259,18 @@ const COMPONENTS = [
 
 export function ComponentGrid() {
   return (
-    <section className="border-b-4 border-foreground">
+    <section className="border-b-4 border-foreground h-screen h-[100dvh] flex flex-col overflow-hidden">
       {/* Section header */}
-      <div className="px-6 md:px-12 pt-16 pb-6 border-b-2 border-foreground">
+      <div className="px-6 md:px-12 pt-[clamp(8px,2vh,16px)] pb-[clamp(4px,1vh,6px)] border-b-2 border-foreground shrink-0">
         <h2
-          className="sf-display text-[clamp(36px,5vw,64px)] leading-none text-foreground"
+          className="sf-display text-[clamp(20px,3vw,48px)] leading-none text-foreground"
         >
           BROWSE_COMPONENTS ( 12 / 340 )
         </h2>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 flex-1 min-h-0 place-content-center">
         {COMPONENTS.map((comp) => {
           const isBlack = comp.bg === "black";
           const Preview = PREVIEW_MAP[comp.id];

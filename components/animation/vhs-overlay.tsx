@@ -36,7 +36,7 @@ export function VHSOverlay() {
       if (scanRef.current) {
         vhsTl.to(scanRef.current, {
           y: "100vh",
-          duration: 14,
+          duration: 28,
           ease: "none",
           repeat: -1,
           delay: 10,

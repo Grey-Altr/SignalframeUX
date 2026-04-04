@@ -36,6 +36,11 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
+        // At scroll top, always select first section
+        if (window.scrollY < 10) {
+          setActiveIndex(0);
+          return;
+        }
         // Find the entry with highest intersection ratio
         let bestIndex = activeIndex;
         let bestRatio = 0;
