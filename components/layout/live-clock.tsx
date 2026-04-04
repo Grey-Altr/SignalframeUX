@@ -149,7 +149,7 @@ export const LiveClock = memo(function LiveClock() {
     <span
       role="timer"
       aria-live="off"
-      className="sf-display text-[clamp(48px,6.5vw,80px)] leading-none tracking-tight tabular-nums sf-clock-pixelize"
+      className="sf-display text-[clamp(52px,7vw,88px)] leading-none tracking-tight tabular-nums sf-clock-pixelize -mr-[0.15em] -my-[0.1em]"
       style={{
         fontVariantNumeric: "tabular-nums",
       }}

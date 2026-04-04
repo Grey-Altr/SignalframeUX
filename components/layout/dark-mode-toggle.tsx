@@ -62,7 +62,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         transition: "opacity 0.08s steps(2), filter 0.08s steps(2)",
       }}
     >
-      <svg aria-hidden="true" width="26" height="34" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
+      <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
         <rect x="2" y="0" width="3" height="1" fill="currentColor" />
         <rect x="1" y="1" width="1" height="1" fill="currentColor" />
         <rect x="5" y="1" width="1" height="1" fill="currentColor" />
@@ -95,7 +95,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
           }}
         />
       </button>
-      <svg aria-hidden="true" width="26" height="34" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
+      <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
         <rect x="2" y="0" width="3" height="1" fill="currentColor" />
         <rect x="1" y="1" width="1" height="1" fill="currentColor" />
         <rect x="5" y="1" width="1" height="1" fill="currentColor" />
