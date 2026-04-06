@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
 status: completed
-stopped_at: Completed 09-01-PLAN.md (GLSLHero shader + Bayer dither)
-last_updated: "2026-04-06T09:14:46Z"
-last_activity: "2026-04-06 — Plan 09-01 complete (2 tasks, 2 commits: 7931b90, fc33bc5)"
+stopped_at: Completed 09-03-PLAN.md (SF primitive consumers + stagger activation)
+last_updated: "2026-04-06T09:50:00Z"
+last_activity: "2026-04-06 — Plan 09-03 complete (2 tasks, 2 commits: b56d32f, 0bf0b6c)"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: 9 — Extended Scenes + Production Integration
-Plan: 03 (next)
-Status: Plans 01 + 02 complete — GLSLHero shader (SCN-03 + SCN-04) + SignalMotion + SignalOverlay (INT-03 + INT-04). Awaiting Plan 03 (SF primitive consumers + stagger on grids).
-Last activity: 2026-04-06 — Plan 09-01 complete (2 tasks, 2 commits: 7931b90, fc33bc5)
+Plan: COMPLETE (3/3 plans done)
+Status: All plans complete — GLSLHero shader (SCN-03 + SCN-04) + SignalMotion + SignalOverlay (INT-03 + INT-04) + SF primitive consumers + stagger (INT-01 + INT-02). Phase 9 fully complete.
+Last activity: 2026-04-06 — Plan 09-03 complete (2 tasks, 2 commits: b56d32f, 0bf0b6c)
 
 ## Progress
 
@@ -42,10 +42,10 @@ Phase 5 — DX Contract & State:                 [██████████
 Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
 Phase 7 — SIGNAL Activation:                   [████      ]  ~50% (2/? plans) In progress
 Phase 8 — First Generative Scenes:             [██████████] 100% (2/2 plans) COMPLETE — SCN-01 + SCN-02 complete
-Phase 9 — Extended Scenes + Integration:       [██████    ]  ~66% (2/3 plans) In progress — SCN-03 + SCN-04 + INT-03 + INT-04 complete
+Phase 9 — Extended Scenes + Integration:       [██████████] 100% (3/3 plans) COMPLETE — SCN-03 + SCN-04 + INT-01 + INT-02 + INT-03 + INT-04 complete
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [███       ]  ~30% (6/? plans)
+v1.1: [████      ]  ~40% (9/? plans)
 ```
 
 ## Accumulated Context
@@ -98,6 +98,9 @@ v1.1: [███       ]  ~30% (6/? plans)
 **09-01:** uResolution added as uniform (not computed inside shader) — gl_FragCoord alone lacks container offset info for correct UV in scissored viewport; ResizeObserver keeps it current.
 **09-01:** TTL cache (2000ms) used for resolveColorAsThreeColor at hero scene build time — safe since color-cycle mutates at ~150ms intervals, hero shader color changes intentionally lag by up to 2s.
 **09-01:** Bayer 4x4 stored as float array literal in fragment shader — avoids sampler2D overhead, GLSL array literals confirmed supported in WebGL1+2.
+**09-03:** py-0 className override neutralizes SFSection default spacing (spacing='16') for section-level wrappers that carry no own vertical padding — spacing lives inside block children; tailwind-merge resolves py-16 py-0 correctly.
+**09-03:** data-anim='stagger' CSS initial state pre-existed in globals.css at line 1038 — no new CSS needed; stagger activation is data-attribute placement only.
+**09-03:** token-tabs.tsx #color-scale-grid chosen for stagger — direct [role='row'] children are correct stagger targets; ComponentsExplorer uses comp-cell (conflict) and TokenVizLoader is canvas-based (no DOM children).
 
 ### Blockers
 - None
@@ -109,7 +112,7 @@ v1.1: [███       ]  ~30% (6/? plans)
 | 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
 | 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | In progress (2/? plans) — SIG-06, SIG-07, SIG-08, SIG-09 complete |
 | 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | In progress (2/? plans) — SCN-01 + SCN-02 complete |
-| 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | In progress (2/3 plans) — SCN-03 + SCN-04 + INT-03 + INT-04 complete |
+| 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | COMPLETE (3/3 plans) — all 6 requirements done |
 
 ## Project Reference
 
@@ -121,5 +124,5 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 09-01-PLAN.md (GLSLHero shader + Bayer dither + SignalMesh relocation)
-Resume file: .planning/phases/09-extended-scenes-production-integration/09-03-PLAN.md
+Stopped at: Completed 09-03-PLAN.md (SF primitive consumers + stagger activation — Phase 9 complete)
+Resume file: (Phase 9 complete — await next phase assignment)

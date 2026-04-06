@@ -3,6 +3,14 @@
 > Loaded at agent spawn. Append-only. Max 50 entries.
 > Oldest entries archived automatically.
 
+### 2026-04-05T00:02:00Z | Phase 09 | tags: signal-motion, scrub, scrolltrigger, gsap-fromto
+
+SignalMotion is a scroll-POSITION-tied wrapper (scrub) — distinct from ScrollReveal (scroll-ENTRY one-shot). Key: use `gsap.fromTo(inner, from, { ...to, scrollTrigger: { trigger: container, scrub } })` with `scope: containerRef`. Reduced-motion guard uses `gsap.set(inner, to)` to jump to end state immediately (no ScrollTrigger created). Both `containerRef` (ScrollTrigger trigger) and `innerRef` (tweened element) are needed — two separate refs, two separate divs in the render.
+
+### 2026-04-05T00:02:00Z | Phase 09 | tags: signal-overlay, css-custom-properties, setproperty, ssr-false, next-dynamic
+
+SignalOverlay writes `--signal-intensity` (value/100), `--signal-speed` (value/50, 50=1x), `--signal-accent` (passthrough degrees) to `document.documentElement.style.setProperty`. These values persist on :root across navigation — a Reset button is ESSENTIAL for demo UX. SFSlider API: `value={[number]}` (array), `onValueChange={([v]) => handler(v)}` — Radix uses array for multi-thumb support. Keyboard shortcut uses `e.shiftKey && e.key === "S"` check. The `'use client'` wrapper file pattern (`signal-overlay-lazy.tsx`) is required for `next/dynamic({ ssr: false })` in Next.js 15 Server Component trees.
+
 ### 2026-04-05T00:00:00Z | Phase 08 | tags: next-dynamic, ssr-false, server-component, client-boundary
 
 Next.js 15 rejects `ssr: false` with `next/dynamic` when used directly in Server Components — build fails with "ssr: false is not allowed with next/dynamic in Server Components". The fix is a thin `'use client'` wrapper component (e.g. `token-viz-loader.tsx`) that holds the dynamic import. The Server Component page imports the wrapper, not the dynamic import directly. This pattern applies to ALL canvas/WebGL components placed on Server Component pages — the wrapper is a one-liner component with no logic. The GlobalEffectsLazy pattern (already in the project) avoids this because it lives in `global-effects.tsx` which is already `'use client'`.
@@ -123,6 +131,10 @@ The SignalCanvas singleton uses `gsap.ticker.add(tickerCallback)` exclusively �
 
 `useSignalScene` calls both `deregisterScene(id)` AND `disposeScene(scene)` in cleanup — they are intentionally separate. `deregisterScene` removes from the singleton Map (stops rendering); `disposeScene` traverses the scene graph and frees GPU memory. Scene components MUST call both or GPU memory leaks. The `buildScene` factory runs inside `useEffect` (not at render time) to prevent Three.js object creation during SSR.
 
+### 2026-04-06T09:15:00Z | Phase 09 | tags: glsl-hero, full-screen-quad, bayer-dither, fbm-noise, uResolution, orthographic-camera
+
+For full-screen quad shaders in Three.js: use `OrthographicCamera(-1,1,1,-1,0,1)` + `PlaneGeometry(2,2)` to fill NDC clip space exactly. UV must be computed from `gl_FragCoord.xy / uResolution` (not from vUv attribute) because scissored viewports offset fragment coordinates — container width/height must be passed as `uResolution` uniform and kept current via `ResizeObserver`. Bayer 4x4 threshold: store as a 16-entry `float[]` array in the fragment shader indexed by `int(mod(gl_FragCoord.x, 4.0)) + int(mod(gl_FragCoord.y, 4.0)) * 4` — GLSL array literals confirmed supported in WebGL1+2, no sampler2D needed. GLSL template literals in `.tsx` files compile correctly with Turbopack (no raw-loader needed). The `"use client"` directive byte check: od -c output shows straight ASCII `"` (0x22), not curly quotes — terminal rendering can be misleading; trust byte output.
+
 ### 2026-04-06T08:37:00Z | Phase 08 | tags: signal-mesh, webgl, glsl, three-js, ssr-dynamic, client-wrapper
 
 In SignalframeUX, `next/dynamic({ ssr: false })` is NOT allowed directly in Server Components (Next.js 15 strict enforcement). The pattern for WebGL components: create a separate `'use client'` file (e.g., `signal-mesh-lazy.tsx`) containing the `dynamic()` call; import this wrapper from the Server Component. This mirrors the existing `SignalCanvasLazy` pattern in `components/layout/signal-canvas-lazy.tsx`. Three.js ShaderMaterial uniforms must be stored in `useRef` at the component level (not inside `buildScene`) so `ScrollTrigger.create` callbacks and GSAP ticker functions can mutate them — closures inside `useGSAP` can't access `buildScene`-local variables after the factory returns.
@@ -146,6 +158,10 @@ The `lastHoveredRef` debounce in `InteractionFeedback` is essential: `pointerove
 ### 2026-04-05T00:00:00Z | Phase 07 | tags: gsap-ticker, oklch-pulse, idle-overlay, ticker-guard
 
 For GSAP ticker-driven CSS custom property mutation in IdleOverlay: always remove the old ticker before registering a new one (tickerRef guard), and clear `basePrimaryRef.current` AFTER `gsap.ticker.remove()` — the removal is synchronous so the ticker won't fire again after the remove call. The `pulseFn` closure captures `baseLightness` once at registration time (outside the ticker), then only computes the sin offset per frame. The snap-back sequence is: remove ticker → restore setProperty → remove grain class → set transition:none → remove --active class → restore transition via rAF.
+
+### 2026-04-06T09:50:00Z | Phase 09 | tags: sfsection, layout-primitives, py-0-override, tailwind-merge, stagger-placement
+
+SFSection defaults to `spacing="16"` which applies `py-16` via `cn(py-${spacing}, className)`. For section-level wrappers that carry no own vertical padding (spacing lives inside block children), pass `className="py-0 ..."` — tailwind-merge resolves `py-16 py-0` to `py-0` correctly since className comes second in cn(). Never pass `spacing="0"` (not a valid value). The `data-bg-shift` attribute must be a spread prop on SFSection — never use the `bgShift` boolean prop (SFSection spreads ...props onto `<section>` so custom data attributes pass through correctly). For stagger placement: add `data-anim="stagger"` to wrapper elements whose DIRECT children are the items to animate — check globals.css for pre-existing initial state rules before adding a duplicate (this project already had the rule at line 1038 from Phase 3).
 
 ### 2026-04-05T00:00:00Z | Phase 07 | tags: data-cursor, canvas-cursor, markup-only, showcase-sections
 
