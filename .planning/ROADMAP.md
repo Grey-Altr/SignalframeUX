@@ -93,9 +93,9 @@ Plans:
   3. Server-side render produces stable HTML with no hydration mismatch warnings in the browser console
   4. Layout primitives (SFContainer, SFSection, etc.) remain Server Components after provider wraps the app — bundle analyzer shows no layout primitives in the client chunk
   5. `motion.pause()` and `motion.resume()` pause and resume all GSAP animations globally
-**Plans:** TBD
+**Plans:** 1 plan
 Plans:
-- [ ] TBD
+- [ ] 13-01-PLAN.md — createSignalframeUX factory + provider mount in layout.tsx
 
 ### Phase 14: Session Persistence
 **Goal**: User state (filters, tabs, scroll position) survives page navigation within a browser session without causing hydration errors
@@ -140,6 +140,6 @@ Plans:
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 12. SIGNAL Wiring | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 13. Config Provider | v1.2 | 0/? | Not started | — |
+| 13. Config Provider | v1.2 | 0/1 | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |
