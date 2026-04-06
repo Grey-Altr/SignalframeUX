@@ -12,20 +12,20 @@
 ## Current Position
 
 Phase: Phase 1 — FRAME Foundation (in progress)
-Plan: 01-02 (next)
-Status: Plan 01-01 complete — token foundation established in globals.css
-Last activity: 2026-04-06 — Plan 01-01 executed, spacing/layout/typography/color-tier/VHS tokens added
+Plan: 01-03 (next)
+Status: Plan 01-02 complete — spacing sweep executed, CVA standard verified across all SF components
+Last activity: 2026-04-05 — Plan 01-02 executed: zero non-blessed spacing values remain in sf/blocks/layout
 
 ## Progress
 
 ```
-Phase 1 — FRAME Foundation:    [█░░░░░░░░░]  33% (1/3 plans)
+Phase 1 — FRAME Foundation:    [██░░░░░░░░]  67% (2/3 plans)
 Phase 2 — FRAME Primitives:    [░░░░░░░░░░]   0%
 Phase 3 — SIGNAL Expression:   [░░░░░░░░░░]   0%
 Phase 4 — Above-the-Fold Lock: [░░░░░░░░░░]   0%
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [░░░░░░░░░░]   7% (1/14 plans)
+Overall:   [█░░░░░░░░░]  14% (2/14 plans)
 ```
 
 ## Accumulated Context
@@ -42,6 +42,8 @@ Overall:   [░░░░░░░░░░]   7% (1/14 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 01-02: p-5 px-6 → p-6 px-6: when p-5 is followed by axis override, p-5 is still non-blessed; drop redundant override
+- Plan 01-02: signal intent in sf-button.tsx kept as pre-standard extension, documented via comment rather than removed
 - Plan 01-01: Spacing tokens placed in :root (not @theme) — avoids Tailwind utility class generation
 - Plan 01-01: Semantic typography defined as both @layer utilities AND :root custom properties for JS/inline access
 - Plan 01-01: VHS CSS custom properties renamed to --sf-vhs-* namespace; class names (.vhs-overlay etc.) unchanged
@@ -60,7 +62,7 @@ Overall:   [░░░░░░░░░░]   7% (1/14 plans)
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | In progress — 1/3 plans complete |
+| 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | In progress — 2/3 plans complete |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | Not started |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | Not started |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | Not started |
@@ -68,6 +70,6 @@ Overall:   [░░░░░░░░░░]   7% (1/14 plans)
 
 ## Session Continuity
 
-Last session: 2026-04-06
-Stopped at: Completed Phase 1 Plan 01-01 — next is Plan 01-02 (spacing sweep audit)
-Resume file: .planning/phases/01-frame-foundation/01-02-PLAN.md
+Last session: 2026-04-05
+Stopped at: Completed Phase 1 Plan 01-02 — next is Plan 01-03 (final Phase 1 plan)
+Resume file: .planning/phases/01-frame-foundation/01-03-PLAN.md
