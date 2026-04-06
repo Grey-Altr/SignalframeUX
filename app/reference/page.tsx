@@ -14,7 +14,7 @@ export default function APIPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" data-cursor>
+      <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <SFSection label="API REFERENCE" className="py-0">
           <APIExplorer />
         </SFSection>

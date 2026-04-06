@@ -302,7 +302,8 @@ export default function StartPage() {
         </SFSection>
 
         {/* ═══ NEXT STEPS ═══ */}
-        <div data-anim="stagger" className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
+        <SFSection label="NEXT STEPS" className="py-0">
+          <div data-anim="stagger" className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
           {NEXT_CARDS.map((card, i) => (
             <Link
               key={card.title}
@@ -330,7 +331,8 @@ export default function StartPage() {
               </div>
             </Link>
           ))}
-        </div>
+          </div>
+        </SFSection>
 
         {/* ═══ COMMUNITY BAND ═══ */}
         <SFSection label="COMMUNITY" className="py-0 sf-yellow-band sf-grain border-b-[3px] border-foreground relative overflow-hidden">
