@@ -149,7 +149,7 @@ Plans:
   5. Prop vocabulary is documented — `intent` for semantic variants, `size` for scale, `asChild` for composition — and any existing component deviating from it is flagged for remediation
 **Plans:** 2 plans
 Plans:
-- [ ] 16-01-PLAN.md — Install 7 shadcn bases + capture performance baseline
+- [x] 16-01-PLAN.md — Install 7 shadcn bases + capture performance baseline
 - [x] 16-02-PLAN.md — SCAFFOLDING.md (checklist + prop vocabulary) + ComponentsExplorer category migration
 
 ### Phase 17: P1 Non-Animated Components
@@ -221,7 +221,7 @@ Plans:
 | 13. Config Provider | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
-| 16. Infrastructure Baseline | v1.3 | 2/2 | In progress | - |
+| 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 17. P1 Non-Animated Components | v1.3 | 0/? | Not started | - |
 | 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |

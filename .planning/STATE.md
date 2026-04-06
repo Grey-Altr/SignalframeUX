@@ -4,8 +4,8 @@ milestone: v1.3
 milestone_name: Component Expansion
 status: active
 stopped_at: null
-last_updated: "2026-04-06T18:17:00.000Z"
-last_activity: "2026-04-06 — Plan 16-02 complete: SCAFFOLDING.md + category migration"
+last_updated: "2026-04-06T18:22:00.000Z"
+last_activity: "2026-04-06 — Plan 16-01 complete: 7 shadcn bases + performance baseline (103 KB)"
 progress:
   total_phases: 5
   completed_phases: 0
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: Phase 16 — Infrastructure Baseline (in progress)
-Plan: 02 complete — SCAFFOLDING.md + category migration
-Status: Plan 16-02 complete, ready for next plan
-Last activity: 2026-04-06 — Plan 16-02: SCAFFOLDING.md authoring guide + ComponentsExplorer category migration
+Plan: 01 + 02 complete — shadcn bases, baseline, scaffolding, categories
+Status: Phase 16 plans 01 and 02 complete
+Last activity: 2026-04-06 — Plan 16-01: 7 shadcn bases installed, 103 KB baseline captured
 
 ## Progress
 
@@ -76,7 +76,7 @@ v1.3: [█         ] 10% (2/? plans) — in progress
 ### v1.3 Critical Constraints (from Research)
 - **rounded-none everywhere**: Radix-generated `rounded-full` and `rounded-md` survive the global `--radius: 0px` token. Every SF wrapper must apply `rounded-none` explicitly on every sub-element. Audit with DevTools computed styles before marking any component complete.
 - **Barrel directive rule**: `sf/index.ts` must remain directive-free permanently. `'use client'` in the barrel turns all 5 layout primitives into Client Components and silently inflates the bundle. Each interactive SF wrapper declares `'use client'` in its own file only.
-- **Bundle budget gate**: Current baseline ~102KB; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
+- **Bundle budget gate**: Measured baseline 103KB shared; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
 - **CVA `intent` prop**: Every new SF wrapper uses `intent:` as the CVA variant key. Never `variant`, `type`, `status`, or `color`.
 - **Toast position**: SFToaster defaults to `bottom-left` with `--z-toast: 100`. SignalOverlay occupies `bottom-right` at z~210 — the two must never overlap.
 - **Same-commit rule**: Component file + barrel export + registry entry must land in one commit. No partial shipments.
@@ -98,6 +98,8 @@ v1.3: [█         ] 10% (2/? plans) — in progress
 | SCAFFOLDING.md at project root | Maximum discoverability for Phase 17-20 executors |
 | Six named categories replace layer-based tags | Product-language taxonomy (FORMS/FEEDBACK/NAVIGATION/DATA_DISPLAY/LAYOUT/GENERATIVE) matches component purpose, not implementation layer |
 | No session migration for stale filterTag | useSessionState defaults to ALL; stale values gracefully ignored |
+| Bundle gate is shared JS (103 KB), not per-route | Per-route First Load varies 103-264 KB due to Three.js async chunks; shared is deterministic |
+| Lighthouse CLI headless not representative | Use browser DevTools against deployed Vercel for accurate LCP/TTI; CLI numbers inflated by WebGL |
 
 ### Blockers
 - None
@@ -112,5 +114,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 16-02-PLAN.md
-Resume with: Next plan in Phase 16
+Stopped at: Completed 16-01-PLAN.md and 16-02-PLAN.md
+Resume with: Next plan in Phase 16 or Phase 17 if Phase 16 complete

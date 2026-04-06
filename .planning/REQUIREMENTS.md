@@ -4,7 +4,7 @@
 
 ### Infrastructure
 - [x] **INFRA-01**: SF wrapper creation checklist codified in SCAFFOLDING.md — rounded-none audit, `intent` prop rule, barrel rule, registry same-commit rule, a11y smoke test, prefers-reduced-motion rule (completed 16-02)
-- [ ] **INFRA-02**: Performance baseline captured — Lighthouse LCP/TTI/bundle size recorded before first new component
+- [x] **INFRA-02**: Performance baseline captured — Lighthouse LCP/TTI/bundle size recorded before first new component (completed 16-01: 103 KB shared, BASELINE.md created)
 - [x] **INFRA-03**: ComponentsExplorer grouped by category — Forms, Feedback, Navigation, Data Display, Layout, Generative (completed 16-02)
 - [x] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition (completed 16-02)
 
@@ -57,7 +57,7 @@
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
 | INFRA-01 | Phase 16 | 16-02 | Complete |
-| INFRA-02 | Phase 16 | — | Pending |
+| INFRA-02 | Phase 16 | 16-01 | Complete |
 | INFRA-03 | Phase 16 | 16-02 | Complete |
 | INFRA-04 | Phase 16 | 16-02 | Complete |
 | FD-01 | Phase 18 | — | Pending |
