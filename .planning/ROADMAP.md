@@ -267,8 +267,8 @@ Plans:
   5. All four components have registry entries in registry.json and `/r/` artifacts, are exported from `sf/index.ts` (except SFDrawer which is lazy), and appear in ComponentsExplorer under the correct category
 **Plans:** 2 plans
 Plans:
-- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
-- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
+- [ ] 23-01-PLAN.md — Install bases + SFInputGroup, SFHoverCard, SFInputOTP (Pattern A wrappers)
+- [ ] 23-02-PLAN.md — SFDrawer (Pattern B lazy) + ComponentsExplorer entries + registry build + bundle gate
 
 ### Phase 24: Detail View Data Layer
 **Goal**: All component data needed to render the interactive detail views is authored and accessible via static TypeScript imports — no runtime fetch calls
@@ -280,8 +280,8 @@ Plans:
   3. lib/code-highlight.ts exists as a server-only RSC module; calling it with a code string returns highlighted HTML using shiki/core with an OKLCH-compatible theme — zero client JS added to the bundle
 **Plans:** 2 plans
 Plans:
-- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
-- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
+- [ ] 24-01-PLAN.md — [To be planned]
+- [ ] 24-02-PLAN.md — [To be planned]
 
 ### Phase 25: Interactive Detail Views + Site Integration
 **Goal**: Clicking any component card on /components or the homepage grid expands an inline detail panel showing variants, props, and copyable code — the milestone's primary feature
@@ -300,8 +300,8 @@ Plans:
   10. The z-index contract is enforced — the detail panel appears above content but below the canvas cursor; `[data-modal-open]` CSS rule drops cursor z-index when panel is open
 **Plans:** 2 plans
 Plans:
-- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
-- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
+- [ ] 25-01-PLAN.md — [To be planned]
+- [ ] 25-02-PLAN.md — [To be planned]
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
@@ -312,8 +312,8 @@ Plans:
   2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
 **Plans:** 2 plans
 Plans:
-- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
-- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
+- [ ] 26-01-PLAN.md — [To be planned]
+- [ ] 26-02-PLAN.md — [To be planned]
 
 ## Progress
 
@@ -339,9 +339,9 @@ Plans:
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 21. Tech Debt Closure | 2/2 | Complete    | 2026-04-06 | - |
-| 22. Token Finalization | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
-| 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
+| 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
+| 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
+| 23. Remaining SF Components | v1.4 | 0/2 | Not started | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
