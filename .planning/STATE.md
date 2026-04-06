@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Completed 10-01-PLAN.md — SIGNAL CSS var defaults + SFSection bgShift type fix
-last_updated: "2026-04-06T11:04:09.967Z"
-last_activity: "2026-04-06 — 10-01 complete: SIGNAL CSS var defaults (FND-01) + SFSection bgShift string union (FND-02)"
+milestone: v1.2
+milestone_name: Tech Debt Sweep
+status: in_progress
+stopped_at: Completed 11-01-PLAN.md — registry.json 33 items + public/r/ rebuild via shadcn build
+last_updated: "2026-04-06T11:20:07Z"
+last_activity: "2026-04-06 — 11-01 complete: DX-04 registry complete (33 items, meta fields, public/r/ rebuilt)"
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # STATE — SignalframeUX
@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 10 — Foundation Fixes (COMPLETE)
-Plan: Both plans complete (10-01 + 10-02)
-Status: Phase 10 done — Phase 11 Registry Completion next
-Last activity: 2026-04-06 — 10-01 complete: SIGNAL CSS var defaults (FND-01) + SFSection bgShift string union (FND-02)
+Phase: Phase 11 — Registry Completion (COMPLETE)
+Plan: 11-01 complete
+Status: Phase 11 done — Phase 12 SIGNAL Wiring next
+Last activity: 2026-04-06 — 11-01 complete: DX-04 registry complete (33 items, meta fields, public/r/ rebuilt)
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [██░░░░░░░░]  ~17% (2/? plans) IN PROGRESS — Phase 11 next
+v1.2: [███░░░░░░░]  ~33% (3/? plans) IN PROGRESS — Phase 12 next
 ```
 
 ## v1.2 Phase Map
@@ -44,7 +44,7 @@ v1.2: [██░░░░░░░░]  ~17% (2/? plans) IN PROGRESS — Phase 1
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
 | 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | COMPLETE |
-| 11. Registry Completion | Full 34-component CLI-installable registry | DX-04 | Not started |
+| 11. Registry Completion | Full 33-item CLI-installable registry | DX-04 | COMPLETE |
 | 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | Not started |
 | 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | Not started |
 | 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | Not started |
@@ -85,6 +85,8 @@ v1.2: [██░░░░░░░░]  ~17% (2/? plans) IN PROGRESS — Phase 1
 | Phase 13 after Phase 12 | Provider architecture benefits from stable SIGNAL wiring |
 | --signal-* in :root not @theme | Runtime-settable vars written via JS setProperty(); @theme generates Tailwind utilities which is wrong for these |
 | bgShift clean break to string union | No boolean/string hybrid — empty string from boolean broke GSAP palette key lookup silently |
+| sf-section/sf-text have no CVA dependency in registry | Source confirmed no cva import — dependencies array accurate |
+| shadcn build handles registry:style (sf-theme) correctly | Auto-generates sf-theme.json with cssVars — no manual file needed |
 
 ### Blockers
 - None
@@ -99,5 +101,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 10-01-PLAN.md — SIGNAL CSS var defaults + SFSection bgShift type fix
-Resume with: `/pde:plan-phase 11` (Registry Completion — DX-04)
+Stopped at: Completed 11-01-PLAN.md — registry.json 33 items + public/r/ rebuild via shadcn build
+Resume with: `/pde:plan-phase 12` (SIGNAL Wiring — INT-04, INT-03)

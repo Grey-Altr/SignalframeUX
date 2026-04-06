@@ -12,7 +12,7 @@
 - [x] **INT-01**: Reference page has correct `mt-[var(--nav-height)]` spacing and NEXT_CARDS grid is wrapped in SFSection
 
 ### Developer Experience
-- [ ] **DX-04**: registry.json includes all 29 interactive + 5 layout SF components plus an `sf-theme` entry with cssVars for token-only installation; `public/r/` is built and up to date
+- [x] **DX-04**: registry.json includes all 29 interactive + 5 layout SF components plus an `sf-theme` entry with cssVars for token-only installation; `public/r/` is built and up to date
 - [ ] **DX-05**: `createSignalframeUX(config)` factory returns `{SignalframeProvider, useSignalframe}` using hole-in-the-donut SSR pattern; config accepts theme, animation, and signal parameters
 
 ### Session Persistence
@@ -42,7 +42,7 @@
 | FND-01 | Phase 10 | 10-01 | Complete |
 | FND-02 | Phase 10 | 10-01 | Complete |
 | INT-01 | Phase 10 | 10-02 | Complete |
-| DX-04 | Phase 11 | TBD | Pending |
+| DX-04 | Phase 11 | 11-01 | Complete |
 | INT-04 | Phase 12 | TBD | Pending |
 | INT-03 | Phase 12 | TBD | Pending |
 | DX-05 | Phase 13 | TBD | Pending |

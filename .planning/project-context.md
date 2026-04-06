@@ -48,7 +48,7 @@ Status: Roadmap ready, Phase 10 next
 - [ ] **INT-03**: SignalMotion wraps at least 3 showcase sections on homepage
 - [ ] **INT-04**: SignalOverlay CSS vars read by WebGL scenes via cached module-level reads
 - [x] **INT-01**: Reference page nav-height spacing + NEXT_CARDS in SFSection
-- [ ] **DX-04**: registry.json complete (34 components + sf-theme)
+- [x] **DX-04**: registry.json complete (33 items: 27 interactive/animation + 5 layout primitives + sf-theme)
 - [ ] **DX-05**: createSignalframeUX(config) factory with SSR-safe provider
 - [ ] **STP-01**: Filter/tab/scroll state persistence via sessionStorage
 - [ ] **DOC-01**: SUMMARY frontmatters + stale checkboxes corrected

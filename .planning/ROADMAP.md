@@ -32,7 +32,7 @@
 **v1.2 Tech Debt Sweep (Phases 10-15):**
 
 - [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
-- [ ] **Phase 11: Registry Completion** — Full 34-component registry with sf-theme token entry
+- [x] **Phase 11: Registry Completion** — Full 33-item registry with sf-theme token entry (COMPLETE 2026-04-06)
 - [ ] **Phase 12: SIGNAL Wiring** — CSS→WebGL bridge + SignalMotion placement
 - [ ] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook
 - [ ] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage
@@ -64,9 +64,9 @@ Plans:
   3. All 5 layout primitives appear as installable registry items alongside the 29 interactive components
   4. Each registry item carries `meta.layer` ("frame" or "signal") and `meta.pattern` ("A", "B", or "C") fields
   5. `/r/[name].json` files exist for every component in `public/r/`
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
+- [x] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
 
 ### Phase 12: SIGNAL Wiring
 **Goal**: SignalOverlay slider changes visibly affect the GLSL hero and signal mesh shaders; scroll-driven motion is active on showcase sections
@@ -137,7 +137,7 @@ Plans:
 | 8. First Generative Scenes | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 11. Registry Completion | v1.2 | 0/1 | Planned | — |
+| 11. Registry Completion | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
