@@ -1,404 +1,371 @@
-# Pitfalls Research
+# Domain Pitfalls
 
-**Domain:** Adding generative/3D visuals (WebGL, Three.js) to an existing high-performance design system
-**Researched:** 2026-04-05
-**Confidence:** HIGH (WebGL context limits, memory leaks, SSR patterns) / MEDIUM (OKLCH/shader bridge, GSAP+Three.js integration specifics)
+**Domain:** Adding CSS→WebGL bridge, component registry, config provider API, and session persistence to an existing Next.js design system (v1.2 Tech Debt Sweep)
+**Researched:** 2026-04-06
+**Confidence:** HIGH (CSS vars/WebGL, hydration, session) / MEDIUM (registry format specifics, provider pattern)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: WebGL Context Exhaustion
+### Pitfall 1: Per-Frame `getComputedStyle` Kills Lighthouse Performance Score
 
 **What goes wrong:**
-Browsers enforce a hard cap on concurrent WebGL contexts: Chrome allows ~16 total (8 on Android), Firefox allows 8 per page origin. When the cap is hit, the browser silently destroys the oldest context — your canvas goes blank with "THREE.WebGLRenderer: Context Lost" and no user-facing error. On pages with multiple canvases (hero, section backgrounds, interactive components), this cap is reached faster than expected.
+Reading `--signal-*` CSS custom properties via `getComputedStyle` on every WebGL render frame causes forced synchronous layout on each tick. The GSAP ticker fires at 60fps — that is 60 layout recalculations per second. On a page that already runs Three.js, ScrollTrigger, and Lenis, this compounds into measurable TBT (Total Blocking Time) regression on Lighthouse, directly attacking the 100/100 score target. The existing `color-resolve.ts` probe (1x1 canvas) is even heavier: it creates a canvas element, gets a 2D context, draws a fill, and reads pixels back — all per frame.
 
 **Why it happens:**
-Each `new THREE.WebGLRenderer()` or `new WebGLRenderingContext()` creates an independent context. Developers mount a renderer per component, navigate between routes without cleanup, and accumulate orphaned contexts that persist in GPU memory even after the DOM node is removed.
+`getComputedStyle()` forces the browser to flush all pending style recalculations and return a resolved value synchronously. When called inside a rAF loop (`gsap.ticker.add`), the browser cannot batch these reads with writes — every call is a forced synchronous layout. The `--signal-intensity`, `--signal-speed`, and `--signal-accent` vars change only when the user interacts with SignalOverlay (rare), yet the current architecture assumes they change every frame.
 
-**How to avoid:**
-- Enforce a single shared WebGLRenderer per page, passed via React context or a module singleton. Never instantiate inside a component that can remount.
-- On route unmount: call `renderer.forceContextLoss()` then `renderer.dispose()` in the component cleanup function.
-- For decorative secondary canvases (grain, noise fields), prefer 2D canvas or CSS — reserve WebGL for the primary hero/focal element only.
-- Use `virtual-webgl` as a last resort if multiple contexts are unavoidable.
+**The project-specific trap:**
+`color-resolve.ts` line 9 explicitly says "Phase 6: No caching." This was correct for `color-cycle-frame.tsx` (which dynamically mutates `--color-primary`). Wiring the same uncached probe to `--signal-*` vars that are user-controlled (not animation-driven) would be incorrect — the `--signal-*` vars change 0 times per second during normal viewing, but would trigger layout recalc 60 times per second. Do NOT reuse the uncached code path for signal uniforms.
 
-**Warning signs:**
-- Console: `"WARNING: Too many active WebGL contexts"` or `"THREE.WebGLRenderer: Context Lost"`
-- Canvas goes blank after navigating between pages and returning
-- `renderer.info.memory.geometries` growing monotonically across page navigations
+**Prevention:**
+- Cache `--signal-*` resolved values in a module-level ref. Invalidate only on the `style` attribute mutation of `:root` (MutationObserver already exists in `color-resolve.ts` — wire into the TTL cache path with a generous TTL like 5000ms).
+- Better: skip `getComputedStyle` entirely for `--signal-*` float values. These are not colors — they are plain numbers (0–1 floats). Read them once on mount and subscribe to changes via `MutationObserver` or a shared signal store. Write the uniform value to a module-level variable; read that variable in the ticker instead of reading the DOM.
+- Pattern to use in the GSAP ticker:
+  ```ts
+  // At module level (not inside ticker)
+  let cachedIntensity = 0.5;
+  let cachedSpeed = 1.0;
 
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — establish the shared renderer pattern as the architectural baseline before any generative component is built. Retrofitting this later requires touching every canvas component.
-
----
-
-### Pitfall 2: GPU Memory Leaks from Undisposed Three.js Resources
-
-**What goes wrong:**
-Three.js does not garbage-collect GPU resources automatically. Geometries, materials, and textures remain in VRAM until explicitly `.dispose()`d — even after being removed from the scene or when the JavaScript object is GC'd. On a design system showcase with animated sections that mount/unmount on scroll or tab navigation, this compounds into a progressive slowdown and eventual browser crash.
-
-**Why it happens:**
-The disconnect between JavaScript's GC model and GPU memory is non-obvious. `scene.remove(mesh)` removes the object from the scene graph but does not free VRAM. `scene.clear()` has the same problem. Developers assume memory is released when objects go out of scope — it is not.
-
-**How to avoid:**
-- On any component unmount or scene teardown, traverse the scene graph and dispose each resource:
-  ```js
-  scene.traverse((obj) => {
-    obj.geometry?.dispose();
-    if (Array.isArray(obj.material)) {
-      obj.material.forEach(m => { m.dispose(); m.map?.dispose(); });
-    } else {
-      obj.material?.dispose();
-      obj.material?.map?.dispose();
-    }
-  });
-  renderer.dispose();
-  ```
-- Monitor `renderer.info.memory` during development — if `geometries` or `textures` count grows over time, there is a leak.
-- Prefer instancing (`InstancedMesh`) and geometry merging over many independent mesh objects.
-
-**Warning signs:**
-- `renderer.info.memory.textures` or `.geometries` increasing between page navigations in DevTools
-- Page FPS dropping progressively over a session without reload
-- Chrome Task Manager showing GPU memory growing over time
-
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — build disposal as a required contract for every canvas component, enforced in the component scaffold/template. Do not ship any generative component without a verified cleanup path.
-
----
-
-### Pitfall 3: SSR Hydration Failure from WebGL Browser Globals
-
-**What goes wrong:**
-`THREE.WebGLRenderer`, `window`, `document`, `navigator.gpu`, and canvas APIs do not exist in the Node.js SSR environment. Importing Three.js or any WebGL library at the module level in a Server Component (or in a file that gets evaluated server-side) throws during build or causes a hydration mismatch that corrupts the page shell.
-
-**Why it happens:**
-Next.js App Router renders the entire component tree on the server by default. Even if the canvas element is wrapped in a Client Component, a top-level `import * as THREE from 'three'` in a shared utility file will execute server-side. The hydration mismatch occurs when the server renders one DOM state and the client renders another — WebGL canvases are invisible on the server so the initial HTML has no canvas element, but React expects one.
-
-**How to avoid:**
-- All Three.js and WebGL components must be Client Components with `'use client'`.
-- Import via `next/dynamic` with `{ ssr: false }`:
-  ```js
-  const SignalCanvas = dynamic(() => import('@/components/animation/SignalCanvas'), { ssr: false });
-  ```
-- Never import Three.js in shared utility files that are consumed by Server Components.
-- Use `useEffect` for any WebGL initialization — never in component body or module scope.
-- Wrap canvas placeholders in a `<Suspense fallback={<div className="signal-placeholder" />}>` to prevent layout shift while the component loads.
-
-**Warning signs:**
-- Build error: `ReferenceError: window is not defined` during `next build`
-- Hydration error: `"Hydration failed because the initial UI does not match"`
-- Canvas component rendering as empty div in production but working in dev (dev mode is more lenient about hydration mismatches)
-
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — establish the `dynamic({ ssr: false })` import pattern as the single canonical approach for all WebGL components. Document in SCAFFOLDING.md before building any canvas component.
-
----
-
-### Pitfall 4: GSAP Animation Loop Conflict with Three.js Render Loop
-
-**What goes wrong:**
-Three.js uses `renderer.setAnimationLoop()` (which wraps `requestAnimationFrame`) for its render loop. GSAP uses `gsap.ticker` (also RAF-based). When both run independently, they may fire at different times within the same frame, causing visual jitter — GSAP-driven values (camera position, uniforms, mesh transforms) are written after the Three.js renderer has already consumed them for that frame. The result is one-frame-behind animation, especially noticeable on ScrollTrigger-driven 3D transitions.
-
-**Why it happens:**
-Two separate RAF callbacks running in the same frame have undefined execution order relative to each other. The GSAP ticker and Three.js's internal RAF callback are registered independently by their respective libraries.
-
-**How to avoid:**
-- Do not use `renderer.setAnimationLoop()`. Instead, drive the Three.js render call from inside `gsap.ticker.add()`:
-  ```js
-  gsap.ticker.add(() => {
-    // update uniforms, camera, mesh transforms here (GSAP writes)
-    renderer.render(scene, camera); // then render
-  });
-  ```
-- This gives GSAP full control of the frame budget and ensures Three.js renders exactly once per GSAP tick, after all tweens have been applied.
-- For ScrollTrigger-driven scenes: update Three.js uniforms in `onUpdate` callbacks, render in the ticker.
-- Lenis (already in the stack) integrates with GSAP ticker via `lenis.raf(time)` — add Three.js to the same ticker chain.
-
-**Warning signs:**
-- 3D meshes appear to stutter or lag one frame behind scroll position
-- Console warnings about multiple RAF callbacks per frame
-- GSAP ScrollTrigger scrub animations look smooth in CSS but jittery in Three.js
-
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — define the unified animation loop architecture before any animated canvas component is built. This is not retrofittable without touching all animation components.
-
----
-
-### Pitfall 5: Breaking the 200KB Initial Bundle Budget
-
-**What goes wrong:**
-`three` (minified + gzipped) is approximately 160–580KB depending on what is imported. Adding it to the initial bundle immediately blows the 200KB page weight budget, destroying the Lighthouse 100/100 score and the LCP < 1.0s target.
-
-**Why it happens:**
-Developers import Three.js in a file that gets included in the main chunk, either directly or transitively. Even with tree shaking, Three.js is a monolithic library where many internals are tightly coupled — tree shaking yields limited savings compared to a full naive import.
-
-**How to avoid:**
-- Always use `next/dynamic` with `ssr: false` for canvas components — this splits Three.js into a separate async chunk loaded only when the component mounts.
-- Audit with `@next/bundle-analyzer` after every new generative component addition.
-- Prefer named imports from Three.js submodules where possible (`import { WebGLRenderer } from 'three'`).
-- Canvas components should load after `LCP` is reported — use `IntersectionObserver` or a `useEffect` delay to defer canvas initialization until the critical path is complete.
-- For non-hero canvases, consider whether a canvas-2D or pure CSS/SVG procedural approach achieves the same visual effect at a fraction of the cost.
-
-**Warning signs:**
-- `@next/bundle-analyzer` shows `three` in the main or shared chunk
-- Lighthouse TBT (Total Blocking Time, 30% of score) increases after adding generative components
-- LCP exceeds 1.0s on pages that previously passed
-
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — validate bundle budget with `@next/bundle-analyzer` before and after adding Three.js. Establish a bundle size CI gate if not already present.
-
----
-
-### Pitfall 6: OKLCH Colors Breaking in WebGL Shaders
-
-**What goes wrong:**
-CSS OKLCH values cannot be passed directly to GLSL shaders. WebGL operates in linear sRGB color space by default. CSS OKLCH is a perceptual color space with a different gamut and gamma encoding. If you read CSS custom property values (e.g. `oklch(0.5 0.15 240)`) and pass them naively to a shader uniform, the rendered color will be visually wrong — different lightness, shifted hue, incorrect contrast — breaking the FRAME/SIGNAL color contract.
-
-**Why it happens:**
-There is no built-in bridge between CSS color spaces and GLSL. Developers probe a DOM element's computed color and pass the resulting string (still OKLCH syntax) to a shader, which does not understand the OKLCH encoding. Even if converted to hex first, the conversion may skip the sRGB gamma correction step that WebGL expects.
-
-**How to avoid:**
-- Establish a CSS-to-shader color bridge utility at project start:
-  1. Create an off-screen `<canvas>` element
-  2. Draw a 1x1 pixel using the CSS color (the browser resolves OKLCH to device sRGB)
-  3. Read back the pixel with `getImageData` — this gives you linear sRGB values the shader can consume
-  4. Pass as `vec3` uniform (values 0–1)
-- Alternatively, maintain a parallel token map: for each OKLCH design token, pre-compute and store the linear sRGB equivalent in a JS constant used only for shader uniforms.
-- In shaders, apply gamma correction if you need perceptually uniform interpolation:
-  ```glsl
-  vec3 linearToSRGB(vec3 linear) {
-    return pow(linear, vec3(1.0 / 2.2));
+  // Updated only when CSS var changes (MutationObserver or explicit setter)
+  function syncSignalUniforms() {
+    cachedIntensity = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--signal-intensity') || '0.5'
+    );
+    cachedSpeed = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--signal-speed') || '1'
+    );
   }
-  ```
-- Document this bridge pattern in SIGNAL-SPEC.md so it is not re-invented per component.
 
-**Warning signs:**
-- Shader colors look visually different from adjacent CSS elements using the same design tokens
-- Theme toggle (light/dark) causes shader colors to appear inconsistent with the UI
-- Colors in canvas appear washed out or over-saturated compared to the design
-
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — implement the color bridge utility before building any shader-based component. The OKLCH probe pattern from v1.0 (theme toggle GSAP guard) is the precedent — extend it.
-
----
-
-### Pitfall 7: Mobile GPU Battery Drain and Thermal Throttling
-
-**What goes wrong:**
-An unthrottled WebGL animation loop running at 60fps continuously — even when the page is idle or below the fold — aggressively clocks the GPU on mobile devices, draining battery and triggering thermal throttling within minutes. Throttled GPUs drop to 20–30fps regardless of your optimization work, making the SIGNAL layer feel broken on mobile rather than elevated.
-
-**Why it happens:**
-`requestAnimationFrame` runs at full refresh rate (60–120Hz) by default, regardless of whether anything visible is changing on screen. Mobile GPUs do not have the power headroom that desktop GPUs do. A continuous render loop with even a simple shader draws measurably more power than CSS-only animation.
-
-**How to avoid:**
-- Use `IntersectionObserver` to pause the render loop when the canvas is not in the viewport: `renderer.setAnimationLoop(null)` when out of view, restart when intersecting.
-- Cap mobile frame rate at 30fps using a time-delta throttle:
-  ```js
-  let lastFrame = 0;
-  const TARGET_FPS = 30;
-  gsap.ticker.add((time) => {
-    if (time - lastFrame < 1000 / TARGET_FPS) return;
-    lastFrame = time;
+  // Inside GSAP ticker — reads cached values only, no DOM access
+  gsap.ticker.add(() => {
+    material.uniforms.uIntensity.value = cachedIntensity;
+    material.uniforms.uSpeed.value = cachedSpeed;
     renderer.render(scene, camera);
   });
   ```
-- Detect mobile with `navigator.hardwareConcurrency <= 4` or a user-agent check, apply reduced quality settings (lower pixel ratio, simplified geometry).
-- Set `renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))` — retina rendering at 2x doubles GPU workload for marginal visual gain.
+- The `--signal-accent` var is a hue rotation (0–360 degrees), not a color token. Do NOT run it through the `color-resolve.ts` canvas probe — parse it as a float directly.
 
-**Warning signs:**
-- Device heats up during browsing session
-- FPS drops from 60 to 15–20 after ~2 minutes on mobile
-- Battery percentage drops noticeably faster than expected
-- Chrome DevTools Performance panel shows frame time spiking on mobile emulation
+**Detection:**
+- Lighthouse Performance score drops after wiring bridge (TBT spike)
+- Chrome DevTools Performance panel shows `Recalculate Style` entries on every frame in the GSAP ticker
+- `renderer.info.render.calls` increasing is not the signal — look for `Layout` entries in the flame chart
 
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — build mobile throttling into the base canvas component template. Never ship a canvas component without IntersectionObserver pause logic.
+**Phase to address:** Phase 1 of v1.2 (INT-04: SignalOverlay→WebGL bridge). Wire the bridge with module-level caching from the start. Do not prototype with per-frame reads and "optimize later" — the Lighthouse regression will be immediate.
 
 ---
 
-### Pitfall 8: Reduced-Motion Handling for Procedural/Generative Content
+### Pitfall 2: Missing `--signal-*` CSS Var Defaults Cause Magenta Flash
 
 **What goes wrong:**
-`prefers-reduced-motion` is honored by the existing GSAP animations (per SIGNAL-SPEC.md), but generative/procedural content — noise fields, particle systems, shader animations — is not covered by CSS media queries. If the Three.js render loop runs unconditionally, users who need reduced motion (vestibular disorders, epilepsy) are exposed to continuous motion in violation of WCAG 2.3.3 (Animation from Interactions) and 2.2.2 (Pause, Stop, Hide). This is a legal accessibility risk, not just a quality issue.
+`--signal-intensity`, `--signal-speed`, and `--signal-accent` have no declared defaults in `globals.css`. This is confirmed — grepping globals.css for `--signal-` returns nothing. `color-resolve.ts` returns magenta `{ r: 255, g: 0, b: 128 }` as its fallback for empty CSS var values (line 108). On page load, before the SignalOverlay mounts and writes defaults to `:root`, any WebGL component reading these vars via the color resolver will receive magenta. On a fast connection this is invisible. On a slow connection or cold cache, the shader renders a vivid magenta frame before the correct values arrive.
 
 **Why it happens:**
-CSS `prefers-reduced-motion` stops CSS transitions and animations automatically when honored in CSS. JavaScript-driven WebGL animations have no such automatic brake — they require explicit detection. Teams that have already handled the CSS layer assume they are compliant.
+CSS custom properties with no declaration and no `var(--signal-intensity, fallback)` usage return an empty string from `getPropertyValue`. The absence of a fallback in the var declaration is a v1.1 oversight (documented as INT-04 tech debt).
 
-**How to avoid:**
-- Detect at initialization and subscribe to changes:
-  ```js
-  const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const shouldReduceMotion = () => mql.matches;
-  mql.addEventListener('change', () => {
-    if (shouldReduceMotion()) renderer.setAnimationLoop(null);
-    else renderer.setAnimationLoop(tick);
-  });
+**Prevention:**
+- Declare all three `--signal-*` vars with defaults in `:root` in `globals.css` before wiring any WebGL uniform reads:
+  ```css
+  :root {
+    --signal-intensity: 0.5;
+    --signal-speed: 1;
+    --signal-accent: 0;
+  }
   ```
-- For generative content: when reduced-motion is active, render a single static frame (the initial state) and halt the loop. Do not simply slow it down — the static frame must be intentionally designed.
-- The SIGNAL-SPEC.md already documents reduced-motion as "intentional alternative design" — generative components must follow the same contract: define the static state, not just "stop the animation."
-- Any animation lasting more than 5 seconds requires a user-accessible pause control regardless of system preference.
+- This must be done as the first step of INT-04 — before the uniform read code is written. The defaults become the canonical initial state; SignalOverlay then overrides them on interaction.
+- Do NOT rely on the WebGL component's shader default uniform values to cover for missing CSS vars — the CSS vars are the source of truth. If the CSS declaration is absent, the bridge is broken at the source, not the destination.
 
-**Warning signs:**
-- WAVE or axe accessibility scanner flags: "Content moves, blinks, scrolls" on canvas elements
-- Lighthouse accessibility score drops after adding canvas components
-- System reduced-motion setting has no effect on canvas elements
+**Detection:**
+- Throttle network to Slow 3G in DevTools, hard reload — observe if a frame with incorrect colors appears in the hero or generative scene before the first paint settles
+- `getComputedStyle(document.documentElement).getPropertyValue('--signal-intensity')` in the browser console returns empty string
 
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — add reduced-motion detection to the base canvas component template. Requires design decision per component: what is the static/halted state? Must be specified before coding, not retrofitted.
+**Phase to address:** Phase 1 of v1.2 (INT-04). This is a one-line-per-var fix in globals.css. Do it first, before any WebGL uniform wiring.
 
 ---
 
-### Pitfall 9: Canvas Accessibility Void (Screen Reader Black Hole)
+### Pitfall 3: `createSignalframeUX(config)` Context Provider Wrapping App Router Server Components
 
 **What goes wrong:**
-Canvas elements are invisible to screen readers by default — no role, no name, no accessible content. A page section whose primary visual content is a WebGL canvas provides zero information to assistive technology users. This violates WCAG 1.1.1 (Non-text Content) and 4.1.2 (Name, Role, Value). The WCAG AA requirement in the constraints is not satisfied by adding `aria-hidden="true"` — that only removes the element from the tree entirely, which is only acceptable if the canvas is purely decorative.
+`createContext` and all Context Provider APIs require `'use client'`. A config provider implemented as a React context cannot wrap `app/layout.tsx` directly if `layout.tsx` is a Server Component — this is the common App Router pattern. The error is subtle: the provider itself can be a Client Component, but if it is imported directly into a Server Component layout, every component the layout imports becomes a Client Component boundary. This is the "context infection" pattern — a single context provider at the root can accidentally force an entire subtree into the client bundle.
+
+The `useSignalframe()` consumer hook has the same constraint: it can only be called from Client Components. If a component that calls `useSignalframe()` is otherwise a Server Component (no state, no effects), adding the hook forces it to become a Client Component and adds it to the JS bundle.
 
 **Why it happens:**
-Canvas elements have no implicit ARIA role. Screen readers treat them as generic containers with no content. Developers add `aria-hidden` to suppress screen reader noise, which is correct for purely decorative canvases but incorrect for canvases conveying information (data visualizations, interactive 3D objects, mood-setting hero content that establishes context).
+App Router's Server/Client boundary works by file, not by import depth. A Client Component file (marked `'use client'`) can import and render Server Components as `children`, but not the reverse. Config providers are typically placed at the layout root — the highest point in the tree — which is exactly where the Server/Client boundary matters most.
 
-**How to avoid:**
-- For purely decorative canvases (background noise, ambient generative texture): `aria-hidden="true"` is correct.
-- For canvases that convey content or mood (hero SIGNAL layer, project showcase visuals): add `role="img"` and `aria-label="[descriptive label]"`.
-- For interactive canvases: expose an accessible text alternative via a visually hidden element adjacent to the canvas, or use the shadow DOM approach to mirror semantic structure.
-- Audit each canvas component against this decision tree: Decorative → `aria-hidden`. Informational → `role="img" aria-label`. Interactive → full accessible equivalent.
+**Prevention:**
+- The correct App Router pattern for a config provider is the "hole in the donut":
+  ```tsx
+  // providers.tsx — 'use client' file
+  'use client';
+  import { createContext, useContext } from 'react';
+  const SignalframeContext = createContext<SignalframeConfig | null>(null);
 
-**Warning signs:**
-- axe or NVDA reports canvas elements with no accessible name
-- VoiceOver skips canvas content with no announcement
-- Lighthouse accessibility category drops below 100
+  export function SignalframeProvider({
+    config,
+    children,
+  }: {
+    config: SignalframeConfig;
+    children: React.ReactNode;
+  }) {
+    return (
+      <SignalframeContext.Provider value={config}>
+        {children}
+      </SignalframeContext.Provider>
+    );
+  }
 
-**Phase to address:**
-Phase 1 (Generative SIGNAL Foundation) — establish the accessibility classification (decorative vs. informational) as a required field in every canvas component's spec. The answer must be decided at design time, not added as an afterthought.
+  export function useSignalframe() {
+    const ctx = useContext(SignalframeContext);
+    if (!ctx) throw new Error('useSignalframe must be used inside SignalframeProvider');
+    return ctx;
+  }
+  ```
+  ```tsx
+  // app/layout.tsx — Server Component
+  import { SignalframeProvider } from '@/components/sf/providers';
 
----
+  export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+      <html>
+        <body>
+          <SignalframeProvider config={defaultConfig}>
+            {children} {/* children remain Server Components */}
+          </SignalframeProvider>
+        </body>
+      </html>
+    );
+  }
+  ```
+- `children` passed into a Client Component Provider are NOT forced to become Client Components — they stay as Server Components. This is the critical rule. The provider wraps; it does not infect.
+- The `config` object passed as props to the Provider must be serializable (no functions, no class instances, no React nodes). If `createSignalframeUX(config)` allows callback configuration (e.g., custom color resolver functions), these cannot be passed through the provider — they must live in a separate Client Component layer.
+- `useSignalframe()` consumers in layout primitives (`SFSection`, `SFContainer`, etc.) would force those primitives to become Client Components. Current decision: layout primitives are Server Components. Do not make them consume context. The config API is for consumer-app setup, not for SF primitives themselves.
 
-## Technical Debt Patterns
+**Detection:**
+- `next build` produces "Server Component cannot import Client Component" error if the provider is placed incorrectly
+- Bundle analyzer shows layout primitives appearing in the client bundle after adding context consumers
+- `@next/bundle-analyzer` shows unexpected components in the shared chunk
 
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| One renderer per canvas component | Simpler component isolation | Context exhaustion, memory leak on route change | Never — use shared renderer from day one |
-| Skip `dispose()` on scene teardown | Faster development iteration | Progressive VRAM leak, eventual crash | Never in production |
-| Import Three.js at module level (not dynamic) | Simpler import syntax | Blows 200KB bundle budget, Lighthouse regression | Never — always `next/dynamic` with `ssr: false` |
-| Use `renderer.setAnimationLoop` instead of GSAP ticker | Three.js "just works" | Frame timing conflicts with GSAP ScrollTrigger, visual jitter | Never when GSAP ScrollTrigger is in use |
-| Pass OKLCH CSS values directly to shader uniforms | No color bridge to build | Wrong colors, FRAME/SIGNAL color contract broken | Never |
-| Skip reduced-motion check on generative components | Simpler component code | WCAG violation, legal accessibility risk | Never in public-facing output |
-| Run render loop when canvas is off-screen | Simpler animation code | Mobile battery drain, thermal throttling | Never — always IntersectionObserver |
-| `aria-hidden` on all canvases | Suppresses screen reader noise | WCAG 1.1.1 violation if canvas conveys content | Only for purely decorative canvases |
-
----
-
-## Integration Gotchas
-
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| Three.js + GSAP ticker | Running two independent RAF loops | Drive `renderer.render()` from inside `gsap.ticker.add()` |
-| Three.js + Lenis | Not integrating Lenis RAF with GSAP ticker | Call `lenis.raf(time)` inside `gsap.ticker.add()`, same loop as Three.js render |
-| Three.js + Next.js App Router | Module-level imports causing SSR errors | Always `next/dynamic({ ssr: false })` — never top-level import in shared files |
-| Three.js + React route changes | Not disposing renderer on unmount | `useEffect` cleanup: `renderer.forceContextLoss(); renderer.dispose()` |
-| OKLCH tokens + GLSL shaders | Passing CSS oklch() strings to uniforms | Use DOM canvas probe to convert to linear sRGB before passing as uniform |
-| Three.js + Turbopack (Next.js 15) | ESM/CJS interop issues with some Three.js addons | Verify addon imports are ESM-compatible; use `transpilePackages` if needed |
-| GSAP ScrollTrigger + Three.js | Updating uniforms in `onUpdate` after render call | Write all uniform updates in `onUpdate`, render last in ticker |
-| Canvas + Lighthouse | Canvas element in LCP candidate causing score regression | Ensure canvas loads async and is not the LCP element; place above-fold text in DOM |
-
----
-
-## Performance Traps
-
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Continuous render loop (no pause) | Mobile battery drain, thermal throttle | IntersectionObserver → `setAnimationLoop(null)` off-screen | Immediately on mobile |
-| High DPR canvas (devicePixelRatio 3+) | GPU overload on retina mobile, frame drops | Cap at `Math.min(dpr, 1.5)` | iPhone Pro / high-DPR Android |
-| Many draw calls per frame | FPS drops progressively as scene grows | Instancing, geometry merging, frustum culling | Scene complexity scales |
-| Shader recompilation on hot path | Frame hitches during animation | Compile shaders once at init, cache materials | First frame or material changes |
-| Three.js in initial JS chunk | LCP > 1.0s, TBT spike, Lighthouse regression | `next/dynamic({ ssr: false })`, bundle analyzer CI gate | Always — from first addition |
-| Texture loading blocking render | Blank canvas then pop-in | Preload textures with `TextureLoader.load()` before scene start | Any textured geometry |
-| Unbounded particle/vertex count | FPS drops on mid-range hardware | Fixed max counts (e.g., 10k particles), LOD for complex geometry | Mid-range mobile, integrated GPU |
+**Phase to address:** Phase 3 of v1.2 (DX-05: createSignalframeUX + useSignalframe). Design the provider boundary explicitly before writing any code — the architecture must be decided upfront.
 
 ---
 
-## UX Pitfalls
+### Pitfall 4: Session Persistence Causing Hydration Mismatch
 
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| SIGNAL dominates FRAME on load | User cannot read content until generative animation settles | FRAME content must be readable at t=0; SIGNAL layers in afterward |
-| Canvas pop-in after lazy load | Layout shift (CLS), jarring appearance | Reserve canvas space with fixed dimensions before load, use `<Suspense>` fallback |
-| Generative content causes reading context loss | User loses their place in content when SIGNAL distracts | SIGNAL must be ambient, not focal; motion hierarchy: content > signal |
-| No static fallback for JS-disabled users | Blank section, broken layout | CSS background fallback for all canvas sections (already a SIGNAL-SPEC.md contract) |
-| Canvas cursor overrides system cursor without indication | Confusing, feels broken for some users | `[data-cursor]` activation must have CSS fallback cursor |
+**What goes wrong:**
+Reading `localStorage` or `sessionStorage` during the initial render produces a hydration mismatch. The server renders with no session state (it has no access to browser storage) — so the HTML contains the default/empty state. The client immediately reads storage and renders a different state. React 18 treats this as a hydration error: "Hydration failed because the initial UI does not match server-rendered HTML." With filter, scroll, and tab session state, this means a section could render with no active tab on server (default index 0) but immediately jump to tab 2 on client — visible flash, potential CLS impact.
 
----
+**Why it happens:**
+`localStorage` is a browser-only API. Next.js App Router Server Components render on the server. Any code that runs during initial render (outside `useEffect`) that branches on `localStorage` values will produce different output server-side vs. client-side. This applies even to Client Components — they render on the server for the initial HTML, then hydrate on the client.
 
-## "Looks Done But Isn't" Checklist
+**The project-specific trap:**
+The STP-01 requirement covers "filters, scroll, tabs." Tab state is the most dangerous: if a tab component renders different children based on the active tab index, and that index comes from `localStorage`, the server renders tab 0 children while the client immediately shows tab 2 children. React will throw a hydration error and fall back to client-only rendering, negating SSR benefits.
 
-- [ ] **Canvas component:** Verify `renderer.dispose()` and `renderer.forceContextLoss()` are called on component unmount — not just scene.clear()
-- [ ] **Bundle budget:** Run `@next/bundle-analyzer` and confirm Three.js is NOT in the main/shared chunk
-- [ ] **SSR safety:** Run `next build` — any `window is not defined` error means a non-dynamic import leaked
-- [ ] **Reduced-motion:** Toggle `prefers-reduced-motion: reduce` in OS — verify canvas animation halts and shows intentional static state
-- [ ] **Mobile battery:** Open Chrome DevTools → Performance → record 2 minutes on mobile emulation — verify frame budget and no thermal indicators
-- [ ] **Context count:** Open multiple pages with canvases — verify no "Too many active WebGL contexts" warning in console
-- [ ] **OKLCH color parity:** Visually compare canvas colors against adjacent CSS elements using same tokens — should match
-- [ ] **Accessibility:** Run axe → no canvas elements without `aria-hidden` or `role="img" aria-label`
-- [ ] **Lenis + Three.js loop:** Verify scroll smoothness — no one-frame-behind jitter on ScrollTrigger-driven 3D elements
-- [ ] **CLS:** Measure with WebPageTest — canvas lazy load must not cause layout shift (placeholder required)
+**Prevention:**
+- Never read `localStorage` in the render path. Always read inside `useEffect`:
+  ```tsx
+  const [activeTab, setActiveTab] = useState(0); // stable default for SSR
 
----
+  useEffect(() => {
+    const saved = localStorage.getItem('sf-active-tab');
+    if (saved !== null) setActiveTab(parseInt(saved, 10));
+  }, []);
+  ```
+- For scroll position restoration: use `sessionStorage` (per-tab, not cross-session) and restore via `useEffect` after mount. Do not attempt scroll restoration before hydration completes.
+- For filter state: same pattern. The first render always uses the default filter state. The `useEffect` applies saved state. This creates a visible "filter reset then snap" if the user returns to a page — acceptable for filters, but visually jarring for tabs.
+- To eliminate the visible snap for tabs specifically: use `suppressHydrationWarning` on the tab container element (not the entire page) so React skips the mismatch warning for that subtree, combined with the `useEffect` pattern above. This is a targeted suppression, not a blanket fix.
+- Consider cookies over localStorage for state that must be SSR-consistent: cookies are readable server-side via Next.js `cookies()` API and can be used to render the correct initial state. This eliminates the snap entirely but requires a `cookies()` read in a Server Component and passing the value as a prop to the Client Component.
+- Zustand with `persist` middleware has the same pitfall — the `onRehydrateStorage` callback fires after mount, not during render. The initial render will always show the non-persisted default.
 
-## Recovery Strategies
+**Detection:**
+- React warning in browser console: "Hydration failed because the initial UI does not match server-rendered HTML"
+- Visible content flash/jump on page load when navigating back to a page with saved state
+- Lighthouse CLS score increases after adding session persistence
 
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| Context exhaustion (multiple renderers) | HIGH | Audit all canvas components, refactor to shared renderer singleton, test all route transitions |
-| GPU memory leak | MEDIUM | Add disposal traversal to all unmount effects, verify with renderer.info.memory in DevTools |
-| SSR/hydration failure in production | HIGH | Move all Three.js imports behind `next/dynamic({ ssr: false })`, audit shared utility files |
-| Bundle budget blown | MEDIUM | Move to `next/dynamic`, run bundle analyzer, verify chunk separation, re-run Lighthouse |
-| GSAP/Three.js frame conflict | MEDIUM | Refactor to single ticker pattern, remove `setAnimationLoop`, test ScrollTrigger scrub |
-| OKLCH color mismatch in shaders | LOW | Implement DOM canvas probe utility, update all shader uniform setters |
-| Reduced-motion violation | LOW | Add `matchMedia` detection to base canvas template, define static states for each component |
-| Accessibility audit failure | LOW-MEDIUM | Classify each canvas (decorative vs. informational), add appropriate ARIA attributes |
+**Phase to address:** Phase 4 of v1.2 (STP-01: session persistence). Decide the persistence mechanism (localStorage + useEffect vs. cookies) before implementation. Cookies are correct for tab state; localStorage is acceptable for filter state.
 
 ---
 
-## Pitfall-to-Phase Mapping
+## Moderate Pitfalls
 
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| WebGL context exhaustion | Phase 1: Generative SIGNAL Foundation — shared renderer architecture | Navigate between all pages with canvases, check console for context warnings |
-| GPU memory leak | Phase 1: Generative SIGNAL Foundation — disposal contract in component template | Monitor `renderer.info.memory` across route navigations |
-| SSR hydration failure | Phase 1: Generative SIGNAL Foundation — `next/dynamic` import pattern | Run `next build`; zero `window is not defined` errors |
-| GSAP + Three.js loop conflict | Phase 1: Generative SIGNAL Foundation — unified ticker architecture | Verify ScrollTrigger scrub smoothness on 3D elements |
-| Bundle budget regression | Phase 1: Generative SIGNAL Foundation — bundle analyzer gate | `@next/bundle-analyzer` shows Three.js in async chunk only |
-| OKLCH color mismatch | Phase 1: Generative SIGNAL Foundation — color bridge utility | Visual comparison: canvas vs. adjacent CSS element |
-| Mobile battery drain | Phase 1: Generative SIGNAL Foundation — IntersectionObserver pause in template | 2-minute mobile DevTools performance trace |
-| Reduced-motion violation | Phase 1: Generative SIGNAL Foundation — detection in template | OS reduced-motion toggle → canvas halts |
-| Canvas accessibility void | Phase 1: Generative SIGNAL Foundation — ARIA classification per component | axe scan → zero canvas accessibility violations |
-| Performance regression on existing pages | Phase 2: SIGNAL Activation (dormant effects) — Lighthouse regression gate | Full Lighthouse run before and after each canvas addition |
+### Pitfall 5: `bgShift` Prop Boolean vs. String Type Mismatch Breaking Consumers
+
+**What goes wrong:**
+`SFSection` defines `bgShift?: boolean` in TypeScript. The JSX usage `<SFSection bgShift>` passes a boolean `true`. The rendered output is `data-bg-shift=""` (empty string attribute) when `true`, and the attribute is absent when `false/undefined`. This is correct — GSAP targets `[data-bg-shift]` by presence. However, if any consumer passes `bgShift="true"` (string) instead of `bgShift` (boolean), TypeScript should catch it — but JSX spread patterns can bypass this.
+
+The real mismatch the analyst flagged: `data-bg-shift` is a spread attribute in some usage patterns. If a block component spreads props onto `SFSection` and the spread source types `bgShift` as `string | boolean`, TypeScript will widen the accepted type and the component will silently accept `bgShift="false"` (which renders as `data-bg-shift="false"` — a truthy attribute, GSAP targets it, unexpected behavior).
+
+**Prevention:**
+- Audit all `SFSection` consumers for `bgShift` prop usage. Accept only `bgShift` (no value) or `bgShift={true}` — never `bgShift="true"` or `bgShift={false}` (unnecessary, use omission).
+- The TypeScript interface is correct. The issue is enforcement at consumer call sites, not the component definition.
+- When fixing: do NOT change the prop type to `string` to accommodate broken consumers. Fix the consumers. Changing to string would mean changing the component logic and breaking the clean presence-attribute pattern.
+- Add a JSDoc comment to the prop explicitly saying `bgShift` is a boolean presence toggle — never pass as string.
+
+**Phase to address:** Phase 2 of v1.2 (bgShift type mismatch fix). One-pass audit of all SFSection usage. Low risk if caught before shipping the session persistence work that touches multiple pages.
+
+---
+
+### Pitfall 6: Registry JSON Format — Flat Structure Requirement Conflicts with SF Layer Structure
+
+**What goes wrong:**
+The shadcn registry spec requires a flat file structure: `/registry.json` at root, and `/[component-name].json` files also at root (not nested). SignalframeUX components live in `components/sf/`, `components/animation/`, `components/blocks/` — three separate source directories. A registry entry that points to files in nested directories will fail CLI resolution unless the `files[].path` values are explicit and the `target` property is set correctly for file placement at install time.
+
+Additionally, the registry `files` array must NOT include a `content` property (shadcn spec constraint). AI tools that auto-generate registry entries sometimes add inline content — this causes schema validation failures.
+
+**Prevention:**
+- Structure `registry.json` at the project root (or `public/registry.json` for serving). Each item's `files[].path` should be relative to the registry root, not the component source root.
+- Use explicit `target` paths in each file entry to tell the CLI where to place files in the consuming project:
+  ```json
+  {
+    "name": "sf-button",
+    "type": "registry:component",
+    "files": [
+      {
+        "path": "components/sf/sf-button.tsx",
+        "type": "registry:component",
+        "target": "components/sf/sf-button.tsx"
+      }
+    ]
+  }
+  ```
+- The `registryDependencies` field must list shadcn base component names (e.g., `"button"`) for SF-wrapped components that depend on `components/ui/`. If the base `button` is not in the consuming project, the CLI will fail without a useful error.
+- Do NOT include `cssVars` for `--signal-*` variables in individual component registry entries — these are system-level globals. Include them in a separate `sf-tokens` registry entry that consumers install first.
+- Validate the registry JSON against `https://ui.shadcn.com/schema/registry.json` before publishing. Schema violations produce silent CLI failures in some versions.
+
+**Phase to address:** Phase 3 of v1.2 (DX-04: registry.json). The flat-structure requirement is the most common first-attempt mistake — address in initial scaffolding.
+
+---
+
+### Pitfall 7: `resolveColorAsThreeColor` Called Per-Frame for `--signal-accent` (Wrong Utility)
+
+**What goes wrong:**
+`--signal-accent` is a hue rotation value (0–360 degrees, a plain integer). It is NOT a color — it is a numeric parameter. Running it through `resolveColorAsThreeColor` or `resolveColorToken` (the canvas probe utility) would be incorrect: the canvas probe sets `ctx.fillStyle = raw` where `raw` would be `"180"` (just a number) — the browser would treat this as an invalid color string and return black `{ r: 0, g: 0, b: 0 }`. The shader uniform would receive black instead of a hue shift value.
+
+**Prevention:**
+- Read `--signal-accent` with a direct `parseFloat()` call on the `getPropertyValue` result, not through `resolveColorToken`. The two utility paths are for different var types:
+  - Color tokens (`--color-primary`, etc.): use `resolveColorToken` / `resolveColorAsThreeColor`
+  - Numeric signal parameters (`--signal-intensity`, `--signal-speed`, `--signal-accent`): use `parseFloat(getPropertyValue(...))` + module-level caching
+- Document this distinction clearly in the color-resolve module. The current module name `color-resolve.ts` implies it is for colors only — enforce that contract.
+
+**Phase to address:** Phase 1 of v1.2 (INT-04). Cannot be discovered after the fact — the wrong color black will look like a "theme issue" and be hard to trace.
+
+---
+
+### Pitfall 8: Breaking Consumers When Fixing Type Mismatches
+
+**What goes wrong:**
+Fixing a prop type (e.g., tightening `bgShift` from `boolean | string` to `boolean`, or changing a variant type in CVA) is a TypeScript breaking change for any consumer that passes the wrong type. In a design system with 29 SF-wrapped components, a type fix in a shared interface (e.g., `SFSectionProps`, a CVA variant config, the `spacing` union) ripples to every consumer of that component across all 5 pages plus any documentation examples.
+
+The specific risk for v1.2: fixing `bgShift` to be strictly `boolean` may produce TypeScript errors in consumer files that currently pass the prop incorrectly but happen to work at runtime due to type widening.
+
+**Prevention:**
+- Before fixing any prop type, run `tsc --noEmit` to get a full list of current type errors. This establishes the baseline.
+- Fix the type in the component definition, then immediately run `tsc --noEmit` again. All new errors are consumer call sites that need updating.
+- Do NOT mark consumer errors as `@ts-ignore` or `as any`. Fix the call site — the point of the type fix is to enforce correctness at all call sites.
+- Batch all type fixes together in a single pass rather than fixing one at a time — type errors from one fix may be masked by errors from another, giving a false "clean" result between fixes.
+
+**Phase to address:** Phase 2 of v1.2 (bgShift type fix). This is the same phase as fixing reference page layout gaps — do both in a single `tsc --noEmit` sweep.
+
+---
+
+## Minor Pitfalls
+
+### Pitfall 9: `useSignalframe()` Called Outside Provider Throws Unhelpful Error
+
+**What goes wrong:**
+If `useSignalframe()` is called in a component that is not inside `SignalframeProvider`, the `useContext` call returns `null`. Without an explicit null-check and throw, the component receives `null` and may silently render incorrectly, or throw a cryptic "Cannot read properties of null" error at a point distant from where the provider was missed.
+
+**Prevention:**
+- The `useSignalframe()` hook must guard and throw immediately:
+  ```ts
+  export function useSignalframe(): SignalframeConfig {
+    const ctx = useContext(SignalframeContext);
+    if (ctx === null) {
+      throw new Error(
+        '[SignalframeUX] useSignalframe() must be called inside a <SignalframeProvider>. ' +
+        'Wrap your app root with createSignalframeUX(config).'
+      );
+    }
+    return ctx;
+  }
+  ```
+- The error message should include the fix — not just the problem.
+
+**Phase to address:** Phase 3 of v1.2 (DX-05). Build this into the hook from the first commit.
+
+---
+
+### Pitfall 10: Session State Persisting Stale Filter Slugs After Component Rename
+
+**What goes wrong:**
+Saving filter state by component slug or label string (e.g., `"Animation"`, `"Layout"`) to localStorage means a rename or restructuring of filter categories breaks the restored state — the old slug is still in storage but no longer matches any active filter, producing a "no results" view on return.
+
+**Prevention:**
+- Store filter state as canonical keys that do not change (e.g., component type enum values, not display labels).
+- Version the storage key: `sf-filters-v1` — when the filter schema changes, bump to `sf-filters-v2`. On read, if the key is the old version, discard and use defaults.
+- Keep storage schema minimal: store only what is needed to restore the UI state, not derived data.
+
+**Phase to address:** Phase 4 of v1.2 (STP-01). Define the storage schema and versioning strategy before implementation.
+
+---
+
+## Phase-Specific Warnings
+
+| Phase Topic | Likely Pitfall | Mitigation |
+|-------------|----------------|------------|
+| INT-04: CSS var→WebGL bridge | Per-frame `getComputedStyle` → Lighthouse TBT regression | Module-level cache + MutationObserver invalidation from day one |
+| INT-04: CSS var→WebGL bridge | Missing `--signal-*` defaults → magenta flash on slow connections | Declare defaults in globals.css before wiring any uniform reads |
+| INT-04: `--signal-accent` uniform | Wrong utility: passing hue int through canvas color probe → uniform receives black | Use `parseFloat(getPropertyValue(...))` directly, never `resolveColorToken` |
+| INT-03: SignalMotion placement | Wiring unused component without testing reduced-motion contract | Verify `prefers-reduced-motion` path halts motion before merging |
+| bgShift type fix | Propagating type fix breaks consumer call sites silently | Run `tsc --noEmit` before and after, fix all consumer errors in same commit |
+| DX-04: registry.json | Nested file paths fail shadcn CLI resolution | Flat registry structure with explicit `target` paths per file |
+| DX-04: registry.json | Omitting `registryDependencies` for shadcn base components | List all `ui/` base component names in `registryDependencies` |
+| DX-05: config provider | Provider placed in Server Component layout → context infection | Use "hole in the donut" pattern; `children` stay server-rendered |
+| DX-05: config provider | Callback props in config object → non-serializable, breaks server boundary | Config values must be plain serializable data only |
+| STP-01: session persistence | Reading localStorage in render path → hydration mismatch | Always read in `useEffect`, never in render or component body |
+| STP-01: tab state specifically | Tab children mismatch server/client → hydration error → CLS | Use cookies + `cookies()` API if tab children differ; otherwise `suppressHydrationWarning` on container |
+| STP-01: filter slug persistence | Rename breaks saved state → "no results" on return | Version storage keys, use canonical enum keys not display labels |
+| Any prop type fix | `@ts-ignore` hiding the real consumer error | Fix the consumer. Never suppress the type error. |
+
+---
+
+## "Looks Done But Isn't" Checklist for v1.2
+
+- [ ] **CSS var bridge (INT-04):** `--signal-intensity`, `--signal-speed`, `--signal-accent` declared in globals.css with defaults before any WebGL uniform reads
+- [ ] **CSS var bridge (INT-04):** Lighthouse Performance score unchanged after wiring (run before/after comparison)
+- [ ] **CSS var bridge (INT-04):** Chrome DevTools Performance flame chart shows zero `Recalculate Style` entries in GSAP ticker frames
+- [ ] **Signal accent (INT-04):** `--signal-accent` read as `parseFloat`, never through canvas color probe
+- [ ] **bgShift fix:** `tsc --noEmit` clean after fix — zero type errors, no `@ts-ignore` added
+- [ ] **Registry (DX-04):** `npx shadcn@latest add` from a fresh project successfully installs an SF component end-to-end
+- [ ] **Registry (DX-04):** JSON validated against `https://ui.shadcn.com/schema/registry.json` schema
+- [ ] **Config provider (DX-05):** Layout primitives (`SFSection`, `SFContainer`, etc.) remain Server Components after provider is wired — verified with `next build` and bundle analyzer
+- [ ] **Config provider (DX-05):** `useSignalframe()` outside provider throws descriptive error with fix instructions
+- [ ] **Session persistence (STP-01):** No hydration warnings in browser console after implementing localStorage reads
+- [ ] **Session persistence (STP-01):** Lighthouse CLS score unchanged after adding session persistence
+- [ ] **Session persistence (STP-01):** Storage keys versioned — bump key if schema changes during implementation
 
 ---
 
 ## Sources
 
-- [Chrome WebGL context limits (Chromium issue tracker)](https://issues.chromium.org/issues/40939743)
-- [Firefox WebGL context limits (Mozilla Bugzilla)](https://bugzilla.mozilla.org/show_bug.cgi?id=790138)
-- [Three.js dispose guidance (three.js forum)](https://discourse.threejs.org/t/dispose-things-correctly-in-three-js/6534)
-- [When to dispose: complete Three.js scene cleanup (three.js forum)](https://discourse.threejs.org/t/when-to-dispose-how-to-completely-clean-up-a-three-js-scene/1549)
-- [React Three Fiber context loss on route change (GitHub)](https://github.com/pmndrs/react-three-fiber/issues/3176)
-- [Three.js memory leak fixes (Mindful Chase)](https://www.mindfulchase.com/explore/troubleshooting-tips/frameworks-and-libraries/fixing-performance-drops-and-memory-leaks-in-three-js-applications.html)
-- [100 Three.js performance tips (Utsubo, 2026)](https://www.utsubo.com/blog/threejs-best-practices-100-tips)
-- [GSAP ticker documentation](https://gsap.com/docs/v3/GSAP/gsap.ticker/)
-- [GSAP + Three.js animation conflict (GSAP community)](https://gsap.com/community/forums/topic/34228-threejs-and-gsap-conflict-animation/)
-- [Building interactive WebGL with Next.js (Vercel)](https://vercel.com/blog/building-an-interactive-webgl-experience-in-next-js)
-- [Next.js lazy loading guide](https://nextjs.org/docs/app/guides/lazy-loading)
-- [WebGL best practices (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices)
-- [prefers-reduced-motion + JavaScript (W3C WCAG technique SCR40)](https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR40)
-- [Accessible animation design (Pope Tech, 2025)](https://blog.pope.tech/2025/12/08/design-accessible-animation-and-movement/)
-- [Canvas ARIA role=img (MDN)](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/img_role)
-- [WebGL mobile battery drain and thermal throttling (Pixel Free Studio)](https://blog.pixelfreestudio.com/webgl-in-mobile-development-challenges-and-solutions/)
-- [OKLCH in CSS — why and how (Evil Martians)](https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl)
-- [GLSL color space conversion library (tobspr)](https://github.com/tobspr/GLSL-Color-Spaces)
-- [Fixing WebGL scroll jank (Psychoactive)](https://www.psychoactive.co.nz/content-hub/fixing-scrolling-jank-in-webgl-using-curtain-js-and-virtual-scroll)
-- [Next.js package bundling guide](https://nextjs.org/docs/app/guides/package-bundling)
+- [Nicolas Mattia — How to Set WebGL Shader Colors with CSS and JavaScript (2025-01-29)](https://nmattia.com/posts/2025-01-29-shader-css-properties/) — canvas probe color resolution, performance metrics
+- [What forces layout/reflow — Paul Irish (comprehensive list)](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) — `getComputedStyle` as forced synchronous layout trigger
+- [MDN — Window.getComputedStyle()](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle) — forces layout, returns resolved values
+- [MDN — Animation performance and frame rate](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Animation_performance_and_frame_rate) — rAF performance model
+- [Next.js — Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components) — createContext Client Component requirement
+- [Vercel KB — Using React Context for State Management with Next.js](https://vercel.com/kb/guide/react-context-state-management-nextjs) — "hole in the donut" pattern
+- [Next.js — createContext in Server Component error](https://nextjs.org/docs/messages/context-in-server-component) — official error explanation
+- [Next.js — Hydration error message](https://nextjs.org/docs/messages/react-hydration-error) — official hydration mismatch docs
+- [FluentReact — How to Fix Next.js localStorage and Hydration Errors Cleanly](https://www.fluentreact.com/blog/nextjs-localstorage-hydration-errors-fix) — useEffect pattern for localStorage
+- [shadcn/ui — registry.json spec](https://ui.shadcn.com/docs/registry/registry-json) — required fields, flat structure requirement
+- [shadcn/ui — registry-item.json spec](https://ui.shadcn.com/docs/registry/registry-item-json) — file type, target, no content property
+- [shadcn/ui — Getting Started with Registry](https://ui.shadcn.com/docs/registry/getting-started) — CLI installation pattern
+- [CVA — TypeScript guide](https://cva.style/docs/getting-started/typescript) — type safety for variant props
+- [Next.js Hydration Errors in 2026 (Medium)](https://medium.com/@blogs-world/next-js-hydration-errors-in-2026-the-real-causes-fixes-and-prevention-checklist-4a8304d53702) — 2026 checklist
+- [W3C CSSWG — getComputedStyle custom property resolved values (issue #2358)](https://github.com/w3c/csswg-drafts/issues/2358) — spec behavior for custom properties
 
 ---
-*Pitfalls research for: Generative/3D visual layer added to SignalframeUX design system*
-*Researched: 2026-04-05*
+
+*Pitfalls research for: v1.2 Tech Debt Sweep — CSS var→WebGL bridge, component registry, config provider, session persistence, type mismatch fixes*
+*Researched: 2026-04-06*

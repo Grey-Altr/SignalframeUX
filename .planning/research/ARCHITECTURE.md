@@ -1,477 +1,416 @@
-# Architecture Research
+# Architecture Patterns — v1.2 Tech Debt Sweep
 
-**Domain:** Generative SIGNAL integration into existing SignalframeUX Next.js 15.3 design system
-**Researched:** 2026-04-05
-**Confidence:** HIGH (existing codebase verified, WebGL constraints from MDN + browser vendors, patterns from R3F official docs)
+**Domain:** SignalframeUX integration layer — wiring existing components, fixing type mismatches, shipping deferred DX features, adding session persistence
+**Researched:** 2026-04-06
+**Confidence:** HIGH — all findings verified against actual codebase files
+
+---
+
+## Context: What v1.2 Is and Is Not
+
+v1.2 is not a new feature milestone. Every item is either:
+- **Wiring** an existing component that is complete but unused (INT-03, INT-04)
+- **Fixing** a type mismatch introduced when usage diverged from the prop definition (bgShift)
+- **Completing** a scaffolded file that is partially done (registry.json)
+- **Implementing** interface sketches that were deferred from v1.1 with open questions resolved (DX-05, STP-01)
+
+This shapes the architecture: the v1.2 build order minimizes blast radius. Each item is self-contained with a clean rollback point.
 
 ---
 
 ## Existing Architecture Baseline
 
-Before addressing integration, the current system must be understood precisely. The decisions below are constrained by it.
-
-### Current Rendering Stack
-
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                     Next.js 15.3 App Router                      │
-│                    Server Components default                      │
-├──────────────────────────────────────────────────────────────────┤
-│  RootLayout (Server)                                             │
-│  ├── LenisProvider ('use client' — smooth scroll)                │
-│  ├── TooltipProvider (Radix, 'use client')                       │
-│  ├── GlobalEffectsLazy (next/dynamic ssr:false)                  │
-│  │    └── GlobalEffects ('use client')                           │
-│  │         ├── VHSOverlay — GSAP + CSS, fixed overlay            │
-│  │         ├── CanvasCursor — Canvas 2D, fixed full-viewport     │
-│  │         ├── ScrollProgress, ScrollToTop, VHSBadge, IdleOverlay│
-│  ├── PageAnimations ('use client' — GSAP ScrollTrigger)          │
-│  └── PageTransition ('use client' — GSAP page wipes)            │
-├──────────────────────────────────────────────────────────────────┤
-│                     Page-level Components                        │
-│  ├── Server Components: SF layout primitives, blocks             │
-│  │    SFContainer, SFSection, SFStack, SFGrid, SFText            │
-│  └── Client Components (animation/): HeroMesh, CircuitDivider,   │
-│       ScrambleText, SplitHeadline, ScrollReveal, ColorCycleFrame │
-├──────────────────────────────────────────────────────────────────┤
-│                     GSAP Bundle Split                            │
-│  gsap-core.ts     — gsap + ScrollTrigger + useGSAP (lightweight) │
-│  gsap-plugins.ts  — + SplitText, ScrambleText, Flip, CustomEase  │
-│  gsap-draw.ts     — + DrawSVG (CircuitDivider only)              │
-├──────────────────────────────────────────────────────────────────┤
-│                     Canvas Layer                                 │
-│  CanvasCursor — Canvas 2D, fixed z-index 9999, full-viewport     │
-│  HeroMesh     — Canvas 2D, absolute, parent-scoped               │
-│  Both use: IntersectionObserver scoping, rAF pause on hidden tab  │
-│  OKLCH→RGB: probe 1×1 canvas (fillStyle + getImageData)          │
-└──────────────────────────────────────────────────────────────────┘
-```
+RootLayout (Server Component)
+├── LenisProvider ('use client')
+├── TooltipProvider ('use client')
+├── {children}            ← page-level Server Components
+├── GlobalEffectsLazy     ← next/dynamic ssr:false
+│    └── GlobalEffects ('use client')
+│         ├── VHSOverlay, CanvasCursor, ScrollProgress, ScrollToTop
+│         ├── IdleOverlay (8s grain drift + OKLCH lightness pulse)
+│         └── SignalOverlayLazy  ← writes --signal-{intensity,speed,accent} to :root
+├── SignalCanvasLazy       ← next/dynamic ssr:false
+│    └── SignalCanvas ('use client')
+│         └── THREE.WebGLRenderer singleton (GSAP ticker as render driver)
+│              ├── GlslHero scene    → reads scroll, uTime, uColor uniforms
+│              └── SignalMesh scene  → reads scroll, uTime uniforms
+├── PageAnimations ('use client')
+└── PageTransition ('use client')
 
-### Critical Existing Constraints
+SIGNAL CSS var bridge (ONE-SIDED — INT-04 tech debt):
+  SignalOverlay writes:  :root { --signal-intensity, --signal-speed, --signal-accent }
+  WebGL scenes read:     (nothing — uniforms are not wired to these CSS vars)
+  globals.css declares:  (nothing — no defaults for --signal-* vars)
 
-| Constraint | Source | Implication for Generative Layer |
-|------------|--------|----------------------------------|
-| `CanvasCursor` holds one Canvas 2D context, fixed viewport | `canvas-cursor.tsx` | A WebGL renderer is a second context; must budget carefully |
-| `HeroMesh` holds one Canvas 2D context, parent-scoped | `hero-mesh.tsx` | Hero slot already has a canvas consumer |
-| Browser WebGL context limit: ~8–16 (Chrome ≈16, Safari ≈8) | MDN, Chromium issue tracker | **Hard ceiling.** Multiple WebGL components across page sections will hit this |
-| GlobalEffectsLazy pattern (next/dynamic ssr:false) | `global-effects-lazy.tsx` | The correct loading pattern for all browser-only rendering |
-| GSAP global timeline scalar for reduced-motion | `gsap-plugins.ts` | Any generative loop must respect this or opt into its own guard |
-| `data-anim`, `data-section`, `data-cursor` attributes | CLAUDE.md, existing code | Generative scoping should follow this data attribute convention |
-| Page weight budget: <200KB initial (excluding images) | CLAUDE.md | Three.js minified+gzip ≈155KB. This consumes the entire budget if included eagerly |
+SignalMotion component:
+  State: CREATED but not placed on any page (INT-03 tech debt)
+  Location: components/animation/signal-motion.tsx
+  API: wraps children, scroll-scrub via GSAP ScrollTrigger fromTo
 
----
+SFSection bgShift prop:
+  Declared type:  bgShift?: boolean  (renders data-bg-shift="" or nothing)
+  Actual usage:   data-bg-shift="white" | data-bg-shift="black" (spread as HTML attr)
+  Result:         prop is dead; usage bypasses it entirely via spread
 
-## System Overview: Integrated Generative Architecture
+registry.json:
+  State: EXISTS at project root with shadcn schema
+  Coverage: 23 of 28 SF components registered
+  Missing:  sf-container, sf-grid, sf-section, sf-stack, sf-text (layout primitives)
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                     SSR Layer (unchanged)                        │
-│  Server Components: SF primitives, page shells, metadata         │
-│  data-signal="[type]" attribute on generative mount points       │
-├──────────────────────────────────────────────────────────────────┤
-│                     FRAME Layer (unchanged)                      │
-│  SFSection, SFStack, SFGrid, SFContainer, SFText                 │
-│  Deterministic structure — no generative behavior                │
-├──────────────────────────────────────────────────────────────────┤
-│                  SIGNAL Layer — Existing (unchanged)             │
-│  Canvas 2D: CanvasCursor (fixed), HeroMesh (hero slot)           │
-│  GSAP: VHSOverlay, CircuitDivider, ScrambleText, PageTransition  │
-│  CSS: Asymmetric hover, section reveals, stagger                 │
-├──────────────────────────────────────────────────────────────────┤
-│               SIGNAL Layer — Generative Extension                │
-│                                                                  │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │             SignalCanvas (singleton WebGL host)          │    │
-│  │  One WebGLRenderer, fixed full-viewport, z behind FRAME  │    │
-│  │  Manages scene multiplexing via scissor/viewport split   │    │
-│  │  Coordinates: IntersectionObserver per registered scene  │    │
-│  │  Pauses: tab visibility, reduced-motion, mobile          │    │
-│  └──────────────────┬──────────────────────────────────────┘    │
-│                     │ scene registry                             │
-│        ┌────────────┼────────────┐                              │
-│        ↓            ↓            ↓                              │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐                        │
-│  │ SceneA   │ │ SceneB   │ │ SceneC   │  (Three.js scenes)     │
-│  │ Mesh/    │ │ Motion   │ │ Procedural│                        │
-│  │ Geo      │ │ Graphic  │ │ Visual   │                        │
-│  └──────────┘ └──────────┘ └──────────┘                        │
-│                                                                  │
-│  GSAP ScrollTrigger → proxy objects → scene uniforms/positions   │
-│  No R3F render loop — GSAP drives redraws on-demand             │
-└──────────────────────────────────────────────────────────────────┘
+createSignalframeUX / useSignalframe:
+  State: Interface sketch in .planning/DX-SPEC.md — not implemented
+  Existing related code: lib/theme.ts (toggleTheme singleton)
+
+Session persistence:
+  State: Interface sketch in .planning/DX-SPEC.md — not implemented
+  Target state: ComponentsExplorer (activeFilter, searchQuery) + token page (activeTab)
 ```
 
 ---
 
 ## Component Boundaries
 
-### New Components vs Modified Existing
+### New vs Modified for v1.2
 
-| Component | New or Modified | Location | Responsibility |
-|-----------|----------------|----------|----------------|
-| `SignalCanvas` | **New** | `components/animation/signal-canvas.tsx` | Singleton WebGL host. One renderer, viewport-sized, z-index below FRAME. Manages scene registry, scissor splits, IntersectionObserver lifecycle |
-| `SignalCanvasLazy` | **New** | `components/layout/signal-canvas-lazy.tsx` | next/dynamic wrapper (ssr:false) for SignalCanvas. Mirrors GlobalEffectsLazy pattern |
-| `useSignalScene` | **New** | `hooks/use-signal-scene.ts` | Hook that registers a Three.js scene with SignalCanvas, gets back a render callback and scroll-proxy ref. Used by scene components |
-| `SignalMesh` | **New** | `components/animation/signal-mesh.tsx` | First generative scene: parametric 3D mesh/geometry. Uses useSignalScene. GSAP-driven uniforms |
-| `SignalMotion` | **New** | `components/animation/signal-motion.tsx` | Motion graphics scene: particle systems, flow fields, data-driven visuals. Uses useSignalScene |
-| `GlobalEffectsLazy` | **Not modified** | `components/layout/global-effects-lazy.tsx` | Unchanged. SignalCanvasLazy added alongside it in RootLayout |
-| `RootLayout` | **Modified** | `app/layout.tsx` | Add `<SignalCanvasLazy />` alongside `<GlobalEffectsLazy />` |
-| `HeroMesh` | **Not modified initially** | `components/animation/hero-mesh.tsx` | Existing Canvas 2D hero mesh stays. Migration to SignalCanvas is Phase 2 work after WebGL pipeline is proven |
-| `CanvasCursor` | **Not modified** | `components/animation/canvas-cursor.tsx` | Canvas 2D cursor stays separate. Different z-layer, different lifecycle |
+| Item | New / Modified / Fixed | Location | What Changes |
+|------|----------------------|----------|--------------|
+| SignalMotion placement | **Modified** (pages) | `app/page.tsx` and other showcase pages | Wrap existing section content with `<SignalMotion>` wrapper — no changes to the component itself |
+| SignalOverlay→WebGL bridge | **Modified** (WebGL scenes) | `components/animation/glsl-hero.tsx`, `signal-mesh.tsx` | Add CSS var reads inside GSAP ticker callbacks; read `--signal-intensity`, `--signal-speed`, `--signal-accent` from `getComputedStyle` on each tick and push to uniforms |
+| globals.css signal defaults | **Modified** (globals) | `app/globals.css` | Add `--signal-intensity: 0.5; --signal-speed: 1; --signal-accent: 0;` defaults to `:root` block |
+| SFSection bgShift type | **Fixed** (component + type) | `components/sf/sf-section.tsx` | Change `bgShift?: boolean` to `bgShift?: "white" \| "black"` and render `data-bg-shift={bgShift}` — matching actual usage |
+| registry.json | **Extended** (static file) | `registry.json` | Add 5 missing layout primitive entries |
+| SignalframeUXProvider | **New** | `lib/signalframe-provider.tsx` | React context provider wrapping existing `toggleTheme`; exposes `useSignalframe()` hook |
+| `createSignalframeUX` | **New** | `lib/signalframe-provider.tsx` (same file) | Factory function that returns `{ SignalframeUXProvider, useSignalframe }` |
+| Session persistence | **Modified** (block component) | `components/blocks/components-explorer.tsx` | Add `sessionStorage` read/write for `activeFilter` + `searchQuery` in `useEffect` |
+| Session persistence (tokens) | **Modified** (page block) | `app/tokens/page.tsx` or its block | Add `sessionStorage` read/write for active tab |
 
 ---
 
-## Architectural Patterns
+## Data Flow Changes
 
-### Pattern 1: Singleton WebGL Renderer with Scene Registry
+### INT-04: SignalOverlay → WebGL Uniform Bridge
 
-**What:** One `THREE.WebGLRenderer` owns one WebGL context for the entire application. Individual generative components register named scenes. The renderer uses `setScissor` and `setViewport` to render each scene into its corresponding DOM element's bounding rect during a single render pass.
+The current flow is one-sided:
 
-**When to use:** Always, for all WebGL content in SignalframeUX. Never instantiate a second WebGLRenderer.
+```
+SignalOverlay slider change
+    ↓
+document.documentElement.style.setProperty("--signal-intensity", value)
+    ↓
+:root CSS var updated
+    ↓
+[NOTHING reads this]
+```
 
-**Trade-offs:** More complex scene management in exchange for staying well under the browser's context limit (8–16). Single shared context means shared resource pool — textures and geometries can be reused across scenes.
+The completed flow reads CSS vars inside the existing GSAP ticker:
 
-**Rationale:** The existing codebase already has two Canvas 2D contexts (CanvasCursor + HeroMesh). Adding multiple independent WebGL contexts risks the Safari 8-context ceiling and Chromium's warning at context 9+. The singleton pattern is the only viable path given the constraint.
+```
+SignalOverlay slider change
+    ↓
+document.documentElement.style.setProperty("--signal-intensity", value)
+    ↓
+:root CSS var updated
+    ↓
+GSAP ticker fires (next frame, ~16ms)
+    ↓
+glsl-hero.tsx ticker callback:
+  const intensity = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--signal-intensity")
+  ) || 0.5
+  uniformsRef.current.uIntensity.value = intensity
+    ↓
+THREE.WebGLRenderer renders with updated uniform
+```
+
+This pattern — reading CSS vars inside the existing ticker callback — is already established by `color-resolve.ts` and the `--color-primary` reads in `canvas-cursor.tsx`. No new loop is needed. The three vars map to existing or new uniforms:
+
+| CSS Var | Uniform Target | Scene(s) | Transform |
+|---------|---------------|----------|-----------|
+| `--signal-intensity` | `uIntensity` (new) | glsl-hero, signal-mesh | Direct: 0.0–1.0 |
+| `--signal-speed` | `uSpeed` (new) | glsl-hero, signal-mesh | Direct: 0.0–2.0 |
+| `--signal-accent` | `uAccent` (new) | glsl-hero | Degrees → radians or direct |
+
+Reading from `getComputedStyle` on each GSAP tick is not expensive at this scale (two reads per frame across the page). The existing color-resolve pattern confirms this is acceptable.
+
+### INT-03: SignalMotion on Showcase Sections
+
+No data flow change. SignalMotion is a self-contained GSAP wrapper — it manages its own ScrollTrigger and refs internally. The change is purely placement: wrap existing section content in `<SignalMotion>` in page components. The component takes `from`, `to`, `scrub`, `start`, `end` props and is already fully implemented with reduced-motion guard.
+
+The primary decision is which sections to activate. Based on the existing section taxonomy in `app/page.tsx`:
+
+```
+Homepage sections with data-bg-shift (the scroll-reactive sections):
+  MANIFESTO → strong candidate for SignalMotion (opacity/y scrub as user scrolls in)
+  SIGNAL/FRAME → strong candidate
+  API → strong candidate
+  COMPONENTS → strong candidate
+  HERO section: skip — hero has its own GLSL animation
+  STATS section: skip — StatsBand is data display, motion would distract
+```
+
+### DX-05: createSignalframeUX + useSignalframe
+
+The open questions from DX-SPEC.md resolve as follows, based on existing codebase evidence:
+
+**Q: Provider vs global singleton?**
+Answer: Provider, but thin. The existing `lib/theme.ts` is a global singleton that imperatively modifies `document.documentElement`. The provider wraps this — it does not replace it. Theme state is initialized from `localStorage.getItem("sf-theme")` (same key as the inline script in `layout.tsx`). The provider synchronizes React state with the DOM class, it does not own the source of truth.
+
+**Q: SSR hydration strategy for token values?**
+Answer: Do not expose resolved OKLCH token values from `useSignalframe()`. The DX-SPEC.md sketch includes `tokens.colorPrimary` (resolved sRGB) — this requires a DOM probe (Canvas 2D `getImageData`). SSR cannot provide this. The v1.2 implementation scopes `useSignalframe()` to: theme state + setTheme + motion controller. Token resolution via `resolveColorToken` remains a separate utility call, not part of the hook return value. This resolves the hydration mismatch without sacrificing DX.
+
+**Q: Motion controller scope?**
+Answer: Global GSAP timeline only. `motion.pause()` calls `gsap.globalTimeline.pause()` — identical to the existing reduced-motion guard in `gsap-plugins.ts`. Not subtree-scoped.
+
+The resulting architecture is minimal:
 
 ```typescript
-// Signal from a section component:
-// Server Component renders mount point with data attribute
-<div data-signal="mesh-geo" data-signal-id="hero-3d" aria-hidden="true" />
+// lib/signalframe-provider.tsx
 
-// Client hook registers with singleton:
-function SignalMesh() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const { registerScene, unregisterScene } = useSignalCanvas();
+const SignalframeContext = createContext<UseSignalframeReturn | null>(null);
 
-  useEffect(() => {
-    if (!mountRef.current) return;
-    const scene = new THREE.Scene();
-    // ... build scene
-    const id = registerScene(mountRef.current, scene, camera);
-    return () => unregisterScene(id);
-  }, []);
+export function createSignalframeUX(config: SignalframeUXConfig) {
+  function SignalframeUXProvider({ children }) {
+    // theme: read from localStorage + classList, write via toggleTheme()
+    // motion: wrap gsap.globalTimeline.pause/resume
+    // prefersReduced: MediaQueryList('prefers-reduced-motion')
+    return (
+      <SignalframeContext.Provider value={...}>
+        {children}
+      </SignalframeContext.Provider>
+    );
+  }
 
-  return <div ref={mountRef} data-signal="mesh-geo" aria-hidden="true" />;
+  function useSignalframe() {
+    return useContext(SignalframeContext);
+  }
+
+  return { SignalframeUXProvider, useSignalframe };
 }
 ```
 
-### Pattern 2: GSAP-Driven Render Demand (frameloop: "demand")
+The provider mounts in `RootLayout` alongside `LenisProvider`. It does not replace any existing providers.
 
-**What:** The SignalCanvas render loop does NOT run on every rAF. Instead, `frameloop: "demand"` equivalent — the renderer only redraws when GSAP ScrollTrigger's `onUpdate` fires or when a ticker callback is scheduled. Outside of active scroll or animation, the GPU is idle.
+**SSR note:** The provider renders on the server with `theme: "dark"` default (matches the inline blocking script behavior). Client hydration reads `localStorage` and classList in a `useEffect` to sync. This matches the existing `suppressHydrationWarning` on `<html>` — the pattern is already established.
 
-**When to use:** All generative scenes. The existing VHSOverlay and HeroMesh already pause on tab hidden; generative WebGL must do the same and go further by only drawing when GSAP says something changed.
+### STP-01: Session Persistence
 
-**Trade-offs:** Scenes that need ambient idle animation (grain drift, color pulse — SIG-08) must register themselves with a low-frequency ticker instead of relying on a continuous rAF loop.
+The open questions from DX-SPEC.md resolve as follows:
 
-**Implementation:** GSAP's `onUpdate` callback in ScrollTrigger gives the scroll progress value. Pass it to scene uniforms, then call `renderer.render(scene, camera)` inside that callback only.
+**Q: Storage backend?**
+Answer: `sessionStorage`. Tab-local, survives navigation within the tab (Next.js App Router navigations do not reload the page), clears on tab close. No URL params (changes the URL, breaks direct links to the page). No Zustand (adds a dependency for a feature scoped to two pages).
 
-```typescript
-// Inside useSignalScene:
-ScrollTrigger.create({
-  trigger: mountEl,
-  start: "top bottom",
-  end: "bottom top",
-  onUpdate: (self) => {
-    scene.userData.scrollProgress = self.progress;
-    requestRender(); // signals SignalCanvas to redraw on next rAF
-  },
-  onLeaveBack: () => { requestRender(); },
-  onLeave: () => { requestRender(); },
-});
-```
+**Q: Hydration timing?**
+Answer: Read in `useEffect` (client-only), not during render. The component renders with default empty state on SSR and on initial client render, then immediately restores from `sessionStorage` in `useEffect`. This causes a brief flicker of the default state — acceptable for a developer tool page. The alternative (read in `useLayoutEffect`) risks SSR errors in strict mode.
 
-### Pattern 3: Server Component Mount Points with data-signal Attributes
+**Q: State reset policy?**
+Answer: Persist until tab close (sessionStorage natural behavior). No manual reset needed.
 
-**What:** Server Components render semantic, content-safe placeholder divs with `data-signal` attributes. These are zero-JS on the server — just positioned containers. Client-side, `SignalMesh` and `SignalMotion` components hydrate them.
+**Q: Scope?**
+Answer: Two locations only — ComponentsExplorer (`activeFilter`, `searchQuery`) and the token page active tab. No other pages.
 
-**When to use:** All generative content that sits behind or alongside FRAME content. Preserves SSR output, CLS = 0 (placeholder has same dimensions as rendered visual), and progressive enhancement (if WebGL fails, the placeholder is invisible, FRAME content remains intact).
-
-**Rationale:** Matches existing pattern — `data-section`, `data-anim`, `data-cursor`, `data-bg-shift` are all authored in Server Components and consumed by client-side JS. `data-signal` extends this convention.
-
-```typescript
-// In a Server Component block:
-export function CaseStudyHero() {
-  return (
-    <SFSection data-section data-signal-zone>
-      <div
-        data-signal="procedural-field"
-        aria-hidden="true"
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-      />
-      <SFStack>
-        {/* FRAME content — always visible, independent of WebGL */}
-        <SFText as="h1" variant="heading-1">Case Study Title</SFText>
-      </SFStack>
-    </SFSection>
-  );
-}
-```
-
-### Pattern 4: FRAME/SIGNAL Legibility Contract for Generative Output
-
-**What:** Generative visuals are constrained to SIGNAL zones that are physically behind FRAME content (z-index below), with controlled opacity (never above 0.15 for background mesh, never above 0.4 for midground elements). The `SignalCanvas` z-index sits below FRAME content, above the body background.
-
-**When to use:** All generative visuals. Non-negotiable. Generative output is inherently unpredictable — the z-stack and opacity ceiling are the only hard enforcement mechanism.
-
-**The contract in code:**
-
-```typescript
-// SignalCanvas fixed canvas — always behind FRAME:
-style={{
-  position: 'fixed',
-  inset: 0,
-  zIndex: 'var(--z-signal-canvas, 1)',  // below nav (--z-nav), below cursor (--z-cursor)
-  pointerEvents: 'none',
-}}
-
-// New z-index tokens in globals.css:
-// --z-signal-canvas: 1;    /* generative layer — behind everything */
-// --z-frame-content: 10;   /* FRAME text, components */
-// --z-cursor: 9999;         /* existing */
-```
-
-**Opacity budget:** Background generative meshes max 0.12 opacity. Midground motion graphics max 0.35. Foreground procedural (if any) max 0.6 and only in zones with no readable text.
-
-### Pattern 5: Progressive Enhancement via WebGL Feature Detection
-
-**What:** `SignalCanvasLazy` checks `WebGLRenderingContext` availability before mounting. On failure (WebGL blocked, low-end GPU, fallback browser), it returns null. FRAME content is unaffected. Canvas 2D fallbacks (HeroMesh already exists for hero) remain visible.
-
-**When to use:** SignalCanvas initialization only.
-
-**Trade-offs:** No explicit CSS fallback state needed for generative visuals — they are additive, not structural.
-
-```typescript
-// In SignalCanvas useEffect:
-const canvas = canvasRef.current;
-const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-if (!gl) {
-  // WebGL not available — unmount gracefully, FRAME content unaffected
-  setWebGLAvailable(false);
-  return;
-}
-```
-
----
-
-## Data Flow
-
-### Generative Scene Render Flow
+The integration is localized to `ComponentsExplorer`:
 
 ```
-Page scroll event (Lenis)
+ComponentsExplorer mounts
     ↓
-ScrollTrigger.onUpdate (GSAP)
+useEffect fires (client-only)
     ↓
-Scene proxy object updated (rotation, uniforms, progress)
+Read sessionStorage.getItem("sf-components-state")
     ↓
-requestRender() called on SignalCanvas
+If exists: parse JSON → setActiveFilter, setSearchQuery
     ↓
-SignalCanvas rAF: forEach(registeredScene) {
-    renderer.setScissor(scene.bounds);
-    renderer.setViewport(scene.bounds);
-    renderer.render(scene.threeScene, scene.camera);
-}
+On state change (filter, search): write sessionStorage.setItem(...)
 ```
 
-### Scene Registration Flow
-
-```
-Component mounts (useSignalScene)
-    ↓
-IntersectionObserver created for mount element
-    ↓
-Scene registered in SignalCanvas registry (Map<id, SceneEntry>)
-    ↓
-On intersection: bounds cached, scroll-trigger created
-    ↓
-On leave: scroll-trigger paused, render skipped
-    ↓
-On unmount: unregisterScene(), observer.disconnect(), geometry.dispose()
-```
-
-### OKLCH Color Propagation to Generative Layer
-
-The existing probe canvas technique (1×1 Canvas 2D fillStyle + getImageData) already resolves OKLCH to RGB for CanvasCursor. The same utility must be extended for the generative layer:
-
-```
-CSS token: --color-primary (oklch)
-    ↓
-lib/color-resolve.ts: resolveOklchToRgb(property) → { r, g, b }
-    (extracted from canvas-cursor.tsx into shared utility)
-    ↓
-Three.js uniform: mesh.material.uniforms.uColor.value.set(r/255, g/255, b/255)
-    ↓
-ColorCycleFrame fires → color stutter → resolve again → update uniform
-```
-
-The `resolveOklchToRgb` function should be extracted from canvas-cursor.tsx into `lib/color-resolve.ts` and shared by both the existing cursor and new generative components.
-
----
-
-## Project Structure — New Files
-
-```
-components/
-├── animation/
-│   ├── signal-canvas.tsx       NEW — singleton WebGL host, scene registry
-│   ├── signal-mesh.tsx         NEW — parametric 3D geometry scene
-│   ├── signal-motion.tsx       NEW — particle/flow field scene
-│   └── hero-mesh.tsx           UNCHANGED (Canvas 2D, migrate later)
-│
-├── layout/
-│   ├── signal-canvas-lazy.tsx  NEW — next/dynamic ssr:false wrapper
-│   └── global-effects-lazy.tsx UNCHANGED
-│
-hooks/
-│   └── use-signal-scene.ts     NEW — scene registration hook
-
-lib/
-│   ├── color-resolve.ts        NEW — extracted OKLCH→RGB probe utility
-│   ├── gsap-core.ts            UNCHANGED
-│   └── gsap-plugins.ts         UNCHANGED
-```
-
----
-
-## Integration Points
-
-### External Services / APIs
-
-| Integration | Pattern | Notes |
-|-------------|---------|-------|
-| Three.js r171+ | `next/dynamic ssr:false` — never server-imported | ~155KB gzip. Load only when WebGL confirmed available. Separate dynamic chunk |
-| GSAP ScrollTrigger | Already loaded via gsap-core.ts — no new bundle cost | Connect to Three.js scene via onUpdate proxy pattern |
-| Lenis smooth scroll | ScrollTrigger.scrollerProxy already wired via LenisProvider | Generative layer inherits this — no new wiring |
-| `@react-three/fiber` (R3F) | NOT RECOMMENDED — see Anti-Pattern 1 | |
-| `@react-three/drei` | NOT RECOMMENDED — see Anti-Pattern 1 | |
-
-**Three.js import strategy:** Import raw Three.js, not via R3F. The existing architecture manages its own rAF loop (GlobalEffects, HeroMesh both do this manually). A raw Three.js singleton renderer follows the same pattern and avoids the R3F abstraction layer overhead.
-
-### Internal Boundaries
-
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| SignalCanvas ↔ Scene components | React context + hook (useSignalScene) | Scenes register/unregister via context API — no prop drilling |
-| SignalCanvas ↔ GlobalEffects | Both lazy-loaded, rendered in RootLayout body | No communication needed — independent fixed overlays |
-| CanvasCursor ↔ SignalCanvas | No shared state | Separate canvases, separate contexts (2D vs WebGL). CanvasCursor stays Canvas 2D |
-| ColorCycleFrame ↔ SignalCanvas | Shared color-resolve.ts utility | ColorCycleFrame fires a custom event or calls a ref callback when --color-primary changes; SignalCanvas listens and updates uniforms |
-| GSAP globalTimeline ↔ SignalCanvas | `initReducedMotion` scalar = 0 pauses GSAP timelines | SignalCanvas must also check `prefers-reduced-motion` independently — GSAP controls its own timelines, not the WebGL rAF |
-
----
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Using React Three Fiber (R3F)
-
-**What people do:** Install `@react-three/fiber` and `@react-three/drei`, wrap everything in `<Canvas>`, use hooks like `useFrame`, `useThree`, `useLoader`.
-
-**Why it's wrong for this project:** R3F creates its own render loop and React reconciler. This means a second React root embedded in the component tree, a separate rAF loop that cannot be paused by GSAP's globalTimeline scalar, a Canvas element that R3F owns (making scissor-based multi-scene management awkward), and an additional ~40KB bundle for fiber itself plus ~200KB for drei helpers. The existing architecture controls its own loops manually (GlobalEffects, HeroMesh, VHSOverlay all do this). R3F would introduce a separate uncontrolled loop.
-
-**Do this instead:** Raw Three.js in a singleton pattern controlled by GSAP's onUpdate callbacks. Matches existing patterns exactly.
-
-### Anti-Pattern 2: Multiple WebGL Contexts (One Per Section)
-
-**What people do:** Add a `<canvas>` to each generative section, call `canvas.getContext('webgl2')` in each component's `useEffect`.
-
-**Why it's wrong:** Browser limit is 8–16 simultaneous WebGL contexts. With CanvasCursor (Canvas 2D, not WebGL — exempt) and HeroMesh (Canvas 2D, not WebGL — exempt), the generative layer starts with a clean WebGL budget of 0. But even so, if each showcase section creates its own WebGL context, hitting 9+ on a page with many sections will silently destroy the oldest context (no error thrown). Safari's limit of 8 is particularly aggressive.
-
-**Do this instead:** Singleton renderer (Pattern 1). One context, one renderer, scissor-split per scene.
-
-### Anti-Pattern 3: Eagerly Importing Three.js
-
-**What people do:** `import * as THREE from 'three'` at the top of a component file, or re-export from a shared module that gets imported in the component tree.
-
-**Why it's wrong:** Three.js minified+gzip is ~155KB. The page weight budget is <200KB initial. An eager import blows the budget before any app code loads. Next.js cannot tree-shake a wildcard import of Three.js because Three.js is not fully tree-shakeable.
-
-**Do this instead:** Three.js is imported exclusively inside the `next/dynamic` async factory in `signal-canvas-lazy.tsx`. It never appears in the synchronous import graph. This defers the ~155KB chunk to after initial paint, matching how `GlobalEffectsLazy` defers GSAP plugin bundles.
-
-### Anti-Pattern 4: Letting Generative Output Overlap FRAME Text
-
-**What people do:** Position a generative canvas at z-index 10 to appear "on top of" or "in front of" the UI for visual impact, without testing text readability.
-
-**Why it's wrong:** Generative output is by definition unpredictable — a particle cluster, mesh vertex, or bright fragment shader region can land exactly on a heading. Because the generative layer is CSS-unpredictable, the only safe enforcement is z-index and opacity constraints, not visual judgment.
-
-**Do this instead:** SignalCanvas z-index is always below FRAME content (`--z-signal-canvas: 1`). If foreground generative elements are needed, they go in dedicated generative-only zones with no overlapping text (empty SFSection with no text children).
-
-### Anti-Pattern 5: Skipping Geometry Disposal on Unmount
-
-**What people do:** Create `THREE.BufferGeometry`, `THREE.ShaderMaterial`, `THREE.Texture` in a useEffect and never call `.dispose()` on cleanup.
-
-**Why it's wrong:** Three.js allocates GPU memory for geometries, materials, and textures. Without disposal, this memory leaks across route navigations. The existing architecture always cleans up (CanvasCursor: `cancelAnimationFrame + observer.disconnect`, HeroMesh: same pattern). Three.js requires the additional step of calling `.dispose()` on GPU resources.
-
-**Do this instead:** `useSignalScene` cleanup function disposes all THREE objects. This is enforced at the hook level, not left to individual scene implementations.
+No new hooks or abstractions. `sessionStorage` reads/writes directly in `useEffect` inside the existing component. The JSON key is `"sf-components-state"` (namespaced to avoid collisions).
 
 ---
 
 ## Suggested Build Order
 
-Dependencies flow downward — each phase is unblocked only after the one above it.
+Dependencies flow downward. Each item is independently deployable with a commit rollback point.
 
-### Phase A: Foundation (prerequisite for everything)
+### Step 1: globals.css signal defaults (30 min)
 
-1. Extract `resolveOklchToRgb` from canvas-cursor.tsx into `lib/color-resolve.ts` and update CanvasCursor to import it. Zero behavior change — pure refactor. Establishes the shared utility.
+Zero dependencies. Add three CSS custom property defaults to `:root` in `app/globals.css`:
 
-2. Build `SignalCanvas` singleton + `useSignalScene` hook. No scenes yet — just the renderer, context management, IntersectionObserver pattern, visibility pause, reduced-motion guard, and WebGL feature detection. Test with a placeholder solid-color scene.
+```css
+--signal-intensity: 0.5;
+--signal-speed: 1;
+--signal-accent: 0;
+```
 
-3. Build `SignalCanvasLazy` wrapper, add to RootLayout alongside `GlobalEffectsLazy`. Confirm Three.js chunk is deferred (check Network tab — must not appear in initial load waterfall).
+Commit immediately. This unblocks INT-04 and makes the SignalOverlay panel correct at initial state (currently it shows 0.50/1.00/0° but the CSS vars are undefined until first slider interaction).
 
-**Gate:** Lighthouse 100/100 must be maintained. Bundle size must not increase by >5KB initial.
+### Step 2: SFSection bgShift type fix (30 min)
 
-### Phase B: First Generative Scene (validates the pipeline)
+Zero dependencies. Change `bgShift?: boolean` to `bgShift?: "white" | "black"` in `sf-section.tsx`. Update the JSDoc. Verify `app/page.tsx` usage passes through spread — the actual callers use `data-bg-shift="white"` as a spread HTML attribute, so the prop change does not break them. This is a type cleanup, not a behavioral change.
 
-4. Build `SignalMesh` — parametric 3D geometry scene. Register via `useSignalScene`. Wire GSAP ScrollTrigger onUpdate to mesh rotation/position uniforms. Test scroll-driven behavior. This is the most load-bearing validation — if the scissor/viewport split, GSAP wiring, and reduced-motion handling all work here, Phase C is straightforward.
+Commit immediately.
 
-5. Activate dormant `[data-cursor]` sections (the existing one-line tech debt fix from v1.0 audit). Apply to sections that will have generative visuals — cursor activation signals "this section is interactive and generative."
+### Step 3: registry.json layout primitives (1 hr)
 
-**Gate:** No WebGL context warnings in browser console. Cursor activates correctly. Mesh renders without CLS.
+Zero dependencies. Add the 5 missing SF layout primitives to `registry.json`:
+- `sf-container` — wraps content with max-width + gutter tokens
+- `sf-section` — semantic section primitive with bgShift, spacing, label
+- `sf-stack` — flex column with blessed gap stops
+- `sf-grid` — responsive grid with blessed column/gap tokens
+- `sf-text` — typography primitive with semantic alias enforcement
 
-### Phase C: Extended Generative Scenes
+These have no npm dependencies (no Radix base). `registryDependencies` field is empty. The `type` is `"registry:ui"` matching existing entries.
 
-6. Build `SignalMotion` — particle system or flow field scene. Reuses SignalCanvas pipeline established in Phase B. GSAP-driven particle parameters.
+Commit immediately.
 
-7. Wire ColorCycleFrame color changes to Three.js uniforms via color-resolve utility. Generative layer should respond to accent color cycling.
+### Step 4: SignalOverlay → WebGL bridge (2–3 hr)
 
-**Gate:** Multiple scenes on the same page do not cause context warnings. Color cycling propagates to WebGL layer correctly.
+Depends on: Step 1 (CSS var defaults must exist before wiring).
 
-### Phase D: Integration with SF Primitives (consumers)
+Two modifications:
 
-8. Apply `data-signal` mount points to showcase pages — CaseStudy sections, about hero, work grid. These are the first production consumers of SFSection/SFStack/SFGrid (resolving the PRM-02/03/04 tech debt from v1.0 audit) while also being the first generative zones.
+1. `glsl-hero.tsx` — inside the existing GSAP ticker callback (currently increments `uTime`), add reads of `--signal-intensity`, `--signal-speed`, `--signal-accent` from `getComputedStyle`. Push to new `uIntensity`, `uSpeed`, `uAccent` uniforms. Add these three uniforms to the shader's `uniform` declarations and wire them to the visual output (e.g., `uIntensity` scales noise amplitude, `uSpeed` scales the time delta, `uAccent` shifts hue in the fragment shader output).
 
-9. SIGNAL authoring model documentation — a `SIGNAL-GENERATIVE-SPEC.md` that documents: which sections have generative zones, what scene each zone uses, opacity budget, scroll range, reduced-motion fallback.
+2. `signal-mesh.tsx` — same pattern: read `--signal-intensity` and `--signal-speed` in ticker, push to new uniforms, wire to vertex displacement amplitude and time scale.
 
-**Gate:** CRT critique score ≥ 90 for pages with generative content. FRAME content legible over all generative output.
+The read happens once per GSAP tick (~60fps). `getComputedStyle` on `:root` is cheap at this frequency — this is the same technique as `canvas-cursor.tsx` line 41.
+
+Commit after each scene.
+
+### Step 5: SignalMotion on showcase sections (1–2 hr)
+
+Depends on: nothing (SignalMotion is self-contained).
+
+Place `<SignalMotion>` wrappers on 4 homepage sections. Use conservative defaults (`from={{ opacity: 0.6, y: 16 }}`, `scrub={1}`) — the sections already have layout and content, the motion should enhance not dominate. Verify reduced-motion renders at `to` state immediately.
+
+Test: scroll slowly through the page, verify scrub behavior; test with `prefers-reduced-motion: reduce` in DevTools, verify no animation fires.
+
+Commit.
+
+### Step 6: createSignalframeUX + useSignalframe (3–4 hr)
+
+Depends on: nothing externally, but conceptually benefits from Steps 1–5 being stable first (the motion controller wraps the already-settled GSAP timeline state).
+
+Create `lib/signalframe-provider.tsx`. Export `createSignalframeUX`. Mount the returned `SignalframeUXProvider` in `RootLayout`. Document the hook contract in SCAFFOLDING.md.
+
+**Critical constraint:** The provider's theme initialization must NOT conflict with the inline blocking script in `layout.tsx`. The inline script reads `localStorage("sf-theme")` and sets `document.documentElement.classList`. The provider must read the same key and treat the DOM classList as the source of truth — not re-apply its own default on mount (which would cause a flash).
+
+Correct initialization:
+
+```typescript
+const [isDark, setIsDark] = useState(() => {
+  if (typeof window === "undefined") return true; // SSR default: dark
+  return document.documentElement.classList.contains("dark");
+});
+```
+
+Commit after provider works. Commit separately after SCAFFOLDING.md update.
+
+### Step 7: Session persistence (2–3 hr)
+
+Depends on: nothing (self-contained in ComponentsExplorer).
+
+Modify `components/blocks/components-explorer.tsx` to:
+1. Read from `sessionStorage` in `useEffect` on mount — restore `activeFilter` and `searchQuery`.
+2. Write to `sessionStorage` in a separate `useEffect` when either state changes.
+
+The token page tab persistence follows the same pattern once the tab state location is identified.
+
+Commit after ComponentsExplorer. Commit separately after token page.
+
+### Step 8: Documentation cleanup
+
+Depends on: all above complete.
+
+Update SCAFFOLDING.md with `useSignalframe()` API contract. Update component frontmatter JSDoc for `SFSection` bgShift. Mark resolved tech debt items in PROJECT.md.
 
 ---
 
-## Scaling Considerations
+## Integration Points Summary
 
-This is a portfolio site — "scaling" is about adding more generative scenes, not about user load. The relevant scaling axis is: how many scenes can the page support?
+| Item | Files Read | Files Modified | New Files |
+|------|-----------|----------------|-----------|
+| globals.css defaults | none | `app/globals.css` | none |
+| bgShift type fix | `sf-section.tsx` | `sf-section.tsx` | none |
+| registry.json | `registry.json`, 5 sf component files | `registry.json` | none |
+| INT-04 WebGL bridge | `glsl-hero.tsx`, `signal-mesh.tsx`, `globals.css` | `glsl-hero.tsx`, `signal-mesh.tsx` | none |
+| INT-03 SignalMotion | `signal-motion.tsx`, `app/page.tsx` | `app/page.tsx` (+ other showcase pages) | none |
+| createSignalframeUX | `lib/theme.ts`, `app/layout.tsx`, `DX-SPEC.md` | `app/layout.tsx` | `lib/signalframe-provider.tsx` |
+| Session persistence | `components/blocks/components-explorer.tsx`, `DX-SPEC.md` | `components/blocks/components-explorer.tsx`, token page block | none |
 
-| Scene Count | Approach |
-|-------------|----------|
-| 1–3 scenes | Single SignalCanvas, all scenes rendered each frame via scissor split. Budget: fine |
-| 4–8 scenes | Add IntersectionObserver culling — only render scenes currently in viewport. Others skip their render pass entirely |
-| 9+ scenes | Profile first. Likely culling is sufficient. If not, consider WebGPU renderer (Three.js r171+ has automatic WebGL2 fallback) for better GPU throughput. Not needed for v1.1 scope |
+---
 
-**Note on WebGPU:** All major browsers ship WebGPU as of November 2025 (Chrome/Edge since 2023, Safari since June 2025 Safari 26, Firefox since July 2025). Three.js r171+ supports WebGPU with automatic WebGL2 fallback. This is not needed for v1.1 but is a clean upgrade path if shader complexity grows.
+## Anti-Patterns to Avoid
+
+### Anti-Pattern 1: Polling CSS vars outside the existing ticker
+
+**What:** Adding a new `setInterval` or `requestAnimationFrame` loop to watch `--signal-intensity` for changes.
+
+**Why bad:** The GSAP ticker already runs at 60fps. A second loop is redundant and creates a second read cycle that can get out of phase with the render. The render only happens in the GSAP ticker callback anyway, so reading outside of it gains nothing.
+
+**Instead:** Read CSS vars inside the existing GSAP ticker callback in each scene component. One read per render frame, zero extra loops.
+
+### Anti-Pattern 2: Replacing lib/theme.ts with the new provider
+
+**What:** Rewriting `toggleTheme()` inside the provider, deleting `lib/theme.ts`.
+
+**Why bad:** `toggleTheme` is called by `DarkModeToggle` and `CommandPalette`. These components use `'use client'` and import directly from `lib/theme.ts`. Replacing the function breaks those callers unless they are simultaneously updated, and the commit is no longer atomic.
+
+**Instead:** The provider wraps `toggleTheme`. It calls the existing function and syncs its own React state. `lib/theme.ts` stays unchanged.
+
+### Anti-Pattern 3: Making useSignalframe return resolved OKLCH token values
+
+**What:** Implementing `tokens.colorPrimary` as a resolved sRGB value from `resolveColorToken`.
+
+**Why bad:** Requires a DOM Canvas 2D probe call during React render or in a `useLayoutEffect`. This causes an SSR/client mismatch if done during render, or a one-frame delay if done in `useLayoutEffect`. The DX-SPEC.md sketched this but marked it as an open question.
+
+**Instead:** Scope `useSignalframe()` to theme + motion controller only. Document that color token resolution uses `resolveColorToken(cssVar)` directly — it is already exported from `lib/color-resolve.ts`.
+
+### Anti-Pattern 4: Persisting session state to localStorage instead of sessionStorage
+
+**What:** Using `localStorage` for component browser filter state.
+
+**Why bad:** Filter state persists across sessions (even days later), can conflict with the system theme key (`sf-theme` in localStorage), and may return stale state if component names/categories change between deploys.
+
+**Instead:** `sessionStorage` — tab-local, clears on close, no cross-session contamination. The DX-SPEC.md recommendation is confirmed correct.
+
+### Anti-Pattern 5: Adding bgShift as a data-attribute-typed prop with "white"/"black" values treated as theme selectors
+
+**What:** Making `bgShift="white"` activate different CSS based on light/dark mode.
+
+**Why bad:** The existing `#bg-shift-wrapper` CSS in globals.css already handles dark/light mode correctly. The `data-bg-shift` value is already used by GSAP scroll targeting to identify which sections get which background color on scroll. Changing the semantics of the value would break GSAP targeting.
+
+**Instead:** Fix only the TypeScript type — `bgShift?: "white" | "black"` — and propagate the value to `data-bg-shift`. Do not change the CSS or GSAP scroll logic.
+
+---
+
+## Confidence Assessment
+
+| Area | Confidence | Basis |
+|------|-----------|-------|
+| INT-04 bridge approach | HIGH | getComputedStyle in ticker is verified pattern from canvas-cursor.tsx line 41 |
+| INT-03 SignalMotion placement | HIGH | Component is complete and documented; placement is mechanical |
+| bgShift fix | HIGH | Type mismatch confirmed by reading sf-section.tsx vs app/page.tsx side by side |
+| registry.json completion | HIGH | shadcn schema is already in the file; 5 missing components identified by diff |
+| createSignalframeUX scope | HIGH | Narrowed from DX-SPEC.md open questions using existing lib/theme.ts + layout.tsx evidence |
+| Session persistence approach | HIGH | sessionStorage is DOM-native, no external deps; hydration timing resolved via useEffect |
 
 ---
 
 ## Sources
 
-- MDN WebGL best practices: [https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices)
-- WebGL multiple views pattern (scissor): [https://webglfundamentals.org/webgl/lessons/webgl-multiple-views.html](https://webglfundamentals.org/webgl/lessons/webgl-multiple-views.html)
-- Chromium WebGL context limit issue: [https://github.com/openlayers/openlayers/issues/16118](https://github.com/openlayers/openlayers/issues/16118)
-- R3F Canvas API (fallback, gl, frameloop): [https://r3f.docs.pmnd.rs/api/canvas](https://r3f.docs.pmnd.rs/api/canvas)
-- R3F too many contexts (Safari): [https://github.com/pmndrs/react-three-fiber/discussions/2457](https://github.com/pmndrs/react-three-fiber/discussions/2457)
-- Next.js lazy loading (next/dynamic): [https://nextjs.org/docs/app/guides/lazy-loading](https://nextjs.org/docs/app/guides/lazy-loading)
-- GSAP + Three.js integration (Frontend Horse): [https://frontend.horse/episode/using-threejs-with-gsap-scrolltrigger/](https://frontend.horse/episode/using-threejs-with-gsap-scrolltrigger/)
-- Codrops WebGL + GSAP gallery (Feb 2026): [https://tympanus.net/codrops/2026/02/02/building-a-scroll-revealed-webgl-gallery-with-gsap-three-js-astro-and-barba-js/](https://tympanus.net/codrops/2026/02/02/building-a-scroll-revealed-webgl-gallery-with-gsap-three-js-astro-and-barba-js/)
-- WebGPU browser support (all majors as of Nov 2025): [https://www.webgpu.com/news/webgpu-hits-critical-mass-all-major-browsers/](https://www.webgpu.com/news/webgpu-hits-critical-mass-all-major-browsers/)
-- Three.js WebGPU support r171+: [https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu](https://developer.chrome.com/docs/web-platform/webgpu/from-webgl-to-webgpu)
-- Non-intrusive WebGL context loss patterns: [https://medium.com/@mattdesl/non-intrusive-webgl-cebd176c281d](https://medium.com/@mattdesl/non-intrusive-webgl-cebd176c281d)
-- r3f-scroll-rig (scroll-synced 3D + DOM): [https://github.com/14islands/r3f-scroll-rig](https://github.com/14islands/r3f-scroll-rig)
+- `components/animation/signal-overlay.tsx` — CSS var write side confirmed (lines 136–148)
+- `components/animation/signal-mesh.tsx`, `glsl-hero.tsx` — uniform structure confirmed, no signal-* reads exist
+- `components/animation/signal-motion.tsx` — complete implementation, zero page placements
+- `components/sf/sf-section.tsx` — bgShift boolean type confirmed
+- `app/page.tsx` — data-bg-shift="white"/"black" spread usage confirmed (lines 29–50)
+- `app/globals.css` lines 462–470 — bg-shift-wrapper CSS confirmed, no --signal-* defaults
+- `registry.json` — 23 entries, 5 layout primitives missing
+- `lib/theme.ts` — toggleTheme singleton confirmed
+- `lib/color-resolve.ts` — getComputedStyle probe pattern confirmed (lines 104–120)
+- `.planning/DX-SPEC.md` — interface sketches for DX-05 and STP-01 with open questions
+- `components/blocks/components-explorer.tsx` — activeFilter, searchQuery, focusedIndex state confirmed (lines 278–283)
 
 ---
-*Architecture research for: SignalframeUX v1.1 Generative Surface*
-*Researched: 2026-04-05*
+
+*Architecture research for: SignalframeUX v1.2 Tech Debt Sweep*
+*Researched: 2026-04-06*

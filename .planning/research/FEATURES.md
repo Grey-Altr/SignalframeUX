@@ -1,237 +1,283 @@
-# Feature Research
+# Feature Landscape
 
-**Domain:** Generative design system showcase — creative technology portfolio
-**Researched:** 2026-04-05
-**Confidence:** HIGH (Awwwards SOTD corpus, Codrops case studies 2025-2026, official docs)
-
----
-
-## Context: What Is Already Built
-
-The following SIGNAL effects are **fully implemented in v1.0** and are NOT in scope for this milestone. They are listed here only to establish dependency anchors and prevent duplication:
-
-| Effect | Spec ID | Status |
-|--------|---------|--------|
-| ScrambleText on route entry | SIG-01 | Shipped |
-| Asymmetric hover (100ms/400ms) | SIG-02 | Shipped |
-| Hard-cut 34ms section reveals | SIG-03 | Shipped |
-| Staggered grid entry (ScrollTrigger.batch) | SIG-04 | Shipped |
-| Progressive enhancement `[data-anim]` catch-all | SIG-05 | Shipped |
-| Canvas cursor (crosshair + particle trail) | SIG-09 | Mounted, `[data-cursor]` not yet placed on sections |
-| VHS/CRT overlay | SIG family | Shipped |
-| Circuit divider DrawSVG scrub | SIG family | Shipped |
-| Hero mesh (canvas-based) | SIG family | Shipped |
-| Marquee text bands | SIG family | Shipped |
-
-The new milestone (v1.1 Generative Surface) adds **generative/procedural SIGNAL capabilities** beyond this baseline.
+**Domain:** Design system DX — registry distribution, config provider, session persistence
+**Milestone:** v1.2 Tech Debt Sweep (DX-04, DX-05, STP-01)
+**Researched:** 2026-04-06
+**Overall confidence:** HIGH (shadcn official docs verified via Context7/WebFetch, React patterns from official sources)
 
 ---
 
-## Feature Landscape
+## Context: What This File Covers
 
-### Table Stakes (Awwwards-Level Baseline for Creative Tech Sites)
+The previous FEATURES.md covers v1.1 Generative Surface (SIGNAL effects, WebGL, etc.). This file covers
+the three deferred DX features that were sketched in DX-SPEC.md and are now active in v1.2:
 
-Features that any 2026 SOTD-level generative design system showcase is expected to have. Their absence caps the Creativity score and signals technical incompleteness to a jury that sees 300+ sites per week.
+| Item | Feature | Status |
+|------|---------|--------|
+| DX-04 | registry.json — CLI/AI component installation | Active |
+| DX-05 | createSignalframeUX(config) + useSignalframe() API | Active |
+| STP-01 | Session state persistence (filters, scroll, tabs) | Active |
+
+---
+
+## DX-04: registry.json — Component Distribution Surface
+
+### Current State
+
+The project already has two registry files:
+
+- `registry.json` — source registry at project root (26 SF components listed)
+- `public/r/registry.json` — built output served at `/r/registry.json` (17 components — stale, missing 9 items added post-v1.0)
+
+The source `registry.json` is correctly structured against the shadcn schema. The built `public/r/` output is stale.
+
+### Table Stakes
+
+Features an installable registry MUST have to function with `npx shadcn@latest add`:
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| WebGL procedural background or environment | Every 2026 SOTD in the industrial/generative corridor uses WebGL for at least one hero-moment surface (Darknode, Shift 5, Corentin Bernadou portfolio). Canvas-only is read as "not generative." | MEDIUM | OGL (minimal, ~40KB) preferred over Three.js (~600KB) for single-effect use. Must not block LCP. `dynamic(() => import(...), { ssr: false })` required in Next.js 15. |
-| GLSL shader driving at least one surface | Awwwards jury distinguishes between "libraries doing the work" and "authored shader work." A custom GLSL shader — even one — signals technical authorship. DrawSVG on circuit dividers (already shipped) does not count as generative in this dimension. | HIGH | Vertex displacement + noise (simplex/Perlin) is the standard entry point. Can reuse the hero-mesh canvas component as foundation. |
-| Scroll-reactive visual layer (not just layout) | ScrollTrigger reveal animations (shipped) are table stakes for the FRAME layer. For the SIGNAL generative layer, the expectation is that scroll modulates a procedural parameter — mesh density, shader intensity, particle speed — not just opacity/transform. | MEDIUM | Can be implemented as ScrollTrigger progress value piped into a uniform or canvas parameter. GSAP scrub pattern already used in circuit dividers. |
-| Idle-state animation on background surfaces | Static hero after initial reveal is a craft failure in 2026. The 60-90s jury evaluation window (SYNTH-awwwards-patterns.md §3) requires something alive when the user stops scrolling. SIG-08 (grain drift, color pulse) is already identified in PROJECT.md as active requirement. | LOW | CSS animation on a grain texture or GSAP looping timeline on shader uniform. Very low CPU cost when done as CSS animation. |
-| One signature cursor interaction detail | The Lookback, Corentin Bernadou, and Arnaud Rocca all cite cursor behavior as their "craft clincher" moment. CanvasCursor is mounted but `[data-cursor]` is not placed on any section (known tech debt). | LOW | One-line fix per section. Zero new code required — this is activation, not implementation. Highest ROI item in the entire milestone. |
+| Valid `$schema` field pointing to shadcn schema URL | Required for CLI validation | None | Already present: `"https://ui.shadcn.com/schema/registry.json"` |
+| Per-component JSON at `/r/[name].json` | The CLI fetches individual component JSON — not the root registry.json | LOW | shadcn CLI build step (`shadcn build`) generates these from source. Currently absent. |
+| `registryDependencies` populated | CLI resolves shadcn/ui base component (button, card, etc.) before installing the SF wrapper | LOW | Partially done. Needs audit — animation components (circuit-divider, etc.) have no registryDependencies declared. |
+| `cssVars` block on the theme item | The CLI can inject CSS custom properties into the consumer's globals.css via cssVars | MEDIUM | Not yet in registry.json. SF token system lives in globals.css — a `cssVars` block on a "sf-theme" registry item would let consumers install the token layer as a unit. |
+| All 29 SF components present | 9 components from v1.0/v1.1 (sf-label, sf-select, sf-checkbox, sf-radio-group, sf-switch, sf-textarea, animation/scramble-text, animation/circuit-divider, animation/hero-mesh) are in source but not in `public/r/` | LOW | Run `pnpm shadcn build` after source is complete. |
+| Layout primitives in registry | SFContainer, SFSection, SFStack, SFGrid, SFText are not in registry.json at all | MEDIUM | These have no shadcn/ui base — `registryDependencies: []` is correct. Type should be `registry:ui`. They enforce token system by construction — the cssVars approach or docs field should capture this. |
 
-### Differentiators (Competitive Advantage Within DU/TDR Aesthetic)
+### Differentiators
 
-Features that create SOTD-level distinctiveness specifically for the industrial/brutalist corridor that SignalframeUX occupies. These are NOT generic creative-tech features — they must cohere with the DU/TDR visual language.
+Features that make the registry genuinely useful beyond basic shadcn compatibility:
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| ASCII / dithering post-process shader | CRT-era retro-brutalist effect that directly references early computing visual language — aligns with DU/TDR aesthetic without being decorative. Efecto (Codrops Jan 2026) demonstrates GPU-accelerated ASCII shader in WebGL. Eloy Benoffi's brutalist portfolio won SOTD using this exact technique (Oct 2025). | HIGH | Fragment shader post-processing pass over the WebGL scene or over an image/video element. Floyd-Steinberg dithering is CPU-only (avoid); ordered dithering is GPU-parallel (use). OGL or raw WebGL context. Must have CSS fallback for no-WebGL. |
-| Parametric mesh that responds to SIGNAL tokens | A 3D surface (wireframe or solid) whose parameters — density, displacement amplitude, speed — are driven by the same token system as the FRAME layer. This makes the generative layer legible as a system, not just a visual effect. No other SOTD-winner design system has demonstrated this. | HIGH | WebGL geometry (OGL or Three.js) with uniforms reading from CSS custom property values resolved at render time. GSAP ScrollTrigger drives the uniform. Requires WebGL component isolated behind `dynamic import`. |
-| Data-driven visualization as design token display | Rather than a static token table, display spacing/color/typography tokens as a living generative grid — bars animated from 0 to their token value, OKLCH values rendered as procedurally blended color fields, duration tokens shown as real-time oscilloscope traces. This makes the token explorer itself a generative output. | MEDIUM | Canvas 2D (not WebGL) is sufficient here. The visualization IS the data — no shader complexity needed. Directly maps to existing token explorer component. High jury Creativity score because the concept is unified (the system demonstrates itself). |
-| Procedural noise applied to typographic surfaces | Vertex displacement on SplitText characters — a GLSL noise function displacing individual character meshes on hover or scroll. Corentin Bernadou (SOTD Mar 2026) used Three.js geometry for this exact effect. Aligns with existing ScrambleText + DU/TDR terminal aesthetic. | HIGH | Requires Three.js or OGL. Characters must be rendered as WebGL geometry (not DOM text), then transitioned back to DOM for the legible state. Complex FRAME/SIGNAL boundary management. Defer unless core generative layer is stable first. |
-| Audio feedback palette (SIG-06) | Subtle click/hover sounds mapped to interaction events — not music, not interface sounds, but the "terminal feedback" layer that DU/TDR electronic music production contexts use. Already identified in PROJECT.md. Low implementation cost via Web Audio API oscillator tones. | LOW | Web Audio API, no library. OscillatorNode + GainNode. 2-3 tones: click (sharp 440hz 20ms), hover (soft 220hz 50ms), route change (descending 3-tone 200ms). Must respect `prefers-reduced-motion` and provide opt-out. No autoplay — user gesture required to unlock AudioContext. |
-| Haptic feedback on mobile (SIG-07) | Vibration API — a single short pulse on tap events. 10ms at most. Reinforces the tactile terminal voice on mobile where cursor effects are suppressed. Already in PROJECT.md. | LOW | `navigator.vibrate([10])` — 3 lines. Zero dependencies. Android only (iOS blocks Vibration API). Feature-detect before calling. |
-| Idle-state color pulse / grain drift (SIG-08) | When the user stops interacting for >3s, background grain texture begins a slow drift — a 0.3% shift in noise seed per second, imperceptible but alive. Color temperature of the primary surface shifts ±2% in OKLCH L-channel. Signals that the system is "breathing." Already in PROJECT.md. | LOW | CSS animation on grain texture `background-position`. GSAP looping timeline on a CSS custom property for the OKLCH shift. No WebGL required. |
-| Live SIGNAL authoring controls (devtool overlay) | An overlay (keyboard-toggled, not shown by default) where parameters of any active SIGNAL effect can be adjusted in real-time — mesh density slider, scramble character set selector, duration multiplier. This demonstrates the parametric/token model to a technical audience. Extremely high Creativity + Technical score impact on Awwwards jury. | HIGH | React state + CSS custom property writes + postMessage to WebGL worker if using offscreen canvas. Must be keyboard-only accessible (no mouse required). Opt-in via `?debug=signal` query param or `Shift+D` keyboard shortcut. |
+| `layer` metadata (frame/signal) | Consumers can filter registry items by FRAME vs SIGNAL layer — this is the core SF mental model | LOW | Add via `meta: { layer: "frame" }` field. shadcn registry-item schema has a `meta` object for arbitrary key-value. |
+| `pattern` metadata (A/B/C) | Mirrors the shadcn integration pattern classification already used in SCAFFOLDING.md | LOW | `meta: { pattern: "A" }` alongside layer. Zero cost to add. |
+| `categories` field populated | Enables filtering in registry browsers and tooling | LOW | shadcn registry-item has a `categories` array. Use `["frame", "interactive"]`, `["signal", "animation"]`, etc. |
+| `docs` field with usage example | Brief snippet of how to use the component — visible in AI-assisted scaffolding | LOW | Single `import + usage` line is sufficient. |
+| `envVars` field where needed | If any SF component reads from env (none currently, but future cdOS components might) | LOW | N/A for current components. Keep in mind for future. |
+| Separate per-component JSON auto-generated, NOT hand-maintained | Manual maintenance of per-component JSON will drift. Auto-generation via `shadcn build` is the only maintainable path. | MEDIUM | Requires confirming `shadcn build` command works in this project's Turbopack/Next.js 15 config. |
+| `sf-theme` registry item with `cssVars` | A dedicated installable item that delivers just the token layer — spacing, typography, OKLCH color palette, animation tokens — into the consumer's globals.css | MEDIUM | This is the highest-leverage addition. Consumers who don't want all 29 components can install just the token system. Maps to the existing globals.css `@theme` block. |
 
-### Anti-Features (Commonly Requested, Often Fatal to This Aesthetic)
+### Anti-Features
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Gradient mesh / aurora background | Visually impressive, commonly seen on award sites | Zero SOTD winners in the industrial/brutalist corridor use them. They signal "generic dark-mode aesthetic" — the explicit anti-target of SignalframeUX. The Awwwards SOTD research (SYNTH-awwwards-patterns.md §5) lists gradient meshes as the top Creativity penalty. | Hard-edge color field transitions (already shipped as SIG-03) + procedural noise at <3% opacity |
-| Particle storm / floating particles as primary effect | Adds motion and depth, common on creative tech sites | "Particles on an industrial site read as accident, not intent" (SYNTH-awwwards-patterns.md §5). Particle systems with no semantic grounding score poorly on Creativity. Also: significant performance cost for minimal conceptual return. | Particle trail on the canvas cursor (already shipped as SIG-09) — same technology, purposeful semantic: the cursor IS the particle source |
-| Full Three.js scene with camera controls | Demonstrates 3D capability | Bundles ~600KB of Three.js, requires `'use client'` on the containing page, breaks Lighthouse score, and often introduces the Next.js 15 / React 19 `ReactCurrentOwner` compatibility error. Full 3D scenes also fight the flat DU/TDR aesthetic. | OGL (minimal ~40KB) for shader effects. Three.js only if 3D geometry is the concept (typographic mesh, parametric surface) — isolated behind `dynamic import({ ssr: false })` |
-| Real-time audio reactive visuals | High visual spectacle | Requires user-initiated audio unlock (browser autoplay policy), adds significant implementation complexity for uncertain UX return. Audio-reactive assumes audio is playing — no design system showcase has a guaranteed audio context. | Audio feedback palette (SIG-06) — output only, no audio input analysis required |
-| Glassmorphism or frosted glass surfaces | Modern and popular | Zero border-radius policy + hard-edge identity = direct conflict. Also cited as Creativity penalty in SOTD research (contrast failure). | Hard-cut background switches at section boundaries (SIG-03) achieve the same "layered depth" signal without frosted treatment |
-| Parallax depth >20px | Creates dimension and interest | Spatial noise, not spatial intelligence (SYNTH-awwwards-patterns.md §5). Also causes CLS issues on scroll. | Scroll-linked shader uniform modulation — depth communicated through procedural change, not pixel offset |
-| WebGPU (primary renderer) | Future-facing, impressive spec | WebGPU support is still uneven (Safari iOS has known issues as of 2026, Firefox partial). Three.js offers automatic WebGL 2 fallback — but only if you design for it from the start. A showcase that breaks on Safari costs the Developer Award. | WebGL 2 as primary target. WebGPU as opt-in enhancement when `navigator.gpu` is available. |
-| GPGPU / compute shader particle simulation | Maximum technical flex | GPGPU requires WebGL 2 transform feedback or WebGPU compute — no canvas 2D fallback possible. Guaranteed failure path on older hardware and mobile. Lighthouse performance score impact. | CPU-side noise-driven animation via GSAP + minimal WebGL for visual output only |
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Hand-maintained per-component JSON in `public/r/` | Will immediately drift from source. Already stale after v1.0. | Use `shadcn build` to auto-generate. Add to `package.json` scripts as `registry:build`. |
+| Embedding full component source inline in registry.json | Registry.json is an index, not a bundle. Inline source defeats the point of file-reference resolution. | Keep `files[].path` as relative paths. Let the CLI resolve them. |
+| Version field on individual components | Shadcn registry does not version individual components. Per-component versions create maintenance overhead with no consumer benefit. | Version the registry at the root level (`"version"` in the registry name or as a `meta` field on the root item) aligned to project semver. |
+| Including `node_modules` paths in files[] | Breaks portability. | Ensure all `files[].path` are relative to project root. |
 
----
-
-## Feature Dependencies
+### Feature Dependencies
 
 ```
-[data-cursor] activation (one-line fix)
-    └──requires──> CanvasCursor mounted in GlobalEffects (already done)
+public/r/ per-component JSON (auto-generated)
+    requires: shadcn CLI build step
+    requires: source registry.json complete and valid
 
-WebGL procedural background
-    └──requires──> dynamic import with ssr:false
-    └──requires──> FRAME/SIGNAL legibility contract defined (PROJECT.md active requirement)
-    └──requires──> Performance budget reconciled (PROJECT.md active requirement)
+cssVars on sf-theme item
+    requires: globals.css @theme block stable (already true in v1.2)
+    requires: sf-theme named item added to registry.json items[]
 
-GLSL shader on surface
-    └──requires──> WebGL procedural background (above)
-    └──requires──> OGL or Three.js installed and isolated
-
-Scroll-reactive shader uniform
-    └──requires──> GLSL shader on surface (above)
-    └──requires──> ScrollTrigger progress value piped to uniform (GSAP already installed)
-
-Parametric mesh with token system
-    └──requires──> WebGL procedural background (above)
-    └──requires──> SIGNAL authoring model defined (PROJECT.md active requirement)
-    └──enhances──> Data-driven token visualization (shared parametric concept)
-
-ASCII / dithering shader
-    └──requires──> WebGL procedural background (above)
-    └──requires──> Fragment shader post-process pass
-    └──conflicts──> Full Three.js scene (different render pipeline; pick one)
-
-Data-driven token visualization
-    └──requires──> Existing token explorer component (already shipped in v1.0)
-    └──NO WebGL required──> Canvas 2D sufficient
-
-Audio feedback palette (SIG-06)
-    └──requires──> User gesture to unlock AudioContext (browser policy)
-    └──NO dependencies on WebGL layer
-
-Haptic feedback (SIG-07)
-    └──requires──> Mobile detection (pointer: coarse already used in codebase)
-    └──NO dependencies on WebGL layer
-
-Idle-state animation (SIG-08)
-    └──NO dependencies on WebGL or audio
-    └──enhances──> Static FRAME layer (activates between user interactions)
-
-Live SIGNAL authoring overlay
-    └──requires──> WebGL procedural background (above, for uniform controls)
-    └──requires──> Parametric token integration (above)
-    └──enhances──> All SIGNAL effects (universal parameter exposure)
+layout primitives in registry
+    requires: no shadcn base (registryDependencies: [])
+    requires: type: "registry:ui" (correct type for primitives without base)
 ```
 
-### Dependency Notes
+---
 
-- **[data-cursor] activation requires nothing new:** This is a one-line `data-cursor` attribute add to existing showcase sections. Highest ROI item — zero implementation risk.
-- **WebGL procedural background blocks three other features:** ASCII shader, scroll-reactive shader, and parametric mesh all require the WebGL context to exist first. Build in order.
-- **Audio/haptic/idle are fully independent:** SIG-06, SIG-07, SIG-08 have no WebGL dependency and can be built in any order, in parallel with the WebGL work.
-- **ASCII shader conflicts with full Three.js scene:** They use different render pipelines. Choose OGL + custom GLSL (preferred for DU/TDR aesthetic) or Three.js + postprocessing library — not both.
-- **Data-driven token visualization is fully independent:** Canvas 2D. No WebGL. Can ship before any generative 3D work.
+## DX-05: createSignalframeUX(config) + useSignalframe() — Config Provider API
+
+### Existing Sketch
+
+DX-SPEC.md already contains a well-reasoned interface sketch. The open questions identified there
+remain the implementation decision points. This research resolves them with ecosystem evidence.
+
+### What the Ecosystem Does (HIGH confidence — verified against MUI, Ant Design, Radix patterns)
+
+The standard config provider pattern in mature React design systems:
+
+1. **Factory function returns Provider + hook as a pair.** MUI uses `createTheme()` + `ThemeProvider` + `useTheme()`. Ant Design uses `ConfigProvider` (pre-configured globally) + `useConfig()` hook. Radix Themes uses `Theme` + `useTheme`. The pattern is consistent: factory produces a configured Provider, hook reads from that Provider's context.
+
+2. **Provider wraps the app root, not individual components.** All major systems place the Provider at `layout.tsx` (Next.js App Router) or `_app.tsx`. This is the correct placement for SignalframeUX — wrapping `app/layout.tsx` is the right call.
+
+3. **CSS custom property resolution happens client-side only.** Every design system that reads resolved CSS variable values uses `getComputedStyle()` in a `useLayoutEffect` or `useEffect`. This is unavoidable — CSS custom properties are resolved at paint time in the browser, not during SSR. The correct pattern: return a stable server-safe default on SSR, then hydrate with resolved values after mount. MUI's `tokens.colorPrimary` returns a string like `"oklch(0 0 0)"` on the server and the real value post-hydration.
+
+4. **Motion controller scope should be global, not subtree.** GSAP's `gsap.globalTimeline` is already a singleton. `motion.pause()` / `motion.resume()` should call `gsap.globalTimeline.pause()` / `.resume()`. Scoped timelines (per-subtree) require a GSAP `Timeline` instance per Provider — unnecessary complexity given SF's single-app-per-page assumption.
+
+5. **SSR hydration strategy for theme.** The existing `lib/theme.ts` already uses `document.documentElement.setAttribute('data-theme', ...)`. The Provider should read the current `data-theme` attribute value (which next-themes or the existing toggle sets) rather than managing theme state independently. This avoids double-registration.
+
+### Table Stakes
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| `SignalframeUXProvider` component | Any design system with a programmatic API needs a Provider — it's the entry point for consumers | MEDIUM | Wraps app in context. Reads initial `data-theme` from `document.documentElement` on mount. |
+| `useSignalframe()` hook | How consumers access config state — theme, tokens, motion | LOW | Throws if called outside Provider (`throw new Error("useSignalframe must be used within SignalframeUXProvider")`). This is the standard pattern. |
+| `theme` + `setTheme()` in hook return | Theme read/write in one place | LOW | `setTheme` should delegate to existing `toggleTheme` in `lib/theme.ts` rather than replacing it. |
+| `motion.prefersReduced` boolean | Read `window.matchMedia('(prefers-reduced-motion: reduce)').matches` — already gated in all SF animation components | LOW | Hook syncs from MediaQuery listener on mount. |
+| `motion.pause()` / `motion.resume()` | Global animation control — GSAP provides this natively | LOW | Thin wrapper over `gsap.globalTimeline.pause()` and `.resume()`. |
+| SSR safety — no hydration mismatch | Provider must not cause hydration errors in Next.js App Router | MEDIUM | Use stable server defaults for CSS-var-derived values. Resolve in `useLayoutEffect`. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| `tokens.colorPrimary` etc. (resolved CSS var values) | Enables generative components (WebGL, Canvas) to read token values without probing the DOM themselves. Currently `lib/color-resolve.ts` does this ad-hoc with TTL cache. Provider centralizes it. | MEDIUM | One `getComputedStyle(document.documentElement).getPropertyValue('--color-primary')` per token, on mount + on theme change. |
+| `createSignalframeUX(config)` factory | Enables `defaultTheme` and `motionPreference` to be set at instantiation — useful for cdOS and CD-Operator consumers | LOW | The factory is a thin wrapper: it just closes over `config` and returns the Provider + hook pair with config baked in. The complexity is in the Provider, not the factory. |
+| `tokens.durations` object | Animation duration tokens readable by JS — useful for GSAP `duration:` values that should match CSS token values | LOW | Read from CSS vars: `getComputedStyle(el).getPropertyValue('--duration-fast')` parsed to ms number. |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Replacing `lib/theme.ts` toggle logic | Breaking change to existing 29 components that import from `lib/theme.ts` | Delegate from `setTheme()` to existing `toggleTheme()`. Wrapper, not replacement. |
+| CSS-in-JS token injection | Adds a CSS-in-JS runtime dependency (Emotion, styled-components) to a system built on Tailwind v4 + CSS custom properties | CSS custom properties are already the token layer. Provider reads them; it doesn't rewrite them. |
+| Provider managing GSAP timelines directly | GSAP's singleton architecture conflicts with React's component tree. React StrictMode double-mounts would register timelines twice. | Provider only calls `gsap.globalTimeline.pause/resume`. It never creates or registers timelines. |
+| Context value re-computation on every render | If `value={}` is a new object every render, all consumers re-render. Classic React context pitfall. | `useMemo` for the context value. Stable references for `motion` object (it's just wrappers, `useCallback` it). |
+| Async token resolution displayed as loading state | CSS vars resolve synchronously once the DOM exists. A loading spinner for token values is unnecessary complexity. | Read synchronously in `useLayoutEffect`. Server default (`""`) is fine — it's never painted if client JS runs fast. |
+
+### Feature Dependencies
+
+```
+SignalframeUXProvider
+    requires: existing lib/theme.ts (wraps, doesn't replace)
+    requires: existing lib/color-resolve.ts (or inlines the getComputedStyle calls)
+    requires: gsap installed (already true)
+
+useSignalframe() hook
+    requires: SignalframeUXProvider in ancestor tree
+    requires: 'use client' directive (reads DOM, manages state)
+
+createSignalframeUX factory
+    requires: SignalframeUXProvider (factory returns it configured)
+    complexity: trivial — factory is 5 lines wrapping the Provider
+```
 
 ---
 
-## MVP Definition (v1.1 Generative Surface)
+## STP-01: Session State Persistence
 
-### Launch With (v1.1 — Core Generative Surface)
+### What "Session" Means for This Project
 
-The minimum set that makes the showcase definitively "generative" for Awwwards jury evaluation, without risking the Lighthouse 100/100 constraint or the DU/TDR aesthetic contract:
+The component browser (`/components`) and token explorer (`/tokens`) have filter/tab state that resets
+on navigation. Users drilling into a component detail and pressing Back want to return to where they
+were. This is a developer-tooling UX problem, not an authentication/security problem.
 
-- [ ] `[data-cursor]` activated on all showcase sections — activates the already-built canvas cursor. One attribute per section. SOTD craft clincher moment. Zero risk.
-- [ ] Idle-state animation (SIG-08) — grain drift + OKLCH color pulse. CSS + GSAP looping. No dependencies. Answers "is this alive?"
-- [ ] Audio feedback palette (SIG-06) — 2-3 oscillator tones on interaction events. Web Audio API. No library. Terminal voice reinforcement.
-- [ ] Data-driven token visualization — Canvas 2D animation on existing token explorer. No WebGL. Demonstrates "the system demonstrates itself."
-- [ ] WebGL procedural background (OGL, one surface) — Establishes the generative surface foundation. Vertex displacement via simplex noise. Must pass Lighthouse 100 with `dynamic import`.
+**Target:** `sessionStorage` (tab-scoped, cleared on close). Not `localStorage` (too persistent), not URL params (changes the URL, breaks bookmarks for filter-free state).
 
-### Add After Validation (v1.1.x)
+### SSR Hydration Problem — This Is The Main Risk
 
-Features to add once the WebGL foundation is stable and performance is confirmed:
+`sessionStorage` is browser-only. On SSR, `window` does not exist. Reading `sessionStorage` in a Server Component or during SSR render throws. The standard Next.js 15 / React 19 pattern to avoid hydration mismatch:
 
-- [ ] GLSL shader on hero surface — Custom fragment/vertex shader replacing or enhancing the existing hero-mesh component. Establishes authorship signal to Awwwards jury.
-- [ ] Scroll-reactive shader uniforms — ScrollTrigger progress piped to WebGL uniforms. Makes generative layer feel intentionally designed, not decorative.
-- [ ] Haptic feedback (SIG-07) — 3 lines of code. Add after audio feedback is validated.
-- [ ] ASCII / dithering post-process shader — High-value DU/TDR differentiator. Add once OGL context is established. Requires ordered dithering (GPU) not Floyd-Steinberg (CPU).
+1. Server renders with `DEFAULT_SESSION_STATE` (empty filters, scrollTop: 0)
+2. Client hydrates with the same default — no mismatch
+3. `useLayoutEffect` fires after hydration and reads `sessionStorage`
+4. State updates → second render on client only → no server/client discrepancy
 
-### Future Consideration (v2+)
+This is the pattern used by `usehooks-ts`'s `useLocalStorage` hook as of 2025. The key insight: **render the default first, then update — never try to read storage before hydration.**
 
-Features that require stable generative foundation and more implementation time:
+### Table Stakes
 
-- [ ] Parametric mesh with token system — The "system demonstrates itself" at the 3D level. High Creativity score potential. Defer until SIGNAL authoring model is fully defined.
-- [ ] Live SIGNAL authoring overlay — Devtool for real-time parameter editing. Requires all parametric systems to be in place first.
-- [ ] Procedural noise on typographic surfaces — Three.js character mesh displacement. Highest complexity. Defer until core generative layer is proven.
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| Search query persists across navigation | Core developer tool expectation. Drilling into a component and returning should show the same search results. | LOW | One sessionStorage key per page. Read in `useLayoutEffect`, write on change. |
+| Active tab persists | Token explorer tab (colors/spacing/typography/animation/layout) should not reset on navigate-away and return. | LOW | Same pattern as search. Single key per page. |
+| Filter state persists (pattern, layer) | Component browser filters for FRAME/SIGNAL layer and pattern A/B/C should persist within session. | LOW | Same pattern. |
+| Scroll position restoration | Returning to component list should scroll to the previously viewed item — not top of page. | MEDIUM | Requires storing `scrollTop` and restoring it after content mounts. `useLayoutEffect` + `element.scrollTo()`. Timing is fragile — content must be rendered before scroll restore fires. |
+| State cleared on session end | `sessionStorage` does this natively — no implementation required. | None | This is the default behavior of sessionStorage. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Typed state adapter (`SFSessionStorage` interface) | The interface sketch in DX-SPEC.md is correct. A typed adapter makes swapping storage backends possible without changing consumer code. | LOW | Define the interface, implement a `sessionStorageAdapter`. Total: ~30 lines. |
+| `lastUpdated` timestamp on state | Enables staleness detection — if state is >1h old, reset it. Avoids stale filter states after a long break. | LOW | ISO timestamp written with every state update. Read on init — compare to `Date.now()`. |
+| `useSessionState<T>(key, default)` generic hook | A single reusable hook that encapsulates the read-default-then-hydrate pattern. All three pages use it instead of repeating the pattern. | LOW | ~25 lines. Returns `[state, setState]` like `useState`. Write to sessionStorage on every set. |
+
+### Anti-Features
+
+| Feature | Why Avoid | What to Do Instead |
+|---------|-----------|-------------------|
+| URL search params as primary persistence | Changes the URL — breaks bookmarks for users who want the "no filters" view, adds param noise to browser history | sessionStorage is invisible to the URL. Use URL params only if deep-linking to a specific filtered view is a future requirement (it's not in scope). |
+| Redux or Zustand for session state | Three key-value pairs in sessionStorage do not warrant a state management library. State is local to each page. | Three `useSessionState` hook calls per page. No global store. |
+| Persisting to `localStorage` | localStorage persists across sessions. A stale filter from 3 months ago reappearing is more confusing than helpful. Session scope is correct for tooling state. | sessionStorage |
+| React `useContext` global session store | Tempting because it avoids prop drilling, but session state is page-local. Global context creates unnecessary coupling between unrelated pages. | Page-local hook calls. Each page manages its own session slice. |
+| `suppressHydrationWarning` as fix | Suppresses the warning but leaves the hydration mismatch in place — React renders the wrong DOM for one frame, which causes visible layout shift. | Render default first, hydrate in `useLayoutEffect`. Clean pattern, zero warnings. |
+
+### Feature Dependencies
+
+```
+useSessionState hook
+    requires: 'use client' directive
+    requires: sessionStorage browser API (guarded by typeof window !== 'undefined')
+
+Scroll restoration
+    requires: useSessionState hook (scroll position is just another persisted value)
+    requires: ref to scrollable container to call .scrollTo() on
+    requires: content rendered before restoration fires (useLayoutEffect timing)
+
+SFSessionStorage adapter interface
+    requires: DX-SPEC.md interface shape (already defined)
+    no external dependencies
+```
 
 ---
 
-## Feature Prioritization Matrix
+## Cross-Feature Dependencies
 
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| `[data-cursor]` activation | HIGH — immediate craft moment | LOW — one attribute per section | P1 |
-| Idle-state animation (SIG-08) | HIGH — "breathing" surface | LOW — CSS + GSAP loop | P1 |
-| Audio feedback palette (SIG-06) | MEDIUM — terminal voice | LOW — Web Audio API, no library | P1 |
-| Data-driven token visualization | HIGH — concept unity | MEDIUM — Canvas 2D animation | P1 |
-| WebGL procedural background (OGL) | HIGH — generative foundation | MEDIUM — OGL setup + simplex noise | P1 |
-| GLSL custom shader (hero) | HIGH — authorship signal | HIGH — shader writing + fallbacks | P2 |
-| Scroll-reactive shader uniforms | HIGH — intentional design | MEDIUM — ScrollTrigger → uniform | P2 |
-| Haptic feedback (SIG-07) | LOW — mobile only, iOS blocked | LOW — 3 lines | P2 |
-| ASCII / dithering shader | HIGH — DU/TDR differentiator | HIGH — post-process pipeline | P2 |
-| Parametric mesh + token system | HIGH — concept crown jewel | HIGH — full WebGL system | P3 |
-| Live SIGNAL authoring overlay | HIGH — jury demonstration | HIGH — full devtool | P3 |
-| Procedural typographic mesh | MEDIUM — visual spectacle | VERY HIGH — Three.js + DOM bridge | P3 |
+```
+DX-04 (registry.json complete)
+    enables: AI/CLI component installation into consumer projects
+    no dependency on DX-05 or STP-01
 
----
+DX-05 (config provider)
+    enables: programmatic access to SF tokens from JS (useful for WebGL uniform resolution)
+    depends on: lib/theme.ts (existing — wrap, don't replace)
+    no dependency on DX-04 or STP-01
 
-## Competitor / Reference Analysis
+STP-01 (session persistence)
+    enables: improved developer tool UX on /components and /tokens pages
+    no dependency on DX-04 or DX-05
+```
 
-| Feature | Active Theory (v5) | Corentin Bernadou (SOTD Mar 2026) | Arnaud Rocca (Codrops Mar 2026) | SignalframeUX Approach |
-|---------|-------------------|-----------------------------------|----------------------------------|------------------------|
-| WebGL approach | Custom Hydra engine (Three.js base), full 3D world | Three.js + custom GLSL shaders | OGL fluid simulation | OGL (smaller, fits aesthetic) |
-| Generative technique | Interactive multi-user particle tubes | 3D geometry with shader distortion | Mouse-driven fluid density buffer | Noise displacement + ASCII/dither shader |
-| FRAME/SIGNAL relationship | Signal overwhelms frame | Signal subtly enhances frame ("2D interface stays clear") | Signal responds to user input | FRAME must remain readable — SIGNAL decorates |
-| Performance strategy | LCP ~1.3s desktop (acceptable for creative studio) | Unknown, vanilla JS | Frame-rate independent dissipation | Lighthouse 100 non-negotiable |
-| Audio | None | None | None | SIG-06 (oscillator palette — terminal voice) |
-| Aesthetic | LA studio / office environment | Swiss grid + WebGL geometry | Minimal, motion-first | DU/TDR industrial / terminal |
+**All three are independent.** They can be shipped in any order. Recommended order:
 
-The key insight from this reference analysis: **the DU/TDR aesthetic is unoccupied at the SOTD level.** Corentin Bernadou's Swiss-grid approach is the closest competitor but uses imagery and organic 3D geometry. SignalframeUX's industrial terminal voice — noise-driven mesh displacement, ordered dithering, ASCII fragments — has no direct SOTD competitor as of April 2026.
+1. DX-04 — run `shadcn build`, fill gaps, verify CLI install works. Purely additive, zero risk.
+2. STP-01 — the `useSessionState` hook is 25 lines. Highest UX payoff relative to complexity.
+3. DX-05 — the Provider is the most complex because of SSR hydration and GSAP integration. Do last.
 
 ---
 
-## Performance Budget Notes
+## MVP Definition (v1.2 Tech Debt Sweep — DX Features)
 
-These constraints are non-negotiable (from PROJECT.md and CLAUDE.md):
-- Page weight: <200KB initial (excluding images)
-- LCP: <1.0s
-- Lighthouse: 100/100 all categories
+### Launch With
 
-**WebGL library budget:**
-- OGL: ~40KB minified+gzipped (fits budget, preferred)
-- Three.js core: ~600KB minified (exceeds budget alone — must use `dynamic import` + tree-shake)
-- React Three Fiber: adds ~50KB on top of Three.js (total >650KB — use only if Three.js is already required)
+- **DX-04:** Source `registry.json` complete (all 29 components + 5 layout primitives + sf-theme cssVars item). `shadcn build` runs without error. Per-component JSON in `public/r/` auto-generated.
+- **STP-01:** `useSessionState` hook. Component browser search + filter state persists in session. Token explorer tab persists. Scroll restoration on /components page.
+- **DX-05:** `SignalframeUXProvider` + `useSignalframe()` hook. `theme`/`setTheme`, `motion.prefersReduced`, `motion.pause/resume`. SSR-safe with stable defaults. `createSignalframeUX` factory wraps it.
 
-**R3F + Next.js 15 known issue:** GitHub Issue #71836 documents a `ReactCurrentOwner` error with React Three Fiber on Next.js 15 + React 19. Resolved in R3F v9 (breaking changes vs v8). If Three.js is used, prefer raw Three.js with `dynamic import` over R3F until compatibility is confirmed stable.
+### Defer
 
-**Recommended WebGL strategy:** OGL as primary renderer for all v1.1 generative effects. Three.js only if a specific scene requires it (parametric mesh with complex geometry), isolated as a separate `dynamic import` chunk.
+- **DX-04 full auto-generation pipeline** (shadcn build as CI step): deferred post-v1.2. Manual build + commit for v1.2 is acceptable.
+- **DX-05 `tokens.colorPrimary` etc.**: Resolved CSS var values. Useful but not critical for v1.2. Ship the Provider shell first; add token resolution in a follow-up if WebGL components need it.
+- **STP-01 scroll restoration on /tokens page**: Low priority. Tab persistence covers the main pain point.
 
 ---
 
 ## Sources
 
-- SYNTH-awwwards-patterns.md (SignalframeUX project research, 2026-04-05) — Awwwards SOTD Jan-Mar 2026 corpus analysis
-- [Arnaud Rocca's Portfolio: From GSAP to WebGL — Codrops Mar 2026](https://tympanus.net/codrops/2026/03/31/arnaud-roccas-portfolio-from-a-gsap-powered-motion-system-to-fluid-webgl/) — OGL fluid simulation case study
-- [Inside Corentin Bernadou's Portfolio — Codrops Mar 2026](https://tympanus.net/codrops/2026/03/05/inside-corentin-bernadous-portfolio-swiss-inspired-layouts-webgl-geometry-and-thoughtful-motion/) — Three.js + GLSL architecture
-- [Efecto: ASCII and Dithering Shaders — Codrops Jan 2026](https://tympanus.net/codrops/2026/01/04/efecto-building-real-time-ascii-and-dithering-effects-with-webgl-shaders/) — GPU dithering technique
-- [Eloy Benoffi's Brutalist Portfolio — Codrops Oct 2025](https://tympanus.net/codrops/2025/10/15/from-blank-canvas-to-mayhem-eloy-benoffis-brutalist-glitchy-portfolio-built-with-webflow-and-gsap/) — ASCII art + SOTD industrial aesthetic
-- [OGL — Minimal WebGL Library](https://github.com/oframe/ogl) — Zero-dependency WebGL library
-- [Next.js 15 + R3F ReactCurrentOwner Issue #71836](https://github.com/vercel/next.js/issues/71836) — Compatibility warning
-- [React Three Fiber v9 Migration Guide](https://r3f.docs.pmnd.rs/tutorials/v9-migration-guide) — R3F React 19 compatibility notes
-- [Three.js 2026 WebGPU Overview](https://www.utsubo.com/blog/threejs-2026-what-changed) — WebGPU status and fallback patterns
-- [Making Motion Behave — Vladyslav Penev, Codrops Feb 2026](https://tympanus.net/codrops/2026/02/04/making-motion-behave-inside-vladyslav-penevs-production-ready-interaction-systems/) — Production motion system patterns
-- [Building Real-Time Dithering Shader — Codrops Jun 2025](https://tympanus.net/codrops/2025/06/04/building-a-real-time-dithering-shader/) — Ordered dithering GPU implementation
-- Web Audio API — MDN: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
-- SIGNAL-SPEC.md (SignalframeUX project, 2026-04-06) — Existing effect specifications
+- [shadcn registry.json spec — official docs](https://ui.shadcn.com/docs/registry/registry-json) — HIGH confidence
+- [shadcn registry-item.json spec — official docs](https://ui.shadcn.com/docs/registry/registry-item-json) — HIGH confidence
+- [shadcn registry getting started — official docs](https://ui.shadcn.com/docs/registry/getting-started) — HIGH confidence
+- [shadcn CLI 3.0 and MCP Server — changelog Aug 2025](https://ui.shadcn.com/docs/changelog/2025-08-cli-3-mcp) — HIGH confidence
+- [Ant Design ConfigProvider — official docs](https://ant.design/components/config-provider/) — MEDIUM confidence (WebFetch returned CSS, not docs content)
+- [SSR-Safe React Hooks — ReactUse blog 2025](https://reactuse.com/blog/ssr-safe-react-hooks/) — MEDIUM confidence
+- [usehooks-ts useLocalStorage SSR issue resolution](https://github.com/astoilkov/use-local-storage-state/issues/23) — MEDIUM confidence
+- [Next.js scroll position persistence discussion](https://github.com/vercel/next.js/discussions/60146) — MEDIUM confidence
+- DX-SPEC.md (SignalframeUX project, 2026-04-06) — interface sketches for DX-04/05/STP-01
+- registry.json (SignalframeUX project root) — current source state audit
+- public/r/registry.json (SignalframeUX) — current built output state audit
 
 ---
 
-*Feature research for: SignalframeUX v1.1 Generative Surface milestone*
-*Researched: 2026-04-05*
+*Feature research for: SignalframeUX v1.2 Tech Debt Sweep — DX-04, DX-05, STP-01*
+*Researched: 2026-04-06*

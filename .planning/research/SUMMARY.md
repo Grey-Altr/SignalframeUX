@@ -1,208 +1,282 @@
-# Project Research Summary
+# Research Summary — SignalframeUX v1.2 Tech Debt Sweep
 
-**Project:** SignalframeUX — v1.1 Generative Surface
-**Domain:** Generative WebGL/SIGNAL layer added to a production Next.js 15.3 design system
-**Researched:** 2026-04-05
-**Confidence:** HIGH
+**Synthesized:** 2026-04-06
+**Sources:** STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
+**Scope:** Registry distribution (DX-04), config provider API (DX-05), session persistence (STP-01), CSS→WebGL bridge (INT-04), SignalMotion wiring (INT-03), bgShift type fix
+
+---
 
 ## Executive Summary
 
-SignalframeUX v1.1 is not a new build — it is a targeted generative extension to a proven, Lighthouse-100 design system. The v1.0 FRAME layer is stable and complete. The research question is how to introduce WebGL-based procedural visuals (the SIGNAL generative extension) without destroying the performance budget, breaking the FRAME/SIGNAL legibility contract, or violating the DU/TDR aesthetic identity. The research answer is clear: use a singleton WebGL renderer driven by the GSAP ticker, loaded lazily via `next/dynamic({ ssr: false })`, with all scenes managed via a shared context and scissor-split viewport. This mirrors patterns already proven in the codebase (GlobalEffectsLazy, HeroMesh) and avoids every major failure mode.
+v1.2 is a wiring and completion milestone, not a feature expansion. Every work item is either completing something scaffolded but not finished (registry.json, SignalMotion placement), wiring an existing component that is fully implemented but disconnected (SignalOverlay→WebGL bridge), fixing a confirmed type mismatch (bgShift boolean vs. string), or implementing interface sketches that were deferred from v1.1 with open design questions that can now be resolved (createSignalframeUX, session persistence). The research confirms this framing — no new libraries are required except `nuqs` (6 kB, zero runtime deps) for URL-encoded filter/tab state, and all architectural decisions reduce to using existing patterns already proven in this codebase.
 
-The recommended WebGL approach is raw Three.js (not React Three Fiber) in a singleton `SignalCanvas` component. R3F is explicitly rejected by the architecture research because it creates an uncontrolled second React reconciler and render loop that cannot be managed by GSAP's globalTimeline scalar. Three.js selective imports land in a separate async chunk — not the initial 200KB budget — preserving Lighthouse 100. OGL (~29KB) is the preferred renderer for isolated 2D shader effects where Three.js is overkill. The highest-ROI item in the entire milestone is activating the already-built canvas cursor: one `data-cursor` attribute per section, zero new code, immediate craft credibility with Awwwards jury.
+The primary risk area is performance: the CSS→WebGL bridge (INT-04) must use module-level cached values rather than per-frame `getComputedStyle` calls to protect the Lighthouse 100/100 Performance score. The `--signal-*` vars change only on user interaction with SignalOverlay, making per-frame DOM reads wasteful and harmful. Every other risk is a standard Next.js App Router hydration concern (context providers, session storage) with well-documented mitigations. The research resolves all open questions from DX-SPEC.md with high confidence.
 
-The primary risk is not technical complexity but discipline: every pitfall identified in research (context exhaustion, GPU memory leaks, bundle budget regression, reduced-motion violations, OKLCH color mismatch in shaders) results from skipping a Foundation phase gate. All nine critical pitfalls are preventable if the shared renderer pattern, disposal contract, dynamic import pattern, and color bridge utility are established before any generative scene is built. If Phase 1 ships these primitives correctly, Phases 2–4 are straightforward. If Phase 1 is skipped or rushed, later phases require expensive retrofitting across every canvas component.
+The recommended build order runs from zero-risk to higher-risk: globals.css defaults first (unblocks INT-04, prevents magenta flash), bgShift type fix second (independent, TypeScript-only), registry.json completion third (additive, zero behavioral change), INT-04 bridge fourth (most impactful Signal feature), INT-03 SignalMotion fifth (placement only), DX-05 provider sixth (most complex, SSR boundary work), STP-01 session persistence last (self-contained, page-local). Each step is independently committable with a clean rollback point.
+
+---
 
 ## Key Findings
 
-### Recommended Stack
+### From STACK.md
 
-The existing stack (Next.js 15.3, GSAP 3.12, Lenis, Tailwind v4) is unchanged. The generative extension adds Three.js `^0.183.2` as the WebGL scene graph, loaded exclusively via dynamic import. OGL `^1.x` is the alternative for lightweight isolated shader effects — at ~29KB it does not require the same bundle isolation caution as Three.js. `@react-three/fiber` and `@react-three/drei` are explicitly excluded: they introduce an uncontrolled render loop and are architecturally incompatible with the GSAP-driven singleton renderer pattern. Raw-loader (`^4.0.2`) is added if GLSL files are authored as separate `.glsl` files; the alternative is TypeScript template literals (no config required).
+| Technology | Decision | Rationale |
+|------------|----------|-----------|
+| `nuqs ^2.8.9` | Add (only new runtime dep) | URL state for filter/tab; NuqsAdapter for App Router; 6 kB gzipped, zero dependencies |
+| `shadcn build` | Use existing (already in devDeps) | Generates per-component `/r/[name].json` files; no new install required |
+| Native React context | Use existing | Factory pattern for `createSignalframeUX` — ~30 lines, no library needed |
+| `sessionStorage` (native) | Use existing | Scroll position persistence; tab-scoped, correct semantics |
+| `getComputedStyle` in GSAP ticker | Use existing (with cache) | CSS var→WebGL bridge; pattern already proven in `color-resolve.ts` and `canvas-cursor.tsx` |
 
-**Core technologies:**
-- `three@^0.183.2`: WebGL scene graph, geometry, shaders — industry standard, selective imports only, deferred async chunk via `next/dynamic`
-- `ogl@^1.x`: Minimal WebGL (~29KB) for isolated 2D shader quads and noise fields — preferred for non-scene effects, avoids Three.js overhead
-- `@next/bundle-analyzer`: Post-build validation that Three.js lands in async chunk — run after every generative component addition
-- `raw-loader@^4.0.2`: GLSL file import support (Turbopack + Webpack dual config) — optional; template literals are acceptable alternative
+**Version constraints:** nuqs requires Next.js 14.2+ and React 18+ (both met). No other version concerns.
 
-**What NOT to add:**
-- `@react-three/fiber` or `@react-three/drei` — incompatible with singleton pattern, uncontrolled render loop
-- `lottie-web` or `@lottiefiles/*` — not generative, not DU/TDR, 60–200KB dead weight
-- `babylon.js` — ~500KB+, no advantage over Three.js for this use case
-- Any new GSAP effects — CLAUDE.md explicitly forbids expanding GSAP animations
+**What was rejected:**
+- `@bramus/style-observer` — GSAP ticker solves CSS var reading without it
+- `zustand` / `jotai` — overkill for read-only config context
+- `use-local-storage` — native sessionStorage API is sufficient
 
-### Expected Features
+### From FEATURES.md
 
-The DU/TDR industrial aesthetic occupies an uncontested SOTD niche as of April 2026. No current SOTD winner combines Awwwards-level WebGL generative work with a terminal/industrial voice. This is the competitive gap SignalframeUX fills.
+**DX-04: registry.json**
 
-**Must have — v1.1 Launch (table stakes for SOTD credibility):**
-- `[data-cursor]` activation on showcase sections — zero new code, highest ROI item, cursor is already built
-- Idle-state animation SIG-08 (grain drift + OKLCH color pulse) — CSS + GSAP loop, answers "is this alive?"
-- Audio feedback palette SIG-06 — Web Audio API oscillator tones, terminal voice reinforcement, no library
-- Data-driven token visualization — Canvas 2D animation on existing token explorer, "the system demonstrates itself"
-- WebGL procedural background via OGL (one surface) — establishes the generative foundation, vertex displacement via simplex noise
+Table stakes:
+- Per-component JSON at `/r/[name].json` — CLI fetches individual JSON, not the root manifest. Currently absent; `shadcn build` generates these.
+- `registryDependencies` populated on all SF-wrapped components
+- All 29 SF components + 5 layout primitives present (layout primitives currently missing from registry)
+- `cssVars` block on a `sf-theme` registry item — delivers the token layer as an installable unit
 
-**Should have — v1.1.x (competitive differentiators after foundation is stable):**
-- Custom GLSL shader on hero surface — authorship signal to Awwwards jury, distinguishes "library work" from "authored work"
-- Scroll-reactive shader uniforms — ScrollTrigger progress piped to WebGL uniforms, makes SIGNAL intentional not decorative
-- ASCII / ordered dithering post-process shader — highest-value DU/TDR differentiator, directly references computational visual history
-- Haptic feedback SIG-07 — 3 lines of code, add after audio is validated
+Differentiators:
+- `meta: { layer: "frame" | "signal" }` — mirrors the core SF dual-layer model
+- `meta: { pattern: "A" | "B" | "C" }` — mirrors integration pattern classification from SCAFFOLDING.md
+- `categories` array populated for registry browser filtering
+- `sf-theme` token-only item — highest-leverage addition; consumers get just the token system
 
-**Defer to v2+:**
-- Parametric mesh with token system — requires stable SIGNAL authoring model, high creativity score potential
-- Live SIGNAL authoring overlay — requires all parametric systems in place, devtool for parameter editing
-- Procedural noise on typographic surfaces — Three.js character mesh displacement, highest complexity, defer until core is proven
+Defer to post-v1.2:
+- `shadcn build` as automated CI step (manual build + commit is acceptable for v1.2)
 
-**Anti-features (never build):**
-- Gradient mesh / aurora backgrounds — explicit Creativity penalty in SOTD research, generic dark-mode aesthetic
-- Particle storm as primary effect — reads as "accident, not intent" per SOTD research corpus
-- Full Three.js scene with camera controls — ~600KB bundle, fights flat DU/TDR aesthetic
-- Parallax depth >20px — spatial noise, causes CLS, not spatial intelligence
+**DX-05: createSignalframeUX + useSignalframe**
 
-### Architecture Approach
+Table stakes:
+- `SignalframeUXProvider` — wraps app root, reads `data-theme` from DOM on mount, delegates to existing `toggleTheme()` in `lib/theme.ts`
+- `useSignalframe()` — returns `{ theme, setTheme, motion }`. Throws descriptive error if called outside Provider.
+- `motion.prefersReduced` boolean + `motion.pause()` / `motion.resume()` (thin wrappers over `gsap.globalTimeline`)
+- SSR-safe: stable `theme: "dark"` default on server; hydrate from `localStorage` + classList in `useEffect`
 
-The architecture is a singleton WebGL host (`SignalCanvas`) mounted in RootLayout alongside the existing `GlobalEffectsLazy`, loaded via the identical `next/dynamic({ ssr: false })` pattern. One `THREE.WebGLRenderer` manages all generative scenes via scissor/viewport splitting — never one renderer per component. Scenes register with a React context hook (`useSignalScene`), receive a render callback and scroll-proxy ref, and unregister (with full disposal) on unmount. The GSAP ticker drives all rendering: Three.js `renderer.render()` is called inside `gsap.ticker.add()`, eliminating the loop conflict pitfall. Server Components render `data-signal` mount points — inert, dimensionally-correct divs — which Client Components hydrate. OKLCH tokens cross to GLSL via an extracted `lib/color-resolve.ts` probe utility (the probe canvas technique already exists in CanvasCursor — this is an extraction, not new code).
+Defer to post-v1.2:
+- `tokens.colorPrimary` / resolved OKLCH values — requires DOM Canvas 2D probe, SSR mismatch risk; `resolveColorToken` utility already covers this use case separately
 
-**Major components:**
-1. `SignalCanvas` (`components/animation/signal-canvas.tsx`) — singleton WebGL host; one renderer, one context, scissor-split scene management, IntersectionObserver lifecycle, reduced-motion guard, WebGL feature detection
-2. `SignalCanvasLazy` (`components/layout/signal-canvas-lazy.tsx`) — `next/dynamic({ ssr: false })` wrapper; mirrors GlobalEffectsLazy pattern exactly
-3. `useSignalScene` (`hooks/use-signal-scene.ts`) — registration hook; scenes register/unregister via context; enforces disposal contract at hook level
-4. `SignalMesh` (`components/animation/signal-mesh.tsx`) — first generative scene; parametric 3D geometry driven by GSAP ScrollTrigger uniforms
-5. `SignalMotion` (`components/animation/signal-motion.tsx`) — particle/flow field scene; reuses established SignalCanvas pipeline
-6. `lib/color-resolve.ts` — extracted OKLCH-to-RGB probe utility; shared by CanvasCursor (existing) and all new generative components
+**STP-01: Session Persistence**
 
-### Critical Pitfalls
+Table stakes:
+- `useSessionState<T>(key, default)` generic hook — ~25 lines, `useState` + `useEffect` read pattern
+- Component browser: `activeFilter` + `searchQuery` persisted in `sessionStorage`
+- Token explorer: `activeTab` persisted in `sessionStorage`
+- Scroll restoration on `/components` page
 
-1. **WebGL context exhaustion** — Never instantiate more than one `WebGLRenderer`. Browser limit is 8 (Safari) to 16 (Chrome). Multiple components each creating a context will silently destroy the oldest one. Prevention: singleton renderer established in Phase 1 Foundation before any scene component is built. Cannot be retrofitted without touching every canvas component.
+Differentiators:
+- `lastUpdated` timestamp for staleness detection
+- Versioned storage keys (`sf-filters-v1`) to handle filter schema changes without stale state
 
-2. **GPU memory leak from undisposed Three.js resources** — `scene.remove(mesh)` does not free VRAM. `.dispose()` must be called explicitly on geometry, material, textures, and the renderer itself. Prevention: `useSignalScene` enforces disposal at hook level. Monitor `renderer.info.memory.geometries` during development.
+Avoid:
+- URL search params as primary persistence (breaks bookmarks, adds URL noise)
+- localStorage (too persistent, cross-session contamination)
+- Global React context for session state (page-local state does not warrant it)
 
-3. **SSR hydration failure** — `THREE.WebGLRenderer` and `window` do not exist in Node.js. Any module-level Three.js import that enters the Server Component tree throws during `next build`. Prevention: all canvas components must be behind `next/dynamic({ ssr: false })`; Three.js must never appear in the synchronous import graph of any shared utility file.
+### From ARCHITECTURE.md
 
-4. **GSAP + Three.js render loop conflict** — Two independent RAF loops (`renderer.setAnimationLoop` + `gsap.ticker`) fire in undefined order within a frame. GSAP-written uniform values may be consumed by Three.js before GSAP writes them. Prevention: never use `renderer.setAnimationLoop()`. Drive `renderer.render()` exclusively from inside `gsap.ticker.add()`. Lenis RAF must also be in the same ticker chain.
+**Existing architecture baseline (locked from v1.0/v1.1):**
+- GSAP ticker is the only render driver for WebGL — no independent rAF loops
+- Three.js in async chunk — 102 kB initial bundle maintained
+- Server Components default; `'use client'` only when required
+- Document-level event listener pattern proven (audio/haptics/global effects)
 
-5. **OKLCH colors breaking in WebGL shaders** — CSS OKLCH cannot be passed directly to GLSL uniforms. WebGL operates in linear sRGB; OKLCH is a perceptual color space with different gamma encoding. Prevention: use the DOM canvas probe technique (already in CanvasCursor) to resolve OKLCH to linear sRGB before passing as `vec3` uniform. Extract to `lib/color-resolve.ts` in Phase 1 — never re-invent per component.
+**Component boundary changes for v1.2:**
 
-6. **Bundle budget blown by Three.js** — Three.js minified+gzip is ~155KB. Eager import in any file reachable by the initial load waterfall destroys the 200KB budget and breaks Lighthouse 100. Prevention: Three.js lives exclusively inside the `next/dynamic` async factory. Run `@next/bundle-analyzer` as a validation gate after Phase 1.
+| Item | Type | Location |
+|------|------|----------|
+| SignalMotion placement | Modified (pages) | `app/page.tsx` + showcase pages |
+| INT-04 WebGL bridge | Modified (WebGL scenes) | `glsl-hero.tsx`, `signal-mesh.tsx` |
+| globals.css signal defaults | Modified | `app/globals.css` |
+| SFSection bgShift type | Fixed | `components/sf/sf-section.tsx` |
+| registry.json | Extended | `registry.json` |
+| SignalframeUXProvider | New | `lib/signalframe-provider.tsx` |
+| `createSignalframeUX` factory | New | `lib/signalframe-provider.tsx` (same file) |
+| Session persistence | Modified (block) | `components/blocks/components-explorer.tsx` |
 
-7. **Mobile GPU battery drain and thermal throttling** — Continuous WebGL render loop at 60fps on mobile drains battery and triggers thermal throttling within minutes. Prevention: `IntersectionObserver` pauses the render loop when canvas is off-screen; 30fps cap on mobile via time-delta throttle; pixel ratio capped at 1.5.
+**Key data flow addition — INT-04:**
+```
+SignalOverlay slider
+  → :root CSS var
+  → GSAP ticker (next frame, ~16ms)
+  → module-level cache read
+  → WebGL uniform mutation
+  → Three.js render
+```
+
+**Resolved DX-SPEC.md open questions:**
+- Provider vs singleton: Provider (thin), wraps existing `toggleTheme` singleton, does not replace it
+- Token resolution in hook: out of scope for v1.2; `useSignalframe` covers theme + motion only
+- Motion scope: global GSAP timeline only — `motion.pause()` = `gsap.globalTimeline.pause()`
+- Session storage backend: `sessionStorage` (tab-local); no URL params, no global context
+- Session hydration timing: `useEffect` (client-only); default empty state on SSR, restore on mount
+
+### From PITFALLS.md
+
+**Critical pitfalls (will break the system if missed):**
+
+**1. Per-frame `getComputedStyle` kills Lighthouse Performance (INT-04)**
+- `getComputedStyle` forces synchronous layout on every GSAP tick (60fps)
+- `--signal-*` vars change only on user interaction — per-frame DOM reads are wasteful
+- Prevention: module-level cache variables; update via MutationObserver on `:root` style attribute; ticker reads the cached value, never the DOM
+- Detection: Chrome DevTools flame chart shows `Recalculate Style` on every frame
+
+**2. Missing `--signal-*` CSS var defaults cause magenta flash (INT-04)**
+- `color-resolve.ts` fallback returns magenta for empty CSS var values
+- Prevention: declare `--signal-intensity: 0.5; --signal-speed: 1; --signal-accent: 0` in globals.css BEFORE writing any WebGL uniform reads
+- This is the first action in INT-04, no exceptions
+
+**3. Config provider context infection of Server Components (DX-05)**
+- React context requires `'use client'`; incorrect placement forces Server Component subtrees into client bundle
+- Prevention: "hole in the donut" pattern — `SignalframeProvider` is `'use client'`, but `{children}` passed to it remain Server Components
+- Detection: `next build` errors or bundle analyzer shows layout primitives in client chunk
+
+**4. Session persistence causes hydration mismatch (STP-01)**
+- Reading `sessionStorage`/`localStorage` during render produces server/client HTML mismatch
+- Prevention: render default state first; read storage only in `useEffect` after mount
+- Tab state is most dangerous (different children rendered) — consider cookies if CLS is a concern
+
+**Moderate pitfalls:**
+
+**5. `--signal-accent` passed through color canvas probe receives black (INT-04)**
+- `--signal-accent` is a plain float (hue degrees), not a color token
+- Prevention: `parseFloat(getPropertyValue('--signal-accent'))` directly — never `resolveColorToken`
+
+**6. Registry nested file paths fail shadcn CLI (DX-04)**
+- Prevention: flat registry structure with `files[].target` set explicitly per file entry
+
+**7. bgShift type fix propagates TypeScript errors to consumer call sites**
+- Prevention: `tsc --noEmit` before and after; fix all consumer errors in the same commit; never `@ts-ignore`
+
+**8. Stale filter slugs after component rename (STP-01)**
+- Prevention: version storage keys (`sf-filters-v1`); use canonical enum keys, not display labels
+
+---
 
 ## Implications for Roadmap
 
-The dependency structure from FEATURES.md and build order from ARCHITECTURE.md maps directly to a 4-phase implementation. Every pitfall in PITFALLS.md is addressable in Phase 1 — which means Phase 1 is the critical path.
+### Recommended Phase Structure
 
-### Phase 1: Generative SIGNAL Foundation
+**Phase 1: Foundation — globals.css defaults + bgShift type fix**
+- Rationale: Zero-dependency changes. Must precede INT-04 (CSS var defaults) and any SFSection work. Run `tsc --noEmit` baseline before the type fix; commit each change independently.
+- Delivers: Correct initial CSS var defaults (prevents magenta flash); TypeScript-clean bgShift prop
+- Pitfalls to avoid: Fix all consumer call sites in the same commit; never `@ts-ignore`
+- Research flag: Not needed
 
-**Rationale:** All 9 critical pitfalls are addressed here. Every downstream phase depends on the singleton renderer, disposal contract, dynamic import pattern, color bridge utility, reduced-motion detection, and accessibility classification being in place. This phase produces no user-visible generative output — it produces the infrastructure that makes user-visible output safe to ship. Skipping or rushing this phase makes every subsequent phase a liability.
+**Phase 2: Registry Completion (DX-04)**
+- Rationale: Purely additive. Source `registry.json` already exists and is correctly structured. Adding layout primitives + running `shadcn build` is low-risk, high distribution value. Run `pnpm shadcn build` early to confirm Turbopack/Next.js 15 compatibility.
+- Delivers: Full 29-component + 5-primitive registry; `sf-theme` cssVars item; `/r/[name].json` auto-generated for all components; CLI-installable
+- Pitfalls to avoid: Flat structure with explicit `target` paths; `registryDependencies` on all SF-wrapped components; validate against shadcn schema before publishing
+- Research flag: Not needed — shadcn registry docs are authoritative and HIGH confidence
 
-**Delivers:** `SignalCanvas` singleton, `SignalCanvasLazy` wrapper, `useSignalScene` hook, `lib/color-resolve.ts`, z-index token additions to globals.css, placeholder scene validation (solid-color rectangle confirming scissor split works), Lighthouse 100 maintained, Three.js confirmed in async chunk only via bundle analyzer.
+**Phase 3: CSS→WebGL Bridge (INT-04) + SignalMotion (INT-03)**
+- Rationale: INT-04 depends on Phase 1 (globals.css defaults must exist). INT-03 is independent but belongs here as the other wiring work. Together they complete the SIGNAL layer — the most visible user-facing improvement in v1.2.
+- Delivers: SignalOverlay sliders visually affect GLSL hero and signal mesh shaders; scroll-scrub motion on 4 homepage sections (MANIFESTO, SIGNAL/FRAME, API, COMPONENTS)
+- Pitfalls to avoid: Module-level cache from day one; `--signal-accent` as `parseFloat` never `resolveColorToken`; verify reduced-motion path for SignalMotion
+- Research flag: Not needed — bridge pattern confirmed from existing codebase
 
-**Addresses:** WebGL procedural background (foundation), the performance budget requirement, the SSR safety requirement, reduced-motion compliance, canvas accessibility contract.
+**Phase 4: Config Provider (DX-05)**
+- Rationale: Most architecturally complex item. Benefits from Phases 1–3 being stable. SSR boundary must be designed before code is written — the provider architecture is a commit-once decision.
+- Delivers: `createSignalframeUX(config)` factory; `SignalframeUXProvider` in root layout; `useSignalframe()` hook with theme, setTheme, motion.pause/resume, motion.prefersReduced
+- Pitfalls to avoid: "Hole in the donut" pattern mandatory; `children` must stay Server Components; provider reads `localStorage("sf-theme")` same key as inline blocking script; no token resolution in v1.2 hook
+- Research flag: Not needed — all open questions from DX-SPEC.md resolved
 
-**Avoids:** All 9 critical pitfalls from PITFALLS.md — this phase IS the prevention strategy.
+**Phase 5: Session Persistence (STP-01)**
+- Rationale: Self-contained page-level work. Runs last because ComponentsExplorer is also the demo surface for the registry — having DX-04 complete first means the explorer is fully populated when session state is added.
+- Delivers: Filter/search state persists on `/components`; tab state persists on `/tokens`; scroll restoration on `/components`
+- Pitfalls to avoid: Read in `useEffect` only; version the storage key before implementation; no hydration warnings; Lighthouse CLS unchanged
+- Research flag: Not needed
 
-**Gate:** Lighthouse 100/100 unchanged. Bundle size initial increase < 5KB. `next build` produces zero `window is not defined` errors. No WebGL context warnings in browser console.
+**Phase 6: Documentation Cleanup**
+- Rationale: SCAFFOLDING.md needs `useSignalframe()` API contract; SFSection JSDoc needs bgShift update; tech debt items in PROJECT.md need resolution marks.
+- Delivers: System documentation reflects v1.2 state
+- Research flag: Not needed
 
-### Phase 2: SIGNAL Activation (Dormant Effects + Low-Cost Wins)
+### Build Order Summary
 
-**Rationale:** The highest-ROI items in the entire milestone require no new WebGL work. `[data-cursor]` activation is one attribute per section. SIG-08 idle animation is CSS + GSAP loop. SIG-06 audio feedback is Web Audio API with no dependencies. These ship before any WebGL scene component, proving the SIGNAL authoring model on the simplest cases and delivering immediate craft credibility.
+```
+Phase 1: globals.css defaults + bgShift type fix     60 min   zero deps
+Phase 2: registry.json completion + shadcn build     90 min   additive
+Phase 3: INT-04 WebGL bridge + INT-03 SignalMotion   3-5 hr   Phase 1 required
+Phase 4: createSignalframeUX + useSignalframe         3-4 hr   Phases 1-3 stable
+Phase 5: session persistence                          2-3 hr   Phase 2 helpful
+Phase 6: docs cleanup                                30-60 min all phases done
+```
 
-**Delivers:** `[data-cursor]` attributes on all showcase sections (canvas cursor fully activated), idle-state grain drift + OKLCH color pulse (SIG-08), audio feedback oscillator palette (SIG-06), haptic feedback SIG-07.
+Total estimated: 10–14 hours of implementation.
 
-**Addresses:** One-line cursor fix from v1.0 tech debt, "breathing surface" requirement, terminal voice reinforcement, mobile tactile feedback.
+---
 
-**Uses:** Existing CanvasCursor (zero changes), existing GSAP looping pattern, Web Audio API (no library).
+## Research Flags
 
-**Gate:** Canvas cursor activates on all `[data-cursor]` sections. OS reduced-motion toggle halts idle animation and audio. No Lighthouse regression.
+| Phase | Research Needed | Reason |
+|-------|-----------------|--------|
+| Phase 1 | No | Mechanical changes; no design decisions |
+| Phase 2 | No | shadcn registry spec is authoritative and HIGH confidence |
+| Phase 3 | No | Bridge pattern proven in existing codebase; no unknowns |
+| Phase 4 | No | DX-SPEC.md open questions fully resolved; App Router patterns well-documented |
+| Phase 5 | No | sessionStorage + useEffect is standard; no new patterns |
+| Phase 6 | No | Documentation only |
 
-### Phase 3: First Generative WebGL Scene (Foundation Validation)
+No phases require `/pde:research-phase`. All critical unknowns are resolved by this research pass.
 
-**Rationale:** The first WebGL scene validates the entire Phase 1 pipeline under real conditions. `SignalMesh` (parametric 3D geometry) is the load-bearing test: scissor/viewport split, GSAP ScrollTrigger → uniform wiring, IntersectionObserver pause, disposal on unmount, color token propagation from CSS OKLCH to GLSL. If this works correctly, Phase 4 is additive. The data-driven token visualization ships here using Canvas 2D (not WebGL) — it shares the "generative surface" concept without WebGL risk.
-
-**Delivers:** `SignalMesh` component — parametric 3D geometry driven by scroll, GSAP-wired uniforms, correct disposal. Data-driven token visualization (Canvas 2D animation on existing token explorer). ColorCycleFrame color changes propagated to Three.js uniforms via `color-resolve.ts`.
-
-**Addresses:** WebGL procedural background (fully delivered), scroll-reactive visual layer (SIGNAL generative requirement), "the system demonstrates itself" concept for token explorer.
-
-**Uses:** Three.js (async chunk), GSAP ScrollTrigger onUpdate pattern, `lib/color-resolve.ts`, `useSignalScene` hook.
-
-**Gate:** No WebGL context warnings across all pages. `renderer.info.memory.geometries` stable across route navigations. OKLCH colors in canvas visually match adjacent CSS elements using same tokens. CLS = 0 (canvas placeholder sized correctly).
-
-### Phase 4: Extended Generative Scenes + Production Integration
-
-**Rationale:** With the WebGL pipeline proven, additional scenes and production integration of SF primitives into showcase pages are straightforward. This phase ships the DU/TDR differentiators (ASCII/dithering shader, custom GLSL hero) and applies `data-signal` mount points to production pages, resolving the v1.0 PRM-02/03/04 tech debt while activating generative zones.
-
-**Delivers:** `SignalMotion` component (particle/flow field via established pipeline), ASCII/ordered dithering post-process shader (OGL, GPU-parallel), custom GLSL shader on hero surface, `data-signal` mount points on CaseStudy/About/Work sections, `SIGNAL-GENERATIVE-SPEC.md` documentation.
-
-**Addresses:** GLSL authorship signal to Awwwards jury, DU/TDR visual language at WebGL level, production consumer integration resolving PRM-02/03/04 tech debt.
-
-**Gate:** CRT critique score ≥ 90 for pages with generative content. FRAME content legible over all generative output at all viewport sizes. Lighthouse 100/100 maintained. axe scan: zero canvas accessibility violations.
-
-### Phase Ordering Rationale
-
-- **Foundation before scenes:** Every pitfall in PITFALLS.md is a Phase 1 concern. There is no safe path to building scenes before the singleton renderer, disposal contract, and dynamic import pattern exist.
-- **Dormant effects before WebGL:** Phase 2 items (cursor, idle, audio) deliver Awwwards craft credibility immediately with zero WebGL risk. They also establish the SIGNAL authoring model on the simplest cases before the complex cases.
-- **One scene before many:** Phase 3's single `SignalMesh` validates the entire pipeline. Shipping multiple scenes before one is proven is how context exhaustion and memory leaks slip through.
-- **Integration last:** `data-signal` production integration (Phase 4) requires the pipeline to be stable and the SF primitives to have real consumers — Phase 4 satisfies both simultaneously.
-
-### Research Flags
-
-Phases likely needing deeper research during planning:
-
-- **Phase 1 (Foundation):** Turbopack raw-loader integration is MEDIUM confidence — community solution, not official Next.js docs. Verify `experimental.turbopack.rules` behavior on the specific Next.js 15.3 build before shipping. Template literal shaders are the safe fallback if this proves unstable.
-- **Phase 3 (First WebGL Scene):** GSAP ScrollTrigger + Three.js uniform timing under Lenis has not been verified in this specific stack combination. The `lenis.raf(time)` + `gsap.ticker` integration needs a focused integration test before building scene scroll reactivity at scale.
-- **Phase 4 (ASCII Shader):** OGL post-process pipeline for ordered dithering involves fragment shader architecture that has no existing precedent in this codebase. Review the Codrops Jan 2026 Efecto implementation before committing to an approach.
-
-Phases with standard patterns (skip research-phase):
-
-- **Phase 2 (SIGNAL Activation):** All items are well-documented. `[data-cursor]` is attribute addition. SIG-08 is CSS animation + GSAP loop. SIG-06 is MDN-documented Web Audio API. No ambiguity.
-- **Phase 1 `next/dynamic` pattern:** Established pattern with HIGH confidence sources. The GlobalEffectsLazy precedent in this codebase is the exact template.
+---
 
 ## Confidence Assessment
 
-| Area | Confidence | Notes |
+| Area | Confidence | Basis |
 |------|------------|-------|
-| Stack | HIGH | Core library recommendations (Three.js, OGL, version numbers) confirmed via npm registry and official docs. Turbopack raw-loader config is MEDIUM — community pattern. R3F exclusion is HIGH confidence based on confirmed GitHub issue #71836. |
-| Features | HIGH | Awwwards SOTD corpus (Jan–Mar 2026), Codrops case studies with named site examples. Anti-feature list derived from verified SOTD research patterns. DU/TDR niche unoccupied status is HIGH confidence observation as of April 2026. |
-| Architecture | HIGH | Singleton WebGL pattern verified via MDN WebGL best practices and WebGL fundamentals scissor multi-view docs. GSAP ticker integration pattern verified via GSAP docs. Existing codebase verified directly. R3F anti-pattern confirmed via R3F own docs and GitHub discussions. |
-| Pitfalls | HIGH (WebGL/SSR/memory/bundle) / MEDIUM (OKLCH-shader bridge, GSAP+Three.js timing specifics) | Context limits, memory leak patterns, and SSR constraints are HIGH — multiple authoritative sources. OKLCH/shader bridge and specific GSAP+Three.js timing under Lenis is MEDIUM — needs integration test to confirm. |
+| Stack (new deps) | HIGH | Official shadcn docs; nuqs official docs; native React APIs |
+| Features (DX-04) | HIGH | Official shadcn registry spec verified; current registry.json audited against live codebase |
+| Features (DX-05) | HIGH | DX-SPEC.md open questions resolved against actual codebase; MUI/Radix/Ant Design patterns confirmed |
+| Features (STP-01) | HIGH | sessionStorage native; hydration pattern from official Next.js docs |
+| Architecture (INT-04) | HIGH | Pattern verified from `canvas-cursor.tsx` line 41, `color-resolve.ts` lines 104–120 |
+| Architecture (INT-03) | HIGH | `signal-motion.tsx` confirmed complete; placement is mechanical |
+| Architecture (bgShift) | HIGH | Type mismatch confirmed by reading `sf-section.tsx` and `app/page.tsx` side-by-side |
+| Pitfalls (performance) | HIGH | `getComputedStyle` forced layout documented (Paul Irish, MDN); Lighthouse TBT mechanism confirmed |
+| Pitfalls (hydration) | HIGH | Official Next.js hydration error docs; FluentReact useEffect pattern |
 
-**Overall confidence:** HIGH
+**Overall confidence: HIGH**
 
-### Gaps to Address
+### Gaps (Non-Blocking)
 
-- **Turbopack raw-loader stability:** The `experimental.turbopack.rules` config for GLSL files is a community pattern, not official Next.js documentation. During Phase 1, validate this works on the actual Next.js 15.3 build before committing. If it fails, use TypeScript template literals for all shaders — acceptable for v1.1 scope.
-- **Lenis + GSAP ticker + Three.js render ordering:** The specific integration of `lenis.raf(time)` inside `gsap.ticker.add()` alongside `renderer.render()` has not been tested in this stack. Build a minimal integration test in Phase 1 or Phase 3 before scroll-reactive uniforms are added to production scenes.
-- **OGL vs Three.js choice per scene:** Research recommends OGL for isolated 2D shader effects and Three.js for 3D geometry. The ASCII shader (Phase 4) is the most architecturally ambiguous — verify whether OGL's post-process pipeline is sufficient before choosing. If not, Three.js postprocessing library is the alternative (but requires the same dynamic import isolation).
-- **Three.js selective import tree-shaking ceiling:** Bundle size estimates for selective Three.js imports (40–80KB) are MEDIUM confidence. Actual size depends on which Three.js internals are transitively required. Validate with `@next/bundle-analyzer` after Phase 1 scaffold is built.
-
-## Sources
-
-### Primary (HIGH confidence)
-
-- R3F docs (r3f.docs.pmnd.rs) — v9/React 19 pairing, Next.js transpilePackages requirement
-- GitHub vercel/next.js issue #71836 — R3F v8 incompatible with Next.js 15/React 19 confirmed
-- Next.js Turbopack docs (nextjs.org/docs/app/api-reference/config) — loader rules format
-- MDN WebGL best practices — context limits, disposal patterns, accessibility
-- WebGL fundamentals scissor pattern (webglfundamentals.org/webgl/lessons/webgl-multiple-views.html)
-- GitHub oframe/ogl — OGL ~29KB total, zero deps, ES6 modules
-- GSAP ticker documentation (gsap.com/docs/v3/GSAP/gsap.ticker)
-- npm registry — three@0.183.2, @react-three/fiber@9.5.0 latest confirmed
-
-### Secondary (MEDIUM confidence)
-
-- Codrops Jan 2026 — Efecto: ASCII and Dithering Shaders with WebGL
-- Codrops Mar 2026 — Inside Corentin Bernadou's Portfolio (Three.js + GLSL architecture)
-- Codrops Mar 2026 — Arnaud Rocca's Portfolio: GSAP to WebGL (OGL fluid simulation)
-- Codrops Oct 2025 — Eloy Benoffi's Brutalist Portfolio (ASCII art, SOTD industrial aesthetic)
-- Frontend Horse — GSAP + Three.js ScrollTrigger integration patterns
-- GitHub vercel/next.js discussion #64964 — Turbopack raw-loader via experimental.turbopack.rules (community, not official)
-- SYNTH-awwwards-patterns.md (SignalframeUX project research, 2026-04-05) — Awwwards SOTD Jan–Mar 2026 corpus
-
-### Tertiary (LOW confidence)
-
-- bundlephobia.com — Three.js bundle size estimates (verify manually with bundle-analyzer after install)
-- WebSearch — Three.js tree-shaking ceiling estimates (project-specific validation required)
+- **`shadcn build` in Turbopack/Next.js 15 context:** Expected to work (shadcn 4.1.2 already in devDeps). Run `pnpm shadcn build` early in Phase 2 to confirm before building out the full registry.
+- **`--signal-accent` shader math:** Bridge pattern is confirmed. Specific GLSL hue rotation math for `uAccent` is an implementation-time decision, not a research gap.
+- **Cache invalidation mechanism for INT-04:** MutationObserver on `:root` style attribute vs. direct `invalidateSignalCache()` call from SignalOverlay — either works. Implementation choice.
 
 ---
-*Research completed: 2026-04-05*
-*Ready for roadmap: yes*
+
+## Sources (Aggregated)
+
+**HIGH confidence:**
+- shadcn/ui registry documentation (ui.shadcn.com/docs/registry)
+- shadcn/ui registry-item.json spec (ui.shadcn.com/docs/registry/registry-item-json)
+- nuqs GitHub + homepage (github.com/47ng/nuqs, nuqs.dev)
+- Next.js Server and Client Components docs (nextjs.org/docs/app/getting-started/server-and-client-components)
+- Next.js hydration error docs (nextjs.org/docs/messages/react-hydration-error)
+- MDN — Window.getComputedStyle (forced layout documentation)
+- What forces layout/reflow — Paul Irish (gist.github.com/paulirish/5d52fb081b3570c81e3a)
+- Codebase: `glsl-hero.tsx`, `signal-canvas.tsx`, `canvas-cursor.tsx`, `color-resolve.ts`, `signal-overlay.tsx`, `signal-motion.tsx`, `sf-section.tsx`, `app/page.tsx`, `app/globals.css`, `lib/theme.ts`
+- Codebase: `.planning/DX-SPEC.md`, `registry.json`, `public/r/registry.json`
+
+**MEDIUM confidence:**
+- InfoQ nuqs 2.5 article (industry adoption data)
+- SSR-Safe React Hooks — ReactUse blog 2025
+- Next.js scroll position persistence discussion (github.com/vercel/next.js/discussions/60146)
+- Ant Design ConfigProvider docs
+- Nicolas Mattia — CSS+WebGL color resolution (2025-01-29)
+
+---
+
+*Synthesized by: gsd-research-synthesizer*
+*For: gsd-roadmapper (v1.2 roadmap phase structuring)*
+*Date: 2026-04-06*

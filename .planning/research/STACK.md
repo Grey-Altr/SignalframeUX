@@ -1,242 +1,379 @@
-# Stack Research
+# Technology Stack
 
-**Domain:** Generative web visuals — 3D meshes, motion graphics, procedural graphics, shader-based effects within Next.js 15.3 App Router
-**Researched:** 2026-04-05
-**Confidence:** MEDIUM (core library recommendations HIGH; bundle size figures approximate; GLSL/Turbopack integration MEDIUM due to toolchain volatility)
+**Project:** SignalframeUX v1.2 Tech Debt Sweep
+**Researched:** 2026-04-06
+**Scope:** NEW capabilities only — registry.json, config provider API, session persistence, CSS var→WebGL bridge
 
 ---
 
-## Context: What Already Exists
+## Context: What Is NOT Re-Researched
 
-The following stack is locked and NOT re-researched here:
+The following stack is locked from v1.0/v1.1 and NOT covered here:
 
 - Next.js 15.3 (App Router, Turbopack) + TypeScript 5.8
-- GSAP 3.12.7 + ScrollTrigger, @gsap/react 2.1.2
-- Lenis 1.1.20 (smooth scroll)
+- GSAP 3.12.7 + ScrollTrigger, @gsap/react 2.1.2, Lenis 1.1.20
 - Tailwind CSS v4, CVA, Radix/shadcn SF layer
-- Canvas 2D: `HeroMesh` is a production canvas animation (2D grid mesh, mouse repulsion, RAF loop, IntersectionObserver guard, reduced-motion support). This is the baseline — all generative additions must match this quality bar.
+- Three.js 0.183.2 (async chunk), SignalCanvas singleton, useSignalScene, color-resolve
 
-The existing `hero-mesh.tsx` proves canvas 2D is viable. The research question is: what additional libraries are needed to extend into WebGL (3D meshes), shader effects, and motion graphics, without blowing the 200KB initial budget.
-
----
-
-## Recommended Stack
-
-### Core Generative Layer
-
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| `three` | `^0.183.2` | WebGL scene graph, geometry, materials, shaders | Industry standard for web 3D. Full GLSL control. Excellent tree-shaking when imported selectively. Required peer dep for R3F and Drei. |
-| `@react-three/fiber` | `^9.5.0` | React renderer for Three.js | v9 targets React 19 explicitly (this project uses React 19.1). Declarative scene authoring in JSX. Compatible with Next.js App Router via `dynamic()` + `ssr: false`. |
-| `@react-three/drei` | `^10.x` | Helper abstractions for R3F | Drei v10 pairs with R3F v9/React 19. Provides `shaderMaterial`, `useTexture`, `OrbitControls`, `PerformanceMonitor`, and dozens of scene utilities without reinventing. Tree-shakeable — import only what you use. |
-
-### Supporting Libraries
-
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| `@react-three/postprocessing` | `^3.x` | Screen-space effects (bloom, noise, chromatic aberration, scan lines) | When adding post-process layer to WebGL scenes. Merges effects into single render pass for performance. Pairs with `postprocessing` package (auto-installed). |
-| `raw-loader` | `^4.0.2` | Import `.glsl`/`.vert`/`.frag` files as strings | Required when writing inline GLSL as separate files. Works with both Turbopack (dev) and Webpack (build) via dual config. |
-| `ogl` | `^1.x` | Minimal WebGL library (~29KB min+gzip total) | When Three.js is overkill for a specific isolated effect — pure GLSL quads, particle sims, 2D shader passes. Use in place of Three.js for non-scene effects only. |
-
-### Development Tools
-
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| `@next/bundle-analyzer` | Visualize bundle chunks post-build | Run after adding generative libs to confirm code-split chunks are isolated from initial 200KB budget. |
-| `typescript` shader `.d.ts` declarations | Type-safe GLSL imports | Add `declare module '*.glsl' { const value: string; export default value; }` to `src/types/shaders.d.ts`. Required for both `raw-loader` and inline template literal shaders. |
+Existing architecture decisions that constrain this milestone:
+- GSAP ticker is the ONLY render driver for WebGL — no independent rAF loops
+- Three.js lives in async chunk — 102 kB initial shared bundle maintained
+- Server Components default — `'use client'` only when required
+- Document-level event listener pattern proven in v1.1 (audio/haptics)
 
 ---
 
-## Installation
+## Feature 1: registry.json (DX-04)
+
+### What It Is
+
+A machine-readable component manifest that lets AI assistants (Claude, v0, Cursor) and the shadcn CLI install SignalframeUX components directly into consumer projects via URL:
 
 ```bash
-# Core generative stack
-npm install three @react-three/fiber @react-three/drei
-
-# Post-processing (optional — add per scene)
-npm install @react-three/postprocessing
-
-# OGL for isolated lightweight effects (optional)
-npm install ogl
-
-# Dev: shader file imports + bundle analysis
-npm install -D raw-loader @next/bundle-analyzer
+pnpm dlx shadcn@latest add https://signalframeux.com/r/sf-button.json
 ```
 
----
+### Stack Decision: shadcn Registry Format
 
-## Critical Integration: Next.js App Router + SSR
+**Use the shadcn registry schema.** No additional library required — it is a JSON build artifact.
 
-Three.js cannot execute on the server — it depends on `window`, `WebGLRenderingContext`, and Canvas APIs unavailable in Node.js. This is a hard constraint.
+| Aspect | Decision | Rationale |
+|--------|----------|-----------|
+| Schema | `https://ui.shadcn.com/schema/registry.json` | Industry standard; supported by shadcn CLI, v0, and AI tools |
+| Build command | `shadcn build` (already in devDeps: `shadcn@4.1.2`) | No new dependency — shadcn CLI already installed |
+| Output dir | `public/r/` | Convention; served by Next.js static file serving at `/r/[name].json` |
+| Source dir | `registry/` at project root | Convention from shadcn registry template |
 
-**Required pattern for every R3F scene component:**
+### registry.json Top-Level Structure
 
-```typescript
-// app/some-page/page.tsx (Server Component)
-import dynamic from 'next/dynamic'
-
-const GenerativeScene = dynamic(
-  () => import('@/components/animation/generative-scene'),
-  { ssr: false, loading: () => null }
-)
-```
-
-```typescript
-// components/animation/generative-scene.tsx
-'use client'
-
-import { Canvas } from '@react-three/fiber'
-// ... scene contents
-```
-
-This pattern:
-- Keeps the Server Component parent clean
-- Code-splits the entire Three.js chunk into a separate JS bundle
-- Defers load until the component is needed (not on initial page load)
-- Prevents SSR hydration errors
-
-**`transpilePackages` in `next.config.ts`:**
-
-```typescript
-const nextConfig = {
-  transpilePackages: ['three'],
-  // ...
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "signalframeux",
+  "homepage": "https://signalframeux.com",
+  "items": [ ...registry items... ]
 }
 ```
 
-Required because Three.js ships ESM and Next.js must transpile it.
+### File Type Mapping for SF Components
+
+| SF Component Type | Registry Type | When to Use |
+|-------------------|---------------|-------------|
+| SF-wrapped shadcn component | `registry:ui` | `sf-button.tsx`, `sf-card.tsx`, etc. |
+| Layout primitive | `registry:ui` | `sf-container.tsx`, `sf-section.tsx`, etc. |
+| Animation component | `registry:component` | `signal-motion.tsx`, `scroll-reveal.tsx`, etc. |
+| Hook | `registry:hook` | `use-signal-scene.ts`, etc. |
+| Lib utility | `registry:lib` | `color-resolve.ts`, `signal-canvas.tsx`, etc. |
+| CSS theme/tokens | `registry:theme` | `globals.css` token subset |
+
+### Build Script Addition
+
+```json
+// package.json — add to scripts:
+"registry:build": "shadcn build"
+```
+
+The `shadcn build` command reads `registry.json` at project root, processes all file paths, and outputs per-component JSON files to `public/r/`. No configuration needed beyond adding the source files.
+
+**Confidence:** HIGH — official shadcn/ui documentation, `shadcn@4.1.2` already in devDeps.
 
 ---
 
-## GLSL Shader File Configuration
+## Feature 2: createSignalframeUX(config) + useSignalframe() (DX-05)
 
-Turbopack (dev server) and Webpack (production build) require separate config. Both must be set.
+### What It Is
+
+A React context provider factory that lets consumers configure SignalframeUX behavior at the application boundary:
 
 ```typescript
-// next.config.ts
-const nextConfig = {
-  transpilePackages: ['three'],
-  experimental: {
-    turbopack: {
-      rules: {
-        '*{.glsl,.vert,.frag,.vs,.fs}': {
-          loaders: ['raw-loader'],
-          as: '*.js',
-        },
-      },
-    },
-  },
-  webpack(config: WebpackConfig) {
-    config.module.rules.push({
-      test: /\.(glsl|vert|frag|vs|fs)$/,
-      use: 'raw-loader',
-    })
-    return config
-  },
+// consumer's app/layout.tsx
+const { SignalframeProvider } = createSignalframeUX({
+  signal: { defaultIntensity: 0.3, defaultSpeed: 1.0 },
+  reducedMotion: 'system',
+  theme: 'dark',
+});
+```
+
+```typescript
+// any component
+const { signal, theme } = useSignalframe();
+```
+
+### Stack Decision: Native React Context — No Library
+
+**Use plain React `createContext` + `useContext`.** No new dependency.
+
+| Option | Decision | Rationale |
+|--------|----------|-----------|
+| Native React context | **RECOMMENDED** | Zero bundle cost; already in project; TypeScript generics handle the factory pattern cleanly |
+| `react-use-config` | Rejected | Adds dependency for what is ~30 lines of code; unmaintained (last commit 2021) |
+| Zustand | Rejected | Overkill; global store conflicts with the provider factory pattern; existing project has no Zustand |
+| Jotai | Rejected | Overkill for design system config; adds atoms complexity for a simple read-only config tree |
+
+### Implementation Pattern
+
+The factory pattern is proven in the ecosystem (Wagmi `createConfig`, Ant Design `ConfigProvider`, Radix UI theming) and is straightforward with TypeScript:
+
+```typescript
+// lib/signalframe-context.tsx
+interface SignalframeConfig {
+  signal?: { defaultIntensity?: number; defaultSpeed?: number; defaultAccent?: number; };
+  reducedMotion?: 'system' | 'always' | 'never';
+  theme?: 'dark' | 'light' | 'system';
+}
+
+export function createSignalframeUX(config: SignalframeConfig = {}) {
+  const SignalframeContext = createContext<SignalframeConfig>(config);
+
+  function SignalframeProvider({ children }: { children: React.ReactNode }) {
+    return <SignalframeContext.Provider value={config}>{children}</SignalframeContext.Provider>;
+  }
+
+  function useSignalframe() {
+    return useContext(SignalframeContext);
+  }
+
+  return { SignalframeProvider, useSignalframe };
+}
+
+// Default export for apps that don't need customisation
+export const { SignalframeProvider, useSignalframe } = createSignalframeUX();
+```
+
+**Key constraints:**
+- `SignalframeProvider` must be a Client Component (`'use client'`) because it uses React context
+- Config is read-only at runtime — no mutation API (no `setConfig`). SignalOverlay writes directly to CSS vars, not to this context
+- `useSignalframe` is a thin accessor — not a settings panel. The SignalOverlay already handles interactive mutation
+
+**Confidence:** HIGH — native React API, pattern validated across major libraries.
+
+---
+
+## Feature 3: Session State Persistence (STP-01)
+
+### What It Is
+
+Persist three types of UI state across page reloads: filter selections, scroll position, and tab state.
+
+### Stack Decision: nuqs for Filter/Tab State, Native sessionStorage for Scroll
+
+Two different mechanisms for two different data shapes:
+
+| State Type | Mechanism | Why |
+|------------|-----------|-----|
+| Filter selections | nuqs `useQueryState` | URL-encoded → shareable, bookmarkable, SSR-compatible with Next.js App Router |
+| Tab state | nuqs `useQueryState` | Same rationale; tab = navigation state, belongs in URL |
+| Scroll position | `sessionStorage` (native) | Scroll is ephemeral positional data — NOT shareable, NOT needed in URL, `sessionStorage` clears on tab close (correct behavior) |
+
+### nuqs
+
+**Install: `pnpm add nuqs`** — new dependency.
+
+| Aspect | Value |
+|--------|-------|
+| Version | `^2.8.9` (latest, April 2026) |
+| Bundle size | 6 kB gzipped |
+| Dependencies | Zero runtime dependencies |
+| Next.js App Router support | First-class via `NuqsAdapter` |
+| React version | Supports React 19 |
+
+**Required setup — add `NuqsAdapter` to root layout:**
+
+```typescript
+// app/layout.tsx (Server Component)
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </body>
+    </html>
+  );
 }
 ```
 
-**Alternative (no raw-loader):** Write shaders as TypeScript template literals in `.ts` files. No loader config needed. Acceptable for simple shaders; less ergonomic for complex GLSL with imports.
+**Usage in filter components:**
+
+```typescript
+'use client';
+import { parseAsString, useQueryState } from 'nuqs';
+
+const [activeFilter, setActiveFilter] = useQueryState('filter', parseAsString.withDefault('all'));
+```
+
+**Why not localStorage for filters?**
+- URL state is shareable and bookmarkable — correct for filters/tabs
+- nuqs is the de-facto standard for Next.js App Router URL state (used by Vercel, Supabase, Sentry, Clerk)
+- localStorage accumulates stale state; URL state self-cleans on navigation
+- nuqs v2.5+ provides key isolation — components only re-render when their specific key changes
+
+**Scroll position — native sessionStorage:**
+
+```typescript
+// Simple hook — no library needed
+function useScrollPersistence(key: string) {
+  useEffect(() => {
+    const saved = sessionStorage.getItem(key);
+    if (saved) window.scrollTo(0, parseInt(saved, 10));
+
+    const onScroll = () => sessionStorage.setItem(key, String(window.scrollY));
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [key]);
+}
+```
+
+**Why not nuqs for scroll?** Scroll position in the URL creates ugly URLs, breaks browser back-button behavior, and generates unnecessary history entries. `sessionStorage` is the correct tool: it persists through refreshes on the same tab and clears when the tab closes.
+
+**Confidence:** HIGH — nuqs official docs, NuqsAdapter pattern verified; sessionStorage is native Web API.
 
 ---
 
-## Bundle Size Analysis
+## Feature 4: SignalOverlay→WebGL CSS Var Bridge (INT-04)
 
-### The 200KB Problem
+### What It Is
 
-The project has a hard 200KB initial page weight budget. Three.js is large.
+Complete the one-sided bridge: `SignalOverlay` writes `--signal-intensity`, `--signal-speed`, `--signal-accent` to `:root` CSS vars, but no WebGL scene currently reads them. The bridge must poll these vars on each GSAP ticker frame and push values into Three.js uniforms.
 
-| Library | Min+Gzip (approx) | Loaded When |
-|---------|-------------------|-------------|
-| `three` (full import) | ~160KB | Never — import selectively |
-| `three` (selective imports) | ~40–80KB | Only on dynamic chunk load |
-| `@react-three/fiber` | ~15KB | Dynamic chunk only |
-| `@react-three/drei` (selective) | ~5–20KB | Dynamic chunk only |
-| `ogl` (full) | ~29KB | Dynamic chunk only |
-| Canvas 2D (`hero-mesh.tsx`) | 0KB overhead | Already ships in client bundle |
+### Stack Decision: getComputedStyle in GSAP Ticker — No Library
 
-**Key insight:** Because R3F scenes are loaded via `dynamic(() => import(...), { ssr: false })`, Three.js and all its dependencies land in a separate JS chunk that is NOT part of the initial page load. The 200KB budget applies to the initial bundle. The Three.js chunk loads asynchronously when the component mounts.
+**No new library required.** The existing architecture already has everything needed:
 
-This means Three.js does NOT violate the 200KB initial budget if — and only if — every WebGL component uses `dynamic()` import.
+1. GSAP ticker already drives the WebGL render loop (proven in `signal-canvas.tsx`, `glsl-hero.tsx`)
+2. `getComputedStyle(document.documentElement).getPropertyValue('--signal-intensity')` reads CSS vars synchronously
+3. Three.js uniform mutation on tick is the existing pattern (`glsl-hero.tsx` already does `uniformsRef.current.uTime.value += 0.016`)
 
-**Validation step:** Run `ANALYZE=true npm run build` after setup (with `@next/bundle-analyzer`) and confirm Three.js lives in a chunk separate from `_app` and route bundles.
+**Why not StyleObserver / `@bramus/style-observer`?**
+- Adds a dependency (~5 kB) for a problem already solved by the GSAP ticker
+- The GSAP ticker already runs every frame — reading 3 CSS vars per tick is negligible (< 1µs)
+- `getComputedStyle` is called every frame in `color-resolve.ts` for the canvas probe — this is an established pattern in this codebase
+
+**Why not MutationObserver watching `:root` style attribute?**
+- MutationObserver on `style` attribute fires when `element.style.setProperty()` is called — this would work for SignalOverlay's writes
+- BUT: it fires synchronously on mutation, not on the render frame — could trigger uniform updates between GSAP ticker ticks, causing visual stutter
+- The ticker-per-frame approach is frame-coherent: uniforms update at the same moment the scene renders
+
+### Bridge Pattern
+
+The bridge lives in `glsl-hero.tsx` (the primary WebGL consumer) and any future WebGL scene that reads signal parameters. Pattern:
+
+```typescript
+// Inside GSAP ticker callback in the scene component:
+const tickerFn = () => {
+  if (!uniformsRef.current) return;
+  uniformsRef.current.uTime.value += 0.016;
+
+  // Signal bridge — read CSS vars, push to uniforms
+  const style = getComputedStyle(document.documentElement);
+  const intensity = parseFloat(style.getPropertyValue('--signal-intensity') || '0.5');
+  const speed = parseFloat(style.getPropertyValue('--signal-speed') || '1.0');
+  uniformsRef.current.uIntensity.value = intensity;
+  uniformsRef.current.uSpeed.value = speed;
+};
+```
+
+**CSS var defaults in globals.css** — must be added as part of INT-04:
+
+```css
+/* globals.css — @theme or :root block */
+--signal-intensity: 0.5;
+--signal-speed: 1.0;
+--signal-accent: 0;
+```
+
+Without defaults, `getPropertyValue` returns an empty string, and `parseFloat('')` returns `NaN`.
+
+**Confidence:** HIGH — pattern validated by existing codebase (`glsl-hero.tsx` ticker + `color-resolve.ts` `getComputedStyle` probe). No new library needed.
 
 ---
 
-## Alternatives Considered
+## Installation Summary
 
-| Recommended | Alternative | Why Not |
-|-------------|-------------|---------|
-| `@react-three/fiber` + `three` | Raw Three.js imperatively | No React lifecycle integration; manual cleanup; harder composition |
-| `@react-three/fiber` + `three` | Babylon.js | Larger bundle; React integration unofficial; ecosystem less mature for this use case |
-| `@react-three/fiber` + `three` | PlayCanvas | Not open-source friendly; proprietary editor dependency |
-| `@react-three/drei` | Manual helpers | Drei is tree-shakeable v10+; no cost for unused helpers |
-| `ogl` (for isolated shaders) | WebGL from scratch | OGL is ~29KB total and provides a clean abstraction without Three.js overhead for 2D quad effects |
-| GLSL shader files | `glslify-loader` | glslify adds complexity; not needed unless shader module imports are required |
+### New Dependencies
+
+```bash
+pnpm add nuqs
+```
+
+That is the only new runtime dependency for the entire v1.2 milestone.
+
+### New Dev Script (no install)
+
+```json
+// package.json
+"registry:build": "shadcn build"
+```
+
+### What Is NOT Added
+
+| Considered | Rejected | Why |
+|------------|----------|-----|
+| `@bramus/style-observer` | Rejected | GSAP ticker solves CSS var reading at no cost |
+| `zustand` | Rejected | Overkill for read-only config context |
+| `react-use-config` | Rejected | Unmaintained; 30 lines of native code replaces it |
+| `jotai` | Rejected | No global state model needed |
+| `use-local-storage` | Rejected | `sessionStorage` native API is sufficient for scroll |
+| Any new animation library | Rejected | CLAUDE.md: do not expand animation system |
 
 ---
 
-## What NOT to Use
+## Integration Checklist
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| `@react-three/fiber@8` | React 19 incompatible — `ReactCurrentOwner` error confirmed in Next.js 15 issues | `@react-three/fiber@9.x` |
-| Full `three` barrel import (`import * as THREE from 'three'`) | Pulls entire library; no tree-shaking possible; balloons bundle | `import { BoxGeometry, ShaderMaterial } from 'three'` — named imports only |
-| Lottie (`@lottiefiles/dotlottie-react`, `lottie-web`) | Motion graphics via JSON animation — not generative, not procedural, not aligned with DU/TDR raw aesthetic. Adds 60–200KB. | GSAP + Canvas 2D or R3F for true generative output |
-| Babylon.js | ~500KB+; designed for game engines; React integration is unofficial community wrapper | Three.js + R3F |
-| `vite-plugin-glsl` | Vite plugin — not compatible with Next.js/Turbopack build pipeline | `raw-loader` via `next.config.ts` rules |
-| New GSAP effects beyond existing | CLAUDE.md explicitly forbids expanding GSAP animations. GSAP is for scroll choreography + scene transitions, not generative graphics. | R3F/Three.js for WebGL generative output |
-| `react-spring` or `framer-motion` for 3D | Redundant with GSAP + R3F; adds bundle weight with no gain | GSAP for timeline control; R3F `useFrame` for per-frame 3D animation |
+### registry.json
+- [ ] Create `registry/` directory at project root
+- [ ] Write `registry.json` with all SF component entries
+- [ ] Add `"registry:build": "shadcn build"` to `package.json` scripts
+- [ ] Run `pnpm registry:build` → verify output in `public/r/`
+- [ ] Serve endpoint at `https://[domain]/r/[name].json`
 
----
+### Config Provider
+- [ ] Create `lib/signalframe-context.tsx` with `createSignalframeUX` factory
+- [ ] Add `'use client'` directive (context requires client boundary)
+- [ ] Wrap root layout with default `SignalframeProvider`
+- [ ] Export from `sf/index.ts` barrel
 
-## Stack Patterns by Variant
+### Session Persistence
+- [ ] Install: `pnpm add nuqs`
+- [ ] Add `NuqsAdapter` to `app/layout.tsx` (Server Component, wraps children)
+- [ ] Identify all filter/tab components → replace `useState` with `useQueryState`
+- [ ] Create `hooks/use-scroll-persistence.ts` for scroll state
 
-**If building a full 3D scene (meshes, camera, lighting):**
-- Use R3F `Canvas` + `@react-three/drei` helpers
-- Use `useFrame` for per-frame updates (replaces GSAP for WebGL)
-- GSAP ScrollTrigger can drive R3F uniforms/camera position via ref values
-
-**If building a 2D shader effect (fullscreen quad, noise field, data viz):**
-- Use OGL `Renderer` + `Program` + `Mesh` — avoids Three.js overhead
-- Or use a plain `<canvas>` + raw WebGL2 context (as `hero-mesh.tsx` does with Canvas 2D)
-- Pattern: lazy load via `dynamic()`, write shader as template literal string
-
-**If building a motion graphic (SVG morphing, vector animation):**
-- GSAP MorphSVG or DrawSVG (already licensed) + inline SVG
-- Do NOT use Lottie or R3F for 2D vector work
-
-**If GSAP needs to control a 3D object:**
-- Use `useRef` on the R3F mesh, then `gsap.to(meshRef.current.position, {...})`
-- GSAP animates Three.js object properties natively — no special bridge needed
+### CSS Var→WebGL Bridge
+- [ ] Add `--signal-intensity: 0.5`, `--signal-speed: 1.0`, `--signal-accent: 0` defaults to `globals.css`
+- [ ] Extend `glsl-hero.tsx` GSAP ticker to read CSS vars and push to uniforms
+- [ ] Add `uIntensity` and `uSpeed` uniforms to hero fragment shader
+- [ ] Verify `SignalOverlay` slider changes produce visible shader response
 
 ---
 
 ## Version Compatibility
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| `@react-three/fiber@9.5.0` | `three@0.170+`, `react@19.0–19.2` | Verified: pairs explicitly with React 19. Use `three@^0.183.2` (latest). |
-| `@react-three/drei@10.x` | `@react-three/fiber@9.x` | Drei v10 targets R3F v9 / React 19 |
-| `@react-three/postprocessing@3.x` | `@react-three/fiber@9.x`, `postprocessing@7.x` | `postprocessing` auto-installed as peer dep |
-| `three@0.183.2` | Next.js 15.3 + Turbopack | Requires `transpilePackages: ['three']` in `next.config.ts` |
-| `raw-loader@4.0.2` | Webpack 5, Turbopack (via `experimental.turbopack.rules`) | Dual config required: separate Turbopack + Webpack sections |
+| Package | Version | Peer Requirements | Notes |
+|---------|---------|-------------------|-------|
+| `nuqs` | `^2.8.9` | React 18+, Next.js 14.2+ | NuqsAdapter required for App Router |
+| `shadcn` (build) | `4.1.2` | Next.js, TypeScript | Already installed in devDeps |
+| React Context (native) | React 19.1.0 | — | Already in project |
+| `sessionStorage` (native) | Browser API | — | No polyfill needed for target browsers |
 
 ---
 
 ## Sources
 
-- R3F docs (r3f.docs.pmnd.rs/getting-started/installation) — v9/React 19 pairing, Next.js transpilePackages requirement — HIGH confidence
-- GitHub pmndrs/react-three-fiber releases — v9.5.0 confirmed latest, React 19 compat — HIGH confidence
-- GitHub vercel/next.js issue #71836 — R3F v8 incompatible with Next.js 15/React 19 confirmed — HIGH confidence
-- GitHub vercel/next.js discussion #64964 — Turbopack raw-loader pattern via `experimental.turbopack.rules` — MEDIUM confidence (community solution, not official docs)
-- Next.js Turbopack docs (nextjs.org/docs/app/api-reference/config/next-config-js/turbopack) — loader rules format — HIGH confidence
-- npm registry — `three` latest 0.183.2, `@react-three/fiber` latest 9.5.0 — HIGH confidence
-- GitHub oframe/ogl — OGL ~29KB total min+gzip, zero deps, ES6 modules — HIGH confidence
-- WebSearch — Three.js bundle size estimates; tree-shaking limitations — MEDIUM confidence (exact numbers require project-specific build analysis)
-- bundlephobia.com (JavaScript-rendered, content not extractable) — cited as validation tool for post-install audit — verify manually
+- shadcn/ui registry documentation (ui.shadcn.com/docs/registry) — registry.json schema, file types, build command — HIGH confidence
+- shadcn/ui registry-item-json docs (ui.shadcn.com/docs/registry/registry-item-json) — all `registry:*` type values — HIGH confidence
+- shadcn/ui getting-started docs (ui.shadcn.com/docs/registry/getting-started) — build workflow, `public/r/` output — HIGH confidence
+- nuqs GitHub (github.com/47ng/nuqs) — NuqsAdapter pattern for Next.js App Router, v2.8.9 latest — HIGH confidence
+- nuqs homepage (nuqs.dev) — 6 kB gzipped, zero dependencies, useQueryState API — HIGH confidence
+- InfoQ nuqs 2.5 article — key isolation, debounce, React Advanced 2025 industry adoption — MEDIUM confidence
+- GSAP community forum (gsap.com/community) — `getComputedStyle` + `getPropertyValue` for CSS var reading — HIGH confidence
+- Codebase: `glsl-hero.tsx` — ticker-driven uniform mutation pattern, existing implementation — HIGH confidence
+- Codebase: `color-resolve.ts` — `getComputedStyle` probe pattern, established precedent — HIGH confidence
+- Codebase: `signal-overlay.tsx` — CSS var write pattern, confirmed `--signal-intensity/speed/accent` names — HIGH confidence
+- WebSearch — StyleObserver alternatives evaluated and rejected (bramus/style-observer) — MEDIUM confidence
 
 ---
 
-*Stack research for: Generative SIGNAL layer additions — SignalframeUX v1.1*
-*Researched: 2026-04-05*
+*Stack research for: SignalframeUX v1.2 Tech Debt Sweep — NEW capabilities only*
+*Researched: 2026-04-06*
