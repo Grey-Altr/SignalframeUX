@@ -48,7 +48,7 @@
 - [x] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only) (completed 2026-04-06)
 - [x] **Phase 18: P1 Animated Components** — Accordion (stagger), Toast/Toaster (slide), Progress (fill tween) (completed 2026-04-06)
 - [x] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup (completed 2026-04-06)
-- [ ] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check
+- [x] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check (completed 2026-04-06)
 
 ## Phase Details
 
@@ -237,4 +237,4 @@ Plans:
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 20. P3 Registry-Only + Final Audit | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
