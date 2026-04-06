@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-stack",
+  "title": "SF Stack",
+  "description": "Flex stack with blessed gap tokens for vertical/horizontal layouts. FRAME layer.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-stack.tsx",
+      "content": "import { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport React from \"react\";\n\nconst sfStackVariants = cva(\"flex\", {\n  variants: {\n    direction: {\n      vertical: \"flex-col\",\n      horizontal: \"flex-row flex-wrap\",\n    },\n    gap: {\n      \"1\": \"gap-1\",\n      \"2\": \"gap-2\",\n      \"3\": \"gap-3\",\n      \"4\": \"gap-4\",\n      \"6\": \"gap-6\",\n      \"8\": \"gap-8\",\n      \"12\": \"gap-12\",\n      \"16\": \"gap-16\",\n      \"24\": \"gap-24\",\n    },\n    align: {\n      start: \"items-start\",\n      center: \"items-center\",\n      end: \"items-end\",\n      stretch: \"items-stretch\",\n    },\n  },\n  defaultVariants: {\n    direction: \"vertical\",\n    gap: \"4\",\n    align: \"stretch\",\n  },\n});\n\ninterface SFStackProps\n  extends React.ComponentProps<\"div\">,\n    VariantProps<typeof sfStackVariants> {}\n\n/**\n * Vertical rhythm container — FRAME layer layout primitive.\n *\n * Flex container with gap variants mapped to blessed spacing stops.\n * Defaults to vertical column layout with stretch alignment. Use\n * direction=\"horizontal\" for inline/row arrangements.\n *\n * @param direction - Flex direction. \"vertical\" | \"horizontal\"\n * @param gap - Gap between children, maps to blessed stops. \"1\" | \"2\" | \"3\" | \"4\" | \"6\" | \"8\" | \"12\" | \"16\" | \"24\"\n * @param align - Flex alignment. \"start\" | \"center\" | \"end\" | \"stretch\"\n * @param className - Merged via cn() after variant classes\n *\n * @example\n * <SFStack gap=\"8\" align=\"start\">\n *   <SFText variant=\"heading-2\">Title</SFText>\n *   <SFText variant=\"body\">Description</SFText>\n * </SFStack>\n */\nconst SFStack = React.forwardRef<HTMLDivElement, SFStackProps>(\n  function SFStack({ direction, gap, align, className, ...props }, ref) {\n    return (\n      <div\n        ref={ref}\n        className={cn(sfStackVariants({ direction, gap, align }), className)}\n        {...props}\n      />\n    );\n  }\n);\n\nSFStack.displayName = \"SFStack\";\n\nexport { SFStack };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B"
+  },
+  "type": "registry:ui"
+}

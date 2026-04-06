@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-input.tsx",
-      "content": "import { Input } from \"@/components/ui/input\";\nimport { cn } from \"@/lib/utils\";\n\nexport function SFInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof Input>) {\n  return (\n    <Input\n      className={cn(\n        \"font-mono border-2 border-foreground bg-background\",\n        \"focus-visible:ring-primary focus-visible:ring-2 focus-visible:ring-offset-0\",\n        \"placeholder:text-muted-foreground placeholder:uppercase placeholder:tracking-wider\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "content": "import { Input } from \"@/components/ui/input\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Text input field — FRAME layer form primitive.\n *\n * Enforces SF input contract: font-mono, uppercase, 2px foreground border,\n * sf-focusable keyboard indicator, and sf-border-draw-focus for SIGNAL-layer\n * focus animation. Placeholder inherits uppercase and tracking styles.\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFInput placeholder=\"Enter value\" />\n * <SFInput type=\"email\" placeholder=\"you@studio.com\" />\n */\nexport function SFInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof Input>) {\n  return (\n    <Input\n      className={cn(\n        \"sf-focusable sf-border-draw-focus font-mono uppercase tracking-wider text-xs border-2 border-foreground bg-background\",\n        \"focus-visible:ring-0\",\n        \"placeholder:text-muted-foreground placeholder:uppercase placeholder:tracking-wider\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-select",
+  "title": "SF Select",
+  "description": "Brutalist select with 2px borders, no radius, inverted focus state",
+  "registryDependencies": [
+    "select"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-select.tsx",
+      "content": "\"use client\";\n\nimport {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectLabel,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Dropdown select input — FRAME layer form primitive.\n *\n * Radix Select root wrapped with SF contract. Compose with\n * SFSelectTrigger, SFSelectContent, SFSelectItem, SFSelectValue,\n * SFSelectGroup, and SFSelectLabel for a complete select control.\n * Trigger enforces font-mono, uppercase, sf-border-draw-focus.\n *\n * @example\n * <SFSelect>\n *   <SFSelectTrigger><SFSelectValue placeholder=\"Choose...\" /></SFSelectTrigger>\n *   <SFSelectContent>\n *     <SFSelectItem value=\"a\">Option A</SFSelectItem>\n *   </SFSelectContent>\n * </SFSelect>\n */\nfunction SFSelect(props: React.ComponentProps<typeof Select>) {\n  return <Select {...props} />;\n}\n\n/** Sub-component of SFSelect — trigger button with sf-border-draw-focus, mono uppercase, and no ring. */\nfunction SFSelectTrigger({\n  className,\n  ...props\n}: React.ComponentProps<typeof SelectTrigger>) {\n  return (\n    <SelectTrigger\n      className={cn(\n        \"sf-focusable sf-border-draw-focus rounded-none border-2 border-foreground bg-background font-mono uppercase tracking-wider text-xs\",\n        \"focus:ring-0 focus:ring-offset-0 focus-visible:ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFSelect — dropdown panel with sharp corners, 2px border, and no shadow. */\nfunction SFSelectContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof SelectContent>) {\n  return (\n    <SelectContent\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background shadow-none\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFSelect — option item in mono uppercase; inverts colors on focus. */\nfunction SFSelectItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof SelectItem>) {\n  return (\n    <SelectItem\n      className={cn(\n        \"rounded-none font-mono uppercase tracking-wider text-xs\",\n        \"focus:bg-foreground focus:text-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFSelect — renders the currently selected value or placeholder inside SFSelectTrigger. */\nfunction SFSelectValue(props: React.ComponentProps<typeof SelectValue>) {\n  return <SelectValue {...props} />;\n}\n\n/** Sub-component of SFSelect — groups related select items under a common label. */\nfunction SFSelectGroup(props: React.ComponentProps<typeof SelectGroup>) {\n  return <SelectGroup {...props} />;\n}\n\n/** Sub-component of SFSelect — non-interactive group label in muted mono uppercase at 2xs size. */\nfunction SFSelectLabel({\n  className,\n  ...props\n}: React.ComponentProps<typeof SelectLabel>) {\n  return (\n    <SelectLabel\n      className={cn(\n        \"rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-2 py-1.5\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFSelect,\n  SFSelectTrigger,\n  SFSelectContent,\n  SFSelectGroup,\n  SFSelectItem,\n  SFSelectLabel,\n  SFSelectValue,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-switch",
+  "title": "SF Switch",
+  "description": "Square switch with 2px borders, primary checked state",
+  "registryDependencies": [
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-switch.tsx",
+      "content": "\"use client\";\n\nimport { Switch } from \"@/components/ui/switch\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Toggle switch input — FRAME layer form primitive.\n *\n * Radix Switch with SF styling: sharp corners (rounded-none), 2px\n * foreground border, primary fill on checked state, transparent when\n * unchecked, and sf-toggle-snap snap animation on the thumb.\n * Inherits all Radix SwitchProps.\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFSwitch id=\"notifications\" defaultChecked />\n * <SFLabel htmlFor=\"notifications\">Enable notifications</SFLabel>\n */\nexport function SFSwitch({\n  className,\n  ...props\n}: React.ComponentProps<typeof Switch>) {\n  return (\n    <Switch\n      className={cn(\n        \"sf-focusable rounded-none border-2 border-foreground\",\n        \"data-[state=checked]:bg-primary data-[state=checked]:border-primary\",\n        \"data-[state=unchecked]:bg-transparent\",\n        \"focus-visible:ring-0 focus-visible:ring-offset-0\",\n        \"[&>span]:sf-toggle-snap\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-checkbox",
+  "title": "SF Checkbox",
+  "description": "Square checkbox with 2px borders, primary checked state",
+  "registryDependencies": [
+    "checkbox"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-checkbox.tsx",
+      "content": "\"use client\";\n\nimport { Checkbox } from \"@/components/ui/checkbox\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Toggle checkbox input — FRAME layer form primitive.\n *\n * Radix Checkbox wrapped with SF styling: sharp corners (rounded-none),\n * 2px foreground border, primary fill on checked state, and\n * sf-focusable keyboard indicator. Inherits all Radix CheckboxProps.\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFCheckbox id=\"terms\" />\n * <SFLabel htmlFor=\"terms\">Accept terms</SFLabel>\n */\nexport function SFCheckbox({\n  className,\n  ...props\n}: React.ComponentProps<typeof Checkbox>) {\n  return (\n    <Checkbox\n      className={cn(\n        \"sf-focusable rounded-none border-2 border-foreground\",\n        \"data-[state=checked]:bg-primary data-[state=checked]:border-primary\",\n        \"focus-visible:ring-0 focus-visible:ring-offset-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

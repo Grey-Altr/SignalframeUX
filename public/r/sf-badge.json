@@ -12,9 +12,13 @@
   "files": [
     {
       "path": "components/sf/sf-badge.tsx",
-      "content": "import { Badge } from \"@/components/ui/badge\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\nconst sfBadgeVariants = cva(\n  \"font-mono uppercase tracking-wider text-xs border-0\",\n  {\n    variants: {\n      intent: {\n        default: \"bg-foreground text-background\",\n        primary: \"bg-primary text-primary-foreground\",\n        outline: \"bg-transparent text-foreground border-2 border-foreground\",\n        signal: \"bg-[var(--sf-yellow)] text-foreground\",\n      },\n    },\n    defaultVariants: {\n      intent: \"default\",\n    },\n  }\n);\n\ninterface SFBadgeProps\n  extends React.ComponentProps<typeof Badge>,\n    VariantProps<typeof sfBadgeVariants> {}\n\nexport function SFBadge({ intent, className, ...props }: SFBadgeProps) {\n  return (\n    <Badge\n      className={cn(sfBadgeVariants({ intent }), className)}\n      {...props}\n    />\n  );\n}\n",
+      "content": "import { Badge } from \"@/components/ui/badge\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\nconst sfBadgeVariants = cva(\n  \"font-mono uppercase tracking-wider text-xs\",\n  {\n    variants: {\n      intent: {\n        default: \"border-2 border-foreground bg-foreground text-background\",\n        primary: \"border-2 border-primary bg-primary text-primary-foreground\",\n        outline: \"bg-transparent text-foreground border-2 border-foreground\",\n        signal: \"border-2 border-foreground bg-[var(--sf-yellow)] text-foreground\",\n      },\n    },\n    defaultVariants: {\n      intent: \"default\",\n    },\n  }\n);\n\ninterface SFBadgeProps\n  extends React.ComponentProps<typeof Badge>,\n    VariantProps<typeof sfBadgeVariants> {}\n\n/**\n * Status indicator badge — FRAME layer label primitive.\n *\n * Renders a small monospace uppercase badge. Enforces 2px border,\n * font-mono, uppercase, and tracking-wider across all intents.\n * \"signal\" uses sf-yellow accent — use sparingly.\n *\n * @param intent - Visual variant. \"default\" | \"primary\" | \"outline\" | \"signal\"\n * @param className - Merged via cn() after variant classes\n *\n * @example\n * <SFBadge intent=\"primary\">Active</SFBadge>\n * <SFBadge intent=\"outline\">Draft</SFBadge>\n */\nexport function SFBadge({ intent, className, ...props }: SFBadgeProps) {\n  return (\n    <Badge\n      className={cn(sfBadgeVariants({ intent }), className)}\n      {...props}\n    />\n  );\n}\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B"
+  },
   "type": "registry:ui"
 }

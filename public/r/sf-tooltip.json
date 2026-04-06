@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-tooltip.tsx",
-      "content": "import {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFTooltip(props: React.ComponentProps<typeof Tooltip>) {\n  return <Tooltip {...props} />;\n}\n\nfunction SFTooltipContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof TooltipContent>) {\n  return (\n    <TooltipContent\n      className={cn(\n        \"bg-foreground text-background font-mono text-xs uppercase tracking-wider\",\n        \"border-0 rounded-none px-3 py-1.5\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFTooltip,\n  SFTooltipContent,\n  TooltipTrigger as SFTooltipTrigger,\n};\n",
+      "content": "import {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Hover tooltip — FRAME layer contextual primitive.\n *\n * Radix Tooltip root wrapped with SF contract. Compose with\n * SFTooltipTrigger and SFTooltipContent for full tooltip behavior.\n * Content renders inverted (foreground bg, background text) in\n * font-mono uppercase with no border or border-radius.\n *\n * @example\n * <SFTooltip>\n *   <SFTooltipTrigger asChild><SFButton size=\"sm\">?</SFButton></SFTooltipTrigger>\n *   <SFTooltipContent>Keyboard shortcut: ⌘K</SFTooltipContent>\n * </SFTooltip>\n */\nfunction SFTooltip(props: React.ComponentProps<typeof Tooltip>) {\n  return <Tooltip {...props} />;\n}\n\n/** Sub-component of SFTooltip — floating label in inverted mono uppercase with no border or radius. */\nfunction SFTooltipContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof TooltipContent>) {\n  return (\n    <TooltipContent\n      className={cn(\n        \"bg-foreground text-background font-mono text-xs uppercase tracking-wider\",\n        \"border-0 rounded-none px-3 py-1.5\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFTooltip — trigger element that shows the tooltip on hover/focus. */\nfunction SFTooltipTrigger(props: React.ComponentProps<typeof TooltipTrigger>) {\n  return <TooltipTrigger {...props} />;\n}\n\nexport {\n  SFTooltip,\n  SFTooltipContent,\n  SFTooltipTrigger,\n};\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

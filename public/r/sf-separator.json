@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-separator.tsx",
-      "content": "import { Separator } from \"@/components/ui/separator\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSeparatorProps extends React.ComponentProps<typeof Separator> {\n  weight?: \"thin\" | \"normal\" | \"heavy\";\n}\n\nexport function SFSeparator({\n  className,\n  weight = \"normal\",\n  ...props\n}: SFSeparatorProps) {\n  return (\n    <Separator\n      className={cn(\n        \"bg-foreground\",\n        weight === \"thin\" && \"h-px\",\n        weight === \"normal\" && \"h-[2px]\",\n        weight === \"heavy\" && \"h-[3px]\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "content": "\"use client\";\n\nimport { Separator } from \"@/components/ui/separator\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSeparatorProps extends React.ComponentProps<typeof Separator> {\n  weight?: \"thin\" | \"normal\" | \"heavy\";\n}\n\n/**\n * Visual divider — FRAME layer structural primitive.\n *\n * Radix Separator with SF foreground color and three weight variants\n * mapped to border token values. Supports both horizontal (default)\n * and vertical orientation.\n *\n * @param orientation - Layout direction. \"horizontal\" | \"vertical\"\n * @param weight - Line thickness variant. \"thin\" | \"normal\" | \"heavy\"\n * @param className - Merged via cn() after weight/orientation classes\n *\n * @example\n * <SFSeparator weight=\"normal\" />\n * <SFSeparator orientation=\"vertical\" weight=\"thin\" className=\"h-6\" />\n */\nexport function SFSeparator({\n  className,\n  weight = \"normal\",\n  ...props\n}: SFSeparatorProps) {\n  const isVertical = props.orientation === \"vertical\";\n  return (\n    <Separator\n      className={cn(\n        \"bg-foreground\",\n        !isVertical && weight === \"thin\" && \"h-px\",\n        !isVertical && weight === \"normal\" && \"h-[var(--border-element)]\",\n        !isVertical && weight === \"heavy\" && \"h-[var(--border-divider)]\",\n        isVertical && weight === \"thin\" && \"w-px\",\n        isVertical && weight === \"normal\" && \"w-[var(--border-element)]\",\n        isVertical && weight === \"heavy\" && \"w-[var(--border-divider)]\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

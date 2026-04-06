@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-textarea",
+  "title": "SF Textarea",
+  "description": "Brutalist textarea with bottom border only, mono uppercase text",
+  "registryDependencies": [
+    "textarea"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-textarea.tsx",
+      "content": "import { Textarea } from \"@/components/ui/textarea\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Multi-line text input — FRAME layer form primitive.\n *\n * Enforces SF textarea contract: font-mono, uppercase, 2px foreground\n * border, sf-border-draw-focus SIGNAL animation on focus, no shadow,\n * no ring. Placeholder inherits uppercase and tracking styles.\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFTextarea placeholder=\"Enter notes...\" rows={4} />\n * <SFTextarea placeholder=\"Description\" className=\"min-h-32\" />\n */\nexport function SFTextarea({\n  className,\n  ...props\n}: React.ComponentProps<typeof Textarea>) {\n  return (\n    <Textarea\n      className={cn(\n        \"sf-focusable sf-border-draw-focus rounded-none border-2 border-foreground bg-background\",\n        \"font-mono uppercase tracking-wider text-xs\",\n        \"placeholder:text-muted-foreground placeholder:uppercase placeholder:tracking-wider\",\n        \"shadow-none focus-visible:ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

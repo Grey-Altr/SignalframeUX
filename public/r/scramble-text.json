@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scramble-text",
+  "title": "Scramble Text",
+  "description": "Text scramble/decode animation effect for headings and labels",
+  "files": [
+    {
+      "path": "components/animation/scramble-text.tsx",
+      "content": "\"use client\";\n\nimport { useRef } from \"react\";\nimport { gsap, useGSAP } from \"@/lib/gsap-split\";\n\nconst SF_CHARS = \"!<>-_\\\\/[]{}—=+*^?#01シグナル\";\n\ninterface ScrambleTextProps {\n  text: string;\n  className?: string;\n  trigger?: \"load\" | \"hover\";\n  chars?: string;\n}\n\nexport function ScrambleText({\n  text,\n  className,\n  trigger = \"hover\",\n  chars = SF_CHARS,\n}: ScrambleTextProps) {\n  const ref = useRef<HTMLSpanElement>(null);\n\n  const { contextSafe } = useGSAP(\n    () => {\n      if (trigger === \"load\" && ref.current) {\n        if (window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return;\n        gsap.from(ref.current, {\n          duration: 1,\n          scrambleText: {\n            text: \"\",\n            chars,\n            revealDelay: 0.5,\n            speed: 0.3,\n          },\n        });\n      }\n    },\n    { scope: ref, dependencies: [trigger] }\n  );\n\n  const handleHover = contextSafe(() => {\n    if (!ref.current) return;\n    gsap.to(ref.current, {\n      duration: 0.8,\n      scrambleText: {\n        text,\n        chars,\n        revealDelay: 0.3,\n        speed: 0.4,\n      },\n    });\n  });\n\n  return (\n    <span\n      ref={ref}\n      className={className}\n      aria-label={text}\n      onMouseEnter={trigger === \"hover\" ? handleHover : undefined}\n      onFocus={trigger === \"hover\" ? handleHover : undefined}\n    >\n      <span aria-hidden=\"true\">{text}</span>\n    </span>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "signal",
+    "pattern": "C"
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-radio-group",
+  "title": "SF Radio Group",
+  "description": "Square radio buttons with 2px borders, no radius",
+  "registryDependencies": [
+    "radio-group"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-radio-group.tsx",
+      "content": "\"use client\";\n\nimport { RadioGroup, RadioGroupItem } from \"@/components/ui/radio-group\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Radio selection group — FRAME layer form primitive.\n *\n * Radix RadioGroup wrapped with SF grid layout. Use with\n * SFRadioGroupItem and SFLabel for full accessible radio sets.\n * Items render with sharp corners, 2px foreground border, and\n * sf-focusable keyboard indicator.\n *\n * @param className - Merged via cn() after grid base class\n *\n * @example\n * <SFRadioGroup defaultValue=\"option-a\">\n *   <SFRadioGroupItem value=\"option-a\" id=\"opt-a\" />\n *   <SFLabel htmlFor=\"opt-a\">Option A</SFLabel>\n * </SFRadioGroup>\n */\nfunction SFRadioGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof RadioGroup>) {\n  return <RadioGroup className={cn(\"grid gap-2\", className)} {...props} />;\n}\n\n/** Sub-component of SFRadioGroup — individual radio button with SF sharp corners and focus indicator. */\nfunction SFRadioGroupItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof RadioGroupItem>) {\n  return (\n    <RadioGroupItem\n      className={cn(\n        \"sf-focusable rounded-none border-2 border-foreground\",\n        \"focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFRadioGroup, SFRadioGroupItem };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

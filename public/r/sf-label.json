@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-label",
+  "title": "SF Label",
+  "description": "Mono uppercase label with wider tracking",
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-label.tsx",
+      "content": "\"use client\";\n\nimport { Label } from \"@/components/ui/label\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Form field label — FRAME layer typography primitive.\n *\n * Associates with an input via htmlFor. Renders in font-mono uppercase\n * with tracking-wider and text-xs — consistent with other form\n * chrome elements (SFInput, SFCheckbox).\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFLabel htmlFor=\"project-name\">Project Name</SFLabel>\n * <SFInput id=\"project-name\" placeholder=\"Untitled\" />\n */\nexport function SFLabel({\n  className,\n  ...props\n}: React.ComponentProps<typeof Label>) {\n  return (\n    <Label\n      className={cn(\n        \"font-mono uppercase tracking-wider text-xs\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

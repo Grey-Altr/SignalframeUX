@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-container",
+  "title": "SF Container",
+  "description": "Responsive page container enforcing max-width tokens and responsive gutters. FRAME layer.",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-container.tsx",
+      "content": "import { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\nimport React from \"react\";\n\nconst sfContainerVariants = cva(\n  \"w-full mx-auto px-[var(--gutter-sm)] md:px-[var(--gutter)]\",\n  {\n    variants: {\n      width: {\n        wide: \"max-w-[var(--max-w-wide)]\",\n        content: \"max-w-[var(--max-w-content)]\",\n        full: \"max-w-[var(--max-w-full)]\",\n      },\n    },\n    defaultVariants: {\n      width: \"wide\",\n    },\n  }\n);\n\ninterface SFContainerProps\n  extends React.ComponentProps<\"div\">,\n    VariantProps<typeof sfContainerVariants> {}\n\n/**\n * Responsive page container — FRAME layer layout primitive.\n *\n * Enforces max-width tokens and responsive gutters defined in globals.css.\n * Default width is \"wide\" for most page sections. Use \"content\" for\n * prose/readable text columns.\n *\n * @param width - Max-width variant. \"wide\" | \"content\" | \"full\"\n * @param className - Merged via cn() after variant classes\n *\n * @example\n * <SFContainer width=\"content\">\n *   <SFText variant=\"body\">Readable prose column</SFText>\n * </SFContainer>\n */\nconst SFContainer = React.forwardRef<HTMLDivElement, SFContainerProps>(\n  function SFContainer({ width, className, ...props }, ref) {\n    return (\n      <div\n        ref={ref}\n        className={cn(sfContainerVariants({ width }), className)}\n        {...props}\n      />\n    );\n  }\n);\n\nSFContainer.displayName = \"SFContainer\";\n\nexport { SFContainer };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B"
+  },
+  "type": "registry:ui"
+}

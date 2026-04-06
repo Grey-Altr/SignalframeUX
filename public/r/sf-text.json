@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-text",
+  "title": "SF Text",
+  "description": "Polymorphic text component with semantic typography aliases. FRAME layer.",
+  "files": [
+    {
+      "path": "components/sf/sf-text.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport React from \"react\";\n\nexport type TextVariant = \"heading-1\" | \"heading-2\" | \"heading-3\" | \"body\" | \"small\";\n\ntype TextElement =\n  | \"h1\"\n  | \"h2\"\n  | \"h3\"\n  | \"h4\"\n  | \"h5\"\n  | \"h6\"\n  | \"p\"\n  | \"span\"\n  | \"label\";\n\nconst variantClassMap: Record<TextVariant, string> = {\n  \"heading-1\": \"text-heading-1\",\n  \"heading-2\": \"text-heading-2\",\n  \"heading-3\": \"text-heading-3\",\n  body: \"text-body\",\n  small: \"text-small\",\n};\n\nconst defaultElementMap: Record<TextVariant, TextElement> = {\n  \"heading-1\": \"h1\",\n  \"heading-2\": \"h2\",\n  \"heading-3\": \"h3\",\n  body: \"p\",\n  small: \"span\",\n};\n\ninterface SFTextProps extends React.HTMLAttributes<HTMLElement> {\n  variant: TextVariant;\n  as?: TextElement;\n  className?: string;\n}\n\n/**\n * Semantic text primitive — FRAME layer typography enforcer.\n *\n * Maps semantic variants to typography alias classes (text-heading-1 etc.)\n * defined in globals.css. Defaults to the appropriate HTML element for each\n * variant (h1/h2/h3 for headings, p for body, span for small) but accepts\n * `as` for override. Polymorphic — ref is cast to React.Ref<any> per\n * TypeScript forwardRef polymorphic limitation.\n *\n * @param variant - Semantic text style. \"heading-1\" | \"heading-2\" | \"heading-3\" | \"body\" | \"small\"\n * @param as - Override rendered element tag. Defaults: h1/h2/h3/p/span per variant\n * @param className - Merged via cn() after variant class\n *\n * @example\n * <SFText variant=\"heading-1\">Signal Frame</SFText>\n * <SFText variant=\"body\" as=\"span\">Inline body text</SFText>\n */\nconst SFText = React.forwardRef<HTMLElement, SFTextProps>(\n  function SFText({ variant, as, className, ...props }, ref) {\n    const Tag = as ?? defaultElementMap[variant];\n    return (\n      <Tag\n        // eslint-disable-next-line @typescript-eslint/no-explicit-any\n        ref={ref as React.Ref<any>}\n        className={cn(variantClassMap[variant], className)}\n        {...(props as React.HTMLAttributes<HTMLElement>)}\n      />\n    );\n  }\n);\n\nSFText.displayName = \"SFText\";\n\nexport { SFText };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B"
+  },
+  "type": "registry:ui"
+}

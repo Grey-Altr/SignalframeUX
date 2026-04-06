@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-scroll-area.tsx",
-      "content": "\"use client\";\n\nimport { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\";\nimport { cn } from \"@/lib/utils\";\n\nfunction SFScrollArea({\n  className,\n  ...props\n}: React.ComponentProps<typeof ScrollArea>) {\n  return (\n    <ScrollArea\n      className={cn(\n        \"[&_[data-slot=scroll-area-thumb]]:rounded-none [&_[data-slot=scroll-area-thumb]]:bg-foreground/30\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFScrollArea, ScrollBar as SFScrollBar };\n",
+      "content": "\"use client\";\n\nimport { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Custom scroll container — FRAME layer overflow primitive.\n *\n * Radix ScrollArea with SF-styled thumb: sharp corners and\n * foreground/30 color replacing the default rounded thumb.\n * Use when content overflows a constrained height and native\n * scrollbar styling conflicts with the SF aesthetic.\n *\n * @param className - Merged via cn() after base classes\n *\n * @example\n * <SFScrollArea className=\"h-64\">\n *   <div className=\"p-4\">{longContent}</div>\n * </SFScrollArea>\n */\nfunction SFScrollArea({\n  className,\n  ...props\n}: React.ComponentProps<typeof ScrollArea>) {\n  return (\n    <ScrollArea\n      className={cn(\n        \"[&_[data-slot=scroll-area-thumb]]:rounded-none [&_[data-slot=scroll-area-thumb]]:bg-foreground/30\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFScrollArea — scrollbar track with sharp corners, composable with SFScrollArea. */\nfunction SFScrollBar({\n  className,\n  ...props\n}: React.ComponentProps<typeof ScrollBar>) {\n  return (\n    <ScrollBar\n      className={cn(\n        \"rounded-none [&_[data-slot=scroll-area-scrollbar]]:rounded-none\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFScrollArea, SFScrollBar };\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

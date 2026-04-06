@@ -15,7 +15,11 @@
           "path": "components/sf/sf-button.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
     },
     {
       "name": "sf-card",
@@ -28,7 +32,11 @@
           "path": "components/sf/sf-card.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-input",
@@ -41,7 +49,11 @@
           "path": "components/sf/sf-input.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-badge",
@@ -55,7 +67,11 @@
           "path": "components/sf/sf-badge.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
     },
     {
       "name": "sf-tabs",
@@ -68,7 +84,11 @@
           "path": "components/sf/sf-tabs.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-table",
@@ -81,7 +101,11 @@
           "path": "components/sf/sf-table.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-separator",
@@ -94,7 +118,11 @@
           "path": "components/sf/sf-separator.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-tooltip",
@@ -107,7 +135,11 @@
           "path": "components/sf/sf-tooltip.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-dialog",
@@ -120,7 +152,11 @@
           "path": "components/sf/sf-dialog.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-sheet",
@@ -133,7 +169,11 @@
           "path": "components/sf/sf-sheet.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-dropdown-menu",
@@ -146,7 +186,11 @@
           "path": "components/sf/sf-dropdown-menu.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-toggle",
@@ -160,7 +204,11 @@
           "path": "components/sf/sf-toggle.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
     },
     {
       "name": "sf-slider",
@@ -173,7 +221,11 @@
           "path": "components/sf/sf-slider.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-command",
@@ -186,7 +238,11 @@
           "path": "components/sf/sf-command.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-skeleton",
@@ -199,7 +255,11 @@
           "path": "components/sf/sf-skeleton.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-popover",
@@ -212,7 +272,11 @@
           "path": "components/sf/sf-popover.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     },
     {
       "name": "sf-scroll-area",
@@ -225,7 +289,307 @@
           "path": "components/sf/sf-scroll-area.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "circuit-divider",
+      "type": "registry:ui",
+      "title": "Circuit Divider",
+      "description": "DrawSVG circuit-board divider with animated paths and junction dots",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/animation/circuit-divider.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "vhs-overlay",
+      "type": "registry:ui",
+      "title": "VHS Overlay",
+      "description": "CRT scanlines, noise flicker, glitch bursts, and chromatic aberration overlay",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/animation/vhs-overlay.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "hero-mesh",
+      "type": "registry:ui",
+      "title": "Hero Mesh",
+      "description": "Interactive mesh grid background that responds to cursor movement",
+      "files": [
+        {
+          "path": "components/animation/hero-mesh.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "scramble-text",
+      "type": "registry:ui",
+      "title": "Scramble Text",
+      "description": "Text scramble/decode animation effect for headings and labels",
+      "files": [
+        {
+          "path": "components/animation/scramble-text.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "sf-label",
+      "type": "registry:ui",
+      "title": "SF Label",
+      "description": "Mono uppercase label with wider tracking",
+      "registryDependencies": ["label"],
+      "files": [
+        {
+          "path": "components/sf/sf-label.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-select",
+      "type": "registry:ui",
+      "title": "SF Select",
+      "description": "Brutalist select with 2px borders, no radius, inverted focus state",
+      "registryDependencies": ["select"],
+      "files": [
+        {
+          "path": "components/sf/sf-select.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-checkbox",
+      "type": "registry:ui",
+      "title": "SF Checkbox",
+      "description": "Square checkbox with 2px borders, primary checked state",
+      "registryDependencies": ["checkbox"],
+      "files": [
+        {
+          "path": "components/sf/sf-checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-radio-group",
+      "type": "registry:ui",
+      "title": "SF Radio Group",
+      "description": "Square radio buttons with 2px borders, no radius",
+      "registryDependencies": ["radio-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-switch",
+      "type": "registry:ui",
+      "title": "SF Switch",
+      "description": "Square switch with 2px borders, primary checked state",
+      "registryDependencies": ["switch"],
+      "files": [
+        {
+          "path": "components/sf/sf-switch.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-textarea",
+      "type": "registry:ui",
+      "title": "SF Textarea",
+      "description": "Brutalist textarea with bottom border only, mono uppercase text",
+      "registryDependencies": ["textarea"],
+      "files": [
+        {
+          "path": "components/sf/sf-textarea.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-container",
+      "type": "registry:ui",
+      "title": "SF Container",
+      "description": "Responsive page container enforcing max-width tokens and responsive gutters. FRAME layer.",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "components/sf/sf-container.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
+    },
+    {
+      "name": "sf-section",
+      "type": "registry:ui",
+      "title": "SF Section",
+      "description": "Page section with data attributes for animation and bgShift color palette. FRAME layer.",
+      "files": [
+        {
+          "path": "components/sf/sf-section.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
+    },
+    {
+      "name": "sf-grid",
+      "type": "registry:ui",
+      "title": "SF Grid",
+      "description": "Responsive grid with blessed column counts and gap tokens. FRAME layer.",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "components/sf/sf-grid.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
+    },
+    {
+      "name": "sf-stack",
+      "type": "registry:ui",
+      "title": "SF Stack",
+      "description": "Flex stack with blessed gap tokens for vertical/horizontal layouts. FRAME layer.",
+      "dependencies": ["class-variance-authority"],
+      "files": [
+        {
+          "path": "components/sf/sf-stack.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
+    },
+    {
+      "name": "sf-text",
+      "type": "registry:ui",
+      "title": "SF Text",
+      "description": "Polymorphic text component with semantic typography aliases. FRAME layer.",
+      "files": [
+        {
+          "path": "components/sf/sf-text.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B"
+      }
+    },
+    {
+      "name": "sf-theme",
+      "type": "registry:style",
+      "title": "SF Theme",
+      "description": "SignalframeUX token system — OKLCH color palette, zero-radius, motion tokens, SIGNAL runtime vars. Token-only installation, no component files.",
+      "dependencies": [],
+      "cssVars": {
+        "theme": {
+          "color-background": "oklch(1 0 0)",
+          "color-foreground": "oklch(0.145 0 0)",
+          "color-card": "oklch(1 0 0)",
+          "color-card-foreground": "oklch(0.145 0 0)",
+          "color-primary": "oklch(0.65 0.3 350)",
+          "color-primary-foreground": "oklch(0.985 0 0)",
+          "color-secondary": "oklch(0.970 0.005 298)",
+          "color-secondary-foreground": "oklch(0.205 0 0)",
+          "color-muted": "oklch(0.930 0.005 298)",
+          "color-muted-foreground": "oklch(0.460 0.010 298)",
+          "color-accent": "oklch(0.930 0.005 298)",
+          "color-accent-foreground": "oklch(0.205 0 0)",
+          "color-destructive": "oklch(0.550 0.180 25)",
+          "color-border": "oklch(0.205 0 0)",
+          "color-input": "oklch(0.205 0 0)",
+          "color-ring": "oklch(0.65 0.3 350)",
+          "radius": "0px"
+        },
+        "light": {
+          "signal-intensity": "0.5",
+          "signal-speed": "1",
+          "signal-accent": "0"
+        },
+        "dark": {
+          "color-background": "oklch(0.145 0 0)",
+          "color-foreground": "oklch(0.985 0 0)",
+          "color-card": "oklch(0.205 0 0)",
+          "color-card-foreground": "oklch(0.985 0 0)",
+          "color-border": "oklch(0.400 0 0)",
+          "color-input": "oklch(0.400 0 0)"
+        }
+      },
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }

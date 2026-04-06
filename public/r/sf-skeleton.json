@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-skeleton.tsx",
-      "content": "import { Skeleton } from \"@/components/ui/skeleton\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSkeletonProps extends React.ComponentProps<typeof Skeleton> {}\n\nexport function SFSkeleton({ className, ...props }: SFSkeletonProps) {\n  return (\n    <Skeleton\n      className={cn(\n        \"rounded-none bg-muted animate-none sf-skeleton\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "content": "import { Skeleton } from \"@/components/ui/skeleton\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Loading placeholder — FRAME layer state primitive.\n *\n * Renders an accessible skeleton block with aria role=\"status\" and\n * a custom sf-skeleton shimmer animation (no rounded corners). Use to\n * represent content loading states in place of actual content.\n *\n * @param className - Merged via cn() — set width/height to match target content shape\n *\n * @example\n * <SFSkeleton className=\"h-4 w-48\" />\n * <SFSkeleton className=\"h-32 w-full\" />\n */\nexport function SFSkeleton({ className, ...props }: React.ComponentProps<typeof Skeleton>) {\n  return (\n    <Skeleton\n      role=\"status\"\n      aria-label=\"Loading...\"\n      className={cn(\n        \"rounded-none animate-none sf-skeleton\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

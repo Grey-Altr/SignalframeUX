@@ -9,9 +9,13 @@
   "files": [
     {
       "path": "components/sf/sf-slider.tsx",
-      "content": "\"use client\";\n\nimport { Slider } from \"@/components/ui/slider\";\nimport { cn } from \"@/lib/utils\";\n\ninterface SFSliderProps extends React.ComponentProps<typeof Slider> {}\n\nexport function SFSlider({ className, ...props }: SFSliderProps) {\n  return (\n    <Slider\n      className={cn(\n        \"[&_[data-slot=slider-track]]:rounded-none [&_[data-slot=slider-track]]:h-[3px] [&_[data-slot=slider-track]]:bg-muted\",\n        \"[&_[data-slot=slider-range]]:bg-primary\",\n        \"[&_[data-slot=slider-thumb]]:rounded-none [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-foreground [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
+      "content": "\"use client\";\n\nimport { Slider } from \"@/components/ui/slider\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Range input slider — FRAME layer form primitive.\n *\n * Radix Slider with SF styling: square track (3px height), primary fill\n * for the active range, and a square thumb with sf-focusable indicator\n * and 2px foreground border. Inherits all Radix SliderProps.\n *\n * @param className - Merged via cn() after base slot-targeting classes\n *\n * @example\n * <SFSlider defaultValue={[50]} min={0} max={100} step={1} />\n * <SFSlider defaultValue={[20, 80]} min={0} max={100} />\n */\nexport function SFSlider({ className, ...props }: React.ComponentProps<typeof Slider>) {\n  return (\n    <Slider\n      className={cn(\n        \"[&_[data-slot=slider-track]]:rounded-none [&_[data-slot=slider-track]]:h-[3px] [&_[data-slot=slider-track]]:bg-muted\",\n        \"[&_[data-slot=slider-range]]:bg-primary\",\n        \"[&_[data-slot=slider-thumb]]:sf-focusable [&_[data-slot=slider-thumb]]:rounded-none [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-foreground [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n",
       "type": "registry:ui"
     }
   ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
   "type": "registry:ui"
 }

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-section",
+  "title": "SF Section",
+  "description": "Page section with data attributes for animation and bgShift color palette. FRAME layer.",
+  "files": [
+    {
+      "path": "components/sf/sf-section.tsx",
+      "content": "import { cn } from \"@/lib/utils\";\nimport React from \"react\";\n\ninterface SFSectionProps extends React.ComponentProps<\"section\"> {\n  label?: string;\n  bgShift?: \"white\" | \"black\";\n  spacing?: \"8\" | \"12\" | \"16\" | \"24\";\n}\n\n/**\n * Semantic page section — FRAME layer layout primitive.\n *\n * Renders a `<section>` with data-section always present. Applies\n * spacing variant mapped to blessed stops. Supports optional\n * data-section-label (CSS ::before content) and data-bg-shift\n * (scroll-triggered background toggle via GSAP).\n *\n * @param label - Optional label string applied as data-section-label\n * @param bgShift - Background shift value for GSAP scroll targeting. \"white\" or \"black\".\n * @param spacing - Vertical padding from blessed stops. \"8\" | \"12\" | \"16\" | \"24\"\n * @param className - Merged via cn() after spacing class\n *\n * @example\n * <SFSection label=\"Work\" spacing=\"24\" bgShift=\"white\">\n *   <SFContainer>Content here</SFContainer>\n * </SFSection>\n */\nconst SFSection = React.forwardRef<HTMLElement, SFSectionProps>(\n  function SFSection(\n    { label, bgShift, spacing = \"16\", className, children, ...props },\n    ref\n  ) {\n    return (\n      <section\n        ref={ref}\n        data-section\n        data-section-label={label}\n        data-bg-shift={bgShift}\n        className={cn(`py-${spacing}`, className)}\n        {...props}\n      >\n        {children}\n      </section>\n    );\n  }\n);\n\nSFSection.displayName = \"SFSection\";\n\nexport { SFSection };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B"
+  },
+  "type": "registry:ui"
+}
