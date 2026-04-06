@@ -58,7 +58,7 @@
 
 - [x] **Phase 21: Tech Debt Closure** — MutationObserver disconnect, NaN guard, Lenis scroll race, duplicate TOAST entry (completed 2026-04-06)
 - [x] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audited, sidebar/chart tokens documented (completed 2026-04-06)
-- [ ] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP
+- [x] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP (completed 2026-04-06)
 - [ ] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC)
 - [ ] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring
 - [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
@@ -265,10 +265,10 @@ Plans:
   3. SFInputOTP renders an OTP input with individual character slots; the input is keyboard navigable and passes WCAG AA color contrast
   4. SFInputGroup wraps the last uncovered `ui/` component — all shadcn base components now have an SF wrapper equivalent; the gap is closed
   5. All four components have registry entries in registry.json and `/r/` artifacts, are exported from `sf/index.ts` (except SFDrawer which is lazy), and appear in ComponentsExplorer under the correct category
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 23-01-PLAN.md — Install bases + SFInputGroup, SFHoverCard, SFInputOTP (Pattern A wrappers)
-- [ ] 23-02-PLAN.md — SFDrawer (Pattern B lazy) + ComponentsExplorer entries + registry build + bundle gate
+- [x] 23-01-PLAN.md — Install bases + SFInputGroup, SFHoverCard, SFInputOTP (Pattern A wrappers)
+- [x] 23-02-PLAN.md — SFDrawer (Pattern B lazy) + ComponentsExplorer entries + registry build + bundle gate
 
 ### Phase 24: Detail View Data Layer
 **Goal**: All component data needed to render the interactive detail views is authored and accessible via static TypeScript imports — no runtime fetch calls
@@ -341,7 +341,7 @@ Plans:
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
-| 23. Remaining SF Components | 1/2 | In Progress|  | - |
+| 23. Remaining SF Components | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
