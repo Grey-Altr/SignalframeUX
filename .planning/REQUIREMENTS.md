@@ -12,8 +12,8 @@
 
 - [x] **SIG-06**: Audio feedback palette via Web Audio API with gesture-gating for browser autoplay policy compliance
 - [x] **SIG-07**: Haptic feedback via Vibration API with graceful degradation on unsupported browsers (Safari/iOS)
-- [ ] **SIG-08**: Idle state animation (grain drift + color pulse) activates after inactivity threshold
-- [ ] **SIG-09**: `[data-cursor]` attribute placed on all showcase sections, activating the existing CanvasCursor crosshair + particle trail
+- [x] **SIG-08**: Idle state animation (grain drift + color pulse) activates after inactivity threshold
+- [x] **SIG-09**: `[data-cursor]` attribute placed on all showcase sections, activating the existing CanvasCursor crosshair + particle trail
 
 ## Generative Scenes
 
@@ -55,8 +55,8 @@
 | GEN-05 | Phase 6 | Complete (06-02) |
 | SIG-06 | Phase 7 | Complete (07-01) |
 | SIG-07 | Phase 7 | Complete (07-01) |
-| SIG-08 | Phase 7 | Pending |
-| SIG-09 | Phase 7 | Pending |
+| SIG-08 | Phase 7 | Complete (07-02) |
+| SIG-09 | Phase 7 | Complete (07-02) |
 | SCN-01 | Phase 8 | Pending |
 | SCN-02 | Phase 8 | Pending |
 | SCN-03 | Phase 9 | Pending |

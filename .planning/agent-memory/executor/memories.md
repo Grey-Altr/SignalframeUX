@@ -122,3 +122,11 @@ Web Audio API AudioContext must be created inside a gesture handler — module-l
 ### 2026-04-06T08:01:22Z | Phase 07 | tags: haptic-feedback, vibration-api, document-delegation, lastHoveredRef
 
 The `lastHoveredRef` debounce in `InteractionFeedback` is essential: `pointerover` fires on every pixel of movement within an element, not just on entry. Without the ref tracking the last interactive element, hundreds of OscillatorNodes are created per second on any hover. The pattern: `onPointerOver` checks `target.closest(INTERACTIVE) === lastHoveredRef.current` and skips if true; `onPointerOut` resets the ref to `null` so re-entry after leaving fires again. This is placed in `global-effects.tsx` as a single document-level delegated listener — zero per-component wiring needed.
+
+### 2026-04-05T00:00:00Z | Phase 07 | tags: gsap-ticker, oklch-pulse, idle-overlay, ticker-guard
+
+For GSAP ticker-driven CSS custom property mutation in IdleOverlay: always remove the old ticker before registering a new one (tickerRef guard), and clear `basePrimaryRef.current` AFTER `gsap.ticker.remove()` — the removal is synchronous so the ticker won't fire again after the remove call. The `pulseFn` closure captures `baseLightness` once at registration time (outside the ticker), then only computes the sin offset per frame. The snap-back sequence is: remove ticker → restore setProperty → remove grain class → set transition:none → remove --active class → restore transition via rAF.
+
+### 2026-04-05T00:00:00Z | Phase 07 | tags: data-cursor, canvas-cursor, markup-only, showcase-sections
+
+`data-cursor` placement is a pure markup task — CanvasCursor already queries `[data-cursor]` via IntersectionObserver (canvas-cursor.tsx, unchanged). For the homepage, add to every `data-bg-shift` div (6 sections). For showcase pages, add to `<main id="main-content">`. Total: 10 occurrences across 5 files. Explicit placement per section (not at SFSection primitive level) preserves showcase zone intentionality and avoids over-broad cursor activation on nav/footer areas.
