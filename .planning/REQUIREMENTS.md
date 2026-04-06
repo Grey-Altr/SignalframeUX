@@ -1,25 +1,36 @@
-# Requirements — v1.2 Tech Debt Sweep
+# Requirements — v1.3 Component Expansion
 
-## Milestone v1.2 Requirements
+## Milestone v1.3 Requirements
 
-### Foundation
-- [x] **FND-01**: `--signal-intensity`, `--signal-speed`, and `--signal-accent` CSS custom properties have sensible defaults declared in globals.css
-- [x] **FND-02**: SFSection `bgShift` prop type changed from `boolean` to `"white" | "black"` with all call sites updated to use the typed prop instead of spread HTML attributes
+### Infrastructure
+- [ ] **INFRA-01**: SF wrapper creation checklist codified in SCAFFOLDING.md — rounded-none audit, `intent` prop rule, barrel rule, registry same-commit rule, a11y smoke test, prefers-reduced-motion rule
+- [ ] **INFRA-02**: Performance baseline captured — Lighthouse LCP/TTI/bundle size recorded before first new component
+- [ ] **INFRA-03**: ComponentsExplorer grouped by category — Forms, Feedback, Navigation, Data Display, Layout, Generative
+- [ ] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition
 
-### Integration Wiring
-- [x] **INT-03**: SignalMotion component wraps at least 3 showcase sections on the homepage with scroll-driven animation active
-- [x] **INT-04**: SignalOverlay CSS var changes (`--signal-intensity`, `--signal-speed`, `--signal-accent`) are read by WebGL scenes (GLSLHero and/or SignalMesh) via cached module-level reads — no per-frame `getComputedStyle`
-- [x] **INT-01**: Reference page has correct `mt-[var(--nav-height)]` spacing and NEXT_CARDS grid is wrapped in SFSection
+### Feedback & Disclosure
+- [ ] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation
+- [ ] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
+- [ ] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween
+- [ ] **FD-04**: User confirms destructive actions via SFAlertDialog with loading state support
+- [ ] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success)
+- [ ] **FD-06**: User can show/hide content via SFCollapsible without accordion semantics
 
-### Developer Experience
-- [x] **DX-04**: registry.json includes all 29 interactive + 5 layout SF components plus an `sf-theme` entry with cssVars for token-only installation; `public/r/` is built and up to date
-- [x] **DX-05**: `createSignalframeUX(config)` factory returns `{SignalframeProvider, useSignalframe}` using hole-in-the-donut SSR pattern; config accepts theme, animation, and signal parameters
+### Identity & Navigation
+- [ ] **NAV-01**: User is represented by square SFAvatar with Radix fallback chain (image → initials → icon)
+- [ ] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component
+- [ ] **NAV-03**: User sees designed empty states via SFEmptyState with optional ScrambleText SIGNAL treatment
+- [ ] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior
+- [ ] **NAV-05**: User navigates paginated content via SFPagination
 
-### Session Persistence
-- [x] **STP-01**: User's active filter selection, tab state, and scroll position persist across page navigations within a session using sessionStorage (hydration-safe via useEffect pattern)
+### Multi-Step & Status
+- [ ] **MS-01**: User completes multi-step flows via SFStepper with per-step error state
+- [ ] **MS-02**: User sees presence/status indicators via SFStatusDot with GSAP pulse on active state
+- [ ] **MS-03**: User selects from exclusive/multi toggle options via SFToggleGroup
 
-### Documentation
-- [x] **DOC-01**: All SUMMARY.md frontmatters include accurate `requirements_completed` fields; stale REQUIREMENTS.md checkboxes from v1.0/v1.1 are corrected
+### Registry-Only (Lazy)
+- [ ] **REG-01**: Consumer installs SFCalendar via shadcn CLI — lazy-loaded, bundle cost annotated, `meta.heavy: true`
+- [ ] **REG-02**: Consumer installs SFMenubar via shadcn CLI — lazy-loaded, registry-only
 
 ---
 
@@ -27,24 +38,41 @@
 
 - Registry namespace strategy (`@signalframe/` vs unnamespaced) — deferred until cdOS becomes a consumer
 - Registry v2 "Smart Versioning" — monitor shadcn releases for v2 registry spec
+- DataTable composite block (SFTable + SFPagination + SFSelect + SFInput) — deferred to v1.4 after SFPagination ships
+- Input OTP / PinInput — relevant only for auth flows, defer to cdOS milestone
+- Spinner component — SFSkeleton covers most loading cases; evaluate if insufficient
 
 ## Out of Scope
 
-- React Three Fiber migration — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
-- New generative scenes — v1.2 is debt closure, not feature expansion
-- New SF components — library frozen at 29 interactive + 5 layout primitives
+- React Three Fiber migration — R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
+- New generative scenes — component expansion, not generative expansion
 - Token expansion — palette and spacing stops remain frozen
+- Carousel / Chart / Rich Text Editor / Color Picker — application-layer, not design system
+- Rounded corner variants — zero border-radius is non-negotiable
+- ContextMenu — right-click model conflicts with DU/TDR aesthetic
+- Resizable panels — no identified consumer use case
 
 ## Traceability
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| FND-01 | Phase 10 | 10-01 | Complete |
-| FND-02 | Phase 10 | 10-01 | Complete |
-| INT-01 | Phase 10 | 10-02 | Complete |
-| DX-04 | Phase 11 | 11-01 | Complete |
-| INT-04 | Phase 12 | 12-01 | Complete |
-| INT-03 | Phase 12 | 12-02 | Complete |
-| DX-05 | Phase 13 | 13-01 | Complete |
-| STP-01 | Phase 14 | 14-01 | Complete |
-| DOC-01 | Phase 15 | 15-01, 15-02 | Complete |
+| INFRA-01 | — | — | Pending |
+| INFRA-02 | — | — | Pending |
+| INFRA-03 | — | — | Pending |
+| INFRA-04 | — | — | Pending |
+| FD-01 | — | — | Pending |
+| FD-02 | — | — | Pending |
+| FD-03 | — | — | Pending |
+| FD-04 | — | — | Pending |
+| FD-05 | — | — | Pending |
+| FD-06 | — | — | Pending |
+| NAV-01 | — | — | Pending |
+| NAV-02 | — | — | Pending |
+| NAV-03 | — | — | Pending |
+| NAV-04 | — | — | Pending |
+| NAV-05 | — | — | Pending |
+| MS-01 | — | — | Pending |
+| MS-02 | — | — | Pending |
+| MS-03 | — | — | Pending |
+| REG-01 | — | — | Pending |
+| REG-02 | — | — | Pending |
