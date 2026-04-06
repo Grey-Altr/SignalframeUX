@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: FRAME Foundation** — Lock tokens, enforce spacing, define typography aliases, layout tokens, color tiers, and variant standards across the system (COMPLETE — 3/3 plans)
 - [x] **Phase 2: FRAME Primitives** — Build the six SF primitives (Container, Section, Stack, Grid, Text, Button) that enforce the locked token system (COMPLETE — 2/2 plans)
-- [ ] **Phase 3: SIGNAL Expression** — Author the full SIGNAL layer: scramble, asymmetric hover, hard-cut transitions, scroll choreography, cursor detail, mobile fallbacks, and progressive enhancement guarantees
+- [x] **Phase 3: SIGNAL Expression** — Author the full SIGNAL layer: scramble, asymmetric hover, hard-cut transitions, scroll choreography, cursor detail, mobile fallbacks, and progressive enhancement guarantees (COMPLETE — 4/4 plans)
 - [ ] **Phase 4: Above-the-Fold Lock** — Seal the 90-second jury moment at 1440px, resolve component count claim, craft error and empty states as first-class design moments, and QA reduced-motion as a standalone experience
 - [ ] **Phase 5: DX Contract & State** — Finalize scaffolding spec, JSDoc contract, FRAME/SIGNAL import boundary, API foundation, and session state persistence
 
@@ -65,7 +65,7 @@ Plans:
 - [x] 03-01-PLAN.md — CSS fallback catch-all, asymmetric hover timing, hard-cut section transitions
 - [x] 03-02-PLAN.md — Canvas cursor with crosshair and particle trail on [data-cursor] sections
 - [x] 03-03-PLAN.md — ScrambleText ScrollTrigger wiring + staggered grid entry batch
-- [ ] 03-04-PLAN.md — SIGNAL-SPEC.md specification document + deferred SIG-06/07/08 documentation
+- [x] 03-04-PLAN.md — SIGNAL-SPEC.md specification document + deferred SIG-06/07/08 documentation
 
 ### Phase 4: Above-the-Fold Lock
 **Goal**: The hero at 1440x900 is a standalone SOTD jury moment requiring no scroll, error and empty states are crafted design moments, and the reduced-motion experience is a first-class alternative
@@ -98,7 +98,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
-| 3. SIGNAL Expression | 3/4 | In progress | - |
+| 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |
 

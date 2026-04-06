@@ -59,6 +59,10 @@ CSS attribute presence selector `[data-anim]` has lower specificity than attribu
 
 In SignalframeUX page-animations.tsx, `start: "top bottom"` is the correct ScrollTrigger threshold for headings — it fires immediately when the trigger element's top crosses the viewport bottom, which happens on page load for any above-fold element. Using `once: true` per `ScrollTrigger.create` prevents re-fire on scroll-back; this requires individual create() calls per heading, not a batch call, since each heading needs its own independent once state. For `ScrollTrigger.batch` stagger, matching `interval` (grouping window) to `stagger` (per-item delay) at 0.04 keeps the cascade clean — the batch fires when 40ms passes without new entrants, and items animate at 40ms apart.
 
+### 2026-04-06T03:58:00Z | Phase 03 | tags: signal-spec, mobile-matrix, deferred-effects, spec-doc
+
+SIGNAL-SPEC.md (03-04) is a pure documentation task — created in a single task with no code changes. The spec documents effects as designed per CONTEXT.md decisions and the values from prior plan implementations. Mobile collapse behavior uses `@media (pointer: coarse)` not viewport-width; this is confirmed in globals.css at lines 1249 and 1647. When 03-03 had no commits (only STATE update), 03-04 can still proceed — the spec captures design intent regardless of implementation status.
+
 ### 2026-04-06T03:46:51Z | Phase 03 | tags: canvas-cursor, oklch-to-rgb, signal-layer, intersection-observer
 
 Canvas 2D context does not understand oklch() CSS values — resolve --color-primary to RGB by creating a probe 1x1 canvas, setting fillStyle to the raw computed property value, drawing a pixel, and reading back with getImageData(). This is the correct approach for bridging CSS custom property color values into canvas draw calls. The zIndex style prop accepts string in JSX via `as unknown as number` cast — React's CSSProperties types number only, but CSS custom property references require string values like "var(--z-cursor, 9999)".
