@@ -562,11 +562,12 @@
   /* ── Interaction feedback ── */
   .sf-pressable {
     transition:
-      transform var(--duration-normal) var(--ease-default),
-      box-shadow var(--duration-normal) var(--ease-default);
+      transform var(--duration-slow) var(--ease-default),
+      box-shadow var(--duration-slow) var(--ease-default);
   }
   .sf-pressable:hover {
     transform: translateY(var(--hover-y));
+    transition-duration: var(--duration-fast);
     transition-timing-function: var(--ease-hover);
   }
   .sf-pressable:active {
@@ -577,14 +578,12 @@
   }
 
   .sf-hoverable {
-    transition: transform var(--duration-normal) var(--ease-default);
+    transition: transform var(--duration-slow) var(--ease-default);
   }
   .sf-hoverable:hover {
     transform: translateY(var(--hover-y));
+    transition-duration: var(--duration-fast);
     transition-timing-function: var(--ease-hover);
-  }
-  .sf-hoverable:not(:hover) {
-    transition-duration: var(--duration-glacial);
   }
 
   .sf-focusable:focus-visible {
@@ -598,12 +597,13 @@
 
   .sf-invert-hover {
     transition:
-      background-color var(--duration-fast) var(--ease-default),
-      color var(--duration-fast) var(--ease-default);
+      background-color var(--duration-slow) var(--ease-default),
+      color var(--duration-slow) var(--ease-default);
   }
   .sf-invert-hover:hover {
     background-color: var(--color-foreground, oklch(0.145 0 0));
     color: var(--color-background, oklch(1 0 0));
+    transition-duration: var(--duration-fast);
   }
 
   .sf-link-draw {
@@ -622,6 +622,7 @@
   }
   .sf-link-draw:hover::after {
     width: 100%;
+    transition-duration: var(--duration-fast);
   }
 
   .sf-entrance {
@@ -985,6 +986,7 @@
   }
 
   /* Reset CSS initial animation states so content is visible when GSAP bails */
+  [data-anim],
   [data-anim="section-reveal"],
   [data-anim="tag"],
   [data-anim="comp-cell"],
@@ -1026,6 +1028,11 @@
 [data-anim="cta-btn"] {
   opacity: 0;
   transform: translateY(20px);
+}
+/* ── Catch-all: any [data-anim] without a specific rule above stays visible.
+   GSAP sets opacity:0 on init before animating — content never disappears if JS fails. ── */
+[data-anim] {
+  opacity: 1;
 }
 .sf-anim-visible {
   opacity: 1 !important;
