@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "@/lib/gsap-core";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
@@ -114,6 +115,7 @@ function ScrollToTop() {
   const btnRef = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
   const visibleRef = useRef(false);
+  const lenis = useLenisInstance();
 
   useEffect(() => {
     let rafId = 0;
@@ -143,8 +145,11 @@ function ScrollToTop() {
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       onClick={() => {
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+        if (lenis) {
+          lenis.scrollTo(0);
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
       }}
       className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-200"
       style={{

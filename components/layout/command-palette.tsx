@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
 import {
   SFCommand,
   SFCommandDialog,
@@ -34,6 +35,7 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const router = useRouter();
+  const lenis = useLenisInstance();
 
   const openRef = useRef(open);
   useEffect(() => { openRef.current = open; }, [open]);
@@ -63,8 +65,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   const scrollToTop = useCallback(() => {
     onOpenChange(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [onOpenChange]);
+    if (lenis) {
+      lenis.scrollTo(0);
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [onOpenChange, lenis]);
 
   const toggleTheme = useCallback(() => {
     onOpenChange(false);

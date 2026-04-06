@@ -1,11 +1,18 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
 
 export function BackToTop() {
+  const lenis = useLenisInstance();
+
   const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+    if (lenis) {
+      lenis.scrollTo(0);
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [lenis]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
 
 /**
  * Page transition wipe — black panel slides across viewport on route change.
@@ -13,6 +14,11 @@ export function PageTransition() {
   const prevPathRef = useRef(pathname);
   const wipeRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef(false);
+
+  // Store Lenis in a ref so it's accessible inside the transitionend DOM event handler
+  const lenis = useLenisInstance();
+  const lenisRef = useRef(lenis);
+  useEffect(() => { lenisRef.current = lenis; }, [lenis]);
 
   const runWipe = useCallback(() => {
     const wipe = wipeRef.current;
@@ -39,8 +45,12 @@ export function PageTransition() {
     const handleCover = () => {
       wipe.removeEventListener("transitionend", handleCover);
 
-      // Scroll to top while covered
-      window.scrollTo(0, 0);
+      // Scroll to top while covered — route through Lenis to avoid race condition
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
 
       // Switch origin and wipe out
       wipe.style.transition = "none";

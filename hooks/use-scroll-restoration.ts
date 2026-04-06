@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
 
 const SCROLL_KEY_PREFIX = "sfux.scroll";
 
@@ -17,15 +18,16 @@ const SCROLL_KEY_PREFIX = "sfux.scroll";
  *   the DOM has painted before scrolling.
  * - Hard reload: sessionStorage is cleared by the browser, so scroll starts at 0 on next load.
  *
- * Lenis compatibility note: The rAF timing gives Lenis time to initialize before the scrollTo
- * fires. If Lenis overrides the position, use `lenis.scrollTo(y, { immediate: true })` instead
- * of `window.scrollTo`. Monitor visually — if scroll snaps back to 0, Lenis is winning the race.
+ * Lenis compatibility note: Routes scroll through lenis.scrollTo(y, { immediate: true }) when
+ * Lenis is active — this prevents the race condition where Lenis overrides window.scrollTo.
+ * Falls back to window.scrollTo when Lenis is null (prefers-reduced-motion).
  *
  * sessionStorage failures are caught silently — scroll simply starts at 0 on that visit.
  */
 export function useScrollRestoration() {
   const pathname = usePathname();
   const key = `${SCROLL_KEY_PREFIX}.${pathname}`;
+  const lenis = useLenisInstance();
 
   // Save scroll position on SPA navigation away and on hard-reload (beforeunload)
   useEffect(() => {
@@ -54,11 +56,17 @@ export function useScrollRestoration() {
         const y = parseInt(stored, 10);
         if (!isNaN(y) && y > 0) {
           // rAF ensures DOM has painted before scrolling (also gives Lenis time to initialize)
-          requestAnimationFrame(() => window.scrollTo(0, y));
+          requestAnimationFrame(() => {
+            if (lenis) {
+              lenis.scrollTo(y, { immediate: true });
+            } else {
+              window.scrollTo(0, y);
+            }
+          });
         }
       }
     } catch {
       // Ignore — scroll starts at 0
     }
-  }, [key]);
+  }, [key, lenis]);
 }
