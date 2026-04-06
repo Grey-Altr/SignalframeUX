@@ -51,6 +51,10 @@ The project's formatter modifies files on save and causes "File has been modifie
 
 The gsd-tools.cjs binary is not installed in this environment. STATE.md and ROADMAP.md must be updated manually. Key fields: Current Position Plan/Status/Last activity, Progress bar percentages, Decisions section, Session Continuity, Roadmap table status column and checkbox list.
 
+### 2026-04-06T20:48:00Z | Phase 20 | tags: registry, meta-pattern, final-audit, v1.3-complete
+
+Registry meta.pattern audit: 8 entries had incorrect "B" values. 3 Radix-wrapped (sf-button, sf-badge, sf-toggle) corrected B->A. 5 pure-SF layout primitives (sf-container, sf-section, sf-grid, sf-stack, sf-text) corrected B->C. Only sf-calendar and sf-menubar should be pattern B (lazy/P3). Final tally: 35 A, 2 B, 12 C = 49 items. gsd-tools path is `$HOME/.claude/get-shit-done/bin/gsd-tools.cjs` (NOT pde-os). v1.3 milestone complete with all 10 plans across 5 phases shipped.
+
 ### 2026-04-06T19:31:00Z | Phase 18 | tags: sf-accordion, sf-progress, gsap-stagger, gsap-tween, radix-direct-wrap, reduced-motion
 
 SFProgress wraps Radix ProgressPrimitive directly (not shadcn base ui/progress.tsx) because the base has `transition-all` on the indicator which conflicts with GSAP, and we need ref access on the indicator element for gsap.to(). SFAccordionContent uses useEffect on mount for GSAP stagger -- Radix unmounts content when closed by default, so mount === panel open, no MutationObserver needed. The base Radix CSS animations (animate-accordion-down/up) are kept for container height; GSAP only staggers the children inside the content div. Both components use the pattern: `window.matchMedia('(prefers-reduced-motion: reduce)').matches` guard BEFORE any tween creation, matching SFStatusDot precedent.
@@ -239,3 +243,39 @@ Radix ToggleGroup.Root is a discriminated union type (single | multiple overload
 ### 2026-04-06T20:17:00Z | Phase 19-02 | tags: navigation-menu, sf-sheet-mobile, explorer-entries, phase-19-complete
 
 SFNavigationMenu wraps Radix NavigationMenu with 8 exports -- desktop flyout with `rounded-none` on 5 sub-elements (root, trigger, content, link, viewport), `sf-focusable` replacing default ring, and `border-2 border-foreground` on viewport. SFNavigationMenuIndicator intentionally NOT exported per DU/TDR aesthetic (no decorative arrow). SFNavigationMenuMobile uses direct import from `@/components/sf/sf-sheet` (not barrel) to avoid circular dependency -- renders SFSheet with hamburger Menu icon trigger and `side="left"`. ComponentsExplorer: updated existing PAGINATION (011) in-place rather than duplicating as 024 (it was a pre-existing placeholder with dots preview). Added TOGGLE_GRP (023), STEPPER (024), NAV_MENU (025). Shared bundle stayed at 102 KB. Phase 19 complete -- all 4 P2 components shipped.
+
+### 2026-04-06T20:44:00Z | Phase 20-01 | tags: calendar, menubar, lazy-loading, pattern-b, react-day-picker
+
+SFCalendar uses `[--cell-radius:0px]` CSS variable override on the root element instead of per-element `rounded-none` -- react-day-picker v9 uses `rounded-(--cell-radius)` throughout, so zeroing the variable eliminates all rounding in one shot. SFMenubar wraps all 15 sub-components from shadcn menubar for complete API parity. Both use Pattern B: wrapper file + lazy loader file pair, imported via `next/dynamic` with `ssr:false` and `SFSkeleton` fallback. Neither appears in `sf/index.ts` barrel. Registry entries have `meta.heavy:true` and `meta.pattern:"B"`. Shared bundle unchanged at 102 KB -- react-day-picker and date-fns only load when SFCalendarLazy mounts. Phase 20 plan 01 complete, plan 02 (final audit) next.
+
+### 2026-04-06T22:45:00Z | Phase 21 | tags: mutation-observer, nan-guard, webgl-cleanup, css-var-parsing
+
+The `parseFloat(value || fallback)` pattern fails silently when getPropertyValue returns a truthy non-numeric string (e.g. " " with leading space from CSS whitespace, "auto") — the `||` guard only fires on empty string, not NaN. The correct pattern is an explicit `isNaN()` check: `const v = parseFloat(...); return isNaN(v) ? fallback : v`. Place MutationObserver disconnect inside the useGSAP cleanup return (same teardown as ticker removal), not a separate useEffect — co-location prevents observer accumulation that causes WebGL jank during frequent Phase 25 mount/unmount cycles.
+
+### 2026-04-06T21:55:39Z | Phase 21 | tags: lenis, react-context, dom-event-handler, reduced-motion
+
+For the lenisRef pattern in page-transition.tsx: DOM event handlers added via addEventListener inside a useCallback cannot safely close over React hook values that change — the closure captures the stale value. Use `useRef(lenis)` + `useEffect(() => { lenisRef.current = lenis; }, [lenis])` so the DOM handler always reads the current Lenis instance via `lenisRef.current`. When Lenis is null, reduced-motion is active — use `behavior: "auto"` (instant) not `"smooth"` in window.scrollTo fallbacks. The `immediate: true` option in lenis.scrollTo matches window.scrollTo instant semantics for scroll restoration and page transition wipes.
+
+### 2026-04-06T22:21:00Z | Phase 22 | tags: tailwind-v4, @theme, color-tokens, utility-generation
+
+Tailwind v4 ONLY generates bg-*/text-*/border-* utilities from tokens declared inside `@theme {}`. Tokens in `:root` are invisible to the utility generator — this is the TK-01 bug. The fix is a targeted 2-line insertion into @theme between `--color-destructive` and `--color-border`. Verify utility generation with `grep -o "\.bg-success\|\.border-success" .next/static/css/*.css` after `pnpm build`.
+
+### 2026-04-06T22:21:00Z | Phase 22 | tags: color-resolve, webgl-bridge, audit-pattern, oklch
+
+color-resolve.ts WebGL bridge audit pattern: (1) read file to confirm canvas probe + magenta fallback, (2) grep all callers for the token strings they pass (never trust plan — always verify), (3) grep animation/ for the specific token names being moved. The audit is complete when zero callers reference the migrated tokens. No code changes to color-resolve.ts were needed — file is stable and handles any CSS format the browser resolves.
+
+### 2026-04-06T22:30:00Z | Phase 22 | tags: documentation, globals-css, scaffolding, token-policy
+
+22-02 was pure documentation — no behavioral changes. Insertion point for globals.css comment blocks: use the gap between named comment sections (e.g. COLOR TIERS closing line and `@theme {` opening) — this is the highest-discoverability location for new policy blocks. gsd-tools.cjs is not available in this environment; update STATE.md and ROADMAP.md directly via Edit tool when state tooling fails.
+
+### 2026-04-06T23:20:00Z | Phase 23 | tags: sf-wrapper, rounded-none, cva-override, tailwind-merge
+
+SFInputOTPSlot requires explicit `first:rounded-none last:rounded-none` in the className override — the base uses `first:rounded-l-lg last:rounded-r-lg` which are positional pseudo-class variants and Tailwind Merge resolves them correctly as long as the override appears AFTER the conflicting classes. The outer `rounded-none` alone is insufficient for these prefixed variants.
+
+### 2026-04-06T23:20:00Z | Phase 23 | tags: cva-cascade, sf-wrapper, input-group, kbd-selector
+
+CVA-generated classes apply at the sub-element level and do not cascade up or down to sibling/parent overrides. SFInputGroupAddon's `[&>kbd]:rounded-none` is required to reach the `[&>kbd]:rounded-[calc(var(--radius)-5px)]` class produced by CVA inside `inputGroupAddonVariants` — passing `className="rounded-none"` to the wrapper only affects the addon's root div, not its kbd descendants.
+
+### 2026-04-06T23:20:00Z | Phase 23 | tags: shadcn-install, vaul, pnpm-dlx, peer-deps
+
+`pnpm dlx shadcn@latest add drawer` installs vaul v1.1.2 as a direct dependency and confirms React 19.1 compatibility — shadcn's CLI vetting is sufficient evidence, no separate peer-deps audit needed. The `--yes` flag is essential for non-interactive CI execution; without it, the CLI prompts interactively and stalls.
