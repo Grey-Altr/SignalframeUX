@@ -1,5 +1,39 @@
 "use client";
 
+/**
+ * STP-02 Theme Toggle Audit — color-cycle-frame.tsx
+ *
+ * AUDIT FINDINGS (2026-04-06, Phase 5 Plan 01):
+ *
+ * Conflict surfaces in components/animation/:
+ *   - color-cycle-frame.tsx: calls document.documentElement.style.setProperty("--color-primary", ...)
+ *     on mount (random init) and on scroll-triggered color cycle (inside wipe onMid callback).
+ *   - hero-mesh.tsx: uses hardcoded rgba(255,255,255,...) on canvas context — theme-neutral.
+ *     Canvas paint calls do not respond to CSS variable changes. No guard needed.
+ *   - vhs-overlay.tsx: GSAP mutates opacity only — no color properties. No guard needed.
+ *
+ * GSAP color mutation audit result:
+ *   grep -rn "gsap.(to|from|fromTo|set).*(color|background|fill|stroke)" components/animation/
+ *   → NO MATCHES — zero GSAP color mutations exist. GSAP only animates opacity and transform.
+ *
+ * sf-no-transition mechanism:
+ *   lib/theme.ts applies "sf-no-transition" class, toggles dark class, removes after 2 rAF ticks.
+ *   globals.css backs with: transition: none !important; animation-duration: 0.01ms !important.
+ *   This mechanism is correct and complete for CSS transition suppression.
+ *
+ * setProperty vs sf-no-transition:
+ *   CSS variable mutation via setProperty() is instant — not transition-dependent.
+ *   sf-no-transition suppresses transition animations, not variable reads.
+ *   Therefore: setProperty calls do NOT conflict with sf-no-transition directly.
+ *
+ * Guarded conflict:
+ *   If a theme toggle occurs during an active color cycle wipe (~150ms window), the onMid
+ *   callback fires after the wipe covers and calls setProperty("--color-primary", cycleColor).
+ *   This overwrites the theme's intended --color-primary with the cycling accent color.
+ *   Guard: skip setProperty if "sf-no-transition" class is present on documentElement.
+ *   The init setProperty (mount) is not guarded — it fires once at load, before any toggle.
+ */
+
 import { useRef, useCallback, useEffect } from "react";
 import { triggerColorStutter } from "@/lib/color-stutter";
 
@@ -92,6 +126,8 @@ export function ColorCycleFrame({ children, className }: { children: React.React
     if (!container) return;
     triggerLocalWipe(container, direction, () => {
       const root = document.documentElement;
+      // STP-02 guard: skip if theme toggle is in progress (sf-no-transition window ~2 rAF ticks)
+      if (root.classList.contains("sf-no-transition")) return;
       root.style.setProperty("--color-primary", ACCENT_COLORS[next]);
       triggerColorStutter();
     });
