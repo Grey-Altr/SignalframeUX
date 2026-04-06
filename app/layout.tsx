@@ -8,6 +8,7 @@ import { LenisProvider } from "@/components/layout/lenis-provider";
 import { PageAnimations } from "@/components/layout/page-animations";
 import { PageTransition } from "@/components/animation/page-transition";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SignalframeProvider } from "@/components/layout/signalframe-config";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -94,7 +95,9 @@ export default async function RootLayout({
         </a>
         <TooltipProvider>
           <LenisProvider>
-            {children}
+            <SignalframeProvider>
+              {children}
+            </SignalframeProvider>
           </LenisProvider>
         </TooltipProvider>
         {/* White wipe-up reveal on page load */}
