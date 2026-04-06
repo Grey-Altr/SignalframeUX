@@ -11,21 +11,21 @@
 
 ## Current Position
 
-Phase: Phase 1 — FRAME Foundation (in progress)
-Plan: 01-03 (next)
-Status: Plan 01-02 complete — spacing sweep executed, CVA standard verified across all SF components
-Last activity: 2026-04-05 — Plan 01-02 executed: zero non-blessed spacing values remain in sf/blocks/layout
+Phase: Phase 1 — FRAME Foundation (COMPLETE)
+Plan: 01-03 (complete) — Phase 1 done, next is Phase 2
+Status: Plan 01-03 complete — CSS fallbacks added, print stylesheet appended, Phase 1 all 8 FRM requirements addressed
+Last activity: 2026-04-06 — Plan 01-03 executed: CSS fallbacks on all critical var() calls + @media print block
 
 ## Progress
 
 ```
-Phase 1 — FRAME Foundation:    [██░░░░░░░░]  67% (2/3 plans)
+Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [░░░░░░░░░░]   0%
 Phase 3 — SIGNAL Expression:   [░░░░░░░░░░]   0%
 Phase 4 — Above-the-Fold Lock: [░░░░░░░░░░]   0%
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [█░░░░░░░░░]  14% (2/14 plans)
+Overall:   [██░░░░░░░░]  21% (3/14 plans)
 ```
 
 ## Accumulated Context
@@ -42,6 +42,9 @@ Overall:   [█░░░░░░░░░]  14% (2/14 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 01-03: Motion tokens (--duration-*, --ease-*) intentionally exempt from CSS fallbacks — decorative properties, no silent visual failure risk
+- Plan 01-03: CSS fallback only applied to active rule consumers, not :root declarations or commented-out code
+- Plan 01-03: Print position: static scoped to nav/fixed/sticky only — blanket * would break flex/grid layout structure
 - Plan 01-02: p-5 px-6 → p-6 px-6: when p-5 is followed by axis override, p-5 is still non-blessed; drop redundant override
 - Plan 01-02: signal intent in sf-button.tsx kept as pre-standard extension, documented via comment rather than removed
 - Plan 01-01: Spacing tokens placed in :root (not @theme) — avoids Tailwind utility class generation
@@ -62,7 +65,7 @@ Overall:   [█░░░░░░░░░]  14% (2/14 plans)
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | In progress — 2/3 plans complete |
+| 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | Not started |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | Not started |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | Not started |
@@ -70,6 +73,6 @@ Overall:   [█░░░░░░░░░]  14% (2/14 plans)
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: Completed Phase 1 Plan 01-02 — next is Plan 01-03 (final Phase 1 plan)
-Resume file: .planning/phases/01-frame-foundation/01-03-PLAN.md
+Last session: 2026-04-06
+Stopped at: Completed Phase 1 Plan 01-03 — Phase 1 COMPLETE. Next is Phase 2 Plan 02-01.
+Resume file: .planning/phases/02-frame-primitives/

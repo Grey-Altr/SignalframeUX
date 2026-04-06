@@ -10,7 +10,7 @@
 
 ## Phases
 
-- [x] **Phase 1: FRAME Foundation** — Lock tokens, enforce spacing, define typography aliases, layout tokens, color tiers, and variant standards across the system (in progress — 2/3 plans)
+- [x] **Phase 1: FRAME Foundation** — Lock tokens, enforce spacing, define typography aliases, layout tokens, color tiers, and variant standards across the system (COMPLETE — 3/3 plans)
 - [ ] **Phase 2: FRAME Primitives** — Build the six SF primitives (Container, Section, Stack, Grid, Text, Button) that enforce the locked token system
 - [ ] **Phase 3: SIGNAL Expression** — Author the full SIGNAL layer: scramble, asymmetric hover, hard-cut transitions, scroll choreography, cursor detail, mobile fallbacks, and progressive enhancement guarantees
 - [ ] **Phase 4: Above-the-Fold Lock** — Seal the 90-second jury moment at 1440px, resolve component count claim, craft error and empty states as first-class design moments, and QA reduced-motion as a standalone experience
@@ -34,7 +34,7 @@
 Plans:
 - [x] 01-01-PLAN.md — Token definitions: semantic typography aliases, layout tokens, color tiers, VHS namespace
 - [x] 01-02-PLAN.md — Component sweep: blessed spacing enforcement + CVA compliance audit
-- [ ] 01-03-PLAN.md — CSS fallbacks on critical var() calls + print stylesheet
+- [x] 01-03-PLAN.md — CSS fallbacks on critical var() calls + print stylesheet
 
 ### Phase 2: FRAME Primitives
 **Goal**: Six SF primitives exist that enforce Phase 1 tokens by construction — using them correctly is easier than deviating from them
