@@ -45,7 +45,10 @@ Plans:
   2. SFContainer renders at the correct max-width token, applies standard gutters, and responds correctly at all Tailwind v4 breakpoints without prop configuration
   3. SFSection applies `data-section` and `data-section-label` data attributes automatically and uses consistent vertical spacing from blessed stops
   4. SFText renders using semantic typography aliases and rejects (via TypeScript types) any typography value outside the defined scale
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 02-01-PLAN.md — SFContainer + SFSection + SFStack layout primitives and barrel export
+- [ ] 02-02-PLAN.md — SFGrid + SFText primitives and SFButton PRM-06 audit
 
 ### Phase 3: SIGNAL Expression
 **Goal**: The SIGNAL layer is fully authored, specced, and progressively enhanced — every effect has a timing spec, a CSS fallback, and a mobile behavior definition
@@ -88,8 +91,8 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. FRAME Foundation | 0/3 | Planned | - |
-| 2. FRAME Primitives | 0/? | Not started | - |
+| 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
+| 2. FRAME Primitives | 0/2 | Planned | - |
 | 3. SIGNAL Expression | 0/? | Not started | - |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |
