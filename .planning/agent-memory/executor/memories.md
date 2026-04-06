@@ -102,3 +102,15 @@ In SignalframeUX, JSDoc placement differs by pattern: Pattern A (named function 
 ### 2026-04-05T00:00:00Z | Phase 04 | tags: reduced-motion, signal-spec, two-layer-architecture, visual-qa
 
 The reduced-motion suppression in SignalframeUX uses a two-layer contract: CSS layer fires at paint time (before JS loads) via `@media (prefers-reduced-motion: reduce)` blocks resetting all `[data-anim]` to opacity:1 and suppressing .sf-cursor/.vhs-overlay/.sf-glitch; JS layer fires at runtime via `gsap.globalTimeline.timeScale(0)` and an early return from `initHeroAnimations`. The CSS global block uses `animation-duration: 0.01ms` AND `transition-duration: 0.01ms` — transitions are NOT suppressed by animation-duration alone. During Plan 04-03 audit, CSS coverage was confirmed complete with zero gaps (hero-mesh and error-code selectors already added in 04-01/04-02). When SIGNAL-SPEC.md is updated with a documentation section, read the entire file first to identify the exact insertion anchor — the Key Links table at the end of Section 6 is the correct append point for Section 7.
+
+### 2026-04-06T07:23:00Z | Phase 06 | tags: signal-canvas, jsx-extension, lib-tsx, build-error
+
+In SignalframeUX, files in `lib/` that contain React components with JSX syntax must use `.tsx` extension even though the convention is `lib/*.ts` for utilities. Next.js/Turbopack rejects JSX in `.ts` files with `Expected '>', got 'ref'` at build time. The `@/lib/signal-canvas` path alias resolves both `.ts` and `.tsx` so downstream imports need no changes after the rename.
+
+### 2026-04-06T07:23:00Z | Phase 06 | tags: signal-canvas, gsap-ticker, scissor-viewport, webgl-singleton
+
+The SignalCanvas singleton uses `gsap.ticker.add(tickerCallback)` exclusively — never `renderer.setAnimationLoop()` or raw `requestAnimationFrame`. The ticker callback checks `state.reducedMotion` and `state.scenes.size === 0` to skip rendering when unnecessary. The scissor Y-axis conversion is: `canvasY = renderer.domElement.clientHeight - rect.bottom` (Three.js is Y-up, DOM is Y-down).
+
+### 2026-04-06T07:23:00Z | Phase 06 | tags: use-signal-scene, dispose-pattern, intersection-observer
+
+`useSignalScene` calls both `deregisterScene(id)` AND `disposeScene(scene)` in cleanup — they are intentionally separate. `deregisterScene` removes from the singleton Map (stops rendering); `disposeScene` traverses the scene graph and frees GPU memory. Scene components MUST call both or GPU memory leaks. The `buildScene` factory runs inside `useEffect` (not at render time) to prevent Three.js object creation during SSR.
