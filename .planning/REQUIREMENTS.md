@@ -1,78 +1,64 @@
-# Requirements — v1.3 Component Expansion
+# Requirements — v1.4 Feature Complete
 
-## Milestone v1.3 Requirements
+## Tech Debt
+- [ ] **TD-01**: MutationObserver in signal-mesh.tsx and glsl-hero.tsx disconnects on unmount
+- [ ] **TD-02**: readSignalVars has explicit isNaN() guard in both WebGL scenes
+- [ ] **TD-03**: Programmatic scroll routes through lenis.scrollTo (not window.scrollTo)
+- [ ] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
 
-### Infrastructure
-- [x] **INFRA-01**: SF wrapper creation checklist codified in SCAFFOLDING.md — rounded-none audit, `intent` prop rule, barrel rule, registry same-commit rule, a11y smoke test, prefers-reduced-motion rule (completed 16-02)
-- [x] **INFRA-02**: Performance baseline captured — Lighthouse LCP/TTI/bundle size recorded before first new component (completed 16-01: 103 KB shared, BASELINE.md created)
-- [x] **INFRA-03**: ComponentsExplorer grouped by category — Forms, Feedback, Navigation, Data Display, Layout, Generative (completed 16-02)
-- [x] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition (completed 16-02)
+## Token System
+- [ ] **TK-01**: --color-success and --color-warning moved into @theme block in globals.css
+- [ ] **TK-02**: Elevation absence explicitly documented in globals.css and SCAFFOLDING.md
+- [ ] **TK-03**: Sidebar and chart color tokens documented in SCAFFOLDING.md
+- [ ] **TK-04**: WebGL color bridge (color-resolve.ts) audited for token dependency safety
 
-### Feedback & Disclosure
-- [x] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation (completed 18-01)
-- [x] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
-- [x] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween (completed 18-01)
-- [x] **FD-04**: User confirms destructive actions via SFAlertDialog with loading state support (completed 17-02)
-- [x] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success) (completed 17-01)
-- [x] **FD-06**: User can show/hide content via SFCollapsible without accordion semantics (completed 17-01)
+## Components
+- [ ] **CMP-01**: SFDrawer (vaul-based, lazy, meta.heavy: true) with registry + explorer entry
+- [ ] **CMP-02**: SFHoverCard (FRAME-only, Pattern A) with registry + explorer entry
+- [ ] **CMP-03**: SFInputOTP (input-otp, Pattern A) with registry + explorer entry
+- [ ] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
 
-### Identity & Navigation
-- [x] **NAV-01**: User is represented by square SFAvatar with Radix fallback chain (image → initials → icon) (completed 17-01)
-- [x] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component (completed 17-01)
-- [x] **NAV-03**: User sees designed empty states via SFEmptyState with optional ScrambleText SIGNAL treatment (completed 17-02)
-- [x] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior (completed 19-02)
-- [x] **NAV-05**: User navigates paginated content via SFPagination (completed 19-01)
+## Detail View Data
+- [ ] **DV-01**: lib/component-registry.ts maps all grid items to variants, code snippets, doc pointers
+- [ ] **DV-02**: lib/api-docs.ts extended with ComponentDoc entries for all ~45 components
+- [ ] **DV-03**: lib/code-highlight.ts (shiki/core, server-only RSC module) for syntax highlighting
 
-### Multi-Step & Status
-- [x] **MS-01**: User completes multi-step flows via SFStepper with per-step error state (completed 19-01)
-- [x] **MS-02**: User sees presence/status indicators via SFStatusDot with GSAP pulse on active state (completed 17-02)
-- [x] **MS-03**: User selects from exclusive/multi toggle options via SFToggleGroup (completed 19-01)
+## Interactive Detail Views
+- [ ] **DV-04**: ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE) and GSAP height animation
+- [ ] **DV-05**: Variant grid renders all intent/size values as live SF components
+- [ ] **DV-06**: Props table with name, type, default, required, description per component
+- [ ] **DV-07**: Code tab with usage snippet + CLI install command, both copy-to-clipboard
+- [ ] **DV-08**: FRAME/SIGNAL layer badge and pattern tier (A/B/C) visible in detail header
+- [ ] **DV-09**: Animation token callout per component (durations, easings used)
+- [ ] **DV-10**: Keyboard accessible (Escape closes, focus returns to trigger card)
+- [ ] **DV-11**: Detail panel as DOM sibling outside GSAP Flip grid (not child)
+- [ ] **DV-12**: next/dynamic lazy load for ComponentDetail (bundle gate compliance)
 
-### Registry-Only (Lazy)
-- [x] **REG-01**: Consumer installs SFCalendar via shadcn CLI — lazy-loaded, bundle cost annotated, `meta.heavy: true`
-- [x] **REG-02**: Consumer installs SFMenubar via shadcn CLI — lazy-loaded, registry-only
+## Site Integration
+- [ ] **SI-01**: ComponentsExplorer onClick expands detail panel with session state persistence
+- [ ] **SI-02**: Homepage grid cards clickable with same detail expansion behavior
+- [ ] **SI-03**: DU/TDR aesthetic on detail panel (sharp edges, uppercase labels, accent on selected)
+- [ ] **SI-04**: Z-index contract for detail panel vs canvas cursor and SignalOverlay
 
----
+## Verification
+- [ ] **VF-01**: Shared JS bundle remains under 150 KB gate after all additions
+- [ ] **VF-02**: Lighthouse audit against deployed URL (target 100/100)
 
-## Future Requirements
-
-- Registry namespace strategy (`@signalframe/` vs unnamespaced) — deferred until cdOS becomes a consumer
-- Registry v2 "Smart Versioning" — monitor shadcn releases for v2 registry spec
-- DataTable composite block (SFTable + SFPagination + SFSelect + SFInput) — deferred to v1.4 after SFPagination ships
-- Input OTP / PinInput — relevant only for auth flows, defer to cdOS milestone
-- Spinner component — SFSkeleton covers most loading cases; evaluate if insufficient
+## Future Requirements (v1.4.x)
+- Component composition callout in detail view (which SF components compose another)
+- Token usage callout per component in detail view
 
 ## Out of Scope
-
-- React Three Fiber migration — R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
-- New generative scenes — component expansion, not generative expansion
-- Token expansion — palette and spacing stops remain frozen
-- Carousel / Chart / Rich Text Editor / Color Picker — application-layer, not design system
-- Rounded corner variants — zero border-radius is non-negotiable
-- ContextMenu — right-click model conflicts with DU/TDR aesthetic
-- Resizable panels — no identified consumer use case
+- SFCarousel — GSAP animation frame conflict; DU/TDR aesthetic misalignment
+- SFChart — recharts ~50KB dependency; no current consumer
+- SFResizable — no identified use case
+- SFContextMenu — inaccessible on touch; aesthetic misalignment
+- SFSidebar — deferred to cdOS milestone (large composable system)
+- DataTable composite block — deferred to cdOS milestone
+- Storybook — duplicates existing in-site explorer
+- MDX pipeline — TypeScript data in api-docs.ts is established pattern
+- Interactive prop knobs — show all variants statically instead
+- Localization (JFM) — separate future milestone
 
 ## Traceability
-
-| REQ-ID | Phase | Plan | Status |
-|--------|-------|------|--------|
-| INFRA-01 | Phase 16 | 16-02 | Complete |
-| INFRA-02 | Phase 16 | 16-01 | Complete |
-| INFRA-03 | Phase 16 | 16-02 | Complete |
-| INFRA-04 | Phase 16 | 16-02 | Complete |
-| FD-01 | Phase 18 | 18-01 | Complete |
-| FD-02 | Phase 18 | — | Pending |
-| FD-03 | Phase 18 | 18-01 | Complete |
-| FD-04 | Phase 17 | 17-02 | Complete |
-| FD-05 | Phase 17 | 17-01 | Complete |
-| FD-06 | Phase 17 | 17-01 | Complete |
-| NAV-01 | Phase 17 | 17-01 | Complete |
-| NAV-02 | Phase 17 | 17-01 | Complete |
-| NAV-03 | Phase 17 | 17-02 | Complete |
-| NAV-04 | Phase 19 | 19-02 | Complete |
-| NAV-05 | Phase 19 | 19-01 | Complete |
-| MS-01 | Phase 19 | 19-01 | Complete |
-| MS-02 | Phase 17 | 17-02 | Complete |
-| MS-03 | Phase 19 | 19-01 | Complete |
-| REG-01 | Phase 20 | 20-01, 20-02 | Complete |
-| REG-02 | Phase 20 | 20-01, 20-02 | Complete |
+(To be filled by roadmapper)
