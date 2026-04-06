@@ -66,7 +66,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
-(No active requirements — planning next milestone)
+(Defining requirements for v1.4)
 
 ### Out of Scope
 
@@ -76,7 +76,17 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: Planning next
+## Current Milestone: v1.4 Feature Complete
+
+**Goal:** Ship every remaining component, finalize tokens, and build an interactive showcase site where each component expands to show props, variants, and implementation details.
+
+**Target features:**
+- All remaining shadcn/Radix components SF-wrapped and registered
+- Token system finalized — no gaps
+- Site as coherent showcase demonstrating every component
+- Interactive component detail views (click to expand props, variants, usage, implementation info)
+- Homepage grid components clickable with same detail expansion
+- Close all outstanding tech debt from v1.2/v1.3
 
 ## Context
 
@@ -171,4 +181,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.3 Component Expansion milestone shipped*
+*Last updated: 2026-04-06 after v1.4 Feature Complete milestone started*
