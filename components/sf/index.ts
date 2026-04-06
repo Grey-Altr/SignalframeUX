@@ -2,6 +2,8 @@
 export { SFContainer } from "./sf-container";
 export { SFSection } from "./sf-section";
 export { SFStack } from "./sf-stack";
+export { SFGrid } from "./sf-grid";
+export { SFText, type TextVariant } from "./sf-text";
 
 export { SFButton } from "./sf-button";
 export {
