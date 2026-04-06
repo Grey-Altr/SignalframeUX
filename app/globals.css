@@ -149,6 +149,12 @@
   --sf-vhs-crt-opacity: 0.2;
   --sf-vhs-noise-opacity: 0.015;
 
+  /* ── SIGNAL Runtime Defaults ── */
+  /* Read by color-resolve.ts and WebGL uniforms. SignalOverlay overrides at runtime. */
+  --signal-intensity: 0.5;
+  --signal-speed: 1;
+  --signal-accent: 0;
+
   /* ── Spacing Tokens (blessed stops only) ──
      Based on 4px base. These are the ONLY valid content spacing values.
      Tailwind equivalents: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 12=48px, 16=64px, 24=96px */
