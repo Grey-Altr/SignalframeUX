@@ -2,10 +2,27 @@
 
 ## v1.1 Generative Surface (Shipped: 2026-04-06)
 
-**Phases completed:** 4 phases, 9 plans, 2 tasks
+**Phases completed:** 4 phases, 9 plans
+**Timeline:** 6 days (2026-03-31 → 2026-04-06)
+**Requirements:** 15/17 satisfied (2 partial: INT-03 zero consumers, INT-04 one-sided bridge)
+**Audit:** tech_debt — 2 partial reqs + documentation tracking debt, no blockers
+**Nyquist:** 0/4 phases compliant (all draft)
 
 **Key accomplishments:**
-- (none recorded)
+- Singleton WebGL infrastructure: SignalCanvas renderer, useSignalScene hook, color-resolve OKLCH→sRGB bridge with TTL cache
+- Multi-sensory SIGNAL activation: audio feedback (Web Audio square wave), haptic feedback (Vibration API), idle animation (8s grain drift + OKLCH ±5% lightness pulse)
+- Two generative scenes: SignalMesh (IcosahedronGeometry + vertex displacement + ScrollTrigger) and TokenViz (Canvas 2D self-depicting token visualization)
+- GLSL procedural hero shader with FBM 4-octave noise, geometric grid lines, and integrated Bayer 4×4 ordered dither
+- SF layout primitive migration across all 5 pages (32 SFSection instances, zero raw div section wrappers)
+- SignalMotion scroll-driven wrapper + SignalOverlay live parameter panel with Shift+S toggle
+
+**Known gaps (accepted):**
+- INT-03: SignalMotion built but zero consumers — component exists with no page placement
+- INT-04: SignalOverlay writes CSS vars (--signal-intensity, --signal-speed, --signal-accent) but no WebGL scene reads them
+- INT-01 minor: reference page missing mt-[var(--nav-height)], start NEXT_CARDS grid not SFSection-wrapped
+- Documentation tracking: 14/17 SUMMARY frontmatters missing requirements_completed, 8 REQUIREMENTS.md checkboxes stale
+
+**Archives:** `.planning/milestones/v1.1-ROADMAP.md`, `v1.1-REQUIREMENTS.md`, `v1.1-MILESTONE-AUDIT.md`
 
 ---
 

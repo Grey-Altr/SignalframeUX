@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
 status: completed
-stopped_at: Completed 09-03-PLAN.md (SF primitive consumers + stagger activation — Phase 9 complete)
-last_updated: "2026-04-06T09:37:06.828Z"
-last_activity: "2026-04-06 — Plan 09-03 complete (2 tasks, 2 commits: b56d32f, 0bf0b6c)"
+stopped_at: Milestone v1.1 complete — archived and tagged
+last_updated: "2026-04-06T12:00:00.000Z"
+last_activity: "2026-04-06 — v1.1 Generative Surface milestone completed and archived"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -21,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression |
-| Current Focus | Phase 6: Generative SIGNAL Foundation |
-| Milestone | v1.1 Generative Surface |
+| Current Focus | Planning next milestone |
+| Milestone | v1.1 Generative Surface (COMPLETE) |
 
 ## Current Position
 
-Phase: 9 — Extended Scenes + Production Integration
-Plan: COMPLETE (3/3 plans done)
-Status: All plans complete — GLSLHero shader (SCN-03 + SCN-04) + SignalMotion + SignalOverlay (INT-03 + INT-04) + SF primitive consumers + stagger (INT-01 + INT-02). Phase 9 fully complete.
-Last activity: 2026-04-06 — Plan 09-03 complete (2 tasks, 2 commits: b56d32f, 0bf0b6c)
+Phase: Milestone complete
+Plan: All 9 plans across 4 phases shipped
+Status: v1.1 Generative Surface archived. 15/17 requirements satisfied, 2 partial (INT-03, INT-04 accepted as tech debt).
+Last activity: 2026-04-06 — Milestone audited, archived, and tagged
 
 ## Progress
 
@@ -39,13 +39,13 @@ Phase 2 — FRAME Primitives:                    [██████████
 Phase 3 — SIGNAL Expression:                   [██████████] 100% (4/4 plans) COMPLETE
 Phase 4 — Above-the-Fold Lock:                 [██████████] 100% (3/3 plans) COMPLETE
 Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
-Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
-Phase 7 — SIGNAL Activation:                   [████      ]  ~50% (2/? plans) In progress
-Phase 8 — First Generative Scenes:             [██████████] 100% (2/2 plans) COMPLETE — SCN-01 + SCN-02 complete
-Phase 9 — Extended Scenes + Integration:       [██████████] 100% (3/3 plans) COMPLETE — SCN-03 + SCN-04 + INT-01 + INT-02 + INT-03 + INT-04 complete
+Phase 6 — Generative SIGNAL Foundation:        [██████████] 100% (2/2 plans) COMPLETE
+Phase 7 — SIGNAL Activation:                   [██████████] 100% (2/2 plans) COMPLETE
+Phase 8 — First Generative Scenes:             [██████████] 100% (2/2 plans) COMPLETE
+Phase 9 — Extended Scenes + Integration:       [██████████] 100% (3/3 plans) COMPLETE
 
-v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [████      ]  ~40% (9/? plans)
+v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
+v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 ```
 
 ## Accumulated Context
@@ -55,74 +55,34 @@ v1.1: [████      ]  ~40% (9/? plans)
 - 29 SF-wrapped components (24 interactive + 5 layout primitives)
 - SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
-- SIGNAL-SPEC.md (259 lines) documenting all effects with timing, fallback, mobile, reduced-motion
-- GlobalEffectsLazy pattern via `next/dynamic({ ssr: false })` — template for SignalCanvasLazy
 
-### Known Tech Debt Entering v1.1 (from v1.0 audit)
-- SFSection, SFStack, SFGrid exported but zero production consumers — resolved in Phase 9
-- [data-cursor] not placed on any section (cursor never activates) — resolved in Phase 7
-- Pre-existing TypeScript error in color-cycle-frame.tsx:79 — carry into Phase 6 investigation
+### From v1.1
+- Singleton WebGL infrastructure: SignalCanvas, useSignalScene, color-resolve with TTL cache
+- Multi-sensory SIGNAL: audio (Web Audio), haptics (Vibration API), idle animation (grain drift + OKLCH pulse)
+- Generative scenes: SignalMesh (Three.js), TokenViz (Canvas 2D), GLSLHero (GLSL + Bayer dither)
+- SF primitives consumed across all 5 pages (32 SFSection instances)
+- Three.js in async chunk (102 kB initial shared bundle)
 
-### v1.1 Architecture Decisions
-- Raw Three.js over R3F — R3F independent rAF loop conflicts with GSAP globalTimeline scalar (confirmed via GitHub #71836)
-- OGL (~29KB) for isolated 2D shader effects where Three.js is overkill (ASCII shader, noise fields)
-- Singleton `SignalCanvas` renderer — scissor/viewport split, never one renderer per component
-- GSAP ticker as render driver — `renderer.render()` called inside `gsap.ticker.add()`, never `renderer.setAnimationLoop()`
-- `lib/color-resolve.ts` extracted from canvas-cursor.tsx probe technique — shared by all canvas/WebGL components
-- `next/dynamic({ ssr: false })` for all WebGL components — mirrors GlobalEffectsLazy exactly
-- Template literal shaders preferred over raw-loader — Turbopack raw-loader is community pattern (MEDIUM confidence)
-
-### Research Flags (Needs Integration Test)
-- Turbopack `experimental.turbopack.rules` for GLSL files — validate in Phase 6 before committing; fallback to template literals if unstable
-- Lenis + GSAP ticker + Three.js render ordering — build minimal integration test in Phase 6 or Phase 8 before scroll-reactive uniforms at scale
-- OGL vs Three.js for ASCII shader (Phase 9) — verify OGL post-process pipeline sufficient before choosing; fallback is Three.js postprocessing with same dynamic import isolation
-
-### Decisions
-
-**06-01:** Project uses pnpm (not npm) — pnpm-lock.yaml present, npm install fails against .pnpm virtual store. Use `pnpm add` for all installs.
-**06-01:** No transpilePackages for Three.js — next/dynamic({ ssr: false }) is sufficient SSR guard; transpilePackages has known Turbopack issues (vercel/next.js#63230).
-**06-01:** No caching in color-resolve.ts (Phase 6) — color-cycle-frame.tsx mutates --color-primary dynamically; cached values go stale. Optimize in Phase 8.
-**06-02:** signal-canvas.tsx not .ts — lib/ file contains a React component with JSX; .tsx extension required by Next.js/Turbopack; @/lib/signal-canvas path alias resolves both extensions.
-**06-02:** disposeScene and deregisterScene are separate calls — hook calls both; separation allows future temporary deregistration without GPU disposal.
-**07-01:** Document-level delegation over per-component wiring — single InteractionFeedback component in GlobalEffects handles all interactive elements; no SF component modifications needed.
-**07-01:** coarse-pointer skips hover audio setup entirely — touch devices have no hover state; pointerdown haptics still fire naturally via the same listener when on coarse devices (but listener is not added for coarse-pointer, so hover is also skipped for haptics — intentional; micro-vibration on touch hover is not meaningful without a hover state).
-**07-02:** ticker-accumulation-guard — old ticker explicitly removed before registering new one in idle activation; prevents multiple pulseFn callbacks accumulating across repeated idle cycles.
-**07-02:** data-cursor explicit per-section placement — added to data-bg-shift divs and showcase main elements, not at SFSection primitive level; preserves showcase zone intentionality.
-**08-01:** next/dynamic({ ssr: false }) requires a 'use client' wrapper in Next.js 15 — cannot be used inline in Server Components; signal-mesh-lazy.tsx wraps the dynamic import, mirroring SignalCanvasLazy pattern.
-**08-01:** TTL cache in color-resolve.ts is opt-in (omit options = no-cache) — preserves Phase 6 behavior for color-cycle-frame.tsx which mutates --color-primary dynamically; cache is opt-in via { ttl: ms }.
-**08-02:** Client boundary wrapper required for ssr:false dynamic imports in Next.js 15 Server Components — TokenVizLoader wraps the dynamic import, keeping TokensPage a Server Component.
-**08-02:** 10-entry type scale used (not 9) — globals.css includes --text-md at 16px alongside the expected 9 entries; accurate representation takes precedence over the plan spec.
-**09-02:** SFSlider used over native input[type=range] in SignalOverlay — already SF-styled (square thumb, square track, primary fill), Radix a11y included, consistent with system aesthetic.
-**09-02:** Reset button added to SignalOverlay beyond plan spec — CSS custom properties persist on :root across navigation; reset is essential for demo UX and not optional.
-**09-02:** Speed slider hidden (not just disabled) on reduced-motion — shows "Reduced motion active" message; clearer UX signal than a grayed-out unresponsive slider.
-**09-01:** uResolution added as uniform (not computed inside shader) — gl_FragCoord alone lacks container offset info for correct UV in scissored viewport; ResizeObserver keeps it current.
-**09-01:** TTL cache (2000ms) used for resolveColorAsThreeColor at hero scene build time — safe since color-cycle mutates at ~150ms intervals, hero shader color changes intentionally lag by up to 2s.
-**09-01:** Bayer 4x4 stored as float array literal in fragment shader — avoids sampler2D overhead, GLSL array literals confirmed supported in WebGL1+2.
-**09-03:** py-0 className override neutralizes SFSection default spacing (spacing='16') for section-level wrappers that carry no own vertical padding — spacing lives inside block children; tailwind-merge resolves py-16 py-0 correctly.
-**09-03:** data-anim='stagger' CSS initial state pre-existed in globals.css at line 1038 — no new CSS needed; stagger activation is data-attribute placement only.
-**09-03:** token-tabs.tsx #color-scale-grid chosen for stagger — direct [role='row'] children are correct stagger targets; ComponentsExplorer uses comp-cell (conflict) and TokenVizLoader is canvas-based (no DOM children).
+### Known Tech Debt (Carried Forward)
+- INT-03: SignalMotion component created but unused — needs placement on showcase sections
+- INT-04: SignalOverlay writes CSS vars but no WebGL uniform reads them — one-sided bridge
+- INT-01 minor: reference page missing mt-[var(--nav-height)], start NEXT_CARDS grid not SFSection-wrapped
+- SFSection bgShift boolean prop orphaned — all usage passes data-bg-shift as spread string
+- DX-04/05: Registry, API factory — deferred with interface sketches
+- STP-01: Session persistence — deferred with interface sketch
 
 ### Blockers
 - None
 
-## Roadmap
-
-| Phase | Goal | Requirements | Status |
-|-------|------|--------------|--------|
-| 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
-| 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | In progress (2/? plans) — SIG-06, SIG-07, SIG-08, SIG-09 complete |
-| 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | In progress (2/? plans) — SCN-01 + SCN-02 complete |
-| 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | COMPLETE (3/3 plans) — all 6 requirements done |
-
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-05)
+See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** Phase 8 — First Generative Scenes
+**Current focus:** Planning next milestone
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 09-03-PLAN.md (SF primitive consumers + stagger activation — Phase 9 complete)
-Resume file: (Phase 9 complete — await next phase assignment)
+Stopped at: v1.1 Generative Surface milestone completed and archived
+Resume file: (Milestone complete — use /pde:new-milestone for next cycle)
