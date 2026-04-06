@@ -170,24 +170,105 @@ function VHSBadge() {
   );
 }
 
-/** Idle standby overlay — faint scanline drift after 60s of no interaction */
+/**
+ * Idle standby overlay — grain drift + OKLCH color pulse after 8s of no interaction.
+ *
+ * When idle activates:
+ *   1. Captures current --color-primary value from computed styles
+ *   2. Parses base lightness from OKLCH string (null-checks: skips pulse if not OKLCH)
+ *   3. Registers a GSAP ticker that oscillates lightness +/-5% over a 4-second period
+ *   4. Activates sf-grain-animated class on grain overlay (film-grain flicker)
+ *   5. Activates sf-idle-overlay--active class (scanline drift)
+ *
+ * On any interaction (resetIdle):
+ *   - GSAP ticker removed immediately
+ *   - --color-primary restored to captured base value (instant, no transition)
+ *   - Grain drift class removed
+ *   - Overlay opacity transition bypassed via transition:none + rAF restore
+ *
+ * NOTE: ColorCycleFrame also mutates --color-primary via setProperty on wheel events.
+ * No conflict: idle requires 8s of full inactivity; any wheel event fires resetIdle
+ * which removes the pulse ticker before ColorCycleFrame can fire.
+ *
+ * Reduced-motion: entire system is suppressed — silent and static.
+ */
 function IdleOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const grainRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const IDLE_TIMEOUT = 60_000;
+  const tickerRef = useRef<((t: number, dt: number) => void) | null>(null);
+  const basePrimaryRef = useRef<string>("");
+  const IDLE_TIMEOUT = 8_000;
 
   const resetIdle = useCallback(() => {
     const el = overlayRef.current;
     if (!el) return;
+
+    // Remove GSAP ticker first — instant snap-back of color
+    if (tickerRef.current) {
+      gsap.ticker.remove(tickerRef.current);
+      tickerRef.current = null;
+    }
+    // Restore captured --color-primary (instant, no transition)
+    if (basePrimaryRef.current) {
+      document.documentElement.style.setProperty("--color-primary", basePrimaryRef.current);
+      basePrimaryRef.current = "";
+    }
+    // Remove grain drift
+    grainRef.current?.classList.remove("sf-grain-animated");
+
+    // Instant overlay snap-back: bypass the glacial opacity transition
+    el.style.transition = "none";
     el.classList.remove("sf-idle-overlay--active");
+    requestAnimationFrame(() => { el.style.transition = ""; });
+
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      el.classList.add("sf-idle-overlay--active");
+      const overlay = overlayRef.current;
+      if (!overlay) return;
+
+      // Capture current --color-primary before pulse starts
+      basePrimaryRef.current = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-primary")
+        .trim();
+
+      // CRITICAL null-check: skip pulse if value is not in OKLCH format
+      const match = basePrimaryRef.current.match(/oklch\(([\d.]+)/);
+      if (!match) {
+        // Not OKLCH — still activate grain + overlay, but skip color pulse
+        grainRef.current?.classList.add("sf-grain-animated");
+        overlay.classList.add("sf-idle-overlay--active");
+        return;
+      }
+
+      const baseLightness = parseFloat(match[1]);
+
+      // CRITICAL ticker guard: remove any existing ticker before registering a new one
+      if (tickerRef.current) {
+        gsap.ticker.remove(tickerRef.current);
+        tickerRef.current = null;
+      }
+
+      // Oscillate lightness +/-5% over a 4-second cycle
+      let elapsed = 0;
+      const PERIOD = 4; // seconds
+      const pulseFn = (_time: number, deltaTime: number) => {
+        elapsed += deltaTime / 1000;
+        const l = baseLightness + 0.05 * Math.sin((2 * Math.PI * elapsed) / PERIOD);
+        const next = basePrimaryRef.current.replace(/oklch\([\d.]+/, `oklch(${l.toFixed(3)}`);
+        document.documentElement.style.setProperty("--color-primary", next);
+      };
+
+      gsap.ticker.add(pulseFn);
+      tickerRef.current = pulseFn;
+
+      grainRef.current?.classList.add("sf-grain-animated");
+      overlay.classList.add("sf-idle-overlay--active");
     }, IDLE_TIMEOUT);
   }, []);
 
   useEffect(() => {
-    // Respect reduced motion
+    // Respect reduced motion — entire idle system is suppressed
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const events = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"] as const;
@@ -197,10 +278,24 @@ function IdleOverlay() {
     return () => {
       events.forEach((e) => document.removeEventListener(e, resetIdle));
       clearTimeout(timerRef.current);
+      // Cleanup: remove ticker and restore color on unmount
+      if (tickerRef.current) { gsap.ticker.remove(tickerRef.current); }
+      if (basePrimaryRef.current) {
+        document.documentElement.style.setProperty("--color-primary", basePrimaryRef.current);
+      }
     };
   }, [resetIdle]);
 
-  return <div ref={overlayRef} className="sf-idle-overlay" aria-hidden="true" />;
+  return (
+    <>
+      <div ref={overlayRef} className="sf-idle-overlay" aria-hidden="true" />
+      <div
+        ref={grainRef}
+        className="sf-idle-grain fixed inset-0 pointer-events-none z-[var(--z-vhs)] sf-grain"
+        aria-hidden="true"
+      />
+    </>
+  );
 }
 
 /**
