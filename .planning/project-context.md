@@ -4,7 +4,7 @@
 > Regenerate with /pde:new-milestone or /pde:new-project.
 
 ## Tech Stack
-TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS v4 (@theme in globals.css) · CVA for variants · Radix UI via shadcn → SF-wrapped layer · GSAP 3.12 + ScrollTrigger · Lenis · OKLCH color space · Lucide React · Vercel · Raw Three.js (not R3F) · Web Audio API · Vibration API · Sonner (v1.3+)
+TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS v4 (@theme in globals.css) · CVA for variants · Radix UI via shadcn → SF-wrapped layer · GSAP 3.12 + ScrollTrigger · Lenis · OKLCH color space · Lucide React · Vercel · Raw Three.js (not R3F) · Web Audio API · Vibration API · Sonner · shiki/core (v1.4+, server-only RSC)
 
 ## Conventions
 - SF-wrapped components in `sf/` with barrel export from `sf/index.ts`
@@ -31,41 +31,39 @@ TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS
 - Zero border-radius — DU/TDR industrial edges
 
 ## Current Milestone
-Component Expansion (v1.3) — 5 phases (16–20)
-Status: Roadmap defined, ready for Phase 16 planning
+Feature Complete (v1.4) — 6 phases (21–26)
+Status: Roadmap defined, ready for Phase 21 planning
 
 ## Key Decisions
 | Decision | Milestone | Outcome |
 |----------|-----------|---------|
-| CVA `intent` as standard variant prop | v1.0 | ✓ Good — consistent API across all SF components |
-| Server Components default for primitives | v1.0 | ✓ Good — no 'use client' on any layout primitive |
 | Hole-in-the-donut SSR pattern for SignalframeProvider | v1.2 | ✓ Good — layout primitives stay Server Components |
-| useEffect-deferred sessionStorage reads for SSR safety | v1.2 | ✓ Good — zero hydration mismatches |
-| Phase 16 infrastructure before any component | v1.3 | Pitfall prevention front-loaded |
-| Non-animated before animated (Phase 17 before 18) | v1.3 | Isolates SIGNAL layer risk from FRAME layer risk |
-| SFProgress before SFStepper | v1.3 | Hard dependency — Stepper uses Progress as connector |
-| Calendar/Menubar lazy via next/dynamic | v1.3 | Bundle budget non-negotiable; NOT in sf/index.ts |
-| Toast bottom-left, z-100 | v1.3 | Avoids SignalOverlay conflict at bottom-right z-210 |
-| DataTable deferred to v1.4 | v1.3 | Composite block is application-layer scope |
+| Pattern B for lazy P3 components (next/dynamic + ssr:false) | v1.3 | ✓ Good — Calendar/Menubar zero bundle cost |
+| SFToggleGroup imports Radix directly (not through ui/ base) | v1.3 | ✓ Good — avoids variant→intent CVA remapping conflict |
+| CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix provides built-in data-motion |
+| Phase ordering dependency-forced for v1.4 | v1.4 | tech debt → tokens → components → detail data → detail views → verification |
+| ComponentDetail as DOM sibling of Flip grid | v1.4 | Child position corrupts GSAP Flip state captures |
+| shiki/core only (not bundle/web or bundle/full) | v1.4 | ~50-80 KB async server-only vs 695 KB or 6.4 MB |
+| Inline expand for detail views (not full page or drawer) | v1.4 | Grid context preserved; GSAP FLIP pattern-consistent |
 
 ## Active Requirements
-- [ ] **INFRA-01**: SF wrapper creation checklist in SCAFFOLDING.md
-- [ ] **INFRA-02**: Performance baseline captured
-- [ ] **INFRA-03**: ComponentsExplorer grouped by category
-- [ ] **INFRA-04**: Prop vocabulary locked and documented
-- [ ] **FD-01**: SFAccordion with stagger SIGNAL animation
-- [ ] **FD-02**: SFToast (Sonner) with GSAP slide, bottom-left
-- [ ] **FD-03**: SFProgress with SIGNAL fill intensity tween
-- [ ] **FD-04**: SFAlertDialog with loading state
-- [ ] **FD-05**: SFAlert with intent variants
-- [ ] **FD-06**: SFCollapsible
-- [ ] **NAV-01**: SFAvatar square, Radix fallback chain
-- [ ] **NAV-02**: SFBreadcrumb as Server Component
-- [ ] **NAV-03**: SFEmptyState with optional ScrambleText
-- [ ] **NAV-04**: SFNavigationMenu with flyout + mobile behavior
-- [ ] **NAV-05**: SFPagination
-- [ ] **MS-01**: SFStepper with per-step error state
-- [ ] **MS-02**: SFStatusDot with GSAP pulse
-- [ ] **MS-03**: SFToggleGroup
-- [ ] **REG-01**: SFCalendar lazy, `meta.heavy: true`
-- [ ] **REG-02**: SFMenubar lazy, registry-only
+- [ ] **TD-01**: MutationObserver disconnect on unmount
+- [ ] **TD-02**: readSignalVars isNaN() guard
+- [ ] **TD-03**: lenis.scrollTo replaces window.scrollTo
+- [ ] **TD-04**: Duplicate TOAST entries resolved
+- [ ] **TK-01**: success/warning tokens into @theme
+- [ ] **TK-02**: Elevation absence documented
+- [ ] **TK-03**: Sidebar/chart tokens documented
+- [ ] **TK-04**: WebGL color bridge audited
+- [ ] **CMP-01**: SFDrawer (vaul, lazy)
+- [ ] **CMP-02**: SFHoverCard (FRAME-only)
+- [ ] **CMP-03**: SFInputOTP
+- [ ] **CMP-04**: SFInputGroup wrapper
+- [ ] **DV-01**: component-registry.ts data map
+- [ ] **DV-02**: api-docs.ts full coverage
+- [ ] **DV-03**: code-highlight.ts (shiki RSC)
+- [ ] **DV-04**: ComponentDetail panel (3 tabs, GSAP)
+- [ ] **DV-05**: Variant grid (live SF renders)
+- [ ] **DV-06**: Props table
+- [ ] **DV-07**: Code tab + copy-to-clipboard
+- [ ] **DV-08**: FRAME/SIGNAL badge + pattern tier
