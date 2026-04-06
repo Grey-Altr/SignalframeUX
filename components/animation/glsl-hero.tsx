@@ -87,6 +87,8 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform float uGridDensity;
   uniform float uDitherOpacity;
   uniform vec2  uResolution;
+  uniform float uIntensity;  // 0.0-1.0, scales FBM noise amplitude
+  uniform float uAccent;     // 0-360, hue rotation degrees (reserved for future use)
 
   // ---------------------------------------------------------------------------
   // Hash function — deterministic pseudo-random from 2D input
@@ -169,7 +171,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     vec2 uv = gl_FragCoord.xy / uResolution;
 
     // FBM noise — slow drift via uTime, scroll modulates scale inside fbm()
-    float n = fbm(uv * 4.0 + vec2(uTime * 0.1, uTime * 0.07));
+    float n = fbm(uv * 4.0 + vec2(uTime * 0.1, uTime * 0.07)) * (0.5 + uIntensity * 0.5);
 
     // Geometric grid lines — thin lines at regular intervals on both axes
     float gridX = step(fract(uv.x * uGridDensity), 0.02);
@@ -223,6 +225,8 @@ export function GLSLHero() {
     uGridDensity:   THREE.IUniform<number>;
     uDitherOpacity: THREE.IUniform<number>;
     uResolution:    THREE.IUniform<THREE.Vector2>;
+    uIntensity:     THREE.IUniform<number>;
+    uAccent:        THREE.IUniform<number>;
   } | null>(null);
 
   // ResizeObserver — update uResolution uniform on container resize
@@ -263,6 +267,8 @@ export function GLSLHero() {
       uGridDensity:   { value: 12.0 },
       uDitherOpacity: { value: 0.25 },
       uResolution:    { value: new THREE.Vector2(container.clientWidth, container.clientHeight) },
+      uIntensity:     { value: 0.5 },
+      uAccent:        { value: 0.0 },
     };
     uniformsRef.current = uniforms;
 
@@ -295,6 +301,9 @@ export function GLSLHero() {
       // Reduced-motion guard — skip all animation setup
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+      // INT-04: initialize module-level signal cache + MutationObserver
+      ensureSignalObserver();
+
       // ScrollTrigger: wire scroll progress to uScroll + uGridDensity uniforms
       ScrollTrigger.create({
         trigger: container,
@@ -312,7 +321,10 @@ export function GLSLHero() {
       // ticker-accumulation-guard: remove any old ticker before registering (HMR safety)
       const tickerFn = () => {
         if (!uniformsRef.current) return;
-        uniformsRef.current.uTime.value += 0.016;
+        // INT-04: time scaled by cached speed — no DOM access in ticker
+        uniformsRef.current.uTime.value += 0.016 * _signalSpeed;
+        uniformsRef.current.uIntensity.value = _signalIntensity;
+        uniformsRef.current.uAccent.value = _signalAccent;
       };
 
       gsap.ticker.remove(tickerFn);
