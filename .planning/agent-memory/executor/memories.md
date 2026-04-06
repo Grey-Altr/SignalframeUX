@@ -174,3 +174,7 @@ CSS custom properties intended for JS runtime `setProperty()` mutation (e.g. `--
 ### 2026-04-06T00:00:00Z | Phase 10 | tags: sfsection-wrap, nav-height, py-0-override, reference-page
 
 When SFSection wraps an existing block that has its own internal padding (NEXT_CARDS cards have `py-10`), use `className="py-0"` on the SFSection — tailwind-merge resolves `py-16 py-0` to `py-0` since className comes second in `cn()`. The `--nav-height: 83px` var in globals.css is the canonical nav clearance token; reference page was the only page missing `mt-[var(--nav-height)]` on its `<main>` element (start/page.tsx pattern was the correct reference to match).
+
+### 2026-04-06T11:20:07Z | Phase 11 | tags: shadcn-registry, registry-build, meta-fields, cva-detection
+
+`shadcn build` (devDep `shadcn@^4.1.2`) generates `public/r/*.json` from `registry.json` correctly including `registry:style` items (sf-theme generates sf-theme.json with cssVars) — no manual file creation needed. `shadcn build` does NOT wipe files not listed in registry.json (base.json was preserved without restore). Always read component source to confirm CVA usage before listing `class-variance-authority` in registry dependencies: sf-section and sf-text do NOT import CVA despite being B-pattern layout primitives — B-pattern means no Radix base, not CVA required.
