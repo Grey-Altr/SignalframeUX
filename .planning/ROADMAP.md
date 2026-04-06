@@ -147,7 +147,10 @@ Plans:
   3. Lighthouse LCP, TTI, and initial bundle size are recorded as a numbered baseline before any v1.3 component ships
   4. ComponentsExplorer on /components displays six named category groups: Forms, Feedback, Navigation, Data Display, Layout, Generative
   5. Prop vocabulary is documented — `intent` for semantic variants, `size` for scale, `asChild` for composition — and any existing component deviating from it is flagged for remediation
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 16-01-PLAN.md — Install 7 shadcn bases + capture performance baseline
+- [ ] 16-02-PLAN.md — SCAFFOLDING.md (checklist + prop vocabulary) + ComponentsExplorer category migration
 
 ### Phase 17: P1 Non-Animated Components
 **Goal**: Seven FRAME-only components are live in the system — user identity, navigation hierarchy, inline feedback, and confirmation patterns — with zero SIGNAL layer involvement
@@ -218,7 +221,7 @@ Plans:
 | 13. Config Provider | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
-| 16. Infrastructure Baseline | v1.3 | 0/? | Not started | - |
+| 16. Infrastructure Baseline | v1.3 | 0/2 | Not started | - |
 | 17. P1 Non-Animated Components | v1.3 | 0/? | Not started | - |
 | 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
