@@ -3,6 +3,8 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+// Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
+import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
 
 export const metadata: Metadata = {
   title: "Components — SIGNALFRAME//UX",
@@ -40,6 +42,11 @@ export default function ComponentsPage() {
             </span>
           </div>
         </header>
+
+        {/* WebGL showcase — SignalMesh icosahedron relocated from homepage hero */}
+        <div className="relative h-[300px] border-b-4 border-foreground overflow-hidden" data-cursor>
+          <SignalMeshLazy />
+        </div>
 
         <ComponentsExplorer />
       </main>
