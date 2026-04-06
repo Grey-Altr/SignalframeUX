@@ -34,7 +34,7 @@
 - [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
 - [x] **Phase 11: Registry Completion** — Full 33-item registry with sf-theme token entry (COMPLETE 2026-04-06)
 - [x] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement (COMPLETE 2026-04-06)
-- [ ] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook
+- [x] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook (COMPLETE 2026-04-06)
 - [ ] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage
 - [ ] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs
 
@@ -95,7 +95,7 @@ Plans:
   5. `motion.pause()` and `motion.resume()` pause and resume all GSAP animations globally
 **Plans:** 1 plan
 Plans:
-- [ ] 13-01-PLAN.md — createSignalframeUX factory + provider mount in layout.tsx
+- [x] 13-01-PLAN.md — createSignalframeUX factory + provider mount in layout.tsx
 
 ### Phase 14: Session Persistence
 **Goal**: User state (filters, tabs, scroll position) survives page navigation within a browser session without causing hydration errors
@@ -140,6 +140,6 @@ Plans:
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 12. SIGNAL Wiring | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 13. Config Provider | v1.2 | 0/1 | Not started | — |
+| 13. Config Provider | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |

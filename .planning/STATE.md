@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 12-01-PLAN.md — CSS→WebGL signal cache wired to GLSLHero + SignalMesh (INT-04 satisfied)
-last_updated: "2026-04-06T11:48:02.464Z"
-last_activity: "2026-04-06 — 12-01 complete: INT-04 satisfied — signal cache wired to GLSLHero + SignalMesh uniforms"
+stopped_at: Completed 13-01-PLAN.md — createSignalframeUX factory + SignalframeProvider mounted at app root (DX-05 satisfied)
+last_updated: "2026-04-06T12:01:25Z"
+last_activity: "2026-04-06 — 13-01 complete: DX-05 satisfied — SSR-safe config provider factory wired to layout root"
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 4
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # STATE — SignalframeUX
@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 12 — SIGNAL Wiring (COMPLETE)
-Plan: 12-01 complete (both 12-01 and 12-02 done)
-Status: Phase 12 done — Phase 13 Config Provider next
-Last activity: 2026-04-06 — 12-01 complete: INT-04 satisfied — signal cache wired to GLSLHero + SignalMesh uniforms
+Phase: Phase 13 — Config Provider (COMPLETE)
+Plan: 13-01 complete
+Status: Phase 13 done — Phase 14 Session Persistence next
+Last activity: 2026-04-06 — 13-01 complete: DX-05 satisfied — createSignalframeUX factory + SignalframeProvider mounted at app root
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [█████░░░░░]  ~50% (5/? plans) IN PROGRESS — Phase 13 next
+v1.2: [███████░░░]  ~67% (6/? plans) IN PROGRESS — Phase 14 next
 ```
 
 ## v1.2 Phase Map
@@ -46,7 +46,7 @@ v1.2: [█████░░░░░]  ~50% (5/? plans) IN PROGRESS — Phase 1
 | 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | COMPLETE |
 | 11. Registry Completion | Full 33-item CLI-installable registry | DX-04 | COMPLETE |
 | 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | COMPLETE |
-| 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | Not started |
+| 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | COMPLETE |
 | 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | Not started |
 | 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | Not started |
 
@@ -91,6 +91,8 @@ v1.2: [█████░░░░░]  ~50% (5/? plans) IN PROGRESS — Phase 1
 | opacity floor 0.4 (not 0) for SignalMotion from state | Content never fully invisible for slow scrollers or users who skip the scroll window |
 | Module-level signal cache (not per-instance) | Single MutationObserver across all component instances — no redundant DOM observers |
 | FBM amplitude floor 50% (not 0%) | Prevents GLSLHero going fully dark at uIntensity=0; maintains visual presence at minimum |
+| createSignalframeUX called from 'use client' wrapper, not Server Component module scope | Next.js 15 rejects 'use client' function calls from Server Component module scope — mirrors SignalCanvasLazy/GlobalEffectsLazy pattern |
+| Standalone useSignalframe export alongside factory-returned hook | Consumers can import directly without threading factory return through module |
 
 ### Blockers
 - None
@@ -105,5 +107,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 12-01-PLAN.md — CSS→WebGL signal cache wired to GLSLHero + SignalMesh (INT-04 satisfied)
-Resume with: `/pde:plan-phase 13` (Config Provider — DX-05)
+Stopped at: Completed 13-01-PLAN.md — createSignalframeUX factory + SignalframeProvider mounted at app root (DX-05 satisfied)
+Resume with: `/pde:plan-phase 14` (Session Persistence — STP-01)
