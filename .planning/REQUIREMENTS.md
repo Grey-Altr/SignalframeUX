@@ -10,7 +10,7 @@
 
 ### Feedback & Disclosure
 - [x] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation (completed 18-01)
-- [ ] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
+- [x] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
 - [x] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween (completed 18-01)
 - [x] **FD-04**: User confirms destructive actions via SFAlertDialog with loading state support (completed 17-02)
 - [x] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success) (completed 17-01)
