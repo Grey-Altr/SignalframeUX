@@ -47,7 +47,7 @@
 - [x] **Phase 16: Infrastructure Baseline** — SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary (completed 2026-04-06)
 - [x] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only) (completed 2026-04-06)
 - [x] **Phase 18: P1 Animated Components** — Accordion (stagger), Toast/Toaster (slide), Progress (fill tween) (completed 2026-04-06)
-- [ ] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup
+- [x] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup (completed 2026-04-06)
 - [ ] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check
 
 ## Phase Details
@@ -197,7 +197,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [x] 19-01-PLAN.md — SFToggleGroup + SFPagination + SFStepper (3 FRAME/SIGNAL components)
-- [ ] 19-02-PLAN.md — SFNavigationMenu (flyout + mobile SFSheet) + ComponentsExplorer entries + bundle gate
+- [x] 19-02-PLAN.md — SFNavigationMenu (flyout + mobile SFSheet) + ComponentsExplorer entries + bundle gate (completed 2026-04-06)
 
 ### Phase 20: P3 Registry-Only + Final Audit
 **Goal**: Heavy-dep components are available to consumers via the shadcn CLI without entering the main bundle; the registry is complete and the build passes Lighthouse
@@ -233,5 +233,5 @@ Plans:
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 19. P2 Components | v1.3 | 1/2 | In progress | - |
+| 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |

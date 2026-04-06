@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 19-01-PLAN.md
-last_updated: "2026-04-06T20:08:55Z"
-last_activity: "2026-04-06 — Plan 19-01: SFToggleGroup + SFPagination + SFStepper, 102 KB shared"
+stopped_at: Completed 19-02-PLAN.md
+last_updated: "2026-04-06T20:17:00Z"
+last_activity: "2026-04-06 — Plan 19-02: SFNavigationMenu + ComponentsExplorer P2 entries, 102 KB shared"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 7
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 19 — P2 Components (in progress)
-Plan: 01 complete — SFToggleGroup + SFPagination + SFStepper
-Status: Plan 19-01 complete (1/2 plans), Plan 19-02 next
-Last activity: 2026-04-06 — Plan 19-01: Three P2 components, 102 KB shared
+Phase: Phase 19 — P2 Components (complete)
+Plan: 02 complete — SFNavigationMenu + ComponentsExplorer P2 entries
+Status: Phase 19 complete (2/2 plans), Phase 20 next
+Last activity: 2026-04-06 — Plan 19-02: SFNavigationMenu + explorer entries, 102 KB shared
 
 ## Progress
 
@@ -37,7 +37,7 @@ Last activity: 2026-04-06 — Plan 19-01: Three P2 components, 102 KB shared
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [███████   ] 54% (7/? plans) — in progress
+v1.3: [████████  ] 62% (8/? plans) — in progress
 ```
 
 ## v1.3 Phase Map
@@ -47,7 +47,7 @@ v1.3: [███████   ] 54% (7/? plans) — in progress
 | 16. Infrastructure Baseline | All authoring preconditions satisfied — checklist, baseline, categories, prop vocabulary | INFRA-01, INFRA-02, INFRA-03, INFRA-04 | In progress (2/? plans) |
 | 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Complete (2/2 plans) |
 | 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Complete (2/2 plans) |
-| 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | In progress (1/2 plans) |
+| 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Complete (2/2 plans) |
 | 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | Not started |
 
 ## Accumulated Context
@@ -110,6 +110,8 @@ v1.3: [███████   ] 54% (7/? plans) — in progress
 | SFToggleGroup uses intersection type for Root props | Radix ToggleGroup.Root is a discriminated union (single/multiple); interface extends fails |
 | SFPagination as Server Component | Base pagination.tsx has no 'use client' and SFPagination uses no hooks |
 | SFStepper writing-mode:vertical-lr for vertical connectors | SFProgress uses xPercent tween; writing-mode rotates the fill direction |
+| SFNavigationMenuIndicator not exported | DU/TDR aesthetic rejects decorative arrow; hidden by omission |
+| PAGINATION (011) updated in-place | Pre-existing placeholder updated to v1.3.0 with SF-wrapped preview rather than adding duplicate entry |
 
 ### Blockers
 - None
@@ -124,5 +126,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 19-01-PLAN.md
-Resume with: Phase 19 Plan 02 (SFNavigationMenu)
+Stopped at: Completed 19-02-PLAN.md
+Resume with: Phase 20 Plan 01 (P3 Registry-Only + Final Audit)

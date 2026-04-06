@@ -20,7 +20,7 @@
 - [x] **NAV-01**: User is represented by square SFAvatar with Radix fallback chain (image → initials → icon) (completed 17-01)
 - [x] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component (completed 17-01)
 - [x] **NAV-03**: User sees designed empty states via SFEmptyState with optional ScrambleText SIGNAL treatment (completed 17-02)
-- [ ] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior
+- [x] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior (completed 19-02)
 - [x] **NAV-05**: User navigates paginated content via SFPagination (completed 19-01)
 
 ### Multi-Step & Status
@@ -69,7 +69,7 @@
 | NAV-01 | Phase 17 | 17-01 | Complete |
 | NAV-02 | Phase 17 | 17-01 | Complete |
 | NAV-03 | Phase 17 | 17-02 | Complete |
-| NAV-04 | Phase 19 | — | Pending |
+| NAV-04 | Phase 19 | 19-02 | Complete |
 | NAV-05 | Phase 19 | 19-01 | Complete |
 | MS-01 | Phase 19 | 19-01 | Complete |
 | MS-02 | Phase 17 | 17-02 | Complete |
