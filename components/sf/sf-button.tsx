@@ -18,7 +18,7 @@ const sfButtonVariants = cva(
         sm: "h-8 px-3 text-xs",
         md: "h-10 px-6 text-sm",
         lg: "h-12 px-8 text-base",
-        xl: "h-14 px-10 text-lg",
+        xl: "h-14 px-12 text-lg",
       },
     },
     defaultVariants: {

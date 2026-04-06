@@ -13,7 +13,7 @@ export function SharedCodeBlock({
   return (
     <div
       className={cn(
-        "relative overflow-x-auto font-mono bg-[var(--sf-code-bg)] text-[var(--sf-code-text)] p-5 pr-6 text-[var(--text-sm)] leading-[1.7] shadow-[inset_0_2px_4px_var(--sf-inset-shadow-color)]",
+        "relative overflow-x-auto font-mono bg-[var(--sf-code-bg)] text-[var(--sf-code-text)] p-6 text-[var(--text-sm)] leading-[1.7] shadow-[inset_0_2px_4px_var(--sf-inset-shadow-color)]",
         className
       )}
       role="region"

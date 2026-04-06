@@ -427,7 +427,7 @@ export function ComponentsExplorer() {
             onClick={() => handleFilter(cat)}
             aria-pressed={activeFilter === cat}
             data-filter={cat}
-            className={`border-0 border-r-2 border-foreground rounded-none px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
+            className={`border-0 border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
               activeFilter === cat ? "text-[var(--sf-primary-on-dark)]" : ""
             }`}
           >
@@ -440,13 +440,13 @@ export function ComponentsExplorer() {
           aria-label="Search components"
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 border-0 rounded-none px-5 py-3.5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
+          className="flex-1 border-0 rounded-none px-6 py-3.5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
         <div
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="border-0 border-l-2 border-foreground px-5 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
+          className="border-0 border-l-2 border-foreground px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
         >
           {resultCount} RESULTS
         </div>
@@ -474,7 +474,7 @@ export function ComponentsExplorer() {
               data-flip-id={comp.index}
               tabIndex={i === focusedIndex ? 0 : -1}
               aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
-              className={`flip-card group relative overflow-hidden p-5 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] ${styles.cell} ${styles.hoverCell}`}
+              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow

@@ -472,7 +472,7 @@ export function APIExplorer() {
       {/* Page Header */}
       <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
         <h1
-          className="sf-display px-6 md:px-12 pt-10 pb-6"
+          className="sf-display px-6 md:px-12 pt-12 pb-6"
           style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
         >
           <span data-anim="page-heading" suppressHydrationWarning>API</span>
@@ -514,7 +514,7 @@ export function APIExplorer() {
         className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-foreground text-background hidden md:block"
       >
         <SFScrollArea className="h-full">
-          <div className="border-b border-[var(--sf-subtle-border)] p-5 sf-display text-2xl">
+          <div className="border-b border-[var(--sf-subtle-border)] p-6 sf-display text-2xl">
             API&trade;
           </div>
           {NAV_SECTIONS.map((section) => (
@@ -551,7 +551,7 @@ export function APIExplorer() {
       </nav>
 
       {/* CENTER PANEL — Documentation */}
-      <div ref={contentRef} className="overflow-y-auto border-r-[3px] border-foreground py-10 px-6 md:px-12 h-auto md:h-[calc(100vh-var(--nav-height))] relative">
+      <div ref={contentRef} className="overflow-y-auto border-r-[3px] border-foreground py-12 px-6 md:px-12 h-auto md:h-[calc(100vh-var(--nav-height))] relative">
         {/* Scroll progress bar */}
         <div
           aria-hidden="true"
@@ -718,7 +718,7 @@ export function APIExplorer() {
           </div>
 
           <div
-            className="relative flex flex-col items-center justify-center gap-6 p-10 min-h-[300px] transition-colors duration-200"
+            className="relative flex flex-col items-center justify-center gap-6 p-12 min-h-[300px] transition-colors duration-200"
             style={{
               background:
                 previewTheme === "LIGHT" ? "var(--sf-preview-light-bg)"
@@ -727,7 +727,7 @@ export function APIExplorer() {
             }}
           >
             {/* Context-aware HUD telemetry */}
-            <div className={`absolute top-5 left-5 text-[var(--text-xs)] uppercase tracking-[0.2em] opacity-40 ${
+            <div className={`absolute top-6 left-6 text-[var(--text-xs)] uppercase tracking-[0.2em] opacity-40 ${
               previewTheme === "LIGHT" ? "text-foreground" : "text-[var(--sf-code-text)]"
             }`}>
               {(activeNav === "button" ? [
@@ -777,7 +777,7 @@ export function APIExplorer() {
           </div>
 
           {/* Context-aware code preview */}
-          <div className="w-full p-5 bg-[var(--sf-code-bg)] font-mono text-[var(--text-sm)] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)] whitespace-pre">
+          <div className="w-full p-6 bg-[var(--sf-code-bg)] font-mono text-[var(--text-sm)] text-[var(--sf-code-text)] leading-[1.6] border-t border-[var(--sf-subtle-border)] whitespace-pre">
             <span className="text-muted-foreground">{"// CURRENTLY VIEWING"}</span>
             {"\n"}
             {activeNav === "button" ? (

@@ -202,7 +202,7 @@ export function TokenTabs() {
 
       {/* ═══ COLOR TAB ═══ */}
       <SFTabsContent value="COLOR" className="mt-0">
-        <div className="sf-yellow-band border-b-4 border-foreground relative py-10 px-6 md:px-12">
+        <div className="sf-yellow-band border-b-4 border-foreground relative py-12 px-6 md:px-12">
           <h2 className="sf-display text-foreground mb-4" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
             OKLCH COLOR SYSTEM&trade;
           </h2>
@@ -216,7 +216,7 @@ export function TokenTabs() {
             the same step. {COLOR_SCALES.length} scales × 12 steps = {COLOR_SCALES.length * 12} color tokens. Accept
             color into your life.&trade;
           </p>
-          <div className="h-8 overflow-hidden relative mt-5 border-t border-foreground/10 border-b border-b-foreground/10">
+          <div className="h-8 overflow-hidden relative mt-6 border-t border-foreground/10 border-b border-b-foreground/10">
             <div
               aria-hidden="true"
               className="flex items-center h-full whitespace-nowrap animate-marquee"
@@ -396,11 +396,11 @@ export function TokenTabs() {
           <SFTableBody>
             {TYPE_SCALE.map((t) => (
               <SFTableRow key={t.name} className="align-baseline">
-                <SFTableCell className="p-5 text-[var(--text-xs)] text-primary font-bold w-[160px]">
+                <SFTableCell className="p-6 text-[var(--text-xs)] text-primary font-bold w-[160px]">
                   {t.name}
                 </SFTableCell>
                 <SFTableCell
-                  className="p-5 overflow-hidden whitespace-nowrap text-ellipsis"
+                  className="p-6 overflow-hidden whitespace-nowrap text-ellipsis"
                   style={{
                     fontFamily: t.font,
                     fontSize: `${t.size}px`,
@@ -420,7 +420,7 @@ export function TokenTabs() {
                 >
                   {t.sample}
                 </SFTableCell>
-                <SFTableCell className="p-5 text-[var(--text-sm)] text-muted-foreground text-right w-[200px]">
+                <SFTableCell className="p-6 text-[var(--text-sm)] text-muted-foreground text-right w-[200px]">
                   {t.meta}
                 </SFTableCell>
               </SFTableRow>
@@ -487,10 +487,10 @@ export function TokenTabs() {
           <SFTableBody>
             {ELEVATION_TOKENS.map((e) => (
               <SFTableRow key={e.name}>
-                <SFTableCell className="p-5 px-6 font-bold text-[var(--text-sm)] text-primary w-[200px]">
+                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-primary w-[200px]">
                   {e.name}
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6">
+                <SFTableCell className="p-6 px-6">
                   <div className="flex items-center gap-6">
                     <div
                       className="w-24 h-14 border-2 border-foreground bg-background"
@@ -506,7 +506,7 @@ export function TokenTabs() {
                     />
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6 text-[var(--text-xs)] text-muted-foreground font-mono text-right w-[280px]">
+                <SFTableCell className="p-6 px-6 text-[var(--text-xs)] text-muted-foreground font-mono text-right w-[280px]">
                   {e.css}
                 </SFTableCell>
               </SFTableRow>
@@ -534,10 +534,10 @@ export function TokenTabs() {
           <SFTableBody>
             {RADIUS_TOKENS.map((r) => (
               <SFTableRow key={r.name}>
-                <SFTableCell className="p-5 px-6 font-bold text-[var(--text-sm)] text-primary">
+                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-primary">
                   {r.name}
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6">
+                <SFTableCell className="p-6 px-6">
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center gap-1">
                       <div
@@ -559,7 +559,7 @@ export function TokenTabs() {
                     </div>
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-5 px-6 text-[var(--text-xs)] text-muted-foreground font-mono">
+                <SFTableCell className="p-6 px-6 text-[var(--text-xs)] text-muted-foreground font-mono">
                   <span className="text-primary font-bold">0px</span>
                   <span className="ml-2 opacity-50">vs {r.typical}</span>
                 </SFTableCell>

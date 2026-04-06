@@ -63,7 +63,7 @@ export function CodeSection() {
       </div>
 
       {/* Right — Code block with typewriter + X-ray annotations */}
-      <div className="bg-[var(--sf-code-bg)] px-8 py-10 relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
+      <div className="bg-[var(--sf-code-bg)] px-8 py-12 relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
         {/* Terminal label */}
         <div className="absolute top-4 right-6 text-sm uppercase tracking-[0.2em] text-[var(--sf-dim-text)] font-bold z-[3]">
           TERMINAL™
