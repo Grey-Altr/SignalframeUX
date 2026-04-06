@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 17-01-PLAN.md
-last_updated: "2026-04-06T18:55:53Z"
-last_activity: "2026-04-06 — Plan 17-01: 4 SF wrappers (Avatar, Breadcrumb, Alert, Collapsible) shipped"
+stopped_at: Completed 17-02-PLAN.md
+last_updated: "2026-04-06T19:02:35Z"
+last_activity: "2026-04-06 — Plan 17-02: SFAlertDialog, SFEmptyState, SFStatusDot shipped + 7 explorer entries"
 progress:
   total_phases: 11
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 17 — P1 Non-Animated Components (in progress)
-Plan: 01 complete — SFAvatar, SFBreadcrumb, SFAlert, SFCollapsible shipped
-Status: Phase 17 plan 01 complete
-Last activity: 2026-04-06 — Plan 17-01: 4 SF wrappers shipped, bundle unchanged at 103 KB
+Phase: Phase 17 — P1 Non-Animated Components (complete)
+Plan: 02 complete — SFAlertDialog, SFEmptyState, SFStatusDot shipped + 7 explorer entries
+Status: Phase 17 complete (all 7 components shipped)
+Last activity: 2026-04-06 — Plan 17-02: 3 SF wrappers + 7 ComponentsExplorer entries, bundle 102 KB
 
 ## Progress
 
@@ -37,7 +37,7 @@ Last activity: 2026-04-06 — Plan 17-01: 4 SF wrappers shipped, bundle unchange
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [██        ] 15% (3/? plans) — in progress
+v1.3: [███       ] 20% (4/? plans) — in progress
 ```
 
 ## v1.3 Phase Map
@@ -45,7 +45,7 @@ v1.3: [██        ] 15% (3/? plans) — in progress
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
 | 16. Infrastructure Baseline | All authoring preconditions satisfied — checklist, baseline, categories, prop vocabulary | INFRA-01, INFRA-02, INFRA-03, INFRA-04 | In progress (2/? plans) |
-| 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | In progress (1/? plans) |
+| 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Complete (2/2 plans) |
 | 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Not started |
 | 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Not started |
 | 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | Not started |
@@ -102,6 +102,8 @@ v1.3: [██        ] 15% (3/? plans) — in progress
 | Lighthouse CLI headless not representative | Use browser DevTools against deployed Vercel for accurate LCP/TTI; CLI numbers inflated by WebGL |
 | SFAlert as Server Component | Base alert.tsx has no 'use client' and SFAlert uses no hooks — reduces client bundle |
 | SFBreadcrumb as Server Component | Base breadcrumb.tsx has no 'use client' — per NAV-02 requirement |
+| SFStatusDot uses gsap-core not gsap-split | Only needs core tween for pulse — avoids loading SplitText/ScrambleText plugins |
+| SFEmptyState Bayer dither as base64 PNG | Inline data URI avoids network request; 8x8 pattern at opacity-[0.04] is DU/TDR visual language |
 
 ### Blockers
 - None
@@ -116,5 +118,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 17-01-PLAN.md
-Resume with: Next plan in Phase 17
+Stopped at: Completed 17-02-PLAN.md
+Resume with: Phase 18 planning (P1 Animated Components)

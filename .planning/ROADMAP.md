@@ -45,7 +45,7 @@
 **v1.3 Component Expansion (Phases 16-20):**
 
 - [x] **Phase 16: Infrastructure Baseline** — SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary (completed 2026-04-06)
-- [ ] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only)
+- [x] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only) (completed 2026-04-06)
 - [ ] **Phase 18: P1 Animated Components** — Accordion (stagger), Toast/Toaster (slide), Progress (fill tween)
 - [ ] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup
 - [ ] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check
@@ -167,7 +167,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [x] 17-01-PLAN.md — Install shadcn bases + SFCollapsible, SFBreadcrumb, SFAvatar, SFAlert (completed 2026-04-06)
-- [ ] 17-02-PLAN.md — SFAlertDialog, SFEmptyState, SFStatusDot + ComponentsExplorer entries
+- [x] 17-02-PLAN.md — SFAlertDialog, SFEmptyState, SFStatusDot + ComponentsExplorer entries (completed 2026-04-06)
 
 ### Phase 18: P1 Animated Components
 **Goal**: The three SIGNAL-eligible P1 components are live — Accordion stagger, Toast slide entrance, and Progress fill tween all function correctly and degrade gracefully under prefers-reduced-motion
@@ -225,7 +225,7 @@ Plans:
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 17. P1 Non-Animated Components | v1.3 | 1/2 | In progress | - |
+| 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |
