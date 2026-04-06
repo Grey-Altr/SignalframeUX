@@ -1,14 +1,14 @@
 ---
 pde_state_version: 1.0
-milestone: v1.3
-milestone_name: Component Expansion
-status: active
-stopped_at: null
-last_updated: "2026-04-06T18:22:00.000Z"
-last_activity: "2026-04-06 — Plan 16-01 complete: 7 shadcn bases + performance baseline (103 KB)"
+milestone: v1.0
+milestone_name: milestone
+status: completed
+stopped_at: Completed 16-01-PLAN.md and 16-02-PLAN.md
+last_updated: "2026-04-06T18:29:53.201Z"
+last_activity: "2026-04-06 — Plan 16-01: 7 shadcn bases installed, 103 KB baseline captured"
 progress:
-  total_phases: 5
-  completed_phases: 0
+  total_phases: 11
+  completed_phases: 1
   total_plans: 2
   completed_plans: 2
 ---
