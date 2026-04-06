@@ -34,3 +34,11 @@ In globals.css, grep for `var(--color-[^,)]*)` to find color var() calls WITHOUT
 ### 2026-04-06T02:22:00Z | Phase 01 | tags: print-stylesheet, signal-layer, media-print
 
 For @media print in this project: suppress Signal layer with `display: none !important` on .vhs-overlay, .vhs-crt, .vhs-noise, .vhs-scanlines, [data-anim], .sf-grain::after, .sf-idle-overlay, .sf-cursor, and GSAP debug markers. Do NOT use blanket `* { position: static !important }` — it breaks flex/grid layout. Instead, scope position:static to nav, .scroll-to-top, [style*="position: fixed"], [style*="position: sticky"] only.
+
+### 2026-04-06T03:00:00Z | Phase 02 | tags: primitives, server-components, forwardRef, cva-pattern
+
+In SignalframeUX, layout primitives (SFContainer, SFSection, SFStack) are Server Components — no 'use client' directive — and use `React.forwardRef` with a named inner function for GSAP targeting compatibility. SFSection uses plain typed props (not CVA) when there is only one variant dimension (spacing stops), keeping the API surface minimal. Data attribute boolean patterns: `data-section` is always present with no value; conditional attrs like `data-section-label` use `prop={value ?? undefined}` so React omits the attribute entirely when value is undefined.
+
+### 2026-04-06T03:00:00Z | Phase 02 | tags: barrel-export, index.ts, layout-section-ordering
+
+In sf/index.ts, layout primitives are inserted at line 1 under a `// Layout Primitives` comment before all Radix-based component exports — this ordering signals primacy of structural primitives over interactive components and satisfies AC-8. When inserting at the top of an existing barrel, use Edit with the first export line as the old_string anchor.
