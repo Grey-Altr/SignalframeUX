@@ -466,7 +466,7 @@
     transition-timing-function: step-end;
   }
   .dark #bg-shift-wrapper {
-    background-color: var(--color-background);
+    background-color: var(--color-background, oklch(0.145 0 0));
   }
 }
 
@@ -477,10 +477,10 @@
 @layer utilities {
 .sf-border {
     border-width: 2px;
-    border-color: var(--color-foreground);
+    border-color: var(--color-foreground, oklch(0.145 0 0));
   }
   .sf-ui-text {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -491,7 +491,7 @@
     letter-spacing: 0.15em;
   }
   .sf-display {
-    font-family: var(--font-display);
+    font-family: var(--font-display, "Anton", "Impact", sans-serif);
     text-transform: uppercase;
     line-height: 0.9;
   }
@@ -500,40 +500,40 @@
      Composite tokens bundling font-family + size + weight + line-height.
      Use these for all new components. Existing clamp() hero/display type is intentional — leave it. */
   .text-heading-1 {
-    font-family: var(--font-display);
+    font-family: var(--font-display, "Anton", "Impact", sans-serif);
     font-size: var(--text-3xl);
     font-weight: 700;
     line-height: 0.9;
     text-transform: uppercase;
   }
   .text-heading-2 {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     font-size: var(--text-2xl);
     font-weight: 700;
     line-height: 1.1;
   }
   .text-heading-3 {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     font-size: var(--text-xl);
     font-weight: 600;
     line-height: 1.2;
   }
   .text-body {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     font-size: var(--text-base);
     font-weight: 400;
     line-height: 1.5;
   }
   .text-small {
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     font-size: var(--text-sm);
     font-weight: 400;
     line-height: 1.4;
   }
 
   .sf-yellow-band {
-    background-color: var(--sf-yellow);
-    color: var(--color-foreground);
+    background-color: var(--sf-yellow, oklch(0.91 0.18 98));
+    color: var(--color-foreground, oklch(0.145 0 0));
     padding: 1.5rem 2rem;
   }
 
@@ -571,7 +571,7 @@
   }
   .sf-pressable:active {
     transform: translateY(var(--press-y)) scale(var(--press-scale));
-    box-shadow: inset 0 2px 4px var(--sf-inset-shadow-color);
+    box-shadow: inset 0 2px 4px var(--sf-inset-shadow-color, oklch(0 0 0 / 0.2));
     transition-duration: var(--duration-instant);
     transition-timing-function: linear;
   }
@@ -588,7 +588,7 @@
   }
 
   .sf-focusable:focus-visible {
-    outline: var(--focus-ring-width) solid var(--color-ring);
+    outline: var(--focus-ring-width) solid var(--color-ring, oklch(0.65 0.3 350));
     outline-offset: var(--focus-ring-offset);
     animation: sf-focus-expand var(--duration-normal) var(--ease-default) both;
   }
@@ -602,8 +602,8 @@
       color var(--duration-fast) var(--ease-default);
   }
   .sf-invert-hover:hover {
-    background-color: var(--color-foreground);
-    color: var(--color-background);
+    background-color: var(--color-foreground, oklch(0.145 0 0));
+    color: var(--color-background, oklch(1 0 0));
   }
 
   .sf-link-draw {
@@ -639,7 +639,7 @@
   .sf-skeleton {
     position: relative;
     overflow: hidden;
-    background-color: var(--color-muted);
+    background-color: var(--color-muted, oklch(0.930 0.005 298));
   }
   .sf-skeleton::after {
     content: "";
@@ -648,7 +648,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      var(--color-primary) 2px,
+      var(--color-primary, oklch(0.65 0.3 350)) 2px,
       transparent 4px
     );
     animation: sf-skeleton-sweep 1.5s ease-in-out infinite;
@@ -681,7 +681,7 @@
     left: 0;
     height: 2px;
     width: 0%;
-    background: var(--color-primary);
+    background: var(--color-primary, oklch(0.65 0.3 350));
     transition: width 2s var(--ease-default);
   }
   .sf-btn-progress[aria-busy="true"]::after {
@@ -711,7 +711,7 @@
 
   /* ── Input validation states ── */
   .sf-input-error {
-    border-color: var(--color-destructive) !important;
+    border-color: var(--color-destructive, oklch(0.550 0.180 25)) !important;
     animation: sf-shake 0.4s linear;
   }
   .sf-input-success {
@@ -749,10 +749,10 @@
   /* ── Input border-draw on focus (clockwise magenta trace) ── */
   .sf-border-draw-focus {
     background-image:
-      linear-gradient(var(--color-primary), var(--color-primary)),
-      linear-gradient(var(--color-primary), var(--color-primary)),
-      linear-gradient(var(--color-primary), var(--color-primary)),
-      linear-gradient(var(--color-primary), var(--color-primary));
+      linear-gradient(var(--color-primary, oklch(0.65 0.3 350)), var(--color-primary, oklch(0.65 0.3 350))),
+      linear-gradient(var(--color-primary, oklch(0.65 0.3 350)), var(--color-primary, oklch(0.65 0.3 350))),
+      linear-gradient(var(--color-primary, oklch(0.65 0.3 350)), var(--color-primary, oklch(0.65 0.3 350))),
+      linear-gradient(var(--color-primary, oklch(0.65 0.3 350)), var(--color-primary, oklch(0.65 0.3 350)));
     background-position: top left, top right, bottom right, bottom left;
     background-repeat: no-repeat;
     background-size: 0% 2px, 2px 0%, 0% 2px, 2px 0%;
@@ -786,7 +786,7 @@
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
-    font-family: var(--font-sans);
+    font-family: var(--font-sans, "Inter", system-ui, sans-serif);
     text-transform: uppercase;
     font-size: var(--text-2xs);
     letter-spacing: 0.15em;
@@ -859,7 +859,7 @@
   .sf-page-wipe {
     position: fixed;
     inset: 0;
-    background: var(--color-foreground);
+    background: var(--color-foreground, oklch(0.145 0 0));
     z-index: 10000;
     transform: scaleX(0);
     transform-origin: left;
@@ -907,7 +907,7 @@
 
 @keyframes sf-success-border {
   0% { border-color: oklch(0.55 0.16 145); }
-  100% { border-color: var(--color-border); }
+  100% { border-color: var(--color-border, oklch(0.205 0 0)); }
 }
 
 @keyframes sf-idle-scan {
@@ -976,7 +976,7 @@
   }
   .sf-border-draw-focus:focus,
   .sf-border-draw-focus:focus-within {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-primary, oklch(0.65 0.3 350));
     background-size: 0% 0px !important;
   }
 
@@ -1045,7 +1045,7 @@
   bottom: -4px;
   width: 100%;
   height: 2px;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary, oklch(0.65 0.3 350));
   transform: scaleX(0);
   transform-origin: left;
 }
@@ -1189,9 +1189,9 @@
     border-color var(--duration-normal) var(--ease-default);
 }
 .hero-cta-btn.primary:hover {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  border-color: var(--color-foreground);
+  background: var(--color-background, oklch(1 0 0));
+  color: var(--color-foreground, oklch(0.145 0 0));
+  border-color: var(--color-foreground, oklch(0.145 0 0));
 }
 .hero-cta-btn.secondary:hover {
   border-width: 3px;
@@ -1206,7 +1206,7 @@
   content: '';
   position: absolute;
   top: -2px; left: -2px; height: 3px; width: 0;
-  background: var(--color-primary);
+  background: var(--color-primary, oklch(0.65 0.3 350));
   transition: width var(--duration-fast) ease 0s;
   z-index: 1;
 }
@@ -1214,7 +1214,7 @@
   content: '';
   position: absolute;
   top: -2px; right: -2px; width: 3px; height: 0;
-  background: var(--color-primary);
+  background: var(--color-primary, oklch(0.65 0.3 350));
   transition: height var(--duration-fast) ease 0.1s;
   z-index: 1;
 }
@@ -1222,14 +1222,14 @@
   content: '';
   position: absolute;
   bottom: -2px; right: -2px; height: 3px; width: 0;
-  background: var(--color-primary);
+  background: var(--color-primary, oklch(0.65 0.3 350));
   transition: width var(--duration-fast) ease 0.2s;
 }
 .bd-span::after {
   content: '';
   position: absolute;
   bottom: -2px; left: -2px; width: 3px; height: 0;
-  background: var(--color-primary);
+  background: var(--color-primary, oklch(0.65 0.3 350));
   transition: height var(--duration-fast) ease 0.3s;
 }
 .hero-cta-btn:hover::before { width: calc(100% + 4px); }
@@ -1448,7 +1448,7 @@
   clip-path: inset(20% 0 40% 0);
 }
 .sf-glitch::after {
-  color: var(--color-primary);
+  color: var(--color-primary, oklch(0.65 0.3 350));
   opacity: 0.05;
   animation: sf-glitch-2 2.5s steps(3) 3;
   clip-path: inset(60% 0 10% 0);
