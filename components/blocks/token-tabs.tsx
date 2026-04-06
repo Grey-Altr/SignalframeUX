@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import {
   SFTabs,
   SFTabsList,
@@ -171,12 +172,13 @@ const BREAKPOINT_TOKENS = [
 ];
 
 export function TokenTabs() {
+  const [activeTab, setActiveTab] = useSessionState<string>(SESSION_KEYS.TOKENS_TAB, "COLOR");
   const [showAll, setShowAll] = useState(false);
   const [focusedSwatch, setFocusedSwatch] = useState<{ scale: number; step: number }>({ scale: 0, step: 0 });
   const visibleScales = showAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
 
   return (
-    <SFTabs defaultValue="COLOR">
+    <SFTabs value={activeTab} onValueChange={setActiveTab}>
       <SFTabsList className="border-b-[3px] border-foreground w-full justify-start flex-wrap rounded-none">
         {["COLOR", "SPACING", "TYPOGRAPHY", "MOTION"].map((tab) => (
           <SFTabsTrigger

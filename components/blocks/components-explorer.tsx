@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { SFButton, SFInput, SFBadge } from "@/components/sf";
+import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
+import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
 
 const CATEGORIES = [
@@ -275,7 +277,8 @@ function FilterIndicator({
 }
 
 export function ComponentsExplorer() {
-  const [activeFilter, setActiveFilter] = useState<Category>("ALL");
+  const [activeFilter, setActiveFilter] = useSessionState<Category>(SESSION_KEYS.COMPONENTS_FILTER, "ALL");
+  useScrollRestoration();
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedIndex, setFocusedIndex] = useState(0);
