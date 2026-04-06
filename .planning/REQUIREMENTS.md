@@ -9,7 +9,7 @@
 ### Integration Wiring
 - [ ] **INT-03**: SignalMotion component wraps at least 3 showcase sections on the homepage with scroll-driven animation active
 - [ ] **INT-04**: SignalOverlay CSS var changes (`--signal-intensity`, `--signal-speed`, `--signal-accent`) are read by WebGL scenes (GLSLHero and/or SignalMesh) via cached module-level reads — no per-frame `getComputedStyle`
-- [ ] **INT-01**: Reference page has correct `mt-[var(--nav-height)]` spacing and NEXT_CARDS grid is wrapped in SFSection
+- [x] **INT-01**: Reference page has correct `mt-[var(--nav-height)]` spacing and NEXT_CARDS grid is wrapped in SFSection
 
 ### Developer Experience
 - [ ] **DX-04**: registry.json includes all 29 interactive + 5 layout SF components plus an `sf-theme` entry with cssVars for token-only installation; `public/r/` is built and up to date
@@ -41,7 +41,7 @@
 |--------|-------|------|--------|
 | FND-01 | Phase 10 | TBD | Pending |
 | FND-02 | Phase 10 | TBD | Pending |
-| INT-01 | Phase 10 | TBD | Pending |
+| INT-01 | Phase 10 | 10-02 | Complete |
 | DX-04 | Phase 11 | TBD | Pending |
 | INT-04 | Phase 12 | TBD | Pending |
 | INT-03 | Phase 12 | TBD | Pending |

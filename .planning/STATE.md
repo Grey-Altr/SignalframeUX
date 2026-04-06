@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 10 — Foundation Fixes (not started)
-Plan: —
-Status: Roadmap ready, awaiting Phase 10 planning
-Last activity: 2026-04-06 — v1.2 roadmap created (6 phases, 9 requirements mapped)
+Phase: Phase 10 — Foundation Fixes (in progress)
+Plan: 10-02 complete
+Status: 1/2 plans complete — 10-01 remaining
+Last activity: 2026-04-06 — 10-02 complete: reference page nav clearance + NEXT_CARDS SFSection wrap
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [░░░░░░░░░░]   0% (0/? plans) ROADMAP READY — Phase 10 next
+v1.2: [█░░░░░░░░░]  ~8% (1/? plans) IN PROGRESS — Phase 10 active
 ```
 
 ## v1.2 Phase Map
@@ -97,5 +97,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: v1.2 roadmap created
-Resume with: `/pde:plan-phase 10`
+Stopped at: Completed 10-02-PLAN.md — reference page nav clearance + NEXT_CARDS in SFSection
+Resume with: `/pde:execute-phase 10 01`

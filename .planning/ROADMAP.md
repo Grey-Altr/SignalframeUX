@@ -52,7 +52,7 @@
 **Plans:** 2 plans
 Plans:
 - [ ] 10-01-PLAN.md — Signal CSS var defaults + SFSection bgShift type fix
-- [ ] 10-02-PLAN.md — Reference page nav clearance + NEXT_CARDS SFSection wrap
+- [x] 10-02-PLAN.md — Reference page nav clearance + NEXT_CARDS SFSection wrap
 
 ### Phase 11: Registry Completion
 **Goal**: Every SF component and the token system are installable via the shadcn CLI from a complete, schema-valid registry
@@ -126,7 +126,7 @@ Plans:
 | 7. SIGNAL Activation | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 8. First Generative Scenes | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
-| 10. Foundation Fixes | v1.2 | 0/2 | Planned | — |
+| 10. Foundation Fixes | v1.2 | 1/2 | In progress | — |
 | 11. Registry Completion | v1.2 | 0/? | Not started | — |
 | 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
