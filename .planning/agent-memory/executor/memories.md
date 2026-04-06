@@ -3,6 +3,14 @@
 > Loaded at agent spawn. Append-only. Max 50 entries.
 > Oldest entries archived automatically.
 
+### 2026-04-06T05:16:00Z | Phase 05 | tags: stp-02-guard, setProperty, sf-no-transition, color-cycle
+
+In SignalframeUX, `color-cycle-frame.tsx` calls `setProperty("--color-primary", ...)` via a wipe `onMid` callback (~150ms after trigger). The STP-02 guard is: `if (root.classList.contains("sf-no-transition")) return;` before the setProperty call. This prevents the cycling color from overwriting the theme's `--color-primary` during the ~2 rAF theme toggle window. Mount-time init setProperty is intentionally left unguarded (fires once at load, before any user toggle). GSAP itself has zero color mutations in `components/animation/` — only `setProperty` is the color mutation surface.
+
+### 2026-04-06T05:16:00Z | Phase 05 | tags: dx-spec, deferred-items, interface-sketches, open-questions
+
+For deferred item interface sketches in `DX-SPEC.md`, follow pitfall 4 from the research doc: shape-only TypeScript interfaces (no function bodies, no implementation detail), each section annotated with 5+ open questions rather than locked decisions. The three deferred items are DX-04 (registry.json), DX-05 (createSignalframeUX/useSignalframe), STP-01 (session state). SCAFFOLDING.md lives in `docs/` (new directory, must be created) — 7 sections, three annotated sub-patterns extracted from actual codebase source.
+
 ### 2026-04-06T02:14:00Z | Phase 01 | tags: globals.css, token-placement, tailwind-v4, spacing
 
 In SignalframeUX, spacing and layout tokens go in `:root` (NOT `@theme`) to avoid Tailwind v4 generating unwanted utility classes from custom properties — this is critical since Tailwind v4 auto-generates utilities from `@theme` values. Only put tokens in `@theme` if you explicitly want Tailwind utility generation.
