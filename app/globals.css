@@ -23,6 +23,19 @@
      Adding a color = a deliberate, documented system change.
    ─────────────────────────────────────────────────────────── */
 
+/* ── ELEVATION POLICY ─────────────────────────────────────────
+   INTENTIONALLY ABSENT: No box-shadow scale, no z-elevation variables.
+
+   Depth is expressed through spacing, hierarchy, layout, contrast,
+   and motion. This is a deliberate DU/TDR aesthetic decision.
+
+   DO NOT add a shadow elevation scale to this system.
+
+   Existing sf-* shadow tokens (--sf-inset-shadow, --sf-deboss-light,
+   --sf-deboss-shadow) are micro-feedback press-effect utilities only —
+   they are not an elevation scale.
+   ─────────────────────────────────────────────────────────── */
+
 @theme {
   /* ── Color Tokens ── */
   --color-background: oklch(1 0 0);

@@ -128,3 +128,17 @@ Note: Omit `"dependencies": ["class-variance-authority"]` if the component does 
 2. **`'use client'` in barrel kills Server Components**: Adding `'use client'` to `sf/index.ts` turns ALL 5 layout primitives into Client Components, silently inflating the bundle. Each interactive wrapper declares `'use client'` in its own file only.
 3. **`meta.pattern` values in existing registry**: **RESOLVED** — Fixed in Phase 20 final audit. All 49 registry entries now use correct A/B/C pattern values: 35 Pattern A (Radix-wrapped), 2 Pattern B (lazy/P3: sf-calendar, sf-menubar), 12 Pattern C (pure-SF + animation + non-SF entries).
 4. **shadcn version pinning**: Use `pnpm dlx shadcn@4.1.2 add` to stay on the pinned version. `@latest` may generate different class patterns.
+
+## Elevation Policy
+
+The SignalframeUX token system has **no box-shadow elevation scale** and **no z-elevation variables**. This is a deliberate DU/TDR aesthetic decision — depth is expressed through spacing, hierarchy, layout, contrast, and motion only.
+
+**DO NOT** add a shadow elevation scale to this system.
+
+Three `--sf-*` shadow tokens exist in `:root` for micro-feedback press effects. They are NOT an elevation scale:
+
+| Token | Purpose |
+|-------|---------|
+| `--sf-inset-shadow` | `inset 0 1px 2px oklch(0 0 0 / 0.08)` — subtle press-in feedback |
+| `--sf-deboss-light` | `0 1px 0 oklch(1 0 0 / 0.1)` — light deboss highlight |
+| `--sf-deboss-shadow` | `0 -1px 0 oklch(0 0 0 / 0.15)` — dark deboss shadow |
