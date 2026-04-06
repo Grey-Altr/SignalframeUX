@@ -60,7 +60,12 @@ Plans:
   3. A user with JavaScript disabled sees all `[data-anim]` elements fully visible and readable, with no invisible or zero-opacity content
   4. The magenta crosshair cursor detail appears on canvas sections and is visually distinguishable from the system cursor at 1440px viewport width
   5. Mobile behavior for all generative SIGNAL elements is explicitly specced and implemented: either a defined static fallback is visible, or the element is suppressed with a documented rationale
-**Plans**: TBD
+**Plans:** 4 plans
+Plans:
+- [ ] 03-01-PLAN.md — CSS fallback catch-all, asymmetric hover timing, hard-cut section transitions
+- [ ] 03-02-PLAN.md — Canvas cursor with crosshair and particle trail on [data-cursor] sections
+- [ ] 03-03-PLAN.md — ScrambleText ScrollTrigger wiring + staggered grid entry batch
+- [ ] 03-04-PLAN.md — SIGNAL-SPEC.md specification document + deferred SIG-06/07/08 documentation
 
 ### Phase 4: Above-the-Fold Lock
 **Goal**: The hero at 1440x900 is a standalone SOTD jury moment requiring no scroll, error and empty states are crafted design moments, and the reduced-motion experience is a first-class alternative
@@ -93,7 +98,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
-| 3. SIGNAL Expression | 0/? | Not started | - |
+| 3. SIGNAL Expression | 0/4 | Planned | - |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |
 
