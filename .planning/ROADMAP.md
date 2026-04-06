@@ -194,7 +194,7 @@ Plans:
   3. SFStepper renders a multi-step flow with per-step error state; each step's connector uses SFProgress fill — SFProgress is the underlying primitive, not a reimplementation
   4. SFToggleGroup supports both exclusive (single selection) and multi-select modes; `intent` prop drives color variant; zero border-radius on all toggle buttons
   5. All four components are exported from `sf/index.ts` barrel and have registry entries with `meta.layer` and `meta.pattern` fields
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 19-01-PLAN.md — SFToggleGroup + SFPagination + SFStepper (3 FRAME/SIGNAL components)
 - [x] 19-02-PLAN.md — SFNavigationMenu (flyout + mobile SFSheet) + ComponentsExplorer entries + bundle gate (completed 2026-04-06)
@@ -233,5 +233,5 @@ Plans:
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 19. P2 Components | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |
