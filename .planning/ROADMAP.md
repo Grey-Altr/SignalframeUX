@@ -14,7 +14,7 @@
 - [x] **Phase 2: FRAME Primitives** — Build the six SF primitives (Container, Section, Stack, Grid, Text, Button) that enforce the locked token system (COMPLETE — 2/2 plans)
 - [x] **Phase 3: SIGNAL Expression** — Author the full SIGNAL layer: scramble, asymmetric hover, hard-cut transitions, scroll choreography, cursor detail, mobile fallbacks, and progressive enhancement guarantees (COMPLETE — 4/4 plans)
 - [x] **Phase 4: Above-the-Fold Lock** — Seal the 90-second jury moment at 1440px, resolve component count claim, craft error and empty states as first-class design moments, and QA reduced-motion as a standalone experience (COMPLETE — 3/3 plans)
-- [ ] **Phase 5: DX Contract & State** — Finalize scaffolding spec, JSDoc contract, FRAME/SIGNAL import boundary, API foundation, and session state persistence
+- [x] **Phase 5: DX Contract & State** — Finalize scaffolding spec, JSDoc contract, FRAME/SIGNAL import boundary, API foundation, and session state persistence (COMPLETE — 2/2 plans)
 
 ---
 
@@ -95,7 +95,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [x] 05-01-PLAN.md — SCAFFOLDING.md + DX-SPEC.md deferred sketches + STP-02 theme toggle GSAP audit
-- [ ] 05-02-PLAN.md — JSDoc sweep on all 28 SF-wrapped components
+- [x] 05-02-PLAN.md — JSDoc sweep on all 28 SF-wrapped components
 
 ---
 
@@ -107,7 +107,7 @@ Plans:
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
 | 4. Above-the-Fold Lock | 3/3 | Complete | 2026-04-05 |
-| 5. DX Contract & State | 1/2 | In progress | - |
+| 5. DX Contract & State | 2/2 | Complete | 2026-04-06 |
 
 ---
 

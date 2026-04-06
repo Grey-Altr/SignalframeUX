@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed Phase 5 Plan 05-01 — DX documentation foundation (SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard)
-last_updated: "2026-04-06T05:16:00Z"
-last_activity: "2026-04-06 — Plan 05-01 executed: docs/SCAFFOLDING.md (7 sections, 3 patterns), .planning/DX-SPEC.md (3 deferred item interfaces), STP-02 audit confirmed zero GSAP color mutations + added setProperty guard"
+stopped_at: Completed Phase 5 Plan 05-02 — JSDoc sweep complete on all 28 SF-wrapped components (491 lines added, zero logic changes)
+last_updated: "2026-04-06T05:45:00Z"
+last_activity: "2026-04-06 — Plan 05-02 executed: JSDoc sweep across all 28 SF components, primary exports with full blocks (description, @param, @example) + compound sub-exports with one-liners"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 15
-  completed_plans: 13
+  completed_plans: 15
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 5 — DX Contract & State (IN PROGRESS)
-Plan: 05-01 (complete) — DX documentation foundation: docs/SCAFFOLDING.md (7 sections, 3 annotated patterns, import boundary), .planning/DX-SPEC.md (interface sketches for DX-04/DX-05/STP-01), STP-02 audit (zero GSAP color mutations, setProperty guard added to color-cycle-frame.tsx)
-Status: Phase 5 IN PROGRESS — 1/2 plans complete
-Last activity: 2026-04-06 — Plan 05-01 executed: docs/SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard
+Phase: Phase 5 — DX Contract & State (COMPLETE)
+Plan: 05-02 (complete) — JSDoc sweep: all 28 SF-wrapped components now have JSDoc blocks with @example on primary exports and one-liner JSDoc on compound sub-exports. 491 lines of documentation added, zero logic or styling changes.
+Status: Phase 5 COMPLETE — 2/2 plans complete. ALL 5 PHASES COMPLETE.
+Last activity: 2026-04-06 — Plan 05-02 executed: JSDoc sweep across all 28 SF components
 
 ## Progress
 
@@ -38,9 +38,9 @@ Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plan
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
 Phase 3 — SIGNAL Expression:   [██████████] 100% (4/4 plans) COMPLETE
 Phase 4 — Above-the-Fold Lock: [██████████] 100% (3/3 plans) COMPLETE
-Phase 5 — DX Contract & State: [█████░░░░░]  50% (1/2 plans)
+Phase 5 — DX Contract & State: [██████████] 100% (2/2 plans) COMPLETE
 
-Overall:   [████████░░]  ~87% (13/15 plans)
+Overall:   [██████████] 100% (15/15 plans) MILESTONE COMPLETE
 ```
 
 ## Accumulated Context
@@ -57,6 +57,8 @@ Overall:   [████████░░]  ~87% (13/15 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 05-02: Full JSDoc block on primary export of each compound component; one-liner on all sub-exports — avoids noise without sacrificing discoverability
+- Plan 05-02: Pattern A (Radix wrapper) JSDoc placed above export function; Pattern B/C (forwardRef const) JSDoc placed above const declaration — TypeScript LS surfaces both correctly
 - Plan 05-01: STP-02 guard skips setProperty if sf-no-transition class is present — prevents color cycle from overwriting theme primary during ~150ms wipe window; mount-time init intentionally unguarded
 - Plan 05-01: GSAP color mutation audit confirmed zero matches — GSAP only animates opacity and transform in all animation/ files; setProperty is the only color mutation surface
 - Plan 05-01: DX-SPEC.md interface sketches are shape-only with open questions — deferred items (DX-04, DX-05, STP-01) documented without locked decisions per pitfall 4 from RESEARCH.md
@@ -112,10 +114,10 @@ Overall:   [████████░░]  ~87% (13/15 plans)
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | COMPLETE — 4/4 plans |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | COMPLETE — 3/3 plans |
-| 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | IN PROGRESS — 1/2 plans |
+| 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | COMPLETE — 2/2 plans |
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed Phase 5 Plan 05-01 — DX documentation foundation (SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard)
-Resume file: .planning/phases/05-dx-contract-state/
+Stopped at: Completed Phase 5 Plan 05-02 — JSDoc sweep complete on all 28 SF-wrapped components. ALL 5 PHASES COMPLETE. Milestone v1.0 done.
+Resume file: .planning/phases/05-dx-contract-state/05-02-SUMMARY.md
