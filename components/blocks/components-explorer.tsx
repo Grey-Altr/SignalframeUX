@@ -8,13 +8,12 @@ type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
 
 const CATEGORIES = [
   "ALL",
-  "FRAME",
-  "SIGNAL",
-  "LAYOUT",
-  "INPUT",
-  "DATA",
+  "FORMS",
   "FEEDBACK",
-  "MOTION",
+  "NAVIGATION",
+  "DATA_DISPLAY",
+  "LAYOUT",
+  "GENERATIVE",
 ] as const;
 
 type Category = (typeof CATEGORIES)[number];
@@ -199,22 +198,22 @@ function PreviewParticle() {
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
-  { index: "001", name: "BUTTON", category: "PRIMITIVES", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "INPUT", preview: <PreviewButton /> },
-  { index: "002", name: "INPUT", category: "PRIMITIVES", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "INPUT", preview: <PreviewInput /> },
-  { index: "003", name: "TOGGLE", category: "PRIMITIVES", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "INPUT", preview: <PreviewToggle /> },
-  { index: "004", name: "SLIDER", category: "PRIMITIVES", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "INPUT", preview: <PreviewSlider /> },
+  { index: "001", name: "BUTTON", category: "FORMS", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "FORMS", preview: <PreviewButton /> },
+  { index: "002", name: "INPUT", category: "FORMS", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "FORMS", preview: <PreviewInput /> },
+  { index: "003", name: "TOGGLE", category: "FORMS", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FORMS", preview: <PreviewToggle /> },
+  { index: "004", name: "SLIDER", category: "FORMS", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FORMS", preview: <PreviewSlider /> },
   { index: "005", name: "CARD", category: "LAYOUT", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "LAYOUT", preview: <PreviewCard /> },
   { index: "006", name: "MODAL", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewModal /> },
-  { index: "007", name: "TABS", category: "NAVIGATION", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "LAYOUT", preview: <PreviewTabs /> },
+  { index: "007", name: "TABS", category: "NAVIGATION", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewTabs /> },
   { index: "008", name: "BADGE", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "black", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--color-primary)" text="NEW" /> },
-  { index: "009", name: "TABLE", category: "DATA", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "DATA", preview: <PreviewTable /> },
+  { index: "009", name: "TABLE", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "DATA_DISPLAY", preview: <PreviewTable /> },
   { index: "010", name: "TOAST", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
-  { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "DATA", preview: <PreviewDots /> },
+  { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewDots /> },
   { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
-  { index: "101", name: "NOISE_BG", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "SIGNAL", preview: <PreviewNoise /> },
-  { index: "102", name: "WAVEFORM", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "SIGNAL", preview: <PreviewWave /> },
-  { index: "103", name: "GLITCH_TXT", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "SIGNAL", preview: <PreviewGlitch /> },
-  { index: "104", name: "PARTICLE", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "SIGNAL", preview: <PreviewParticle /> },
+  { index: "101", name: "NOISE_BG", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewNoise /> },
+  { index: "102", name: "WAVEFORM", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewWave /> },
+  { index: "103", name: "GLITCH_TXT", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewGlitch /> },
+  { index: "104", name: "PARTICLE", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewParticle /> },
 ];
 
 /* ── Variant style maps ── */
