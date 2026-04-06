@@ -238,7 +238,7 @@ Plans:
   4. ComponentsExplorer displays exactly one TOAST entry per component (TOAST (FRAME) at index 010 and TOAST (SIGNAL) at a distinct index) — no duplicate display names
 **Plans:** 2 plans
 Plans:
-- [ ] 21-01-PLAN.md — Observer disconnect + isNaN guard + TOAST dedup (TD-01, TD-02, TD-04)
+- [x] 21-01-PLAN.md — Observer disconnect + isNaN guard + TOAST dedup (TD-01, TD-02, TD-04)
 - [ ] 21-02-PLAN.md — Lenis scrollTo migration (TD-03)
 
 ### Phase 22: Token Finalization
@@ -324,7 +324,7 @@ Plans:
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 21. Tech Debt Closure | v1.4 | 0/2 | In progress | - |
+| 21. Tech Debt Closure | v1.4 | 1/2 | In progress | - |
 | 22. Token Finalization | v1.4 | 0/? | Not started | - |
 | 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |

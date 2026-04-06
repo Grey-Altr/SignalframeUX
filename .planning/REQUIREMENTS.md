@@ -1,10 +1,10 @@
 # Requirements — v1.4 Feature Complete
 
 ## Tech Debt
-- [ ] **TD-01**: MutationObserver in signal-mesh.tsx and glsl-hero.tsx disconnects on unmount
-- [ ] **TD-02**: readSignalVars has explicit isNaN() guard in both WebGL scenes
+- [x] **TD-01**: MutationObserver in signal-mesh.tsx and glsl-hero.tsx disconnects on unmount
+- [x] **TD-02**: readSignalVars has explicit isNaN() guard in both WebGL scenes
 - [ ] **TD-03**: Programmatic scroll routes through lenis.scrollTo (not window.scrollTo)
-- [ ] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
+- [x] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
 
 ## Token System
 - [ ] **TK-01**: --color-success and --color-warning moved into @theme block in globals.css
@@ -64,10 +64,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TD-01 | Phase 21 | Pending |
-| TD-02 | Phase 21 | Pending |
+| TD-01 | Phase 21 | Complete — 21-01 (1ff1156) |
+| TD-02 | Phase 21 | Complete — 21-01 (1ff1156) |
 | TD-03 | Phase 21 | Pending |
-| TD-04 | Phase 21 | Pending |
+| TD-04 | Phase 21 | Complete — 21-01 (823c95b) |
 | TK-01 | Phase 22 | Pending |
 | TK-02 | Phase 22 | Pending |
 | TK-03 | Phase 22 | Pending |

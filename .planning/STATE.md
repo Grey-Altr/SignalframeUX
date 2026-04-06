@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.4
 milestone_name: Feature Complete
-status: roadmap_ready
-stopped_at: null
-last_updated: "2026-04-06T22:30:00.000Z"
-last_activity: "2026-04-06 — v1.4 roadmap created (6 phases, 22 requirements)"
+status: in_progress
+stopped_at: "Completed 21-01-PLAN.md"
+last_updated: "2026-04-06T22:45:00.000Z"
+last_activity: "2026-04-06 — Phase 21 Plan 01 complete: TD-01, TD-02, TD-04 resolved"
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 21 (not started — roadmap ready)
-Plan: —
-Status: Roadmap defined, awaiting plan-phase execution
-Last activity: 2026-04-06 — v1.4 roadmap created
+Phase: Phase 21 (in progress)
+Plan: 21-01 complete, 21-02 next
+Status: Plan 21-01 shipped — TD-01, TD-02, TD-04 resolved
+Last activity: 2026-04-06 — 21-01 complete (2 tasks, 3 files, 6 min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [__________] 0% (0/? plans) IN PROGRESS
+v1.4: [_________] ~9% (1/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -109,6 +109,9 @@ v1.4: [__________] 0% (0/? plans) IN PROGRESS
 | Decision | Rationale |
 |----------|-----------|
 | Phase 21 before any v1.4 feature work | MutationObserver, Lenis, and TOAST naming issues are directly activated by detail view patterns — fix first |
+| readSignalVars uses isNaN() guard via inline raw() helper (not || fallback) | getPropertyValue can return truthy non-numeric strings ("auto", " ") — || fallback is bypassed, NaN propagates to shader uniforms |
+| Observer disconnect inside useGSAP cleanup return (not separate useEffect) | Fires in same teardown pass as ticker removal; avoids separate cleanup lifecycle and potential ordering issues |
+| TOAST display names use (FRAME) / (SIGNAL) suffix matching subcategory field | Consistent with existing data model; enables Phase 25 routing by name without schema changes |
 | Phase 22 (tokens) before Phase 23 (components) | New SF wrappers must use the final token vocabulary; WebGL bridge audit happens before any OKLCH values are touched |
 | Phase 23 (components) before Phase 24 (data) | Component set must be final before documenting all components in api-docs.ts and component-registry.ts |
 | Phase 24 (data) before Phase 25 (UI) | Detail UI has no value without data; decoupling data authoring reduces Phase 25 tail risk |
@@ -130,5 +133,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: v1.4 roadmap created — 6 phases, 22 requirements mapped, all files written
-Resume with: `/pde:plan-phase 21` — Tech Debt Closure (TD-01, TD-02, TD-03, TD-04)
+Stopped at: Completed 21-01-PLAN.md — TD-01, TD-02, TD-04 resolved
+Resume with: `/pde:execute-phase 21 02` — Tech Debt Closure Plan 02 (TD-03: lenis.scrollTo)
