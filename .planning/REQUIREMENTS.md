@@ -13,12 +13,12 @@
 - [ ] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
 - [ ] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween
 - [ ] **FD-04**: User confirms destructive actions via SFAlertDialog with loading state support
-- [ ] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success)
-- [ ] **FD-06**: User can show/hide content via SFCollapsible without accordion semantics
+- [x] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success) (completed 17-01)
+- [x] **FD-06**: User can show/hide content via SFCollapsible without accordion semantics (completed 17-01)
 
 ### Identity & Navigation
-- [ ] **NAV-01**: User is represented by square SFAvatar with Radix fallback chain (image → initials → icon)
-- [ ] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component
+- [x] **NAV-01**: User is represented by square SFAvatar with Radix fallback chain (image → initials → icon) (completed 17-01)
+- [x] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component (completed 17-01)
 - [ ] **NAV-03**: User sees designed empty states via SFEmptyState with optional ScrambleText SIGNAL treatment
 - [ ] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior
 - [ ] **NAV-05**: User navigates paginated content via SFPagination
@@ -64,10 +64,10 @@
 | FD-02 | Phase 18 | — | Pending |
 | FD-03 | Phase 18 | — | Pending |
 | FD-04 | Phase 17 | — | Pending |
-| FD-05 | Phase 17 | — | Pending |
-| FD-06 | Phase 17 | — | Pending |
-| NAV-01 | Phase 17 | — | Pending |
-| NAV-02 | Phase 17 | — | Pending |
+| FD-05 | Phase 17 | 17-01 | Complete |
+| FD-06 | Phase 17 | 17-01 | Complete |
+| NAV-01 | Phase 17 | 17-01 | Complete |
+| NAV-02 | Phase 17 | 17-01 | Complete |
 | NAV-03 | Phase 17 | — | Pending |
 | NAV-04 | Phase 19 | — | Pending |
 | NAV-05 | Phase 19 | — | Pending |
