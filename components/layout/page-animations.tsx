@@ -379,22 +379,25 @@ async function initPageHeadingScramble(headings: NodeListOf<Element>) {
   const { ScrambleTextPlugin } = await import("@/lib/gsap-plugins");
   if (!ScrambleTextPlugin) return;
 
-  // Defer scramble until after hydration completes (setTimeout pushes past
-  // React's microtask-based hydration, unlike rAF which can fire before it)
-  setTimeout(() => {
-    headings.forEach((el, i) => {
-      const htmlEl = el as HTMLElement;
-      const originalText = htmlEl.textContent || "";
+  headings.forEach((el, i) => {
+    const htmlEl = el as HTMLElement;
+    const originalText = htmlEl.textContent || "";
 
-      gsap.to(htmlEl, {
-        duration: 0.8,
-        delay: 0.1 + i * 0.05,
-        scrambleText: {
-          text: originalText,
-          chars: "01!<>-_\\/[]{}—=+*^?#",
-          speed: 0.4,
-        },
-      });
+    ScrollTrigger.create({
+      trigger: htmlEl,
+      start: "top bottom", // fires even if heading is already in viewport
+      once: true,
+      onEnter: () => {
+        gsap.to(htmlEl, {
+          duration: 0.8,
+          delay: 0.1 + i * 0.05,
+          scrambleText: {
+            text: originalText,
+            chars: "01!<>-_\\/[]{}—=+*^?#",
+            speed: 0.4,
+          },
+        });
+      },
     });
-  }, 0);
+  });
 }
