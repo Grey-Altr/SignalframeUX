@@ -141,5 +141,8 @@ export {
   SFBreadcrumbSeparator,
 } from "./sf-breadcrumb";
 
+// Multi-Step & Selection
+export { SFToggleGroup, SFToggleGroupItem } from "./sf-toggle-group";
+
 // Data Display
 export { SFStatusDot, type SFStatusDotStatus } from "./sf-status-dot";

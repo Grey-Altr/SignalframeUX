@@ -763,6 +763,24 @@
         "layer": "signal",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-toggle-group",
+      "type": "registry:ui",
+      "title": "SF ToggleGroup",
+      "description": "Exclusive or multi-select toggle group with CVA intent variants, industrial edge-to-edge layout",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["toggle-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-toggle-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }
