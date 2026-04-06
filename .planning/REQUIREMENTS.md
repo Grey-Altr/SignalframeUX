@@ -16,7 +16,7 @@
 - [x] **DX-05**: `createSignalframeUX(config)` factory returns `{SignalframeProvider, useSignalframe}` using hole-in-the-donut SSR pattern; config accepts theme, animation, and signal parameters
 
 ### Session Persistence
-- [ ] **STP-01**: User's active filter selection, tab state, and scroll position persist across page navigations within a session using sessionStorage (hydration-safe via useEffect pattern)
+- [x] **STP-01**: User's active filter selection, tab state, and scroll position persist across page navigations within a session using sessionStorage (hydration-safe via useEffect pattern)
 
 ### Documentation
 - [ ] **DOC-01**: All SUMMARY.md frontmatters include accurate `requirements_completed` fields; stale REQUIREMENTS.md checkboxes from v1.0/v1.1 are corrected
@@ -46,5 +46,5 @@
 | INT-04 | Phase 12 | 12-01 | Complete |
 | INT-03 | Phase 12 | 12-02 | Complete |
 | DX-05 | Phase 13 | 13-01 | Complete |
-| STP-01 | Phase 14 | TBD | Pending |
+| STP-01 | Phase 14 | 14-01 | Complete |
 | DOC-01 | Phase 15 | TBD | Pending |

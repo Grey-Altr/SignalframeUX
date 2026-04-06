@@ -35,7 +35,7 @@
 - [x] **Phase 11: Registry Completion** — Full 33-item registry with sf-theme token entry (COMPLETE 2026-04-06)
 - [x] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement (COMPLETE 2026-04-06)
 - [x] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook (COMPLETE 2026-04-06)
-- [ ] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage
+- [x] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage (COMPLETE 2026-04-06)
 - [ ] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs
 
 ## Phase Details
@@ -107,9 +107,9 @@ Plans:
   3. Scroll position on /components is restored on back-navigation
   4. A hard page reload clears all persisted state (sessionStorage semantics, not localStorage)
   5. No hydration mismatch warnings appear in the browser console on any page that uses session state
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 14-01-PLAN.md — useSessionState + useScrollRestoration hooks and integration into ComponentsExplorer + TokenTabs
+- [x] 14-01-PLAN.md — useSessionState + useScrollRestoration hooks and integration into ComponentsExplorer + TokenTabs
 
 ### Phase 15: Documentation Cleanup
 **Goal**: All planning documents accurately reflect the v1.2 state — no stale checkboxes, no missing frontmatter fields, API contracts complete
@@ -141,5 +141,5 @@ Plans:
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 12. SIGNAL Wiring | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 13. Config Provider | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 14. Session Persistence | v1.2 | 0/1 | Not started | — |
+| 14. Session Persistence | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |

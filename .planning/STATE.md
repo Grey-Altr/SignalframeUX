@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 13-01-PLAN.md — createSignalframeUX factory + SignalframeProvider mounted at app root (DX-05 satisfied)
-last_updated: "2026-04-06T12:15:12.516Z"
-last_activity: "2026-04-06 — 13-01 complete: DX-05 satisfied — createSignalframeUX factory + SignalframeProvider mounted at app root"
+stopped_at: Completed 14-01-PLAN.md — useSessionState + useScrollRestoration hooks wired into ComponentsExplorer and TokenTabs (STP-01 satisfied)
+last_updated: "2026-04-06T12:27:25Z"
+last_activity: "2026-04-06 — 14-01 complete: STP-01 satisfied — sessionStorage persistence for filter, tab, and scroll state"
 progress:
   total_phases: 6
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 5
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # STATE — SignalframeUX
@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 13 — Config Provider (COMPLETE)
-Plan: 13-01 complete
-Status: Phase 13 done — Phase 14 Session Persistence next
-Last activity: 2026-04-06 — 13-01 complete: DX-05 satisfied — createSignalframeUX factory + SignalframeProvider mounted at app root
+Phase: Phase 14 — Session Persistence (COMPLETE)
+Plan: 14-01 complete
+Status: Phase 14 done — Phase 15 Documentation Cleanup next
+Last activity: 2026-04-06 — 14-01 complete: STP-01 satisfied — sessionStorage persistence for filter, tab, and scroll state
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [███████░░░]  ~67% (6/? plans) IN PROGRESS — Phase 14 next
+v1.2: [█████████░]  ~83% (7/? plans) IN PROGRESS — Phase 15 next
 ```
 
 ## v1.2 Phase Map
@@ -47,7 +47,7 @@ v1.2: [███████░░░]  ~67% (6/? plans) IN PROGRESS — Phase 1
 | 11. Registry Completion | Full 33-item CLI-installable registry | DX-04 | COMPLETE |
 | 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | COMPLETE |
 | 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | COMPLETE |
-| 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | Not started |
+| 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | COMPLETE |
 | 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | Not started |
 
 ## Accumulated Context
@@ -93,6 +93,9 @@ v1.2: [███████░░░]  ~67% (6/? plans) IN PROGRESS — Phase 1
 | FBM amplitude floor 50% (not 0%) | Prevents GLSLHero going fully dark at uIntensity=0; maintains visual presence at minimum |
 | createSignalframeUX called from 'use client' wrapper, not Server Component module scope | Next.js 15 rejects 'use client' function calls from Server Component module scope — mirrors SignalCanvasLazy/GlobalEffectsLazy pattern |
 | Standalone useSignalframe export alongside factory-returned hook | Consumers can import directly without threading factory return through module |
+| useScrollRestoration in ComponentsExplorer, not app/components/page.tsx | page.tsx is a Server Component; hook must live in the already-client ComponentsExplorer |
+| showAll state in TokenTabs NOT persisted | Per research: users expect showAll to reset each visit; it controls display verbosity, not navigation context |
+| SESSION_KEYS in use-session-state.ts (not a separate constants file) | Keeps hook and key constants co-located; prevents orphaned constants |
 
 ### Blockers
 - None
@@ -107,5 +110,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 13-01-PLAN.md — createSignalframeUX factory + SignalframeProvider mounted at app root (DX-05 satisfied)
-Resume with: `/pde:plan-phase 14` (Session Persistence — STP-01)
+Stopped at: Completed 14-01-PLAN.md — useSessionState + useScrollRestoration hooks wired into ComponentsExplorer and TokenTabs (STP-01 satisfied)
+Resume with: `/pde:plan-phase 15` (Documentation Cleanup — DOC-01)
