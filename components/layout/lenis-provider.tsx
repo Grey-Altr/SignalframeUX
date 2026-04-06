@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, createContext, useContext } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap-core";
 
+const LenisContext = createContext<Lenis | null>(null);
+
+export function useLenisInstance(): Lenis | null {
+  return useContext(LenisContext);
+}
+
 export function LenisProvider({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -13,17 +20,18 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     // Skip smooth scroll if user prefers reduced motion
     if (mql.matches) return;
 
-    const lenis = new Lenis({
+    const instance = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 2,
     });
-    lenisRef.current = lenis;
+    lenisRef.current = instance;
+    setLenis(instance);
 
     // Sync Lenis scroll position with GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+    instance.on("scroll", ScrollTrigger.update);
     const tickerCallback = (time: number) => {
-      lenis.raf(time * 1000);
+      instance.raf(time * 1000);
     };
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
@@ -32,8 +40,9 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     const motionHandler = (e: MediaQueryListEvent) => {
       if (e.matches) {
         gsap.ticker.remove(tickerCallback);
-        lenis.destroy();
+        instance.destroy();
         lenisRef.current = null;
+        setLenis(null);
       }
     };
     mql.addEventListener("change", motionHandler);
@@ -41,10 +50,11 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mql.removeEventListener("change", motionHandler);
       gsap.ticker.remove(tickerCallback);
-      lenis.destroy();
+      instance.destroy();
       lenisRef.current = null;
+      setLenis(null);
     };
   }, []);
 
-  return <>{children}</>;
+  return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
 }
