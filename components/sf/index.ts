@@ -151,6 +151,7 @@ export {
 
 // Multi-Step & Selection
 export { SFToggleGroup, SFToggleGroupItem } from "./sf-toggle-group";
+export { SFStepper, SFStep } from "./sf-stepper";
 
 // Data Display
 export { SFStatusDot, type SFStatusDotStatus } from "./sf-status-dot";

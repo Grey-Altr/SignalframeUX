@@ -61,9 +61,8 @@ type SFToggleGroupContextValue = {
 
 const SFToggleGroupContext = React.createContext<SFToggleGroupContextValue>({});
 
-interface SFToggleGroupProps
-  extends React.ComponentProps<typeof ToggleGroupPrimitive.Root>,
-    VariantProps<typeof sfToggleGroupItemVariants> {}
+type SFToggleGroupProps = React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
+  VariantProps<typeof sfToggleGroupItemVariants>;
 
 function SFToggleGroup({
   className,

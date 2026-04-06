@@ -798,6 +798,24 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-stepper",
+      "type": "registry:ui",
+      "title": "SF Stepper",
+      "description": "Vertical multi-step flow with SFProgress connectors and per-step error state",
+      "dependencies": ["gsap", "lucide-react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/sf/sf-stepper.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
     }
   ]
 }
