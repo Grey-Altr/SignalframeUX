@@ -1,34 +1,22 @@
-# Feature Research — v1.3 Component Expansion
+# Feature Research
 
-**Domain:** Design system component library expansion — comprehensive UI component set
-**Milestone:** v1.3 Component Expansion
+**Domain:** Interactive design system showcase site + component library completion
+**Milestone:** v1.4 Feature Complete
 **Researched:** 2026-04-06
-**Confidence:** HIGH (shadcn/ui official docs via WebFetch, Mantine/Ark/Radix Themes verified via official sources, ecosystem patterns cross-referenced)
+**Confidence:** HIGH (codebase audit + official shadcn/Radix docs + cross-system analysis)
 
 ---
 
-## Context: What This File Covers
+## Context: What Already Exists
 
-SignalframeUX already ships 29 SF-wrapped components (24 interactive + 5 layout primitives) and a
-complete SIGNAL generative layer. This research maps what the major component ecosystems ship that
-SignalframeUX does not yet have, prioritizes additions by impact and complexity, and defines what
-belongs in v1.3 vs what stays out of scope.
+SignalframeUX v1.3 shipped:
+- 45 SF components (5 layout primitives, 40 interactive/display)
+- ComponentsExplorer: 6-category filterable grid with CSS-only thumbnail previews
+- APIExplorer: sidebar nav + props tables + code block at `/reference`
+- Registry: 49-item shadcn CLI registry with `meta.layer` / `meta.pattern` / `meta.heavy`
+- Token system: spacing (9 stops), typography (5 semantic aliases), layout (5 tokens), color (core 5 + extended), animation (5 durations, 3 easings)
 
-### Reference Ecosystems Surveyed
-
-| Library | Component Count | Model |
-|---------|----------------|-------|
-| shadcn/ui | 70 components | Copy-owned, Radix-based |
-| Mantine v9 | 110+ components | Full-styled, self-contained |
-| Radix Themes 3.0 | ~40 components | Opinioned styling over Radix Primitives |
-| Ark UI | 45+ components | Headless, Zag.js state machines |
-
-### Already Shipped (do not re-implement)
-
-SFButton, SFCard, SFDialog, SFInput, SFSelect, SFTable, SFBadge, SFToggle, SFTooltip,
-SFDropdownMenu, SFSheet, SFSkeleton, SFSeparator, SFLabel, SFTextarea, SFSwitch, SFCheckbox,
-SFRadioGroup, SFSlider, SFTabs, SFScrollArea, SFCommand, SFPopover, SFHoverCard,
-SFContainer, SFSection, SFStack, SFGrid, SFText
+The v1.4 milestone adds: remaining shadcn components, token system finalization, and interactive component detail views (click to see props, variants, code).
 
 ---
 
@@ -36,277 +24,221 @@ SFContainer, SFSection, SFStack, SFGrid, SFText
 
 ### Table Stakes (Users Expect These)
 
-Every product engineer reaching for a component library expects these to exist. Their absence makes
-the system feel incomplete for real UI work.
+Features a design system showcase site must have. Missing these = the site feels like a demo, not a reference.
 
-| Feature | Why Expected | Complexity | Dependencies on Existing |
-|---------|--------------|------------|--------------------------|
-| **Accordion** | Ubiquitous disclosure pattern — FAQs, settings panels, nav groups. Every major system ships it. | LOW | SFSeparator for dividers; CVA for open/closed variants |
-| **Toast / Sonner** | Async feedback after mutations — submit success, error, copy confirmation. Non-negotiable for interactive apps. | MEDIUM | shadcn deprecated Toast in favor of Sonner; Sonner is a separate `sonner` package install |
-| **Progress** | File upload, form steps, loading states. Single animated bar is table stakes. | LOW | CVA for determinate/indeterminate variants; SIGNAL layer eligible |
-| **AlertDialog** | Destructive action confirmation — delete, reset, logout. Separate from Dialog because semantics differ (modal interrupt vs content container). | LOW | SFDialog base already exists; AlertDialog is a Radix Primitives separate package |
-| **Avatar** | User representation in nav, comments, lists, teams. Expected with fallback to initials and image error handling. | LOW | No existing dependency; Radix Avatar primitive is the base |
-| **Breadcrumb** | Navigation hierarchy in content-heavy apps, dashboards, deep navigation trees. | LOW | SFSeparator for dividers; no Radix primitive (shadcn builds it from scratch) |
-| **EmptyState** | Every list, table, or search result needs a "nothing here" state. The PROJECT.md notes this was shipped as a first-class design moment in v1.0 — it should be a reusable SF component, not a one-off. | LOW | SFText, SFButton for CTA; no Radix base |
-| **NavigationMenu** | Primary site nav with submenus, dropdowns, keyboard-navigable mega-menus. | HIGH | Radix NavigationMenu primitive is complex; heavy animation expectations |
-| **Pagination** | Numbered page navigation for tables, lists, search results. | LOW | SFButton base; no Radix primitive (shadcn builds it from scratch) |
-| **Stepper** | Multi-step flows — onboarding, checkout, wizards. Mantine ships it natively; shadcn/ui community has it. | MEDIUM | SFSeparator for step connectors; CVA for step states (active/complete/error) |
-| **StatusDot** | Online/offline/pending indicators on avatars and list items. Tiny but universally expected. | LOW | Avatar enhancer; standalone usage in tables and lists |
-| **ToggleGroup** | Exclusive or multi-select toggle set — view mode, alignment, filter chips. | LOW | SFToggle base already exists; Radix ToggleGroup primitive extends it |
+| Feature | Why Expected | Complexity | Depends On |
+|---------|--------------|------------|------------|
+| Per-component detail view (props, variants, code) | Every design system site (shadcn, Radix, MUI) shows this — missing it signals incompleteness | MEDIUM | Existing APIExplorer infra, registry metadata |
+| Copy-to-clipboard on code blocks | Standard since 2020; users expect it on every code snippet | LOW | SharedCodeBlock already has infra |
+| Live/rendered component preview in detail view | Users need to see the component, not just read about it | MEDIUM | SF components already importable; need isolated render context |
+| Props table per component | Table of name, type, default, description is the minimum API surface doc | MEDIUM | Prop definitions (partial in API_DOCS lib; need full coverage) |
+| Variant grid showing all intent values | Show all CVA variants side by side (primary, secondary, ghost, destructive) | MEDIUM | CVA variants already defined; need rendering surface |
+| Remaining shadcn/Radix components wrapped | SFDrawer, SFHoverCard, SFInputOTP fill the most visible gaps that force consumers to drop to raw shadcn | MEDIUM per component | shadcn CLI base components |
+| Token system final audit and documentation | globals.css has most tokens; elevation tier, sidebar tokens need documentation gaps closed | LOW | globals.css mostly complete |
+| Component search and URL addressability from detail view | User clicks a card, sees detail — needs back-navigation or direct-link URL | LOW | Next.js routing |
+| Keyboard accessible detail panel | Tab into panel, Escape to close — WCAG AA required | LOW | Radix Collapsible or Dialog pattern |
 
-### Differentiators (SignalframeUX-Specific Value)
+### Differentiators (Competitive Advantage)
 
-Features that distinguish SignalframeUX from generic component libraries through SIGNAL integration
-and DU/TDR aesthetic execution.
+Features that distinguish this from a generic shadcn docs clone.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Progress with SIGNAL fill** | Progress bar fill driven by `--signal-intensity` uniform — ties completion state into the generative layer. Industrial aesthetic: sharp edges, no radius, monochrome fill with optional OKLCH accent. | LOW | Additive to basic Progress; SIGNAL integration is a CSS var on the fill element |
-| **Toast with GSAP slide** | Toast enters with a 34ms hard-cut translate (DU/TDR timing) not a CSS transition. Exit is `--duration-fast` fade. Distinctive without being decorative. | LOW | Additive to Sonner; requires GSAP entrance hook on toast mount |
-| **Accordion with stagger** | On open, child content items stagger in with `data-anim="stagger"` — already in the existing animation system. SignalframeUX-native behavior vs generic CSS transition. | LOW | Uses existing stagger infrastructure from v1.0 |
-| **EmptyState as design moment** | EmptyState surfaces the SIGNAL layer — generative noise texture, scramble text on the headline, no decorative illustration. This is the DU/TDR empty state, not a friendly mascot. | MEDIUM | ScrambleText + optional SignalOverlay background; EmptyState must accept SIGNAL prop to activate |
-| **StatusDot with pulse animation** | StatusDot "online" variant uses a GSAP pulse on the dot — not a CSS keyframe animation. Respects `prefers-reduced-motion` via existing reduced-motion gating. | LOW | GSAP small animation; no architectural dependency |
-| **Stepper with FRAME progress bar** | Stepper progress bar uses SFProgress internally — the step connector is the Progress fill. Maintains token consistency across all progress representations. | LOW | Depends on SFProgress existing first |
+| SIGNAL layer integration visible in detail view | Show the animation token (`--duration-fast`, GSAP easing) used by each component alongside the props — no other design system exposes this | LOW | Metadata already in registry; display it |
+| DU/TDR aesthetic applied to the detail view UI itself | The detail panel must feel like the system, not a generic white card — sharp edges, uppercase labels, `sf-display` typography, yellow accent on selected state | LOW | Style work only; no new architecture |
+| FRAME/SIGNAL layer badge per component | `meta.layer` already in registry — surface it visually in detail view with a styled badge | LOW | Data already exists |
+| Pattern taxonomy visible (A/B/C) | `meta.pattern` (35A, 2B, 12C) explains construction method — valuable for engineers adopting the system | LOW | Data already exists |
+| CLI install snippet directly in detail view | `pnpm dlx shadcn@latest add sf-button` in the panel — makes adoption frictionless | LOW | Registry already works; add display UI |
+| "Install via CLI" one-line copy | Surfacing the exact command removes the lookup step for new consumers | LOW | Deterministic from component name |
+| Component composition callout | Show which SF components compose another (SFStepper uses SFProgress; SFNavigationMenu uses SFSheet on mobile) | MEDIUM | Requires authoring composition metadata |
 
-### Anti-Features (Do Not Build)
+### Anti-Features (Commonly Requested, Often Problematic)
 
-Features commonly requested or found in other libraries that do not belong in SignalframeUX v1.3.
-
-| Anti-Feature | Why Requested | Why Problematic | What to Do Instead |
-|--------------|---------------|-----------------|-------------------|
-| **Calendar / DatePicker** | Every design system ships a date picker | date-fns or day.js dependency required; heavy Radix Calendar primitive; interaction complexity is high and specific to consumer app needs. Out of scope for a generalist design system baseline. | Registry-only with heavy-deps annotation; consumers install when needed via `shadcn add calendar` |
-| **Menubar** | Desktop app-style top menu bar | Rarely used in web apps; heavy Radix Menubar dependency; niche use case that adds implementation burden without broad payoff. Same category as Calendar. | Registry-only; annotated as heavy; lazy-loaded when added to consumer projects |
-| **Carousel** | Visual richness, image galleries | Embla dependency adds 4kB+; use cases are narrow and always custom; generic carousel is never actually used as-shipped. | Ship nothing; consumers integrate Embla directly if needed |
-| **Data Table with sorting/filtering** | Power user tables | This is application logic, not a component. A table with pagination is a pattern built from SFTable + SFPagination + application state. | Document the composition pattern; do not abstract into a monolithic component |
-| **Chart components** | Data visualization | Recharts or Tremor dependency; chart types are domain-specific; impossible to generalize well. Heavy bundle. | Document `recharts` as recommended pairing; do not wrap it |
-| **Rich Text Editor** | Content authoring | TipTap or Slate — entirely separate engineering effort; scope-busting | Out of scope entirely |
-| **Color Picker** | Token editor tooling | Niche; high complexity; relevant only for future cdOS not for the current consumer surface | Defer to cdOS milestone |
-| **File Upload with drag/drop** | Forms with attachments | Complex interaction model + server integration assumptions; not part of a pure component library | SFInput type="file" handles the basic case; complex upload is application code |
-| **Rounded corner variants** | Generic softness appeal | Directly violates CLAUDE.md hard constraint: zero border-radius everywhere. This is a DU/TDR industrial system. | Never implement; reject if requested |
-| **Dark/light mode toggle component** | UX convenience | Already shipped in v1.0 as a custom component. Re-implementing as an SFComponent adds no value and duplicates the existing toggle. | Use existing theme toggle; do not re-wrap |
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| Storybook integration | Industry standard; teams expect it | Introduces a separate build pipeline, MDX authoring burden, and a visual identity that fights the DU/TDR aesthetic. The existing APIExplorer + ComponentsExplorer covers 90% of Storybook's value for a single-system showcase | Extend the existing custom explorer with inline detail views |
+| Interactive prop controls (knobs) | Real-time prop manipulation like Storybook Controls | High complexity for custom implementation; requires runtime prop-injection that interacts poorly with Server Components and GSAP animations | Show all variants statically in a variant grid — same information, zero prop-injection complexity |
+| MDX/Markdown component pages | Full narrative prose per component | MDX adds a build-time dependency and content authoring surface requiring ongoing maintenance; the system is code-first | TypeScript `COMPONENT_DOCS` map (already exists as `API_DOCS` in lib/) — props, description, variants as data, not prose |
+| Dark/light mode toggle per preview | See components in both themes | Adds UI complexity to the detail view; the aesthetic discipline depends on dark-primary | The theme toggle in the nav already handles this; document light mode as secondary |
+| Figma embed per component | Link design specs to components | Figma files require auth; embeds break for external visitors; high maintenance cost as design evolves | Defer to cdOS milestone |
+| Full-text search across props/docs | Search by prop name, type, description | Requires indexing runtime; adds bundle weight; 45 components doesn't warrant full-text search | Category filter + name search (already exist) are sufficient |
+| Carousel component (SFCarousel) | Radix/shadcn has it | Swipe gesture handling conflicts with GSAP ticker ownership of animation frames; carousel aesthetic conflicts with DU/TDR industrial language | Not wrapping — explicitly excluded |
+| Chart component (SFChart) | Useful for dashboards | recharts adds ~50KB gzipped; no current consumer identified; defer until cdOS dashboard needed | Registry entry only if deferred; no showcase rendering |
+| ContextMenu (SFContextMenu) | Radix has it | Right-click interactions are inaccessible on touch devices; aesthetically misaligned with DU/TDR; explicitly excluded in v1.3 | None — intentional exclusion |
+| Resizable panels (SFResizable) | Radix has it | No identified consumer use case; explicitly excluded in v1.3 | None — intentional exclusion |
 
 ---
 
 ## Feature Dependencies
 
 ```
-SFAccordion
-    └── uses: SFSeparator (already exists)
-    └── uses: CVA (already exists)
-    └── base: Radix Accordion primitive
-    └── signal eligible: stagger on open (data-anim="stagger")
+Component Detail View
+    └──requires──> ComponentEntry metadata (exists: index, name, category, version, meta.layer, meta.pattern)
+    └──requires──> Props definition data (partial: API_DOCS covers ~10 components; need 35 more authored)
+    └──requires──> Live SF component renders (exists: all SF components importable)
+    └──requires──> Code snippets per component (partial: SharedCodeBlock exists; usage snippets need authoring)
+    └──requires──> CLI command string (NEW: deterministic formula from component name + registry)
 
-SFToast (Sonner wrapper)
-    └── base: sonner npm package (new install required)
-    └── signal eligible: GSAP entrance on mount
-    └── no dependency on other SF components
+Variant Grid in Detail View
+    └──requires──> CVA variant definitions (exists: all interactive SF components use CVA with `intent`)
+    └──requires──> Rendered SF component instances (NEW: upgrade from CSS-only thumbnails to live SF renders in detail view)
 
-SFProgress
-    └── no Radix base (HTML progress + CSS)
-    └── signal eligible: --signal-intensity CSS var on fill
-    └── used-by: SFStepper (dependency — Progress must exist first)
+Homepage Grid Cards Clickable
+    └──requires──> Component detail view (above)
+    └──requires──> component-grid.tsx updated to trigger same detail expansion
 
-SFAlertDialog
-    └── base: Radix AlertDialog primitive (separate from Dialog primitive)
-    └── uses: SFButton (already exists) for Confirm/Cancel actions
-    └── companion to: SFDialog (same mental model, different Radix package)
+SFDrawer
+    └──requires──> vaul package (verify: may already be transitively present via Sonner)
+    └──requires──> SF wrapper following SCAFFOLDING.md 9-point checklist
+    └──requires──> Registry entry + ComponentsExplorer entry (same-commit rule)
+    └──requires──> meta.heavy: true (lazy load in SF wrapper)
 
-SFAvatar
-    └── base: Radix Avatar primitive
-    └── used-by: SFStatusDot (StatusDot is an Avatar enhancer variant)
-    └── no other dependencies
+SFHoverCard / SFInputOTP
+    └──requires──> shadcn CLI base install
+    └──requires──> SF wrapper + registry + explorer entry
 
-SFBreadcrumb
-    └── uses: SFSeparator for chevron dividers
-    └── no Radix base (shadcn builds from scratch — li/ol + aria)
-    └── no other SF dependencies
-
-SFEmptyState
-    └── uses: SFText (already exists) for headline/body
-    └── uses: SFButton (already exists) for optional CTA
-    └── signal eligible: ScrambleText headline, optional SignalOverlay background
-    └── no Radix base
-
-SFNavigationMenu
-    └── base: Radix NavigationMenu primitive (heaviest new dep in this set)
-    └── uses: SFButton / anchor styling
-    └── NOTE: Must not block P1 delivery — implement after simpler components ship
-
-SFPagination
-    └── uses: SFButton (already exists) for page number items
-    └── no Radix base (shadcn builds from scratch)
-    └── used-by: SFTable compositions (documentation pattern, not hard dep)
-
-SFStepper
-    └── uses: SFProgress (hard dependency — must exist first)
-    └── uses: SFSeparator for connectors
-    └── no Radix base (custom implementation)
-
-SFStatusDot
-    └── companion to: SFAvatar (Indicator variant over Avatar)
-    └── standalone usage in tables and lists
-    └── signal eligible: GSAP pulse on "online" state
-
-SFToggleGroup
-    └── base: Radix ToggleGroup primitive
-    └── extends: SFToggle (already exists)
-    └── no other dependencies
+Token System Finalization
+    └──requires──> Audit globals.css against CLAUDE.md token spec (LOW: mostly complete)
+    └──requires──> Elevation decision: explicitly exclude (recommended) or add shadow tokens
+    └──requires──> SCAFFOLDING.md updated with sidebar/chart token documentation
 ```
 
 ### Dependency Notes
 
-- **SFStepper requires SFProgress:** The step connector uses Progress fill internally. Stepper cannot ship before Progress exists. This dictates P1 ordering.
-- **SFStatusDot enhances SFAvatar:** StatusDot is an Indicator positioned over an Avatar. Avatar must exist first, but StatusDot can be a thin wrapper that accepts any child.
-- **SFNavigationMenu is isolated:** The heaviest implementation in the set. No other component depends on it. Safe to defer to P2 without blocking anything.
-- **SFToast (Sonner) is isolated:** Sonner package; no inter-component dependencies. Can ship in any order.
-- **Calendar and Menubar conflict with bundle budget:** Both require heavy Radix primitives. Registry-only (no SF wrapper) prevents bundle contamination.
+- **Detail view requires props data first:** `lib/api-docs.ts` has partial coverage (~10 components). Authoring the remaining 35 component prop definitions is the largest non-engineering effort in the milestone. The detail view infrastructure can be built while props data is authored in parallel.
+- **Variant grid requires live renders, not CSS thumbnails:** The ComponentsExplorer uses CSS sketches for performance in the grid. The detail view is the live-render surface. These are intentionally separate surfaces — maintain the split.
+- **CLI snippet format is deterministic:** `pnpm dlx shadcn@latest add sf-[component-name]` — no new data needed, just display UI.
+- **Homepage grid reuse:** The detail view component should be authored once and consumed by both ComponentsExplorer (at `/components`) and component-grid.tsx (homepage). Avoid duplicating the panel implementation.
 
 ---
 
 ## MVP Definition
 
-### v1.3 Phase 1 — Launch With (P1)
+### Launch With (v1.4)
 
-Minimum viable component expansion. These unblock real UI work immediately.
+The minimum set that satisfies the PROJECT.md milestone goal.
 
-- [ ] **SFAccordion** — table stakes; FAQ, settings, nav groups. Stagger SIGNAL eligible.
-- [ ] **SFToast** — async feedback is non-negotiable for interactive apps. GSAP slide entrance.
-- [ ] **SFProgress** — required by SFStepper; standalone for uploads, loading states. SIGNAL fill eligible.
-- [ ] **SFAlertDialog** — destructive confirmation pattern; required for any CRUD UI.
-- [ ] **SFAvatar** — user representation; appears in nav, lists, comments.
-- [ ] **SFBreadcrumb** — navigation hierarchy; expected in content/dashboard apps.
-- [ ] **SFEmptyState** — every list/table needs this; DU/TDR design moment opportunity.
+- [ ] **Component detail view** — click a card in ComponentsExplorer, expand inline to see: (1) variant grid with all `intent` values rendered live, (2) props table with name/type/default/description, (3) copy-able usage snippet + CLI install command. Accessible: keyboard-navigable, Escape to close. FRAME/SIGNAL badge and pattern tier (A/B/C) visible.
+- [ ] **Props data authored for all 45 existing components** — the detail view is meaningless without accurate props tables. This is authoring work, not engineering work, but it is the prerequisite for the feature having value.
+- [ ] **Homepage grid cards clickable** — same detail expansion behavior as ComponentsExplorer. Required by PROJECT.md: "Homepage grid components clickable with same detail expansion."
+- [ ] **SFDrawer** — Vaul-based, lazy-loaded, `meta.heavy: true`. Fills the bottom-sheet overlay gap that SFSheet (slide from right) doesn't cover. High value for mobile-first patterns.
+- [ ] **Token system audit committed** — globals.css annotated, elevation absence explicitly documented, sidebar/chart color tokens noted in SCAFFOLDING.md.
+- [ ] **v1.2/v1.3 tech debt closed** — MutationObserver disconnect on unmount, readSignalVars NaN guard, duplicate TOAST entry in ComponentsExplorer.
 
-### v1.3 Phase 2 — Add After P1 Ships (P2)
+### Add After Validation (v1.4.x)
 
-- [ ] **SFNavigationMenu** — primary site nav with submenus. High complexity; implement after simpler components stable.
-- [ ] **SFPagination** — numbered nav for tables; low complexity but depends on SFButton patterns being stable.
-- [ ] **SFStepper** — multi-step flows; depends on SFProgress existing first.
-- [ ] **SFStatusDot** — tiny but universally expected; low risk, add after Avatar ships.
-- [ ] **SFToggleGroup** — view mode / filter chips; extends existing SFToggle.
+- [ ] **SFHoverCard** — Radix HoverCard, FRAME-only, small bundle cost. Add once detail view infrastructure is proven. Trigger: visual QA pass on detail view.
+- [ ] **SFInputOTP** — Radix OTP input, relevant for cdOS auth flows. Trigger: cdOS milestone scoping starts.
+- [ ] **Component composition callout in detail view** — low-hanging DX win. Add as a metadata field in COMPONENT_DOCS and render as a dependency list.
+- [ ] **Token usage callout per component** — "This component uses: `--duration-fast`, `--ease-hover`." Medium authoring effort; defer until after props data is complete.
 
-### v1.3 Phase 3 — Registry Only, No SF Wrapper (P3)
+### Future Consideration (v2+)
 
-These are heavy or niche. Add to `registry.json` with `meta.heavy: true` annotation. Consumers install via `shadcn add` when needed. No SF wrapper shipped.
-
-- [ ] **Calendar** — date-fns dependency; lazy-loaded in registry.
-- [ ] **Menubar** — Radix Menubar primitive; desktop-app pattern only.
-
-### Defer Beyond v1.3
-
-- Color Picker — cdOS milestone only
-- File Upload with drag/drop — application-layer concern
-- Chart components — consumer responsibility; document recharts pairing
-- Rich Text Editor — out of scope entirely
-- Data Table (full) — composition pattern documented, not abstracted
+- [ ] **SFSidebar** — shadcn Sidebar is a large composable system (Sidebar, SidebarProvider, SidebarInset, etc.). Relevant when cdOS dashboard is being built. Defer.
+- [ ] **SFChart** — recharts dep (~50KB); defer until a dashboard block is needed for the showcase.
+- [ ] **DataTable composite block** — SFTable + SFPagination + SFSelect + SFInput. High value for cdOS; significant API surface design required. Explicitly deferred from v1.3.
+- [ ] **SFFileUpload** — no Radix base; requires custom implementation. cdOS use case only.
+- [ ] **Registry namespace strategy** (`@signalframe/` vs unnamespaced) — relevant when cdOS becomes an active consumer.
 
 ---
 
 ## Feature Prioritization Matrix
 
-| Component | User Value | Implementation Cost | SIGNAL Eligible | Priority |
-|-----------|------------|---------------------|-----------------|----------|
-| SFAccordion | HIGH | LOW | YES (stagger) | P1 |
-| SFToast | HIGH | MEDIUM | YES (GSAP slide) | P1 |
-| SFProgress | HIGH | LOW | YES (fill intensity) | P1 |
-| SFAlertDialog | HIGH | LOW | NO | P1 |
-| SFAvatar | HIGH | LOW | NO | P1 |
-| SFBreadcrumb | MEDIUM | LOW | NO | P1 |
-| SFEmptyState | HIGH | LOW | YES (ScrambleText) | P1 |
-| SFNavigationMenu | HIGH | HIGH | NO | P2 |
-| SFPagination | MEDIUM | LOW | NO | P2 |
-| SFStepper | MEDIUM | MEDIUM | NO | P2 |
-| SFStatusDot | MEDIUM | LOW | YES (pulse) | P2 |
-| SFToggleGroup | MEDIUM | LOW | NO | P2 |
-| Calendar (registry) | LOW | N/A | NO | P3 |
-| Menubar (registry) | LOW | N/A | NO | P3 |
-
-**Priority key:**
-- P1: Must have for v1.3 milestone completion
-- P2: Should have; add when P1 stable
-- P3: Registry entry only; no SF wrapper
-
----
-
-## Ecosystem Gap Analysis
-
-Cross-referencing what shadcn/ui, Mantine, Radix Themes, and Ark UI ship vs what SignalframeUX has.
-
-| Component | shadcn/ui | Mantine | Radix Themes | Ark UI | SignalframeUX | Gap? |
-|-----------|-----------|---------|--------------|--------|---------------|------|
-| Accordion | YES | YES | YES | YES | NO | YES — P1 |
-| Alert (inline) | YES | YES | YES | NO | NO | MEDIUM — informational banners |
-| AlertDialog | YES | NO (uses Modal) | YES | YES | NO | YES — P1 |
-| Avatar | YES | YES | YES | YES | NO | YES — P1 |
-| Breadcrumb | YES | YES | NO | NO | NO | YES — P1 |
-| Calendar | YES | YES | NO | YES | NO | P3 registry only |
-| Carousel | YES | NO | NO | YES | NO | Anti-feature — skip |
-| Collapsible | YES | YES | NO | YES | NO | Covered by Accordion |
-| Command/Search | YES | NO | NO | NO | YES | Shipped |
-| EmptyState | YES | NO | NO | NO | NO | YES — P1 |
-| HoverCard | YES | NO | NO | NO | YES | Shipped |
-| Input OTP | YES | YES (PinInput) | NO | YES (PinInput) | NO | Deferred — niche |
-| Menubar | YES | NO | NO | NO | NO | P3 registry only |
-| NavigationMenu | YES | YES | NO | NO | NO | YES — P2 |
-| Pagination | YES | YES | NO | YES | NO | YES — P2 |
-| Progress | YES | YES | YES | YES | NO | YES — P1 |
-| Sonner/Toast | YES | YES | NO | YES | NO | YES — P1 |
-| Spinner | YES | YES (Loader) | NO | NO | NO | LOW — SFSkeleton covers most cases |
-| Stepper | NO (community) | YES | NO | YES (Steps) | NO | YES — P2 |
-| StatusDot | NO | YES (Indicator) | NO | NO | NO | YES — P2 |
-| ToggleGroup | YES | NO | NO | YES | NO | YES — P2 |
-| Number Input | NO (shadcn) | YES | YES | YES | NO | Deferred — use SFInput |
-| Tags Input | NO (shadcn) | YES | NO | YES | NO | Deferred — application layer |
-| Rating | NO (shadcn) | YES | NO | YES | NO | Anti-feature — consumer app |
-
-### Notable Gaps Not in v1.3 Scope
-
-- **Alert (inline banner):** shadcn ships it; Mantine calls it `Alert`. Distinct from AlertDialog.
-  A non-modal informational/warning/error banner. LOW complexity, could be added to P2 but is not in
-  PROJECT.md targets. Flag for roadmap consideration.
-- **Spinner:** Most use cases are covered by SFSkeleton (which is already shipped). A standalone
-  Spinner (circular loader) is LOW complexity but redundant given Skeleton coverage.
-- **Input OTP:** PinInput variant. Ark UI ships it; Mantine ships it. Niche — only relevant for
-  auth flows. Defer until cdOS needs it.
+| Feature | User Value | Implementation Cost | Priority |
+|---------|------------|---------------------|----------|
+| Component detail view (inline expand) | HIGH — core milestone goal | MEDIUM | P1 |
+| Props data authoring (45 components) | HIGH — unlocks detail view value | MEDIUM (authoring, not engineering) | P1 |
+| Homepage grid cards clickable | HIGH — PROJECT.md requirement | LOW (reuse detail view component) | P1 |
+| SFDrawer (lazy, vaul) | HIGH — visible gap in component set | MEDIUM | P1 |
+| Variant grid in detail view | HIGH — demonstrates component richness | MEDIUM | P1 |
+| Copy-to-clipboard on code blocks | MEDIUM — expected UX | LOW | P1 |
+| FRAME/SIGNAL badge + pattern tier in detail view | MEDIUM — differentiator, data exists | LOW | P1 |
+| CLI install snippet in detail view | MEDIUM — adoption friction | LOW | P1 |
+| Tech debt (v1.2/v1.3 non-blocking) | MEDIUM — accumulation risk | LOW | P2 |
+| SFHoverCard | MEDIUM — fills gap | LOW | P2 |
+| SFInputOTP | MEDIUM — cdOS auth use case | LOW | P2 |
+| Token system audit + docs | MEDIUM — closes gaps | LOW | P2 |
+| Component composition callout | MEDIUM — DX value | MEDIUM | P2 |
+| SFSidebar | MEDIUM | HIGH | P3 |
+| SFChart | LOW (no current consumer) | HIGH (recharts dep) | P3 |
+| SFCarousel | LOW (aesthetic conflict) | MEDIUM | Excluded |
+| SFResizable | LOW (no use case) | MEDIUM | Excluded |
+| SFContextMenu | LOW (touch inaccessible, aesthetic conflict) | LOW | Excluded |
 
 ---
 
-## Edge-Case Patterns Considered Standard
+## Competitor Feature Analysis
 
-Based on Carbon Design System, GitLab Pajamas, and USWDS research — these are not optional extras.
+| Feature | shadcn/ui docs | Radix UI docs | SignalframeUX v1.4 approach |
+|---------|---------------|---------------|------------------------------|
+| Component detail surface | Full page per component at `/docs/components/[name]` | Full page per primitive with anatomy, props, examples | Inline expand from grid card — no page navigation, preserves grid context |
+| Live preview | Renders actual component with controls | Renders actual primitive in examples | Render actual SF component in variant grid within detail panel |
+| Props table | Auto-generated from TypeScript, grouped by component part | Full ARIA attribute documentation | TypeScript `COMPONENT_DOCS` map, manually curated for SF-specific nuance |
+| Copy code | Yes — single usage example | Yes — multiple examples per feature | Yes — usage snippet + CLI install command, both copyable |
+| Variant display | Separate visual examples, not side-by-side | Single representative example | Side-by-side variant grid showing all `intent` values |
+| Design identity | Generic clean white | Generic clean white | DU/TDR industrial: sharp, high-contrast, uppercase labels, yellow accent on selected state |
+| SIGNAL/animation docs | Not applicable | Not applicable | First-class: animation tokens surfaced per component in detail view |
+| Installation | `pnpm dlx shadcn@latest add [name]` | npm install per package | Same CLI pattern, displayed directly in the detail panel |
+| Searchability | Full-text across all docs | Browser search only | Category filter + name search — sufficient for 45 components |
 
-| Pattern | Standard? | How SignalframeUX Should Handle It | Component |
-|---------|-----------|-------------------------------------|-----------|
-| **Empty state with CTA** | YES — universal | SFEmptyState accepts `action` prop (SFButton); required for CRUD interfaces | SFEmptyState |
-| **Empty state without CTA** | YES — search/filter results | SFEmptyState `action` prop is optional; "no results" variant | SFEmptyState |
-| **Skeleton as loading state** | YES — shipped in v1.0 | SFSkeleton already covers this; do not add duplicate loading states | SFSkeleton (existing) |
-| **Progress indeterminate** | YES — async with unknown duration | SFProgress must support `value={null}` for indeterminate animation | SFProgress |
-| **Toast error with retry** | YES — network failures | SFToast accepts `action` slot for retry button; standard Sonner pattern | SFToast |
-| **Avatar fallback to initials** | YES — image load failure | SFAvatar: image → initials → generic icon, in priority order | SFAvatar |
-| **Avatar fallback to icon** | YES — when no initials available | Third fallback tier via Radix Avatar.Fallback | SFAvatar |
-| **AlertDialog with loading state** | MEDIUM — async confirm | AlertDialog confirm button should accept `loading` state (disabled + spinner) | SFAlertDialog |
-| **Stepper with error state** | YES — form validation | SFStepper: step states must include `error` (red dot, error label) | SFStepper |
-| **Pagination with ellipsis** | YES — long page ranges | SFPagination: truncate with "..." when range > 7 pages | SFPagination |
-| **Breadcrumb truncation** | YES — deep paths | SFBreadcrumb: truncate middle items with "..." when > 4 levels | SFBreadcrumb |
-| **NavigationMenu keyboard nav** | YES — WCAG requirement | Full arrow-key navigation required; Radix handles this natively | SFNavigationMenu |
-| **Toast deduplication** | MEDIUM — rapid actions | Sonner handles this natively with toast ID | SFToast |
-| **StatusDot screen reader label** | YES — accessibility | StatusDot must render visually hidden status text for screen readers | SFStatusDot |
+---
+
+## Implementation Notes
+
+### Detail View: Inline Expand vs Drawer vs Full Page
+
+Three patterns exist in the ecosystem:
+
+1. **Full page navigation** (shadcn/ui): each component at `/docs/components/button`. SEO-friendly; requires separate pages for each of 45 components.
+2. **Side drawer** (Storybook): slides in from the right, obscures grid. Loses browsing context.
+3. **Inline expand** (PROJECT.md goal): card expands in place. Grid context preserved.
+
+**Recommendation: inline expand using GSAP FLIP.** The ComponentsExplorer already uses GSAP FLIP for filter animations. The same technique handles expand/collapse animations without layout shift. This is pattern-consistent with the existing system. Use `SFCollapsible` or a custom Radix-free expand for the panel itself — avoid SFDialog (wrong semantic) or SFSheet (wrong visual language for this use case).
+
+**Detail view content: 3 tabs maximum.**
+1. **VARIANTS** — rendered SF component in all `intent` and `size` values
+2. **PROPS** — table: name / type / default / required / description
+3. **CODE** — usage snippet + CLI install command, both with copy button
+
+Three tabs is the industry norm (shadcn, MUI, Atlassian all use Preview / Props / Code). Four or more tabs fragment the information without adding clarity.
+
+### Components to Wrap
+
+**P1 — Wrap in v1.4:**
+- `SFDrawer` — Vaul-based (verify if vaul already in package.json before adding). Lazy-loaded, `meta.heavy: true`. Bottom-sheet pattern for mobile-first overlays. SFSheet handles right-side slide; Drawer handles bottom-up.
+
+**P2 — Wrap in v1.4.x:**
+- `SFHoverCard` — Radix HoverCard, FRAME-only wrapper, minimal bundle cost
+- `SFInputOTP` — Radix OTP input, cdOS auth flows, minimal bundle cost
+
+**Explicitly excluded:**
+- `SFCarousel` — animation frame conflict with GSAP; aesthetic conflict with DU/TDR
+- `SFChart` — recharts ~50KB; no current consumer
+- `SFResizable` — no use case identified
+- `SFContextMenu` — inaccessible on touch; aesthetic misalignment
+- `SFSidebar` — deferred to cdOS milestone (large composable system)
+
+### What "Token Finalization" Means
+
+The token system is largely complete. Specific gaps:
+- **Elevation tier:** No `box-shadow` tokens exist. Decision: explicitly document the absence. "No elevation tokens — depth via spacing, contrast, and motion only" aligns with Enhanced Flat Design philosophy. Add as a comment to globals.css.
+- **Sidebar color tokens:** `--color-sidebar-*` exist in globals.css but are not documented in SCAFFOLDING.md. Add them to the extended palette documentation.
+- **Chart color tokens:** `--color-chart-1` through `--color-chart-5` exist in globals.css. If SFChart is deferred, add a comment noting these are reserved for future chart use.
+- **No new tokens needed** — the CLAUDE.md rule "DO NOT expand the palette" remains the constraint.
 
 ---
 
 ## Sources
 
-- [shadcn/ui component docs — official](https://ui.shadcn.com/docs/components) — HIGH confidence, verified via WebFetch
-- [Mantine Core component inventory — official](https://mantine.dev/core/package/) — HIGH confidence, verified via WebFetch
-- [Ark UI component inventory — GitHub README](https://github.com/chakra-ui/ark) — HIGH confidence, verified via WebFetch
-- [Radix Themes overview — official](https://www.radix-ui.com/themes/docs/overview/releases) — MEDIUM confidence (component list inferred from release notes)
-- [Carbon Design System — loading, empty, error state patterns](https://carbondesignsystem.com/patterns/loading-pattern/) — HIGH confidence
-- [GitLab Pajamas — Skeleton loader guidelines](https://design.gitlab.com/components/skeleton-loader/) — HIGH confidence
-- [Design System Checklist — component categories](https://www.designsystemchecklist.com/category/components) — MEDIUM confidence
-- [LogRocket — UI best practices for loading/error/empty states in React](https://blog.logrocket.com/ui-design-best-practices-loading-error-empty-state-react/) — MEDIUM confidence
-- SignalframeUX PROJECT.md — v1.3 milestone targets verified against this research
+- [shadcn/ui component list](https://ui.shadcn.com/docs/components) — authoritative component inventory (HIGH confidence: verified via WebFetch)
+- [shadcn/ui Drawer docs](https://ui.shadcn.com/docs/components/drawer) — Vaul-based Drawer API (HIGH confidence: verified via WebFetch)
+- [shadcn/ui October 2025 changelog](https://ui.shadcn.com/docs/changelog/2025-10-new-components) — Spinner, Kbd, ButtonGroup, InputGroup, Field, Item, Empty added (MEDIUM confidence: search result)
+- [Radix UI Primitives](https://www.radix-ui.com/primitives) — authoritative primitive list (HIGH confidence: verified via WebFetch)
+- [Storybook docs](https://storybook.js.org/docs/writing-docs/doc-blocks) — documentation patterns reference (MEDIUM confidence)
+- [shadcn/ui vs Storybook analysis](https://supernova.io/blog/top-storybook-documentation-examples-and-the-lessons-you-can-learn) — FT migration from Storybook to custom site (MEDIUM confidence: WebSearch)
+- SignalframeUX codebase: `ANL-analyst-brief-v4.md`, `v1.3-REQUIREMENTS.md`, `components/sf/index.ts`, `components/blocks/components-explorer.tsx`, `lib/api-docs.ts` — (HIGH confidence: direct source)
 
 ---
 
-*Feature research for: SignalframeUX v1.3 Component Expansion*
+*Feature research for: SignalframeUX v1.4 Feature Complete milestone*
 *Researched: 2026-04-06*

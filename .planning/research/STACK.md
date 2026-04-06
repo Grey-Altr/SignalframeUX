@@ -1,280 +1,243 @@
 # Stack Research
 
-**Domain:** Design system component library expansion (React/Next.js)
+**Domain:** Design system component library + interactive showcase (Next.js 15 / React 19)
 **Researched:** 2026-04-06
-**Scope:** NEW capabilities only — v1.3 Component Expansion (Accordion, Toast, Progress, AlertDialog, Avatar, Breadcrumb, EmptyState, NavigationMenu, Pagination, Stepper, StatusDot, ToggleGroup, Calendar, Menubar)
-**Confidence:** HIGH
+**Scope:** NEW capabilities only — v1.4 Feature Complete (remaining SF wrappers, interactive detail views, token finalization, showcase coherence)
+**Confidence:** HIGH (all critical claims verified against official docs or npm registry)
 
 ---
 
-## Context: What Is NOT Re-Researched
+## Context: What This Covers
 
-The following stack is locked from v1.0–v1.2 and NOT covered here:
+This is a subsequent-milestone stack addition document. The existing stack (Next.js 15.3, TypeScript 5.8, Tailwind CSS v4, CVA, Radix UI via shadcn, GSAP 3.12, Lenis, Three.js, sonner, OKLCH) is validated and NOT re-researched here.
 
-- Next.js 15.3 (App Router, Turbopack) + TypeScript 5.8
-- GSAP 3.12.7 + ScrollTrigger, @gsap/react 2.1.2, Lenis 1.1.20
-- Tailwind CSS v4, CVA 0.7.1, `radix-ui` 1.4.3 umbrella, `shadcn` 4.1.2 devDep
-- Three.js 0.183.2 (async chunk), SignalCanvas singleton, OKLCH color space
-- `cmdk` 1.1.1 (already installed — powers SFCommand)
-- Session persistence, registry.json, createSignalframeUX factory (all v1.2)
+This document covers ONLY the new capabilities required for v1.4:
 
-Existing architecture constraints for this milestone:
-- `radix-ui@1.4.3` umbrella package already installed — all needed Radix primitives are bundled and tree-shakeable; zero new Radix installs needed
-- `'use client'` only when required — Server Components default
-- Page weight budget < 200KB initial (excluding images) — heavy components must use `next/dynamic`
-- No border-radius anywhere (DU/TDR aesthetic)
-- GSAP is the only animation driver — no independent animation libraries
+1. Remaining shadcn/Radix component dependencies not yet installed
+2. Syntax highlighting for interactive component detail views
+3. Interactive detail view architecture (no new deps — GSAP + existing patterns)
+4. Token system finalization (no new deps — CSS-only work)
 
 ---
 
-## Critical Finding: All Radix Primitives Already Available
+## Recommended Stack
 
-The installed `radix-ui@1.4.3` umbrella exports ALL primitives needed for v1.3 with zero additional installs:
+### New Component Dependencies
 
-| Target Component | Radix Primitive | Import Path |
-|-----------------|-----------------|-------------|
-| SFAccordion | `Accordion` | `import * as Accordion from 'radix-ui/react-accordion'` |
-| SFAlertDialog | `AlertDialog` | `import * as AlertDialog from 'radix-ui/react-alert-dialog'` |
-| SFAvatar | `Avatar` | `import * as Avatar from 'radix-ui/react-avatar'` |
-| SFNavigationMenu | `NavigationMenu` | `import * as NavigationMenu from 'radix-ui/react-navigation-menu'` |
-| SFProgress | `Progress` | `import * as Progress from 'radix-ui/react-progress'` |
-| SFToggleGroup | `ToggleGroup` | `import * as ToggleGroup from 'radix-ui/react-toggle-group'` |
-| SFMenubar (P3) | `Menubar` | `import * as Menubar from 'radix-ui/react-menubar'` |
-| SFBreadcrumb | — | Pure composition (no Radix primitive needed) |
-| SFPagination | — | Pure composition (no Radix primitive needed) |
-| SFStepper | — | Pure composition (no Radix primitive needed) |
-| SFStatusDot | — | Pure CSS/CVA (no Radix primitive needed) |
-| SFEmptyState | — | Pure composition (no Radix primitive needed) |
+These packages are required by shadcn CLI when adding remaining unwrapped components. None are currently in `package.json`.
 
-The umbrella package is tree-shakeable by namespace import — only primitives explicitly imported are bundled. No version conflicts or duplicate dependencies. Namespace import (`import * as Accordion from 'radix-ui/react-accordion'`) is tree-shaking equivalent to named imports per Radix documentation.
+| Package | Version | Required By | Why Needed |
+|---------|---------|-------------|------------|
+| `vaul` | `^1.1.2` | SFDrawer | shadcn Drawer is built on vaul by Emil Kowalski. React 19 support added in v1.1.1. Peer dep confirmed. |
+| `embla-carousel-react` | `^8.6.0` | SFCarousel | shadcn Carousel is built on Embla Carousel. v8 supports React 19. shadcn CLI adds this automatically. |
+| `input-otp` | `^1.x` | SFInputOTP | shadcn Input OTP is built on guilherme_rodz's input-otp package. shadcn CLI adds this automatically. |
+| `react-resizable-panels` | `^4.x` | SFResizable | shadcn Resizable uses react-resizable-panels v4 (confirmed in shadcn changelog). |
+| `recharts` | `^3.x` | SFChart | shadcn Chart wraps Recharts v3. Chart tokens use `var(--chart-1)` format — OKLCH-compatible with existing `@theme`. DEFER: only add if SFChart is explicitly in milestone scope. |
 
-**Confidence:** HIGH — verified by reading `node_modules/radix-ui/src/index.ts` directly.
+**Components NOT needing new deps:**
+- Context Menu, Hover Card, Aspect Ratio — pure Radix UI, already covered by existing `radix-ui@^1.4.3` unified package
+- Kbd, Spinner, ButtonGroup, Field, Item, Empty — October 2025 shadcn additions, no external peer deps; copy-paste only
 
----
+### Syntax Highlighting
 
-## Decision 1: Toast — Sonner, Not Radix Toast
+| Package | Version | Purpose | Why Recommended |
+|---------|---------|---------|-----------------|
+| `shiki` | `^1.x` | Code block syntax highlighting in detail views | Server Component native — zero client JS shipped. Lazy-loads languages as async chunks (Next.js handles automatically). Fine-grained bundle via `shiki/core` keeps footprint to ~50-80 KB async. Renders at build/request time; no runtime client overhead. |
 
-### Recommendation: `sonner@2.0.7` — new dependency
+**Bundle strategy:** Use `shiki/core` with only the languages actually needed (TypeScript, TSX, Bash). Provide a custom theme object using the project's existing `--sf-code-bg` / `--sf-code-text` OKLCH values rather than importing a bundled theme. This avoids the full 695 KB gzip web bundle cost — only ~50-80 KB async (not in initial bundle).
 
-| Aspect | Sonner | Radix Toast |
-|--------|--------|-------------|
-| Status in shadcn/ui | **Official recommendation — Radix Toast deprecated** | Deprecated (shadcn replaced it) |
-| API surface | Imperative `toast()` call from anywhere | Component + `useToast()` hook wiring |
-| Stacking behavior | Built-in stacked/swipeable UI | Manual implementation required |
-| Bundle size | ~7-10 kB gzipped (LOW confidence — bundlephobia JS not parseable) | Already in radix-ui umbrella |
-| Animation | Built-in slide/stack animations | Manual |
-| Promise API | `toast.promise(fn)` — zero-config async feedback | Not available |
-| `'use client'` required | Yes | Yes |
-| Styling control | CSS variables + Tailwind overrides | Full unstyled control |
+**Pattern (RSC — server-only module):**
+```typescript
+// lib/code-highlight.ts — server-only, never imported in client components
+import { createHighlighter } from 'shiki/core'
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 
-**Why Sonner over Radix Toast:**
-1. shadcn/ui has officially deprecated Radix Toast in favor of Sonner — this is the ecosystem direction
-2. Sonner's imperative API (`toast('Message')` from anywhere) is strictly better DX than wiring a `useToast()` hook through component trees
-3. `toast.promise()` is essential for async interaction patterns (form submissions, data loading)
-4. Sonner's stacking/swipe behavior is production-ready with zero configuration
-5. The design system can fully override Sonner's default styling via CSS variables to enforce DU/TDR aesthetic (no rounded corners, OKLCH colors)
+// Call once at module level; Next.js caches the module
+const highlighter = await createHighlighter({
+  themes: [/* inline custom theme object using sf OKLCH tokens */],
+  langs: ['typescript', 'tsx', 'bash'],
+  engine: createJavaScriptRegexEngine(),
+})
 
-**Why not Radix Toast:** Deprecated in shadcn. The primitive is already in the `radix-ui` umbrella so there would be zero install cost — but the API is more complex for identical results, and it is the ecosystem's past, not future.
-
-**Sonner styling override pattern for zero-radius DU/TDR aesthetic:**
-```tsx
-// In root layout (Server Component passthrough wrapping Toaster):
-<Toaster
-  toastOptions={{
-    classNames: {
-      toast: 'border-0 rounded-none font-mono',
-      title: 'text-sm tracking-wide uppercase',
-    }
-  }}
-/>
+export async function highlightCode(code: string, lang: string): Promise<string> {
+  return highlighter.codeToHtml(code, { lang, theme: 'sf-dark' })
+}
 ```
 
-**Install:** `pnpm add sonner`
+The returned HTML string is rendered server-side in the RSC component. Shiki's output is build-time-generated HTML with inline styles — it does not add any client JavaScript.
 
----
+**Important constraint:** Shiki uses lazy imports. The Shiki docs explicitly warn against Edge Runtime — use the default Next.js Serverless Runtime (already the project default). No config change needed.
 
-## Decision 2: Calendar (P3) — react-day-picker v9, Lazy-Loaded
+**Do NOT use:** `rehype-pretty-code` or `@next/mdx` — MDX pipeline overhead is unnecessary since component documentation is structured TypeScript data, not markdown files. Direct `shiki` API is simpler and gives more control over output HTML structure.
 
-### Recommendation: `react-day-picker@9.14.0` via `next/dynamic` — new dependency, P3 only
+### Interactive Detail Views
 
-| Aspect | Value |
-|--------|-------|
-| Version | `9.14.0` (latest as of April 2026) |
-| date-fns | Bundled as regular dep in v9 (was peer dep in v8) — no separate install |
-| shadcn integration | Official — shadcn Calendar upgraded to react-day-picker v9 (confirmed June 2025 shadcn changelog) |
-| Bundle cost | Significant (includes date-fns) — MUST be lazy-loaded |
-| `next/dynamic` required | Yes — P3 designation; heavy dep annotated in registry |
+**No new packages required.** The existing codebase already has every primitive needed:
 
-**Why react-day-picker:**
-- Only calendar library with official shadcn/ui integration and maintained upgrade path
-- v9 brings first-class timezone support (`timeZone` prop) — correct for a production design system
-- Accessibility: WCAG 2.1 compliant keyboard and screen reader navigation
-- date-fns bundled as regular dep in v9 — no consumer peer dependency management needed
+| Capability | Implementation | Source |
+|------------|---------------|--------|
+| Expand/collapse animation | GSAP `gsap.to(el, { height: el.scrollHeight })` with `onComplete: () => gsap.set(el, { height: 'auto' })` | Pattern proven in SFAccordion (`components/sf/sf-accordion.tsx`) |
+| Prop tables | Extend existing `ComponentDoc` + `PropDef` types in `lib/api-docs.ts` | Already structured for this exact purpose with `name`, `type`, `default`, `desc`, `required` fields |
+| Variant demo rendering | Inline preview components (same pattern as `PreviewButton`, `PreviewCard` etc.) | `components/blocks/components-explorer.tsx` |
+| Tab UI for prop / demo / code panels | `SFTabs` + `SFTabsList` + `SFTabsTrigger` + `SFTabsContent` | Already used in `components/blocks/api-explorer.tsx` |
+| GSAP FLIP for grid layout reflow on expand | `lib/gsap-flip.ts` (lazy-loaded) | Already in `components-explorer.tsx` |
+| Code display | `SharedCodeBlock` component | `components/blocks/shared-code-block.tsx` |
 
-**Why it is P3 (not P1/P2):**
-- react-day-picker + date-fns adds significant weight to the initial bundle
-- Calendar components are session-specific (date pickers, booking flows) — not needed on initial load
-- `next/dynamic` wrapping isolates this from the 200KB initial budget
-
-**Lazy load pattern (required for SFCalendar):**
-```tsx
-// components/sf/sf-calendar.tsx
-import dynamic from 'next/dynamic';
-
-const CalendarInner = dynamic(() => import('./sf-calendar-inner'), {
-  loading: () => <SFSkeleton className="h-[300px] w-[280px]" />,
-  ssr: false,  // date-fns timezone operations are client-side
-});
+**Detail panel expand pattern:**
+```typescript
+// Measure first, then tween — avoids the GSAP "height: auto" duration issue
+const targetHeight = panel.scrollHeight
+gsap.fromTo(
+  panel,
+  { height: 0, opacity: 0 },
+  {
+    height: targetHeight,
+    opacity: 1,
+    duration: 0.2,  // aligns with --duration-normal token
+    ease: 'power2.out',  // aligns with --ease-default token
+    onComplete: () => gsap.set(panel, { height: 'auto' })
+  }
+)
 ```
+Measuring `scrollHeight` before the tween avoids the known GSAP `height: auto` animation issue (where `auto` only applies at tween end, not during). The `onComplete` restore to `height: auto` allows the panel to reflow if content changes.
 
-**Install:** `pnpm add react-day-picker` — P3 phase only, NOT in P1/P2 sprint
+### Token System Finalization
 
----
+**No new packages required.** All gaps are CSS-only work in `app/globals.css`:
 
-## Decision 3: cmdk — Already Installed, No Changes
-
-`cmdk@1.1.1` is already a production dependency powering `SFCommand`. v1.3 adds no new command palette components, so no version bump or changes are needed.
-
-**Confidence:** HIGH — verified from `package.json`.
-
----
-
-## Decision 4: Tree-Shaking with radix-ui Umbrella — No Risk
-
-Adding many SF-wrapped Radix components does NOT meaningfully impact the initial bundle because:
-
-1. `radix-ui@1.4.3` uses namespace exports — Turbopack/webpack tree-shakes at the `@radix-ui/react-*` sub-package level
-2. Each primitive is a separate internal sub-package — only explicitly imported primitives are included in the bundle
-3. The Radix sub-packages are already present in `node_modules` from the umbrella install — adding SF wrappers adds only the thin wrapper code
-4. P1/P2 components are Radix-based or pure composition — no new heavy dependencies in either phase
-
-**Practical impact:** Adding all P1/P2 SF wrappers (SFAccordion through SFToggleGroup) adds approximately 2-5 kB gzipped total from wrapper code. The Radix primitives themselves were already downloaded with the umbrella install.
-
-**Confidence:** MEDIUM — tree-shaking verified via Radix documentation; per-primitive wrapper sizes are estimated.
+| Gap | Status | Action |
+|-----|--------|--------|
+| `--color-success` / `--color-warning` | Exist as `--sf-green` / `--sf-yellow` in `:root` but NOT in `@theme` as named semantic tokens | Wire into `@theme` block alongside destructive |
+| `--max-w-content`, `--max-w-wide`, `--max-w-full` | Referenced in CLAUDE.md as required tokens — audit globals.css to confirm actual presence | Audit + add if missing |
+| Animation token cross-component normalization | `--duration-*` and `--ease-*` tokens exist but usage in components needs audit for consistency | Audit pass only, no new tokens |
 
 ---
 
-## Decision 5: No Version Bumps Required for P1/P2
+## Alternatives Considered
 
-All P1/P2 components are fully covered by the current package.json:
-
-| Package | Current Version | P1/P2 Need | Action |
-|---------|----------------|------------|--------|
-| `radix-ui` | `1.4.3` | Accordion, AlertDialog, Avatar, Progress, NavigationMenu, ToggleGroup | None — all included |
-| `class-variance-authority` | `0.7.1` | CVA variants on all new components | None |
-| `lucide-react` | `0.488.0` | Icons for Breadcrumb, Pagination, Avatar fallback | None |
-| `gsap` | `3.12.7` | SIGNAL integration on Progress, Accordion | None |
-| `tailwind-merge` | `3.0.2` | `cn()` throughout | None |
-
-No version bumps needed for P1/P2. All required primitives are present and verified.
+| Recommended | Alternative | Why Not |
+|-------------|-------------|---------|
+| `shiki` (RSC, server-only) | `prism-react-renderer` | Client-side only; adds to JS bundle; older ecosystem. Shiki is the current standard for Next.js RSC syntax highlighting. |
+| `shiki` (RSC, server-only) | `rehype-pretty-code` | Adds MDX pipeline complexity with no benefit. This project uses structured TypeScript data, not markdown files. Direct shiki API is cleaner. |
+| `shiki/core` fine-grained | `shiki/bundle/web` (695 KB gzip) | Web bundle is 695 KB gzip — unacceptable when only TypeScript and TSX are needed. Fine-grained approach: ~50-80 KB async. |
+| GSAP height animation (existing) | Framer Motion / Motion | Adding a 40+ KB client animation library when GSAP 3.12 is already the animation layer would conflict with `gsap.globalTimeline.timeScale(0)` reduced-motion kill switch. Two animation systems = complexity and maintenance debt. Explicitly out of scope per CLAUDE.md. |
+| Hand-authored `api-docs.ts` prop data | `react-docgen-typescript` | CVA variant types confuse the parser; generates flattened props that lose `intent`/`size` variant structure; requires webpack plugin; increases build time. Hand-authored is the established project pattern and produces higher-quality documentation. |
+| shadcn CLI (`pnpm dlx shadcn@latest add`) | Manual component copy-paste | CLI handles peer dep installation and ensures version alignment with installed shadcn version (4.1.2). |
+| P3 lazy pattern for heavy new components | Direct import | SFDrawer, SFCarousel, SFResizable are not in the critical rendering path. Same P3 pattern used for SFCalendar/SFMenubar — validated and bundle-safe in v1.3. |
 
 ---
 
-## Decision 6: StatusDot, Stepper, Pagination, Breadcrumb — Pure Composition
-
-These four components require no new primitives:
-
-| Component | Implementation | Client Directive |
-|-----------|---------------|-----------------|
-| SFStatusDot | CVA + Tailwind classes only | Server Component ✓ |
-| SFStepper | Pure React composition + Tailwind | `'use client'` (active step state) |
-| SFPagination | Pure React + Lucide `ChevronLeft`/`ChevronRight` | `'use client'` (page state) |
-| SFBreadcrumb | Pure React + Lucide `ChevronRight` + Next.js `Link` | Server Component ✓ |
-
----
-
-## Recommended Stack for v1.3
-
-### New Runtime Dependencies
-
-| Package | Version | Purpose | Phase | Install Command |
-|---------|---------|---------|-------|----------------|
-| `sonner` | `^2.0.7` | Toast notifications — imperative API, stacking, promise | P1 | `pnpm add sonner` |
-| `react-day-picker` | `^9.14.0` | Calendar — date-fns bundled, WCAG 2.1 | P3 only | `pnpm add react-day-picker` |
-
-### Zero New Dependencies (P1 + P2 — covered by existing installs)
-
-| Components | Source | Install |
-|-----------|--------|---------|
-| SFAccordion, SFAlertDialog, SFAvatar, SFProgress | `radix-ui@1.4.3` (existing) | None |
-| SFNavigationMenu, SFToggleGroup | `radix-ui@1.4.3` (existing) | None |
-| SFBreadcrumb, SFPagination, SFStepper, SFStatusDot, SFEmptyState | Pure composition | None |
-
-### What NOT to Add
+## What NOT to Use
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `@radix-ui/react-accordion` (standalone) | Duplicate of what `radix-ui` umbrella already provides | Import via `radix-ui/react-accordion` |
-| `react-toastify` | Legacy; not shadcn-aligned; large bundle | `sonner` |
-| `react-hot-toast` | Lacks stacking/promise API; not shadcn-aligned | `sonner` |
-| `@radix-ui/react-toast` (standalone) | Deprecated by shadcn/ui | `sonner` |
-| `date-fns` (standalone) | Bundled inside `react-day-picker@9` — duplicate | Already included |
-| `react-datepicker` | No shadcn integration, no WCAG compliance by default | `react-day-picker@9` |
-| Any new animation library | CLAUDE.md constraint: do not expand animation system | GSAP (existing) |
-| `framer-motion` | Independent rAF loop conflicts with GSAP `globalTimeline.timeScale(0)` | GSAP (existing) |
+| `framer-motion` / `motion` | Dual animation system conflicts with GSAP `globalTimeline.timeScale(0)` reduced-motion kill switch. Project explicitly chose GSAP as the single animation driver. | GSAP (existing) |
+| `react-docgen-typescript` | CVA variant types confuse the parser; flattens prop hierarchy; adds webpack plugin; increases build time | Hand-authored `lib/api-docs.ts` extension (existing) |
+| `@storybook/*` | 200+ MB infrastructure that duplicates what the in-site showcase does natively. Not aligned with the "reduce friction" mandate in CLAUDE.md. | In-site component explorer (existing) |
+| `recharts` (unless SFChart is in scope) | 300+ KB dependency; include only if Chart is a named deliverable | Defer until explicitly scoped |
+| `shiki/bundle/full` or `shiki/bundle/web` | Full: 6.4 MB minified / 1.2 MB gzip; web: 695 KB gzip — both exceed the 200 KB initial page budget for a single feature | `shiki/core` with fine-grained language/theme imports |
+| MDX pipeline (`@next/mdx`, `next-mdx-remote`) | Compilation overhead with no benefit; component documentation is structured data, not prose | TypeScript objects in `lib/api-docs.ts` |
+| `react-syntax-highlighter` | 250+ KB bundle; client-side; outdated relative to Shiki | `shiki` (server-side) |
 
 ---
 
-## SIGNAL Layer Integration Notes
+## Stack Patterns by Variant
 
-Three P1 components are animation-eligible per v1.3 milestone spec — all use existing GSAP patterns:
+**For component detail views with syntax-highlighted code:**
+- Use a Server Component that calls `highlightCode()` from `lib/code-highlight.ts`
+- Render the resulting HTML using React's `__html` prop (server-rendered, no client eval)
+- Theme object uses existing `--sf-code-bg` / `--sf-code-text` / `--sf-code-keyword` OKLCH values from globals.css
+- Zero client JavaScript added
 
-| Component | SIGNAL Pattern | Implementation Note |
-|-----------|---------------|---------------------|
-| SFProgress | Fill animation on value change | `gsap.to(barRef, { width: value+'%', duration: 0.4, ease: 'power2.out' })` |
-| SFToast (Sonner) | Slide-in entrance | Override Sonner's default CSS animation with GSAP in `onAutoClose`/`onDismiss` callbacks if needed; Sonner's built-in CSS animation may be sufficient |
-| SFAccordion | Content stagger on open | `gsap.from(contentRef, { opacity: 0, y: -8, duration: 0.2 })` on `onValueChange` |
+**For detail panel expand/collapse:**
+- `useRef` on the panel element, measure `panel.current.scrollHeight` before tween
+- GSAP `fromTo` with `onComplete: () => gsap.set(panel, { height: 'auto' })` to allow reflow post-animation
+- Duration: `--duration-normal` (200ms), easing: `--ease-default`
 
-No new GSAP plugins needed. ScrollTrigger is NOT needed (these are interaction-triggered, not scroll-triggered).
+**For prop table data additions:**
+- Extend `ComponentDoc` entries in `lib/api-docs.ts`
+- `PropDef` interface already has `name`, `type`, `default`, `desc`, `required` — sufficient for all new components
+- No schema validation library needed at this scale
+
+**For remaining SF wrapper components (classification by pattern):**
+- P1 direct import: Context Menu, Hover Card, Aspect Ratio, Kbd, Spinner, InputOTP, Input Group, Field
+- P3 lazy (`next/dynamic`, `ssr: false`, `meta.heavy: true`): Drawer, Carousel, Resizable
+- DEFER to v1.5: Chart (recharts dep), Sidebar (complex dep tree)
 
 ---
 
-## Installation Summary
-
-### P1 Sprint
+## Installation
 
 ```bash
-pnpm add sonner
+# Add remaining shadcn base components (CLI handles peer dep installation)
+pnpm dlx shadcn@latest add drawer
+pnpm dlx shadcn@latest add carousel
+pnpm dlx shadcn@latest add input-otp
+pnpm dlx shadcn@latest add resizable
+pnpm dlx shadcn@latest add context-menu
+pnpm dlx shadcn@latest add hover-card
+pnpm dlx shadcn@latest add aspect-ratio
+
+# Add syntax highlighting for detail views (server-only, zero client impact)
+pnpm add shiki
+
+# Optional — only if SFChart is explicitly in milestone scope
+# pnpm add recharts
 ```
 
-### P3 Sprint (calendar only — defer until P3)
+**Verify after shadcn CLI:** check that `package.json` picked up `vaul`, `embla-carousel-react`, `input-otp`, `react-resizable-panels` as direct dependencies. If the CLI did not add them, add manually:
 
 ```bash
-pnpm add react-day-picker
-```
-
-### P1/P2 — No install needed. Verify with:
-
-```bash
-node -e "const r = require('./node_modules/radix-ui/src/index.ts'); console.log('ok')" 2>/dev/null
-# Or simply: ls node_modules/radix-ui/src/index.ts
+pnpm add vaul embla-carousel-react input-otp react-resizable-panels
 ```
 
 ---
 
 ## Version Compatibility
 
-| Package | Version | Peer Requirements | Status |
-|---------|---------|-------------------|--------|
-| `sonner` | `^2.0.7` | React 18+, zero runtime deps | Compatible with React 19.1.0 ✓ |
-| `react-day-picker` | `^9.14.0` | React 16.8+ (hooks) | Compatible with React 19.1.0 ✓; date-fns bundled |
-| `radix-ui` | `1.4.3` (existing) | React 18+ | All v1.3 primitives verified present ✓ |
+| Package | Compatible With | Notes |
+|---------|-----------------|-------|
+| `vaul@^1.1.2` | React 19, Next.js 15 | React 19 added to peer deps in v1.1.1. Confirmed on npm. |
+| `embla-carousel-react@^8.6.0` | React 19, Next.js 15 | v8 resolved the React 19 peer dep issue present in v7. |
+| `shiki@^1.x` | Next.js 15 App Router, RSC | Serverless Runtime only — not Edge Runtime (shiki uses lazy imports Edge doesn't support). Project already uses Serverless Runtime default; no config change needed. |
+| `react-resizable-panels@^4.x` | React 19, Next.js 15 | shadcn changelog explicitly confirms v4 as current supported version. |
+| `input-otp@^1.x` | React 19, Next.js 15 | No reported React 19 issues. Standard form input primitive. |
+| `recharts@^3.x` (deferred) | React 19, Tailwind v4 | Chart tokens: use `var(--chart-1)` not `hsl(var(--chart-1))`. OKLCH values in `@theme` already use the correct format — no token migration needed if added later. |
+
+---
+
+## Bundle Impact Assessment
+
+Current baseline: 102 KB shared JS (v1.3 confirmed). Target: stay under 150 KB gate.
+
+| Addition | Initial Bundle Impact | Strategy |
+|----------|----------------------|----------|
+| `shiki` | 0 KB added to initial | Server-only RSC module; languages/themes load as async chunks on demand |
+| `vaul` (SFDrawer) | ~0 KB with P3 pattern | `next/dynamic({ ssr: false })` — same as SFCalendar/SFMenubar (proven in v1.3) |
+| `embla-carousel-react` (SFCarousel) | ~0 KB with P3 pattern | `next/dynamic({ ssr: false })` |
+| `react-resizable-panels` (SFResizable) | ~0 KB with P3 pattern | `next/dynamic({ ssr: false })` |
+| `input-otp` (SFInputOTP) | ~5 KB | Small library; P1 direct import acceptable |
+| Context Menu, Hover Card, Aspect Ratio | 0 KB | Covered by existing `radix-ui@^1.4.3` unified package |
+| Kbd, Spinner, ButtonGroup, Field, Item, Empty | ~1-2 KB total | Copy-paste components, no external deps |
+
+**Projected bundle after v1.4:** ~107-110 KB — comfortably under 150 KB gate.
 
 ---
 
 ## Sources
 
-- `node_modules/radix-ui/src/index.ts` — direct inspection confirming all v1.3 Radix primitives available — HIGH confidence
-- `node_modules/radix-ui/package.json` — sub-package dependency versions (Accordion 1.2.12, AlertDialog 1.1.15, Avatar 1.1.10) — HIGH confidence
-- Radix Primitives documentation (radix-ui.com/primitives/docs/overview/introduction) — tree-shaking via umbrella namespace imports — HIGH confidence
-- shadcn/ui docs (ui.shadcn.com/docs/components/radix/sonner) — Sonner as official replacement for deprecated Radix Toast — HIGH confidence
-- shadcn/ui changelog 2025-06-calendar (ui.shadcn.com/docs/changelog/2025-06-calendar) — Calendar upgraded to react-day-picker v9 confirmed — HIGH confidence
-- WebSearch: sonner v2.0.7 latest version, zero runtime deps — MEDIUM confidence (npm page, not Context7)
-- WebSearch: react-day-picker v9.14.0, date-fns bundled as regular dep, WCAG 2.1 — HIGH confidence (daypicker.dev official changelog)
-- Next.js docs (nextjs.org/docs/app/guides/lazy-loading) — `next/dynamic` pattern with `ssr: false` for heavy components — HIGH confidence
-- `package.json` — all current installed versions verified — HIGH confidence
+- `https://shiki.style/packages/next` — Shiki Next.js integration, RSC pattern, Serverless Runtime recommendation (HIGH confidence — official docs)
+- `https://shiki.style/guide/bundles` — Bundle sizes: full 6.4 MB / 1.2 MB gzip, web 695 KB gzip, core fine-grained approach (HIGH confidence — official docs)
+- `https://ui.shadcn.com/docs/components/radix/drawer` — Vaul dependency confirmation (HIGH confidence — official shadcn docs)
+- `https://ui.shadcn.com/docs/components/radix/carousel` — Embla Carousel dependency confirmation (HIGH confidence — official shadcn docs)
+- `https://ui.shadcn.com/docs/components/radix/resizable` — react-resizable-panels v4 confirmation (HIGH confidence — official shadcn docs)
+- `https://ui.shadcn.com/docs/changelog/2025-10-new-components` — October 2025 additions: Spinner, Kbd, ButtonGroup, InputGroup, Field, Item, Empty — no external peer deps (HIGH confidence — official shadcn changelog)
+- `https://www.npmjs.com/package/vaul` — vaul v1.1.2, React 19 in peerDependencies (HIGH confidence — npm registry)
+- `https://www.npmjs.com/package/embla-carousel-react` — v8.6.0, React 19 support resolved in v8 (HIGH confidence — npm registry)
+- `https://gsap.com/community/forums/` — GSAP `scrollHeight` expand pattern, `height: auto` via `onComplete` (MEDIUM confidence — community forums, consistent with observed SFAccordion implementation)
+- Codebase analysis — `lib/api-docs.ts`, `components/blocks/api-explorer.tsx`, `components/sf/sf-accordion.tsx`, `package.json` (HIGH confidence — direct inspection)
 
 ---
 
-*Stack research for: SignalframeUX v1.3 Component Expansion — NEW capabilities only*
+*Stack research for: SignalframeUX v1.4 Feature Complete milestone*
 *Researched: 2026-04-06*
