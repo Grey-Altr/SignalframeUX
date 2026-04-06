@@ -334,3 +334,67 @@ export { SFCard, SFCardHeader, SFCardTitle, ... } from "./sf-card";
 1. Create `components/sf/sf-{name}.tsx`
 2. Add the export to `components/sf/index.ts` in the correct section (layout primitives grouped by dependency, interactive components alphabetically)
 3. Verify the import works from `@/components/sf` before committing
+
+---
+
+## 8. Config Provider API
+
+The `createSignalframeUX` factory provides SSR-safe theme and GSAP motion control
+at app root. Source: `lib/signalframe-provider.tsx`.
+
+### createSignalframeUX(config?)
+
+```ts
+import { createSignalframeUX } from '@/lib/signalframe-provider';
+
+// Must be called from a 'use client' wrapper (not Server Component module scope)
+const { SignalframeProvider, useSignalframe } = createSignalframeUX({
+  defaultTheme: 'dark',      // 'light' | 'dark' | 'system' — default: 'system'
+  motionPreference: 'system' // 'full' | 'reduced' | 'system' — default: 'system'
+});
+```
+
+Returns `{ SignalframeProvider, useSignalframe }`:
+- `SignalframeProvider` — Client Component. Wrap your app root. `{children}` remain Server
+  Components (hole-in-the-donut pattern).
+- `useSignalframe` — hook scoped to the returned provider instance.
+
+### useSignalframe()
+
+Available as both a factory-returned hook and a standalone named export:
+
+```ts
+import { useSignalframe } from '@/lib/signalframe-provider';
+```
+
+Returns `UseSignalframeReturn`:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `theme` | `'light' \| 'dark'` | Current resolved theme. Reads from `document.classList`, not localStorage. |
+| `setTheme` | `(theme: 'light' \| 'dark') => void` | Hard-cut DU-style theme toggle. Wraps `lib/theme toggleTheme`. |
+| `motion` | `SignalframeMotionController` | Global GSAP motion controller with reduced-motion guard. |
+
+### SignalframeMotionController
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `pause` | `() => void` | Pauses all GSAP animations (`gsap.globalTimeline.pause()`). |
+| `resume` | `() => void` | Resumes GSAP animations. No-op when `prefersReduced` is true. |
+| `prefersReduced` | `boolean` | True when OS `prefers-reduced-motion` is active or `motionPreference: 'reduced'`. |
+
+### SSR Constraint
+
+`createSignalframeUX()` must be called at module scope inside a `'use client'` file —
+not from a Server Component. Pattern mirrors `SignalCanvasLazy`/`GlobalEffectsLazy`.
+
+```tsx
+// components/layout/signalframe-config.tsx
+'use client';
+import { createSignalframeUX } from '@/lib/signalframe-provider';
+export const { SignalframeProvider, useSignalframe } = createSignalframeUX({ defaultTheme: 'dark' });
+```
+
+Both the factory-returned hook and the standalone named export from
+`@/lib/signalframe-provider` are valid usage patterns. Use the standalone export
+when you do not need to thread the factory return through module scope.
