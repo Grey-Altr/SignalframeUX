@@ -6,6 +6,7 @@ import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
+import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
 function CustomCursor() {
@@ -378,6 +379,7 @@ export function GlobalEffects() {
       <VHSBadge />
       <IdleOverlay />
       <InteractionFeedback />
+      <SignalOverlayLazy />
     </>
   );
 }
