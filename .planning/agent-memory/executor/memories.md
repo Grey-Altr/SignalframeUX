@@ -50,3 +50,7 @@ For polymorphic components (SFText with `as` prop mapping to multiple HTML eleme
 ### 2026-04-06T03:06:00Z | Phase 02 | tags: cva, sfgrid, numeric-string-keys, variant-design
 
 SFGrid uses numeric string keys ("1", "2", "3", "4") rather than numeric literals for CVA cols variants — string keys allow multi-class values like "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" without ambiguity. CVA variants must be string keys; numeric literals would conflict. When a variant encodes responsive breakpoint logic (not a single class), CVA is the right tool — one prop abstracts multiple Tailwind classes across breakpoints.
+
+### 2026-04-06T03:46:51Z | Phase 03 | tags: canvas-cursor, oklch-to-rgb, signal-layer, intersection-observer
+
+Canvas 2D context does not understand oklch() CSS values — resolve --color-primary to RGB by creating a probe 1x1 canvas, setting fillStyle to the raw computed property value, drawing a pixel, and reading back with getImageData(). This is the correct approach for bridging CSS custom property color values into canvas draw calls. The zIndex style prop accepts string in JSX via `as unknown as number` cast — React's CSSProperties types number only, but CSS custom property references require string values like "var(--z-cursor, 9999)".

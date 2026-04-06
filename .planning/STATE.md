@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed Phase 2 Plan 02-02 — Phase 2 COMPLETE. Next is Phase 3 — SIGNAL Expression.
-last_updated: "2026-04-06T03:11:35.482Z"
-last_activity: "2026-04-06 — Plan 02-02 executed: SFGrid, SFText primitives + barrel export + SFButton PRM-06 audit"
+status: in_progress
+stopped_at: Completed Phase 3 Plan 03-02 — CanvasCursor canvas crosshair + particle trail wired into GlobalEffects.
+last_updated: "2026-04-06T03:52:00Z"
+last_activity: "2026-04-06 — Plan 03-02 executed: CanvasCursor (canvas crosshair + particle trail) created and wired into GlobalEffects"
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # STATE — SignalframeUX
@@ -26,21 +26,21 @@ progress:
 
 ## Current Position
 
-Phase: Phase 2 — FRAME Primitives (COMPLETE)
-Plan: 02-02 (complete) — SFGrid, SFText created; SFButton PRM-06 audit complete; all six primitives barrel-exported
-Status: Phase 2 COMPLETE — all 5 layout primitives (SFContainer, SFSection, SFStack, SFGrid, SFText) exported; token system enforcement in place
-Last activity: 2026-04-06 — Plan 02-02 executed: SFGrid, SFText primitives + barrel export + SFButton PRM-06 audit
+Phase: Phase 3 — SIGNAL Expression (in progress)
+Plan: 03-02 (complete) — CanvasCursor canvas crosshair + particle trail; [data-cursor] IntersectionObserver scoping; GlobalEffects wired
+Status: Phase 3 underway — 2/4 plans complete
+Last activity: 2026-04-06 — Plan 03-02 executed: CanvasCursor created and wired into GlobalEffects
 
 ## Progress
 
 ```
 Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
-Phase 3 — SIGNAL Expression:   [░░░░░░░░░░]   0%
+Phase 3 — SIGNAL Expression:   [████░░░░░░]  50% (2/4 plans)
 Phase 4 — Above-the-Fold Lock: [░░░░░░░░░░]   0%
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [████░░░░░░]  36% (5/14 plans)
+Overall:   [████░░░░░░]  50% (7/14 plans)
 ```
 
 ## Accumulated Context
@@ -57,6 +57,13 @@ Overall:   [████░░░░░░]  36% (5/14 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 03-01: [data-anim] catch-all after specific rules — CSS attribute presence selector ([data-anim]) has lower specificity than value selectors ([data-anim="section-reveal"]), guaranteeing GSAP-animated elements still start hidden
+- Plan 03-01: Asymmetric hover: base state 400ms (return), :hover override 100ms (snap-in) — CSS transition-duration on :hover overrides base; base duration governs the release, hover duration governs the snap
+- Plan 03-01: sf-hoverable:not(:hover) removed — redundant once base state is --duration-slow; simpler CSS with same behavior
+- Plan 03-01: Section-reveal hard cut at 34ms / ease:none — DU aesthetic signature; snap reveals not fade-ins
+- Plan 03-02: Canvas zIndex as "var(--z-cursor, 9999)" requires "as unknown as number" cast — React CSSProperties types z-index as number only
+- Plan 03-02: OKLCH→RGB resolved via probe 1x1 canvas (fillStyle + getImageData) — correct approach for canvas draw calls, handles any browser-parseable CSS value
+- Plan 03-02: CustomCursor function preserved in global-effects.tsx — not exported, tree-shaken at build; rollback capability maintained
 - Plan 02-02: SFGrid uses numeric string keys ("3") for CVA variants — allows Tailwind class strings as values without ambiguity
 - Plan 02-02: SFText uses plain Record maps not CVA — single variant dimension, CVA adds no value
 - Plan 02-02: Polymorphic ref cast uses React.Ref<any> — TypeScript cannot narrow across element union without it (accepted RESEARCH.md Pitfall 1)
@@ -89,12 +96,12 @@ Overall:   [████░░░░░░]  36% (5/14 plans)
 |-------|------|--------------|--------|
 | 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
-| 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | Not started |
+| 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | In progress — 2/4 plans |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | Not started |
 | 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed Phase 2 Plan 02-02 — Phase 2 COMPLETE. Next is Phase 3 — SIGNAL Expression.
-Resume file: .planning/phases/03-signal-expression/
+Stopped at: Completed Phase 3 Plan 03-01 — CSS fallback catch-all, asymmetric hover timing, hard-cut section transitions. Next: 03-02.
+Resume file: .planning/phases/03-signal-expression/03-02-PLAN.md
