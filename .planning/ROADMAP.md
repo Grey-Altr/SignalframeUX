@@ -30,7 +30,11 @@
   3. Any SF component with a missing CSS custom property renders with a declared fallback — no silent blank or invisible elements
   4. The color palette has a defined tier boundary: core 5 tokens in one list, extended tokens in a second list, and no mechanism to add to either without a deliberate system change
   5. Every CVA call in `sf/` uses `intent` as the variant prop name and has `defaultVariants` declared
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Token definitions: semantic typography aliases, layout tokens, color tiers, VHS namespace
+- [ ] 01-02-PLAN.md — Component sweep: blessed spacing enforcement + CVA compliance audit
+- [ ] 01-03-PLAN.md — CSS fallbacks on critical var() calls + print stylesheet
 
 ### Phase 2: FRAME Primitives
 **Goal**: Six SF primitives exist that enforce Phase 1 tokens by construction — using them correctly is easier than deviating from them
@@ -84,7 +88,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. FRAME Foundation | 0/? | Not started | - |
+| 1. FRAME Foundation | 0/3 | Planned | - |
 | 2. FRAME Primitives | 0/? | Not started | - |
 | 3. SIGNAL Expression | 0/? | Not started | - |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
