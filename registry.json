@@ -781,6 +781,23 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-pagination",
+      "type": "registry:ui",
+      "title": "SF Pagination",
+      "description": "Minimal numbered page navigation with previous/next, Server Component, no ellipsis",
+      "registryDependencies": ["pagination"],
+      "files": [
+        {
+          "path": "components/sf/sf-pagination.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }

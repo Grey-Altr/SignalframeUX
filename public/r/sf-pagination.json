@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-pagination",
+  "title": "SF Pagination",
+  "description": "Minimal numbered page navigation with previous/next, Server Component, no ellipsis",
+  "registryDependencies": [
+    "pagination"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-pagination.tsx",
+      "content": "import {\n  Pagination,\n  PaginationContent,\n  PaginationItem,\n  PaginationLink,\n  PaginationPrevious,\n  PaginationNext,\n} from \"@/components/ui/pagination\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * SFPagination -- FRAME layer numbered page navigation.\n *\n * Server Component. Wraps shadcn Pagination with monospace text,\n * sharp corners, 2px borders, and inverted active state. No ellipsis\n * export -- pagination should show explicit page numbers.\n *\n * @example\n * <SFPagination>\n *   <SFPaginationContent>\n *     <SFPaginationItem><SFPaginationPrevious href=\"/page/1\" /></SFPaginationItem>\n *     <SFPaginationItem><SFPaginationLink href=\"/page/1\">1</SFPaginationLink></SFPaginationItem>\n *     <SFPaginationItem><SFPaginationLink href=\"/page/2\" isActive>2</SFPaginationLink></SFPaginationItem>\n *     <SFPaginationItem><SFPaginationLink href=\"/page/3\">3</SFPaginationLink></SFPaginationItem>\n *     <SFPaginationItem><SFPaginationNext href=\"/page/3\" /></SFPaginationItem>\n *   </SFPaginationContent>\n * </SFPagination>\n */\n\nfunction SFPagination({\n  className,\n  ...props\n}: React.ComponentProps<typeof Pagination>) {\n  return <Pagination className={cn(\"font-mono\", className)} {...props} />;\n}\n\nfunction SFPaginationContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof PaginationContent>) {\n  return (\n    <PaginationContent className={cn(\"gap-0\", className)} {...props} />\n  );\n}\n\nfunction SFPaginationItem(\n  props: React.ComponentProps<typeof PaginationItem>\n) {\n  return <PaginationItem {...props} />;\n}\n\nfunction SFPaginationLink({\n  className,\n  isActive,\n  ...props\n}: React.ComponentProps<typeof PaginationLink>) {\n  return (\n    <PaginationLink\n      isActive={isActive}\n      className={cn(\n        \"rounded-none border-2 border-foreground uppercase tracking-wider text-xs font-mono\",\n        isActive\n          ? \"bg-foreground text-background hover:bg-foreground hover:text-background\"\n          : \"bg-transparent text-foreground hover:bg-foreground hover:text-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFPaginationPrevious({\n  className,\n  ...props\n}: React.ComponentProps<typeof PaginationPrevious>) {\n  return (\n    <PaginationPrevious\n      className={cn(\n        \"rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nfunction SFPaginationNext({\n  className,\n  ...props\n}: React.ComponentProps<typeof PaginationNext>) {\n  return (\n    <PaginationNext\n      className={cn(\n        \"rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFPagination,\n  SFPaginationContent,\n  SFPaginationItem,\n  SFPaginationLink,\n  SFPaginationPrevious,\n  SFPaginationNext,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

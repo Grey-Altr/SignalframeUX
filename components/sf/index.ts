@@ -140,6 +140,14 @@ export {
   SFBreadcrumbPage,
   SFBreadcrumbSeparator,
 } from "./sf-breadcrumb";
+export {
+  SFPagination,
+  SFPaginationContent,
+  SFPaginationItem,
+  SFPaginationLink,
+  SFPaginationPrevious,
+  SFPaginationNext,
+} from "./sf-pagination";
 
 // Multi-Step & Selection
 export { SFToggleGroup, SFToggleGroupItem } from "./sf-toggle-group";
