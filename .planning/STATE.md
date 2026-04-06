@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: completed
 stopped_at: Completed 14-01-PLAN.md — useSessionState + useScrollRestoration hooks wired into ComponentsExplorer and TokenTabs (STP-01 satisfied)
-last_updated: "2026-04-06T12:27:25Z"
+last_updated: "2026-04-06T13:20:58.768Z"
 last_activity: "2026-04-06 — 14-01 complete: STP-01 satisfied — sessionStorage persistence for filter, tab, and scroll state"
 progress:
   total_phases: 6
