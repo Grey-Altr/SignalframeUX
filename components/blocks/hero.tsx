@@ -7,8 +7,10 @@ export function Hero() {
     <section className="mt-[var(--nav-height)] grid grid-cols-1 md:grid-cols-2 h-[calc(100vh-var(--nav-height))] h-[calc(100dvh-var(--nav-height))] border-b-4 border-foreground overflow-hidden">
       {/* Left — Black panel */}
       <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground pr-[clamp(16px,4vw,48px)] pl-[calc(clamp(16px,4vw,48px)-2em)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative overflow-hidden">
-        {/* Canvas mesh background */}
-        <HeroMesh className="absolute inset-0 z-0 opacity-[0.45]" />
+        {/* Canvas mesh background — opacity-0 initial state; GSAP fades to 0.45 via data-anim="hero-mesh" */}
+        <div data-anim="hero-mesh" className="absolute inset-0 z-0 opacity-0">
+          <HeroMesh className="w-full h-full" />
+        </div>
 
         {/* Halftone decorative circle */}
         <div
