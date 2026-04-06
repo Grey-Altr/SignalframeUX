@@ -2,12 +2,12 @@
 pde_state_version: 1.0
 milestone: v1.4
 milestone_name: Feature Complete
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
-last_updated: "2026-04-06T22:00:00.000Z"
-last_activity: "2026-04-06 — Milestone v1.4 started"
+last_updated: "2026-04-06T22:30:00.000Z"
+last_activity: "2026-04-06 — v1.4 roadmap created (6 phases, 22 requirements)"
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression |
-| Current Focus | v1.4 Feature Complete — all components, tokens finalized, interactive showcase site |
+| Current Focus | v1.4 Feature Complete — tech debt, token finalization, remaining components, interactive detail views |
 | Milestone | v1.4 Feature Complete |
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 21 (not started — roadmap ready)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v1.4 started
+Status: Roadmap defined, awaiting plan-phase execution
+Last activity: 2026-04-06 — v1.4 roadmap created
 
 ## Progress
 
@@ -38,11 +38,19 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.4: [__________] 0% (0/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
 
-(To be defined after requirements)
+| Phase | Goal | Requirements | Status |
+|-------|------|--------------|--------|
+| 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Not started |
+| 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Not started |
+| 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Not started |
+| 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Not started |
+| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Not started |
+| 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
 
 ## Accumulated Context
 
@@ -70,48 +78,43 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 - STP-01 hydration safety: render default state first, read sessionStorage only in useEffect after mount
 - bgShift type fix: fix all consumer call sites in same commit, never @ts-ignore, run tsc --noEmit before and after
 
-### v1.3 Critical Constraints (from Research)
+### From v1.3
 
-- **rounded-none everywhere**: Radix-generated `rounded-full` and `rounded-md` survive the global `--radius: 0px` token. Every SF wrapper must apply `rounded-none` explicitly on every sub-element. Audit with DevTools computed styles before marking any component complete.
-- **Barrel directive rule**: `sf/index.ts` must remain directive-free permanently. `'use client'` in the barrel turns all 5 layout primitives into Client Components and silently inflates the bundle. Each interactive SF wrapper declares `'use client'` in its own file only.
-- **Bundle budget gate**: Measured baseline 103KB shared; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
-- **CVA `intent` prop**: Every new SF wrapper uses `intent:` as the CVA variant key. Never `variant`, `type`, `status`, or `color`.
-- **Toast position**: SFToaster defaults to `bottom-left` with `--z-toast: 100`. SignalOverlay occupies `bottom-right` at z~210 — the two must never overlap.
-- **Same-commit rule**: Component file + barrel export + registry entry must land in one commit. No partial shipments.
-- **SFProgress before SFStepper**: Hard dependency — Stepper uses Progress fill as step connector. Phase 18 must complete before Phase 19 begins.
-- **Calendar/Menubar lazy**: Both use `next/dynamic` with `ssr: false` and are NOT exported from `sf/index.ts` barrel.
-- **NavigationMenu is last in P2**: Most complex, highest keyboard-regression risk, nothing depends on it — always last.
+- rounded-none everywhere: Radix-generated `rounded-full` and `rounded-md` survive the global `--radius: 0px` token. Every SF wrapper must apply `rounded-none` explicitly on every sub-element.
+- Barrel directive rule: `sf/index.ts` must remain directive-free permanently. `'use client'` in the barrel turns all 5 layout primitives into Client Components and silently inflates the bundle.
+- Bundle budget gate: Measured baseline 103KB shared; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
+- CVA `intent` prop: Every new SF wrapper uses `intent:` as the CVA variant key. Never `variant`, `type`, `status`, or `color`.
+- Same-commit rule: Component file + barrel export + registry entry must land in one commit. No partial shipments.
+- Toast position: SFToaster defaults to `bottom-left` with `--z-toast: 100`. SignalOverlay occupies `bottom-right` at z~210 — the two must never overlap.
+- SFProgress before SFStepper: Hard dependency — Stepper uses Progress fill as step connector.
+- Calendar/Menubar lazy: Both use `next/dynamic` with `ssr: false` and are NOT exported from `sf/index.ts` barrel.
+- Component count at v1.3 ship: 49-item registry, 45 SF components total (includes 5 layout primitives)
+
+### v1.4 Critical Constraints (from Research)
+
+- **Phase ordering is dependency-forced**: tech debt → tokens → components → detail data → detail views → verification. Do not reorder.
+- **MutationObserver disconnect FIRST**: Detail views dramatically increase mount/unmount frequency. Observer accumulation without disconnect causes WebGL jank. TD-01 MUST precede Phase 25.
+- **ComponentDetail as DOM sibling**: The panel must be rendered after the GSAP Flip grid div, NOT inside it. Child position corrupts Flip state captures during filter animations. See DV-11.
+- **next/dynamic for ComponentDetail**: Bundle gate compliance is non-negotiable. Import all 49 component previews at top-level = bundle balloon. DV-12 is not optional.
+- **shiki/core only**: Use `shiki/core` fine-grained (~50-80 KB async, server-only). Never `shiki/bundle/web` (695 KB gzip) or `shiki/bundle/full` (6.4 MB).
+- **Z-index contract**: Canvas cursor at z-500; detail panel must use `--z-overlay` token; add `[data-modal-open]` CSS rule dropping cursor z-index below panel when open. See SI-04.
+- **lenis.scrollTo only**: Any programmatic scroll from detail view code must use `lenis.scrollTo`. Never `window.scrollTo`. Grep check before Phase 25.
+- **vaul transitive check**: vaul may already be present transitively via Sonner. Check `pnpm-lock.yaml` before Phase 23 begins.
+- **api-docs.ts audit at Phase 24 start**: ~15 of 31+ grid components have existing entries. Exact delta must be confirmed via pre-phase audit before estimating authoring effort.
+- **shiki OKLCH theme prototype at Phase 25 start**: The custom OKLCH theme object construction must be prototyped before full implementation begins.
+- **color-resolve.ts alpha syntax**: Audit `oklch(L C H / A)` parser support before Phase 22 modifies any color tokens.
 
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Phase 16 before any component | All pitfall prevention front-loaded — checklist, baseline, categories codified before first wrapper line |
-| Non-animated before animated (Phase 17 before 18) | Isolates SIGNAL layer risk from FRAME layer risk — simpler components validate pattern before adding GSAP |
-| Phase 17 groups FD-04, FD-05, FD-06 with navigation components | All are FRAME-only, Pattern A or C — same authoring complexity, logical to batch |
-| MS-02 (SFStatusDot) in Phase 17, not Phase 19 | StatusDot is FRAME-primary with a simple GSAP pulse — closer to Phase 17 complexity than P2 |
-| Phase 19 SFNavigationMenu last | Most complex Radix primitive with non-obvious data-state CSS interactions; nothing depends on it |
-| Phase 20 batches REG-01 and REG-02 with final audit | Registry-only components warrant no separate phase; Lighthouse check is natural companion |
-| DataTable deferred to v1.4 | Depends on SFPagination (Phase 19); composite block is application-layer work, not design system scope for v1.3 |
-| SCAFFOLDING.md at project root | Maximum discoverability for Phase 17-20 executors |
-| Six named categories replace layer-based tags | Product-language taxonomy (FORMS/FEEDBACK/NAVIGATION/DATA_DISPLAY/LAYOUT/GENERATIVE) matches component purpose, not implementation layer |
-| No session migration for stale filterTag | useSessionState defaults to ALL; stale values gracefully ignored |
-| Bundle gate is shared JS (103 KB), not per-route | Per-route First Load varies 103-264 KB due to Three.js async chunks; shared is deterministic |
-| Lighthouse CLI headless not representative | Use browser DevTools against deployed Vercel for accurate LCP/TTI; CLI numbers inflated by WebGL |
-| SFAlert as Server Component | Base alert.tsx has no 'use client' and SFAlert uses no hooks — reduces client bundle |
-| SFBreadcrumb as Server Component | Base breadcrumb.tsx has no 'use client' — per NAV-02 requirement |
-| SFStatusDot uses gsap-core not gsap-split | Only needs core tween for pulse — avoids loading SplitText/ScrambleText plugins |
-| SFEmptyState Bayer dither as base64 PNG | Inline data URI avoids network request; 8x8 pattern at opacity-[0.04] is DU/TDR visual language |
-| SFProgress wraps Radix directly, not shadcn base | Base ui/progress.tsx has transition-all on indicator (conflicts with GSAP) and lacks ref access |
-| GSAP stagger runs on SFAccordionContent mount | Radix unmounts content when closed by default; mount === panel open, no observer needed |
-| Kept Radix CSS height animation on AccordionContent | GSAP only staggers inner children; container height handled by animate-accordion-down/up |
-| SFToggleGroup uses intersection type for Root props | Radix ToggleGroup.Root is a discriminated union (single/multiple); interface extends fails |
-| SFPagination as Server Component | Base pagination.tsx has no 'use client' and SFPagination uses no hooks |
-| SFStepper writing-mode:vertical-lr for vertical connectors | SFProgress uses xPercent tween; writing-mode rotates the fill direction |
-| SFNavigationMenuIndicator not exported | DU/TDR aesthetic rejects decorative arrow; hidden by omission |
-| PAGINATION (011) updated in-place | Pre-existing placeholder updated to v1.3.0 with SF-wrapped preview rather than adding duplicate entry |
-| Calendar --cell-radius:0px CSS var override | Cleaner than per-element rounded-none; catches all DayPicker dynamic rounded-* classes |
-| SFMenubar wraps all 15 sub-components | Complete API parity with shadcn base, even pass-through components |
+| Phase 21 before any v1.4 feature work | MutationObserver, Lenis, and TOAST naming issues are directly activated by detail view patterns — fix first |
+| Phase 22 (tokens) before Phase 23 (components) | New SF wrappers must use the final token vocabulary; WebGL bridge audit happens before any OKLCH values are touched |
+| Phase 23 (components) before Phase 24 (data) | Component set must be final before documenting all components in api-docs.ts and component-registry.ts |
+| Phase 24 (data) before Phase 25 (UI) | Detail UI has no value without data; decoupling data authoring reduces Phase 25 tail risk |
+| Phase 25 includes SI-01 through SI-04 | Site integration is inseparable from detail view feature — they form one delivery boundary |
+| Phase 26 is standalone verification | Bundle + Lighthouse audit is a gate, not implementation work — isolated phase keeps it verifiable |
+| CMP-02 (SFHoverCard) and CMP-03 (SFInputOTP) in Phase 23 | Research originally deferred these to v1.4.x but REQUIREMENTS.md scopes them to v1.4 — included |
 
 ### Blockers
 
@@ -122,10 +125,10 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** v1.4 Feature Complete — all components, tokens finalized, interactive showcase site
+**Current focus:** v1.4 Feature Complete — all remaining components, token finalization, interactive showcase detail views
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Defining v1.4 requirements
-Resume with: Continue requirement scoping and roadmap creation for v1.4 Feature Complete.
+Stopped at: v1.4 roadmap created — 6 phases, 22 requirements mapped, all files written
+Resume with: `/pde:plan-phase 21` — Tech Debt Closure (TD-01, TD-02, TD-03, TD-04)

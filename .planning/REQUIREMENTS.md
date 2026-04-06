@@ -61,4 +61,36 @@
 - Localization (JFM) — separate future milestone
 
 ## Traceability
-(To be filled by roadmapper)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| TD-01 | Phase 21 | Pending |
+| TD-02 | Phase 21 | Pending |
+| TD-03 | Phase 21 | Pending |
+| TD-04 | Phase 21 | Pending |
+| TK-01 | Phase 22 | Pending |
+| TK-02 | Phase 22 | Pending |
+| TK-03 | Phase 22 | Pending |
+| TK-04 | Phase 22 | Pending |
+| CMP-01 | Phase 23 | Pending |
+| CMP-02 | Phase 23 | Pending |
+| CMP-03 | Phase 23 | Pending |
+| CMP-04 | Phase 23 | Pending |
+| DV-01 | Phase 24 | Pending |
+| DV-02 | Phase 24 | Pending |
+| DV-03 | Phase 24 | Pending |
+| DV-04 | Phase 25 | Pending |
+| DV-05 | Phase 25 | Pending |
+| DV-06 | Phase 25 | Pending |
+| DV-07 | Phase 25 | Pending |
+| DV-08 | Phase 25 | Pending |
+| DV-09 | Phase 25 | Pending |
+| DV-10 | Phase 25 | Pending |
+| DV-11 | Phase 25 | Pending |
+| DV-12 | Phase 25 | Pending |
+| SI-01 | Phase 25 | Pending |
+| SI-02 | Phase 25 | Pending |
+| SI-03 | Phase 25 | Pending |
+| SI-04 | Phase 25 | Pending |
+| VF-01 | Phase 26 | Pending |
+| VF-02 | Phase 26 | Pending |

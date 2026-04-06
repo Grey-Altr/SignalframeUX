@@ -6,6 +6,7 @@
 - [x] **v1.1 Generative Surface** — Phases 6-9 (shipped 2026-04-06)
 - [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
+- [ ] **v1.4 Feature Complete** — Phases 21-26 (in progress)
 
 ## Phases
 
@@ -42,13 +43,25 @@
 
 </details>
 
-**v1.3 Component Expansion (Phases 16-20):**
+<details>
+<summary>v1.3 Component Expansion (Phases 16-20) — SHIPPED 2026-04-06</summary>
 
 - [x] **Phase 16: Infrastructure Baseline** — SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary (completed 2026-04-06)
 - [x] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only) (completed 2026-04-06)
 - [x] **Phase 18: P1 Animated Components** — Accordion (stagger), Toast/Toaster (slide), Progress (fill tween) (completed 2026-04-06)
 - [x] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup (completed 2026-04-06)
 - [x] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check (completed 2026-04-06)
+
+</details>
+
+**v1.4 Feature Complete (Phases 21-26):**
+
+- [ ] **Phase 21: Tech Debt Closure** — MutationObserver disconnect, NaN guard, Lenis scroll race, duplicate TOAST entry
+- [ ] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audit, sidebar/chart tokens
+- [ ] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP
+- [ ] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC)
+- [ ] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring
+- [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
 
 ## Phase Details
 
@@ -214,6 +227,76 @@ Plans:
 - [x] 20-01-PLAN.md — SFCalendar + SFMenubar (lazy wrappers, loaders, registry entries)
 - [x] 20-02-PLAN.md — Final audit (meta.pattern fix, public/r/ rebuild, SCAFFOLDING.md, ComponentsExplorer, bundle gate)
 
+### Phase 21: Tech Debt Closure
+**Goal**: All known instability from v1.2 and v1.3 is eliminated before any v1.4 feature work begins
+**Depends on**: Phase 20 (v1.3 complete)
+**Requirements**: TD-01, TD-02, TD-03, TD-04
+**Success Criteria** (what must be TRUE):
+  1. signal-mesh.tsx and glsl-hero.tsx both call `_signalObserver.disconnect()` and null-reset the module-level observer reference inside the GSAP context cleanup return — confirmed by code review
+  2. readSignalVars in both WebGL scenes uses an explicit `isNaN()` guard such that any non-numeric CSS var value (including unit-suffixed values like "0.5px") returns the defined fallback, not a propagated NaN
+  3. All programmatic scroll calls in the codebase route through `lenis.scrollTo` — `grep -r "window.scrollTo"` returns zero results
+  4. ComponentsExplorer displays exactly one TOAST entry per component (TOAST (FRAME) at index 010 and TOAST (SIGNAL) at a distinct index) — no duplicate display names
+**Plans**: TBD
+
+### Phase 22: Token Finalization
+**Goal**: The token system has no gaps — all extended palette tokens are in @theme, elevation absence is documented, and the WebGL color bridge is audited for safety
+**Depends on**: Phase 21 (stable WebGL scenes before touching OKLCH values in globals.css)
+**Requirements**: TK-01, TK-02, TK-03, TK-04
+**Success Criteria** (what must be TRUE):
+  1. `--color-success` and `--color-warning` are declared inside the `@theme` block in globals.css — removing the `:root` fallback declarations does not break any existing component rendering
+  2. globals.css contains an explicit comment block documenting the absence of elevation tokens (no box-shadow scale, no z-elevation variables) as an intentional DU/TDR design decision
+  3. SCAFFOLDING.md documents sidebar and chart color token behavior — including the recommendation to avoid SFSidebar and SFChart until respective milestones
+  4. color-resolve.ts handles all current token values without silent failure — visual smoke test of SignalMesh and GLSLHero after every globals.css change confirms no color regression
+**Plans**: TBD
+
+### Phase 23: Remaining SF Components
+**Goal**: The component set is complete for v1.4 — every identified remaining shadcn/Radix component is SF-wrapped, registered, and in ComponentsExplorer
+**Depends on**: Phase 22 (token system final before new components use it)
+**Requirements**: CMP-01, CMP-02, CMP-03, CMP-04
+**Success Criteria** (what must be TRUE):
+  1. SFDrawer opens as a bottom-sheet overlay via vaul; it is loaded with `next/dynamic` (`ssr: false`, `meta.heavy: true`) and its code does NOT appear in the initial shared bundle
+  2. SFHoverCard appears on hover/focus with a FRAME-only panel (no animation), keyboard accessible, zero border-radius on the content panel
+  3. SFInputOTP renders an OTP input with individual character slots; the input is keyboard navigable and passes WCAG AA color contrast
+  4. SFInputGroup wraps the last uncovered `ui/` component — all shadcn base components now have an SF wrapper equivalent; the gap is closed
+  5. All four components have registry entries in registry.json and `/r/` artifacts, are exported from `sf/index.ts` (except SFDrawer which is lazy), and appear in ComponentsExplorer under the correct category
+**Plans**: TBD
+
+### Phase 24: Detail View Data Layer
+**Goal**: All component data needed to render the interactive detail views is authored and accessible via static TypeScript imports — no runtime fetch calls
+**Depends on**: Phase 23 (component set must be final before documenting all components)
+**Requirements**: DV-01, DV-02, DV-03
+**Success Criteria** (what must be TRUE):
+  1. lib/component-registry.ts exists and maps every ComponentsExplorer grid item's index to a ComponentRegistryEntry containing: variant previews (live SF component renders), a code snippet, and a docId pointer to api-docs.ts
+  2. lib/api-docs.ts contains a ComponentDoc entry for every component in the registry (~49 items) — each entry has at least one PropDef with name, type, default, required, and description fields
+  3. lib/code-highlight.ts exists as a server-only RSC module; calling it with a code string returns highlighted HTML using shiki/core with an OKLCH-compatible theme — zero client JS added to the bundle
+**Plans**: TBD
+
+### Phase 25: Interactive Detail Views + Site Integration
+**Goal**: Clicking any component card on /components or the homepage grid expands an inline detail panel showing variants, props, and copyable code — the milestone's primary feature
+**Depends on**: Phase 24 (all data must exist before the UI can render it)
+**Requirements**: DV-04, DV-05, DV-06, DV-07, DV-08, DV-09, DV-10, DV-11, DV-12, SI-01, SI-02, SI-03, SI-04
+**Success Criteria** (what must be TRUE):
+  1. Clicking a component card on /components opens a ComponentDetail panel below the grid with three tabs (VARIANTS / PROPS / CODE); the panel animates open via GSAP height tween from 0 to auto; pressing Escape closes the panel and returns focus to the trigger card
+  2. The VARIANTS tab renders a live grid of all `intent` and `size` values as actual SF component instances — not screenshots or static markup
+  3. The PROPS tab renders a table with name, type, default, required, and description for every prop; the table is readable at all viewport widths
+  4. The CODE tab shows a usage snippet with syntax highlighting and a CLI install command; both have working copy-to-clipboard buttons
+  5. The detail panel header displays the FRAME or SIGNAL layer badge, the pattern tier (A / B / C), and the animation token callout (durations and easings used) for SIGNAL-layer components
+  6. ComponentDetail is loaded with `next/dynamic`; opening the first detail panel does NOT push the shared JS bundle past the 150 KB gate
+  7. ComponentDetail is a DOM sibling of the GSAP Flip grid div (not a child) — the panel's open/close geometry does not corrupt GSAP Flip state captures during filter animations
+  8. Homepage grid cards on / open the same ComponentDetail panel with identical behavior to /components
+  9. The detail panel renders with DU/TDR aesthetic: sharp edges, uppercase labels, accent color on the active tab, no decorative gradients
+  10. The z-index contract is enforced — the detail panel appears above content but below the canvas cursor; `[data-modal-open]` CSS rule drops cursor z-index when panel is open
+**Plans**: TBD
+
+### Phase 26: Verification + Launch Gate
+**Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
+**Depends on**: Phase 25 (all features complete before final verification)
+**Requirements**: VF-01, VF-02
+**Success Criteria** (what must be TRUE):
+  1. `ANALYZE=true pnpm build` confirms the shared JS bundle is under 150 KB — ComponentDetail lazy-load, P3 component lazy-load, and shiki server-only module all verified as non-contributors to initial bundle
+  2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -237,4 +320,10 @@ Plans:
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 20. P3 Registry-Only + Final Audit | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
+| 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 21. Tech Debt Closure | v1.4 | 0/? | Not started | - |
+| 22. Token Finalization | v1.4 | 0/? | Not started | - |
+| 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
+| 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
+| 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
+| 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
