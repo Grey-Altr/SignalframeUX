@@ -34,19 +34,19 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ Reduced-motion experience QA'd as intentional alternative design — v1.0
 - ✓ DX contract: SCAFFOLDING.md, JSDoc 28/28 components, import boundary documented — v1.0
 - ✓ Theme toggle GSAP guard prevents OKLCH/inline color conflicts — v1.0
+- ✓ Singleton WebGL infrastructure (SignalCanvas, useSignalScene, color-resolve) — v1.1
+- ✓ Multi-sensory SIGNAL activation: audio (Web Audio), haptics (Vibration API), idle animation — v1.1
+- ✓ SignalMesh + TokenViz validate full generative pipeline under production conditions — v1.1
+- ✓ GLSL procedural hero with integrated Bayer 4×4 ordered dither — v1.1
+- ✓ All 5 pages consume SF layout primitives (32 SFSection instances, zero raw div wrappers) — v1.1
+- ✓ [data-cursor] activated on all showcase sections — v1.1
+- ✓ data-anim="stagger" on production grid blocks — v1.1
+- ✓ Performance budget maintained with Three.js in async chunk (102 kB initial) — v1.1
 
 ### Active
 
-- [ ] Showcase pages consume SFSection, SFStack, SFGrid primitives (zero-consumer tech debt)
-- [ ] [data-cursor] activated on showcase sections (dormant SIGNAL activation)
-- [ ] data-anim="stagger" applied to production grid blocks
-- [ ] Generative SIGNAL foundation — 3D meshes, motion graphics, procedural visuals within DU/TDR aesthetic
-- [ ] SIGNAL layer authoring model defined (parametric/component-based)
-- [ ] Performance budget reconciled with generative library choices
-- [ ] FRAME/SIGNAL legibility contract enforced for generative output
-- [ ] Audio feedback palette (Web Audio API) — SIG-06
-- [ ] Haptic feedback (Vibration API) — SIG-07
-- [ ] Idle state animation (grain drift, color pulse) — SIG-08
+- [ ] SignalMotion component placed on showcase sections (created but unused — INT-03 tech debt)
+- [ ] SignalOverlay CSS var bridge to WebGL uniforms (one-sided wire — INT-04 tech debt)
 - [ ] registry.json for AI/CLI component installation — DX-04
 - [ ] createSignalframeUX(config) + useSignalframe() API — DX-05
 - [ ] Session state persistence (filters, scroll, tabs) — STP-01
@@ -56,19 +56,19 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - Mobile app — web-first, responsive design handles mobile
 - Backend API — design system is frontend-only
 - CMS integration — MDX + JSON for content
+- React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
+- Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
 ## Context
 
-## Current Milestone: v1.1 Generative Surface
-
-**Goal:** Evolve SignalframeUX from a design system into a generative technology — enhance the existing showcase with SF primitives and dormant SIGNAL effects, then extend the SIGNAL layer into procedural/generative output (3D meshes, motion graphics, data-driven visuals) within DU/TDR aesthetic constraints.
-
-**Target features:**
-- Showcase pages consuming all SF layout primitives (SFSection, SFStack, SFGrid)
-- Dormant SIGNAL effects activated ([data-cursor], stagger on grids)
-- Generative SIGNAL foundation — procedural visuals, 3D meshes, motion graphics
-- SIGNAL authoring model and FRAME/SIGNAL legibility enforcement for generative output
-- Performance budget reconciliation for generative libraries
+**Shipped v1.1 Generative Surface** (2026-04-06):
+- 26 files modified, +2,388 lines across 20 feat commits
+- Singleton WebGL infrastructure: SignalCanvas, useSignalScene, color-resolve with TTL cache
+- Multi-sensory SIGNAL: audio feedback (Web Audio square wave), haptic feedback (Vibration API), idle animation (8s grain drift + OKLCH lightness pulse)
+- Two generative scenes: SignalMesh (IcosahedronGeometry + vertex displacement) and TokenViz (Canvas 2D self-depicting visualization)
+- GLSL procedural hero shader with FBM noise, geometric grid lines, and integrated Bayer 4×4 ordered dither
+- SF layout primitives consumed across all 5 pages (32 SFSection instances)
+- Three.js in async chunk (102 kB initial shared bundle)
 
 **Shipped v1.0 Craft & Feedback** (2026-04-06):
 - 115 files modified, +12,440 lines across 82 commits
@@ -76,15 +76,12 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - Token system: 9 blessed spacing stops, 5 semantic typography aliases, 5 layout tokens, tiered color palette
 - SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
-- SIGNAL-SPEC.md (259 lines) documenting all effects with timing, fallback, mobile, reduced-motion
 
-**Known tech debt (12 items from milestone audit):**
-- 3 primitives (SFSection, SFStack, SFGrid) exported but awaiting first production consumer
-- [data-cursor] attribute not placed on any section — CanvasCursor mounted but never activates (one-line fix)
-- GSAP animation tokens use inline comments, not var() — known FRAME/SIGNAL boundary design decision
-- Pre-existing TypeScript error in color-cycle-frame.tsx:79
-- Human verification pending: hero performance trace, reduced-motion composition
-- All resolve when portfolio pages are built or during next milestone
+**Known tech debt (v1.1):**
+- INT-03: SignalMotion component created but unused — needs placement on showcase sections
+- INT-04: SignalOverlay writes CSS vars but no WebGL uniform reads them — one-sided bridge
+- INT-04: --signal-* CSS vars have no defaults in globals.css
+- SFSection bgShift boolean prop orphaned — all usage passes data-bg-shift as spread string
 
 ## Key Decisions
 
@@ -94,8 +91,13 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 | OKLCH color space throughout | v1.0 | ✓ Good — perceptually uniform, canvas bridge works via probe |
 | Zero border-radius everywhere | v1.0 | ✓ Good — defines the DU/TDR industrial aesthetic |
 | CVA `intent` as standard variant prop | v1.0 | ✓ Good — consistent API across all SF components |
-| Deferred SIG-06/07/08 to post-v1.0 | v1.0 | — Pending — audio/haptic/idle remain as interface sketches |
+| Deferred SIG-06/07/08 to post-v1.0 | v1.0 | ✓ Good — shipped in v1.1 with native APIs, zero dependencies |
 | Server Components default for primitives | v1.0 | ✓ Good — no 'use client' on any layout primitive |
+| Raw Three.js over React Three Fiber | v1.1 | ✓ Good — R3F's independent rAF conflicts with GSAP timeScale(0) |
+| GSAP ticker as WebGL render driver | v1.1 | ✓ Good — single animation loop, reduced-motion kills everything |
+| Single-pass GLSL hero with integrated dither | v1.1 | ✓ Good — avoided WebGLRenderTarget two-pass complexity |
+| Document-level event listener for audio/haptics | v1.1 | ✓ Good — single listener vs modifying every SF component |
+| pnpm over npm | v1.1 | ✓ Good — project convention, all plans auto-corrected |
 
 ## Constraints
 
@@ -116,4 +118,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-05 after v1.1 Generative Surface milestone started*
+*Last updated: 2026-04-06 after v1.1 Generative Surface milestone completed*

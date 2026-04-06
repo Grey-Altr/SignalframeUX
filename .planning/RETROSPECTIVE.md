@@ -48,6 +48,49 @@
 
 ---
 
+## Milestone: v1.1 — Generative Surface
+
+**Shipped:** 2026-04-06
+**Phases:** 4 | **Plans:** 9 | **Sessions:** 1 (autonomous)
+
+### What Was Built
+- Singleton WebGL infrastructure (SignalCanvas, useSignalScene, color-resolve with TTL cache)
+- Multi-sensory SIGNAL activation: audio (Web Audio square wave 200-800Hz), haptics (Vibration API 5-10ms), idle animation (8s threshold, grain drift, OKLCH lightness ±5% pulse)
+- SignalMesh (IcosahedronGeometry + vertex displacement + ScrollTrigger) and TokenViz (Canvas 2D self-depicting visualization)
+- GLSL procedural hero shader with FBM noise, geometric grid lines, and integrated Bayer 4×4 ordered dither
+- SF layout primitive migration across all 5 pages (32 SFSection instances, zero raw div wrappers)
+- SignalMotion scroll-driven wrapper and SignalOverlay live parameter panel
+
+### What Worked
+- **Infrastructure-first phasing** — Phase 6 singleton foundation enabled Phases 8-9 to build scenes without infrastructure concerns
+- **Parallel execution** — Plans 08-01 and 08-02 ran in parallel (different pages, different technologies), saving ~5 minutes
+- **Plan checker blocker catches** — Phase 7 checker caught oscillator debounce missing from code template and build-only verify gap; fixed in one revision cycle
+- **Executor memory accumulation** — by Phase 9, executors knew to use pnpm, create 'use client' lazy wrappers, and pass data-bg-shift as spread props without being told
+
+### What Was Inefficient
+- **REQUIREMENTS.md checkbox staleness** — Phases 8-9 executors didn't update REQUIREMENTS.md checkboxes, causing audit to flag 8 stale rows. The `phase complete` CLI handles ROADMAP/STATE but not REQUIREMENTS checkbox updates.
+- **SignalMotion unused (INT-03)** — Component was planned, built, and verified as existing, but no placement was planned. Requirement satisfied "on paper" but not in production runtime.
+- **SignalOverlay one-sided bridge (INT-04)** — CSS vars written but no WebGL consumer reads them. Research and planning assumed the connection would be obvious; it wasn't explicit in any task.
+
+### Patterns Established
+- `'use client'` lazy wrapper pattern for all WebGL components (discovered independently by two executors in Phase 8)
+- `data-bg-shift="value"` as spread prop (never SFSection's boolean bgShift prop)
+- GSAP ticker as sole render driver for Three.js (not setAnimationLoop)
+- globalThis singleton pattern for HMR-safe state in signal-canvas.tsx
+
+### Key Lessons
+1. **Requirements need explicit consumer/integration tasks** — creating a component doesn't satisfy "component provides X" unless it's wired to a consumer
+2. **Infrastructure phases can skip discuss** — Phase 6 correctly bypassed grey areas; all decisions were technical
+3. **Single-pass shader design avoids complexity cascades** — combining dither into the hero shader eliminated render target management entirely
+4. **Executor memory is genuinely useful by Phase 3+** — accumulated patterns prevent repeated auto-fixes
+
+### Cost Observations
+- Model mix: ~15% opus (orchestration), ~85% sonnet (research, planning, execution, verification)
+- Sessions: 1 autonomous session
+- Notable: 9 plans executed, 2 parallel waves in Phases 8 and 9; plan checker ran 3 times (2 first-pass, 1 revision)
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -55,14 +98,18 @@
 | Milestone | Sessions | Phases | Key Change |
 |-----------|----------|--------|------------|
 | v1.0 | 1 | 5 | First autonomous milestone — full discuss→plan→execute pipeline |
+| v1.1 | 1 | 4 | Infrastructure-first phasing, parallel execution, executor memory accumulation |
 
 ### Cumulative Quality
 
 | Milestone | Validation Checks | Nyquist Compliant | Tech Debt Items |
 |-----------|-------------------|-------------------|-----------------|
 | v1.0 | 75+ grep checks | 5/5 phases | 12 (audit: 0 blockers, orphaned primitives, [data-cursor] gap) |
+| v1.1 | 45+ must-have checks | 0/4 phases (partial) | 5 (2 partial reqs: INT-03 unused, INT-04 one-sided bridge) |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Plan checker iteration catches real blockers — do not skip verification
 2. Pre-existing errors compound across phases — fix them first
+3. Requirements need explicit consumer/integration tasks — creation ≠ deployment
+4. Executor memory accumulates useful patterns by Phase 3+ — reduces auto-fix overhead

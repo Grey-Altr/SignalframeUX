@@ -1,5 +1,14 @@
 # Milestones
 
+## v1.1 Generative Surface (Shipped: 2026-04-06)
+
+**Phases completed:** 4 phases, 9 plans, 2 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.0 Craft & Feedback (Shipped: 2026-04-05)
 
 **Phases completed:** 5 phases, 14 plans
