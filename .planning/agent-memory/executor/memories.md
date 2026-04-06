@@ -279,3 +279,9 @@ CVA-generated classes apply at the sub-element level and do not cascade up or do
 ### 2026-04-06T23:20:00Z | Phase 23 | tags: shadcn-install, vaul, pnpm-dlx, peer-deps
 
 `pnpm dlx shadcn@latest add drawer` installs vaul v1.1.2 as a direct dependency and confirms React 19.1 compatibility — shadcn's CLI vetting is sufficient evidence, no separate peer-deps audit needed. The `--yes` flag is essential for non-interactive CI execution; without it, the CLI prompts interactively and stalls.
+
+### 2026-04-06T23:30:00Z | Phase 23 | tags: pattern-b, lazy-wrapper, vaul, sf-drawer
+SFDrawer Pattern B follows sf-calendar-lazy.tsx exactly: real impl in sf-drawer.tsx, lazy loader in sf-drawer-lazy.tsx using `next/dynamic` with `ssr:false` and `SFSkeleton` fallback. The `rounded-none` override on `SFDrawerContent` via `cn()` successfully beats vaul's `data-[vaul-drawer-direction=bottom]:rounded-t-xl` — cn() appends rounded-none last, Tailwind picks it up. Heavy component never enters sf/index.ts barrel; consumers import sf-drawer-lazy.tsx directly.
+
+### 2026-04-06T23:30:00Z | Phase 23 | tags: components-explorer, registry-build, preview-functions, css-only-sketches
+ComponentsExplorer preview functions are CSS-only span/div sketches (not live SF components) — lightweight thumbnails for the /components grid. New entries append after the last FRAME index (027 MENUBAR) with sequential indices 028-030. DRAWER at 012 version was updated from v2.0.0 to v1.4.0 to match actual ship milestone. `pnpm run registry:build` runs `shadcn build` and generates all /r/ JSON artifacts from registry.json entries in one pass.
