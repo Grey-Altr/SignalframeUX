@@ -991,6 +991,8 @@
   [data-anim="tag"],
   [data-anim="comp-cell"],
   [data-anim="cta-btn"],
+  [data-anim="hero-mesh"],
+  [data-anim="error-code"],
   [data-anim="stagger"] > *,
   .sf-hero-deferred {
     opacity: 1 !important;
@@ -1026,6 +1028,9 @@
 [data-anim="comp-cell"] {
   opacity: 0;
 }
+[data-anim="hero-mesh"] {
+  opacity: 0;
+}
 [data-anim="cta-btn"] {
   opacity: 0;
   transform: translateY(20px);
@@ -1033,6 +1038,9 @@
 [data-anim="stagger"] > * {
   opacity: 0;
   transform: translateY(20px);
+}
+[data-anim="error-code"] {
+  opacity: 0;
 }
 /* ── Catch-all: any [data-anim] without a specific rule above stays visible.
    GSAP sets opacity:0 on init before animating — content never disappears if JS fails. ── */

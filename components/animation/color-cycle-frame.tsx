@@ -76,7 +76,7 @@ export function ColorCycleFrame({ children, className }: { children: React.React
   const hoveredRef = useRef(false);
   const accumulatedRef = useRef(0);
   const lockedRef = useRef(false);
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const random = Math.floor(Math.random() * ACCENT_COLORS.length);

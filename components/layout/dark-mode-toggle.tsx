@@ -44,7 +44,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         bloom.style.opacity = "0";
         bloom.style.background = "rgba(255,255,255,0)";
         bloom.style.backdropFilter = "blur(0px) brightness(1)";
-        bloom.style.webkitBackdropFilter = "blur(0px) brightness(1)";
+        (bloom.style as CSSStyleDeclaration & { webkitBackdropFilter: string }).webkitBackdropFilter = "blur(0px) brightness(1)";
       });
       setTimeout(() => bloom.remove(), 1200);
     }

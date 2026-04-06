@@ -74,14 +74,23 @@ async function initHeroAnimations(
 
   const ctx = gsap.context(() => {
 
-  // ── 0. Hero slashes — slide left to right ──
+  // ── 0. Hero mesh — FIRST visible motion, fires at delay:0 (<500ms from load) ──
+  // Initial opacity:0 is set in CSS ([data-anim="hero-mesh"]) and in hero.tsx wrapper.
+  // GSAP controls the fade-in to 0.45 opacity.
+  gsap.fromTo(
+    "[data-anim='hero-mesh']",
+    { opacity: 0 },
+    { opacity: 0.45, duration: 0.3, ease: "power2.out", delay: 0 }
+  );
+
+  // ── 1. Hero slashes — slide left to right (fires as chars begin) ──
   const slashes = document.querySelector("[data-anim='hero-slashes']");
   if (slashes) {
     gsap.set(slashes, { x: "-100vw" });
-    gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 1 });
+    gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 0.3 });
   }
 
-  // ── 1. Hero headline — SplitText char reveal ──
+  // ── 2. Hero headline — SplitText char reveal (fires at 0.4s — visible within 1s) ──
   const split = SplitText.create("[data-anim='hero-char']", {
     type: "chars",
   });
@@ -93,11 +102,11 @@ async function initHeroAnimations(
     duration: 0.35,
     ease: "power3.out",
     stagger: 0.02,
-    delay: 2.3,
+    delay: 0.4,
     onComplete: () => revealMultilingual(),
   });
 
-  // ── 2. Multilingual scramble sequence ──
+  // ── 3. Multilingual scramble sequence (fires ~1.3s after load) ──
   function revealMultilingual() {
     const kata = document.querySelector("[data-anim='hero-katakana']") as HTMLElement;
     const farsi = document.querySelector("[data-anim='hero-farsi']") as HTMLElement;
@@ -107,7 +116,7 @@ async function initHeroAnimations(
     const elements = [kata, farsi, mandarin].filter(Boolean);
     if (subtitle) gsap.set(subtitle, { y: 20 });
 
-    const tl = gsap.timeline({ delay: 2.2 });
+    const tl = gsap.timeline({ delay: 0.3 });
 
     elements.forEach((el) => {
       const text = el.getAttribute("data-text") || el.textContent || "";
@@ -129,21 +138,29 @@ async function initHeroAnimations(
     }
   }
 
-  // ── 3. Hero copy — "something you can" slow fade, "feel" blur bloom ──
-  const heroCopy = document.querySelector("[data-anim='hero-copy']");
+  // ── 4. Hero feel — "feel" blur bloom (right panel) ──
   const heroFeel = document.querySelector("[data-anim='hero-feel']");
-  const heroDot = document.querySelector("[data-anim='hero-copy-dot']");
-  if (heroCopy) {
-    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.inOut", delay: 2 });
-  }
-  if (heroDot) {
-    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.inOut", delay: 6 });
-  }
   if (heroFeel) {
     gsap.to(heroFeel, { opacity: 1, filter: "blur(0px)", duration: 1, ease: "power2.out", delay: 0.5 });
   }
 
-  // ── 3b. Accent color cycle — flash through palette and land on magenta ──
+  // ── 5. Hero copy — "a system you can" slow fade ──
+  const heroCopy = document.querySelector("[data-anim='hero-copy']");
+  if (heroCopy) {
+    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.inOut", delay: 1.0 });
+  }
+
+  // ── 6. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
+  gsap.to("[data-anim='cta-btn']", {
+    y: 0,
+    opacity: 1,
+    duration: 0.5,
+    ease: "power2.out",
+    stagger: 0.1,
+    delay: 1.5,
+  });
+
+  // ── 7. Accent color cycle — flash through palette and land on magenta ──
   const accentColors = [
     "oklch(0.7 0.18 195)",   // Cyan
     "oklch(0.75 0.3 140)",   // Lime
@@ -154,7 +171,7 @@ async function initHeroAnimations(
     "oklch(0.65 0.3 350)",   // Magenta (home)
   ];
   const root = document.documentElement;
-  const colorTl = gsap.timeline({ delay: 4.4 });
+  const colorTl = gsap.timeline({ delay: 2.0 });
   accentColors.forEach((color, i) => {
     const isLast = i === accentColors.length - 1;
     colorTl
@@ -167,16 +184,11 @@ async function initHeroAnimations(
       .to({}, { duration: isLast ? 0 : 0.12 });
   });
 
-
-  // ── 4. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
-  gsap.to("[data-anim='cta-btn']", {
-    y: 0,
-    opacity: 1,
-    duration: 0.5,
-    ease: "power2.out",
-    stagger: 0.1,
-    delay: 4.0,
-  });
+  // ── 8. Hero copy dot — period punctuation, lands last ──
+  const heroDot = document.querySelector("[data-anim='hero-copy-dot']");
+  if (heroDot) {
+    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.inOut", delay: 3.0 });
+  }
 
   }); // end gsap.context
 
