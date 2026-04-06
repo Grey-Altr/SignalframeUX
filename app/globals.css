@@ -180,6 +180,28 @@
   --hover-y: -2px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
+
+  /* ── Semantic Typography Custom Properties ── */
+  --text-heading-1-family: var(--font-display);
+  --text-heading-1-size: var(--text-3xl);
+  --text-heading-1-weight: 700;
+  --text-heading-1-leading: 0.9;
+  --text-heading-2-family: var(--font-sans);
+  --text-heading-2-size: var(--text-2xl);
+  --text-heading-2-weight: 700;
+  --text-heading-2-leading: 1.1;
+  --text-heading-3-family: var(--font-sans);
+  --text-heading-3-size: var(--text-xl);
+  --text-heading-3-weight: 600;
+  --text-heading-3-leading: 1.2;
+  --text-body-family: var(--font-sans);
+  --text-body-size: var(--text-base);
+  --text-body-weight: 400;
+  --text-body-leading: 1.5;
+  --text-small-family: var(--font-sans);
+  --text-small-size: var(--text-sm);
+  --text-small-weight: 400;
+  --text-small-leading: 1.4;
 }
 
 /* ── Dark Mode ── */
@@ -461,6 +483,42 @@
     text-transform: uppercase;
     line-height: 0.9;
   }
+
+  /* ── Semantic Typography Aliases ──
+     Composite tokens bundling font-family + size + weight + line-height.
+     Use these for all new components. Existing clamp() hero/display type is intentional — leave it. */
+  .text-heading-1 {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .text-heading-2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .text-heading-3 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .text-body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .text-small {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
   .sf-yellow-band {
     background-color: var(--sf-yellow);
     color: var(--color-foreground);
