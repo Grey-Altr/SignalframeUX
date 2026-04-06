@@ -37,7 +37,10 @@
   3. Turning on "prefers-reduced-motion" in OS settings causes all canvas components to render a static fallback frame with no animation loop running
   4. `next build` completes with zero `window is not defined` errors; bundle analyzer confirms Three.js lands in an async chunk, not the initial load
   5. Lighthouse 100/100 is maintained across all pages after the WebGL infrastructure is added
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 06-01-PLAN.md — Install Three.js + bundle analyzer, create color-resolve.ts bridge, create SSR-safe signal-canvas-lazy.tsx wrapper
+- [ ] 06-02-PLAN.md — Build singleton SignalCanvas renderer, useSignalScene hook, mount in RootLayout
 
 ### Phase 7: SIGNAL Activation
 **Goal**: Every dormant SIGNAL effect is activated — the canvas cursor fires on all showcase sections, the idle state proves the site is alive, audio and haptic feedback complete the multi-sensory terminal voice
@@ -83,7 +86,7 @@
 | 3. SIGNAL Expression | v1.0 | 4/4 | Complete | 2026-04-06 |
 | 4. Above-the-Fold Lock | v1.0 | 3/3 | Complete | 2026-04-06 |
 | 5. DX Contract & State | v1.0 | 2/2 | Complete | 2026-04-06 |
-| 6. Generative SIGNAL Foundation | v1.1 | 0/? | Not started | - |
+| 6. Generative SIGNAL Foundation | v1.1 | 0/2 | Not started | - |
 | 7. SIGNAL Activation | v1.1 | 0/? | Not started | - |
 | 8. First Generative Scenes | v1.1 | 0/? | Not started | - |
 | 9. Extended Scenes + Production Integration | v1.1 | 0/? | Not started | - |
