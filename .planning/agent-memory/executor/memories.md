@@ -51,6 +51,10 @@ For polymorphic components (SFText with `as` prop mapping to multiple HTML eleme
 
 SFGrid uses numeric string keys ("1", "2", "3", "4") rather than numeric literals for CVA cols variants — string keys allow multi-class values like "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" without ambiguity. CVA variants must be string keys; numeric literals would conflict. When a variant encodes responsive breakpoint logic (not a single class), CVA is the right tool — one prop abstracts multiple Tailwind classes across breakpoints.
 
+### 2026-04-06T03:47:54Z | Phase 03 | tags: css-specificity, data-anim, hover-timing, progressive-enhancement
+
+CSS attribute presence selector `[data-anim]` has lower specificity than attribute value selectors `[data-anim="section-reveal"]` — placing the catch-all `[data-anim] { opacity: 1 }` AFTER the specific rules is the correct CSS ordering to guarantee JS-off visibility without breaking GSAP initial states. For asymmetric hover timing, the base state governs the OUT transition and :hover overrides to the IN duration — `transition-duration` on :hover correctly overrides for the snap-in because the `transition` shorthand on the base state is already established.
+
 ### 2026-04-06T03:46:51Z | Phase 03 | tags: canvas-cursor, oklch-to-rgb, signal-layer, intersection-observer
 
 Canvas 2D context does not understand oklch() CSS values — resolve --color-primary to RGB by creating a probe 1x1 canvas, setting fillStyle to the raw computed property value, drawing a pixel, and reading back with getImageData(). This is the correct approach for bridging CSS custom property color values into canvas draw calls. The zIndex style prop accepts string in JSX via `as unknown as number` cast — React's CSSProperties types number only, but CSS custom property references require string values like "var(--z-cursor, 9999)".
