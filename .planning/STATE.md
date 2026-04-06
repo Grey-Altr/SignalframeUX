@@ -4,13 +4,13 @@ milestone: v1.1
 milestone_name: Generative Surface
 status: active
 stopped_at: ""
-last_updated: "2026-04-06T07:16:00.000Z"
-last_activity: "2026-04-06 — Phase 6 Plan 01 complete: Three.js infrastructure + color bridge"
+last_updated: "2026-04-06T07:23:00.000Z"
+last_activity: "2026-04-06 — Phase 6 Plan 02 complete: singleton SignalCanvas renderer + useSignalScene hook"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: 6 — Generative SIGNAL Foundation
-Plan: 02 (next)
-Status: Plan 01 complete — Three.js infrastructure + color bridge delivered
-Last activity: 2026-04-06 — Plan 01 complete (3 tasks, 3 commits: 608df40, b913979, 6693f44)
+Plan: 03 (next)
+Status: Plan 02 complete — singleton SignalCanvas renderer + useSignalScene hook delivered
+Last activity: 2026-04-06 — Plan 02 complete (3 tasks, 3 commits: 26f0861, d120beb, 78c957b)
 
 ## Progress
 
@@ -39,13 +39,13 @@ Phase 2 — FRAME Primitives:                    [██████████
 Phase 3 — SIGNAL Expression:                   [██████████] 100% (4/4 plans) COMPLETE
 Phase 4 — Above-the-Fold Lock:                 [██████████] 100% (3/3 plans) COMPLETE
 Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
-Phase 6 — Generative SIGNAL Foundation:        [█         ]  ~20% (1/? plans) In progress
+Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
 Phase 7 — SIGNAL Activation:                   [          ]   0% (0/? plans) Not started
 Phase 8 — First Generative Scenes:             [          ]   0% (0/? plans) Not started
 Phase 9 — Extended Scenes + Integration:       [          ]   0% (0/? plans) Not started
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [█         ]  ~5% (1/? plans)
+v1.1: [█         ]  ~10% (2/? plans)
 ```
 
 ## Accumulated Context
@@ -82,6 +82,8 @@ v1.1: [█         ]  ~5% (1/? plans)
 **06-01:** Project uses pnpm (not npm) — pnpm-lock.yaml present, npm install fails against .pnpm virtual store. Use `pnpm add` for all installs.
 **06-01:** No transpilePackages for Three.js — next/dynamic({ ssr: false }) is sufficient SSR guard; transpilePackages has known Turbopack issues (vercel/next.js#63230).
 **06-01:** No caching in color-resolve.ts (Phase 6) — color-cycle-frame.tsx mutates --color-primary dynamically; cached values go stale. Optimize in Phase 8.
+**06-02:** signal-canvas.tsx not .ts — lib/ file contains a React component with JSX; .tsx extension required by Next.js/Turbopack; @/lib/signal-canvas path alias resolves both extensions.
+**06-02:** disposeScene and deregisterScene are separate calls — hook calls both; separation allows future temporary deregistration without GPU disposal.
 
 ### Blockers
 - None
@@ -90,7 +92,7 @@ v1.1: [█         ]  ~5% (1/? plans)
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (1/? plans) |
+| 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
 | 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | Not started |
 | 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | Not started |
 | 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | Not started |
@@ -105,5 +107,5 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 06-01-PLAN.md (Three.js infrastructure + color bridge)
-Resume file: .planning/phases/06-generative-signal-foundation/06-02-PLAN.md
+Stopped at: Completed 06-02-PLAN.md (singleton SignalCanvas renderer + useSignalScene hook)
+Resume file: .planning/phases/06-generative-signal-foundation/06-03-PLAN.md

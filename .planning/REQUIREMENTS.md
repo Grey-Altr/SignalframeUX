@@ -2,11 +2,11 @@
 
 ## Generative Foundation
 
-- [ ] **GEN-01**: Singleton SignalCanvas renderer manages all WebGL contexts from a single shared instance, preventing context exhaustion
-- [ ] **GEN-02**: OKLCH→sRGB color bridge utility extracted from canvas-cursor.tsx into `lib/color-resolve.ts`, shared by all canvas/WebGL components
-- [ ] **GEN-03**: `useSignalScene` hook provides automatic `.dispose()` traversal on unmount, GSAP ticker as render driver, and IntersectionObserver pause for offscreen canvases
-- [ ] **GEN-04**: All WebGL components load via `next/dynamic({ ssr: false })` with `transpilePackages: ['three']`, validated by bundle analyzer under 200KB initial budget
-- [ ] **GEN-05**: Every canvas/WebGL component has `matchMedia('prefers-reduced-motion')` guard with static fallback frame and appropriate ARIA role
+- [x] **GEN-01**: Singleton SignalCanvas renderer manages all WebGL contexts from a single shared instance, preventing context exhaustion
+- [x] **GEN-02**: OKLCH→sRGB color bridge utility extracted from canvas-cursor.tsx into `lib/color-resolve.ts`, shared by all canvas/WebGL components
+- [x] **GEN-03**: `useSignalScene` hook provides automatic `.dispose()` traversal on unmount, GSAP ticker as render driver, and IntersectionObserver pause for offscreen canvases
+- [x] **GEN-04**: All WebGL components load via `next/dynamic({ ssr: false })` with `transpilePackages: ['three']`, validated by bundle analyzer under 200KB initial budget
+- [x] **GEN-05**: Every canvas/WebGL component has `matchMedia('prefers-reduced-motion')` guard with static fallback frame and appropriate ARIA role
 
 ## SIGNAL Activation
 
@@ -48,11 +48,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GEN-01 | Phase 6 | Pending |
-| GEN-02 | Phase 6 | Pending |
-| GEN-03 | Phase 6 | Pending |
-| GEN-04 | Phase 6 | Pending |
-| GEN-05 | Phase 6 | Pending |
+| GEN-01 | Phase 6 | Complete (06-02) |
+| GEN-02 | Phase 6 | Complete (06-01) |
+| GEN-03 | Phase 6 | Complete (06-02) |
+| GEN-04 | Phase 6 | Complete (06-01) |
+| GEN-05 | Phase 6 | Complete (06-02) |
 | SIG-06 | Phase 7 | Pending |
 | SIG-07 | Phase 7 | Pending |
 | SIG-08 | Phase 7 | Pending |
