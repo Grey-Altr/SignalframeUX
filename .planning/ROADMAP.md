@@ -137,7 +137,7 @@ Plans:
 | 8. First Generative Scenes | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 11. Registry Completion | v1.2 | 1/1 | Complete | 2026-04-06 |
+| 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
