@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed Phase 4 Plan 04-03 — Reduced-motion QA complete, SIGNAL-SPEC.md Section 7 (17-effect documentation, two-layer architecture, QA checklist)
-last_updated: "2026-04-06T04:56:52.143Z"
-last_activity: "2026-04-05 — Plan 04-03 executed: reduced-motion CSS audit (no gaps found), human-verified all surfaces approved, SIGNAL-SPEC.md Section 7 documentation"
+stopped_at: Completed Phase 5 Plan 05-01 — DX documentation foundation (SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard)
+last_updated: "2026-04-06T05:16:00Z"
+last_activity: "2026-04-06 — Plan 05-01 executed: docs/SCAFFOLDING.md (7 sections, 3 patterns), .planning/DX-SPEC.md (3 deferred item interfaces), STP-02 audit confirmed zero GSAP color mutations + added setProperty guard"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 15
+  completed_plans: 13
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 4 — Above-the-Fold Lock (IN PROGRESS)
-Plan: 04-03 (complete) — Reduced-motion QA: CSS coverage audit (complete, no gaps), human-verified all surfaces at 1440x900 (approved), SIGNAL-SPEC.md Section 7 added with 17-effect documentation and two-layer suppression architecture
-Status: Phase 4 IN PROGRESS — 3/? plans complete
-Last activity: 2026-04-05 — Plan 04-03 executed: reduced-motion CSS audit (no gaps found), human-verified all surfaces approved, SIGNAL-SPEC.md Section 7 documentation
+Phase: Phase 5 — DX Contract & State (IN PROGRESS)
+Plan: 05-01 (complete) — DX documentation foundation: docs/SCAFFOLDING.md (7 sections, 3 annotated patterns, import boundary), .planning/DX-SPEC.md (interface sketches for DX-04/DX-05/STP-01), STP-02 audit (zero GSAP color mutations, setProperty guard added to color-cycle-frame.tsx)
+Status: Phase 5 IN PROGRESS — 1/2 plans complete
+Last activity: 2026-04-06 — Plan 05-01 executed: docs/SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard
 
 ## Progress
 
@@ -38,9 +38,9 @@ Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plan
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
 Phase 3 — SIGNAL Expression:   [██████████] 100% (4/4 plans) COMPLETE
 Phase 4 — Above-the-Fold Lock: [██████████] 100% (3/3 plans) COMPLETE
-Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
+Phase 5 — DX Contract & State: [█████░░░░░]  50% (1/2 plans)
 
-Overall:   [████████░░]  ~85% (12/15 plans)
+Overall:   [████████░░]  ~87% (13/15 plans)
 ```
 
 ## Accumulated Context
@@ -57,6 +57,9 @@ Overall:   [████████░░]  ~85% (12/15 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 05-01: STP-02 guard skips setProperty if sf-no-transition class is present — prevents color cycle from overwriting theme primary during ~150ms wipe window; mount-time init intentionally unguarded
+- Plan 05-01: GSAP color mutation audit confirmed zero matches — GSAP only animates opacity and transform in all animation/ files; setProperty is the only color mutation surface
+- Plan 05-01: DX-SPEC.md interface sketches are shape-only with open questions — deferred items (DX-04, DX-05, STP-01) documented without locked decisions per pitfall 4 from RESEARCH.md
 - Plan 04-03: Reduced-motion CSS audit confirmed complete — no gaps found; hero-mesh and error-code were already added in 04-01 and 04-02; [data-anim] catch-all covers any future unlisted values
 - Plan 04-03: Hover transitions (SIG-02) suppressed by global transition-duration: 0.01ms but state changes remain instant — intentional; hover feedback is pointer state not decorative motion
 - Plan 04-03: Two-layer architecture documented as authoritative pattern — CSS fires at paint-time before JS, GSAP layer handles timeline suppression at runtime
@@ -109,10 +112,10 @@ Overall:   [████████░░]  ~85% (12/15 plans)
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | COMPLETE — 4/4 plans |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | COMPLETE — 3/3 plans |
-| 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
+| 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | IN PROGRESS — 1/2 plans |
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: Completed Phase 4 Plan 04-03 — Reduced-motion QA complete, SIGNAL-SPEC.md Section 7 (17-effect documentation, two-layer architecture, QA checklist)
-Resume file: .planning/phases/04-above-the-fold-lock/
+Last session: 2026-04-06
+Stopped at: Completed Phase 5 Plan 05-01 — DX documentation foundation (SCAFFOLDING.md, DX-SPEC.md, STP-02 audit + guard)
+Resume file: .planning/phases/05-dx-contract-state/

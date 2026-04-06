@@ -94,7 +94,7 @@ Plans:
   4. Activating the theme toggle during an active GSAP animation does not produce OKLCH color conflicts or inline style collisions — verified by toggling during a ScrambleText sequence
 **Plans:** 2 plans
 Plans:
-- [ ] 05-01-PLAN.md — SCAFFOLDING.md + DX-SPEC.md deferred sketches + STP-02 theme toggle GSAP audit
+- [x] 05-01-PLAN.md — SCAFFOLDING.md + DX-SPEC.md deferred sketches + STP-02 theme toggle GSAP audit
 - [ ] 05-02-PLAN.md — JSDoc sweep on all 28 SF-wrapped components
 
 ---
@@ -107,7 +107,7 @@ Plans:
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
 | 4. Above-the-Fold Lock | 3/3 | Complete | 2026-04-05 |
-| 5. DX Contract & State | 0/2 | Planning complete | - |
+| 5. DX Contract & State | 1/2 | In progress | - |
 
 ---
 

@@ -44,8 +44,8 @@
 
 ## FLUENCY — DX Contract
 
-- [ ] **DX-01**: SF component scaffolding spec documented — file structure, CVA shape, barrel export pattern, required props, data attributes
-- [ ] **DX-02**: FRAME/SIGNAL import boundary explicit — `sf/` = FRAME, `animation/` = SIGNAL, data attributes bridge them
+- [x] **DX-01**: SF component scaffolding spec documented — file structure, CVA shape, barrel export pattern, required props, data attributes
+- [x] **DX-02**: FRAME/SIGNAL import boundary explicit — `sf/` = FRAME, `animation/` = SIGNAL, data attributes bridge them
 - [ ] **DX-03**: Per-component JSDoc with usage example on all SF-wrapped components
 - [ ] **DX-04**: `registry.json` distribution surface for AI/CLI-driven component installation
 - [ ] **DX-05**: API architecture foundation — `createSignalframeUX(config)`, `useSignalframe()` hook returning tokens/theme/motion controllers
@@ -53,7 +53,7 @@
 ## FLUENCY — State & Persistence
 
 - [ ] **STP-01**: Session state persistence — component browser filters, token explorer tab, scroll position survive return visits within same session
-- [ ] **STP-02**: Theme toggle during GSAP animation guarded — transition buffer prevents OKLCH/inline color conflicts
+- [x] **STP-02**: Theme toggle during GSAP animation guarded — transition buffer prevents OKLCH/inline color conflicts
 
 ## Traceability
 
@@ -89,13 +89,13 @@
 | ATF-04 | Phase 4 — Above-the-Fold Lock | Pending |
 | ATF-05 | Phase 4 — Above-the-Fold Lock | Pending |
 | ATF-06 | Phase 4 — Above-the-Fold Lock | Pending |
-| DX-01 | Phase 5 — DX Contract & State | Pending |
-| DX-02 | Phase 5 — DX Contract & State | Pending |
+| DX-01 | Phase 5 — DX Contract & State | Complete |
+| DX-02 | Phase 5 — DX Contract & State | Complete |
 | DX-03 | Phase 5 — DX Contract & State | Pending |
 | DX-04 | Phase 5 — DX Contract & State | Pending |
 | DX-05 | Phase 5 — DX Contract & State | Pending |
 | STP-01 | Phase 5 — DX Contract & State | Pending |
-| STP-02 | Phase 5 — DX Contract & State | Pending |
+| STP-02 | Phase 5 — DX Contract & State | Complete |
 
 ---
 
