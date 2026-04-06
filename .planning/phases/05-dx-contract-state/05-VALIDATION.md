@@ -25,7 +25,7 @@ created: 2026-04-05
 | 05-01 | DX-01 | file | `test -f docs/SCAFFOLDING.md && grep -c "CVA" docs/SCAFFOLDING.md` | ⬜ |
 | 05-02 | DX-02 | grep | `grep -c "sf/" docs/SCAFFOLDING.md` (import boundary) | ⬜ |
 | 05-03 | DX-03 | grep | `grep -c "/**" components/sf/*.tsx` (JSDoc count) | ⬜ |
-| 05-04 | DX-04,DX-05,STP-01 | file | `test -f .planning/phases/05-dx-contract-state/DX-SPEC.md` | ⬜ |
+| 05-04 | DX-04,DX-05,STP-01 | file | `test -f .planning/DX-SPEC.md` | ⬜ |
 | 05-05 | STP-02 | grep | `grep "sf-no-transition" lib/theme.ts` | ⬜ |
 
 ## Manual-Only Verifications
