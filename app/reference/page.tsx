@@ -13,7 +13,7 @@ export default function APIPage() {
   return (
     <>
       <Nav />
-      <main id="main-content">
+      <main id="main-content" data-cursor>
         <APIExplorer />
       </main>
       <Footer />

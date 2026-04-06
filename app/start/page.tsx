@@ -185,7 +185,7 @@ export default function StartPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "GET STARTED" }]} />
         {/* ═══ HERO ═══ */}
         <section className="bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">

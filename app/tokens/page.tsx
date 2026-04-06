@@ -13,7 +13,7 @@ export default function TokensPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
         {/* ═══ PAGE HEADER ═══ */}
         <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">

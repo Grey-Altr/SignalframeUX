@@ -23,25 +23,25 @@ export default function HomePage() {
       <Nav />
       <main id="main-content" className="transition-none">
         <div id="bg-shift-wrapper">
-          <div data-bg-shift="white" data-section="hero" data-section-label="HERO"><Hero /></div>
-          <div data-bg-shift="black" data-section="manifesto" data-section-label="MANIFESTO" className="relative overflow-hidden">
+          <div data-bg-shift="white" data-section="hero" data-section-label="HERO" data-cursor><Hero /></div>
+          <div data-bg-shift="black" data-section="manifesto" data-section-label="MANIFESTO" data-cursor className="relative overflow-hidden">
             <GhostLabel text="MANIFEST" className="-left-4 top-1/2 -translate-y-1/2" />
             <ManifestoBand />
           </div>
           <CircuitDivider variant="default" />
-          <div data-bg-shift="white" data-section="signal" data-section-label="SIGNAL / FRAME" className="relative overflow-hidden">
+          <div data-bg-shift="white" data-section="signal" data-section-label="SIGNAL / FRAME" data-cursor className="relative overflow-hidden">
             <GhostLabel text="SIGNAL" className="right-0 top-0" />
             <DualLayer />
           </div>
           <CircuitDivider variant="minimal" />
-          <div data-bg-shift="black" data-section="stats" data-section-label="STATS"><StatsBand /></div>
+          <div data-bg-shift="black" data-section="stats" data-section-label="STATS" data-cursor><StatsBand /></div>
           <MarqueeBand />
           <CircuitDivider variant="complex" />
-          <div data-bg-shift="white" data-section="code" data-section-label="API" className="relative overflow-hidden">
+          <div data-bg-shift="white" data-section="code" data-section-label="API" data-cursor className="relative overflow-hidden">
             <GhostLabel text="CODE" className="-left-4 top-1/4" />
             <CodeSection />
           </div>
-          <div data-bg-shift="black" data-section="grid" data-section-label="COMPONENTS" className="relative overflow-hidden">
+          <div data-bg-shift="black" data-section="grid" data-section-label="COMPONENTS" data-cursor className="relative overflow-hidden">
             <GhostLabel text="GRID" className="right-0 bottom-0" />
             <ComponentGrid />
           </div>

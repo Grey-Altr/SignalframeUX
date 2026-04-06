@@ -13,7 +13,7 @@ export default function ComponentsPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "COMPONENTS" }]} />
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
         <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
