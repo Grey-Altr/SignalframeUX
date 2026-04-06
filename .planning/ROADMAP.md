@@ -4,7 +4,7 @@
 
 - [x] **v1.0 Craft & Feedback** — Phases 1-5 (shipped 2026-04-05)
 - [x] **v1.1 Generative Surface** — Phases 6-9 (shipped 2026-04-06)
-- [ ] **v1.2 Tech Debt Sweep** — Phases 10-15 (in progress)
+- [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
 
 ## Phases
 
@@ -36,7 +36,7 @@
 - [x] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement (COMPLETE 2026-04-06)
 - [x] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook (COMPLETE 2026-04-06)
 - [x] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage (COMPLETE 2026-04-06)
-- [ ] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs
+- [x] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs (COMPLETE 2026-04-06)
 
 ## Phase Details
 
@@ -120,10 +120,10 @@ Plans:
   2. All REQUIREMENTS.md checkboxes from v1.0, v1.1, and v1.2 reflect actual completion status — no stale unchecked boxes for shipped work
   3. SCAFFOLDING.md documents the `useSignalframe()` API contract with correct parameter and return types
   4. SFSection JSDoc reflects the updated `bgShift: "white" | "black"` type (not boolean)
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 15-01-PLAN.md — SUMMARY frontmatter normalization + REQUIREMENTS archive checkbox fixes
-- [ ] 15-02-PLAN.md — SCAFFOLDING.md API contract + DOC-01 closure
+- [x] 15-01-PLAN.md — SUMMARY frontmatter normalization + REQUIREMENTS archive checkbox fixes
+- [x] 15-02-PLAN.md — SCAFFOLDING.md API contract + DOC-01 closure
 
 ## Progress
 
@@ -143,4 +143,4 @@ Plans:
 | 12. SIGNAL Wiring | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 13. Config Provider | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 14. Session Persistence | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 15. Documentation Cleanup | v1.2 | 0/2 | Not started | — |
+| 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |

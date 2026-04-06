@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 14-01-PLAN.md — useSessionState + useScrollRestoration hooks wired into ComponentsExplorer and TokenTabs (STP-01 satisfied)
-last_updated: "2026-04-06T13:20:58.768Z"
-last_activity: "2026-04-06 — 14-01 complete: STP-01 satisfied — sessionStorage persistence for filter, tab, and scroll state"
+stopped_at: Completed 15-02-PLAN.md — SCAFFOLDING.md Config Provider API section + DOC-01 closure (v1.2 Tech Debt Sweep COMPLETE)
+last_updated: "2026-04-06T16:43:00Z"
+last_activity: "2026-04-06 — 15-02 complete: DOC-01 satisfied — SCAFFOLDING.md Section 8 added, DOC-01 marked complete, v1.2 milestone shipped"
 progress:
   total_phases: 6
-  completed_phases: 5
-  total_plans: 7
-  completed_plans: 7
+  completed_phases: 6
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # STATE — SignalframeUX
@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 14 — Session Persistence (COMPLETE)
-Plan: 14-01 complete
-Status: Phase 14 done — Phase 15 Documentation Cleanup next
-Last activity: 2026-04-06 — 14-01 complete: STP-01 satisfied — sessionStorage persistence for filter, tab, and scroll state
+Phase: Phase 15 — Documentation Cleanup (COMPLETE)
+Plan: 15-02 complete
+Status: ALL PHASES COMPLETE — v1.2 Tech Debt Sweep shipped
+Last activity: 2026-04-06 — 15-02 complete: DOC-01 satisfied — SCAFFOLDING.md Section 8 added, DOC-01 marked complete, v1.2 milestone shipped
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [█████████░]  ~83% (7/? plans) IN PROGRESS — Phase 15 next
+v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 ```
 
 ## v1.2 Phase Map
@@ -48,7 +48,7 @@ v1.2: [█████████░]  ~83% (7/? plans) IN PROGRESS — Phase 1
 | 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | COMPLETE |
 | 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | COMPLETE |
 | 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | COMPLETE |
-| 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | Not started |
+| 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | COMPLETE |
 
 ## Accumulated Context
 
@@ -96,6 +96,8 @@ v1.2: [█████████░]  ~83% (7/? plans) IN PROGRESS — Phase 1
 | useScrollRestoration in ComponentsExplorer, not app/components/page.tsx | page.tsx is a Server Component; hook must live in the already-client ComponentsExplorer |
 | showAll state in TokenTabs NOT persisted | Per research: users expect showAll to reset each visit; it controls display verbosity, not navigation context |
 | SESSION_KEYS in use-session-state.ts (not a separate constants file) | Keeps hook and key constants co-located; prevents orphaned constants |
+| SCAFFOLDING.md Section 8 appended verbatim from RESEARCH.md — no renumbering | Preserves existing doc structure; append-only keeps diff minimal and reviewable |
+| DOC-01 traceability attributes both 15-01 and 15-02 | Both plans contributed to DOC-01 — frontmatter normalization in 15-01, API contract + closure in 15-02 |
 
 ### Blockers
 - None
@@ -110,5 +112,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 14-01-PLAN.md — useSessionState + useScrollRestoration hooks wired into ComponentsExplorer and TokenTabs (STP-01 satisfied)
-Resume with: `/pde:plan-phase 15` (Documentation Cleanup — DOC-01)
+Stopped at: Completed 15-02-PLAN.md — SCAFFOLDING.md Config Provider API section + DOC-01 closure (v1.2 COMPLETE)
+Resume with: v1.2 milestone shipped — no further phases planned
