@@ -1,5 +1,14 @@
 # Milestones
 
+## v1.2 Tech Debt Sweep (Shipped: 2026-04-06)
+
+**Phases completed:** 6 phases, 9 plans, 6 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.1 Generative Surface (Shipped: 2026-04-06)
 
 **Phases completed:** 4 phases, 9 plans

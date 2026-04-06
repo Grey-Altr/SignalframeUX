@@ -43,13 +43,19 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ data-anim="stagger" on production grid blocks — v1.1
 - ✓ Performance budget maintained with Three.js in async chunk (102 kB initial) — v1.1
 
+- ✓ SignalMotion scroll-driven animation on 4 homepage sections — v1.2
+- ✓ SignalOverlay CSS→WebGL uniform bridge via module-level MutationObserver cache — v1.2
+- ✓ CSS var defaults (--signal-intensity, --signal-speed, --signal-accent) in globals.css — v1.2
+- ✓ SFSection bgShift typed "white" | "black" (was boolean) — v1.2
+- ✓ Reference page nav clearance + NEXT_CARDS in SFSection — v1.2
+- ✓ Full 33-item shadcn CLI registry with meta.layer/meta.pattern fields — v1.2
+- ✓ createSignalframeUX(config) factory + useSignalframe() hook with SSR-safe provider — v1.2
+- ✓ Session persistence: useSessionState + useScrollRestoration hooks (hydration-safe) — v1.2
+- ✓ Documentation cleanup: SUMMARY frontmatter, archive checkboxes, SCAFFOLDING.md API contract — v1.2
+
 ### Active
 
-- [ ] SignalMotion component placed on showcase sections (created but unused — INT-03 tech debt)
-- [ ] SignalOverlay CSS var bridge to WebGL uniforms (one-sided wire — INT-04 tech debt)
-- [ ] registry.json for AI/CLI component installation — DX-04
-- [ ] createSignalframeUX(config) + useSignalframe() API — DX-05
-- [ ] Session state persistence (filters, scroll, tabs) — STP-01
+(No active requirements — planning next milestone)
 
 ### Out of Scope
 
@@ -59,19 +65,9 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.2 Tech Debt Sweep
+## Current Milestone: Planning Next
 
-**Goal:** Close all carried tech debt from v1.0 and v1.1 — wire unused components, fix type mismatches, ship deferred DX features, add session persistence, and clean up documentation.
-
-**Target features:**
-- Wire SignalMotion onto showcase sections (INT-03)
-- Complete SignalOverlay→WebGL CSS var bridge with defaults (INT-04)
-- Fix reference page layout gaps (INT-01)
-- Fix SFSection bgShift prop type mismatch (bgShift)
-- Ship registry.json for AI/CLI component installation (DX-04)
-- Ship createSignalframeUX(config) + useSignalframe() API factory (DX-05)
-- Add session state persistence for filters, scroll, tabs (STP-01)
-- Clean up documentation frontmatters and stale checkboxes (Docs)
+All three milestones shipped. Ready for `/pde:new-milestone`.
 
 ## Context
 
@@ -91,11 +87,20 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
 
-**Known tech debt (v1.1):**
-- INT-03: SignalMotion component created but unused — needs placement on showcase sections
-- INT-04: SignalOverlay writes CSS vars but no WebGL uniform reads them — one-sided bridge
-- INT-04: --signal-* CSS vars have no defaults in globals.css
-- SFSection bgShift boolean prop orphaned — all usage passes data-bg-shift as spread string
+**Shipped v1.2 Tech Debt Sweep** (2026-04-06):
+- 124 files modified, +8,639 lines across 6 phases, 9 plans
+- All v1.0/v1.1 tech debt closed: CSS var defaults, bgShift type fix, reference page layout
+- CSS→WebGL signal bridge via MutationObserver cache (zero getComputedStyle in ticker)
+- SignalMotion scroll-driven entrance on 4 homepage sections
+- Full shadcn CLI registry: 33 items with meta.layer/meta.pattern
+- createSignalframeUX config factory + SSR-safe SignalframeProvider (hole-in-the-donut)
+- Session persistence: useSessionState + useScrollRestoration hooks (hydration-safe)
+- Documentation: 30 SUMMARY frontmatters normalized, 14 stale archive checkboxes fixed, SCAFFOLDING.md API contract
+
+**Minor tech debt (v1.2, non-blocking):**
+- MutationObserver in WebGL scenes has no disconnect on unmount
+- readSignalVars has no NaN guard
+- Lenis vs window.scrollTo race on scroll restoration (rAF mitigates)
 
 ## Key Decisions
 
@@ -112,6 +117,10 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 | Single-pass GLSL hero with integrated dither | v1.1 | ✓ Good — avoided WebGLRenderTarget two-pass complexity |
 | Document-level event listener for audio/haptics | v1.1 | ✓ Good — single listener vs modifying every SF component |
 | pnpm over npm | v1.1 | ✓ Good — project convention, all plans auto-corrected |
+| Module-level MutationObserver cache for signal uniforms | v1.2 | ✓ Good — zero getComputedStyle in GSAP ticker |
+| Hole-in-the-donut SSR pattern for SignalframeProvider | v1.2 | ✓ Good — layout primitives stay Server Components |
+| sessionStorage over localStorage for session state | v1.2 | ✓ Good — clears on tab close, correct semantics |
+| useEffect-deferred sessionStorage reads for SSR safety | v1.2 | ✓ Good — zero hydration mismatches |
 
 ## Constraints
 
@@ -132,4 +141,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.2 Tech Debt Sweep milestone started*
+*Last updated: 2026-04-06 after v1.2 Tech Debt Sweep milestone shipped*
