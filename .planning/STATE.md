@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: 22-02 shipped — TK-02, TK-03 resolved (elevation policy + deferred token groups documented)
-stopped_at: Completed 22-02-PLAN.md — TK-02, TK-03 resolved
-last_updated: "2026-04-06T22:32:03.639Z"
-last_activity: 2026-04-06 — 22-02 complete (2 tasks, 2 files, ~5min)
+status: 23-01 shipped — CMP-02, CMP-03, CMP-04 complete (SFHoverCard, SFInputOTP, SFInputGroup)
+stopped_at: Completed 23-01-PLAN.md — SFInputGroup + SFHoverCard + SFInputOTP wrappers
+last_updated: "2026-04-06T23:20:00Z"
+last_activity: 2026-04-06 — 23-01 complete (2 tasks, 10 files, ~3min)
 progress:
   total_phases: 17
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 22 (complete)
-Plan: 22-02 complete
-Status: 22-02 shipped — TK-02, TK-03 resolved (elevation policy + deferred token groups documented)
-Last activity: 2026-04-06 — 22-02 complete (2 tasks, 2 files, ~5min)
+Phase: Phase 23 (in progress — 1/2 plans complete)
+Plan: 23-01 complete
+Status: 23-01 shipped — CMP-02, CMP-03, CMP-04 complete (SFHoverCard, SFInputOTP, SFInputGroup Pattern A wrappers)
+Last activity: 2026-04-06 — 23-01 complete (2 tasks, 10 files, ~3min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [███_______] ~33% (4/? plans) IN PROGRESS
+v1.4: [████______] ~40% (5/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -47,7 +47,7 @@ v1.4: [███_______] ~33% (4/? plans) IN PROGRESS
 |-------|------|--------------|--------|
 | 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Complete (2/2 plans) |
 | 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
-| 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Not started |
+| 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | In progress (1/2 plans — CMP-02, CMP-03, CMP-04 complete) |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Not started |
 | 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Not started |
 | 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
@@ -123,6 +123,8 @@ v1.4: [███_______] ~33% (4/? plans) IN PROGRESS
 | CMP-02 (SFHoverCard) and CMP-03 (SFInputOTP) in Phase 23 | Research originally deferred these to v1.4.x but REQUIREMENTS.md scopes them to v1.4 — included |
 | lenisRef pattern for page-transition.tsx | transitionend DOM handler cannot safely close over React hook values — store Lenis in useRef updated via useEffect |
 | immediate: true for scroll restoration and page wipe | Matches original instant-scroll intent; smooth scroll is inappropriate while wipe panel covers the viewport |
+| SFInputOTPSlot uses first:rounded-none + last:rounded-none to beat base's first:rounded-l-lg + last:rounded-r-lg | Tailwind Merge respects class order — explicit overrides required for positional pseudo-class variants |
+| SFInputGroupAddon uses [>kbd]:rounded-none to reach inside CVA-generated radius | CVA applies radius at sub-element level; outer rounded-none does not cascade into CVA children |
 
 ### Blockers
 
@@ -138,5 +140,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 22-02-PLAN.md — TK-02, TK-03 resolved
-Resume with: `/pde:execute-phase 23 01` — Remaining SF Components (CMP-01, CMP-02, CMP-03, CMP-04)
+Stopped at: Completed 23-01-PLAN.md — CMP-02 (SFHoverCard), CMP-03 (SFInputOTP), CMP-04 (SFInputGroup) shipped
+Resume with: `/pde:execute-phase 23 02` — CMP-01 SFDrawer (Pattern B, lazy, vaul)

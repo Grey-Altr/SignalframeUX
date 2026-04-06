@@ -265,7 +265,7 @@ Plans:
   3. SFInputOTP renders an OTP input with individual character slots; the input is keyboard navigable and passes WCAG AA color contrast
   4. SFInputGroup wraps the last uncovered `ui/` component — all shadcn base components now have an SF wrapper equivalent; the gap is closed
   5. All four components have registry entries in registry.json and `/r/` artifacts, are exported from `sf/index.ts` (except SFDrawer which is lazy), and appear in ComponentsExplorer under the correct category
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 23-01-PLAN.md — Install bases + SFInputGroup, SFHoverCard, SFInputOTP (Pattern A wrappers)
 - [ ] 23-02-PLAN.md — SFDrawer (Pattern B lazy) + ComponentsExplorer entries + registry build + bundle gate
@@ -341,7 +341,7 @@ Plans:
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
-| 23. Remaining SF Components | v1.4 | 0/2 | Not started | - |
+| 23. Remaining SF Components | 1/2 | In Progress|  | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |

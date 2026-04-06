@@ -14,9 +14,9 @@
 
 ## Components
 - [ ] **CMP-01**: SFDrawer (vaul-based, lazy, meta.heavy: true) with registry + explorer entry
-- [ ] **CMP-02**: SFHoverCard (FRAME-only, Pattern A) with registry + explorer entry
-- [ ] **CMP-03**: SFInputOTP (input-otp, Pattern A) with registry + explorer entry
-- [ ] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
+- [x] **CMP-02**: SFHoverCard (FRAME-only, Pattern A) with registry + explorer entry
+- [x] **CMP-03**: SFInputOTP (input-otp, Pattern A) with registry + explorer entry
+- [x] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
 
 ## Detail View Data
 - [ ] **DV-01**: lib/component-registry.ts maps all grid items to variants, code snippets, doc pointers
@@ -73,9 +73,9 @@
 | TK-03 | Phase 22 | Pending |
 | TK-04 | Phase 22 | Pending |
 | CMP-01 | Phase 23 | Pending |
-| CMP-02 | Phase 23 | Pending |
-| CMP-03 | Phase 23 | Pending |
-| CMP-04 | Phase 23 | Pending |
+| CMP-02 | Phase 23 | Complete |
+| CMP-03 | Phase 23 | Complete |
+| CMP-04 | Phase 23 | Complete |
 | DV-01 | Phase 24 | Pending |
 | DV-02 | Phase 24 | Pending |
 | DV-03 | Phase 24 | Pending |
