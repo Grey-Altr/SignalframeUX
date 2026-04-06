@@ -57,7 +57,7 @@
 **v1.4 Feature Complete (Phases 21-26):**
 
 - [x] **Phase 21: Tech Debt Closure** — MutationObserver disconnect, NaN guard, Lenis scroll race, duplicate TOAST entry (completed 2026-04-06)
-- [ ] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audit, sidebar/chart tokens
+- [ ] **Phase 22: Token Finalization** — success/warning into @theme (22-01 done), elevation absence documented, WebGL bridge audit (22-01 done), sidebar/chart tokens
 - [ ] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP
 - [ ] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC)
 - [ ] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring
