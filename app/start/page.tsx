@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
-import { SFButton } from "@/components/sf/sf-button";
-import { SFBadge } from "@/components/sf/sf-badge";
+import { SFButton, SFBadge } from "@/components/sf";
 import Link from "next/link";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
 import { Breadcrumb } from "@/components/layout/breadcrumb";

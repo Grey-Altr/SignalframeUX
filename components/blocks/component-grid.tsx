@@ -1,16 +1,19 @@
 import Link from "next/link";
-import { SFButton } from "@/components/sf/sf-button";
-import { SFInput } from "@/components/sf/sf-input";
-import { SFCard, SFCardHeader, SFCardTitle, SFCardContent } from "@/components/sf/sf-card";
-import { SFBadge } from "@/components/sf/sf-badge";
 import {
+  SFButton,
+  SFInput,
+  SFCard,
+  SFCardHeader,
+  SFCardTitle,
+  SFCardContent,
+  SFBadge,
   SFTable,
   SFTableHeader,
   SFTableHead,
   SFTableBody,
   SFTableRow,
   SFTableCell,
-} from "@/components/sf/sf-table";
+} from "@/components/sf";
 import { GRAIN_SVG } from "@/lib/grain";
 import { PreviewTabs } from "@/components/blocks/preview-tabs";
 

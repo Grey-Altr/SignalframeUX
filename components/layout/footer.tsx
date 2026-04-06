@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SFSeparator } from "@/components/sf/sf-separator";
+import { SFSeparator } from "@/components/sf";
 import { CopyButton } from "@/components/layout/copy-button";
 import { BackToTop } from "@/components/layout/back-to-top";
 

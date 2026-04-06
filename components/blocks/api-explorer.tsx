@@ -1,24 +1,20 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, memo } from "react";
-import { SFBadge } from "@/components/sf/sf-badge";
-import { SFButton } from "@/components/sf/sf-button";
 import {
+  SFBadge,
+  SFButton,
   SFTabs,
   SFTabsList,
   SFTabsTrigger,
   SFTabsContent,
-} from "@/components/sf/sf-tabs";
-import {
   SFTable,
   SFTableHeader,
   SFTableHead,
   SFTableBody,
   SFTableRow,
   SFTableCell,
-} from "@/components/sf/sf-table";
-import { SFScrollArea } from "@/components/sf/sf-scroll-area";
-import {
+  SFScrollArea,
   SFSelect,
   SFSelectTrigger,
   SFSelectContent,
@@ -26,7 +22,7 @@ import {
   SFSelectItem,
   SFSelectLabel,
   SFSelectValue,
-} from "@/components/sf/sf-select";
+} from "@/components/sf";
 import { SharedCodeBlock as CodeBlock } from "@/components/blocks/shared-code-block";
 import { API_DOCS } from "@/lib/api-docs";
 import type { ComponentDoc } from "@/lib/api-docs";

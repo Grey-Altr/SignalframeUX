@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { SFButton } from "@/components/sf/sf-button";
-import { SFInput } from "@/components/sf/sf-input";
-import { SFBadge } from "@/components/sf/sf-badge";
+import { SFButton, SFInput, SFBadge } from "@/components/sf";
 type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
 
 const CATEGORIES = [

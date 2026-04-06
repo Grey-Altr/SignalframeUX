@@ -1,6 +1,6 @@
 "use client";
 
-import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf/sf-tabs";
+import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf";
 
 export function PreviewTabs() {
   return (

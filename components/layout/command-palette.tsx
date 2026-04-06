@@ -13,7 +13,7 @@ import {
   SFCommandItem,
   SFCommandSeparator,
   SFCommandShortcut,
-} from "@/components/sf/sf-command";
+} from "@/components/sf";
 
 const NAV_ITEMS = [
   { label: "HOME", href: "/", shortcut: "H" },

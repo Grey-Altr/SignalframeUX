@@ -308,7 +308,7 @@ All SF components are re-exported from `components/sf/index.ts`. This is the sin
 **Rules:**
 - Named exports only — no default exports
 - Layout Primitives section at the top, separated by a comment
-- Alphabetical within each section
+- Creation-grouped within each section (layout primitives ordered by structural dependency, interactive components alphabetical)
 - New layout primitives go under `// Layout Primitives`
 - New interactive components go after the layout section, alphabetically
 
@@ -332,5 +332,5 @@ export { SFCard, SFCardHeader, SFCardTitle, ... } from "./sf-card";
 
 **When adding a new component:**
 1. Create `components/sf/sf-{name}.tsx`
-2. Add the export to `components/sf/index.ts` in the correct section, alphabetically
+2. Add the export to `components/sf/index.ts` in the correct section (layout primitives grouped by dependency, interactive components alphabetically)
 3. Verify the import works from `@/components/sf` before committing

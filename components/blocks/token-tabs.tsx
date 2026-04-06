@@ -6,17 +6,15 @@ import {
   SFTabsList,
   SFTabsTrigger,
   SFTabsContent,
-} from "@/components/sf/sf-tabs";
-import {
   SFTable,
   SFTableHeader,
   SFTableHead,
   SFTableBody,
   SFTableRow,
   SFTableCell,
-} from "@/components/sf/sf-table";
-import { SFButton } from "@/components/sf/sf-button";
-import { SFBadge } from "@/components/sf/sf-badge";
+  SFButton,
+  SFBadge,
+} from "@/components/sf";
 
 const CORE_SCALE_COUNT = 6;
 
