@@ -93,7 +93,7 @@ Plans:
   3. Server-side render produces stable HTML with no hydration mismatch warnings in the browser console
   4. Layout primitives (SFContainer, SFSection, etc.) remain Server Components after provider wraps the app — bundle analyzer shows no layout primitives in the client chunk
   5. `motion.pause()` and `motion.resume()` pause and resume all GSAP animations globally
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
 - [x] 13-01-PLAN.md — createSignalframeUX factory + provider mount in layout.tsx
 
