@@ -128,6 +128,7 @@ export {
   SFAccordionContent,
 } from "./sf-accordion";
 export { SFProgress } from "./sf-progress";
+export { SFToaster, sfToast } from "./sf-toast";
 
 // Navigation
 export { SFAvatar, SFAvatarImage, SFAvatarFallback } from "./sf-avatar";

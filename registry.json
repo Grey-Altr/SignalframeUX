@@ -745,6 +745,24 @@
         "layer": "signal",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-toast",
+      "type": "registry:ui",
+      "title": "SF Toast",
+      "description": "System notification toast with GSAP slide entrance, Sonner engine, bottom-left positioning",
+      "dependencies": ["sonner", "gsap", "lucide-react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/sf/sf-toast.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
     }
   ]
 }
