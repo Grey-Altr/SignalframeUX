@@ -84,15 +84,18 @@ Plans:
 - [x] 04-03-PLAN.md — Reduced-motion QA audit, CSS coverage verification, SIGNAL-SPEC.md documentation
 
 ### Phase 5: DX Contract & State
-**Goal**: The developer experience is fully contractual — scaffolding spec, JSDoc coverage, import boundary, API foundation, and session state are all defined and enforced
-**Depends on**: Phase 2 (can run parallel to Phases 3–4)
+**Goal**: The developer experience is fully contractual — scaffolding spec, JSDoc coverage, import boundary, and theme toggle guard are defined and documented; deferred items (registry, API, session state) have interface sketches for post-v1.0
+**Depends on**: Phase 2 (can run parallel to Phases 3-4)
 **Requirements**: DX-01, DX-02, DX-03, DX-04, DX-05, STP-01, STP-02
 **Success Criteria** (what must be TRUE):
   1. A developer (or AI agent) can scaffold a new SF component to spec — correct file location, CVA shape, barrel export, required props, and data attributes — using only the documented scaffolding spec without asking clarifying questions
   2. The FRAME/SIGNAL import boundary is documented and enforced: `sf/` imports are FRAME-only, `animation/` imports are SIGNAL-only, and the data attribute bridge pattern is demonstrated with a working example
   3. Every SF-wrapped component in `sf/` has a JSDoc block with at minimum one usage example that renders correctly
   4. Activating the theme toggle during an active GSAP animation does not produce OKLCH color conflicts or inline style collisions — verified by toggling during a ScrambleText sequence
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — SCAFFOLDING.md + DX-SPEC.md deferred sketches + STP-02 theme toggle GSAP audit
+- [ ] 05-02-PLAN.md — JSDoc sweep on all 28 SF-wrapped components
 
 ---
 
@@ -104,7 +107,7 @@ Plans:
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
 | 4. Above-the-Fold Lock | 3/3 | Complete | 2026-04-05 |
-| 5. DX Contract & State | 0/? | Not started | - |
+| 5. DX Contract & State | 0/2 | Planning complete | - |
 
 ---
 
