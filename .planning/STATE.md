@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: active
-stopped_at: "Completed Phase 4 Plan 04-01 — Hero fast-path animation timeline + component count correction"
+stopped_at: "Completed Phase 4 Plan 04-02 — Crafted states: error.tsx, not-found.tsx, three empty states as FRAME+SIGNAL design moments"
 last_updated: "2026-04-05T00:00:00Z"
-last_activity: "2026-04-05 — Plan 04-01 executed: hero-mesh fires at delay:0, full sequence ~3s, 28 SF components claim corrected"
+last_activity: "2026-04-05 — Plan 04-02 executed: error/404 as FRAME+SIGNAL moments, ComponentsExplorer/API explorer/token explorer empty states designed"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: Phase 4 — Above-the-Fold Lock (IN PROGRESS)
-Plan: 04-01 (complete) — Hero fast-path animation: hero-mesh delay:0, hero-char delay:0.4, full sequence ~3s; 28 SF components claim corrected in stats-band, metadata, hero right panel
-Status: Phase 4 IN PROGRESS — 1/? plans complete
-Last activity: 2026-04-05 — Plan 04-01 executed: hero-mesh fires at delay:0, full sequence ~3s, 28 SF components claim corrected
+Plan: 04-02 (complete) — Crafted states: error.tsx and not-found.tsx as FRAME+SIGNAL moments (SFContainer/SFText structure, ScrambleText, sf-glitch); three empty states (ComponentsExplorer "0 MATCHES", API explorer "COMING SOON" DU/TDR polish, token explorer structural placeholder)
+Status: Phase 4 IN PROGRESS — 2/? plans complete
+Last activity: 2026-04-05 — Plan 04-02 executed: error/404 as FRAME+SIGNAL moments, ComponentsExplorer/API explorer/token explorer empty states designed
 
 ## Progress
 
@@ -37,10 +37,10 @@ Last activity: 2026-04-05 — Plan 04-01 executed: hero-mesh fires at delay:0, f
 Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
 Phase 3 — SIGNAL Expression:   [██████████] 100% (4/4 plans) COMPLETE
-Phase 4 — Above-the-Fold Lock: [██░░░░░░░░]  ~20% (1/? plans)
+Phase 4 — Above-the-Fold Lock: [████░░░░░░]  ~40% (2/? plans)
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [███████░░░]  71% (10/14 plans)
+Overall:   [███████░░░]  ~75% (11/14 plans)
 ```
 
 ## Accumulated Context
@@ -57,6 +57,10 @@ Overall:   [███████░░░]  71% (10/14 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 04-02: ScrambleText guard pattern — matchMedia check before async gsap-plugins import prevents code fetch on reduced-motion devices entirely
+- Plan 04-02: not-found.tsx Server Component uses data-anim="page-heading" — reuses existing initPageHeadingScramble without a new client boundary
+- Plan 04-02: ComponentsExplorer reset clears both searchInput and searchQuery — debounced search has two state vars; must clear both to avoid stale filter state
+- Plan 04-02: token-tabs placeholder uses SFButton ghost — matches existing toggle pattern, avoids inconsistency with raw button
 - Plan 03-01: [data-anim] catch-all after specific rules — CSS attribute presence selector ([data-anim]) has lower specificity than value selectors ([data-anim="section-reveal"]), guaranteeing GSAP-animated elements still start hidden
 - Plan 03-01: Asymmetric hover: base state 400ms (return), :hover override 100ms (snap-in) — CSS transition-duration on :hover overrides base; base duration governs the release, hover duration governs the snap
 - Plan 03-01: sf-hoverable:not(:hover) removed — redundant once base state is --duration-slow; simpler CSS with same behavior
@@ -67,10 +71,6 @@ Overall:   [███████░░░]  71% (10/14 plans)
 - Plan 03-03: stagger interval and stagger delay both set to 0.04 (40ms) — grouping window and per-item delay matched for clean cascade without bunching
 - Plan 03-04: SIGNAL-SPEC.md mobile collapse uses pointer:coarse (not viewport-width) — targets touch devices correctly regardless of screen size; this is the right signal for "no precise cursor" behavior
 - Plan 03-04: SIG-06/07/08 deferred with explicit implementation barriers — Web Audio API gesture-gating complexity, Vibration API limited Safari support, IdleOverlay visual QA deferral — documented to prevent future rediscovery
-- Plan 04-01: hero-mesh wrapped in div (not prop on canvas) — data-anim on parent div gives GSAP clean DOM target without mutating canvas component internals
-- Plan 04-01: gsap.fromTo at delay:0 (not gsap.to) — fromTo pins start state, prevents GSAP reading potentially stale opacity from a prior context revert
-- Plan 04-01: multilingual timeline delay 2.2s → 0.3s — fires at ~1.3s post-load vs ~5.3s; after hero-char chars cascade
-- Plan 04-01: SF COMPONENTS label (not COMPONENTS) — precision: only SF-layer wrapped components counted; base shadcn/ui and animation components excluded
 - Plan 03-02: CustomCursor function preserved in global-effects.tsx — not exported, tree-shaken at build; rollback capability maintained
 - Plan 02-02: SFGrid uses numeric string keys ("3") for CVA variants — allows Tailwind class strings as values without ambiguity
 - Plan 02-02: SFText uses plain Record maps not CVA — single variant dimension, CVA adds no value
@@ -96,7 +96,7 @@ Overall:   [███████░░░]  71% (10/14 plans)
 - SIG-06 (audio), SIG-07 (haptic), SIG-08 (idle), SIG-09 (cursor), DX-04 (registry), DX-05 (API), STP-01, STP-02 (state) — all formally in scope for v1.0 per requirements, but execution strategy marks SIG-06/07/08, DX-04/05, STP-01 as deferred unless time permits. SIG-09 and STP-02 ARE in sprint scope.
 
 ### Blockers
-- None — pre-existing TypeScript errors in color-cycle-frame.tsx and dark-mode-toggle.tsx were fixed during Plan 04-01 build verification.
+- None — pre-existing TypeScript errors in color-cycle-frame.tsx and dark-mode-toggle.tsx fixed during Plan 04-02 build verification.
 
 ## Roadmap
 
@@ -105,11 +105,11 @@ Overall:   [███████░░░]  71% (10/14 plans)
 | 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | COMPLETE — 4/4 plans |
-| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | IN PROGRESS — 1/? plans |
+| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | IN PROGRESS — 2/? plans |
 | 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
 
 ## Session Continuity
 
 Last session: 2026-04-05
-Stopped at: Completed Phase 4 Plan 04-01 — Hero fast-path animation + 28 SF components claim. Next: Plan 04-02.
+Stopped at: Completed Phase 4 Plan 04-02 — Crafted states: error.tsx, not-found.tsx, three empty states as FRAME+SIGNAL design moments
 Resume file: .planning/phases/04-above-the-fold-lock/
