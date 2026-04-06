@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.4
 milestone_name: Feature Complete
 status: in_progress
-stopped_at: "Completed 21-01-PLAN.md"
-last_updated: "2026-04-06T22:45:00.000Z"
-last_activity: "2026-04-06 — Phase 21 Plan 01 complete: TD-01, TD-02, TD-04 resolved"
+stopped_at: "Completed 21-02-PLAN.md"
+last_updated: "2026-04-06T21:55:39Z"
+last_activity: "2026-04-06 — Phase 21 Plan 02 complete: TD-03 resolved (lenis.scrollTo migration)"
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: Phase 21 (in progress)
-Plan: 21-01 complete, 21-02 next
-Status: Plan 21-01 shipped — TD-01, TD-02, TD-04 resolved
-Last activity: 2026-04-06 — 21-01 complete (2 tasks, 3 files, 6 min)
+Plan: 21-02 complete, Phase 21 done
+Status: Plans 21-01 and 21-02 shipped — TD-01, TD-02, TD-03, TD-04 all resolved
+Last activity: 2026-04-06 — 21-02 complete (2 tasks, 6 files, 2m17s)
 
 ## Progress
 
@@ -38,14 +38,14 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [_________] ~9% (1/? plans) IN PROGRESS
+v1.4: [█_________] ~18% (2/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Not started |
+| 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Complete (2/2 plans) |
 | 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Not started |
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Not started |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Not started |
@@ -118,6 +118,8 @@ v1.4: [_________] ~9% (1/? plans) IN PROGRESS
 | Phase 25 includes SI-01 through SI-04 | Site integration is inseparable from detail view feature — they form one delivery boundary |
 | Phase 26 is standalone verification | Bundle + Lighthouse audit is a gate, not implementation work — isolated phase keeps it verifiable |
 | CMP-02 (SFHoverCard) and CMP-03 (SFInputOTP) in Phase 23 | Research originally deferred these to v1.4.x but REQUIREMENTS.md scopes them to v1.4 — included |
+| lenisRef pattern for page-transition.tsx | transitionend DOM handler cannot safely close over React hook values — store Lenis in useRef updated via useEffect |
+| immediate: true for scroll restoration and page wipe | Matches original instant-scroll intent; smooth scroll is inappropriate while wipe panel covers the viewport |
 
 ### Blockers
 
