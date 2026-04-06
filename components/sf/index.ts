@@ -121,6 +121,13 @@ export {
   SFCollapsibleContent,
 } from "./sf-collapsible";
 export { SFEmptyState } from "./sf-empty-state";
+export {
+  SFAccordion,
+  SFAccordionItem,
+  SFAccordionTrigger,
+  SFAccordionContent,
+} from "./sf-accordion";
+export { SFProgress } from "./sf-progress";
 
 // Navigation
 export { SFAvatar, SFAvatarImage, SFAvatarFallback } from "./sf-avatar";

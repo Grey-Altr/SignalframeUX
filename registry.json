@@ -709,6 +709,42 @@
         "layer": "frame",
         "pattern": "C"
       }
+    },
+    {
+      "name": "sf-accordion",
+      "type": "registry:ui",
+      "title": "SF Accordion",
+      "description": "SIGNAL accordion with GSAP stagger on expand, reverse on collapse, reduced-motion guard",
+      "dependencies": ["gsap"],
+      "registryDependencies": ["accordion"],
+      "files": [
+        {
+          "path": "components/sf/sf-accordion.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-progress",
+      "type": "registry:ui",
+      "title": "SF Progress",
+      "description": "SIGNAL progress bar with GSAP fill tween, reduced-motion instant set",
+      "dependencies": ["gsap"],
+      "registryDependencies": ["progress"],
+      "files": [
+        {
+          "path": "components/sf/sf-progress.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
     }
   ]
 }
