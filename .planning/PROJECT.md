@@ -59,6 +59,20 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
+## Current Milestone: v1.2 Tech Debt Sweep
+
+**Goal:** Close all carried tech debt from v1.0 and v1.1 — wire unused components, fix type mismatches, ship deferred DX features, add session persistence, and clean up documentation.
+
+**Target features:**
+- Wire SignalMotion onto showcase sections (INT-03)
+- Complete SignalOverlay→WebGL CSS var bridge with defaults (INT-04)
+- Fix reference page layout gaps (INT-01)
+- Fix SFSection bgShift prop type mismatch (bgShift)
+- Ship registry.json for AI/CLI component installation (DX-04)
+- Ship createSignalframeUX(config) + useSignalframe() API factory (DX-05)
+- Add session state persistence for filters, scroll, tabs (STP-01)
+- Clean up documentation frontmatters and stale checkboxes (Docs)
+
 ## Context
 
 **Shipped v1.1 Generative Surface** (2026-04-06):
@@ -118,4 +132,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.1 Generative Surface milestone completed*
+*Last updated: 2026-04-06 after v1.2 Tech Debt Sweep milestone started*

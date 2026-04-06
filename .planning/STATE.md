@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.1
-milestone_name: Generative Surface
-status: completed
-stopped_at: Milestone v1.1 complete — archived and tagged
-last_updated: "2026-04-06T12:00:00.000Z"
-last_activity: "2026-04-06 — v1.1 Generative Surface milestone completed and archived"
+milestone: v1.2
+milestone_name: Tech Debt Sweep
+status: defining_requirements
+stopped_at: Defining requirements for v1.2
+last_updated: "2026-04-06T13:00:00.000Z"
+last_activity: "2026-04-06 — Milestone v1.2 started"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # STATE — SignalframeUX
@@ -21,31 +21,22 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression |
-| Current Focus | Planning next milestone |
-| Milestone | v1.1 Generative Surface (COMPLETE) |
+| Current Focus | v1.2 Tech Debt Sweep — close all carried debt |
+| Milestone | v1.2 Tech Debt Sweep |
 
 ## Current Position
 
-Phase: Milestone complete
-Plan: All 9 plans across 4 phases shipped
-Status: v1.1 Generative Surface archived. 15/17 requirements satisfied, 2 partial (INT-03, INT-04 accepted as tech debt).
-Last activity: 2026-04-06 — Milestone audited, archived, and tagged
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-06 — Milestone v1.2 started
 
 ## Progress
 
 ```
-Phase 1 — FRAME Foundation:                    [██████████] 100% (3/3 plans) COMPLETE
-Phase 2 — FRAME Primitives:                    [██████████] 100% (2/2 plans) COMPLETE
-Phase 3 — SIGNAL Expression:                   [██████████] 100% (4/4 plans) COMPLETE
-Phase 4 — Above-the-Fold Lock:                 [██████████] 100% (3/3 plans) COMPLETE
-Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
-Phase 6 — Generative SIGNAL Foundation:        [██████████] 100% (2/2 plans) COMPLETE
-Phase 7 — SIGNAL Activation:                   [██████████] 100% (2/2 plans) COMPLETE
-Phase 8 — First Generative Scenes:             [██████████] 100% (2/2 plans) COMPLETE
-Phase 9 — Extended Scenes + Integration:       [██████████] 100% (3/3 plans) COMPLETE
-
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.2: [░░░░░░░░░░]   0% (0/0 plans) DEFINING REQUIREMENTS
 ```
 
 ## Accumulated Context
@@ -63,13 +54,18 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 - SF primitives consumed across all 5 pages (32 SFSection instances)
 - Three.js in async chunk (102 kB initial shared bundle)
 
-### Known Tech Debt (Carried Forward)
-- INT-03: SignalMotion component created but unused — needs placement on showcase sections
-- INT-04: SignalOverlay writes CSS vars but no WebGL uniform reads them — one-sided bridge
-- INT-01 minor: reference page missing mt-[var(--nav-height)], start NEXT_CARDS grid not SFSection-wrapped
-- SFSection bgShift boolean prop orphaned — all usage passes data-bg-shift as spread string
-- DX-04/05: Registry, API factory — deferred with interface sketches
-- STP-01: Session persistence — deferred with interface sketch
+### Analyst Findings (v1.2)
+- --signal-* CSS vars need defaults in globals.css BEFORE INT-04 wiring (NaN risk)
+- INT-04 must NOT use per-frame getComputedStyle() — use custom events or shared ref
+- bgShift is a type mismatch (boolean vs "white"|"black"), not just unused
+- DX-05 has zero external consumers but included per user scope decision
+
+### Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Include all 8 debt items | User wants full sweep, no deferral |
+| v1.2 (not v2.0) | Maintenance release, no breaking API changes |
 
 ### Blockers
 - None
@@ -79,10 +75,10 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 Tech Debt Sweep — close all carried debt
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: v1.1 Generative Surface milestone completed and archived
-Resume file: (Milestone complete — use /pde:new-milestone for next cycle)
+Stopped at: Defining requirements for v1.2
+Resume file: —
