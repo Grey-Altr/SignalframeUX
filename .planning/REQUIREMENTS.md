@@ -3,7 +3,7 @@
 ## Tech Debt
 - [x] **TD-01**: MutationObserver in signal-mesh.tsx and glsl-hero.tsx disconnects on unmount
 - [x] **TD-02**: readSignalVars has explicit isNaN() guard in both WebGL scenes
-- [ ] **TD-03**: Programmatic scroll routes through lenis.scrollTo (not window.scrollTo)
+- [x] **TD-03**: Programmatic scroll routes through lenis.scrollTo (not window.scrollTo)
 - [x] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
 
 ## Token System
@@ -66,7 +66,7 @@
 |-------------|-------|--------|
 | TD-01 | Phase 21 | Complete — 21-01 (1ff1156) |
 | TD-02 | Phase 21 | Complete — 21-01 (1ff1156) |
-| TD-03 | Phase 21 | Pending |
+| TD-03 | Phase 21 | Complete |
 | TD-04 | Phase 21 | Complete — 21-01 (823c95b) |
 | TK-01 | Phase 22 | Pending |
 | TK-02 | Phase 22 | Pending |
