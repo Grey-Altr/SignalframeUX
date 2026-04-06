@@ -50,9 +50,13 @@ let _signalObserver: MutationObserver | null = null;
 
 function readSignalVars(): void {
   const style = getComputedStyle(document.documentElement);
-  _signalIntensity = parseFloat(style.getPropertyValue("--signal-intensity") || "0.5");
-  _signalSpeed     = parseFloat(style.getPropertyValue("--signal-speed")     || "1");
-  _signalAccent    = parseFloat(style.getPropertyValue("--signal-accent")    || "0");
+  const raw = (name: string, fallback: number): number => {
+    const v = parseFloat(style.getPropertyValue(name));
+    return isNaN(v) ? fallback : v;
+  };
+  _signalIntensity = raw("--signal-intensity", 0.5);
+  _signalSpeed     = raw("--signal-speed", 1);
+  _signalAccent    = raw("--signal-accent", 0);
 }
 
 function ensureSignalObserver(): void {
@@ -332,6 +336,11 @@ export function GLSLHero() {
 
       return () => {
         gsap.ticker.remove(tickerFn);
+        // TD-01: disconnect MutationObserver on unmount
+        if (_signalObserver) {
+          _signalObserver.disconnect();
+          _signalObserver = null;
+        }
       };
     },
     { scope: containerRef, dependencies: [hasWebGL] }
