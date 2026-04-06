@@ -91,6 +91,50 @@
 
 ---
 
+## Milestone: v1.2 — Tech Debt Sweep
+
+**Shipped:** 2026-04-06
+**Phases:** 6 | **Plans:** 9 | **Sessions:** 1 (autonomous)
+
+### What Was Built
+- CSS var defaults for --signal-intensity/speed/accent in globals.css (FND-01)
+- SFSection bgShift type fixed from boolean to "white" | "black" (FND-02)
+- Reference page nav clearance + NEXT_CARDS SFSection wrap (INT-01)
+- Full 33-item shadcn CLI registry with meta.layer/meta.pattern fields (DX-04)
+- CSS→WebGL signal bridge: MutationObserver cache → GSAP ticker → uniforms (INT-04)
+- SignalMotion scroll-driven entrance on 4 homepage sections (INT-03)
+- createSignalframeUX config factory + SSR-safe SignalframeProvider (DX-05)
+- useSessionState + useScrollRestoration hooks with hydration safety (STP-01)
+- 30 SUMMARY frontmatters normalized, 14 stale archive checkboxes fixed, API contract in SCAFFOLDING.md (DOC-01)
+
+### What Worked
+- **Infrastructure-first phasing** — fixing CSS defaults and types before wiring prevented cascading errors
+- **Autonomous skipping of discuss for infrastructure phases** — all 6 phases were pure infrastructure, saving ~12 minutes of grey area questioning
+- **Parallel plan execution** — Phases 10, 12, 15 had 2 plans in wave 1 running simultaneously
+- **Deferred human validation** — user chose to skip manual browser checks on phases 12-14, keeping the pipeline flowing
+
+### What Was Inefficient
+- **Phase 15 bulk frontmatter edits** — 30 files modified in a single task, high token consumption for mechanical text replacement. A CLI tool for frontmatter normalization would have been 10x faster.
+- **Plan checker overhead on docs phases** — Phase 15 is pure documentation; full 11-dimension verification was unnecessary
+
+### Patterns Established
+- Module-level MutationObserver cache for CSS→WebGL var bridging (avoids getComputedStyle in ticker)
+- Hole-in-the-donut SSR pattern for design system provider (layout primitives stay Server Components)
+- useEffect-deferred sessionStorage reads for hydration safety
+- `registry:build` script in package.json for shadcn CLI registry
+
+### Key Lessons
+1. **All v1.2 tech debt was mechanical** — every issue had a known fix from research. Phases 10-14 required zero design decisions.
+2. **Infrastructure skipping of discuss is correct** — when all success criteria are technical, grey area questioning adds no value.
+3. **Deferred human validation works for non-blocking items** — autonomous flow maintained without pausing for browser-only checks.
+
+### Cost Observations
+- Model mix: ~70% sonnet (research, plan, verify, execute), ~30% opus (orchestrator)
+- Sessions: 1 (full autonomous)
+- Notable: 9 plans executed across 6 phases; 3 phases had parallel wave execution; all plan checkers passed first try
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -99,6 +143,7 @@
 |-----------|----------|--------|------------|
 | v1.0 | 1 | 5 | First autonomous milestone — full discuss→plan→execute pipeline |
 | v1.1 | 1 | 4 | Infrastructure-first phasing, parallel execution, executor memory accumulation |
+| v1.2 | 1 | 6 | All infrastructure — discuss skipped for all phases, 3 parallel wave executions |
 
 ### Cumulative Quality
 
@@ -106,6 +151,7 @@
 |-----------|-------------------|-------------------|-----------------|
 | v1.0 | 75+ grep checks | 5/5 phases | 12 (audit: 0 blockers, orphaned primitives, [data-cursor] gap) |
 | v1.1 | 45+ must-have checks | 0/4 phases (partial) | 5 (2 partial reqs: INT-03 unused, INT-04 one-sided bridge) |
+| v1.2 | 30+ must-have checks | 0/6 phases (partial — no test runner) | 6 (all non-blocking: observer disconnect, NaN guard, Lenis race) |
 
 ### Top Lessons (Verified Across Milestones)
 
