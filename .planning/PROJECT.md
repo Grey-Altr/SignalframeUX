@@ -37,14 +37,19 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
+- [ ] Showcase pages consume SFSection, SFStack, SFGrid primitives (zero-consumer tech debt)
+- [ ] [data-cursor] activated on showcase sections (dormant SIGNAL activation)
+- [ ] data-anim="stagger" applied to production grid blocks
+- [ ] Generative SIGNAL foundation — 3D meshes, motion graphics, procedural visuals within DU/TDR aesthetic
+- [ ] SIGNAL layer authoring model defined (parametric/component-based)
+- [ ] Performance budget reconciled with generative library choices
+- [ ] FRAME/SIGNAL legibility contract enforced for generative output
 - [ ] Audio feedback palette (Web Audio API) — SIG-06
 - [ ] Haptic feedback (Vibration API) — SIG-07
 - [ ] Idle state animation (grain drift, color pulse) — SIG-08
 - [ ] registry.json for AI/CLI component installation — DX-04
 - [ ] createSignalframeUX(config) + useSignalframe() API — DX-05
 - [ ] Session state persistence (filters, scroll, tabs) — STP-01
-- [ ] Portfolio pages consuming SFSection, SFStack, SFGrid primitives
-- [ ] data-anim="stagger" applied to production grid blocks
 
 ### Out of Scope
 
@@ -53,6 +58,17 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - CMS integration — MDX + JSON for content
 
 ## Context
+
+## Current Milestone: v1.1 Generative Surface
+
+**Goal:** Evolve SignalframeUX from a design system into a generative technology — enhance the existing showcase with SF primitives and dormant SIGNAL effects, then extend the SIGNAL layer into procedural/generative output (3D meshes, motion graphics, data-driven visuals) within DU/TDR aesthetic constraints.
+
+**Target features:**
+- Showcase pages consuming all SF layout primitives (SFSection, SFStack, SFGrid)
+- Dormant SIGNAL effects activated ([data-cursor], stagger on grids)
+- Generative SIGNAL foundation — procedural visuals, 3D meshes, motion graphics
+- SIGNAL authoring model and FRAME/SIGNAL legibility enforcement for generative output
+- Performance budget reconciliation for generative libraries
 
 **Shipped v1.0 Craft & Feedback** (2026-04-06):
 - 115 files modified, +12,440 lines across 82 commits
@@ -100,4 +116,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-05 after v1.0 Craft & Feedback milestone completion*
+*Last updated: 2026-04-05 after v1.1 Generative Surface milestone started*
