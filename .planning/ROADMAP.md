@@ -31,7 +31,7 @@
 
 **v1.2 Tech Debt Sweep (Phases 10-15):**
 
-- [ ] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout
+- [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
 - [ ] **Phase 11: Registry Completion** — Full 34-component registry with sf-theme token entry
 - [ ] **Phase 12: SIGNAL Wiring** — CSS→WebGL bridge + SignalMotion placement
 - [ ] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook
@@ -51,7 +51,7 @@
   4. The reference page renders with correct top spacing (nav clearance) and NEXT_CARDS grid is wrapped in SFSection
 **Plans:** 2 plans
 Plans:
-- [ ] 10-01-PLAN.md — Signal CSS var defaults + SFSection bgShift type fix
+- [x] 10-01-PLAN.md — Signal CSS var defaults + SFSection bgShift type fix
 - [x] 10-02-PLAN.md — Reference page nav clearance + NEXT_CARDS SFSection wrap
 
 ### Phase 11: Registry Completion
@@ -126,7 +126,7 @@ Plans:
 | 7. SIGNAL Activation | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 8. First Generative Scenes | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
-| 10. Foundation Fixes | v1.2 | 1/2 | In progress | — |
+| 10. Foundation Fixes | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 11. Registry Completion | v1.2 | 0/? | Not started | — |
 | 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |

@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.2
 milestone_name: Tech Debt Sweep
-status: roadmap_ready
-stopped_at: Roadmap created — ready for Phase 10 planning
-last_updated: "2026-04-06T13:30:00.000Z"
-last_activity: "2026-04-06 — v1.2 roadmap created (6 phases, 9 requirements)"
+status: in_progress
+stopped_at: "Completed 10-01-PLAN.md — SIGNAL CSS var defaults + SFSection bgShift type fix"
+last_updated: "2026-04-06T10:57:00.000Z"
+last_activity: "2026-04-06 — Phase 10 complete: FND-01 (signal CSS defaults) + FND-02 (bgShift string union) + INT-01 (reference nav/SFSection)"
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # STATE — SignalframeUX
@@ -26,24 +26,24 @@ progress:
 
 ## Current Position
 
-Phase: Phase 10 — Foundation Fixes (in progress)
-Plan: 10-02 complete
-Status: 1/2 plans complete — 10-01 remaining
-Last activity: 2026-04-06 — 10-02 complete: reference page nav clearance + NEXT_CARDS SFSection wrap
+Phase: Phase 10 — Foundation Fixes (COMPLETE)
+Plan: Both plans complete (10-01 + 10-02)
+Status: Phase 10 done — Phase 11 Registry Completion next
+Last activity: 2026-04-06 — 10-01 complete: SIGNAL CSS var defaults (FND-01) + SFSection bgShift string union (FND-02)
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [█░░░░░░░░░]  ~8% (1/? plans) IN PROGRESS — Phase 10 active
+v1.2: [██░░░░░░░░]  ~17% (2/? plans) IN PROGRESS — Phase 11 next
 ```
 
 ## v1.2 Phase Map
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | Not started |
+| 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | COMPLETE |
 | 11. Registry Completion | Full 34-component CLI-installable registry | DX-04 | Not started |
 | 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | Not started |
 | 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | Not started |
@@ -83,6 +83,8 @@ v1.2: [█░░░░░░░░░]  ~8% (1/? plans) IN PROGRESS — Phase 10
 | Phase 11 (registry) before Phase 14 (session) | ComponentsExplorer fully populated before session state wired |
 | Phase 12 requires Phase 10 | FND-01 CSS var defaults are prerequisite for INT-04 WebGL reads |
 | Phase 13 after Phase 12 | Provider architecture benefits from stable SIGNAL wiring |
+| --signal-* in :root not @theme | Runtime-settable vars written via JS setProperty(); @theme generates Tailwind utilities which is wrong for these |
+| bgShift clean break to string union | No boolean/string hybrid — empty string from boolean broke GSAP palette key lookup silently |
 
 ### Blockers
 - None
@@ -97,5 +99,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 10-02-PLAN.md — reference page nav clearance + NEXT_CARDS in SFSection
-Resume with: `/pde:execute-phase 10 01`
+Stopped at: Completed 10-01-PLAN.md — SIGNAL CSS var defaults + SFSection bgShift type fix
+Resume with: `/pde:plan-phase 11` (Registry Completion — DX-04)

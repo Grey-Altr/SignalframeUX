@@ -3,8 +3,8 @@
 ## Milestone v1.2 Requirements
 
 ### Foundation
-- [ ] **FND-01**: `--signal-intensity`, `--signal-speed`, and `--signal-accent` CSS custom properties have sensible defaults declared in globals.css
-- [ ] **FND-02**: SFSection `bgShift` prop type changed from `boolean` to `"white" | "black"` with all call sites updated to use the typed prop instead of spread HTML attributes
+- [x] **FND-01**: `--signal-intensity`, `--signal-speed`, and `--signal-accent` CSS custom properties have sensible defaults declared in globals.css
+- [x] **FND-02**: SFSection `bgShift` prop type changed from `boolean` to `"white" | "black"` with all call sites updated to use the typed prop instead of spread HTML attributes
 
 ### Integration Wiring
 - [ ] **INT-03**: SignalMotion component wraps at least 3 showcase sections on the homepage with scroll-driven animation active
@@ -39,8 +39,8 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| FND-01 | Phase 10 | TBD | Pending |
-| FND-02 | Phase 10 | TBD | Pending |
+| FND-01 | Phase 10 | 10-01 | Complete |
+| FND-02 | Phase 10 | 10-01 | Complete |
 | INT-01 | Phase 10 | 10-02 | Complete |
 | DX-04 | Phase 11 | TBD | Pending |
 | INT-04 | Phase 12 | TBD | Pending |
