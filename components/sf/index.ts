@@ -165,3 +165,13 @@ export { SFStepper, SFStep } from "./sf-stepper";
 
 // Data Display
 export { SFStatusDot, type SFStatusDotStatus } from "./sf-status-dot";
+
+// Forms — Extended
+export {
+  SFInputGroup,
+  SFInputGroupAddon,
+  SFInputGroupButton,
+  SFInputGroupText,
+  SFInputGroupInput,
+  SFInputGroupTextarea,
+} from "./sf-input-group";

@@ -879,6 +879,23 @@
         "pattern": "B",
         "heavy": true
       }
+    },
+    {
+      "name": "sf-input-group",
+      "type": "registry:ui",
+      "title": "SF InputGroup",
+      "description": "Grouped input with inline addons and action buttons. Zero border-radius on all sub-elements.",
+      "registryDependencies": ["input-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-input-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }
