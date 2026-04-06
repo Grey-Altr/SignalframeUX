@@ -659,6 +659,56 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-alert-dialog",
+      "type": "registry:ui",
+      "title": "SF AlertDialog",
+      "description": "Focus-trapped confirmation dialog with loading state on confirm action",
+      "registryDependencies": ["alert-dialog"],
+      "files": [
+        {
+          "path": "components/sf/sf-alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-empty-state",
+      "type": "registry:ui",
+      "title": "SF EmptyState",
+      "description": "Designed empty state with Bayer dither texture and optional ScrambleText",
+      "files": [
+        {
+          "path": "components/sf/sf-empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "sf-status-dot",
+      "type": "registry:ui",
+      "title": "SF StatusDot",
+      "description": "8px square presence indicator with GSAP pulse on active state",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/sf/sf-status-dot.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
     }
   ]
 }

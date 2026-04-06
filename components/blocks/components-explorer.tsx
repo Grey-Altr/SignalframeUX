@@ -195,6 +195,70 @@ function PreviewParticle() {
   );
 }
 
+function PreviewAvatar() {
+  return (
+    <div className="size-8 border-2 border-current flex items-center justify-center text-[10px]">
+      U
+    </div>
+  );
+}
+
+function PreviewBreadcrumb() {
+  return (
+    <span className="text-[var(--text-xs)] font-mono">HOME / DOCS / API</span>
+  );
+}
+
+function PreviewAlert() {
+  return (
+    <div className="w-[80%] h-6 border-2 border-primary bg-primary/10 flex items-center px-1.5 text-[7px] uppercase font-mono">
+      INFO
+    </div>
+  );
+}
+
+function PreviewAlertDialog() {
+  return (
+    <div className="relative w-[60%] h-9 border-2 border-current">
+      <div className="absolute bottom-1 right-1 flex gap-1">
+        <span className="text-[6px] border border-current px-1">CANCEL</span>
+        <span className="text-[6px] border border-current px-1 bg-destructive/20">
+          CONFIRM
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function PreviewCollapsible() {
+  return (
+    <div className="w-[80%]">
+      <div className="h-4 border border-current flex items-center px-1 text-[7px] font-mono uppercase">
+        TOGGLE
+      </div>
+      <div className="h-3 border border-current border-t-0 bg-current/5" />
+    </div>
+  );
+}
+
+function PreviewEmptyState() {
+  return (
+    <span className="text-[var(--text-xs)] font-mono uppercase tracking-widest opacity-60">
+      NO DATA
+    </span>
+  );
+}
+
+function PreviewStatusDot() {
+  return (
+    <div className="flex gap-2 items-center">
+      <span className="size-2 bg-success" />
+      <span className="size-2 bg-accent" />
+      <span className="size-2 bg-muted-foreground" />
+    </div>
+  );
+}
+
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
@@ -210,6 +274,13 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "010", name: "TOAST", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
   { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewDots /> },
   { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
+  { index: "013", name: "AVATAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewAvatar /> },
+  { index: "014", name: "BREADCRUMB", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewBreadcrumb /> },
+  { index: "015", name: "ALERT", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAlert /> },
+  { index: "016", name: "DIALOG_CFM", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "yellow", filterTag: "FEEDBACK", preview: <PreviewAlertDialog /> },
+  { index: "017", name: "COLLAPSE", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewCollapsible /> },
+  { index: "018", name: "EMPTY", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "black", filterTag: "FEEDBACK", preview: <PreviewEmptyState /> },
+  { index: "019", name: "STATUS_DOT", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "DATA_DISPLAY", preview: <PreviewStatusDot /> },
   { index: "101", name: "NOISE_BG", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewNoise /> },
   { index: "102", name: "WAVEFORM", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewWave /> },
   { index: "103", name: "GLITCH_TXT", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewGlitch /> },

@@ -105,10 +105,22 @@ export { SFTextarea } from "./sf-textarea";
 // Feedback
 export { SFAlert, SFAlertTitle, SFAlertDescription } from "./sf-alert";
 export {
+  SFAlertDialog,
+  SFAlertDialogTrigger,
+  SFAlertDialogContent,
+  SFAlertDialogHeader,
+  SFAlertDialogFooter,
+  SFAlertDialogTitle,
+  SFAlertDialogDescription,
+  SFAlertDialogAction,
+  SFAlertDialogCancel,
+} from "./sf-alert-dialog";
+export {
   SFCollapsible,
   SFCollapsibleTrigger,
   SFCollapsibleContent,
 } from "./sf-collapsible";
+export { SFEmptyState } from "./sf-empty-state";
 
 // Navigation
 export { SFAvatar, SFAvatarImage, SFAvatarFallback } from "./sf-avatar";
@@ -120,3 +132,6 @@ export {
   SFBreadcrumbPage,
   SFBreadcrumbSeparator,
 } from "./sf-breadcrumb";
+
+// Data Display
+export { SFStatusDot, type SFStatusDotStatus } from "./sf-status-dot";
