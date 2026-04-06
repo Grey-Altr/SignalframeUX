@@ -179,7 +179,10 @@ Plans:
   3. SFProgress fill width animates via GSAP tween when the `value` prop changes; the SIGNAL intensity tween is guarded by prefers-reduced-motion
   4. `pnpm build` after Phase 18 passes — initial bundle size has not breached 150KB, verified with `ANALYZE=true pnpm build`
   5. All three components pass a11y smoke test: keyboard navigable, ARIA attributes correct, focus rings visible
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 18-01-PLAN.md — SFAccordion (GSAP stagger) + SFProgress (GSAP fill tween) + Sonner install
+- [ ] 18-02-PLAN.md — SFToast/SFToaster (Sonner + GSAP slide) + ComponentsExplorer entries + bundle gate
 
 ### Phase 19: P2 Components
 **Goal**: Coverage completion — view/filter controls, paginated navigation, multi-step flows, and full site navigation are all available in the system
@@ -225,7 +228,7 @@ Plans:
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 17. P1 Non-Animated Components | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
-| 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
+| 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 18. P1 Animated Components | v1.3 | 0/2 | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |
