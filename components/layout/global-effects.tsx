@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "@/lib/gsap-core";
+import { playTone } from "@/lib/audio-feedback";
+import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 
@@ -201,6 +203,76 @@ function IdleOverlay() {
   return <div ref={overlayRef} className="sf-idle-overlay" aria-hidden="true" />;
 }
 
+/**
+ * Document-level interaction feedback — audio tones + haptic micro-vibration.
+ *
+ * Uses a single pointerover/pointerout/pointerdown listener on document with
+ * target.closest() delegation — no per-component wiring required.
+ *
+ * lastHoveredRef debounce: pointerover fires on every pixel of movement within
+ * an element. Tracking the last interactive element prevents hundreds of
+ * OscillatorNodes per second. pointerout resets the ref so re-entry fires again.
+ *
+ * Skipped on coarse-pointer (touch-only) devices — hover audio is not meaningful
+ * when there is no hover state. Haptics still fire on pointerdown via touch.
+ *
+ * Note on ColorCycleFrame conflict: this component resets on any interaction
+ * (via IdleOverlay's resetIdle), removing the idle color ticker before
+ * ColorCycleFrame can fire on wheel events — naturally safe.
+ */
+function InteractionFeedback() {
+  const lastHoveredRef = useRef<Element | null>(null);
+
+  useEffect(() => {
+    // Respect reduced motion — entire feedback system is silent + static
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Skip hover audio on coarse-pointer devices — no hover state on touch
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    const INTERACTIVE = "button, a, [role='button'], .sf-card";
+
+    function onPointerOver(e: PointerEvent) {
+      const target = e.target as HTMLElement;
+      const interactive = target.closest(INTERACTIVE);
+      if (!interactive) return;
+      // Debounce: skip if pointer is still over the same interactive element
+      if (interactive === lastHoveredRef.current) return;
+      lastHoveredRef.current = interactive;
+      playTone("hover");
+      triggerHaptic("hover");
+    }
+
+    function onPointerOut(e: PointerEvent) {
+      const target = e.target as HTMLElement;
+      const interactive = target.closest(INTERACTIVE);
+      // Reset lastHovered when pointer leaves an interactive element
+      if (interactive === lastHoveredRef.current) {
+        lastHoveredRef.current = null;
+      }
+    }
+
+    function onPointerDown(e: PointerEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest(INTERACTIVE)) return;
+      playTone("click");
+      triggerHaptic("click");
+    }
+
+    // pointerenter does not bubble — use pointerover with delegation + debounce
+    document.addEventListener("pointerover", onPointerOver, { passive: true });
+    document.addEventListener("pointerout", onPointerOut, { passive: true });
+    document.addEventListener("pointerdown", onPointerDown, { passive: true });
+
+    return () => {
+      document.removeEventListener("pointerover", onPointerOver);
+      document.removeEventListener("pointerout", onPointerOut);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, []);
+
+  return null;
+}
+
 export function GlobalEffects() {
   return (
     <>
@@ -210,6 +282,7 @@ export function GlobalEffects() {
       <ScrollToTop />
       <VHSBadge />
       <IdleOverlay />
+      <InteractionFeedback />
     </>
   );
 }
