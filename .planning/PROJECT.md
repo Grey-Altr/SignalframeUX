@@ -62,7 +62,25 @@ Software — web application (static-first with dynamic sections)
 - LCP < 1.0s on 4G connection
 - Time to Interactive < 1.5s
 - Zero layout shift (CLS = 0)
-- Awwwards Honorable Mention quality (>= 6.5 weighted score)
+- Awwwards SOTD quality (>= 8.0 weighted score across Design 4x, Usability 3x, Creativity 2x, Content 1x)
+
+## Current Milestone: v1.0 Craft & Feedback
+
+**Goal:** Stabilize the Frame foundation, amplify Signal-layer craft to SOTD level, and make the DX so fluent that AI agents produce award-quality output without friction.
+
+**Pillars:**
+- **Foundation** — lock tokens, primitives, and constraints (spacing, typography, layout, colors, animation)
+- **Feeling** — SOTD-level micro and macro feedback (hover, click, scroll, transitions, state changes, content reveals)
+- **Fluency** — AI/developer DX contract so clean that SignalframeUX is "as easy as feeling"
+
+**Target features:**
+- Token system stabilization (blessed spacing, semantic typography, layout tokens, color tiers)
+- SF primitives (SFContainer, SFSection, SFStack, SFGrid, SFText)
+- Satisfying micro-interactions and macro-transitions across all components
+- AI DX scaffolding contract (component templates, CVA shapes, barrel export patterns)
+- Progressive enhancement guarantees (Signal fallbacks, GSAP load failure resilience)
+- 90-second jury moment — above-the-fold at 1440px must win without scroll
+- Crafted empty states and error pages as first-class design moments
 
 ## Relationship to SignalframeUX
 

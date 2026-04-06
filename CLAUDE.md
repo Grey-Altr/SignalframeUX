@@ -10,9 +10,9 @@ Next.js 15.3 (App Router, Turbopack) · TypeScript 5.8 · Tailwind CSS v4 (`@the
 
 ## Dual-Layer Model
 
-- **SIGNAL** — deterministic, legible, semantic, consistent. The interface layer.
-- **FRAME** — generative, parametric, animated, data-driven. The expression layer.
-- **NON-NEGOTIABLE:** Signal layer MUST remain readable. Frame layer MUST NOT interfere with usability.
+- **FRAME** — deterministic, legible, semantic, consistent. The structural layer.
+- **SIGNAL** — generative, parametric, animated, data-driven. The expressive layer.
+- **NON-NEGOTIABLE:** Frame layer MUST remain readable. Signal layer MUST NOT interfere with usability.
 
 ## Design Philosophy
 

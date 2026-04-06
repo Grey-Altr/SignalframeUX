@@ -48,13 +48,13 @@ The system aspires to function as a programmable API:
 - React layer: `@signalframeux/react` for components and hooks
 
 ### Design Token Categories (original spec)
-**Signal Tokens:** typography, spacing, semantic colors, borders, radii
-**Frame Tokens:** seed, density, motionSpeed, noise
+**Frame Tokens:** typography, spacing, semantic colors, borders, radii (structural)
+**Signal Tokens:** seed, density, motionSpeed, noise (generative/expressive)
 
 ### Component Signal/Frame Props (original spec)
 Every component was designed to support:
-- `signalProps` — deterministic interface configuration
-- `fieldProps` — generative expression configuration
+- `frameProps` — deterministic structural configuration
+- `signalProps` — generative expression configuration
 
 ### Background System (original spec)
 Types: StaticField, AnimatedField, InteractiveField
