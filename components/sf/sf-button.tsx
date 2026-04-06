@@ -11,6 +11,8 @@ const sfButtonVariants = cva(
           "bg-primary text-primary-foreground hover:bg-foreground hover:text-background",
         ghost:
           "sf-border-thicken bg-transparent text-foreground hover:bg-foreground hover:text-background",
+        // signal: pre-standard extension — kept for SignalframeUX brand accent usage.
+        // Blessed intent set: default, primary, secondary, destructive, ghost, outline.
         signal:
           "bg-foreground text-background border-primary hover:bg-primary hover:text-primary-foreground",
       },
