@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
 status: completed
-stopped_at: Completed 07-02-PLAN.md (idle overlay upgrade + data-cursor placement)
-last_updated: "2026-04-06T08:12:15.352Z"
-last_activity: "2026-04-05 — Plan 07-02 complete (2 tasks, 2 commits: 890fc70, 52a9fbf)"
+stopped_at: Completed 08-02-PLAN.md (Canvas 2D token visualization on /tokens page)
+last_updated: "2026-04-06T08:40:00Z"
+last_activity: "2026-04-06 — Plan 08-02 complete (2 tasks, 2 commits: 05909af, 2491d08). SCN-01 + SCN-02 both met."
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 7 — SIGNAL Activation
-Plan: 03 (next)
-Status: Plan 02 complete — IdleOverlay upgraded (8s, OKLCH pulse, grain drift) + data-cursor activated on all showcase sections; SIG-08 + SIG-09 met
-Last activity: 2026-04-05 — Plan 07-02 complete (2 tasks, 2 commits: 890fc70, 52a9fbf)
+Phase: 8 — First Generative Scenes
+Plan: 03 (next — if exists; else Phase 8 complete)
+Status: Plan 01 complete — SignalMesh WebGL icosahedron in homepage hero, GLSL scroll-reactive uniforms, optional TTL cache in color-resolve.ts; SCN-01 met. Plan 02 also complete — SCN-02 met.
+Last activity: 2026-04-06 — Plan 08-01 complete (2 tasks, 2 commits: e164e59, a4e208d)
 
 ## Progress
 
@@ -41,11 +41,11 @@ Phase 4 — Above-the-Fold Lock:                 [██████████
 Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
 Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
 Phase 7 — SIGNAL Activation:                   [████      ]  ~50% (2/? plans) In progress
-Phase 8 — First Generative Scenes:             [          ]   0% (0/? plans) Not started
+Phase 8 — First Generative Scenes:             [████████  ]  ~75% (2/? plans) In progress — SCN-01 + SCN-02 complete
 Phase 9 — Extended Scenes + Integration:       [          ]   0% (0/? plans) Not started
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [██        ]  ~20% (4/? plans)
+v1.1: [███       ]  ~30% (6/? plans)
 ```
 
 ## Accumulated Context
@@ -88,6 +88,10 @@ v1.1: [██        ]  ~20% (4/? plans)
 **07-01:** coarse-pointer skips hover audio setup entirely — touch devices have no hover state; pointerdown haptics still fire naturally via the same listener when on coarse devices (but listener is not added for coarse-pointer, so hover is also skipped for haptics — intentional; micro-vibration on touch hover is not meaningful without a hover state).
 **07-02:** ticker-accumulation-guard — old ticker explicitly removed before registering new one in idle activation; prevents multiple pulseFn callbacks accumulating across repeated idle cycles.
 **07-02:** data-cursor explicit per-section placement — added to data-bg-shift divs and showcase main elements, not at SFSection primitive level; preserves showcase zone intentionality.
+**08-01:** next/dynamic({ ssr: false }) requires a 'use client' wrapper in Next.js 15 — cannot be used inline in Server Components; signal-mesh-lazy.tsx wraps the dynamic import, mirroring SignalCanvasLazy pattern.
+**08-01:** TTL cache in color-resolve.ts is opt-in (omit options = no-cache) — preserves Phase 6 behavior for color-cycle-frame.tsx which mutates --color-primary dynamically; cache is opt-in via { ttl: ms }.
+**08-02:** Client boundary wrapper required for ssr:false dynamic imports in Next.js 15 Server Components — TokenVizLoader wraps the dynamic import, keeping TokensPage a Server Component.
+**08-02:** 10-entry type scale used (not 9) — globals.css includes --text-md at 16px alongside the expected 9 entries; accurate representation takes precedence over the plan spec.
 
 ### Blockers
 - None
@@ -98,7 +102,7 @@ v1.1: [██        ]  ~20% (4/? plans)
 |-------|------|--------------|--------|
 | 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
 | 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | In progress (2/? plans) — SIG-06, SIG-07, SIG-08, SIG-09 complete |
-| 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | Not started |
+| 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | In progress (2/? plans) — SCN-01 + SCN-02 complete |
 | 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | Not started |
 
 ## Project Reference
@@ -106,10 +110,10 @@ v1.1: [██        ]  ~20% (4/? plans)
 See: .planning/PROJECT.md (updated 2026-04-05)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** Phase 7 — SIGNAL Activation
+**Current focus:** Phase 8 — First Generative Scenes
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: Completed 07-02-PLAN.md (idle overlay upgrade + data-cursor placement)
-Resume file: .planning/phases/07-signal-activation/07-03-PLAN.md (if exists)
+Last session: 2026-04-06
+Stopped at: Completed 08-01-PLAN.md (SignalMesh WebGL icosahedron + TTL color cache)
+Resume file: .planning/phases/08-first-generative-scenes/08-03-PLAN.md (if exists)

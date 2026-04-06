@@ -3,6 +3,14 @@
 > Loaded at agent spawn. Append-only. Max 50 entries.
 > Oldest entries archived automatically.
 
+### 2026-04-05T00:00:00Z | Phase 08 | tags: next-dynamic, ssr-false, server-component, client-boundary
+
+Next.js 15 rejects `ssr: false` with `next/dynamic` when used directly in Server Components — build fails with "ssr: false is not allowed with next/dynamic in Server Components". The fix is a thin `'use client'` wrapper component (e.g. `token-viz-loader.tsx`) that holds the dynamic import. The Server Component page imports the wrapper, not the dynamic import directly. This pattern applies to ALL canvas/WebGL components placed on Server Component pages — the wrapper is a one-liner component with no logic. The GlobalEffectsLazy pattern (already in the project) avoids this because it lives in `global-effects.tsx` which is already `'use client'`.
+
+### 2026-04-05T00:00:00Z | Phase 08 | tags: canvas-2d, token-viz, type-scale, globals.css
+
+The globals.css type scale has 10 entries (not 9): --text-2xs (9px), --text-xs (10px), --text-sm (11px), --text-base (13px), --text-md (16px), --text-lg (18px), --text-xl (24px), --text-2xl (32px), --text-3xl (48px), --text-4xl (80px). The plan spec listed 9 entries and incorrect pixel values. Always read globals.css for actual values before hardcoding type scale data. The --text-md entry at 16px is the body/content size equivalent (not --text-base at 13px as in Tailwind defaults — this project uses a compressed scale).
+
 ### 2026-04-06T05:16:00Z | Phase 05 | tags: stp-02-guard, setProperty, sf-no-transition, color-cycle
 
 In SignalframeUX, `color-cycle-frame.tsx` calls `setProperty("--color-primary", ...)` via a wipe `onMid` callback (~150ms after trigger). The STP-02 guard is: `if (root.classList.contains("sf-no-transition")) return;` before the setProperty call. This prevents the cycling color from overwriting the theme's `--color-primary` during the ~2 rAF theme toggle window. Mount-time init setProperty is intentionally left unguarded (fires once at load, before any user toggle). GSAP itself has zero color mutations in `components/animation/` — only `setProperty` is the color mutation surface.
