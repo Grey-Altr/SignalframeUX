@@ -178,3 +178,12 @@ When SFSection wraps an existing block that has its own internal padding (NEXT_C
 ### 2026-04-06T11:20:07Z | Phase 11 | tags: shadcn-registry, registry-build, meta-fields, cva-detection
 
 `shadcn build` (devDep `shadcn@^4.1.2`) generates `public/r/*.json` from `registry.json` correctly including `registry:style` items (sf-theme generates sf-theme.json with cssVars) — no manual file creation needed. `shadcn build` does NOT wipe files not listed in registry.json (base.json was preserved without restore). Always read component source to confirm CVA usage before listing `class-variance-authority` in registry dependencies: sf-section and sf-text do NOT import CVA despite being B-pattern layout primitives — B-pattern means no Radix base, not CVA required.
+
+### 2026-04-06T11:39:30Z | Phase 12 | tags: signal-motion, homepage-wiring, sfsection-boundary, bg-shift-preservation
+
+SignalMotion MUST wrap the block component child (ManifestoBand, DualLayer, etc.), never the SFSection itself — SFSection carries `data-bg-shift` which GSAP's `applyBgShift` queries via `[data-bg-shift]` selector; nesting it inside SignalMotion's scroll trigger boundary would break palette transition timing. GhostLabel stays outside SignalMotion too (watermark is static). The `pnpm lint` command is broken in this project (interactive/deprecated `next lint` prompt) — use `pnpm build` exclusively for verification, which runs TypeScript type checking and compilation.
+
+
+### 2026-04-06T11:41:01Z | Phase 12 | tags: signal-cache, mutation-observer, ticker-no-dom, webgl-uniforms
+
+Module-level signal cache pattern for both glsl-hero.tsx and signal-mesh.tsx: declare `_signalIntensity/_signalSpeed/_signalAccent` at file scope + `ensureSignalObserver()` guarded by `_signalObserver` null check — ensures single MutationObserver across all component instances. `pnpm lint` is non-functional in this project (no ESLint config, `next lint` prompts interactively) — use `pnpm tsc --noEmit` + `pnpm build` as the quality gate instead.
