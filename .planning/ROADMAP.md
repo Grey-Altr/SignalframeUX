@@ -49,7 +49,10 @@
   2. TypeScript compilation passes with zero errors after bgShift prop change — `tsc --noEmit` clean
   3. Any component consuming SFSection with bgShift="white" or bgShift="black" compiles without `@ts-ignore`
   4. The reference page renders with correct top spacing (nav clearance) and NEXT_CARDS grid is wrapped in SFSection
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 10-01-PLAN.md — Signal CSS var defaults + SFSection bgShift type fix
+- [ ] 10-02-PLAN.md — Reference page nav clearance + NEXT_CARDS SFSection wrap
 
 ### Phase 11: Registry Completion
 **Goal**: Every SF component and the token system are installable via the shadcn CLI from a complete, schema-valid registry
@@ -123,7 +126,7 @@
 | 7. SIGNAL Activation | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 8. First Generative Scenes | v1.1 | 2/2 | Complete | 2026-04-06 |
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
-| 10. Foundation Fixes | v1.2 | 0/? | Not started | — |
+| 10. Foundation Fixes | v1.2 | 0/2 | Planned | — |
 | 11. Registry Completion | v1.2 | 0/? | Not started | — |
 | 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
