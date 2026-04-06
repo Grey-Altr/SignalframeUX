@@ -2,12 +2,12 @@
 pde_state_version: 1.0
 milestone: v1.2
 milestone_name: Tech Debt Sweep
-status: defining_requirements
-stopped_at: Defining requirements for v1.2
-last_updated: "2026-04-06T13:00:00.000Z"
-last_activity: "2026-04-06 — Milestone v1.2 started"
+status: roadmap_ready
+stopped_at: Roadmap created — ready for Phase 10 planning
+last_updated: "2026-04-06T13:30:00.000Z"
+last_activity: "2026-04-06 — v1.2 roadmap created (6 phases, 9 requirements)"
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -26,18 +26,29 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 10 — Foundation Fixes (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v1.2 started
+Status: Roadmap ready, awaiting Phase 10 planning
+Last activity: 2026-04-06 — v1.2 roadmap created (6 phases, 9 requirements mapped)
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [░░░░░░░░░░]   0% (0/0 plans) DEFINING REQUIREMENTS
+v1.2: [░░░░░░░░░░]   0% (0/? plans) ROADMAP READY — Phase 10 next
 ```
+
+## v1.2 Phase Map
+
+| Phase | Goal | Requirements | Status |
+|-------|------|--------------|--------|
+| 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | Not started |
+| 11. Registry Completion | Full 34-component CLI-installable registry | DX-04 | Not started |
+| 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | Not started |
+| 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | Not started |
+| 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | Not started |
+| 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | Not started |
 
 ## Accumulated Context
 
@@ -54,18 +65,24 @@ v1.2: [░░░░░░░░░░]   0% (0/0 plans) DEFINING REQUIREMENTS
 - SF primitives consumed across all 5 pages (32 SFSection instances)
 - Three.js in async chunk (102 kB initial shared bundle)
 
-### Analyst Findings (v1.2)
-- --signal-* CSS vars need defaults in globals.css BEFORE INT-04 wiring (NaN risk)
-- INT-04 must NOT use per-frame getComputedStyle() — use custom events or shared ref
-- bgShift is a type mismatch (boolean vs "white"|"black"), not just unused
-- DX-05 has zero external consumers but included per user scope decision
+### v1.2 Research Findings (Critical)
+- FND-01 FIRST: --signal-* CSS var defaults must exist before INT-04 wiring — missing defaults cause magenta flash via color-resolve.ts fallback
+- INT-04 performance rule: NO per-frame getComputedStyle() — module-level cache + MutationObserver or direct invalidation from SignalOverlay
+- --signal-accent is a float (hue degrees), not a color token — use parseFloat() directly, never resolveColorToken
+- DX-05 SSR boundary: "hole in the donut" pattern mandatory — SignalframeProvider is 'use client' but {children} remain Server Components
+- STP-01 hydration safety: render default state first, read sessionStorage only in useEffect after mount
+- bgShift type fix: fix all consumer call sites in same commit, never @ts-ignore, run tsc --noEmit before and after
 
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Include all 8 debt items | User wants full sweep, no deferral |
+| Include all 9 debt items | User wants full sweep, no deferral |
 | v1.2 (not v2.0) | Maintenance release, no breaking API changes |
+| Phase 10 groups FND-01, FND-02, INT-01 | All are mechanical zero-dependency fixes, fastest to clear together |
+| Phase 11 (registry) before Phase 14 (session) | ComponentsExplorer fully populated before session state wired |
+| Phase 12 requires Phase 10 | FND-01 CSS var defaults are prerequisite for INT-04 WebGL reads |
+| Phase 13 after Phase 12 | Provider architecture benefits from stable SIGNAL wiring |
 
 ### Blockers
 - None
@@ -80,5 +97,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Defining requirements for v1.2
-Resume file: —
+Stopped at: v1.2 roadmap created
+Resume with: `/pde:plan-phase 10`

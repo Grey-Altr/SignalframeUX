@@ -39,12 +39,12 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| FND-01 | — | — | — |
-| FND-02 | — | — | — |
-| INT-03 | — | — | — |
-| INT-04 | — | — | — |
-| INT-01 | — | — | — |
-| DX-04 | — | — | — |
-| DX-05 | — | — | — |
-| STP-01 | — | — | — |
-| DOC-01 | — | — | — |
+| FND-01 | Phase 10 | TBD | Pending |
+| FND-02 | Phase 10 | TBD | Pending |
+| INT-01 | Phase 10 | TBD | Pending |
+| DX-04 | Phase 11 | TBD | Pending |
+| INT-04 | Phase 12 | TBD | Pending |
+| INT-03 | Phase 12 | TBD | Pending |
+| DX-05 | Phase 13 | TBD | Pending |
+| STP-01 | Phase 14 | TBD | Pending |
+| DOC-01 | Phase 15 | TBD | Pending |
