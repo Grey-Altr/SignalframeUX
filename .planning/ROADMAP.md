@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 1: FRAME Foundation** — Lock tokens, enforce spacing, define typography aliases, layout tokens, color tiers, and variant standards across the system (COMPLETE — 3/3 plans)
-- [ ] **Phase 2: FRAME Primitives** — Build the six SF primitives (Container, Section, Stack, Grid, Text, Button) that enforce the locked token system (in progress — 1/2 plans)
+- [x] **Phase 2: FRAME Primitives** — Build the six SF primitives (Container, Section, Stack, Grid, Text, Button) that enforce the locked token system (COMPLETE — 2/2 plans)
 - [ ] **Phase 3: SIGNAL Expression** — Author the full SIGNAL layer: scramble, asymmetric hover, hard-cut transitions, scroll choreography, cursor detail, mobile fallbacks, and progressive enhancement guarantees
 - [ ] **Phase 4: Above-the-Fold Lock** — Seal the 90-second jury moment at 1440px, resolve component count claim, craft error and empty states as first-class design moments, and QA reduced-motion as a standalone experience
 - [ ] **Phase 5: DX Contract & State** — Finalize scaffolding spec, JSDoc contract, FRAME/SIGNAL import boundary, API foundation, and session state persistence
@@ -48,7 +48,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [x] 02-01-PLAN.md — SFContainer + SFSection + SFStack layout primitives and barrel export
-- [ ] 02-02-PLAN.md — SFGrid + SFText primitives and SFButton PRM-06 audit
+- [x] 02-02-PLAN.md — SFGrid + SFText primitives and SFButton PRM-06 audit
 
 ### Phase 3: SIGNAL Expression
 **Goal**: The SIGNAL layer is fully authored, specced, and progressively enhanced — every effect has a timing spec, a CSS fallback, and a mobile behavior definition
@@ -92,7 +92,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
-| 2. FRAME Primitives | 0/2 | Planned | - |
+| 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 0/? | Not started | - |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |

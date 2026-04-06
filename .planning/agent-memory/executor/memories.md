@@ -42,3 +42,11 @@ In SignalframeUX, layout primitives (SFContainer, SFSection, SFStack) are Server
 ### 2026-04-06T03:00:00Z | Phase 02 | tags: barrel-export, index.ts, layout-section-ordering
 
 In sf/index.ts, layout primitives are inserted at line 1 under a `// Layout Primitives` comment before all Radix-based component exports — this ordering signals primacy of structural primitives over interactive components and satisfies AC-8. When inserting at the top of an existing barrel, use Edit with the first export line as the old_string anchor.
+
+### 2026-04-06T03:06:00Z | Phase 02 | tags: polymorphic-ref, typescript, sftext, forwardref
+
+For polymorphic components (SFText with `as` prop mapping to multiple HTML element types), TypeScript cannot resolve `React.Ref<HTMLElement>` down to the intersection `RefObject<HTMLHeadingElement> & RefObject<HTMLParagraphElement> & ...` required by JSX. The accepted pattern is `ref as React.Ref<any>` with an eslint-disable comment — this is a structural limitation of TypeScript's polymorphic element typing, not a design error.
+
+### 2026-04-06T03:06:00Z | Phase 02 | tags: cva, sfgrid, numeric-string-keys, variant-design
+
+SFGrid uses numeric string keys ("1", "2", "3", "4") rather than numeric literals for CVA cols variants — string keys allow multi-class values like "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" without ambiguity. CVA variants must be string keys; numeric literals would conflict. When a variant encodes responsive breakpoint logic (not a single class), CVA is the right tool — one prop abstracts multiple Tailwind classes across breakpoints.
