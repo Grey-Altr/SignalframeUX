@@ -166,3 +166,11 @@ SFSection defaults to `spacing="16"` which applies `py-16` via `cn(py-${spacing}
 ### 2026-04-05T00:00:00Z | Phase 07 | tags: data-cursor, canvas-cursor, markup-only, showcase-sections
 
 `data-cursor` placement is a pure markup task — CanvasCursor already queries `[data-cursor]` via IntersectionObserver (canvas-cursor.tsx, unchanged). For the homepage, add to every `data-bg-shift` div (6 sections). For showcase pages, add to `<main id="main-content">`. Total: 10 occurrences across 5 files. Explicit placement per section (not at SFSection primitive level) preserves showcase zone intentionality and avoids over-broad cursor activation on nav/footer areas.
+
+### 2026-04-06T10:57:00Z | Phase 10 | tags: signal-css-vars, bgshift-type, globals.css, root-not-theme
+
+CSS custom properties intended for JS runtime `setProperty()` mutation (e.g. `--signal-intensity`, `--signal-speed`, `--signal-accent`) MUST go in `:root`, NOT in `@theme` — Tailwind v4 auto-generates utility classes from `@theme` values, which is wrong for runtime-settable vars. The SFSection `bgShift` boolean-to-string-union migration is zero-callsite (no consumer files used the `bgShift` prop; all existing usages passed `data-bg-shift` as a spread HTML attribute) — confirmed by grep before committing. The old boolean pattern wrote `data-bg-shift=""` (empty string) which silently broke GSAP `applyBgShift`'s palette key lookup.
+
+### 2026-04-06T00:00:00Z | Phase 10 | tags: sfsection-wrap, nav-height, py-0-override, reference-page
+
+When SFSection wraps an existing block that has its own internal padding (NEXT_CARDS cards have `py-10`), use `className="py-0"` on the SFSection — tailwind-merge resolves `py-16 py-0` to `py-0` since className comes second in `cn()`. The `--nav-height: 83px` var in globals.css is the canonical nav clearance token; reference page was the only page missing `mt-[var(--nav-height)]` on its `<main>` element (start/page.tsx pattern was the correct reference to match).
