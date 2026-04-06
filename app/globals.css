@@ -11,6 +11,18 @@
    DU/TDR brutalist-flat aesthetic · OKLCH color space
    ══════════════════════════════════════════════════════════════ */
 
+/* ── COLOR TIERS ──────────────────────────────────────────────
+   CORE (required — every new component MUST work with these 5):
+     background, foreground, primary, secondary, accent
+
+   EXTENDED (component-specific use only — do not add to this list):
+     muted, card, popover, destructive, success, warning
+
+   EXPANSION POLICY:
+     New tokens require explicit architectural review.
+     Adding a color = a deliberate, documented system change.
+   ─────────────────────────────────────────────────────────── */
+
 @theme {
   /* ── Color Tokens ── */
   --color-background: oklch(1 0 0);
@@ -133,9 +145,9 @@
   --ease-hover: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.085 32.8%, 1.009 36.5%, 0.982 38.5%, 0.961, 0.946 42.4%, 0.938, 0.934 46.4%, 0.936 49.3%, 0.954 53.5%, 1 62.8%, 1.012 68.8%, 1.006 81.5%, 1);
 
-  /* ── VHS Overlay Tokens ── */
-  --vhs-crt-opacity: 0.2;
-  --vhs-noise-opacity: 0.015;
+  /* ── VHS Overlay Tokens (sf-namespaced) ── */
+  --sf-vhs-crt-opacity: 0.2;
+  --sf-vhs-noise-opacity: 0.015;
 
   /* ── Spacing Tokens (blessed stops only) ──
      Based on 4px base. These are the ONLY valid content spacing values.
@@ -1502,7 +1514,7 @@
     oklch(0 0 0 / 0.03) 3px,
     oklch(0 0 0 / 0.03) 4px
   );
-  opacity: var(--vhs-crt-opacity, 0.6);
+  opacity: var(--sf-vhs-crt-opacity, 0.6);
 }
 
 .vhs-scanline {
@@ -1567,7 +1579,7 @@
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='vhs-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23vhs-noise)'/%3E%3C/svg%3E");
   background-size: 200px;
-  opacity: var(--vhs-noise-opacity, 0.03);
+  opacity: var(--sf-vhs-noise-opacity, 0.03);
 }
 
 .vhs-burst {
