@@ -142,3 +142,23 @@ Three `--sf-*` shadow tokens exist in `:root` for micro-feedback press effects. 
 | `--sf-inset-shadow` | `inset 0 1px 2px oklch(0 0 0 / 0.08)` — subtle press-in feedback |
 | `--sf-deboss-light` | `0 1px 0 oklch(1 0 0 / 0.1)` — light deboss highlight |
 | `--sf-deboss-shadow` | `0 -1px 0 oklch(0 0 0 / 0.15)` — dark deboss shadow |
+
+## Deferred Token Groups
+
+The following token groups are declared in `@theme` for shadcn CLI compatibility but have **no SF consumer components** in v1.4. Do not build against these tokens until their respective milestones.
+
+### Sidebar Tokens
+
+Eight tokens: `--color-sidebar`, `--color-sidebar-foreground`, `--color-sidebar-primary`, `--color-sidebar-primary-foreground`, `--color-sidebar-accent`, `--color-sidebar-accent-foreground`, `--color-sidebar-border`, `--color-sidebar-ring`. Dark overrides exist in `.dark {}`.
+
+**Status:** SFSidebar is deferred to the cdOS milestone. These tokens exist solely so `pnpm dlx shadcn add sidebar` resolves without errors. Do not reference sidebar tokens in v1.4 components.
+
+### Chart Tokens
+
+Five tokens: `--color-chart-1` through `--color-chart-5`. No dark overrides (by design — chart colors are consistent across themes).
+
+**Status:** SFChart is out of scope for v1.4 (recharts ~50KB dependency, no current consumer). These tokens exist solely for shadcn CLI compatibility. Do not reference chart tokens in v1.4 components.
+
+### Recommendation
+
+Avoid consuming sidebar or chart tokens in any SF component until the consuming SF wrapper (SFSidebar, SFChart) is authored in its respective milestone. Using these tokens creates undocumented component contracts that may break when the consuming component is eventually built.
