@@ -40,6 +40,33 @@ function checkWebGL(): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// Module-level signal cache (INT-04)
+// Float values for --signal-* CSS vars. Read once on mount, updated via
+// MutationObserver on :root style change. Never read inside GSAP ticker.
+// ---------------------------------------------------------------------------
+
+let _signalIntensity = 0.5;
+let _signalSpeed = 1.0;
+let _signalAccent = 0.0;
+let _signalObserver: MutationObserver | null = null;
+
+function readSignalVars(): void {
+  const style = getComputedStyle(document.documentElement);
+  _signalIntensity = parseFloat(style.getPropertyValue("--signal-intensity") || "0.5");
+  _signalSpeed     = parseFloat(style.getPropertyValue("--signal-speed")     || "1");
+  _signalAccent    = parseFloat(style.getPropertyValue("--signal-accent")    || "0");
+}
+
+function ensureSignalObserver(): void {
+  if (_signalObserver || typeof window === "undefined") return;
+  readSignalVars();
+  _signalObserver = new MutationObserver(readSignalVars);
+  _signalObserver.observe(document.documentElement, {
+    attributeFilter: ["style"],
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Vertex shader — displaces vertices along normal for organic breathing
 // ---------------------------------------------------------------------------
 
@@ -255,6 +282,9 @@ export function SignalMesh() {
       // Reduced-motion guard — skip all animation setup
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+      // INT-04: initialize module-level signal cache + MutationObserver
+      ensureSignalObserver();
+
       // ScrollTrigger: wire scroll progress to uDisplacement uniform
       ScrollTrigger.create({
         trigger: container,
@@ -262,11 +292,12 @@ export function SignalMesh() {
         end: "bottom top",
         onUpdate: (self) => {
           if (!uniformsRef.current) return;
-          uniformsRef.current.uDisplacement.value = self.progress * 0.4;
+          // INT-04: scale displacement ceiling by cached intensity (0.5 default → 0.4 max)
+          uniformsRef.current.uDisplacement.value = self.progress * 0.4 * (_signalIntensity * 2);
 
-          // Also scale rotation speed with scroll progress
+          // Also scale rotation speed with scroll progress + signal speed
           if (meshRef.current) {
-            meshRef.current.rotation.y += 0.003 * (1 + self.progress * 2);
+            meshRef.current.rotation.y += 0.003 * _signalSpeed * (1 + self.progress * 2);
           }
         },
       });
@@ -275,11 +306,12 @@ export function SignalMesh() {
       // ticker-accumulation-guard: remove any old ticker before registering
       const tickerFn = () => {
         if (!uniformsRef.current) return;
-        uniformsRef.current.uTime.value += 0.016;
+        // INT-04: time and rotation scaled by cached speed — no DOM access in ticker
+        uniformsRef.current.uTime.value += 0.016 * _signalSpeed;
 
-        // Slow base rotation (independent of scroll)
+        // Slow base rotation (independent of scroll), scaled by signal speed
         if (meshRef.current) {
-          meshRef.current.rotation.y += 0.003;
+          meshRef.current.rotation.y += 0.003 * _signalSpeed;
         }
       };
 
