@@ -590,6 +590,75 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-collapsible",
+      "type": "registry:ui",
+      "title": "SF Collapsible",
+      "description": "Toggleable content panel with asChild trigger pattern",
+      "registryDependencies": ["collapsible"],
+      "files": [
+        {
+          "path": "components/sf/sf-collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-breadcrumb",
+      "type": "registry:ui",
+      "title": "SF Breadcrumb",
+      "description": "Navigation hierarchy breadcrumb with monospace / separator, Server Component",
+      "registryDependencies": ["breadcrumb"],
+      "files": [
+        {
+          "path": "components/sf/sf-breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-avatar",
+      "type": "registry:ui",
+      "title": "SF Avatar",
+      "description": "Square user avatar with Radix fallback chain: image -> initials -> icon",
+      "registryDependencies": ["avatar"],
+      "files": [
+        {
+          "path": "components/sf/sf-avatar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-alert",
+      "type": "registry:ui",
+      "title": "SF Alert",
+      "description": "Inline feedback banner with CVA intent variants: info, warning, destructive, success",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["alert"],
+      "files": [
+        {
+          "path": "components/sf/sf-alert.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }

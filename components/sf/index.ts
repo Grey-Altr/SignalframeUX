@@ -101,3 +101,22 @@ export { SFCheckbox } from "./sf-checkbox";
 export { SFRadioGroup, SFRadioGroupItem } from "./sf-radio-group";
 export { SFSwitch } from "./sf-switch";
 export { SFTextarea } from "./sf-textarea";
+
+// Feedback
+export { SFAlert, SFAlertTitle, SFAlertDescription } from "./sf-alert";
+export {
+  SFCollapsible,
+  SFCollapsibleTrigger,
+  SFCollapsibleContent,
+} from "./sf-collapsible";
+
+// Navigation
+export { SFAvatar, SFAvatarImage, SFAvatarFallback } from "./sf-avatar";
+export {
+  SFBreadcrumb,
+  SFBreadcrumbList,
+  SFBreadcrumbItem,
+  SFBreadcrumbLink,
+  SFBreadcrumbPage,
+  SFBreadcrumbSeparator,
+} from "./sf-breadcrumb";
