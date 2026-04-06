@@ -57,7 +57,7 @@
 **v1.4 Feature Complete (Phases 21-26):**
 
 - [x] **Phase 21: Tech Debt Closure** — MutationObserver disconnect, NaN guard, Lenis scroll race, duplicate TOAST entry (completed 2026-04-06)
-- [ ] **Phase 22: Token Finalization** — success/warning into @theme (22-01 done), elevation absence documented, WebGL bridge audit (22-01 done), sidebar/chart tokens
+- [x] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audited, sidebar/chart tokens documented (completed 2026-04-06)
 - [ ] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP
 - [ ] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC)
 - [ ] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring
@@ -239,7 +239,7 @@ Plans:
 **Plans:** 2/2 plans complete
 Plans:
 - [x] 21-01-PLAN.md — Observer disconnect + isNaN guard + TOAST dedup (TD-01, TD-02, TD-04)
-- [ ] 21-02-PLAN.md — Lenis scrollTo migration (TD-03)
+- [x] 21-02-PLAN.md — Lenis scrollTo migration (TD-03)
 
 ### Phase 22: Token Finalization
 **Goal**: The token system has no gaps — all extended palette tokens are in @theme, elevation absence is documented, and the WebGL color bridge is audited for safety
@@ -250,10 +250,10 @@ Plans:
   2. globals.css contains an explicit comment block documenting the absence of elevation tokens (no box-shadow scale, no z-elevation variables) as an intentional DU/TDR design decision
   3. SCAFFOLDING.md documents sidebar and chart color token behavior — including the recommendation to avoid SFSidebar and SFChart until respective milestones
   4. color-resolve.ts handles all current token values without silent failure — visual smoke test of SignalMesh and GLSLHero after every globals.css change confirms no color regression
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
-- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
+- [x] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit (completed 2026-04-06)
+- [x] 22-02-PLAN.md — Elevation policy + deferred token groups documentation (completed 2026-04-06)
 
 ### Phase 23: Remaining SF Components
 **Goal**: The component set is complete for v1.4 — every identified remaining shadcn/Radix component is SF-wrapped, registered, and in ComponentsExplorer
@@ -340,7 +340,7 @@ Plans:
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 21. Tech Debt Closure | 2/2 | Complete    | 2026-04-06 | - |
-| 22. Token Finalization | v1.4 | 0/? | Not started | - |
+| 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |

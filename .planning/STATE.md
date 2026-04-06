@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: 22-01 shipped — TK-01 and TK-04 resolved (success/warning in @theme, WebGL bridge audited)
-stopped_at: Completed 22-01-PLAN.md — TK-01, TK-04 resolved
-last_updated: "2026-04-06T22:21:00.000Z"
-last_activity: 2026-04-06 — 22-01 complete (2 tasks, 1 file, ~86s)
+milestone: v1.4
+milestone_name: Feature Complete
+status: 22-02 shipped — TK-02 and TK-03 resolved (elevation policy, deferred token groups documented)
+stopped_at: Completed 22-02-PLAN.md — TK-02, TK-03 resolved
+last_updated: "2026-04-06T22:30:00.000Z"
+last_activity: 2026-04-06 — 22-02 complete (2 tasks, 2 files, ~5min)
 progress:
   total_phases: 17
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 22 (in progress)
-Plan: 22-01 complete
-Status: 22-01 shipped — TK-01 and TK-04 resolved (success/warning in @theme, WebGL bridge audited)
-Last activity: 2026-04-06 — 22-01 complete (2 tasks, 1 file, ~86s)
+Phase: Phase 22 (complete)
+Plan: 22-02 complete
+Status: 22-02 shipped — TK-02, TK-03 resolved (elevation policy + deferred token groups documented)
+Last activity: 2026-04-06 — 22-02 complete (2 tasks, 2 files, ~5min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [██________] ~27% (3/? plans) IN PROGRESS
+v1.4: [███_______] ~33% (4/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -46,7 +46,7 @@ v1.4: [██________] ~27% (3/? plans) IN PROGRESS
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
 | 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Complete (2/2 plans) |
-| 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | In progress (1/? plans) |
+| 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Not started |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Not started |
 | 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Not started |
@@ -113,6 +113,8 @@ v1.4: [██________] ~27% (3/? plans) IN PROGRESS
 | Observer disconnect inside useGSAP cleanup return (not separate useEffect) | Fires in same teardown pass as ticker removal; avoids separate cleanup lifecycle and potential ordering issues |
 | TOAST display names use (FRAME) / (SIGNAL) suffix matching subcategory field | Consistent with existing data model; enables Phase 25 routing by name without schema changes |
 | Phase 22 (tokens) before Phase 23 (components) | New SF wrappers must use the final token vocabulary; WebGL bridge audit happens before any OKLCH values are touched |
+| Elevation comment placed between COLOR TIERS and @theme — highest discoverability in globals.css read path | Authors looking at the token file will immediately see the elevation policy before entering @theme |
+| Sidebar/chart tokens kept in @theme (not removed) — shadcn CLI requires them; documentation marks the boundary | Removal would break `pnpm dlx shadcn add sidebar` — documentation is the correct guard, not deletion |
 | success/warning in @theme not :root | Tailwind v4 only generates bg-*/text-*/border-* utilities from @theme; :root custom properties are invisible to the utility generator |
 | Phase 23 (components) before Phase 24 (data) | Component set must be final before documenting all components in api-docs.ts and component-registry.ts |
 | Phase 24 (data) before Phase 25 (UI) | Detail UI has no value without data; decoupling data authoring reduces Phase 25 tail risk |
@@ -136,5 +138,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 22-01-PLAN.md — TK-01, TK-04 resolved
-Resume with: `/pde:execute-phase 22 02` — Token Finalization Plan 02 (TK-02, TK-03)
+Stopped at: Completed 22-02-PLAN.md — TK-02, TK-03 resolved
+Resume with: `/pde:execute-phase 23 01` — Remaining SF Components (CMP-01, CMP-02, CMP-03, CMP-04)
