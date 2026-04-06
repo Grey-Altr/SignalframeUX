@@ -26,3 +26,11 @@ The project's formatter modifies files on save and causes "File has been modifie
 ### 2026-04-05T00:00:00Z | Phase 01 | tags: gsd-tools, state-management, manual-update
 
 The gsd-tools.cjs binary is not installed in this environment. STATE.md and ROADMAP.md must be updated manually. Key fields: Current Position Plan/Status/Last activity, Progress bar percentages, Decisions section, Session Continuity, Roadmap table status column and checkbox list.
+
+### 2026-04-06T02:22:00Z | Phase 01 | tags: css-fallbacks, globals.css, var-consumers
+
+In globals.css, grep for `var(--color-[^,)]*)` to find color var() calls WITHOUT fallbacks — the regex excludes the comma meaning no fallback is present. Lines in @theme declarations start with `--color-` so filter with `| grep -v "@theme"`. The commented-out sf-cursor block (lines 1240–1300) contains active-looking CSS inside `/* */` comments — verify line numbers against comment open/close markers before adding fallbacks. Custom property declarations in `:root` (e.g. `--text-heading-1-family: var(--font-display)`) are NOT consumers and do not need fallbacks.
+
+### 2026-04-06T02:22:00Z | Phase 01 | tags: print-stylesheet, signal-layer, media-print
+
+For @media print in this project: suppress Signal layer with `display: none !important` on .vhs-overlay, .vhs-crt, .vhs-noise, .vhs-scanlines, [data-anim], .sf-grain::after, .sf-idle-overlay, .sf-cursor, and GSAP debug markers. Do NOT use blanket `* { position: static !important }` — it breaks flex/grid layout. Instead, scope position:static to nav, .scroll-to-top, [style*="position: fixed"], [style*="position: sticky"] only.
