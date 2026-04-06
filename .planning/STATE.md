@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: active
-stopped_at: "Completed Phase 4 Plan 04-02 — Crafted states: error.tsx, not-found.tsx, three empty states as FRAME+SIGNAL design moments"
+stopped_at: "Completed Phase 4 Plan 04-03 — Reduced-motion QA complete, SIGNAL-SPEC.md Section 7 added with 17-effect documentation and two-layer architecture"
 last_updated: "2026-04-05T00:00:00Z"
-last_activity: "2026-04-05 — Plan 04-02 executed: error/404 as FRAME+SIGNAL moments, ComponentsExplorer/API explorer/token explorer empty states designed"
+last_activity: "2026-04-05 — Plan 04-03 executed: reduced-motion CSS audit (no gaps found), human-verified all surfaces approved, SIGNAL-SPEC.md Section 7 documentation"
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
+  completed_phases: 4
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: Phase 4 — Above-the-Fold Lock (IN PROGRESS)
-Plan: 04-02 (complete) — Crafted states: error.tsx and not-found.tsx as FRAME+SIGNAL moments (SFContainer/SFText structure, ScrambleText, sf-glitch); three empty states (ComponentsExplorer "0 MATCHES", API explorer "COMING SOON" DU/TDR polish, token explorer structural placeholder)
-Status: Phase 4 IN PROGRESS — 2/? plans complete
-Last activity: 2026-04-05 — Plan 04-02 executed: error/404 as FRAME+SIGNAL moments, ComponentsExplorer/API explorer/token explorer empty states designed
+Plan: 04-03 (complete) — Reduced-motion QA: CSS coverage audit (complete, no gaps), human-verified all surfaces at 1440x900 (approved), SIGNAL-SPEC.md Section 7 added with 17-effect documentation and two-layer suppression architecture
+Status: Phase 4 IN PROGRESS — 3/? plans complete
+Last activity: 2026-04-05 — Plan 04-03 executed: reduced-motion CSS audit (no gaps found), human-verified all surfaces approved, SIGNAL-SPEC.md Section 7 documentation
 
 ## Progress
 
@@ -37,10 +37,10 @@ Last activity: 2026-04-05 — Plan 04-02 executed: error/404 as FRAME+SIGNAL mom
 Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
 Phase 3 — SIGNAL Expression:   [██████████] 100% (4/4 plans) COMPLETE
-Phase 4 — Above-the-Fold Lock: [████░░░░░░]  ~40% (2/? plans)
+Phase 4 — Above-the-Fold Lock: [██████████] 100% (3/3 plans) COMPLETE
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [███████░░░]  ~75% (11/14 plans)
+Overall:   [████████░░]  ~85% (12/15 plans)
 ```
 
 ## Accumulated Context
@@ -57,6 +57,9 @@ Overall:   [███████░░░]  ~75% (11/14 plans)
 - Dual-layer model corrected: FRAME=structure, SIGNAL=expression
 
 ### Decisions
+- Plan 04-03: Reduced-motion CSS audit confirmed complete — no gaps found; hero-mesh and error-code were already added in 04-01 and 04-02; [data-anim] catch-all covers any future unlisted values
+- Plan 04-03: Hover transitions (SIG-02) suppressed by global transition-duration: 0.01ms but state changes remain instant — intentional; hover feedback is pointer state not decorative motion
+- Plan 04-03: Two-layer architecture documented as authoritative pattern — CSS fires at paint-time before JS, GSAP layer handles timeline suppression at runtime
 - Plan 04-02: ScrambleText guard pattern — matchMedia check before async gsap-plugins import prevents code fetch on reduced-motion devices entirely
 - Plan 04-02: not-found.tsx Server Component uses data-anim="page-heading" — reuses existing initPageHeadingScramble without a new client boundary
 - Plan 04-02: ComponentsExplorer reset clears both searchInput and searchQuery — debounced search has two state vars; must clear both to avoid stale filter state
@@ -105,11 +108,11 @@ Overall:   [███████░░░]  ~75% (11/14 plans)
 | 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | COMPLETE — 4/4 plans |
-| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | IN PROGRESS — 2/? plans |
+| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | COMPLETE — 3/3 plans |
 | 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
 
 ## Session Continuity
 
 Last session: 2026-04-05
-Stopped at: Completed Phase 4 Plan 04-02 — Crafted states: error.tsx, not-found.tsx, three empty states as FRAME+SIGNAL design moments
+Stopped at: Completed Phase 4 Plan 04-03 — Reduced-motion QA complete, SIGNAL-SPEC.md Section 7 (17-effect documentation, two-layer architecture, QA checklist)
 Resume file: .planning/phases/04-above-the-fold-lock/
