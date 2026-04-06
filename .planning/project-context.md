@@ -15,6 +15,8 @@ TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS
 - All tokens defined in `app/globals.css`
 - Zero border-radius everywhere
 - Dual-layer: FRAME = structural, SIGNAL = expressive
+- GSAP modular split: gsap-core (~8KB), gsap-split (~35KB), gsap-draw (~15KB), gsap-plugins (~100KB lazy)
+- WebGL via raw Three.js (not R3F) + `next/dynamic({ ssr: false })`
 
 ## Constraints
 - Lighthouse 100/100 all categories
@@ -24,31 +26,40 @@ TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS
 - Dark mode primary, light mode available
 - No JavaScript required for core content (progressive enhancement)
 - No skeuomorphism, no fake depth, no decorative gradients
+- No R3F (rAF conflicts with GSAP scalar), no Lottie, no gradient meshes/glassmorphism
 
 ## Current Milestone
-v1.0 Craft & Feedback — 5 phases
-Status: Phase 1 not started
+v1.1 Generative Surface — 4 phases (6–9)
+Status: Roadmap created, planning Phase 6
 
 ## Key Decisions
-- FRAME = structure, SIGNAL = expression (the signal runs through the frame)
-- Awwwards SOTD target (>= 8.0 weighted)
-- Three pillars: Foundation, Feeling, Fluency
-- AI DX is first-class — "as easy as feeling"
-- Phase order: FRAME tokens → primitives → SIGNAL → ATF → DX
-- 40% FRAME (strict) / 60% SIGNAL+ATF (iteration budget)
-- Enhanced Flat Design inspired by Detroit Underground + The Designers Republic
+| Decision | Milestone | Outcome |
+|----------|-----------|---------|
+| Dual-layer FRAME/SIGNAL model | v1.0 | ✓ Good — clean separation |
+| OKLCH color space throughout | v1.0 | ✓ Good — perceptually uniform |
+| Zero border-radius everywhere | v1.0 | ✓ Good — defines aesthetic |
+| CVA `intent` as standard variant prop | v1.0 | ✓ Good — consistent API |
+| Server Components default for primitives | v1.0 | ✓ Good |
+| Raw Three.js over R3F | v1.1 | — Pending |
+| Singleton SignalCanvas renderer | v1.1 | — Pending |
+| GSAP ticker as WebGL render driver | v1.1 | — Pending |
+| OGL for lightweight shader effects | v1.1 | — Pending |
 
 ## Active Requirements
-- [ ] FRM-01: Spacing blessed stops enforced
-- [ ] FRM-02: Semantic typography aliases
-- [ ] FRM-03: Layout tokens defined
-- [ ] FRM-04: CSS fallback values on all tokens
-- [ ] FRM-05: Color palette tiered and frozen
-- [ ] FRM-06: VHS tokens namespaced to --sf-vhs-*
-- [ ] FRM-07: CVA intent standardization
-- [ ] FRM-08: Print media styles
-- [ ] PRM-01–06: Six SF primitives
-- [ ] SIG-01–10: Signal expression layer
-- [ ] ATF-01–06: Above-the-fold lock
-- [ ] DX-01–05: DX contract
-- [ ] STP-01–02: State persistence
+- [ ] **GEN-01**: Singleton SignalCanvas renderer
+- [ ] **GEN-02**: OKLCH→sRGB color bridge utility
+- [ ] **GEN-03**: useSignalScene hook (disposal + GSAP ticker + IntersectionObserver)
+- [ ] **GEN-04**: WebGL dynamic import + bundle validation
+- [ ] **GEN-05**: Reduced-motion guard + ARIA for canvas
+- [ ] **SIG-06**: Audio feedback palette (Web Audio API)
+- [ ] **SIG-07**: Haptic feedback (Vibration API)
+- [ ] **SIG-08**: Idle state animation
+- [ ] **SIG-09**: [data-cursor] activation
+- [ ] **SCN-01**: SignalMesh (first 3D)
+- [ ] **SCN-02**: Token visualization (Canvas 2D)
+- [ ] **SCN-03**: ASCII/dithering shader
+- [ ] **SCN-04**: Custom GLSL hero shader
+- [ ] **INT-01**: SF primitive consumers
+- [ ] **INT-02**: Stagger on grids
+- [ ] **INT-03**: SignalMotion component
+- [ ] **INT-04**: Live SIGNAL overlay
