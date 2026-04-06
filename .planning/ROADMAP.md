@@ -81,7 +81,11 @@ Plans:
   3. All showcase pages (Work, Case Study, About, Components) use `SFSection`, `SFStack`, and `SFGrid` as the layout backbone — no raw `div` layout wrappers remain at section level
   4. Component grid blocks on showcase pages stagger-animate on scroll via `data-anim="stagger"` — the animation fires once per scroll into view
   5. Lighthouse 100/100 is maintained across all pages with generative content active; CRT critique score for pages with generative content reaches >= 90/100
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 09-01-PLAN.md — GLSL hero shader with integrated Bayer 4x4 dither + SignalMesh relocation to /components
+- [ ] 09-02-PLAN.md — SignalMotion scroll-driven animation component + SIGNAL overlay parameter panel
+- [ ] 09-03-PLAN.md — SF layout primitive migration across all 5 pages + stagger animation activation
 
 ## Progress
 
@@ -95,4 +99,4 @@ Plans:
 | 6. Generative SIGNAL Foundation | v1.1 | 2/2 | In progress | - |
 | 7. SIGNAL Activation | v1.1 | 2/2 | In progress | - |
 | 8. First Generative Scenes | v1.1 | 0/2 | Not started | - |
-| 9. Extended Scenes + Production Integration | v1.1 | 0/? | Not started | - |
+| 9. Extended Scenes + Production Integration | v1.1 | 0/3 | Not started | - |
