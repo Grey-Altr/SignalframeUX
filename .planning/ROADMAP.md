@@ -77,7 +77,11 @@ Plans:
   3. The component count displayed on the hero matches the actual number of built components, with "growing" label if the count is partial
   4. The error page (app/error.tsx) uses FRAME layout primitives and SIGNAL expression — it is visually distinct from a browser default error and consistent with the design system's visual language
   5. Reduced-motion mode presents a complete, intentional layout experience with no empty regions, invisible elements, or layout collapse where animations would have been
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 04-01-PLAN.md — Hero animation fast-path (sub-500ms first motion), component count fix, hero spacing polish
+- [ ] 04-02-PLAN.md — Crafted error/not-found pages (FRAME+SIGNAL) + ComponentsExplorer empty state
+- [ ] 04-03-PLAN.md — Reduced-motion QA audit, CSS coverage verification, SIGNAL-SPEC.md documentation
 
 ### Phase 5: DX Contract & State
 **Goal**: The developer experience is fully contractual — scaffolding spec, JSDoc coverage, import boundary, API foundation, and session state are all defined and enforced
@@ -99,7 +103,7 @@ Plans:
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
-| 4. Above-the-Fold Lock | 0/? | Not started | - |
+| 4. Above-the-Fold Lock | 0/3 | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |
 
 ---
