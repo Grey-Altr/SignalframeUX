@@ -2,12 +2,12 @@
 
 ## Milestones
 
-- ✅ **v1.0 Craft & Feedback** — Phases 1-5 (shipped 2026-04-06)
+- ✅ **v1.0 Craft & Feedback** — Phases 1-5 (shipped 2026-04-05)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 Craft & Feedback (Phases 1-5) — SHIPPED 2026-04-06</summary>
+<summary>✅ v1.0 Craft & Feedback (Phases 1-5) — SHIPPED 2026-04-05</summary>
 
 - [x] Phase 1: FRAME Foundation (3/3 plans) — completed 2026-04-06
 - [x] Phase 2: FRAME Primitives (2/2 plans) — completed 2026-04-06

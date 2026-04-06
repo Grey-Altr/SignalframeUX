@@ -60,7 +60,7 @@
 
 | Milestone | Validation Checks | Nyquist Compliant | Tech Debt Items |
 |-----------|-------------------|-------------------|-----------------|
-| v1.0 | 75+ grep checks | 5/5 phases | 2 (orphaned primitives, stagger no consumer) |
+| v1.0 | 75+ grep checks | 5/5 phases | 12 (audit: 0 blockers, orphaned primitives, [data-cursor] gap) |
 
 ### Top Lessons (Verified Across Milestones)
 

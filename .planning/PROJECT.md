@@ -62,10 +62,13 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
 - SIGNAL-SPEC.md (259 lines) documenting all effects with timing, fallback, mobile, reduced-motion
 
-**Known tech debt:**
+**Known tech debt (12 items from milestone audit):**
 - 3 primitives (SFSection, SFStack, SFGrid) exported but awaiting first production consumer
-- data-anim="stagger" wired but no block uses it yet
-- Both resolve when portfolio pages are built
+- [data-cursor] attribute not placed on any section — CanvasCursor mounted but never activates (one-line fix)
+- GSAP animation tokens use inline comments, not var() — known FRAME/SIGNAL boundary design decision
+- Pre-existing TypeScript error in color-cycle-frame.tsx:79
+- Human verification pending: hero performance trace, reduced-motion composition
+- All resolve when portfolio pages are built or during next milestone
 
 ## Key Decisions
 
@@ -97,4 +100,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.0 Craft & Feedback milestone*
+*Last updated: 2026-04-05 after v1.0 Craft & Feedback milestone completion*
