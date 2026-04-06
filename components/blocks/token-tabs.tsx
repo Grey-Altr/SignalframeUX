@@ -248,7 +248,7 @@ export function TokenTabs() {
             {showAll ? "SHOW CORE" : `SHOW ALL ${COLOR_SCALES.length}`}
           </SFButton>
         </div>
-        <div id="color-scale-grid" role="grid" aria-label="Color scales" className="overflow-x-auto relative">
+        <div id="color-scale-grid" role="grid" aria-label="Color scales" data-anim="stagger" className="overflow-x-auto relative">
           <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
             ← SCROLL →
           </div>

@@ -302,7 +302,7 @@ export default function StartPage() {
         </SFSection>
 
         {/* ═══ NEXT STEPS ═══ */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
+        <div data-anim="stagger" className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
           {NEXT_CARDS.map((card, i) => (
             <Link
               key={card.title}
