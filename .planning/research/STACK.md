@@ -1,379 +1,280 @@
-# Technology Stack
+# Stack Research
 
-**Project:** SignalframeUX v1.2 Tech Debt Sweep
+**Domain:** Design system component library expansion (React/Next.js)
 **Researched:** 2026-04-06
-**Scope:** NEW capabilities only — registry.json, config provider API, session persistence, CSS var→WebGL bridge
+**Scope:** NEW capabilities only — v1.3 Component Expansion (Accordion, Toast, Progress, AlertDialog, Avatar, Breadcrumb, EmptyState, NavigationMenu, Pagination, Stepper, StatusDot, ToggleGroup, Calendar, Menubar)
+**Confidence:** HIGH
 
 ---
 
 ## Context: What Is NOT Re-Researched
 
-The following stack is locked from v1.0/v1.1 and NOT covered here:
+The following stack is locked from v1.0–v1.2 and NOT covered here:
 
 - Next.js 15.3 (App Router, Turbopack) + TypeScript 5.8
 - GSAP 3.12.7 + ScrollTrigger, @gsap/react 2.1.2, Lenis 1.1.20
-- Tailwind CSS v4, CVA, Radix/shadcn SF layer
-- Three.js 0.183.2 (async chunk), SignalCanvas singleton, useSignalScene, color-resolve
+- Tailwind CSS v4, CVA 0.7.1, `radix-ui` 1.4.3 umbrella, `shadcn` 4.1.2 devDep
+- Three.js 0.183.2 (async chunk), SignalCanvas singleton, OKLCH color space
+- `cmdk` 1.1.1 (already installed — powers SFCommand)
+- Session persistence, registry.json, createSignalframeUX factory (all v1.2)
 
-Existing architecture decisions that constrain this milestone:
-- GSAP ticker is the ONLY render driver for WebGL — no independent rAF loops
-- Three.js lives in async chunk — 102 kB initial shared bundle maintained
-- Server Components default — `'use client'` only when required
-- Document-level event listener pattern proven in v1.1 (audio/haptics)
-
----
-
-## Feature 1: registry.json (DX-04)
-
-### What It Is
-
-A machine-readable component manifest that lets AI assistants (Claude, v0, Cursor) and the shadcn CLI install SignalframeUX components directly into consumer projects via URL:
-
-```bash
-pnpm dlx shadcn@latest add https://signalframeux.com/r/sf-button.json
-```
-
-### Stack Decision: shadcn Registry Format
-
-**Use the shadcn registry schema.** No additional library required — it is a JSON build artifact.
-
-| Aspect | Decision | Rationale |
-|--------|----------|-----------|
-| Schema | `https://ui.shadcn.com/schema/registry.json` | Industry standard; supported by shadcn CLI, v0, and AI tools |
-| Build command | `shadcn build` (already in devDeps: `shadcn@4.1.2`) | No new dependency — shadcn CLI already installed |
-| Output dir | `public/r/` | Convention; served by Next.js static file serving at `/r/[name].json` |
-| Source dir | `registry/` at project root | Convention from shadcn registry template |
-
-### registry.json Top-Level Structure
-
-```json
-{
-  "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "signalframeux",
-  "homepage": "https://signalframeux.com",
-  "items": [ ...registry items... ]
-}
-```
-
-### File Type Mapping for SF Components
-
-| SF Component Type | Registry Type | When to Use |
-|-------------------|---------------|-------------|
-| SF-wrapped shadcn component | `registry:ui` | `sf-button.tsx`, `sf-card.tsx`, etc. |
-| Layout primitive | `registry:ui` | `sf-container.tsx`, `sf-section.tsx`, etc. |
-| Animation component | `registry:component` | `signal-motion.tsx`, `scroll-reveal.tsx`, etc. |
-| Hook | `registry:hook` | `use-signal-scene.ts`, etc. |
-| Lib utility | `registry:lib` | `color-resolve.ts`, `signal-canvas.tsx`, etc. |
-| CSS theme/tokens | `registry:theme` | `globals.css` token subset |
-
-### Build Script Addition
-
-```json
-// package.json — add to scripts:
-"registry:build": "shadcn build"
-```
-
-The `shadcn build` command reads `registry.json` at project root, processes all file paths, and outputs per-component JSON files to `public/r/`. No configuration needed beyond adding the source files.
-
-**Confidence:** HIGH — official shadcn/ui documentation, `shadcn@4.1.2` already in devDeps.
+Existing architecture constraints for this milestone:
+- `radix-ui@1.4.3` umbrella package already installed — all needed Radix primitives are bundled and tree-shakeable; zero new Radix installs needed
+- `'use client'` only when required — Server Components default
+- Page weight budget < 200KB initial (excluding images) — heavy components must use `next/dynamic`
+- No border-radius anywhere (DU/TDR aesthetic)
+- GSAP is the only animation driver — no independent animation libraries
 
 ---
 
-## Feature 2: createSignalframeUX(config) + useSignalframe() (DX-05)
+## Critical Finding: All Radix Primitives Already Available
 
-### What It Is
+The installed `radix-ui@1.4.3` umbrella exports ALL primitives needed for v1.3 with zero additional installs:
 
-A React context provider factory that lets consumers configure SignalframeUX behavior at the application boundary:
+| Target Component | Radix Primitive | Import Path |
+|-----------------|-----------------|-------------|
+| SFAccordion | `Accordion` | `import * as Accordion from 'radix-ui/react-accordion'` |
+| SFAlertDialog | `AlertDialog` | `import * as AlertDialog from 'radix-ui/react-alert-dialog'` |
+| SFAvatar | `Avatar` | `import * as Avatar from 'radix-ui/react-avatar'` |
+| SFNavigationMenu | `NavigationMenu` | `import * as NavigationMenu from 'radix-ui/react-navigation-menu'` |
+| SFProgress | `Progress` | `import * as Progress from 'radix-ui/react-progress'` |
+| SFToggleGroup | `ToggleGroup` | `import * as ToggleGroup from 'radix-ui/react-toggle-group'` |
+| SFMenubar (P3) | `Menubar` | `import * as Menubar from 'radix-ui/react-menubar'` |
+| SFBreadcrumb | — | Pure composition (no Radix primitive needed) |
+| SFPagination | — | Pure composition (no Radix primitive needed) |
+| SFStepper | — | Pure composition (no Radix primitive needed) |
+| SFStatusDot | — | Pure CSS/CVA (no Radix primitive needed) |
+| SFEmptyState | — | Pure composition (no Radix primitive needed) |
 
-```typescript
-// consumer's app/layout.tsx
-const { SignalframeProvider } = createSignalframeUX({
-  signal: { defaultIntensity: 0.3, defaultSpeed: 1.0 },
-  reducedMotion: 'system',
-  theme: 'dark',
-});
-```
+The umbrella package is tree-shakeable by namespace import — only primitives explicitly imported are bundled. No version conflicts or duplicate dependencies. Namespace import (`import * as Accordion from 'radix-ui/react-accordion'`) is tree-shaking equivalent to named imports per Radix documentation.
 
-```typescript
-// any component
-const { signal, theme } = useSignalframe();
-```
-
-### Stack Decision: Native React Context — No Library
-
-**Use plain React `createContext` + `useContext`.** No new dependency.
-
-| Option | Decision | Rationale |
-|--------|----------|-----------|
-| Native React context | **RECOMMENDED** | Zero bundle cost; already in project; TypeScript generics handle the factory pattern cleanly |
-| `react-use-config` | Rejected | Adds dependency for what is ~30 lines of code; unmaintained (last commit 2021) |
-| Zustand | Rejected | Overkill; global store conflicts with the provider factory pattern; existing project has no Zustand |
-| Jotai | Rejected | Overkill for design system config; adds atoms complexity for a simple read-only config tree |
-
-### Implementation Pattern
-
-The factory pattern is proven in the ecosystem (Wagmi `createConfig`, Ant Design `ConfigProvider`, Radix UI theming) and is straightforward with TypeScript:
-
-```typescript
-// lib/signalframe-context.tsx
-interface SignalframeConfig {
-  signal?: { defaultIntensity?: number; defaultSpeed?: number; defaultAccent?: number; };
-  reducedMotion?: 'system' | 'always' | 'never';
-  theme?: 'dark' | 'light' | 'system';
-}
-
-export function createSignalframeUX(config: SignalframeConfig = {}) {
-  const SignalframeContext = createContext<SignalframeConfig>(config);
-
-  function SignalframeProvider({ children }: { children: React.ReactNode }) {
-    return <SignalframeContext.Provider value={config}>{children}</SignalframeContext.Provider>;
-  }
-
-  function useSignalframe() {
-    return useContext(SignalframeContext);
-  }
-
-  return { SignalframeProvider, useSignalframe };
-}
-
-// Default export for apps that don't need customisation
-export const { SignalframeProvider, useSignalframe } = createSignalframeUX();
-```
-
-**Key constraints:**
-- `SignalframeProvider` must be a Client Component (`'use client'`) because it uses React context
-- Config is read-only at runtime — no mutation API (no `setConfig`). SignalOverlay writes directly to CSS vars, not to this context
-- `useSignalframe` is a thin accessor — not a settings panel. The SignalOverlay already handles interactive mutation
-
-**Confidence:** HIGH — native React API, pattern validated across major libraries.
+**Confidence:** HIGH — verified by reading `node_modules/radix-ui/src/index.ts` directly.
 
 ---
 
-## Feature 3: Session State Persistence (STP-01)
+## Decision 1: Toast — Sonner, Not Radix Toast
 
-### What It Is
+### Recommendation: `sonner@2.0.7` — new dependency
 
-Persist three types of UI state across page reloads: filter selections, scroll position, and tab state.
+| Aspect | Sonner | Radix Toast |
+|--------|--------|-------------|
+| Status in shadcn/ui | **Official recommendation — Radix Toast deprecated** | Deprecated (shadcn replaced it) |
+| API surface | Imperative `toast()` call from anywhere | Component + `useToast()` hook wiring |
+| Stacking behavior | Built-in stacked/swipeable UI | Manual implementation required |
+| Bundle size | ~7-10 kB gzipped (LOW confidence — bundlephobia JS not parseable) | Already in radix-ui umbrella |
+| Animation | Built-in slide/stack animations | Manual |
+| Promise API | `toast.promise(fn)` — zero-config async feedback | Not available |
+| `'use client'` required | Yes | Yes |
+| Styling control | CSS variables + Tailwind overrides | Full unstyled control |
 
-### Stack Decision: nuqs for Filter/Tab State, Native sessionStorage for Scroll
+**Why Sonner over Radix Toast:**
+1. shadcn/ui has officially deprecated Radix Toast in favor of Sonner — this is the ecosystem direction
+2. Sonner's imperative API (`toast('Message')` from anywhere) is strictly better DX than wiring a `useToast()` hook through component trees
+3. `toast.promise()` is essential for async interaction patterns (form submissions, data loading)
+4. Sonner's stacking/swipe behavior is production-ready with zero configuration
+5. The design system can fully override Sonner's default styling via CSS variables to enforce DU/TDR aesthetic (no rounded corners, OKLCH colors)
 
-Two different mechanisms for two different data shapes:
+**Why not Radix Toast:** Deprecated in shadcn. The primitive is already in the `radix-ui` umbrella so there would be zero install cost — but the API is more complex for identical results, and it is the ecosystem's past, not future.
 
-| State Type | Mechanism | Why |
-|------------|-----------|-----|
-| Filter selections | nuqs `useQueryState` | URL-encoded → shareable, bookmarkable, SSR-compatible with Next.js App Router |
-| Tab state | nuqs `useQueryState` | Same rationale; tab = navigation state, belongs in URL |
-| Scroll position | `sessionStorage` (native) | Scroll is ephemeral positional data — NOT shareable, NOT needed in URL, `sessionStorage` clears on tab close (correct behavior) |
+**Sonner styling override pattern for zero-radius DU/TDR aesthetic:**
+```tsx
+// In root layout (Server Component passthrough wrapping Toaster):
+<Toaster
+  toastOptions={{
+    classNames: {
+      toast: 'border-0 rounded-none font-mono',
+      title: 'text-sm tracking-wide uppercase',
+    }
+  }}
+/>
+```
 
-### nuqs
+**Install:** `pnpm add sonner`
 
-**Install: `pnpm add nuqs`** — new dependency.
+---
+
+## Decision 2: Calendar (P3) — react-day-picker v9, Lazy-Loaded
+
+### Recommendation: `react-day-picker@9.14.0` via `next/dynamic` — new dependency, P3 only
 
 | Aspect | Value |
 |--------|-------|
-| Version | `^2.8.9` (latest, April 2026) |
-| Bundle size | 6 kB gzipped |
-| Dependencies | Zero runtime dependencies |
-| Next.js App Router support | First-class via `NuqsAdapter` |
-| React version | Supports React 19 |
+| Version | `9.14.0` (latest as of April 2026) |
+| date-fns | Bundled as regular dep in v9 (was peer dep in v8) — no separate install |
+| shadcn integration | Official — shadcn Calendar upgraded to react-day-picker v9 (confirmed June 2025 shadcn changelog) |
+| Bundle cost | Significant (includes date-fns) — MUST be lazy-loaded |
+| `next/dynamic` required | Yes — P3 designation; heavy dep annotated in registry |
 
-**Required setup — add `NuqsAdapter` to root layout:**
+**Why react-day-picker:**
+- Only calendar library with official shadcn/ui integration and maintained upgrade path
+- v9 brings first-class timezone support (`timeZone` prop) — correct for a production design system
+- Accessibility: WCAG 2.1 compliant keyboard and screen reader navigation
+- date-fns bundled as regular dep in v9 — no consumer peer dependency management needed
 
-```typescript
-// app/layout.tsx (Server Component)
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
+**Why it is P3 (not P1/P2):**
+- react-day-picker + date-fns adds significant weight to the initial bundle
+- Calendar components are session-specific (date pickers, booking flows) — not needed on initial load
+- `next/dynamic` wrapping isolates this from the 200KB initial budget
 
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        <NuqsAdapter>{children}</NuqsAdapter>
-      </body>
-    </html>
-  );
-}
+**Lazy load pattern (required for SFCalendar):**
+```tsx
+// components/sf/sf-calendar.tsx
+import dynamic from 'next/dynamic';
+
+const CalendarInner = dynamic(() => import('./sf-calendar-inner'), {
+  loading: () => <SFSkeleton className="h-[300px] w-[280px]" />,
+  ssr: false,  // date-fns timezone operations are client-side
+});
 ```
 
-**Usage in filter components:**
-
-```typescript
-'use client';
-import { parseAsString, useQueryState } from 'nuqs';
-
-const [activeFilter, setActiveFilter] = useQueryState('filter', parseAsString.withDefault('all'));
-```
-
-**Why not localStorage for filters?**
-- URL state is shareable and bookmarkable — correct for filters/tabs
-- nuqs is the de-facto standard for Next.js App Router URL state (used by Vercel, Supabase, Sentry, Clerk)
-- localStorage accumulates stale state; URL state self-cleans on navigation
-- nuqs v2.5+ provides key isolation — components only re-render when their specific key changes
-
-**Scroll position — native sessionStorage:**
-
-```typescript
-// Simple hook — no library needed
-function useScrollPersistence(key: string) {
-  useEffect(() => {
-    const saved = sessionStorage.getItem(key);
-    if (saved) window.scrollTo(0, parseInt(saved, 10));
-
-    const onScroll = () => sessionStorage.setItem(key, String(window.scrollY));
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [key]);
-}
-```
-
-**Why not nuqs for scroll?** Scroll position in the URL creates ugly URLs, breaks browser back-button behavior, and generates unnecessary history entries. `sessionStorage` is the correct tool: it persists through refreshes on the same tab and clears when the tab closes.
-
-**Confidence:** HIGH — nuqs official docs, NuqsAdapter pattern verified; sessionStorage is native Web API.
+**Install:** `pnpm add react-day-picker` — P3 phase only, NOT in P1/P2 sprint
 
 ---
 
-## Feature 4: SignalOverlay→WebGL CSS Var Bridge (INT-04)
+## Decision 3: cmdk — Already Installed, No Changes
 
-### What It Is
+`cmdk@1.1.1` is already a production dependency powering `SFCommand`. v1.3 adds no new command palette components, so no version bump or changes are needed.
 
-Complete the one-sided bridge: `SignalOverlay` writes `--signal-intensity`, `--signal-speed`, `--signal-accent` to `:root` CSS vars, but no WebGL scene currently reads them. The bridge must poll these vars on each GSAP ticker frame and push values into Three.js uniforms.
+**Confidence:** HIGH — verified from `package.json`.
 
-### Stack Decision: getComputedStyle in GSAP Ticker — No Library
+---
 
-**No new library required.** The existing architecture already has everything needed:
+## Decision 4: Tree-Shaking with radix-ui Umbrella — No Risk
 
-1. GSAP ticker already drives the WebGL render loop (proven in `signal-canvas.tsx`, `glsl-hero.tsx`)
-2. `getComputedStyle(document.documentElement).getPropertyValue('--signal-intensity')` reads CSS vars synchronously
-3. Three.js uniform mutation on tick is the existing pattern (`glsl-hero.tsx` already does `uniformsRef.current.uTime.value += 0.016`)
+Adding many SF-wrapped Radix components does NOT meaningfully impact the initial bundle because:
 
-**Why not StyleObserver / `@bramus/style-observer`?**
-- Adds a dependency (~5 kB) for a problem already solved by the GSAP ticker
-- The GSAP ticker already runs every frame — reading 3 CSS vars per tick is negligible (< 1µs)
-- `getComputedStyle` is called every frame in `color-resolve.ts` for the canvas probe — this is an established pattern in this codebase
+1. `radix-ui@1.4.3` uses namespace exports — Turbopack/webpack tree-shakes at the `@radix-ui/react-*` sub-package level
+2. Each primitive is a separate internal sub-package — only explicitly imported primitives are included in the bundle
+3. The Radix sub-packages are already present in `node_modules` from the umbrella install — adding SF wrappers adds only the thin wrapper code
+4. P1/P2 components are Radix-based or pure composition — no new heavy dependencies in either phase
 
-**Why not MutationObserver watching `:root` style attribute?**
-- MutationObserver on `style` attribute fires when `element.style.setProperty()` is called — this would work for SignalOverlay's writes
-- BUT: it fires synchronously on mutation, not on the render frame — could trigger uniform updates between GSAP ticker ticks, causing visual stutter
-- The ticker-per-frame approach is frame-coherent: uniforms update at the same moment the scene renders
+**Practical impact:** Adding all P1/P2 SF wrappers (SFAccordion through SFToggleGroup) adds approximately 2-5 kB gzipped total from wrapper code. The Radix primitives themselves were already downloaded with the umbrella install.
 
-### Bridge Pattern
+**Confidence:** MEDIUM — tree-shaking verified via Radix documentation; per-primitive wrapper sizes are estimated.
 
-The bridge lives in `glsl-hero.tsx` (the primary WebGL consumer) and any future WebGL scene that reads signal parameters. Pattern:
+---
 
-```typescript
-// Inside GSAP ticker callback in the scene component:
-const tickerFn = () => {
-  if (!uniformsRef.current) return;
-  uniformsRef.current.uTime.value += 0.016;
+## Decision 5: No Version Bumps Required for P1/P2
 
-  // Signal bridge — read CSS vars, push to uniforms
-  const style = getComputedStyle(document.documentElement);
-  const intensity = parseFloat(style.getPropertyValue('--signal-intensity') || '0.5');
-  const speed = parseFloat(style.getPropertyValue('--signal-speed') || '1.0');
-  uniformsRef.current.uIntensity.value = intensity;
-  uniformsRef.current.uSpeed.value = speed;
-};
-```
+All P1/P2 components are fully covered by the current package.json:
 
-**CSS var defaults in globals.css** — must be added as part of INT-04:
+| Package | Current Version | P1/P2 Need | Action |
+|---------|----------------|------------|--------|
+| `radix-ui` | `1.4.3` | Accordion, AlertDialog, Avatar, Progress, NavigationMenu, ToggleGroup | None — all included |
+| `class-variance-authority` | `0.7.1` | CVA variants on all new components | None |
+| `lucide-react` | `0.488.0` | Icons for Breadcrumb, Pagination, Avatar fallback | None |
+| `gsap` | `3.12.7` | SIGNAL integration on Progress, Accordion | None |
+| `tailwind-merge` | `3.0.2` | `cn()` throughout | None |
 
-```css
-/* globals.css — @theme or :root block */
---signal-intensity: 0.5;
---signal-speed: 1.0;
---signal-accent: 0;
-```
+No version bumps needed for P1/P2. All required primitives are present and verified.
 
-Without defaults, `getPropertyValue` returns an empty string, and `parseFloat('')` returns `NaN`.
+---
 
-**Confidence:** HIGH — pattern validated by existing codebase (`glsl-hero.tsx` ticker + `color-resolve.ts` `getComputedStyle` probe). No new library needed.
+## Decision 6: StatusDot, Stepper, Pagination, Breadcrumb — Pure Composition
+
+These four components require no new primitives:
+
+| Component | Implementation | Client Directive |
+|-----------|---------------|-----------------|
+| SFStatusDot | CVA + Tailwind classes only | Server Component ✓ |
+| SFStepper | Pure React composition + Tailwind | `'use client'` (active step state) |
+| SFPagination | Pure React + Lucide `ChevronLeft`/`ChevronRight` | `'use client'` (page state) |
+| SFBreadcrumb | Pure React + Lucide `ChevronRight` + Next.js `Link` | Server Component ✓ |
+
+---
+
+## Recommended Stack for v1.3
+
+### New Runtime Dependencies
+
+| Package | Version | Purpose | Phase | Install Command |
+|---------|---------|---------|-------|----------------|
+| `sonner` | `^2.0.7` | Toast notifications — imperative API, stacking, promise | P1 | `pnpm add sonner` |
+| `react-day-picker` | `^9.14.0` | Calendar — date-fns bundled, WCAG 2.1 | P3 only | `pnpm add react-day-picker` |
+
+### Zero New Dependencies (P1 + P2 — covered by existing installs)
+
+| Components | Source | Install |
+|-----------|--------|---------|
+| SFAccordion, SFAlertDialog, SFAvatar, SFProgress | `radix-ui@1.4.3` (existing) | None |
+| SFNavigationMenu, SFToggleGroup | `radix-ui@1.4.3` (existing) | None |
+| SFBreadcrumb, SFPagination, SFStepper, SFStatusDot, SFEmptyState | Pure composition | None |
+
+### What NOT to Add
+
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| `@radix-ui/react-accordion` (standalone) | Duplicate of what `radix-ui` umbrella already provides | Import via `radix-ui/react-accordion` |
+| `react-toastify` | Legacy; not shadcn-aligned; large bundle | `sonner` |
+| `react-hot-toast` | Lacks stacking/promise API; not shadcn-aligned | `sonner` |
+| `@radix-ui/react-toast` (standalone) | Deprecated by shadcn/ui | `sonner` |
+| `date-fns` (standalone) | Bundled inside `react-day-picker@9` — duplicate | Already included |
+| `react-datepicker` | No shadcn integration, no WCAG compliance by default | `react-day-picker@9` |
+| Any new animation library | CLAUDE.md constraint: do not expand animation system | GSAP (existing) |
+| `framer-motion` | Independent rAF loop conflicts with GSAP `globalTimeline.timeScale(0)` | GSAP (existing) |
+
+---
+
+## SIGNAL Layer Integration Notes
+
+Three P1 components are animation-eligible per v1.3 milestone spec — all use existing GSAP patterns:
+
+| Component | SIGNAL Pattern | Implementation Note |
+|-----------|---------------|---------------------|
+| SFProgress | Fill animation on value change | `gsap.to(barRef, { width: value+'%', duration: 0.4, ease: 'power2.out' })` |
+| SFToast (Sonner) | Slide-in entrance | Override Sonner's default CSS animation with GSAP in `onAutoClose`/`onDismiss` callbacks if needed; Sonner's built-in CSS animation may be sufficient |
+| SFAccordion | Content stagger on open | `gsap.from(contentRef, { opacity: 0, y: -8, duration: 0.2 })` on `onValueChange` |
+
+No new GSAP plugins needed. ScrollTrigger is NOT needed (these are interaction-triggered, not scroll-triggered).
 
 ---
 
 ## Installation Summary
 
-### New Dependencies
+### P1 Sprint
 
 ```bash
-pnpm add nuqs
+pnpm add sonner
 ```
 
-That is the only new runtime dependency for the entire v1.2 milestone.
+### P3 Sprint (calendar only — defer until P3)
 
-### New Dev Script (no install)
-
-```json
-// package.json
-"registry:build": "shadcn build"
+```bash
+pnpm add react-day-picker
 ```
 
-### What Is NOT Added
+### P1/P2 — No install needed. Verify with:
 
-| Considered | Rejected | Why |
-|------------|----------|-----|
-| `@bramus/style-observer` | Rejected | GSAP ticker solves CSS var reading at no cost |
-| `zustand` | Rejected | Overkill for read-only config context |
-| `react-use-config` | Rejected | Unmaintained; 30 lines of native code replaces it |
-| `jotai` | Rejected | No global state model needed |
-| `use-local-storage` | Rejected | `sessionStorage` native API is sufficient for scroll |
-| Any new animation library | Rejected | CLAUDE.md: do not expand animation system |
-
----
-
-## Integration Checklist
-
-### registry.json
-- [ ] Create `registry/` directory at project root
-- [ ] Write `registry.json` with all SF component entries
-- [ ] Add `"registry:build": "shadcn build"` to `package.json` scripts
-- [ ] Run `pnpm registry:build` → verify output in `public/r/`
-- [ ] Serve endpoint at `https://[domain]/r/[name].json`
-
-### Config Provider
-- [ ] Create `lib/signalframe-context.tsx` with `createSignalframeUX` factory
-- [ ] Add `'use client'` directive (context requires client boundary)
-- [ ] Wrap root layout with default `SignalframeProvider`
-- [ ] Export from `sf/index.ts` barrel
-
-### Session Persistence
-- [ ] Install: `pnpm add nuqs`
-- [ ] Add `NuqsAdapter` to `app/layout.tsx` (Server Component, wraps children)
-- [ ] Identify all filter/tab components → replace `useState` with `useQueryState`
-- [ ] Create `hooks/use-scroll-persistence.ts` for scroll state
-
-### CSS Var→WebGL Bridge
-- [ ] Add `--signal-intensity: 0.5`, `--signal-speed: 1.0`, `--signal-accent: 0` defaults to `globals.css`
-- [ ] Extend `glsl-hero.tsx` GSAP ticker to read CSS vars and push to uniforms
-- [ ] Add `uIntensity` and `uSpeed` uniforms to hero fragment shader
-- [ ] Verify `SignalOverlay` slider changes produce visible shader response
+```bash
+node -e "const r = require('./node_modules/radix-ui/src/index.ts'); console.log('ok')" 2>/dev/null
+# Or simply: ls node_modules/radix-ui/src/index.ts
+```
 
 ---
 
 ## Version Compatibility
 
-| Package | Version | Peer Requirements | Notes |
-|---------|---------|-------------------|-------|
-| `nuqs` | `^2.8.9` | React 18+, Next.js 14.2+ | NuqsAdapter required for App Router |
-| `shadcn` (build) | `4.1.2` | Next.js, TypeScript | Already installed in devDeps |
-| React Context (native) | React 19.1.0 | — | Already in project |
-| `sessionStorage` (native) | Browser API | — | No polyfill needed for target browsers |
+| Package | Version | Peer Requirements | Status |
+|---------|---------|-------------------|--------|
+| `sonner` | `^2.0.7` | React 18+, zero runtime deps | Compatible with React 19.1.0 ✓ |
+| `react-day-picker` | `^9.14.0` | React 16.8+ (hooks) | Compatible with React 19.1.0 ✓; date-fns bundled |
+| `radix-ui` | `1.4.3` (existing) | React 18+ | All v1.3 primitives verified present ✓ |
 
 ---
 
 ## Sources
 
-- shadcn/ui registry documentation (ui.shadcn.com/docs/registry) — registry.json schema, file types, build command — HIGH confidence
-- shadcn/ui registry-item-json docs (ui.shadcn.com/docs/registry/registry-item-json) — all `registry:*` type values — HIGH confidence
-- shadcn/ui getting-started docs (ui.shadcn.com/docs/registry/getting-started) — build workflow, `public/r/` output — HIGH confidence
-- nuqs GitHub (github.com/47ng/nuqs) — NuqsAdapter pattern for Next.js App Router, v2.8.9 latest — HIGH confidence
-- nuqs homepage (nuqs.dev) — 6 kB gzipped, zero dependencies, useQueryState API — HIGH confidence
-- InfoQ nuqs 2.5 article — key isolation, debounce, React Advanced 2025 industry adoption — MEDIUM confidence
-- GSAP community forum (gsap.com/community) — `getComputedStyle` + `getPropertyValue` for CSS var reading — HIGH confidence
-- Codebase: `glsl-hero.tsx` — ticker-driven uniform mutation pattern, existing implementation — HIGH confidence
-- Codebase: `color-resolve.ts` — `getComputedStyle` probe pattern, established precedent — HIGH confidence
-- Codebase: `signal-overlay.tsx` — CSS var write pattern, confirmed `--signal-intensity/speed/accent` names — HIGH confidence
-- WebSearch — StyleObserver alternatives evaluated and rejected (bramus/style-observer) — MEDIUM confidence
+- `node_modules/radix-ui/src/index.ts` — direct inspection confirming all v1.3 Radix primitives available — HIGH confidence
+- `node_modules/radix-ui/package.json` — sub-package dependency versions (Accordion 1.2.12, AlertDialog 1.1.15, Avatar 1.1.10) — HIGH confidence
+- Radix Primitives documentation (radix-ui.com/primitives/docs/overview/introduction) — tree-shaking via umbrella namespace imports — HIGH confidence
+- shadcn/ui docs (ui.shadcn.com/docs/components/radix/sonner) — Sonner as official replacement for deprecated Radix Toast — HIGH confidence
+- shadcn/ui changelog 2025-06-calendar (ui.shadcn.com/docs/changelog/2025-06-calendar) — Calendar upgraded to react-day-picker v9 confirmed — HIGH confidence
+- WebSearch: sonner v2.0.7 latest version, zero runtime deps — MEDIUM confidence (npm page, not Context7)
+- WebSearch: react-day-picker v9.14.0, date-fns bundled as regular dep, WCAG 2.1 — HIGH confidence (daypicker.dev official changelog)
+- Next.js docs (nextjs.org/docs/app/guides/lazy-loading) — `next/dynamic` pattern with `ssr: false` for heavy components — HIGH confidence
+- `package.json` — all current installed versions verified — HIGH confidence
 
 ---
 
-*Stack research for: SignalframeUX v1.2 Tech Debt Sweep — NEW capabilities only*
+*Stack research for: SignalframeUX v1.3 Component Expansion — NEW capabilities only*
 *Researched: 2026-04-06*

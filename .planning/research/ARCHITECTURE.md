@@ -1,416 +1,559 @@
-# Architecture Patterns — v1.2 Tech Debt Sweep
+# Architecture Patterns — v1.3 Component Expansion
 
-**Domain:** SignalframeUX integration layer — wiring existing components, fixing type mismatches, shipping deferred DX features, adding session persistence
+**Domain:** SignalframeUX design system — comprehensive component library integration
 **Researched:** 2026-04-06
 **Confidence:** HIGH — all findings verified against actual codebase files
 
 ---
 
-## Context: What v1.2 Is and Is Not
+## Context: What v1.3 Is and Is Not
 
-v1.2 is not a new feature milestone. Every item is either:
-- **Wiring** an existing component that is complete but unused (INT-03, INT-04)
-- **Fixing** a type mismatch introduced when usage diverged from the prop definition (bgShift)
-- **Completing** a scaffolded file that is partially done (registry.json)
-- **Implementing** interface sketches that were deferred from v1.1 with open questions resolved (DX-05, STP-01)
+v1.3 adds 15+ new SF-wrapped components to a system that already has 29. The architecture is not new — it is proven. The challenge is integration at scale: barrel exports, Server/Client boundaries, composite patterns, SIGNAL layer integration points, and registry automation across a larger surface area.
 
-This shapes the architecture: the v1.2 build order minimizes blast radius. Each item is self-contained with a clean rollback point.
+Every new component follows the existing pattern or explicitly documents why it deviates.
 
 ---
 
-## Existing Architecture Baseline
+## System Overview
 
 ```
-RootLayout (Server Component)
-├── LenisProvider ('use client')
-├── TooltipProvider ('use client')
-├── {children}            ← page-level Server Components
-├── GlobalEffectsLazy     ← next/dynamic ssr:false
-│    └── GlobalEffects ('use client')
-│         ├── VHSOverlay, CanvasCursor, ScrollProgress, ScrollToTop
-│         ├── IdleOverlay (8s grain drift + OKLCH lightness pulse)
-│         └── SignalOverlayLazy  ← writes --signal-{intensity,speed,accent} to :root
-├── SignalCanvasLazy       ← next/dynamic ssr:false
-│    └── SignalCanvas ('use client')
-│         └── THREE.WebGLRenderer singleton (GSAP ticker as render driver)
-│              ├── GlslHero scene    → reads scroll, uTime, uColor uniforms
-│              └── SignalMesh scene  → reads scroll, uTime uniforms
-├── PageAnimations ('use client')
-└── PageTransition ('use client')
-
-SIGNAL CSS var bridge (ONE-SIDED — INT-04 tech debt):
-  SignalOverlay writes:  :root { --signal-intensity, --signal-speed, --signal-accent }
-  WebGL scenes read:     (nothing — uniforms are not wired to these CSS vars)
-  globals.css declares:  (nothing — no defaults for --signal-* vars)
-
-SignalMotion component:
-  State: CREATED but not placed on any page (INT-03 tech debt)
-  Location: components/animation/signal-motion.tsx
-  API: wraps children, scroll-scrub via GSAP ScrollTrigger fromTo
-
-SFSection bgShift prop:
-  Declared type:  bgShift?: boolean  (renders data-bg-shift="" or nothing)
-  Actual usage:   data-bg-shift="white" | data-bg-shift="black" (spread as HTML attr)
-  Result:         prop is dead; usage bypasses it entirely via spread
-
-registry.json:
-  State: EXISTS at project root with shadcn schema
-  Coverage: 23 of 28 SF components registered
-  Missing:  sf-container, sf-grid, sf-section, sf-stack, sf-text (layout primitives)
-
-createSignalframeUX / useSignalframe:
-  State: Interface sketch in .planning/DX-SPEC.md — not implemented
-  Existing related code: lib/theme.ts (toggleTheme singleton)
-
-Session persistence:
-  State: Interface sketch in .planning/DX-SPEC.md — not implemented
-  Target state: ComponentsExplorer (activeFilter, searchQuery) + token page (activeTab)
+┌─────────────────────────────────────────────────────────────────┐
+│                    CONSUMERS                                     │
+│  app/(pages)   components/blocks   components/layout            │
+│       ↓               ↓                   ↓                     │
+├─────────────────────────────────────────────────────────────────┤
+│                  SF LAYER  (components/sf/)                      │
+│                                                                  │
+│  FRAME primitives (Server Components, CVA variants, cn())        │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │SFAccordion│ │SFToast   │ │SFProgress│ │SFAvatar  │  ...     │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘           │
+│       │            │            │            │                  │
+│  Barrel: components/sf/index.ts (shared SC + CC entry)          │
+│                                                                  │
+│  COMPOSITE patterns (DataTable, SearchableSelect)                │
+│  ┌──────────────────────────────────────────────────┐           │
+│  │  SFTable + SFSelect + SFInput + pagination logic  │           │
+│  └──────────────────────────────────────────────────┘           │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                  UI LAYER  (components/ui/)                      │
+│       shadcn base — read-only, never modified                    │
+│  accordion  toast  progress  alert-dialog  avatar  ...          │
+├─────────────────────────────────────────────────────────────────┤
+│              RADIX UI PRIMITIVES (@radix-ui/react-*)             │
+│  All target components available in radix-ui@1.4.3              │
+│  (accordion, toast, progress, alert-dialog, avatar,              │
+│   navigation-menu, menubar, toggle-group, collapsible)           │
+├─────────────────────────────────────────────────────────────────┤
+│                  SIGNAL LAYER  (components/animation/)           │
+│                                                                  │
+│  GSAP-driven: SignalMotion (scroll-scrub), ScrollReveal          │
+│  (one-shot), ScrambleText, CircuitDivider, VHSOverlay            │
+│  All require 'use client'. Never import from sf/index.ts.        │
+│                                                                  │
+│  SIGNAL integration points for new components:                   │
+│  Progress fill → gsap.to() width tween                          │
+│  Toast slide → gsap.fromTo() translateX entrance/exit           │
+│  Accordion stagger → gsap.fromTo() on open content panel        │
+├─────────────────────────────────────────────────────────────────┤
+│              FOUNDATION  (lib/, hooks/, app/globals.css)         │
+│  Tokens: spacing, type, color, motion, layout                    │
+│  Providers: SignalframeProvider (SSR-safe, hole-in-donut)        │
+│  Registry: registry.json → public/r/ (shadcn CLI compatible)    │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Component Boundaries
+## Component Responsibilities
 
-### New vs Modified for v1.2
+| Component | Responsibility | Integration Type |
+|-----------|---------------|------------------|
+| `SFAccordion` | Collapsible content panels | Pattern A (Radix base) |
+| `SFToast` / `SFToaster` | Ephemeral notification system | Pattern A + Toaster provider |
+| `SFProgress` | Deterministic fill bar | Pattern A + optional SIGNAL hook |
+| `SFAlertDialog` | Destructive action confirmation | Pattern A (Radix base) |
+| `SFAvatar` | User identity graphic with fallback | Pattern A (Radix base) |
+| `SFBreadcrumb` | Path navigation indicator | Pattern C (no Radix, nav element) |
+| `SFEmptyState` | Zero-state placeholder | Pattern C (no Radix, pure SF) |
+| `SFNavigationMenu` | Horizontal nav with flyout panels | Pattern A (Radix base, 'use client') |
+| `SFPagination` | Page navigation control set | Pattern C (no Radix, pure SF) |
+| `SFStepper` | Multi-step process indicator | Pattern C (no Radix, pure SF) |
+| `SFStatusDot` | Inline status indicator | Pattern C (no Radix, pure SF) |
+| `SFToggleGroup` | Exclusive/multi-select toggle set | Pattern A (Radix base) |
+| `SFCalendar` | Date picker (lazy, heavy dep) | Pattern B (registry-only) |
+| `SFMenubar` | Horizontal menubar with submenus | Pattern B (registry-only, lazy) |
 
-| Item | New / Modified / Fixed | Location | What Changes |
-|------|----------------------|----------|--------------|
-| SignalMotion placement | **Modified** (pages) | `app/page.tsx` and other showcase pages | Wrap existing section content with `<SignalMotion>` wrapper — no changes to the component itself |
-| SignalOverlay→WebGL bridge | **Modified** (WebGL scenes) | `components/animation/glsl-hero.tsx`, `signal-mesh.tsx` | Add CSS var reads inside GSAP ticker callbacks; read `--signal-intensity`, `--signal-speed`, `--signal-accent` from `getComputedStyle` on each tick and push to uniforms |
-| globals.css signal defaults | **Modified** (globals) | `app/globals.css` | Add `--signal-intensity: 0.5; --signal-speed: 1; --signal-accent: 0;` defaults to `:root` block |
-| SFSection bgShift type | **Fixed** (component + type) | `components/sf/sf-section.tsx` | Change `bgShift?: boolean` to `bgShift?: "white" \| "black"` and render `data-bg-shift={bgShift}` — matching actual usage |
-| registry.json | **Extended** (static file) | `registry.json` | Add 5 missing layout primitive entries |
-| SignalframeUXProvider | **New** | `lib/signalframe-provider.tsx` | React context provider wrapping existing `toggleTheme`; exposes `useSignalframe()` hook |
-| `createSignalframeUX` | **New** | `lib/signalframe-provider.tsx` (same file) | Factory function that returns `{ SignalframeUXProvider, useSignalframe }` |
-| Session persistence | **Modified** (block component) | `components/blocks/components-explorer.tsx` | Add `sessionStorage` read/write for `activeFilter` + `searchQuery` in `useEffect` |
-| Session persistence (tokens) | **Modified** (page block) | `app/tokens/page.tsx` or its block | Add `sessionStorage` read/write for active tab |
+**Patterns:**
+- **A** — shadcn base in `ui/` → SF-wrapped in `sf/`, listed in `sf/index.ts`
+- **B** — Registry-only, lazy-loaded via `dynamic()`, NOT in `sf/index.ts`
+- **C** — No Radix base, pure SF construction, listed in `sf/index.ts`
 
 ---
 
-## Data Flow Changes
-
-### INT-04: SignalOverlay → WebGL Uniform Bridge
-
-The current flow is one-sided:
+## Recommended Project Structure After v1.3
 
 ```
-SignalOverlay slider change
-    ↓
-document.documentElement.style.setProperty("--signal-intensity", value)
-    ↓
-:root CSS var updated
-    ↓
-[NOTHING reads this]
+components/
+├── ui/                         # shadcn base — read-only
+│   ├── accordion.tsx           # ADD (pnpm dlx shadcn add accordion)
+│   ├── alert-dialog.tsx        # ADD
+│   ├── avatar.tsx              # ADD
+│   ├── navigation-menu.tsx     # ADD
+│   ├── progress.tsx            # ADD
+│   ├── toast.tsx               # ADD
+│   ├── toggle-group.tsx        # ADD
+│   ├── calendar.tsx            # ADD (P3 — heavy)
+│   ├── menubar.tsx             # ADD (P3 — lazy)
+│   └── [existing 24 files]
+│
+├── sf/                         # SF-wrapped + barrel
+│   ├── index.ts                # MODIFY — append new exports
+│   ├── sf-accordion.tsx        # ADD (P1)
+│   ├── sf-alert-dialog.tsx     # ADD (P1)
+│   ├── sf-avatar.tsx           # ADD (P1)
+│   ├── sf-breadcrumb.tsx       # ADD (P1, no Radix base)
+│   ├── sf-empty-state.tsx      # ADD (P1, no Radix base)
+│   ├── sf-progress.tsx         # ADD (P1)
+│   ├── sf-toast.tsx            # ADD (P1)
+│   ├── sf-navigation-menu.tsx  # ADD (P2)
+│   ├── sf-pagination.tsx       # ADD (P2, no Radix base)
+│   ├── sf-status-dot.tsx       # ADD (P2, no Radix base)
+│   ├── sf-stepper.tsx          # ADD (P2, no Radix base)
+│   ├── sf-toggle-group.tsx     # ADD (P2)
+│   └── [existing 28 files]
+│
+├── animation/                  # GSAP layer — no new files for v1.3
+│   └── [existing files]
+│
+├── blocks/                     # MODIFY — update ComponentsExplorer entries
+│   ├── components-explorer.tsx # MODIFY — add new entries to COMPONENTS array
+│   └── [existing files]
+│
+└── layout/                     # No changes for v1.3
+    └── [existing files]
+
+lib/
+└── [no changes — existing gsap-core, signalframe-provider sufficient]
+
+registry.json                   # MODIFY — append 13 new items
+public/r/                       # ADD — 13 new JSON files
 ```
 
-The completed flow reads CSS vars inside the existing GSAP ticker:
+---
 
-```
-SignalOverlay slider change
-    ↓
-document.documentElement.style.setProperty("--signal-intensity", value)
-    ↓
-:root CSS var updated
-    ↓
-GSAP ticker fires (next frame, ~16ms)
-    ↓
-glsl-hero.tsx ticker callback:
-  const intensity = parseFloat(
-    getComputedStyle(document.documentElement).getPropertyValue("--signal-intensity")
-  ) || 0.5
-  uniformsRef.current.uIntensity.value = intensity
-    ↓
-THREE.WebGLRenderer renders with updated uniform
-```
+## Architectural Patterns
 
-This pattern — reading CSS vars inside the existing ticker callback — is already established by `color-resolve.ts` and the `--color-primary` reads in `canvas-cursor.tsx`. No new loop is needed. The three vars map to existing or new uniforms:
+### Pattern A: Standard SF Wrap (Existing, Verified)
 
-| CSS Var | Uniform Target | Scene(s) | Transform |
-|---------|---------------|----------|-----------|
-| `--signal-intensity` | `uIntensity` (new) | glsl-hero, signal-mesh | Direct: 0.0–1.0 |
-| `--signal-speed` | `uSpeed` (new) | glsl-hero, signal-mesh | Direct: 0.0–2.0 |
-| `--signal-accent` | `uAccent` (new) | glsl-hero | Degrees → radians or direct |
+**What:** Thin wrapper over shadcn `ui/` base. CVA variants via `intent` prop. `cn()` merging. Pure layout SF components are Server Components by default; any component wrapping a Radix interactive (Select, Dialog, Toast, NavigationMenu) needs `'use client'` because Radix uses event handlers internally.
 
-Reading from `getComputedStyle` on each GSAP tick is not expensive at this scale (two reads per frame across the page). The existing color-resolve pattern confirms this is acceptable.
+**When to use:** Any component where a shadcn base exists in `ui/`.
 
-### INT-03: SignalMotion on Showcase Sections
+**Trade-offs:** Minimal — thin wrapper means shadcn upgrades flow through automatically, but Radix API changes can surface as TypeScript errors.
 
-No data flow change. SignalMotion is a self-contained GSAP wrapper — it manages its own ScrollTrigger and refs internally. The change is purely placement: wrap existing section content in `<SignalMotion>` in page components. The component takes `from`, `to`, `scrub`, `start`, `end` props and is already fully implemented with reduced-motion guard.
-
-The primary decision is which sections to activate. Based on the existing section taxonomy in `app/page.tsx`:
-
-```
-Homepage sections with data-bg-shift (the scroll-reactive sections):
-  MANIFESTO → strong candidate for SignalMotion (opacity/y scrub as user scrolls in)
-  SIGNAL/FRAME → strong candidate
-  API → strong candidate
-  COMPONENTS → strong candidate
-  HERO section: skip — hero has its own GLSL animation
-  STATS section: skip — StatsBand is data display, motion would distract
-```
-
-### DX-05: createSignalframeUX + useSignalframe
-
-The open questions from DX-SPEC.md resolve as follows, based on existing codebase evidence:
-
-**Q: Provider vs global singleton?**
-Answer: Provider, but thin. The existing `lib/theme.ts` is a global singleton that imperatively modifies `document.documentElement`. The provider wraps this — it does not replace it. Theme state is initialized from `localStorage.getItem("sf-theme")` (same key as the inline script in `layout.tsx`). The provider synchronizes React state with the DOM class, it does not own the source of truth.
-
-**Q: SSR hydration strategy for token values?**
-Answer: Do not expose resolved OKLCH token values from `useSignalframe()`. The DX-SPEC.md sketch includes `tokens.colorPrimary` (resolved sRGB) — this requires a DOM probe (Canvas 2D `getImageData`). SSR cannot provide this. The v1.2 implementation scopes `useSignalframe()` to: theme state + setTheme + motion controller. Token resolution via `resolveColorToken` remains a separate utility call, not part of the hook return value. This resolves the hydration mismatch without sacrificing DX.
-
-**Q: Motion controller scope?**
-Answer: Global GSAP timeline only. `motion.pause()` calls `gsap.globalTimeline.pause()` — identical to the existing reduced-motion guard in `gsap-plugins.ts`. Not subtree-scoped.
-
-The resulting architecture is minimal:
-
+**Example (SFProgress):**
 ```typescript
-// lib/signalframe-provider.tsx
+// No 'use client' if SFProgress is purely presentational (controlled externally)
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
-const SignalframeContext = createContext<UseSignalframeReturn | null>(null);
-
-export function createSignalframeUX(config: SignalframeUXConfig) {
-  function SignalframeUXProvider({ children }) {
-    // theme: read from localStorage + classList, write via toggleTheme()
-    // motion: wrap gsap.globalTimeline.pause/resume
-    // prefersReduced: MediaQueryList('prefers-reduced-motion')
-    return (
-      <SignalframeContext.Provider value={...}>
-        {children}
-      </SignalframeContext.Provider>
-    );
-  }
-
-  function useSignalframe() {
-    return useContext(SignalframeContext);
-  }
-
-  return { SignalframeUXProvider, useSignalframe };
+export function SFProgress({
+  className,
+  ...props
+}: React.ComponentProps<typeof Progress>) {
+  return (
+    <Progress
+      className={cn(
+        "h-1 rounded-none bg-foreground/10 [&>div]:bg-primary [&>div]:rounded-none",
+        className
+      )}
+      {...props}
+    />
+  );
 }
 ```
 
-The provider mounts in `RootLayout` alongside `LenisProvider`. It does not replace any existing providers.
-
-**SSR note:** The provider renders on the server with `theme: "dark"` default (matches the inline blocking script behavior). Client hydration reads `localStorage` and classList in a `useEffect` to sync. This matches the existing `suppressHydrationWarning` on `<html>` — the pattern is already established.
-
-### STP-01: Session Persistence
-
-The open questions from DX-SPEC.md resolve as follows:
-
-**Q: Storage backend?**
-Answer: `sessionStorage`. Tab-local, survives navigation within the tab (Next.js App Router navigations do not reload the page), clears on tab close. No URL params (changes the URL, breaks direct links to the page). No Zustand (adds a dependency for a feature scoped to two pages).
-
-**Q: Hydration timing?**
-Answer: Read in `useEffect` (client-only), not during render. The component renders with default empty state on SSR and on initial client render, then immediately restores from `sessionStorage` in `useEffect`. This causes a brief flicker of the default state — acceptable for a developer tool page. The alternative (read in `useLayoutEffect`) risks SSR errors in strict mode.
-
-**Q: State reset policy?**
-Answer: Persist until tab close (sessionStorage natural behavior). No manual reset needed.
-
-**Q: Scope?**
-Answer: Two locations only — ComponentsExplorer (`activeFilter`, `searchQuery`) and the token page active tab. No other pages.
-
-The integration is localized to `ComponentsExplorer`:
-
-```
-ComponentsExplorer mounts
-    ↓
-useEffect fires (client-only)
-    ↓
-Read sessionStorage.getItem("sf-components-state")
-    ↓
-If exists: parse JSON → setActiveFilter, setSearchQuery
-    ↓
-On state change (filter, search): write sessionStorage.setItem(...)
-```
-
-No new hooks or abstractions. `sessionStorage` reads/writes directly in `useEffect` inside the existing component. The JSON key is `"sf-components-state"` (namespaced to avoid collisions).
+**Determining 'use client' need:** If the shadcn component file itself has `'use client'`, the SF wrapper needs it too. Check the generated `ui/` file after `pnpm dlx shadcn add [name]`.
 
 ---
 
-## Suggested Build Order
+### Pattern B: Registry-Only Lazy Component (New for P3)
 
-Dependencies flow downward. Each item is independently deployable with a commit rollback point.
+**What:** Components too heavy for the main bundle (Calendar ~40KB, Menubar has deep Radix menu tree) are registered in `registry.json` but are NOT exported from `sf/index.ts`. Consumers install them via the shadcn CLI registry. Within the app itself, they use `dynamic()` with a `SFSkeleton` fallback.
 
-### Step 1: globals.css signal defaults (30 min)
+**When to use:** Any component where the initial bundle cost is material (>10KB) and usage is infrequent or page-scoped.
 
-Zero dependencies. Add three CSS custom property defaults to `:root` in `app/globals.css`:
+**Trade-offs:** Eliminates bundle cost but adds a loading boundary. ComponentsExplorer must note the lazy status. Prevents accidental eager import.
 
-```css
---signal-intensity: 0.5;
---signal-speed: 1;
---signal-accent: 0;
-```
-
-Commit immediately. This unblocks INT-04 and makes the SignalOverlay panel correct at initial state (currently it shows 0.50/1.00/0° but the CSS vars are undefined until first slider interaction).
-
-### Step 2: SFSection bgShift type fix (30 min)
-
-Zero dependencies. Change `bgShift?: boolean` to `bgShift?: "white" | "black"` in `sf-section.tsx`. Update the JSDoc. Verify `app/page.tsx` usage passes through spread — the actual callers use `data-bg-shift="white"` as a spread HTML attribute, so the prop change does not break them. This is a type cleanup, not a behavioral change.
-
-Commit immediately.
-
-### Step 3: registry.json layout primitives (1 hr)
-
-Zero dependencies. Add the 5 missing SF layout primitives to `registry.json`:
-- `sf-container` — wraps content with max-width + gutter tokens
-- `sf-section` — semantic section primitive with bgShift, spacing, label
-- `sf-stack` — flex column with blessed gap stops
-- `sf-grid` — responsive grid with blessed column/gap tokens
-- `sf-text` — typography primitive with semantic alias enforcement
-
-These have no npm dependencies (no Radix base). `registryDependencies` field is empty. The `type` is `"registry:ui"` matching existing entries.
-
-Commit immediately.
-
-### Step 4: SignalOverlay → WebGL bridge (2–3 hr)
-
-Depends on: Step 1 (CSS var defaults must exist before wiring).
-
-Two modifications:
-
-1. `glsl-hero.tsx` — inside the existing GSAP ticker callback (currently increments `uTime`), add reads of `--signal-intensity`, `--signal-speed`, `--signal-accent` from `getComputedStyle`. Push to new `uIntensity`, `uSpeed`, `uAccent` uniforms. Add these three uniforms to the shader's `uniform` declarations and wire them to the visual output (e.g., `uIntensity` scales noise amplitude, `uSpeed` scales the time delta, `uAccent` shifts hue in the fragment shader output).
-
-2. `signal-mesh.tsx` — same pattern: read `--signal-intensity` and `--signal-speed` in ticker, push to new uniforms, wire to vertex displacement amplitude and time scale.
-
-The read happens once per GSAP tick (~60fps). `getComputedStyle` on `:root` is cheap at this frequency — this is the same technique as `canvas-cursor.tsx` line 41.
-
-Commit after each scene.
-
-### Step 5: SignalMotion on showcase sections (1–2 hr)
-
-Depends on: nothing (SignalMotion is self-contained).
-
-Place `<SignalMotion>` wrappers on 4 homepage sections. Use conservative defaults (`from={{ opacity: 0.6, y: 16 }}`, `scrub={1}`) — the sections already have layout and content, the motion should enhance not dominate. Verify reduced-motion renders at `to` state immediately.
-
-Test: scroll slowly through the page, verify scrub behavior; test with `prefers-reduced-motion: reduce` in DevTools, verify no animation fires.
-
-Commit.
-
-### Step 6: createSignalframeUX + useSignalframe (3–4 hr)
-
-Depends on: nothing externally, but conceptually benefits from Steps 1–5 being stable first (the motion controller wraps the already-settled GSAP timeline state).
-
-Create `lib/signalframe-provider.tsx`. Export `createSignalframeUX`. Mount the returned `SignalframeUXProvider` in `RootLayout`. Document the hook contract in SCAFFOLDING.md.
-
-**Critical constraint:** The provider's theme initialization must NOT conflict with the inline blocking script in `layout.tsx`. The inline script reads `localStorage("sf-theme")` and sets `document.documentElement.classList`. The provider must read the same key and treat the DOM classList as the source of truth — not re-apply its own default on mount (which would cause a flash).
-
-Correct initialization:
-
+**Example (Calendar lazy loader):**
 ```typescript
-const [isDark, setIsDark] = useState(() => {
-  if (typeof window === "undefined") return true; // SSR default: dark
-  return document.documentElement.classList.contains("dark");
-});
+// components/sf/sf-calendar-lazy.tsx
+import dynamic from "next/dynamic";
+import { SFSkeleton } from "@/components/sf";
+
+export const SFCalendar = dynamic(
+  () => import("./sf-calendar").then((m) => ({ default: m.SFCalendar })),
+  {
+    loading: () => <SFSkeleton className="h-64 w-72" />,
+    ssr: false,  // Date picker has no SSR value; avoids hydration delta
+  }
+);
 ```
 
-Commit after provider works. Commit separately after SCAFFOLDING.md update.
-
-### Step 7: Session persistence (2–3 hr)
-
-Depends on: nothing (self-contained in ComponentsExplorer).
-
-Modify `components/blocks/components-explorer.tsx` to:
-1. Read from `sessionStorage` in `useEffect` on mount — restore `activeFilter` and `searchQuery`.
-2. Write to `sessionStorage` in a separate `useEffect` when either state changes.
-
-The token page tab persistence follows the same pattern once the tab state location is identified.
-
-Commit after ComponentsExplorer. Commit separately after token page.
-
-### Step 8: Documentation cleanup
-
-Depends on: all above complete.
-
-Update SCAFFOLDING.md with `useSignalframe()` API contract. Update component frontmatter JSDoc for `SFSection` bgShift. Mark resolved tech debt items in PROJECT.md.
+**Critical:** The lazy wrapper file (`sf-calendar-lazy.tsx`) exports under the same name as the non-lazy implementation (`SFCalendar`). Consumers import from the lazy file directly, not from `sf/index.ts`.
 
 ---
 
-## Integration Points Summary
+### Pattern C: Pure SF Construction (Extends Existing)
 
-| Item | Files Read | Files Modified | New Files |
-|------|-----------|----------------|-----------|
-| globals.css defaults | none | `app/globals.css` | none |
-| bgShift type fix | `sf-section.tsx` | `sf-section.tsx` | none |
-| registry.json | `registry.json`, 5 sf component files | `registry.json` | none |
-| INT-04 WebGL bridge | `glsl-hero.tsx`, `signal-mesh.tsx`, `globals.css` | `glsl-hero.tsx`, `signal-mesh.tsx` | none |
-| INT-03 SignalMotion | `signal-motion.tsx`, `app/page.tsx` | `app/page.tsx` (+ other showcase pages) | none |
-| createSignalframeUX | `lib/theme.ts`, `app/layout.tsx`, `DX-SPEC.md` | `app/layout.tsx` | `lib/signalframe-provider.tsx` |
-| Session persistence | `components/blocks/components-explorer.tsx`, `DX-SPEC.md` | `components/blocks/components-explorer.tsx`, token page block | none |
+**What:** Components with no applicable Radix primitive (Breadcrumb, EmptyState, Pagination, Stepper, StatusDot). Built entirely with semantic HTML + Tailwind tokens + CVA. These are typically Server Components.
 
----
+**When to use:** When no Radix primitive models the interaction correctly, or when the component is purely presentational.
 
-## Anti-Patterns to Avoid
+**Trade-offs:** Full control over HTML semantics and accessibility, but no Radix behavior inheritance. Keyboard handling must be implemented manually where needed (e.g., Stepper).
 
-### Anti-Pattern 1: Polling CSS vars outside the existing ticker
+**Example (SFStatusDot):**
+```typescript
+// Server Component — no 'use client'
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-**What:** Adding a new `setInterval` or `requestAnimationFrame` loop to watch `--signal-intensity` for changes.
+const sfStatusDotVariants = cva(
+  "inline-block w-2 h-2 border",
+  {
+    variants: {
+      status: {
+        active: "bg-[var(--sf-green)] border-[var(--sf-green)]",
+        idle: "bg-muted border-muted-foreground",
+        error: "bg-destructive border-destructive",
+        pending: "bg-warning border-warning animate-pulse",
+      },
+    },
+    defaultVariants: { status: "idle" },
+  }
+);
 
-**Why bad:** The GSAP ticker already runs at 60fps. A second loop is redundant and creates a second read cycle that can get out of phase with the render. The render only happens in the GSAP ticker callback anyway, so reading outside of it gains nothing.
+interface SFStatusDotProps
+  extends React.ComponentProps<"span">,
+    VariantProps<typeof sfStatusDotVariants> {
+  label?: string;
+}
 
-**Instead:** Read CSS vars inside the existing GSAP ticker callback in each scene component. One read per render frame, zero extra loops.
-
-### Anti-Pattern 2: Replacing lib/theme.ts with the new provider
-
-**What:** Rewriting `toggleTheme()` inside the provider, deleting `lib/theme.ts`.
-
-**Why bad:** `toggleTheme` is called by `DarkModeToggle` and `CommandPalette`. These components use `'use client'` and import directly from `lib/theme.ts`. Replacing the function breaks those callers unless they are simultaneously updated, and the commit is no longer atomic.
-
-**Instead:** The provider wraps `toggleTheme`. It calls the existing function and syncs its own React state. `lib/theme.ts` stays unchanged.
-
-### Anti-Pattern 3: Making useSignalframe return resolved OKLCH token values
-
-**What:** Implementing `tokens.colorPrimary` as a resolved sRGB value from `resolveColorToken`.
-
-**Why bad:** Requires a DOM Canvas 2D probe call during React render or in a `useLayoutEffect`. This causes an SSR/client mismatch if done during render, or a one-frame delay if done in `useLayoutEffect`. The DX-SPEC.md sketched this but marked it as an open question.
-
-**Instead:** Scope `useSignalframe()` to theme + motion controller only. Document that color token resolution uses `resolveColorToken(cssVar)` directly — it is already exported from `lib/color-resolve.ts`.
-
-### Anti-Pattern 4: Persisting session state to localStorage instead of sessionStorage
-
-**What:** Using `localStorage` for component browser filter state.
-
-**Why bad:** Filter state persists across sessions (even days later), can conflict with the system theme key (`sf-theme` in localStorage), and may return stale state if component names/categories change between deploys.
-
-**Instead:** `sessionStorage` — tab-local, clears on close, no cross-session contamination. The DX-SPEC.md recommendation is confirmed correct.
-
-### Anti-Pattern 5: Adding bgShift as a data-attribute-typed prop with "white"/"black" values treated as theme selectors
-
-**What:** Making `bgShift="white"` activate different CSS based on light/dark mode.
-
-**Why bad:** The existing `#bg-shift-wrapper` CSS in globals.css already handles dark/light mode correctly. The `data-bg-shift` value is already used by GSAP scroll targeting to identify which sections get which background color on scroll. Changing the semantics of the value would break GSAP targeting.
-
-**Instead:** Fix only the TypeScript type — `bgShift?: "white" | "black"` — and propagate the value to `data-bg-shift`. Do not change the CSS or GSAP scroll logic.
+export function SFStatusDot({ status, label, className, ...props }: SFStatusDotProps) {
+  return (
+    <span
+      role="status"
+      aria-label={label ?? status ?? "status"}
+      className={cn(sfStatusDotVariants({ status }), className)}
+      {...props}
+    />
+  );
+}
+```
 
 ---
 
-## Confidence Assessment
+### Pattern D: Composite Component (New for v1.3)
 
-| Area | Confidence | Basis |
-|------|-----------|-------|
-| INT-04 bridge approach | HIGH | getComputedStyle in ticker is verified pattern from canvas-cursor.tsx line 41 |
-| INT-03 SignalMotion placement | HIGH | Component is complete and documented; placement is mechanical |
-| bgShift fix | HIGH | Type mismatch confirmed by reading sf-section.tsx vs app/page.tsx side by side |
-| registry.json completion | HIGH | shadcn schema is already in the file; 5 missing components identified by diff |
-| createSignalframeUX scope | HIGH | Narrowed from DX-SPEC.md open questions using existing lib/theme.ts + layout.tsx evidence |
-| Session persistence approach | HIGH | sessionStorage is DOM-native, no external deps; hydration timing resolved via useEffect |
+**What:** A component composed from multiple SF primitives that coordinates state internally. DataTable (SFTable + SFSelect + SFInput + pagination) is the canonical example. The composite lives in `components/blocks/` rather than `components/sf/` because it is not a primitive — it is an opinionated composition.
+
+**When to use:** When 3+ SF primitives must coordinate state that no single primitive owns. Never put composites in `components/sf/`.
+
+**Trade-offs:** Convenient for consumers but harder to decompose. Composites accumulate state. Keep them thin — push logic to a `useDataTable` hook in `hooks/`.
+
+**Location rule:**
+```
+components/blocks/data-table.tsx       <- composite lives here
+hooks/use-data-table.ts                <- pagination/sort/filter state
+components/sf/sf-table.tsx             <- unchanged primitive
+components/sf/sf-select.tsx            <- unchanged primitive
+components/sf/sf-input.tsx             <- unchanged primitive
+```
+
+---
+
+## Barrel Export Scaling: Server/Client Boundary
+
+This is the most operationally important architectural question for v1.3. The `sf/index.ts` barrel is imported by both Server Components and Client Components. This works because Next.js 15 applies RSC tree shaking — unused client exports do not contaminate server render paths.
+
+**The risk:** Exporting a `'use client'` component from `sf/index.ts` is safe as long as server-component consumers do NOT render it. If a Server Component renders `SFToast` (a client component), Next.js will error at build time.
+
+**The rule that prevents problems:**
+1. **Layout primitives** (`SFContainer`, `SFSection`, `SFStack`, `SFGrid`, `SFText`) — no `'use client'`. Safe anywhere.
+2. **Interactive SF components** (`SFSelect`, `SFDialog`, `SFToast`, etc.) — have `'use client'`. Can be in `sf/index.ts` but must only render inside client component trees.
+3. **P3 lazy components** (`SFCalendar`, `SFMenubar`) — NOT in `sf/index.ts`. Import directly from their lazy file.
+
+**Barrel size at 44+ exports:** Not a performance concern in Next.js 15 + Turbopack. Tree shaking operates at the module level. Add inline section comments to `sf/index.ts` to group exports (`// Layout`, `// Input`, `// Feedback`, `// Data`, `// Navigation`).
+
+**Operational rule for v1.3:** After each P1 batch, run `pnpm build` to confirm no Server/Client boundary violations before continuing.
+
+---
+
+## SIGNAL Layer Integration Points
+
+New components eligible for SIGNAL layer animation. Do not add new animation primitives — wire existing GSAP patterns.
+
+| Component | SIGNAL Integration | Implementation |
+|-----------|-------------------|----------------|
+| `SFProgress` | Fill width tween on value change | `useEffect` + `gsap.to(ref, { width: value + '%' })` with `--duration-normal` + `--ease-default` |
+| `SFToast` | Slide entrance/exit | `gsap.fromTo()` on mount: `x: 40 → 0`, opacity 0 → 1, `--duration-normal`. Exit via Radix `data-state="closed"` |
+| `SFAccordion` | Content panel stagger on open | `useGSAP` scoped to content ref: `gsap.from(contentRef, { height: 0, opacity: 0 })` when open state changes |
+| `SFStepper` | Step indicator transition | GSAP `fromTo` on active indicator position between steps |
+| `SFNavigationMenu` | Flyout entrance | `gsap.fromTo` on viewport panel: `y: -8 → 0`, `--duration-fast` |
+
+**Non-eligible (FRAME-only):** Avatar, Breadcrumb, StatusDot, Pagination, ToggleGroup, AlertDialog. No meaningful motion integration that doesn't conflict with Radix accessibility transitions.
+
+**Integration approach:** SIGNAL animation is progressive enhancement. Components render correctly without it. The GSAP call lives inside `useEffect`/`useGSAP` with a `prefers-reduced-motion` guard — matches the existing `SignalMotion` pattern exactly.
+
+**SFToast note:** Radix Toast has its own CSS animation slots (`data-state="open"` / `data-state="closed"`). The SIGNAL integration zeros the Radix CSS transition and handles enter/exit in `useGSAP`. Precedent: `sf-dialog.tsx` overrides Radix animation styles with `rounded-none shadow-none` — same approach applies to motion.
+
+---
+
+## Registry Automation
+
+The registry has 33 items in v1.2. v1.3 adds 13 more (10 active + 3 P3). Manual maintenance of `registry.json` + `public/r/[name].json` is the current approach.
+
+**Current structure per registry entry:**
+```json
+{
+  "name": "sf-accordion",
+  "type": "registry:ui",
+  "title": "SF Accordion",
+  "description": "...",
+  "registryDependencies": ["accordion"],
+  "files": [{ "path": "components/sf/sf-accordion.tsx", "type": "registry:ui" }],
+  "meta": { "layer": "frame", "pattern": "A" }
+}
+```
+
+**v1.3 approach:** Continue manual maintenance. Each new SF file gets:
+1. An entry appended to `registry.json`
+2. A corresponding `public/r/sf-[name].json` (matches existing file format — copy an existing one as template)
+3. A JSDoc block on the component (SCAFFOLDING.md API contract)
+
+**meta.layer values:** `"frame"` for Pattern A/C, `"signal"` for animation-carrying components.
+**meta.pattern values:** `"A"` (Radix wrap), `"B"` (lazy registry-only), `"C"` (pure SF).
+
+---
+
+## Data Flow
+
+### New Component → Consumer Flow
+
+```
+pnpm dlx shadcn add [name]
+    ↓ writes to components/ui/[name].tsx (read-only after)
+
+SF wrap: components/sf/sf-[name].tsx
+    ↓ imports from ui/, applies CVA variants + cn()
+
+Barrel: components/sf/index.ts
+    ↓ appends export
+
+Consumer: any page / block / layout
+    ↓ imports from "@/components/sf"
+
+Registry: registry.json + public/r/sf-[name].json
+    ↓ enables shadcn CLI install by downstream consumers
+```
+
+### SIGNAL Integration Flow (animated components)
+
+```
+Component mounts ('use client')
+    ↓
+useGSAP / useEffect fires after paint
+    ↓
+Check prefers-reduced-motion (matchMedia)
+    ↓ if reduced: gsap.set(ref, finalState) immediately
+    ↓ if full:    gsap.fromTo() using --duration-* + --ease-* tokens
+    ↓
+SignalframeProvider.motion.prefersReduced
+    suspends all tweens via gsap.globalTimeline.timeScale(0)
+```
+
+### ComponentsExplorer Update Flow
+
+```
+COMPONENTS array in components-explorer.tsx
+    ↓ append new ComponentEntry
+      { index, name, category, filterTag, preview: <PreviewXxx /> }
+    ↓ filterTag maps to existing CATEGORIES
+      ("FEEDBACK", "DATA", "INPUT", "LAYOUT", "MOTION", "SIGNAL")
+
+PreviewXxx component (CSS-only thumbnail, no live SF primitives)
+    ↓ defined inline above COMPONENTS array
+    ↓ compact sketch — not interactive, no GSAP
+```
+
+---
+
+## Build Order
+
+Order determined by three constraints: shadcn dependency (install `ui/` base before wrapping), SIGNAL eligibility (non-animated first to isolate blast radius), composite dependency (primitives before composites).
+
+### Phase 0 — Infrastructure Baseline (before any new component)
+1. Install all P1+P2 shadcn bases in one pass:
+   `pnpm dlx shadcn add accordion alert-dialog avatar navigation-menu progress toast toggle-group`
+2. Verify `components/ui/` contains all new files with no TypeScript errors
+3. Run `pnpm build` — clean baseline before changes
+
+### Phase 1 — P1 Non-Animated (simplest, highest value, no SIGNAL)
+
+| # | Component | Pattern | 'use client' | Rationale |
+|---|-----------|---------|--------------|-----------|
+| 1 | `SFStatusDot` | C | No | Smallest possible — pure CVA span, tests Pattern C setup |
+| 2 | `SFAvatar` | A | No (verify after shadcn add) | Radix Avatar is presentational |
+| 3 | `SFBreadcrumb` | C | No | nav + ol/li semantic HTML |
+| 4 | `SFEmptyState` | C | No | Composition of SFText + optional slot |
+| 5 | `SFAlertDialog` | A | Yes | Same pattern as SFDialog — proven template |
+
+### Phase 2 — P1 Animated (SIGNAL integration)
+
+| # | Component | SIGNAL Integration | Complexity |
+|---|-----------|-------------------|------------|
+| 6 | `SFProgress` | GSAP fill tween | Low — single value → width |
+| 7 | `SFToast` / `SFToaster` | Slide entrance/exit | Medium — override Radix CSS transitions |
+| 8 | `SFAccordion` | Panel stagger on open | Medium — wire to Radix open state change |
+
+### Phase 3 — P2 Components
+
+| # | Component | Pattern | Notes |
+|---|-----------|---------|-------|
+| 9 | `SFToggleGroup` | A | Extends SFToggle pattern, mutually exclusive state |
+| 10 | `SFPagination` | C | Pure SF — button row with current/total state props |
+| 11 | `SFStepper` | C | Step state machine — active/complete/pending per step |
+| 12 | `SFNavigationMenu` | A | Radix base, 'use client', flyout animation optional |
+
+### Phase 4 — P3 Registry-Only (lazy-loaded)
+
+| # | Component | Pattern | Bundle strategy |
+|---|-----------|---------|-----------------|
+| 13 | `SFCalendar` | B | `dynamic()` with `ssr: false`, SFSkeleton fallback |
+| 14 | `SFMenubar` | B | `dynamic()` in page context, SFSkeleton fallback |
+
+### Phase 5 — Composite Pattern
+
+| # | Component | Lives In | Deps (must precede) |
+|---|-----------|----------|---------------------|
+| 15 | `DataTable` | `components/blocks/` | SFTable (existing) + SFPagination (Phase 3) + SFSelect (existing) + SFInput (existing) |
+
+### Phase 6 — Wiring and Documentation
+- Update `COMPONENTS` array in `components-explorer.tsx` for all new entries
+- Append to `registry.json` and generate `public/r/` files for each
+- Update `SCAFFOLDING.md` with new component API contracts + JSDoc
+- Run `pnpm build` + Lighthouse audit to confirm performance budget maintained
+
+---
+
+## Scaling Considerations
+
+| Component Count | Architecture Concern | Mitigation |
+|----------------|---------------------|------------|
+| Current: 29 SF | Barrel readable but unorganized | Acceptable — no change needed |
+| After v1.3: ~44 SF | Barrel starts to feel long | Add section comments: `// Layout`, `// Input`, `// Feedback`, `// Navigation`, `// Data` |
+| Hypothetical: 80+ SF | Single barrel hard to scan | Split into domain sub-barrels re-exported from `sf/index.ts` |
+| P3 lazy components | Heavy deps must not enter main bundle | Pattern B enforced: not in `sf/index.ts`, `dynamic()` at usage site only |
+
+**Current concern (v1.3):** None structural. Add inline comments to `sf/index.ts` when appending new exports.
+
+---
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Rendering a Client Component in a Server Component
+
+**What people do:** Import `SFToast` (client component) at the top of a Server Component page and render it directly.
+**Why it's wrong:** Next.js throws a build-time error — non-serializable props across the Server/Client boundary.
+**Do this instead:** Create a `ToastRegion.tsx` client component that renders `SFToaster`. Mount it in the layout client boundary alongside `LenisProvider` and `PageAnimations` — not inside page Server Components.
+
+---
+
+### Anti-Pattern 2: Importing GSAP in a Server Component
+
+**What people do:** Import from `@/lib/gsap-core` in an SF file without `'use client'`.
+**Why it's wrong:** GSAP uses `window`, `document`, and `requestAnimationFrame`. Build fails or produces a runtime error on SSR. Note: `gsap-core.ts` itself has `'use client'` but that only guards the lib module — the consumer still needs its own directive if it uses browser APIs.
+**Do this instead:** If a component needs GSAP, add `'use client'` to that component file. Never import gsap in a Server Component.
+
+---
+
+### Anti-Pattern 3: Composite Components in components/sf/
+
+**What people do:** Build a `DataTable` that manages sort/pagination state and export it from `sf/index.ts`.
+**Why it's wrong:** `components/sf/` is for primitives with single responsibility. A stateful composite inflates the barrel and violates the thin-wrapper API contract expected by SCAFFOLDING.md and the registry.
+**Do this instead:** Put composites in `components/blocks/`. Extract state to `hooks/use-[name].ts`. Primitive dependencies stay in `sf/`.
+
+---
+
+### Anti-Pattern 4: Bypassing CVA for One-Off Variants
+
+**What people do:** Add inline conditionals (`className={active ? 'bg-foreground' : ''}`) inside a new component instead of defining a CVA variant.
+**Why it's wrong:** Diverges from the `intent` prop contract. Makes the component impossible to document accurately in SCAFFOLDING.md and the registry.
+**Do this instead:** Define all visual states as CVA variants with an `intent` key — even if there is currently only one state. Structural consistency enables future extensibility without API breakage.
+
+---
+
+### Anti-Pattern 5: Importing Directly from components/ui/ in Pages or Blocks
+
+**What people do:** `import { Accordion } from "@/components/ui/accordion"` in a page component.
+**Why it's wrong:** Bypasses the SF contract entirely — SF classes (font-mono, rounded-none, 2px borders, inverted hover) are not applied. Produces aesthetically inconsistent output and breaks the DU/TDR visual language.
+**Do this instead:** Always import from `@/components/sf`. The `ui/` layer is an implementation detail, not a public API.
+
+---
+
+### Anti-Pattern 6: Putting P3 Lazy Components in sf/index.ts
+
+**What people do:** Add `export { SFCalendar } from "./sf-calendar"` to `sf/index.ts` because all other SF components are there.
+**Why it's wrong:** Eager import of the lazy file pulls the full ~40KB Calendar bundle into the main chunk, defeating the entire purpose of the lazy pattern.
+**Do this instead:** Import from the specific file: `import { SFCalendar } from "@/components/sf/sf-calendar-lazy"`. Never add P3 components to `sf/index.ts`.
+
+---
+
+## Integration Points
+
+### sf/index.ts → Consumer Boundary
+
+| Direction | Communication | Constraint |
+|-----------|---------------|------------|
+| Server Component → sf/index.ts | Direct import, static resolution | Only render non-client exports |
+| Client Component → sf/index.ts | Direct import, client bundle | Any export valid |
+| blocks/ → sf/index.ts | Direct import | Composites import primitives, not vice versa |
+| animation/ → sf/index.ts | Must NOT import from sf/ (circular risk) | Animation components are standalone |
+| P3 lazy → sf/index.ts | NOT listed — import directly from lazy file | `dynamic(() => import('./sf-calendar'))` |
+
+### registry.json → CLI Consumer Boundary
+
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| registry.json → public/r/[name].json | Manual sync (current approach) | registry.json is source of truth |
+| public/r/ → downstream consumer | `pnpm dlx shadcn add [url]` | Each JSON file is self-contained with deps |
+| meta.layer/meta.pattern → ComponentsExplorer | Not yet wired — manual sync | Future: derive filterTag from meta.layer |
+
+### SIGNAL Layer → SF Component Boundary
+
+| Component | How SIGNAL wires | Guard |
+|-----------|-----------------|-------|
+| SFProgress | `useEffect` reads `value` prop, calls `gsap.to(ref, { width })` | `prefers-reduced-motion` check before tween |
+| SFToast | `useGSAP` on open state from Radix `data-state` | Radix CSS transition zeroed, GSAP takes over |
+| SFAccordion | `useGSAP` scoped to content ref, fires on `data-state="open"` | Only fires when open state changes |
 
 ---
 
 ## Sources
 
-- `components/animation/signal-overlay.tsx` — CSS var write side confirmed (lines 136–148)
-- `components/animation/signal-mesh.tsx`, `glsl-hero.tsx` — uniform structure confirmed, no signal-* reads exist
-- `components/animation/signal-motion.tsx` — complete implementation, zero page placements
-- `components/sf/sf-section.tsx` — bgShift boolean type confirmed
-- `app/page.tsx` — data-bg-shift="white"/"black" spread usage confirmed (lines 29–50)
-- `app/globals.css` lines 462–470 — bg-shift-wrapper CSS confirmed, no --signal-* defaults
-- `registry.json` — 23 entries, 5 layout primitives missing
-- `lib/theme.ts` — toggleTheme singleton confirmed
-- `lib/color-resolve.ts` — getComputedStyle probe pattern confirmed (lines 104–120)
-- `.planning/DX-SPEC.md` — interface sketches for DX-05 and STP-01 with open questions
-- `components/blocks/components-explorer.tsx` — activeFilter, searchQuery, focusedIndex state confirmed (lines 278–283)
+- Verified: `components/sf/` — 28 existing SF files, all reviewed
+- Verified: `components/sf/index.ts` — current barrel export structure (29 components, 104 lines)
+- Verified: `registry.json` — 33 items, meta.layer + meta.pattern schema confirmed
+- Verified: `lib/signalframe-provider.tsx` — SSR-safe hole-in-donut pattern
+- Verified: `node_modules/radix-ui/package.json` — v1.4.3, all target Radix primitives confirmed present (accordion, alert-dialog, avatar, navigation-menu, progress, toast, toggle-group, menubar, collapsible)
+- Verified: `components/animation/signal-motion.tsx` — GSAP integration precedent (useGSAP + prefers-reduced-motion guard)
+- Verified: `components/blocks/components-explorer.tsx` — COMPONENTS array + filterTag taxonomy (FRAME/SIGNAL/LAYOUT/INPUT/DATA/FEEDBACK/MOTION)
+- Verified: `app/globals.css` — motion tokens (--duration-instant through --duration-glacial, --ease-default/hover/spring)
+- Verified: `package.json` — React 19.1, Next.js 15.3, GSAP 3.12, Turbopack, radix-ui@1.4.3
 
 ---
 
-*Architecture research for: SignalframeUX v1.2 Tech Debt Sweep*
+*Architecture research for: SignalframeUX v1.3 Component Expansion*
 *Researched: 2026-04-06*
