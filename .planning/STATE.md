@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
-status: completed
-stopped_at: Completed 06-02-PLAN.md (singleton SignalCanvas renderer + useSignalScene hook)
-last_updated: "2026-04-06T07:32:20.854Z"
-last_activity: "2026-04-06 — Plan 02 complete (3 tasks, 3 commits: 26f0861, d120beb, 78c957b)"
+status: in_progress
+stopped_at: Completed 07-01-PLAN.md (audio feedback + haptic feedback utilities)
+last_updated: "2026-04-06T08:01:22Z"
+last_activity: "2026-04-06 — Plan 07-01 complete (2 tasks, 2 commits: 08cb7b5, f36911e)"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 6 — Generative SIGNAL Foundation
-Plan: 03 (next)
-Status: Plan 02 complete — singleton SignalCanvas renderer + useSignalScene hook delivered
-Last activity: 2026-04-06 — Plan 02 complete (3 tasks, 3 commits: 26f0861, d120beb, 78c957b)
+Phase: 7 — SIGNAL Activation
+Plan: 02 (next)
+Status: Plan 01 complete — audio feedback + haptic feedback utilities delivered, SIG-06 + SIG-07 met
+Last activity: 2026-04-06 — Plan 07-01 complete (2 tasks, 2 commits: 08cb7b5, f36911e)
 
 ## Progress
 
@@ -40,12 +40,12 @@ Phase 3 — SIGNAL Expression:                   [██████████
 Phase 4 — Above-the-Fold Lock:                 [██████████] 100% (3/3 plans) COMPLETE
 Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
 Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
-Phase 7 — SIGNAL Activation:                   [          ]   0% (0/? plans) Not started
+Phase 7 — SIGNAL Activation:                   [██        ]  ~25% (1/? plans) In progress
 Phase 8 — First Generative Scenes:             [          ]   0% (0/? plans) Not started
 Phase 9 — Extended Scenes + Integration:       [          ]   0% (0/? plans) Not started
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [█         ]  ~10% (2/? plans)
+v1.1: [█         ]  ~15% (3/? plans)
 ```
 
 ## Accumulated Context
@@ -84,6 +84,8 @@ v1.1: [█         ]  ~10% (2/? plans)
 **06-01:** No caching in color-resolve.ts (Phase 6) — color-cycle-frame.tsx mutates --color-primary dynamically; cached values go stale. Optimize in Phase 8.
 **06-02:** signal-canvas.tsx not .ts — lib/ file contains a React component with JSX; .tsx extension required by Next.js/Turbopack; @/lib/signal-canvas path alias resolves both extensions.
 **06-02:** disposeScene and deregisterScene are separate calls — hook calls both; separation allows future temporary deregistration without GPU disposal.
+**07-01:** Document-level delegation over per-component wiring — single InteractionFeedback component in GlobalEffects handles all interactive elements; no SF component modifications needed.
+**07-01:** coarse-pointer skips hover audio setup entirely — touch devices have no hover state; pointerdown haptics still fire naturally via the same listener when on coarse devices (but listener is not added for coarse-pointer, so hover is also skipped for haptics — intentional; micro-vibration on touch hover is not meaningful without a hover state).
 
 ### Blockers
 - None
@@ -93,7 +95,7 @@ v1.1: [█         ]  ~10% (2/? plans)
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
 | 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
-| 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | Not started |
+| 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | In progress (1/? plans) — SIG-06, SIG-07 complete |
 | 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | Not started |
 | 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | Not started |
 
@@ -102,10 +104,10 @@ v1.1: [█         ]  ~10% (2/? plans)
 See: .planning/PROJECT.md (updated 2026-04-05)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** Phase 6 — Generative SIGNAL Foundation
+**Current focus:** Phase 7 — SIGNAL Activation
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 06-02-PLAN.md (singleton SignalCanvas renderer + useSignalScene hook)
-Resume file: .planning/phases/06-generative-signal-foundation/06-03-PLAN.md
+Stopped at: Completed 07-01-PLAN.md (audio feedback + haptic feedback utilities)
+Resume file: .planning/phases/07-signal-activation/07-02-PLAN.md

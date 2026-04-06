@@ -114,3 +114,11 @@ The SignalCanvas singleton uses `gsap.ticker.add(tickerCallback)` exclusively �
 ### 2026-04-06T07:23:00Z | Phase 06 | tags: use-signal-scene, dispose-pattern, intersection-observer
 
 `useSignalScene` calls both `deregisterScene(id)` AND `disposeScene(scene)` in cleanup — they are intentionally separate. `deregisterScene` removes from the singleton Map (stops rendering); `disposeScene` traverses the scene graph and frees GPU memory. Scene components MUST call both or GPU memory leaks. The `buildScene` factory runs inside `useEffect` (not at render time) to prevent Three.js object creation during SSR.
+
+### 2026-04-06T08:01:22Z | Phase 07 | tags: audio-feedback, web-audio-api, lazy-audiocontext, gesture-gating
+
+Web Audio API AudioContext must be created inside a gesture handler — module-level or component-mount creation starts the context in `suspended` state and `.resume()` is unreliable outside a gesture. The correct pattern is `let _ctx: AudioContext | null = null` at module scope and a `getCtx()` factory that creates on first call from inside `playTone()`, which is only ever called from pointer event handlers. Each tone creates a fresh OscillatorNode (create-and-stop) — never a persistent singleton oscillator.
+
+### 2026-04-06T08:01:22Z | Phase 07 | tags: haptic-feedback, vibration-api, document-delegation, lastHoveredRef
+
+The `lastHoveredRef` debounce in `InteractionFeedback` is essential: `pointerover` fires on every pixel of movement within an element, not just on entry. Without the ref tracking the last interactive element, hundreds of OscillatorNodes are created per second on any hover. The pattern: `onPointerOver` checks `target.closest(INTERACTIVE) === lastHoveredRef.current` and skips if true; `onPointerOut` resets the ref to `null` so re-entry after leaving fires again. This is placed in `global-effects.tsx` as a single document-level delegated listener — zero per-component wiring needed.

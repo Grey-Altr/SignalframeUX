@@ -54,7 +54,7 @@ Plans:
   5. Toggling OS reduced-motion halts the idle animation and suppresses audio — the reduced-motion path is silent and static
 **Plans**: 2 plans
 Plans:
-- [ ] 07-01-PLAN.md — Audio feedback + haptic feedback utilities, document-level interaction listener
+- [x] 07-01-PLAN.md — Audio feedback + haptic feedback utilities, document-level interaction listener
 - [ ] 07-02-PLAN.md — Idle state upgrade (8s threshold, OKLCH pulse, grain drift) + data-cursor placement on all showcase sections
 
 ### Phase 8: First Generative Scenes
@@ -90,6 +90,6 @@ Plans:
 | 4. Above-the-Fold Lock | v1.0 | 3/3 | Complete | 2026-04-06 |
 | 5. DX Contract & State | v1.0 | 2/2 | Complete | 2026-04-06 |
 | 6. Generative SIGNAL Foundation | v1.1 | 2/2 | In progress | - |
-| 7. SIGNAL Activation | v1.1 | 0/2 | Not started | - |
+| 7. SIGNAL Activation | v1.1 | 1/2 | In progress | - |
 | 8. First Generative Scenes | v1.1 | 0/? | Not started | - |
 | 9. Extended Scenes + Production Integration | v1.1 | 0/? | Not started | - |
