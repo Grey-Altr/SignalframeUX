@@ -53,6 +53,17 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ Session persistence: useSessionState + useScrollRestoration hooks (hydration-safe) — v1.2
 - ✓ Documentation cleanup: SUMMARY frontmatter, archive checkboxes, SCAFFOLDING.md API contract — v1.2
 
+- ✓ SF wrapper creation checklist codified in SCAFFOLDING.md (9-point checklist) — v1.3
+- ✓ Performance baseline captured (103 KB shared, Lighthouse CLI 88/100) — v1.3
+- ✓ ComponentsExplorer grouped by 6 named categories (Forms, Feedback, Navigation, Data Display, Layout, Generative) — v1.3
+- ✓ Prop vocabulary locked (`intent` for semantic variants, `size` for scale, `asChild` for composition) — v1.3
+- ✓ 7 P1 FRAME-only components: SFAvatar, SFBreadcrumb, SFEmptyState, SFAlertDialog, SFAlert, SFCollapsible, SFStatusDot — v1.3
+- ✓ 3 P1 animated components: SFAccordion (GSAP stagger), SFToast/SFToaster (Sonner + GSAP slide), SFProgress (GSAP fill tween) — v1.3
+- ✓ 4 P2 components: SFNavigationMenu (flyout + mobile SFSheet), SFPagination (Server Component), SFStepper (SFProgress connectors), SFToggleGroup — v1.3
+- ✓ 2 P3 registry-only lazy components: SFCalendar, SFMenubar (next/dynamic, meta.heavy: true) — v1.3
+- ✓ Full 49-item registry with corrected meta.pattern values (35 A, 2 B, 12 C) — v1.3
+- ✓ 102 KB shared JS bundle (under 150 KB gate) after 16 new components — v1.3
+
 ### Active
 
 (No active requirements — planning next milestone)
@@ -65,17 +76,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.3 Component Expansion
-
-**Goal:** Build a comprehensive, production-complete component library — every UI pattern a product engineer would reach for, prepared for edge cases, filtered through real consumer use cases.
-
-**Target features:**
-- Precondition infrastructure (SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary)
-- P1 components: Accordion, Toast, Progress, AlertDialog, Avatar, Breadcrumb, EmptyState
-- P2 components: NavigationMenu, Pagination, Stepper, StatusDot, ToggleGroup
-- P3 registry-only: Calendar, Menubar (lazy-loaded, heavy deps annotated)
-- SIGNAL layer integration on animation-eligible components (Progress fill, Toast slide, Accordion stagger)
-- Full registry + SCAFFOLDING.md coverage for every addition
+## Current Milestone: Planning next
 
 ## Context
 
@@ -105,10 +106,26 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - Session persistence: useSessionState + useScrollRestoration hooks (hydration-safe)
 - Documentation: 30 SUMMARY frontmatters normalized, 14 stale archive checkboxes fixed, SCAFFOLDING.md API contract
 
+**Shipped v1.3 Component Expansion** (2026-04-06):
+- 100 files modified, +11,072 lines across 52 commits, 5 phases, 10 plans
+- 16 new SF components shipped (45 total): 7 FRAME-only (Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot), 3 animated (Accordion, Toast, Progress), 4 P2 (NavigationMenu, Pagination, Stepper, ToggleGroup), 2 P3 lazy (Calendar, Menubar)
+- SCAFFOLDING.md: 9-point wrapper checklist, prop vocabulary, registry template
+- ComponentsExplorer: 31 entries across 6 named categories
+- 49-item shadcn CLI registry with corrected meta.pattern values
+- SFStepper consumes SFProgress as vertical connectors (writing-mode:vertical-lr)
+- SFEmptyState with Bayer dither texture matching hero SIGNAL aesthetic
+- SFToast via Sonner with GSAP slide entrance, DU/TDR minimal bar aesthetic
+- Bundle: 102 KB shared JS (unchanged from v1.2 baseline)
+
 **Minor tech debt (v1.2, non-blocking):**
 - MutationObserver in WebGL scenes has no disconnect on unmount
 - readSignalVars has no NaN guard
 - Lenis vs window.scrollTo race on scroll restoration (rAF mitigates)
+
+**Minor tech debt (v1.3, non-blocking):**
+- Lighthouse 100/100 not yet confirmed against deployed URL (CLI headless not representative with WebGL)
+- Duplicate TOAST name in ComponentsExplorer (indices 010 and 022, cosmetic)
+- Phase 19 human validation deferred (NavigationMenu flyout, keyboard nav, Stepper connectors)
 
 ## Key Decisions
 
@@ -129,6 +146,11 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 | Hole-in-the-donut SSR pattern for SignalframeProvider | v1.2 | ✓ Good — layout primitives stay Server Components |
 | sessionStorage over localStorage for session state | v1.2 | ✓ Good — clears on tab close, correct semantics |
 | useEffect-deferred sessionStorage reads for SSR safety | v1.2 | ✓ Good — zero hydration mismatches |
+| Pattern B for lazy P3 components (next/dynamic + ssr:false) | v1.3 | ✓ Good — Calendar/Menubar zero bundle cost |
+| SFStepper uses actual SFProgress as connectors (not reimplementation) | v1.3 | ✓ Good — single animation primitive, GSAP tween reuse |
+| Sonner with unstyled:true for SFToast | v1.3 | ✓ Good — full DU/TDR aesthetic control, no !important battles |
+| SFToggleGroup imports Radix directly (not through ui/ base) | v1.3 | ✓ Good — avoids variant→intent CVA remapping conflict |
+| CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix provides built-in data-motion |
 
 ## Constraints
 
@@ -149,4 +171,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.2 Tech Debt Sweep milestone shipped*
+*Last updated: 2026-04-06 after v1.3 Component Expansion milestone shipped*

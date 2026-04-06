@@ -1,5 +1,14 @@
 # Milestones
 
+## v1.3 Component Expansion (Shipped: 2026-04-06)
+
+**Phases completed:** 5 phases, 10 plans, 6 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.2 Tech Debt Sweep (Shipped: 2026-04-06)
 
 **Phases completed:** 6 phases, 9 plans, 6 tasks
