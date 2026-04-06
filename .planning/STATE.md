@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 19 — P2 Components (complete)
-Plan: 02 complete — SFNavigationMenu + ComponentsExplorer P2 entries
-Status: Phase 19 complete (2/2 plans), Phase 20 next
-Last activity: 2026-04-06 — Plan 19-02: SFNavigationMenu + explorer entries, 102 KB shared
+Phase: Phase 20 — P3 Registry-Only + Final Audit (in progress)
+Plan: 01 complete — SFCalendar + SFMenubar as Pattern B lazy components
+Status: Phase 20 plan 01 complete (1/2 plans), plan 02 next
+Last activity: 2026-04-06 — Plan 20-01: SFCalendar + SFMenubar lazy, 102 KB shared
 
 ## Progress
 
@@ -37,7 +37,7 @@ Last activity: 2026-04-06 — Plan 19-02: SFNavigationMenu + explorer entries, 1
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [████████  ] 62% (8/? plans) — in progress
+v1.3: [█████████ ] 69% (9/? plans) — in progress
 ```
 
 ## v1.3 Phase Map
@@ -48,7 +48,7 @@ v1.3: [████████  ] 62% (8/? plans) — in progress
 | 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Complete (2/2 plans) |
 | 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Complete (2/2 plans) |
 | 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Complete (2/2 plans) |
-| 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | Not started |
+| 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | In progress (1/2 plans) |
 
 ## Accumulated Context
 
@@ -112,6 +112,8 @@ v1.3: [████████  ] 62% (8/? plans) — in progress
 | SFStepper writing-mode:vertical-lr for vertical connectors | SFProgress uses xPercent tween; writing-mode rotates the fill direction |
 | SFNavigationMenuIndicator not exported | DU/TDR aesthetic rejects decorative arrow; hidden by omission |
 | PAGINATION (011) updated in-place | Pre-existing placeholder updated to v1.3.0 with SF-wrapped preview rather than adding duplicate entry |
+| Calendar --cell-radius:0px CSS var override | Cleaner than per-element rounded-none; catches all DayPicker dynamic rounded-* classes |
+| SFMenubar wraps all 15 sub-components | Complete API parity with shadcn base, even pass-through components |
 
 ### Blockers
 - None
@@ -126,5 +128,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 19-02-PLAN.md
-Resume with: Phase 20 Plan 01 (P3 Registry-Only + Final Audit)
+Stopped at: Completed 20-01-PLAN.md
+Resume with: Phase 20 Plan 02 (Final Audit / Lighthouse)

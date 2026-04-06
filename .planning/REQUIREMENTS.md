@@ -29,8 +29,8 @@
 - [x] **MS-03**: User selects from exclusive/multi toggle options via SFToggleGroup (completed 19-01)
 
 ### Registry-Only (Lazy)
-- [ ] **REG-01**: Consumer installs SFCalendar via shadcn CLI — lazy-loaded, bundle cost annotated, `meta.heavy: true`
-- [ ] **REG-02**: Consumer installs SFMenubar via shadcn CLI — lazy-loaded, registry-only
+- [x] **REG-01**: Consumer installs SFCalendar via shadcn CLI — lazy-loaded, bundle cost annotated, `meta.heavy: true`
+- [x] **REG-02**: Consumer installs SFMenubar via shadcn CLI — lazy-loaded, registry-only
 
 ---
 
