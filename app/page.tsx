@@ -13,6 +13,7 @@ import { GhostLabel } from "@/components/animation/ghost-label";
 import { SectionIndicator } from "@/components/layout/section-indicator";
 // GLSL hero shader — SSR-safe Client Component wrapper (mirrors SignalCanvasLazy)
 import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
+import { SFSection } from "@/components/sf";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -25,31 +26,31 @@ export default function HomePage() {
       <Nav />
       <main id="main-content" className="transition-none">
         <div id="bg-shift-wrapper">
-          <div data-bg-shift="white" data-section="hero" data-section-label="HERO" data-cursor className="relative">
+          <SFSection label="HERO" data-bg-shift="white" data-section="hero" data-cursor className="py-0 relative">
             <Hero />
             <GLSLHeroLazy />
-          </div>
-          <div data-bg-shift="black" data-section="manifesto" data-section-label="MANIFESTO" data-cursor className="relative overflow-hidden">
+          </SFSection>
+          <SFSection label="MANIFESTO" data-bg-shift="black" data-section="manifesto" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="MANIFEST" className="-left-4 top-1/2 -translate-y-1/2" />
             <ManifestoBand />
-          </div>
+          </SFSection>
           <CircuitDivider variant="default" />
-          <div data-bg-shift="white" data-section="signal" data-section-label="SIGNAL / FRAME" data-cursor className="relative overflow-hidden">
+          <SFSection label="SIGNAL / FRAME" data-bg-shift="white" data-section="signal" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="SIGNAL" className="right-0 top-0" />
             <DualLayer />
-          </div>
+          </SFSection>
           <CircuitDivider variant="minimal" />
-          <div data-bg-shift="black" data-section="stats" data-section-label="STATS" data-cursor><StatsBand /></div>
+          <SFSection label="STATS" data-bg-shift="black" data-section="stats" data-cursor className="py-0"><StatsBand /></SFSection>
           <MarqueeBand />
           <CircuitDivider variant="complex" />
-          <div data-bg-shift="white" data-section="code" data-section-label="API" data-cursor className="relative overflow-hidden">
+          <SFSection label="API" data-bg-shift="white" data-section="code" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="CODE" className="-left-4 top-1/4" />
             <CodeSection />
-          </div>
-          <div data-bg-shift="black" data-section="grid" data-section-label="COMPONENTS" data-cursor className="relative overflow-hidden">
+          </SFSection>
+          <SFSection label="COMPONENTS" data-bg-shift="black" data-section="grid" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="GRID" className="right-0 bottom-0" />
             <ComponentGrid />
-          </div>
+          </SFSection>
         </div>
         <SectionIndicator />
       </main>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
-import { SFButton, SFBadge } from "@/components/sf";
+import { SFButton, SFBadge, SFSection } from "@/components/sf";
 import Link from "next/link";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -188,7 +188,7 @@ export default function StartPage() {
       <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "GET STARTED" }]} />
         {/* ═══ HERO ═══ */}
-        <section className="bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
+        <SFSection label="GET STARTED" className="py-0 bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
           {/* Yellow accent bar */}
           <div className="h-[6px] bg-[var(--sf-yellow)]" aria-hidden="true" />
           <div className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]">
@@ -211,14 +211,15 @@ export default function StartPage() {
               &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
             </p>
           </div>
-        </section>
+        </SFSection>
 
         {/* ═══ STEPS ═══ */}
         {STEPS.map((step) => (
-          <section
+          <SFSection
             key={step.number}
+            label={step.title}
             aria-label={`Step ${step.number}: ${step.title}`}
-            className="grid grid-cols-[60px_1fr] md:grid-cols-[80px_1fr] border-b-[3px] border-foreground min-h-[200px]"
+            className="py-0 grid grid-cols-[60px_1fr] md:grid-cols-[80px_1fr] border-b-[3px] border-foreground min-h-[200px]"
           >
             {/* Step number column */}
             <div
@@ -260,11 +261,11 @@ export default function StartPage() {
                 </div>
               )}
             </div>
-          </section>
+          </SFSection>
         ))}
 
         {/* ═══ CHECKLIST ═══ */}
-        <section className="border-b-[3px] border-foreground py-10 px-[clamp(20px,4vw,48px)]">
+        <SFSection label="SETUP CHECKLIST" className="border-b-[3px] border-foreground py-10 px-[clamp(20px,4vw,48px)]">
           <h2
             className="sf-display mb-6"
             style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
@@ -298,7 +299,7 @@ export default function StartPage() {
               </div>
             ))}
           </div>
-        </section>
+        </SFSection>
 
         {/* ═══ NEXT STEPS ═══ */}
         <div className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
@@ -332,7 +333,7 @@ export default function StartPage() {
         </div>
 
         {/* ═══ COMMUNITY BAND ═══ */}
-        <section className="sf-yellow-band sf-grain border-b-[3px] border-foreground relative overflow-hidden">
+        <SFSection label="COMMUNITY" className="py-0 sf-yellow-band sf-grain border-b-[3px] border-foreground relative overflow-hidden">
 
           {/* Marquee */}
           <span className="sr-only">Open source. Built by engineers. Work. Build. Signal. Repeat.</span>
@@ -380,7 +381,7 @@ export default function StartPage() {
               </SFButton>
             </div>
           </div>
-        </section>
+        </SFSection>
       </main>
       <Footer />
     </>

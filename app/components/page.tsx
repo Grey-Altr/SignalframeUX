@@ -5,6 +5,7 @@ import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 // Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
 import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
+import { SFSection } from "@/components/sf";
 
 export const metadata: Metadata = {
   title: "Components — SIGNALFRAME//UX",
@@ -18,35 +19,39 @@ export default function ComponentsPage() {
       <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "COMPONENTS" }]} />
         {/* ── Page Header: COMP\nONENTS + 340 stat ── */}
-        <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
-          <h1
-            aria-label="Components"
-            className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
-            style={{ fontSize: "clamp(60px, 9vw, 120px)" }}
-          >
-            <span data-anim="page-heading" suppressHydrationWarning>COMP</span>
-            <br />
-            <span data-anim="page-heading" suppressHydrationWarning>ONENTS</span>
-          </h1>
-          <div className="px-6 md:px-12 pb-6 text-right">
-            <strong
-              className="block text-primary sf-display"
-              style={{ fontSize: "clamp(28px, 4vw, 48px)", lineHeight: 1 }}
+        <SFSection label="COMPONENTS" className="py-0">
+          <header className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground">
+            <h1
+              aria-label="Components"
+              className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
+              style={{ fontSize: "clamp(60px, 9vw, 120px)" }}
             >
-              340
-            </strong>
-            <span className="text-muted-foreground text-[11px] uppercase tracking-[0.15em] leading-snug block mt-1">
-              FRAME + SIGNAL PRIMITIVES
+              <span data-anim="page-heading" suppressHydrationWarning>COMP</span>
               <br />
-              FOR EVERY SURFACE
-            </span>
-          </div>
-        </header>
+              <span data-anim="page-heading" suppressHydrationWarning>ONENTS</span>
+            </h1>
+            <div className="px-6 md:px-12 pb-6 text-right">
+              <strong
+                className="block text-primary sf-display"
+                style={{ fontSize: "clamp(28px, 4vw, 48px)", lineHeight: 1 }}
+              >
+                340
+              </strong>
+              <span className="text-muted-foreground text-[11px] uppercase tracking-[0.15em] leading-snug block mt-1">
+                FRAME + SIGNAL PRIMITIVES
+                <br />
+                FOR EVERY SURFACE
+              </span>
+            </div>
+          </header>
+        </SFSection>
 
         {/* WebGL showcase — SignalMesh icosahedron relocated from homepage hero */}
-        <div className="relative h-[300px] border-b-4 border-foreground overflow-hidden" data-cursor>
-          <SignalMeshLazy />
-        </div>
+        <SFSection label="SIGNAL MESH" className="py-0">
+          <div className="relative h-[300px] border-b-4 border-foreground overflow-hidden" data-cursor>
+            <SignalMeshLazy />
+          </div>
+        </SFSection>
 
         <ComponentsExplorer />
       </main>

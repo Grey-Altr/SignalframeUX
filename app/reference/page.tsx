@@ -3,6 +3,7 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { APIExplorer } from "@/components/blocks/api-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { SFSection } from "@/components/sf";
 
 export const metadata: Metadata = {
   title: "API Reference — SIGNALFRAME//UX",
@@ -14,7 +15,9 @@ export default function APIPage() {
     <>
       <Nav />
       <main id="main-content" data-cursor>
-        <APIExplorer />
+        <SFSection label="API REFERENCE" className="py-0">
+          <APIExplorer />
+        </SFSection>
       </main>
       <Footer />
     </>
