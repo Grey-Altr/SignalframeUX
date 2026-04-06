@@ -68,8 +68,8 @@ Plans:
   4. OKLCH color tokens render in the canvas at the same perceived hue and lightness as the adjacent CSS elements using the same token — no color space mismatch visible
 **Plans**: 2 plans
 Plans:
-- [ ] 08-01-PLAN.md — SignalMesh WebGL scene + color-resolve.ts TTL cache optimization
-- [ ] 08-02-PLAN.md — Canvas 2D token visualization on /tokens page
+- [x] 08-01-PLAN.md — SignalMesh WebGL scene + color-resolve.ts TTL cache optimization
+- [x] 08-02-PLAN.md — Canvas 2D token visualization on /tokens page
 
 ### Phase 9: Extended Scenes + Production Integration
 **Goal**: The DU/TDR aesthetic differentiators (ASCII shader, GLSL hero) are shipped; all showcase pages consume SF layout primitives and carry generative zones — the portfolio is complete as a SOTD entry
@@ -83,7 +83,7 @@ Plans:
   5. Lighthouse 100/100 is maintained across all pages with generative content active; CRT critique score for pages with generative content reaches >= 90/100
 **Plans**: 3 plans
 Plans:
-- [ ] 09-01-PLAN.md — GLSL hero shader with integrated Bayer 4x4 dither + SignalMesh relocation to /components
+- [x] 09-01-PLAN.md — GLSL hero shader with integrated Bayer 4x4 dither + SignalMesh relocation to /components
 - [x] 09-02-PLAN.md — SignalMotion scroll-driven animation component + SIGNAL overlay parameter panel
 - [ ] 09-03-PLAN.md — SF layout primitive migration across all 5 pages + stagger animation activation
 
@@ -99,4 +99,4 @@ Plans:
 | 6. Generative SIGNAL Foundation | v1.1 | 2/2 | In progress | - |
 | 7. SIGNAL Activation | v1.1 | 2/2 | In progress | - |
 | 8. First Generative Scenes | v1.1 | 0/2 | Not started | - |
-| 9. Extended Scenes + Production Integration | v1.1 | 1/3 | In progress | - |
+| 9. Extended Scenes + Production Integration | v1.1 | 2/3 | In progress | - |

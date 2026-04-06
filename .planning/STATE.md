@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
 status: completed
-stopped_at: Completed 09-02-PLAN.md (SignalMotion + SignalOverlay)
-last_updated: "2026-04-05T00:02:00.000Z"
-last_activity: "2026-04-05 — Plan 09-02 complete (2 tasks, 2 commits: 507826f, 36bdbeb)"
+stopped_at: Completed 09-01-PLAN.md (GLSLHero shader + Bayer dither)
+last_updated: "2026-04-06T09:14:46Z"
+last_activity: "2026-04-06 — Plan 09-01 complete (2 tasks, 2 commits: 7931b90, fc33bc5)"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -28,8 +28,8 @@ progress:
 
 Phase: 9 — Extended Scenes + Production Integration
 Plan: 03 (next)
-Status: Plan 02 complete — SignalMotion scrub wrapper + SignalOverlay CSS property bridge panel; INT-03 + INT-04 met.
-Last activity: 2026-04-05 — Plan 09-02 complete (2 tasks, 2 commits: 507826f, 36bdbeb)
+Status: Plans 01 + 02 complete — GLSLHero shader (SCN-03 + SCN-04) + SignalMotion + SignalOverlay (INT-03 + INT-04). Awaiting Plan 03 (SF primitive consumers + stagger on grids).
+Last activity: 2026-04-06 — Plan 09-01 complete (2 tasks, 2 commits: 7931b90, fc33bc5)
 
 ## Progress
 
@@ -42,7 +42,7 @@ Phase 5 — DX Contract & State:                 [██████████
 Phase 6 — Generative SIGNAL Foundation:        [██        ]  ~40% (2/? plans) In progress
 Phase 7 — SIGNAL Activation:                   [████      ]  ~50% (2/? plans) In progress
 Phase 8 — First Generative Scenes:             [██████████] 100% (2/2 plans) COMPLETE — SCN-01 + SCN-02 complete
-Phase 9 — Extended Scenes + Integration:       [███       ]  ~33% (1/3 plans) In progress — INT-03 + INT-04 complete
+Phase 9 — Extended Scenes + Integration:       [██████    ]  ~66% (2/3 plans) In progress — SCN-03 + SCN-04 + INT-03 + INT-04 complete
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
 v1.1: [███       ]  ~30% (6/? plans)
@@ -95,6 +95,9 @@ v1.1: [███       ]  ~30% (6/? plans)
 **09-02:** SFSlider used over native input[type=range] in SignalOverlay — already SF-styled (square thumb, square track, primary fill), Radix a11y included, consistent with system aesthetic.
 **09-02:** Reset button added to SignalOverlay beyond plan spec — CSS custom properties persist on :root across navigation; reset is essential for demo UX and not optional.
 **09-02:** Speed slider hidden (not just disabled) on reduced-motion — shows "Reduced motion active" message; clearer UX signal than a grayed-out unresponsive slider.
+**09-01:** uResolution added as uniform (not computed inside shader) — gl_FragCoord alone lacks container offset info for correct UV in scissored viewport; ResizeObserver keeps it current.
+**09-01:** TTL cache (2000ms) used for resolveColorAsThreeColor at hero scene build time — safe since color-cycle mutates at ~150ms intervals, hero shader color changes intentionally lag by up to 2s.
+**09-01:** Bayer 4x4 stored as float array literal in fragment shader — avoids sampler2D overhead, GLSL array literals confirmed supported in WebGL1+2.
 
 ### Blockers
 - None
@@ -106,7 +109,7 @@ v1.1: [███       ]  ~30% (6/? plans)
 | 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (2/? plans) |
 | 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | In progress (2/? plans) — SIG-06, SIG-07, SIG-08, SIG-09 complete |
 | 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | In progress (2/? plans) — SCN-01 + SCN-02 complete |
-| 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | In progress (1/3 plans) — INT-03 + INT-04 complete |
+| 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | In progress (2/3 plans) — SCN-03 + SCN-04 + INT-03 + INT-04 complete |
 
 ## Project Reference
 
@@ -117,6 +120,6 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: Completed 09-02-PLAN.md (SignalMotion + SignalOverlay CSS bridge panel)
+Last session: 2026-04-06
+Stopped at: Completed 09-01-PLAN.md (GLSLHero shader + Bayer dither + SignalMesh relocation)
 Resume file: .planning/phases/09-extended-scenes-production-integration/09-03-PLAN.md
