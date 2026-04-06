@@ -3,6 +3,7 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { TokenTabs } from "@/components/blocks/token-tabs";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { TokenVizLoader } from "@/components/animation/token-viz-loader";
 
 export const metadata: Metadata = {
   title: "Token Explorer — SIGNALFRAME//UX",
@@ -33,6 +34,9 @@ export default function TokensPage() {
 
         {/* ═══ CATEGORY TABS (client island) ═══ */}
         <TokenTabs />
+
+        {/* ═══ TOKEN DIAGNOSTIC VISUALIZATION (Canvas 2D) ═══ */}
+        <TokenVizLoader />
 
         {/* Gradient separator */}
         <div
