@@ -259,6 +259,40 @@ function PreviewStatusDot() {
   );
 }
 
+function PreviewAccordion() {
+  return (
+    <div className="w-[80%]">
+      <div className="h-4 border border-current flex items-center justify-between px-1 text-[7px] font-mono uppercase">
+        <span>SECTION A</span>
+        <span className="rotate-180">&#x25B4;</span>
+      </div>
+      <div className="h-3 border border-current border-t-0 bg-current/5 px-1 text-[6px] font-mono opacity-60">
+        CONTENT
+      </div>
+      <div className="h-4 border border-current border-t-0 flex items-center justify-between px-1 text-[7px] font-mono uppercase">
+        <span>SECTION B</span>
+        <span>&#x25BE;</span>
+      </div>
+    </div>
+  );
+}
+
+function PreviewProgress() {
+  return (
+    <div className="w-[80%] h-1 bg-muted">
+      <div className="h-full bg-primary" style={{ width: "60%" }} />
+    </div>
+  );
+}
+
+function PreviewToast() {
+  return (
+    <div className="border-2 border-foreground bg-background font-mono text-[var(--text-2xs)] uppercase p-2 tracking-wider">
+      SYSTEM OK
+    </div>
+  );
+}
+
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
@@ -285,6 +319,9 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "102", name: "WAVEFORM", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewWave /> },
   { index: "103", name: "GLITCH_TXT", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewGlitch /> },
   { index: "104", name: "PARTICLE", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewParticle /> },
+  { index: "020", name: "ACCORDION", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAccordion /> },
+  { index: "021", name: "PROGRESS", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewProgress /> },
+  { index: "022", name: "TOAST", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewToast /> },
 ];
 
 /* ── Variant style maps ── */
