@@ -834,6 +834,51 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-calendar",
+      "type": "registry:ui",
+      "title": "SF Calendar",
+      "description": "Lazy-loaded date calendar with react-day-picker. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "dependencies": ["react-day-picker", "date-fns"],
+      "registryDependencies": ["calendar", "button"],
+      "files": [
+        {
+          "path": "components/sf/sf-calendar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-calendar-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
+      "name": "sf-menubar",
+      "type": "registry:ui",
+      "title": "SF Menubar",
+      "description": "Desktop application menubar with Radix primitives. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "registryDependencies": ["menubar"],
+      "files": [
+        {
+          "path": "components/sf/sf-menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-menubar-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
     }
   ]
 }
