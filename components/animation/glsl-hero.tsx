@@ -38,6 +38,33 @@ function checkWebGL(): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// Module-level signal cache (INT-04)
+// Float values for --signal-* CSS vars. Read once on mount, updated via
+// MutationObserver on :root style change. Never read inside GSAP ticker.
+// ---------------------------------------------------------------------------
+
+let _signalIntensity = 0.5;
+let _signalSpeed = 1.0;
+let _signalAccent = 0.0;
+let _signalObserver: MutationObserver | null = null;
+
+function readSignalVars(): void {
+  const style = getComputedStyle(document.documentElement);
+  _signalIntensity = parseFloat(style.getPropertyValue("--signal-intensity") || "0.5");
+  _signalSpeed     = parseFloat(style.getPropertyValue("--signal-speed")     || "1");
+  _signalAccent    = parseFloat(style.getPropertyValue("--signal-accent")    || "0");
+}
+
+function ensureSignalObserver(): void {
+  if (_signalObserver || typeof window === "undefined") return;
+  readSignalVars();
+  _signalObserver = new MutationObserver(readSignalVars);
+  _signalObserver.observe(document.documentElement, {
+    attributeFilter: ["style"],
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Vertex shader — pass-through, fills NDC space
 // ---------------------------------------------------------------------------
 
