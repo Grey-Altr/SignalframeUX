@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-collapsible",
+  "title": "SF Collapsible",
+  "description": "Toggleable content panel with asChild trigger pattern",
+  "registryDependencies": [
+    "collapsible"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-collapsible.tsx",
+      "content": "\"use client\";\n\nimport {\n  Collapsible,\n  CollapsibleTrigger,\n  CollapsibleContent,\n} from \"@/components/ui/collapsible\";\n\n/**\n * Toggleable content panel — FRAME layer disclosure primitive.\n *\n * Radix Collapsible root wrapped with SF contract. Compose with\n * SFCollapsibleTrigger (supports asChild) and SFCollapsibleContent.\n *\n * @example\n * <SFCollapsible>\n *   <SFCollapsibleTrigger asChild><SFButton>Toggle</SFButton></SFCollapsibleTrigger>\n *   <SFCollapsibleContent>Hidden content here</SFCollapsibleContent>\n * </SFCollapsible>\n */\nfunction SFCollapsible(props: React.ComponentProps<typeof Collapsible>) {\n  return <Collapsible {...props} />;\n}\n\n/** Sub-component of SFCollapsible — trigger element that toggles content visibility. */\nfunction SFCollapsibleTrigger(\n  props: React.ComponentProps<typeof CollapsibleTrigger>\n) {\n  return <CollapsibleTrigger {...props} />;\n}\n\n/** Sub-component of SFCollapsible — collapsible content region. */\nfunction SFCollapsibleContent(\n  props: React.ComponentProps<typeof CollapsibleContent>\n) {\n  return <CollapsibleContent {...props} />;\n}\n\nexport { SFCollapsible, SFCollapsibleTrigger, SFCollapsibleContent };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

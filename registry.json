@@ -18,7 +18,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -70,7 +70,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -207,7 +207,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -477,7 +477,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -493,7 +493,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -510,7 +510,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -527,7 +527,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -543,7 +543,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-calendar",
+  "title": "SF Calendar",
+  "description": "Lazy-loaded date calendar with react-day-picker. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+  "dependencies": [
+    "react-day-picker",
+    "date-fns"
+  ],
+  "registryDependencies": [
+    "calendar",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-calendar.tsx",
+      "content": "\"use client\";\n\n/**\n * SFCalendar -- FRAME layer date picker with zero border-radius.\n *\n * P3 lazy component: import via sf-calendar-lazy.tsx, NOT from sf/index.ts.\n *\n * Wraps the shadcn Calendar (react-day-picker) with DU/TDR industrial styling:\n * sharp corners on every sub-element, 2px border, no decorative rounding.\n *\n * @example\n * ```tsx\n * import { SFCalendarLazy } from \"@/components/sf/sf-calendar-lazy\";\n *\n * <SFCalendarLazy />\n * ```\n */\n\nimport { Calendar } from \"@/components/ui/calendar\";\nimport { cn } from \"@/lib/utils\";\n\ntype SFCalendarProps = React.ComponentProps<typeof Calendar>;\n\nfunction SFCalendar({ className, classNames, ...props }: SFCalendarProps) {\n  return (\n    <Calendar\n      className={cn(\n        \"rounded-none border-2 border-border [--cell-radius:0px]\",\n        className\n      )}\n      classNames={{\n        dropdown_root: \"rounded-none\",\n        caption_label: \"rounded-none\",\n        weekday: \"rounded-none\",\n        day: \"rounded-none\",\n        range_start: \"rounded-none\",\n        range_middle: \"rounded-none\",\n        range_end: \"rounded-none\",\n        today: \"rounded-none data-[selected=true]:rounded-none\",\n        ...classNames,\n      }}\n      {...props}\n    />\n  );\n}\n\nexport { SFCalendar };\nexport type { SFCalendarProps };\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "components/sf/sf-calendar-lazy.tsx",
+      "content": "\"use client\";\n\n/**\n * Lazy loader for SFCalendar -- loads react-day-picker only when rendered.\n *\n * P3 component: never exported from sf/index.ts barrel.\n * Import this file directly when you need a calendar.\n *\n * @example\n * ```tsx\n * import { SFCalendarLazy } from \"@/components/sf/sf-calendar-lazy\";\n *\n * <SFCalendarLazy />\n * ```\n */\n\nimport dynamic from \"next/dynamic\";\nimport { SFSkeleton } from \"@/components/sf\";\n\nconst SFCalendarDynamic = dynamic(\n  () =>\n    import(\"@/components/sf/sf-calendar\").then((m) => ({\n      default: m.SFCalendar,\n    })),\n  {\n    ssr: false,\n    loading: () => <SFSkeleton className=\"h-[350px] w-[280px]\" />,\n  }\n);\n\nexport function SFCalendarLazy(\n  props: React.ComponentProps<typeof SFCalendarDynamic>\n) {\n  return <SFCalendarDynamic {...props} />;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B",
+    "heavy": true
+  },
+  "type": "registry:ui"
+}

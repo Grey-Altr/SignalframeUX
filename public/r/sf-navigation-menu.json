@@ -1,19 +1,25 @@
 {
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "sf-navigation-menu",
-  "type": "registry:ui",
   "title": "SF NavigationMenu",
   "description": "Site navigation with desktop flyout panels and mobile SFSheet collapse, industrial DU/TDR styling",
-  "dependencies": ["lucide-react"],
-  "registryDependencies": ["navigation-menu", "sheet"],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "navigation-menu",
+    "sheet"
+  ],
   "files": [
     {
       "path": "components/sf/sf-navigation-menu.tsx",
-      "type": "registry:ui",
-      "content": ""
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  NavigationMenu,\n  NavigationMenuList,\n  NavigationMenuItem,\n  NavigationMenuContent,\n  NavigationMenuTrigger,\n  NavigationMenuLink,\n  NavigationMenuViewport,\n} from \"@/components/ui/navigation-menu\";\nimport {\n  SFSheet,\n  SFSheetTrigger,\n  SFSheetContent,\n  SFSheetHeader,\n  SFSheetTitle,\n} from \"@/components/sf/sf-sheet\";\nimport { cn } from \"@/lib/utils\";\nimport { Menu } from \"lucide-react\";\n\n/**\n * Site navigation — FRAME layer navigation primitive.\n *\n * Desktop (>=768px): Radix NavigationMenu with flyout viewport panels,\n * industrial DU/TDR styling — zero border-radius, 2px borders, mono uppercase.\n *\n * Mobile (<768px): SFSheet slide-out with hamburger trigger for vertical navigation.\n *\n * Compose desktop and mobile together for responsive navigation:\n *\n * @example\n * ```tsx\n * <nav>\n *   <SFNavigationMenu className=\"hidden md:flex\">\n *     <SFNavigationMenuList>\n *       <SFNavigationMenuItem>\n *         <SFNavigationMenuTrigger>DOCS</SFNavigationMenuTrigger>\n *         <SFNavigationMenuContent>\n *           <SFNavigationMenuLink href=\"/docs/intro\">INTRO</SFNavigationMenuLink>\n *         </SFNavigationMenuContent>\n *       </SFNavigationMenuItem>\n *     </SFNavigationMenuList>\n *   </SFNavigationMenu>\n *\n *   <SFNavigationMenuMobile>\n *     <a href=\"/docs\">DOCS</a>\n *     <a href=\"/api\">API</a>\n *   </SFNavigationMenuMobile>\n * </nav>\n * ```\n */\n\n/** SF-wrapped NavigationMenu root with industrial styling. */\nfunction SFNavigationMenu({\n  className,\n  children,\n  viewport = true,\n  ...props\n}: React.ComponentProps<typeof NavigationMenu> & { viewport?: boolean }) {\n  return (\n    <NavigationMenu\n      viewport={viewport}\n      className={cn(\"rounded-none font-mono\", className)}\n      {...props}\n    >\n      {children}\n    </NavigationMenu>\n  );\n}\n\n/** Sub-component of SFNavigationMenu — list container for navigation items. */\nfunction SFNavigationMenuList({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuList>) {\n  return <NavigationMenuList className={cn(className)} {...props} />;\n}\n\n/** Sub-component of SFNavigationMenu — individual navigation item wrapper. */\nfunction SFNavigationMenuItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuItem>) {\n  return <NavigationMenuItem className={cn(className)} {...props} />;\n}\n\n/** Sub-component of SFNavigationMenu — trigger button with chevron, industrial styling. */\nfunction SFNavigationMenuTrigger({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuTrigger>) {\n  return (\n    <NavigationMenuTrigger\n      className={cn(\n        \"sf-focusable rounded-none font-mono uppercase tracking-wider text-xs border-2 border-transparent hover:border-foreground data-popup-open:border-foreground transition-colors duration-[var(--duration-fast)]\",\n        \"focus-visible:ring-0 focus-visible:outline-none\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFNavigationMenu — flyout content panel with preserved motion animations. */\nfunction SFNavigationMenuContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuContent>) {\n  return (\n    <NavigationMenuContent\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFNavigationMenu — navigation link with inverted hover state. */\nfunction SFNavigationMenuLink({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuLink>) {\n  return (\n    <NavigationMenuLink\n      className={cn(\n        \"rounded-none font-mono text-xs uppercase tracking-wider hover:bg-foreground hover:text-background transition-colors\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFNavigationMenu — viewport flyout container with 2px industrial border. */\nfunction SFNavigationMenuViewport({\n  className,\n  ...props\n}: React.ComponentProps<typeof NavigationMenuViewport>) {\n  return (\n    <NavigationMenuViewport\n      className={cn(\n        \"rounded-none border-2 border-foreground shadow-none ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Mobile navigation — SFSheet slide-out with hamburger trigger, visible only below md breakpoint. */\nfunction SFNavigationMenuMobile({\n  children,\n  className,\n  title = \"NAVIGATION\",\n}: {\n  children: React.ReactNode;\n  className?: string;\n  title?: string;\n}) {\n  return (\n    <div className={cn(\"md:hidden\", className)}>\n      <SFSheet>\n        <SFSheetTrigger\n          aria-label=\"Open navigation menu\"\n          className=\"sf-focusable sf-pressable inline-flex items-center justify-center size-10 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors\"\n        >\n          <Menu className=\"size-5\" />\n        </SFSheetTrigger>\n        <SFSheetContent side=\"left\">\n          <SFSheetHeader>\n            <SFSheetTitle>{title}</SFSheetTitle>\n          </SFSheetHeader>\n          <nav className=\"flex flex-col gap-1 mt-4\">\n            {children}\n          </nav>\n        </SFSheetContent>\n      </SFSheet>\n    </div>\n  );\n}\n\nexport {\n  SFNavigationMenu,\n  SFNavigationMenuList,\n  SFNavigationMenuItem,\n  SFNavigationMenuTrigger,\n  SFNavigationMenuContent,\n  SFNavigationMenuLink,\n  SFNavigationMenuViewport,\n  SFNavigationMenuMobile,\n};\n",
+      "type": "registry:ui"
     }
   ],
   "meta": {
     "layer": "frame",
     "pattern": "A"
-  }
+  },
+  "type": "registry:ui"
 }

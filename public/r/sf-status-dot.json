@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-status-dot",
+  "title": "SF StatusDot",
+  "description": "8px square presence indicator with GSAP pulse on active state",
+  "dependencies": [
+    "gsap"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-status-dot.tsx",
+      "content": "\"use client\";\n\nimport { useRef, useEffect } from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { gsap } from \"@/lib/gsap-core\";\n\n/**\n * Presence indicator -- FRAME layer status primitive.\n * 8px square, GSAP pulse on active state. Respects prefers-reduced-motion.\n *\n * @param status - Current state: \"active\" (pulsing green), \"idle\" (accent), \"offline\" (muted)\n * @param className - Additional classes merged onto the dot element\n *\n * @example\n * <SFStatusDot status=\"active\" />\n * <SFStatusDot status=\"idle\" />\n * <SFStatusDot status=\"offline\" />\n */\n\ntype SFStatusDotStatus = \"active\" | \"idle\" | \"offline\";\n\ninterface SFStatusDotProps {\n  status?: SFStatusDotStatus;\n  className?: string;\n}\n\nconst statusColors: Record<SFStatusDotStatus, string> = {\n  active: \"bg-success\",\n  idle: \"bg-accent\",\n  offline: \"bg-muted-foreground\",\n};\n\nfunction SFStatusDot({ status = \"idle\", className }: SFStatusDotProps) {\n  const ref = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    if (status !== \"active\" || !ref.current) return;\n\n    if (window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return;\n\n    const tween = gsap.to(ref.current, {\n      opacity: 0.4,\n      duration: 0.2,\n      ease: \"power2.out\",\n      repeat: -1,\n      yoyo: true,\n    });\n\n    return () => {\n      tween.kill();\n    };\n  }, [status]);\n\n  return (\n    <div\n      ref={ref}\n      role=\"status\"\n      aria-label={status}\n      className={cn(\"size-2\", statusColors[status], className)}\n    />\n  );\n}\n\nexport { SFStatusDot, type SFStatusDotStatus };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "C"
+  },
+  "type": "registry:ui"
+}

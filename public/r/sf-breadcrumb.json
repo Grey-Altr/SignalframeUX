@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-breadcrumb",
+  "title": "SF Breadcrumb",
+  "description": "Navigation hierarchy breadcrumb with monospace / separator, Server Component",
+  "registryDependencies": [
+    "breadcrumb"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-breadcrumb.tsx",
+      "content": "import {\n  Breadcrumb,\n  BreadcrumbList,\n  BreadcrumbItem,\n  BreadcrumbLink,\n  BreadcrumbPage,\n  BreadcrumbSeparator,\n} from \"@/components/ui/breadcrumb\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Navigation hierarchy breadcrumb — FRAME layer wayfinding primitive.\n *\n * Server Component. Wraps shadcn Breadcrumb with monospace text\n * and `/` separator instead of chevron icon.\n *\n * @example\n * <SFBreadcrumb>\n *   <SFBreadcrumbList>\n *     <SFBreadcrumbItem><SFBreadcrumbLink href=\"/\">Home</SFBreadcrumbLink></SFBreadcrumbItem>\n *     <SFBreadcrumbSeparator />\n *     <SFBreadcrumbItem><SFBreadcrumbPage>Current</SFBreadcrumbPage></SFBreadcrumbItem>\n *   </SFBreadcrumbList>\n * </SFBreadcrumb>\n */\nfunction SFBreadcrumb(props: React.ComponentProps<typeof Breadcrumb>) {\n  return <Breadcrumb {...props} />;\n}\n\n/** Sub-component of SFBreadcrumb — ordered list container with monospace font. */\nfunction SFBreadcrumbList({\n  className,\n  ...props\n}: React.ComponentProps<typeof BreadcrumbList>) {\n  return <BreadcrumbList className={cn(\"font-mono\", className)} {...props} />;\n}\n\n/** Sub-component of SFBreadcrumb — individual breadcrumb item wrapper. */\nfunction SFBreadcrumbItem(\n  props: React.ComponentProps<typeof BreadcrumbItem>\n) {\n  return <BreadcrumbItem {...props} />;\n}\n\n/** Sub-component of SFBreadcrumb — navigable breadcrumb link. */\nfunction SFBreadcrumbLink(\n  props: React.ComponentProps<typeof BreadcrumbLink>\n) {\n  return <BreadcrumbLink {...props} />;\n}\n\n/** Sub-component of SFBreadcrumb — current page indicator (non-interactive). */\nfunction SFBreadcrumbPage(\n  props: React.ComponentProps<typeof BreadcrumbPage>\n) {\n  return <BreadcrumbPage {...props} />;\n}\n\n/** Sub-component of SFBreadcrumb — monospace `/` separator between items. */\nfunction SFBreadcrumbSeparator({\n  className,\n  ...props\n}: React.ComponentProps<typeof BreadcrumbSeparator>) {\n  return (\n    <BreadcrumbSeparator className={cn(\"font-mono\", className)} {...props}>\n      /\n    </BreadcrumbSeparator>\n  );\n}\n\nexport {\n  SFBreadcrumb,\n  SFBreadcrumbList,\n  SFBreadcrumbItem,\n  SFBreadcrumbLink,\n  SFBreadcrumbPage,\n  SFBreadcrumbSeparator,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

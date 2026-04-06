@@ -18,7 +18,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -70,7 +70,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -207,7 +207,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "A"
       }
     },
     {
@@ -477,7 +477,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -493,7 +493,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -510,7 +510,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -527,7 +527,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -543,7 +543,7 @@
       ],
       "meta": {
         "layer": "frame",
-        "pattern": "B"
+        "pattern": "C"
       }
     },
     {
@@ -589,6 +589,295 @@
       "meta": {
         "layer": "frame",
         "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-collapsible",
+      "type": "registry:ui",
+      "title": "SF Collapsible",
+      "description": "Toggleable content panel with asChild trigger pattern",
+      "registryDependencies": ["collapsible"],
+      "files": [
+        {
+          "path": "components/sf/sf-collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-breadcrumb",
+      "type": "registry:ui",
+      "title": "SF Breadcrumb",
+      "description": "Navigation hierarchy breadcrumb with monospace / separator, Server Component",
+      "registryDependencies": ["breadcrumb"],
+      "files": [
+        {
+          "path": "components/sf/sf-breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-avatar",
+      "type": "registry:ui",
+      "title": "SF Avatar",
+      "description": "Square user avatar with Radix fallback chain: image -> initials -> icon",
+      "registryDependencies": ["avatar"],
+      "files": [
+        {
+          "path": "components/sf/sf-avatar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-alert",
+      "type": "registry:ui",
+      "title": "SF Alert",
+      "description": "Inline feedback banner with CVA intent variants: info, warning, destructive, success",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["alert"],
+      "files": [
+        {
+          "path": "components/sf/sf-alert.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-alert-dialog",
+      "type": "registry:ui",
+      "title": "SF AlertDialog",
+      "description": "Focus-trapped confirmation dialog with loading state on confirm action",
+      "registryDependencies": ["alert-dialog"],
+      "files": [
+        {
+          "path": "components/sf/sf-alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-empty-state",
+      "type": "registry:ui",
+      "title": "SF EmptyState",
+      "description": "Designed empty state with Bayer dither texture and optional ScrambleText",
+      "files": [
+        {
+          "path": "components/sf/sf-empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "sf-status-dot",
+      "type": "registry:ui",
+      "title": "SF StatusDot",
+      "description": "8px square presence indicator with GSAP pulse on active state",
+      "dependencies": ["gsap"],
+      "files": [
+        {
+          "path": "components/sf/sf-status-dot.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "sf-accordion",
+      "type": "registry:ui",
+      "title": "SF Accordion",
+      "description": "SIGNAL accordion with GSAP stagger on expand, reverse on collapse, reduced-motion guard",
+      "dependencies": ["gsap"],
+      "registryDependencies": ["accordion"],
+      "files": [
+        {
+          "path": "components/sf/sf-accordion.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-progress",
+      "type": "registry:ui",
+      "title": "SF Progress",
+      "description": "SIGNAL progress bar with GSAP fill tween, reduced-motion instant set",
+      "dependencies": ["gsap"],
+      "registryDependencies": ["progress"],
+      "files": [
+        {
+          "path": "components/sf/sf-progress.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-toast",
+      "type": "registry:ui",
+      "title": "SF Toast",
+      "description": "System notification toast with GSAP slide entrance, Sonner engine, bottom-left positioning",
+      "dependencies": ["sonner", "gsap", "lucide-react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/sf/sf-toast.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-toggle-group",
+      "type": "registry:ui",
+      "title": "SF ToggleGroup",
+      "description": "Exclusive or multi-select toggle group with CVA intent variants, industrial edge-to-edge layout",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["toggle-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-toggle-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-pagination",
+      "type": "registry:ui",
+      "title": "SF Pagination",
+      "description": "Minimal numbered page navigation with previous/next, Server Component, no ellipsis",
+      "registryDependencies": ["pagination"],
+      "files": [
+        {
+          "path": "components/sf/sf-pagination.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-stepper",
+      "type": "registry:ui",
+      "title": "SF Stepper",
+      "description": "Vertical multi-step flow with SFProgress connectors and per-step error state",
+      "dependencies": ["gsap", "lucide-react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "components/sf/sf-stepper.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "signal",
+        "pattern": "C"
+      }
+    },
+    {
+      "name": "sf-navigation-menu",
+      "type": "registry:ui",
+      "title": "SF NavigationMenu",
+      "description": "Site navigation with desktop flyout panels and mobile SFSheet collapse, industrial DU/TDR styling",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["navigation-menu", "sheet"],
+      "files": [
+        {
+          "path": "components/sf/sf-navigation-menu.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-calendar",
+      "type": "registry:ui",
+      "title": "SF Calendar",
+      "description": "Lazy-loaded date calendar with react-day-picker. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "dependencies": ["react-day-picker", "date-fns"],
+      "registryDependencies": ["calendar", "button"],
+      "files": [
+        {
+          "path": "components/sf/sf-calendar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-calendar-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
+      "name": "sf-menubar",
+      "type": "registry:ui",
+      "title": "SF Menubar",
+      "description": "Desktop application menubar with Radix primitives. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "registryDependencies": ["menubar"],
+      "files": [
+        {
+          "path": "components/sf/sf-menubar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-menubar-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
       }
     }
   ]

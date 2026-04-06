@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-accordion",
+  "title": "SF Accordion",
+  "description": "SIGNAL accordion with GSAP stagger on expand, reverse on collapse, reduced-motion guard",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [
+    "accordion"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-accordion.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { useRef, useEffect, useCallback } from \"react\";\nimport {\n  Accordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\";\nimport { gsap } from \"@/lib/gsap-core\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * SFAccordion -- SIGNAL layer accordion with GSAP stagger animation.\n *\n * Wraps shadcn/Radix Accordion with:\n * - GSAP stagger on child elements when panels expand (50ms per child)\n * - Reverse stagger on collapse\n * - prefers-reduced-motion guard (instant state, no animation)\n * - rounded-none on all sub-elements (DU/TDR sharp edges)\n *\n * @example\n * ```tsx\n * <SFAccordion type=\"single\" collapsible>\n *   <SFAccordionItem value=\"item-1\">\n *     <SFAccordionTrigger>Section One</SFAccordionTrigger>\n *     <SFAccordionContent>\n *       <p>First paragraph</p>\n *       <p>Second paragraph</p>\n *     </SFAccordionContent>\n *   </SFAccordionItem>\n * </SFAccordion>\n * ```\n */\n\n/* ------------------------------------------------------------------ */\n/*  SFAccordion (root)                                                 */\n/* ------------------------------------------------------------------ */\n\nfunction SFAccordion({\n  className,\n  ...props\n}: React.ComponentProps<typeof Accordion>) {\n  return (\n    <Accordion\n      className={cn(\"flex w-full flex-col\", className)}\n      {...props}\n    />\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/*  SFAccordionItem                                                    */\n/* ------------------------------------------------------------------ */\n\nfunction SFAccordionItem({\n  className,\n  ...props\n}: React.ComponentProps<typeof AccordionItem>) {\n  return (\n    <AccordionItem\n      className={cn(\n        \"rounded-none border-b border-foreground/20\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/*  SFAccordionTrigger                                                 */\n/* ------------------------------------------------------------------ */\n\nfunction SFAccordionTrigger({\n  className,\n  ...props\n}: React.ComponentProps<typeof AccordionTrigger>) {\n  return (\n    <AccordionTrigger\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/* ------------------------------------------------------------------ */\n/*  SFAccordionContent                                                 */\n/* ------------------------------------------------------------------ */\n\nfunction SFAccordionContent({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<typeof AccordionContent>) {\n  const contentRef = useRef<HTMLDivElement>(null);\n  const tweenRef = useRef<gsap.core.Tween | null>(null);\n\n  const animateChildren = useCallback(() => {\n    const el = contentRef.current;\n    if (!el) return;\n\n    // Reduced-motion guard: skip all GSAP animation\n    if (window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return;\n\n    const childElements = el.children;\n    if (childElements.length === 0) return;\n\n    // Kill any in-flight tween\n    if (tweenRef.current) {\n      tweenRef.current.kill();\n    }\n\n    tweenRef.current = gsap.fromTo(\n      childElements,\n      { opacity: 0, y: 8 },\n      {\n        opacity: 1,\n        y: 0,\n        duration: 0.2,\n        stagger: 0.05,\n        ease: \"power2.out\",\n      }\n    );\n  }, []);\n\n  useEffect(() => {\n    // Content mounts only when open (Radix default behavior).\n    // Animate children on mount.\n    animateChildren();\n\n    return () => {\n      if (tweenRef.current) {\n        tweenRef.current.kill();\n      }\n    };\n  }, [animateChildren]);\n\n  return (\n    <AccordionContent\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    >\n      <div ref={contentRef}>{children}</div>\n    </AccordionContent>\n  );\n}\n\nexport {\n  SFAccordion,\n  SFAccordionItem,\n  SFAccordionTrigger,\n  SFAccordionContent,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "signal",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

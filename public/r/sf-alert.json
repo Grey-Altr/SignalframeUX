@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-alert",
+  "title": "SF Alert",
+  "description": "Inline feedback banner with CVA intent variants: info, warning, destructive, success",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "alert"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-alert.tsx",
+      "content": "import { Alert, AlertTitle, AlertDescription } from \"@/components/ui/alert\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { cn } from \"@/lib/utils\";\n\nconst sfAlertVariants = cva(\n  \"rounded-none border-2 font-mono text-sm\",\n  {\n    variants: {\n      intent: {\n        info: \"border-primary bg-primary/10 text-foreground [&>svg]:text-primary\",\n        warning:\n          \"border-accent bg-accent/10 text-foreground [&>svg]:text-accent\",\n        destructive:\n          \"border-destructive bg-destructive/10 text-foreground [&>svg]:text-destructive\",\n        success:\n          \"border-success bg-success/10 text-foreground [&>svg]:text-success\",\n      },\n    },\n    defaultVariants: {\n      intent: \"info\",\n    },\n  }\n);\n\ninterface SFAlertProps\n  extends React.ComponentProps<typeof Alert>,\n    VariantProps<typeof sfAlertVariants> {}\n\n/**\n * Inline feedback banner — FRAME layer notification primitive.\n * Four intents: info (primary), warning (accent), destructive, success.\n *\n * Uses CVA with `intent` as the variant key. Overrides base alert's\n * rounded-lg with rounded-none and applies 2px border with\n * token-mapped background tints.\n *\n * @param intent - Visual variant. \"info\" | \"warning\" | \"destructive\" | \"success\"\n * @param className - Merged via cn() after variant classes\n *\n * @example\n * <SFAlert intent=\"warning\">\n *   <SFAlertTitle>Caution</SFAlertTitle>\n *   <SFAlertDescription>Check your input.</SFAlertDescription>\n * </SFAlert>\n */\nfunction SFAlert({ intent, className, ...props }: SFAlertProps) {\n  return (\n    <Alert\n      className={cn(sfAlertVariants({ intent }), className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFAlert — title in monospace uppercase with wider tracking. */\nfunction SFAlertTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof AlertTitle>) {\n  return (\n    <AlertTitle\n      className={cn(\"font-mono uppercase tracking-wider\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFAlert — description text. */\nfunction SFAlertDescription(\n  props: React.ComponentProps<typeof AlertDescription>\n) {\n  return <AlertDescription {...props} />;\n}\n\nexport { SFAlert, SFAlertTitle, SFAlertDescription };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

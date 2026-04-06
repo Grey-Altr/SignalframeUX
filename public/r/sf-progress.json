@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-progress",
+  "title": "SF Progress",
+  "description": "SIGNAL progress bar with GSAP fill tween, reduced-motion instant set",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [
+    "progress"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-progress.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { useRef, useEffect } from \"react\";\nimport { Progress as ProgressPrimitive } from \"radix-ui\";\nimport { gsap } from \"@/lib/gsap-core\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * SFProgress -- SIGNAL layer progress bar with GSAP fill tween.\n *\n * Wraps Radix Progress directly (not shadcn base) to gain ref access\n * on the indicator. GSAP is the sole animation driver -- no CSS\n * transition-all. Respects prefers-reduced-motion (instant gsap.set).\n *\n * @param value - Progress percentage 0-100\n * @param className - Additional classes on root\n *\n * @example\n * ```tsx\n * <SFProgress value={60} />\n * <SFProgress value={100} className=\"h-2\" />\n * ```\n */\n\ninterface SFProgressProps\n  extends React.ComponentProps<typeof ProgressPrimitive.Root> {\n  value?: number;\n}\n\nfunction SFProgress({ className, value, ...props }: SFProgressProps) {\n  const indicatorRef = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    const el = indicatorRef.current;\n    if (!el) return;\n\n    const targetX = -(100 - (value || 0));\n\n    // Reduced-motion: instant position via gsap.set\n    if (window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) {\n      gsap.set(el, { xPercent: targetX });\n      return;\n    }\n\n    const tween = gsap.to(el, {\n      xPercent: targetX,\n      duration: 0.2,\n      ease: \"power2.out\",\n    });\n\n    return () => {\n      tween.kill();\n    };\n  }, [value]);\n\n  return (\n    <ProgressPrimitive.Root\n      data-slot=\"progress\"\n      className={cn(\n        \"relative flex h-1 w-full items-center overflow-x-hidden rounded-none bg-muted\",\n        className\n      )}\n      {...props}\n    >\n      <ProgressPrimitive.Indicator\n        ref={indicatorRef}\n        data-slot=\"progress-indicator\"\n        className=\"size-full flex-1 rounded-none bg-primary\"\n        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}\n      />\n    </ProgressPrimitive.Root>\n  );\n}\n\nexport { SFProgress };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "signal",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

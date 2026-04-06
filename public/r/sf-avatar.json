@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-avatar",
+  "title": "SF Avatar",
+  "description": "Square user avatar with Radix fallback chain: image -> initials -> icon",
+  "registryDependencies": [
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-avatar.tsx",
+      "content": "\"use client\";\n\nimport {\n  Avatar,\n  AvatarImage,\n  AvatarFallback,\n} from \"@/components/ui/avatar\";\nimport { User } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * User identity avatar — FRAME layer identity primitive.\n * Square crop, Radix fallback chain: image -> initials -> icon.\n *\n * All sub-elements enforce rounded-none to override Radix's\n * default rounded-full. When SFAvatarFallback has no children,\n * a Lucide User icon renders at 60% container size.\n *\n * @param className - Merged via cn() after rounded-none overrides\n *\n * @example\n * <SFAvatar>\n *   <SFAvatarImage src=\"/avatar.png\" alt=\"User\" />\n *   <SFAvatarFallback>JD</SFAvatarFallback>\n * </SFAvatar>\n */\nfunction SFAvatar({\n  className,\n  ...props\n}: React.ComponentProps<typeof Avatar>) {\n  return (\n    <Avatar\n      className={cn(\"rounded-none after:rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFAvatar — image element with square crop. */\nfunction SFAvatarImage({\n  className,\n  ...props\n}: React.ComponentProps<typeof AvatarImage>) {\n  return (\n    <AvatarImage className={cn(\"rounded-none\", className)} {...props} />\n  );\n}\n\n/** Sub-component of SFAvatar — fallback with initials or default User icon. */\nfunction SFAvatarFallback({\n  className,\n  children,\n  ...props\n}: React.ComponentProps<typeof AvatarFallback>) {\n  return (\n    <AvatarFallback className={cn(\"rounded-none\", className)} {...props}>\n      {children ?? <User className=\"size-[60%] text-foreground\" />}\n    </AvatarFallback>\n  );\n}\n\nexport { SFAvatar, SFAvatarImage, SFAvatarFallback };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

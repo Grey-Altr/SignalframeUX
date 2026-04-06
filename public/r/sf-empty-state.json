@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-empty-state",
+  "title": "SF EmptyState",
+  "description": "Designed empty state with Bayer dither texture and optional ScrambleText",
+  "files": [
+    {
+      "path": "components/sf/sf-empty-state.tsx",
+      "content": "\"use client\";\n\nimport { cn } from \"@/lib/utils\";\nimport { ScrambleText } from \"@/components/animation/scramble-text\";\n\n/**\n * Designed empty state -- FRAME layer placeholder with DU/TDR tension.\n * Bayer dither background, monospace text, optional ScrambleText SIGNAL treatment.\n *\n * @param title - Primary message text displayed in monospace uppercase\n * @param scramble - When true, title renders inside ScrambleText for SIGNAL layer effect\n * @param action - Optional action slot (e.g., a button to retry or navigate)\n * @param className - Additional classes merged onto the outer container\n * @param children - Optional description content rendered below the title\n *\n * @example\n * <SFEmptyState title=\"NO DATA FOUND\" scramble>\n *   <p>Try adjusting your filters.</p>\n * </SFEmptyState>\n */\n\ninterface SFEmptyStateProps {\n  title: string;\n  scramble?: boolean;\n  action?: React.ReactNode;\n  className?: string;\n  children?: React.ReactNode;\n}\n\n/* 4x4 Bayer ordered dither pattern as base64 PNG (8x8 px, black/white checkerboard-like noise) */\nconst BAYER_DITHER_URI =\n  \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAADFJREFUGFdj/P///38GBgZGRkZGBhBgAAMmJiYGZMDIyAgXAAuAAchqRrgqsCBIFQMAAPwJBgmjMXwAAAAASUVORK5CYII=\";\n\nfunction SFEmptyState({\n  title,\n  scramble = false,\n  action,\n  className,\n  children,\n}: SFEmptyStateProps) {\n  return (\n    <div\n      className={cn(\n        \"relative flex flex-col items-center justify-center py-16 px-8 text-center font-mono uppercase tracking-wider\",\n        className\n      )}\n    >\n      {/* Bayer dither background layer */}\n      <div\n        aria-hidden=\"true\"\n        className=\"absolute inset-0 opacity-[0.04] pointer-events-none\"\n        style={{\n          backgroundImage: `url(\"${BAYER_DITHER_URI}\")`,\n          backgroundSize: \"8px 8px\",\n          imageRendering: \"pixelated\",\n        }}\n      />\n\n      {/* Content */}\n      <div className=\"relative z-10\">\n        {scramble ? (\n          <ScrambleText\n            text={title}\n            className=\"text-lg mb-4 block\"\n            trigger=\"load\"\n          />\n        ) : (\n          <h3 className=\"text-lg mb-4 text-foreground\">{title}</h3>\n        )}\n\n        {children && (\n          <div className=\"text-sm text-muted-foreground mb-6\">{children}</div>\n        )}\n\n        {action}\n      </div>\n    </div>\n  );\n}\n\nexport { SFEmptyState };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "C"
+  },
+  "type": "registry:ui"
+}
