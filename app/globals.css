@@ -1640,3 +1640,74 @@
 @media (pointer: coarse) {
   .vhs-overlay { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   PRINT STYLES
+   Invert dark backgrounds · suppress Signal layer · preserve layout
+   ══════════════════════════════════════════════════════════════ */
+
+@media print {
+  /* ── Suppress Signal layer completely ── */
+  .vhs-overlay,
+  .vhs-crt,
+  .vhs-noise,
+  .vhs-scanlines,
+  [data-anim],
+  .sf-cursor,
+  .sf-grain::after,
+  .sf-idle-overlay,
+  .gsap-marker-start,
+  .gsap-marker-end,
+  .gsap-marker-scroller-start,
+  .gsap-marker-scroller-end {
+    display: none !important;
+  }
+
+  /* ── Invert dark surfaces for paper ── */
+  body,
+  .dark body,
+  .dark {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* ── Force readable contrast on all text ── */
+  * {
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Preserve layout structure ── */
+  .sf-border {
+    border-color: black !important;
+  }
+
+  /* ── Remove fixed/sticky positioning only (preserve flex/grid layout) ── */
+  nav,
+  .scroll-to-top,
+  [style*="position: fixed"],
+  [style*="position: sticky"] {
+    position: static !important;
+  }
+
+  /* ── Hide interactive-only elements ── */
+  button,
+  [role="button"] {
+    display: none !important;
+  }
+
+  /* ── Links show URL for reference ── */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666 !important;
+  }
+
+  /* ── Ensure content fills page width ── */
+  body {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm !important;
+  }
+}
