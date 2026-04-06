@@ -120,9 +120,10 @@ Plans:
   2. All REQUIREMENTS.md checkboxes from v1.0, v1.1, and v1.2 reflect actual completion status — no stale unchecked boxes for shipped work
   3. SCAFFOLDING.md documents the `useSignalframe()` API contract with correct parameter and return types
   4. SFSection JSDoc reflects the updated `bgShift: "white" | "black"` type (not boolean)
-**Plans:** TBD
+**Plans:** 2 plans
 Plans:
-- [ ] TBD
+- [ ] 15-01-PLAN.md — SUMMARY frontmatter normalization + REQUIREMENTS archive checkbox fixes
+- [ ] 15-02-PLAN.md — SCAFFOLDING.md API contract + DOC-01 closure
 
 ## Progress
 
@@ -142,4 +143,4 @@ Plans:
 | 12. SIGNAL Wiring | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 13. Config Provider | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 14. Session Persistence | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |
+| 15. Documentation Cleanup | v1.2 | 0/2 | Not started | — |
