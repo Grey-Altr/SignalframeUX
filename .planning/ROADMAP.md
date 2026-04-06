@@ -33,7 +33,7 @@
 
 - [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
 - [x] **Phase 11: Registry Completion** — Full 33-item registry with sf-theme token entry (COMPLETE 2026-04-06)
-- [ ] **Phase 12: SIGNAL Wiring** — CSS→WebGL bridge + SignalMotion placement
+- [ ] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement
 - [ ] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook
 - [ ] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage
 - [ ] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs
@@ -78,9 +78,10 @@ Plans:
   3. No `getComputedStyle` call appears in any GSAP ticker callback — CSS var values are read from a module-level cache
   4. At least 3 homepage showcase sections (e.g. MANIFESTO, SIGNAL/FRAME, API, COMPONENTS) have scroll-driven entrance motion via SignalMotion
   5. Reduced-motion preference disables SignalMotion animations without JS errors
-**Plans:** 1 plan
+**Plans:** 2 plans
 Plans:
-- [ ] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
+- [ ] 12-01-PLAN.md — CSS->WebGL signal cache bridge for glsl-hero and signal-mesh
+- [ ] 12-02-PLAN.md — SignalMotion placement on 4 homepage showcase sections
 
 ### Phase 13: Config Provider
 **Goal**: External consumers can initialize SignalframeUX via a config factory with full SSR safety and type-checked config
@@ -92,9 +93,9 @@ Plans:
   3. Server-side render produces stable HTML with no hydration mismatch warnings in the browser console
   4. Layout primitives (SFContainer, SFSection, etc.) remain Server Components after provider wraps the app — bundle analyzer shows no layout primitives in the client chunk
   5. `motion.pause()` and `motion.resume()` pause and resume all GSAP animations globally
-**Plans:** 1 plan
+**Plans:** TBD
 Plans:
-- [ ] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
+- [ ] TBD
 
 ### Phase 14: Session Persistence
 **Goal**: User state (filters, tabs, scroll position) survives page navigation within a browser session without causing hydration errors
@@ -106,9 +107,9 @@ Plans:
   3. Scroll position on /components is restored on back-navigation
   4. A hard page reload clears all persisted state (sessionStorage semantics, not localStorage)
   5. No hydration mismatch warnings appear in the browser console on any page that uses session state
-**Plans:** 1 plan
+**Plans:** TBD
 Plans:
-- [ ] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
+- [ ] TBD
 
 ### Phase 15: Documentation Cleanup
 **Goal**: All planning documents accurately reflect the v1.2 state — no stale checkboxes, no missing frontmatter fields, API contracts complete
@@ -119,9 +120,9 @@ Plans:
   2. All REQUIREMENTS.md checkboxes from v1.0, v1.1, and v1.2 reflect actual completion status — no stale unchecked boxes for shipped work
   3. SCAFFOLDING.md documents the `useSignalframe()` API contract with correct parameter and return types
   4. SFSection JSDoc reflects the updated `bgShift: "white" | "black"` type (not boolean)
-**Plans:** 1 plan
+**Plans:** TBD
 Plans:
-- [ ] 11-01-PLAN.md — Complete registry.json (33 items + meta) and rebuild public/r/
+- [ ] TBD
 
 ## Progress
 
@@ -138,7 +139,7 @@ Plans:
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 12. SIGNAL Wiring | v1.2 | 0/? | Not started | — |
+| 12. SIGNAL Wiring | v1.2 | 0/2 | Planned | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |
