@@ -65,9 +65,17 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: Planning Next
+## Current Milestone: v1.3 Component Expansion
 
-All three milestones shipped. Ready for `/pde:new-milestone`.
+**Goal:** Build a comprehensive, production-complete component library — every UI pattern a product engineer would reach for, prepared for edge cases, filtered through real consumer use cases.
+
+**Target features:**
+- Precondition infrastructure (SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary)
+- P1 components: Accordion, Toast, Progress, AlertDialog, Avatar, Breadcrumb, EmptyState
+- P2 components: NavigationMenu, Pagination, Stepper, StatusDot, ToggleGroup
+- P3 registry-only: Calendar, Menubar (lazy-loaded, heavy deps annotated)
+- SIGNAL layer integration on animation-eligible components (Progress fill, Toast slide, Accordion stagger)
+- Full registry + SCAFFOLDING.md coverage for every addition
 
 ## Context
 
