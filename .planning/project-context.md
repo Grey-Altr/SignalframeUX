@@ -61,5 +61,5 @@ Status: Roadmap created, planning Phase 6
 - [ ] **SCN-04**: Custom GLSL hero shader
 - [ ] **INT-01**: SF primitive consumers
 - [ ] **INT-02**: Stagger on grids
-- [ ] **INT-03**: SignalMotion component
-- [ ] **INT-04**: Live SIGNAL overlay
+- [x] **INT-03**: SignalMotion component
+- [x] **INT-04**: Live SIGNAL overlay
