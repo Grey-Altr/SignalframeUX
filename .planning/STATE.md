@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed Phase 3 Plan 03-02 — CanvasCursor canvas crosshair + particle trail wired into GlobalEffects.
-last_updated: "2026-04-06T03:52:00Z"
-last_activity: "2026-04-06 — Plan 03-02 executed: CanvasCursor (canvas crosshair + particle trail) created and wired into GlobalEffects"
+stopped_at: Completed Phase 3 Plan 03-03 — ScrollTrigger-based ScrambleText (replaced setTimeout) and ScrollTrigger.batch stagger entry wired.
+last_updated: "2026-04-06T04:10:00Z"
+last_activity: "2026-04-06 — Plan 03-03 executed: initPageHeadingScramble uses ScrollTrigger.create per heading; ScrollTrigger.batch stagger added to initCoreAnimations; CSS initial state added to globals.css"
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 8
+  completed_plans: 8
 ---
 
 # STATE — SignalframeUX
@@ -27,20 +27,20 @@ progress:
 ## Current Position
 
 Phase: Phase 3 — SIGNAL Expression (in progress)
-Plan: 03-02 (complete) — CanvasCursor canvas crosshair + particle trail; [data-cursor] IntersectionObserver scoping; GlobalEffects wired
-Status: Phase 3 underway — 2/4 plans complete
-Last activity: 2026-04-06 — Plan 03-02 executed: CanvasCursor created and wired into GlobalEffects
+Plan: 03-03 (complete) — ScrollTrigger-based ScrambleText on viewport entry; ScrollTrigger.batch stagger for [data-anim="stagger"] children
+Status: Phase 3 underway — 3/4 plans complete
+Last activity: 2026-04-06 — Plan 03-03 executed: setTimeout replaced by ScrollTrigger.create in initPageHeadingScramble; stagger batch added to initCoreAnimations
 
 ## Progress
 
 ```
 Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
-Phase 3 — SIGNAL Expression:   [████░░░░░░]  50% (2/4 plans)
+Phase 3 — SIGNAL Expression:   [███████░░░]  75% (3/4 plans)
 Phase 4 — Above-the-Fold Lock: [░░░░░░░░░░]   0%
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [████░░░░░░]  50% (7/14 plans)
+Overall:   [█████░░░░░]  57% (8/14 plans)
 ```
 
 ## Accumulated Context
@@ -63,6 +63,8 @@ Overall:   [████░░░░░░]  50% (7/14 plans)
 - Plan 03-01: Section-reveal hard cut at 34ms / ease:none — DU aesthetic signature; snap reveals not fade-ins
 - Plan 03-02: Canvas zIndex as "var(--z-cursor, 9999)" requires "as unknown as number" cast — React CSSProperties types z-index as number only
 - Plan 03-02: OKLCH→RGB resolved via probe 1x1 canvas (fillStyle + getImageData) — correct approach for canvas draw calls, handles any browser-parseable CSS value
+- Plan 03-03: ScrollTrigger start: "top bottom" for headings — fires immediately for above-fold elements; wires scroll-based reveal for below-fold headings. Per-element ScrollTrigger.create (not batch) because each heading needs its own once: true independent state
+- Plan 03-03: stagger interval and stagger delay both set to 0.04 (40ms) — grouping window and per-item delay matched for clean cascade without bunching
 - Plan 03-02: CustomCursor function preserved in global-effects.tsx — not exported, tree-shaken at build; rollback capability maintained
 - Plan 02-02: SFGrid uses numeric string keys ("3") for CVA variants — allows Tailwind class strings as values without ambiguity
 - Plan 02-02: SFText uses plain Record maps not CVA — single variant dimension, CVA adds no value
@@ -96,12 +98,12 @@ Overall:   [████░░░░░░]  50% (7/14 plans)
 |-------|------|--------------|--------|
 | 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
-| 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | In progress — 2/4 plans |
+| 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | In progress — 3/4 plans |
 | 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | Not started |
 | 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed Phase 3 Plan 03-01 — CSS fallback catch-all, asymmetric hover timing, hard-cut section transitions. Next: 03-02.
-Resume file: .planning/phases/03-signal-expression/03-02-PLAN.md
+Stopped at: Completed Phase 3 Plan 03-03 — ScrollTrigger ScrambleText + stagger batch. Next: 03-04.
+Resume file: .planning/phases/03-signal-expression/03-04-PLAN.md

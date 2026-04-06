@@ -55,6 +55,10 @@ SFGrid uses numeric string keys ("1", "2", "3", "4") rather than numeric literal
 
 CSS attribute presence selector `[data-anim]` has lower specificity than attribute value selectors `[data-anim="section-reveal"]` — placing the catch-all `[data-anim] { opacity: 1 }` AFTER the specific rules is the correct CSS ordering to guarantee JS-off visibility without breaking GSAP initial states. For asymmetric hover timing, the base state governs the OUT transition and :hover overrides to the IN duration — `transition-duration` on :hover correctly overrides for the snap-in because the `transition` shorthand on the base state is already established.
 
+### 2026-04-06T04:10:00Z | Phase 03 | tags: scrolltrigger, scrambletext, stagger-batch, setTimeout-replacement
+
+In SignalframeUX page-animations.tsx, `start: "top bottom"` is the correct ScrollTrigger threshold for headings — it fires immediately when the trigger element's top crosses the viewport bottom, which happens on page load for any above-fold element. Using `once: true` per `ScrollTrigger.create` prevents re-fire on scroll-back; this requires individual create() calls per heading, not a batch call, since each heading needs its own independent once state. For `ScrollTrigger.batch` stagger, matching `interval` (grouping window) to `stagger` (per-item delay) at 0.04 keeps the cascade clean — the batch fires when 40ms passes without new entrants, and items animate at 40ms apart.
+
 ### 2026-04-06T03:46:51Z | Phase 03 | tags: canvas-cursor, oklch-to-rgb, signal-layer, intersection-observer
 
 Canvas 2D context does not understand oklch() CSS values — resolve --color-primary to RGB by creating a probe 1x1 canvas, setting fillStyle to the raw computed property value, drawing a pixel, and reading back with getImageData(). This is the correct approach for bridging CSS custom property color values into canvas draw calls. The zIndex style prop accepts string in JSX via `as unknown as number` cast — React's CSSProperties types number only, but CSS custom property references require string values like "var(--z-cursor, 9999)".

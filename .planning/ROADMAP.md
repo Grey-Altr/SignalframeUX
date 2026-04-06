@@ -63,8 +63,8 @@ Plans:
 **Plans:** 4 plans
 Plans:
 - [x] 03-01-PLAN.md — CSS fallback catch-all, asymmetric hover timing, hard-cut section transitions
-- [ ] 03-02-PLAN.md — Canvas cursor with crosshair and particle trail on [data-cursor] sections
-- [ ] 03-03-PLAN.md — ScrambleText ScrollTrigger wiring + staggered grid entry batch
+- [x] 03-02-PLAN.md — Canvas cursor with crosshair and particle trail on [data-cursor] sections
+- [x] 03-03-PLAN.md — ScrambleText ScrollTrigger wiring + staggered grid entry batch
 - [ ] 03-04-PLAN.md — SIGNAL-SPEC.md specification document + deferred SIG-06/07/08 documentation
 
 ### Phase 4: Above-the-Fold Lock
@@ -98,7 +98,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
-| 3. SIGNAL Expression | 1/4 | In progress | - |
+| 3. SIGNAL Expression | 3/4 | In progress | - |
 | 4. Above-the-Fold Lock | 0/? | Not started | - |
 | 5. DX Contract & State | 0/? | Not started | - |
 
