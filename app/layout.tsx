@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { Electrolize, JetBrains_Mono, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
+import { SignalCanvasLazy } from "@/components/layout/signal-canvas-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
 import { PageAnimations } from "@/components/layout/page-animations";
 import { PageTransition } from "@/components/animation/page-transition";
@@ -110,6 +111,7 @@ export default async function RootLayout({
           }}
         />
         <GlobalEffectsLazy />
+        <SignalCanvasLazy />
         <PageAnimations />
         <PageTransition />
       </body>
