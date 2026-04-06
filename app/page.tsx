@@ -14,7 +14,7 @@ import { SectionIndicator } from "@/components/layout/section-indicator";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
-  description: "A dual-layer design system with 340+ components. Signal layer for clarity, Frame layer for generative depth.",
+  description: "A dual-layer design system with 28 SF components and growing. Signal layer for generative expression, Frame layer for deterministic structure.",
 };
 
 export default function HomePage() {

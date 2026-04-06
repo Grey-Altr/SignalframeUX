@@ -88,6 +88,11 @@ export function Hero() {
           <span data-anim="hero-copy" style={{ opacity: 0 }}>a system you can </span><span data-anim="hero-feel" className="text-primary relative z-[5000]" style={{ opacity: 0, filter: "blur(20px)" }}>feel</span><span data-anim="hero-copy-dot" style={{ opacity: 0 }}>.</span>
         </p>
 
+        {/* Component count — honest claim, DU/TDR typographic voice */}
+        <p className="mt-4 text-[clamp(9px,0.8vw,12px)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+          28 SF COMPONENTS AND GROWING
+        </p>
+
         {/* CTAs with border-draw animation */}
         <div className="flex gap-[clamp(8px,1.5vw,16px)] mt-[clamp(16px,3vh,40px)]">
           <Link

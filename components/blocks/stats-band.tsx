@@ -1,5 +1,5 @@
 const STATS = [
-  { value: "340", label: "COMPONENTS", accent: false },
+  { value: "28", label: "SF COMPONENTS", accent: false },
   { value: "48", label: "OKLCH SCALES", accent: false },
   { value: "12", label: "MOTION CURVES", accent: false },
   { value: "∞", label: "FRAME STATES", accent: true },
