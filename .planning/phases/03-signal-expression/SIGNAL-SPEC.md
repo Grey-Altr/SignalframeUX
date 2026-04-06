@@ -257,3 +257,93 @@ This is the SIG-05 model: CSS default visibility, GSAP initial-state override, a
 | Canvas cursor implementation | `components/animation/canvas-cursor.tsx` | rAF + IntersectionObserver |
 | ScrambleText + stagger | `components/layout/page-animations.tsx` | `initPageHeadingScramble`, `ScrollTrigger.batch` |
 | VHS mobile collapse | `app/globals.css` — pointer: coarse block | `@media (pointer: coarse) { .vhs-overlay { display: none } }` |
+
+---
+
+## 7. Reduced-Motion Behavior
+
+Philosophy: reduced-motion is an intentional alternative design, not "animations off." Emphasis shifts to typography, spacing, and structure. Every effect resolves immediately to its end-state — the composition must read as deliberately designed, not stripped.
+
+### Per-Effect Reduced-Motion States
+
+| Effect | Normal Behavior | Reduced-Motion State | CSS / JS Rule | QA Status |
+|--------|----------------|---------------------|---------------|-----------|
+| SIG-01: ScrambleText (page headings) | Chars scramble on scroll/route entry over 800ms | Text visible immediately, no scramble | `gsap.globalTimeline.timeScale(0)` + `[data-anim] { opacity: 1 !important }` catch-all | Verified |
+| SIG-02: Asymmetric hover | 100ms snap-in / 400ms release via CSS transition | Transitions suppressed — state change is instant | `* { animation-duration: 0.01ms }` + `transition-duration: 0.01ms` from global block | Verified |
+| SIG-03: Hard-cut section reveal | 34ms opacity snap on scroll entry | Section visible immediately, no reveal sequence | `[data-anim="section-reveal"] { opacity: 1 !important; transform: none !important }` | Verified |
+| SIG-04: Stagger grid entry | 400ms per item, 40ms stagger cascade on scroll | All items visible immediately, no cascade | `[data-anim="stagger"] > * { opacity: 1 !important; transform: none !important }` | Verified |
+| SIG-05: [data-anim] catch-all | Safety net — any unknown [data-anim] value stays visible | Same — catch-all IS the reduced-motion state | `[data-anim] { opacity: 1 !important; transform: none !important }` | Verified |
+| SIG-09: Canvas cursor | Magenta crosshair + particle trail, rAF loop | Hidden — no canvas, no listeners, no rAF | `.sf-cursor { display: none }` in reduced-motion block | Verified |
+| SIG-10: Mobile collapse fallback | Per-effect static state on coarse pointer | Matches mobile static state — no additional handling needed | `@media (pointer: coarse)` handles mobile; reduced-motion block handles the rest | Verified |
+| VHS overlay | CRT scan + noise texture layers, GSAP timeline | Hidden entirely | `.vhs-overlay { display: none }` in reduced-motion block | Verified |
+| sf-glitch | Clip-path glitch animation on error/404 elements | Animation stopped, no pseudo-element movement | `.sf-glitch { animation: none }` in reduced-motion block | Verified |
+| Hero-mesh canvas | GSAP timeline — multi-layer orchestrated reveal | Static frame — canvas visible at full opacity, no animation | `[data-anim="hero-mesh"] { opacity: 1 !important; transform: none !important }` + `initHeroAnimations` never called | Verified |
+| Hero heading (SplitText) | SplitText cascade reveal over 600ms, color cycle | Heading visible immediately at full opacity | `[data-anim="hero-chars"] { opacity: 1 !important }` + `initHeroAnimations` early return | Verified |
+| Hero color cycle | Accent color flash in hero timeline | Skipped — part of hero GSAP timeline that never runs | `initHeroAnimations` never called (early return in PageAnimations) | Verified |
+| CTA buttons | Stagger reveal on hero entry via `data-anim="cta-btn"` | Buttons visible immediately | `[data-anim="cta-btn"] { opacity: 1 !important; transform: none !important }` | Verified |
+| Tag elements | Reveal via `data-anim="tag"` | Tags visible immediately | `[data-anim="tag"] { opacity: 1 !important }` | Verified |
+| Component cells | Grid cell entry via `data-anim="comp-cell"` | All cells visible immediately | `[data-anim="comp-cell"] { opacity: 1 !important; transform: none !important }` | Verified |
+| Error page ScrambleText | Error code scramble on error boundary render | Error code text visible immediately — no scramble | `matchMedia("prefers-reduced-motion: reduce")` guard before async `gsap-plugins` import | Verified |
+| Circuit dividers | DrawSVGPlugin scrub tied to scroll | Static SVG path visible, no draw animation | `gsap.globalTimeline.timeScale(0)` suppresses all GSAP timelines | Verified |
+
+### Architecture
+
+Two-layer suppression guarantees complete coverage regardless of load order or JavaScript availability:
+
+**Layer 1 — CSS (fires at paint time, before JS loads):**
+```css
+/* Global animation suppression */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Per-element state reset — resolves all [data-anim] elements to visible */
+@media (prefers-reduced-motion: reduce) {
+  [data-anim], [data-anim="section-reveal"], [data-anim="tag"],
+  [data-anim="comp-cell"], [data-anim="cta-btn"],
+  [data-anim="stagger"] > *, .sf-hero-deferred,
+  [data-anim="hero-mesh"], [data-anim="error-code"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Component signal suppression */
+@media (prefers-reduced-motion: reduce) {
+  .sf-cursor { display: none; }
+  .vhs-overlay { display: none; }
+  .sf-glitch { animation: none; }
+}
+```
+
+**Layer 2 — JavaScript (fires at runtime):**
+- `gsap.globalTimeline.timeScale(0)` — pauses ALL GSAP animations globally. Called in `lib/gsap-plugins.ts` when reduced-motion is detected.
+- `initHeroAnimations` never called — `page-animations.tsx` checks `window.matchMedia("(prefers-reduced-motion: reduce)")` and early-returns to `initReducedMotion()` instead.
+- Error page ScrambleText gated explicitly — `matchMedia` check fires BEFORE `import("@/lib/gsap-plugins")`, preventing the GSAP plugin bundle from loading entirely on reduced-motion devices.
+- `initReducedMotion()` listens for runtime `prefers-reduced-motion` changes — if user toggles the setting while the page is open, GSAP timeline pauses or resumes accordingly.
+
+**Why two layers:** CSS fires synchronously at paint time, eliminating any flash of invisible content even before JS hydrates. JS layer handles GSAP timelines that CSS cannot target. Together they create a zero-gap suppression contract.
+
+**Interaction transitions (SIG-02) preservation note:** The global `transition-duration: 0.01ms` rule suppresses all CSS transitions. Hover state changes are still visible (instant snap to hover state) because the state change itself is not suppressed — only the transition duration is reduced to imperceptible. This is intentional: hover feedback indicates pointer state, not decorative motion.
+
+### QA Checklist — Plan 04-03
+
+All items verified by human visual QA at 1440x900 viewport with DevTools prefers-reduced-motion emulation:
+
+- [x] Hero at 1440x900: complete composition, no empty regions
+- [x] Hero heading (SIGNAL//FRAME): visible immediately
+- [x] Hero-mesh: static, visible at full opacity
+- [x] CTAs: visible, interactive
+- [x] Manifesto text ("a system you can feel."): visible
+- [x] Component count ("28 SF COMPONENTS AND GROWING"): visible
+- [x] Error page: error code visible immediately, no glitch animation
+- [x] Not-found page: "404" visible immediately, no scramble
+- [x] Section reveals: all sections visible without reveal sequence
+- [x] Component grid: all cells visible
+- [x] Hover transitions: suppressed (instant state change preserved)
+- [x] VHS overlay: hidden
+- [x] Custom cursor: hidden
+- [x] Overall judgment: each surface reads as a designed composition, not stripped animations
