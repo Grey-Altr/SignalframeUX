@@ -364,6 +364,36 @@ function PreviewMenubar() {
   );
 }
 
+function PreviewHoverCard() {
+  return (
+    <div className="relative">
+      <span className="underline text-xs font-mono">HOVER ME</span>
+      <div className="absolute -top-10 left-0 border-2 border-current w-24 h-8 bg-background" />
+    </div>
+  );
+}
+
+function PreviewInputOTP() {
+  return (
+    <div className="flex gap-1">
+      {[...Array(4)].map((_, i) => (
+        <span key={i} className="w-5 h-6 border-2 border-current flex items-center justify-center text-xs font-mono">
+          {i === 0 ? "\u00B7" : ""}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PreviewInputGroup() {
+  return (
+    <div className="flex border border-current h-6 w-[80%]">
+      <span className="px-1.5 text-[8px] font-mono border-r border-current flex items-center">@</span>
+      <span className="flex-1" />
+    </div>
+  );
+}
+
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
@@ -378,7 +408,7 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "009", name: "TABLE", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "DATA_DISPLAY", preview: <PreviewTable /> },
   { index: "010", name: "TOAST (FRAME)", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
   { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewPagination /> },
-  { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
+  { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v1.4.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
   { index: "013", name: "AVATAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewAvatar /> },
   { index: "014", name: "BREADCRUMB", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewBreadcrumb /> },
   { index: "015", name: "ALERT", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAlert /> },
@@ -398,6 +428,9 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "025", name: "NAV_MENU", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewNavMenu /> },
   { index: "026", name: "CALENDAR", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewCalendar /> },
   { index: "027", name: "MENUBAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewMenubar /> },
+  { index: "028", name: "HOVER_CARD", category: "LAYOUT", subcategory: "FRAME", version: "v1.4.0", variant: "default", filterTag: "LAYOUT", preview: <PreviewHoverCard /> },
+  { index: "029", name: "INPUT_OTP", category: "FORMS", subcategory: "FRAME", version: "v1.4.0", variant: "black", filterTag: "FORMS", preview: <PreviewInputOTP /> },
+  { index: "030", name: "INPUT_GROUP", category: "FORMS", subcategory: "FRAME", version: "v1.4.0", variant: "default", filterTag: "FORMS", preview: <PreviewInputGroup /> },
 ];
 
 /* ── Variant style maps ── */

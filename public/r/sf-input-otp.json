@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-input-otp",
+  "title": "SF InputOTP",
+  "description": "OTP verification input with individual character slots. Zero border-radius, mono font, keyboard navigable.",
+  "registryDependencies": [
+    "input-otp"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-input-otp.tsx",
+      "content": "\"use client\";\n\nimport {\n  InputOTP,\n  InputOTPGroup,\n  InputOTPSlot,\n  InputOTPSeparator,\n} from \"@/components/ui/input-otp\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * One-time password input — FRAME layer form primitive.\n *\n * Individual character slots for verification codes. Keyboard navigable,\n * supports paste and SMS autofill. Zero border-radius on all slots.\n *\n * @example\n * <SFInputOTP maxLength={6}>\n *   <SFInputOTPGroup>\n *     <SFInputOTPSlot index={0} />\n *     <SFInputOTPSlot index={1} />\n *     <SFInputOTPSlot index={2} />\n *   </SFInputOTPGroup>\n *   <SFInputOTPSeparator />\n *   <SFInputOTPGroup>\n *     <SFInputOTPSlot index={3} />\n *     <SFInputOTPSlot index={4} />\n *     <SFInputOTPSlot index={5} />\n *   </SFInputOTPGroup>\n * </SFInputOTP>\n */\nfunction SFInputOTP({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputOTP>) {\n  return (\n    <InputOTP className={cn(\"font-mono\", className)} {...props} />\n  );\n}\n\n/** Sub-component of SFInputOTP — groups slots together visually. Zero border-radius on group container. */\nfunction SFInputOTPGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputOTPGroup>) {\n  return (\n    <InputOTPGroup className={cn(\"rounded-none\", className)} {...props} />\n  );\n}\n\n/** Sub-component of SFInputOTP — individual character slot. Zero radius, 2px foreground border, ring on active state. */\nfunction SFInputOTPSlot({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputOTPSlot>) {\n  return (\n    <InputOTPSlot\n      className={cn(\n        \"rounded-none border-2 border-foreground first:rounded-none last:rounded-none data-[active=true]:border-primary data-[active=true]:ring-1 data-[active=true]:ring-primary\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFInputOTP — visual separator between slot groups. */\nfunction SFInputOTPSeparator(\n  props: React.ComponentProps<typeof InputOTPSeparator>\n) {\n  return <InputOTPSeparator {...props} />;\n}\n\nexport { SFInputOTP, SFInputOTPGroup, SFInputOTPSlot, SFInputOTPSeparator };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

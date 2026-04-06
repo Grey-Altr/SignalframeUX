@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-hover-card",
+  "title": "SF HoverCard",
+  "description": "FRAME-only hover/focus preview panel. Sharp 2px border, no radius, no shadow. Keyboard accessible via Radix.",
+  "registryDependencies": [
+    "hover-card"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-hover-card.tsx",
+      "content": "\"use client\";\n\nimport {\n  HoverCard,\n  HoverCardContent,\n  HoverCardTrigger,\n} from \"@/components/ui/hover-card\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Hover/focus preview panel — FRAME layer overlay primitive.\n *\n * Radix HoverCard wrapped with SF contract. Content applies sharp corners,\n * 2px border, no shadow. Keyboard accessible via Radix open-on-focus.\n *\n * @example\n * <SFHoverCard>\n *   <SFHoverCardTrigger asChild><SFButton>Preview</SFButton></SFHoverCardTrigger>\n *   <SFHoverCardContent>Card details here</SFHoverCardContent>\n * </SFHoverCard>\n */\nfunction SFHoverCard(props: React.ComponentProps<typeof HoverCard>) {\n  return <HoverCard {...props} />;\n}\n\n/** Sub-component of SFHoverCard — trigger that opens on hover or keyboard focus. */\nfunction SFHoverCardTrigger(\n  props: React.ComponentProps<typeof HoverCardTrigger>\n) {\n  return <HoverCardTrigger {...props} />;\n}\n\n/** Sub-component of SFHoverCard — floating content panel with sharp corners, 2px border, no shadow. */\nfunction SFHoverCardContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof HoverCardContent>) {\n  return (\n    <HoverCardContent\n      className={cn(\n        \"rounded-none border-2 border-foreground bg-background shadow-none ring-0\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { SFHoverCard, SFHoverCardTrigger, SFHoverCardContent };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

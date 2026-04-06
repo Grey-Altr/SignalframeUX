@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-input-group",
+  "title": "SF InputGroup",
+  "description": "Grouped input with inline addons and action buttons. Zero border-radius on all sub-elements.",
+  "registryDependencies": [
+    "input-group"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-input-group.tsx",
+      "content": "\"use client\";\n\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupText,\n  InputGroupInput,\n  InputGroupTextarea,\n} from \"@/components/ui/input-group\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Grouped input with addons — FRAME layer form primitive.\n * Wraps all sub-elements with zero border-radius.\n *\n * Overrides `ui/input-group.tsx`'s `rounded-lg` on the root and\n * CVA-generated `rounded-[calc(var(--radius)-5px)]` / `rounded-[calc(var(--radius)-3px)]`\n * on addon and button children.\n *\n * @example\n * <SFInputGroup>\n *   <SFInputGroupAddon align=\"inline-start\">\n *     <SFInputGroupText>@</SFInputGroupText>\n *   </SFInputGroupAddon>\n *   <SFInputGroupInput placeholder=\"username\" />\n *   <SFInputGroupAddon align=\"inline-end\">\n *     <SFInputGroupButton>Send</SFInputGroupButton>\n *   </SFInputGroupAddon>\n * </SFInputGroup>\n */\nfunction SFInputGroup({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroup>) {\n  return (\n    <InputGroup\n      className={cn(\"rounded-none border-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFInputGroup — addon wrapper for inline or block decorators. Zero border-radius on kbd children. */\nfunction SFInputGroupAddon({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroupAddon>) {\n  return (\n    <InputGroupAddon\n      className={cn(\"rounded-none [&>kbd]:rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFInputGroup — action button inside input group. Overrides CVA's calc-based radius with rounded-none. */\nfunction SFInputGroupButton({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroupButton>) {\n  return (\n    <InputGroupButton\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFInputGroup — non-interactive text label or icon inside the group. */\nfunction SFInputGroupText({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroupText>) {\n  return (\n    <InputGroupText className={cn(\"rounded-none\", className)} {...props} />\n  );\n}\n\n/** Sub-component of SFInputGroup — the primary input field. Base already applies rounded-none; passthrough maintains the contract. */\nfunction SFInputGroupInput({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroupInput>) {\n  return (\n    <InputGroupInput\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFInputGroup — multiline textarea variant. Base already applies rounded-none; passthrough maintains the contract. */\nfunction SFInputGroupTextarea({\n  className,\n  ...props\n}: React.ComponentProps<typeof InputGroupTextarea>) {\n  return (\n    <InputGroupTextarea\n      className={cn(\"rounded-none\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFInputGroup,\n  SFInputGroupAddon,\n  SFInputGroupButton,\n  SFInputGroupText,\n  SFInputGroupInput,\n  SFInputGroupTextarea,\n};\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  },
+  "type": "registry:ui"
+}

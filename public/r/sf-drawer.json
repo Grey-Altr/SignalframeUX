@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-drawer",
+  "title": "SF Drawer",
+  "description": "Bottom-sheet overlay via vaul. Lazy-loaded via next/dynamic (ssr: false). Import sf-drawer-lazy.tsx — NOT from sf/index.ts barrel.",
+  "dependencies": [
+    "vaul"
+  ],
+  "registryDependencies": [
+    "drawer"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-drawer.tsx",
+      "content": "\"use client\";\n\nimport {\n  Drawer,\n  DrawerClose,\n  DrawerContent,\n  DrawerDescription,\n  DrawerFooter,\n  DrawerHeader,\n  DrawerTitle,\n  DrawerTrigger,\n} from \"@/components/ui/drawer\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Bottom-sheet overlay via vaul — FRAME layer.\n * Lazy-load via sf-drawer-lazy.tsx.\n *\n * Compose with SFDrawerTrigger, SFDrawerContent, SFDrawerHeader,\n * SFDrawerTitle, SFDrawerDescription, SFDrawerFooter, and SFDrawerClose.\n * Content slides up from bottom with sharp corners and 2px top border.\n *\n * @example\n * ```tsx\n * import { SFDrawerLazy } from \"@/components/sf/sf-drawer-lazy\";\n * import {\n *   SFDrawerContent, SFDrawerHeader, SFDrawerTitle,\n *   SFDrawerDescription, SFDrawerFooter, SFDrawerClose,\n * } from \"@/components/sf/sf-drawer\";\n *\n * <SFDrawerLazy>\n *   <SFDrawerContent>\n *     <SFDrawerHeader>\n *       <SFDrawerTitle>Panel</SFDrawerTitle>\n *       <SFDrawerDescription>Supporting info</SFDrawerDescription>\n *     </SFDrawerHeader>\n *     <div className=\"p-4\">Body content</div>\n *     <SFDrawerFooter>\n *       <SFDrawerClose>Close</SFDrawerClose>\n *     </SFDrawerFooter>\n *   </SFDrawerContent>\n * </SFDrawerLazy>\n * ```\n */\nfunction SFDrawer(props: React.ComponentProps<typeof Drawer>) {\n  return <Drawer {...props} />;\n}\n\n/** Sub-component of SFDrawer — trigger element that opens the bottom-sheet on interaction. */\nfunction SFDrawerTrigger(props: React.ComponentProps<typeof DrawerTrigger>) {\n  return <DrawerTrigger {...props} />;\n}\n\n/** Sub-component of SFDrawer — close control that dismisses the bottom-sheet when activated. */\nfunction SFDrawerClose(props: React.ComponentProps<typeof DrawerClose>) {\n  return <DrawerClose {...props} />;\n}\n\n/** Sub-component of SFDrawer — bottom-sheet content panel with sharp corners, 2px top border, and no radius. */\nfunction SFDrawerContent({\n  className,\n  ...props\n}: React.ComponentProps<typeof DrawerContent>) {\n  return (\n    <DrawerContent\n      className={cn(\n        \"rounded-none border-t-2 border-foreground bg-background\",\n        className\n      )}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFDrawer — header region with 2px bottom border separating it from body content. */\nfunction SFDrawerHeader({\n  className,\n  ...props\n}: React.ComponentProps<typeof DrawerHeader>) {\n  return (\n    <DrawerHeader\n      className={cn(\"border-b-2 border-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFDrawer — footer region with 2px top border for action buttons. */\nfunction SFDrawerFooter({\n  className,\n  ...props\n}: React.ComponentProps<typeof DrawerFooter>) {\n  return (\n    <DrawerFooter\n      className={cn(\"border-t-2 border-foreground\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFDrawer — sheet title in font-mono uppercase with letter-spacing. */\nfunction SFDrawerTitle({\n  className,\n  ...props\n}: React.ComponentProps<typeof DrawerTitle>) {\n  return (\n    <DrawerTitle\n      className={cn(\"font-mono uppercase tracking-wider text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\n/** Sub-component of SFDrawer — supporting description text in muted foreground, xs size. */\nfunction SFDrawerDescription({\n  className,\n  ...props\n}: React.ComponentProps<typeof DrawerDescription>) {\n  return (\n    <DrawerDescription\n      className={cn(\"text-muted-foreground text-xs\", className)}\n      {...props}\n    />\n  );\n}\n\nexport {\n  SFDrawer,\n  SFDrawerTrigger,\n  SFDrawerClose,\n  SFDrawerContent,\n  SFDrawerHeader,\n  SFDrawerFooter,\n  SFDrawerTitle,\n  SFDrawerDescription,\n};\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "components/sf/sf-drawer-lazy.tsx",
+      "content": "\"use client\";\n\n/**\n * Lazy loader for SFDrawer -- loads vaul only when rendered.\n *\n * Heavy component: never exported from sf/index.ts barrel.\n * Import this file directly when you need a drawer.\n *\n * @example\n * ```tsx\n * import { SFDrawerLazy } from \"@/components/sf/sf-drawer-lazy\";\n * import { SFDrawerContent, SFDrawerHeader, SFDrawerTitle } from \"@/components/sf/sf-drawer\";\n *\n * <SFDrawerLazy>\n *   <SFDrawerContent>\n *     <SFDrawerHeader><SFDrawerTitle>Panel</SFDrawerTitle></SFDrawerHeader>\n *   </SFDrawerContent>\n * </SFDrawerLazy>\n * ```\n */\n\nimport dynamic from \"next/dynamic\";\nimport { SFSkeleton } from \"@/components/sf\";\n\nconst SFDrawerDynamic = dynamic(\n  () =>\n    import(\"@/components/sf/sf-drawer\").then((m) => ({\n      default: m.SFDrawer,\n    })),\n  {\n    ssr: false,\n    loading: () => <SFSkeleton className=\"h-[200px] w-full\" />,\n  }\n);\n\nexport function SFDrawerLazy(\n  props: React.ComponentProps<typeof SFDrawerDynamic>\n) {\n  return <SFDrawerDynamic {...props} />;\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "B",
+    "heavy": true
+  },
+  "type": "registry:ui"
+}
