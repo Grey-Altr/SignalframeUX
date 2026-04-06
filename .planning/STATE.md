@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.1
 milestone_name: Generative Surface
 status: completed
-stopped_at: Completed 08-02-PLAN.md (Canvas 2D token visualization on /tokens page)
-last_updated: "2026-04-06T08:40:00Z"
-last_activity: "2026-04-06 — Plan 08-02 complete (2 tasks, 2 commits: 05909af, 2491d08). SCN-01 + SCN-02 both met."
+stopped_at: Completed 08-01-PLAN.md (SignalMesh WebGL icosahedron + TTL color cache)
+last_updated: "2026-04-06T08:44:32.337Z"
+last_activity: "2026-04-06 — Plan 08-01 complete (2 tasks, 2 commits: e164e59, a4e208d)"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # STATE — SignalframeUX
