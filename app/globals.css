@@ -991,6 +991,7 @@
   [data-anim="tag"],
   [data-anim="comp-cell"],
   [data-anim="cta-btn"],
+  [data-anim="stagger"] > *,
   .sf-hero-deferred {
     opacity: 1 !important;
     transform: none !important;
@@ -1026,6 +1027,10 @@
   opacity: 0;
 }
 [data-anim="cta-btn"] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+[data-anim="stagger"] > * {
   opacity: 0;
   transform: translateY(20px);
 }

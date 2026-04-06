@@ -351,6 +351,23 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
     el.addEventListener("click", handler);
     clickCleanups.push(() => el.removeEventListener("click", handler));
   });
+
+  // ── Staggered grid entry (40ms stagger via ScrollTrigger batch) ──
+  ScrollTrigger.batch("[data-anim='stagger'] > *", {
+    interval: 0.04,    // 40ms grouping window
+    batchMax: 12,      // max items per batch
+    start: "top 85%",
+    onEnter: (batch) => {
+      gsap.to(batch, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        stagger: 0.04,  // 40ms per item
+        ease: "power2.out",
+      });
+    },
+    once: true,
+  });
 }
 
 /** Apply sharp background color shift (DU-style hard cut, no blend) */
