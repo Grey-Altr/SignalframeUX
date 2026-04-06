@@ -137,7 +137,25 @@
   --vhs-crt-opacity: 0.2;
   --vhs-noise-opacity: 0.015;
 
+  /* ── Spacing Tokens (blessed stops only) ──
+     Based on 4px base. These are the ONLY valid content spacing values.
+     Tailwind equivalents: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 12=48px, 16=64px, 24=96px */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-24: 6rem;     /* 96px */
+
   /* ── Layout Tokens ── */
+  --max-w-content: 42rem;   /* 672px — prose/readable width */
+  --max-w-wide: 80rem;      /* 1280px — section width */
+  --max-w-full: 100%;       /* full-bleed */
+  --gutter: 1.5rem;         /* 24px — standard horizontal padding */
+  --gutter-sm: 1rem;        /* 16px — mobile horizontal padding */
   --nav-height: 83px;
 
   /* ── Z-Index Scale ── */
