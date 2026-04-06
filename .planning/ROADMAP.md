@@ -164,7 +164,7 @@ Plans:
   5. SFAlert displays intent variants (info, warning, destructive, success) with correct token-mapped colors
   6. SFCollapsible toggles content visibility without accordion semantics — single panel, no sibling coordination
   7. SFStatusDot renders at active, idle, and offline states; GSAP pulse fires only on active state and is suppressed by prefers-reduced-motion
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 17-01-PLAN.md — Install shadcn bases + SFCollapsible, SFBreadcrumb, SFAvatar, SFAlert (completed 2026-04-06)
 - [x] 17-02-PLAN.md — SFAlertDialog, SFEmptyState, SFStatusDot + ComponentsExplorer entries (completed 2026-04-06)
@@ -225,7 +225,7 @@ Plans:
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 17. P1 Non-Animated Components | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |
