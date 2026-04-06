@@ -45,7 +45,7 @@ Status: Roadmap ready, Phase 10 next
 ## Active Requirements
 - [ ] **FND-01**: --signal-intensity, --signal-speed, --signal-accent CSS defaults in globals.css
 - [ ] **FND-02**: SFSection bgShift prop type boolean → "white" | "black"
-- [ ] **INT-03**: SignalMotion wraps at least 3 showcase sections on homepage
+- [x] **INT-03**: SignalMotion wraps at least 3 showcase sections on homepage
 - [ ] **INT-04**: SignalOverlay CSS vars read by WebGL scenes via cached module-level reads
 - [x] **INT-01**: Reference page nav-height spacing + NEXT_CARDS in SFSection
 - [x] **DX-04**: registry.json complete (33 items: 27 interactive/animation + 5 layout primitives + sf-theme)

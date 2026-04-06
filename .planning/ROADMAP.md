@@ -81,7 +81,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [ ] 12-01-PLAN.md — CSS->WebGL signal cache bridge for glsl-hero and signal-mesh
-- [ ] 12-02-PLAN.md — SignalMotion placement on 4 homepage showcase sections
+- [x] 12-02-PLAN.md — SignalMotion placement on 4 homepage showcase sections
 
 ### Phase 13: Config Provider
 **Goal**: External consumers can initialize SignalframeUX via a config factory with full SSR safety and type-checked config
@@ -139,7 +139,7 @@ Plans:
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 12. SIGNAL Wiring | v1.2 | 0/2 | Planned | — |
+| 12. SIGNAL Wiring | v1.2 | 1/2 | In Progress | — |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |
