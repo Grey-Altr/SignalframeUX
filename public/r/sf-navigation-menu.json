@@ -1,0 +1,19 @@
+{
+  "name": "sf-navigation-menu",
+  "type": "registry:ui",
+  "title": "SF NavigationMenu",
+  "description": "Site navigation with desktop flyout panels and mobile SFSheet collapse, industrial DU/TDR styling",
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["navigation-menu", "sheet"],
+  "files": [
+    {
+      "path": "components/sf/sf-navigation-menu.tsx",
+      "type": "registry:ui",
+      "content": ""
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "A"
+  }
+}

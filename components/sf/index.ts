@@ -148,6 +148,16 @@ export {
   SFPaginationPrevious,
   SFPaginationNext,
 } from "./sf-pagination";
+export {
+  SFNavigationMenu,
+  SFNavigationMenuList,
+  SFNavigationMenuItem,
+  SFNavigationMenuTrigger,
+  SFNavigationMenuContent,
+  SFNavigationMenuLink,
+  SFNavigationMenuViewport,
+  SFNavigationMenuMobile,
+} from "./sf-navigation-menu";
 
 // Multi-Step & Selection
 export { SFToggleGroup, SFToggleGroupItem } from "./sf-toggle-group";
