@@ -236,7 +236,10 @@ Plans:
   2. readSignalVars in both WebGL scenes uses an explicit `isNaN()` guard such that any non-numeric CSS var value (including unit-suffixed values like "0.5px") returns the defined fallback, not a propagated NaN
   3. All programmatic scroll calls in the codebase route through `lenis.scrollTo` — `grep -r "window.scrollTo"` returns zero results
   4. ComponentsExplorer displays exactly one TOAST entry per component (TOAST (FRAME) at index 010 and TOAST (SIGNAL) at a distinct index) — no duplicate display names
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 21-01-PLAN.md — Observer disconnect + isNaN guard + TOAST dedup (TD-01, TD-02, TD-04)
+- [ ] 21-02-PLAN.md — Lenis scrollTo migration (TD-03)
 
 ### Phase 22: Token Finalization
 **Goal**: The token system has no gaps — all extended palette tokens are in @theme, elevation absence is documented, and the WebGL color bridge is audited for safety
@@ -321,7 +324,7 @@ Plans:
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 21. Tech Debt Closure | v1.4 | 0/? | Not started | - |
+| 21. Tech Debt Closure | v1.4 | 0/2 | In progress | - |
 | 22. Token Finalization | v1.4 | 0/? | Not started | - |
 | 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
