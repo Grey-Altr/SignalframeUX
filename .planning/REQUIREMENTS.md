@@ -56,23 +56,23 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| INFRA-01 | — | — | Pending |
-| INFRA-02 | — | — | Pending |
-| INFRA-03 | — | — | Pending |
-| INFRA-04 | — | — | Pending |
-| FD-01 | — | — | Pending |
-| FD-02 | — | — | Pending |
-| FD-03 | — | — | Pending |
-| FD-04 | — | — | Pending |
-| FD-05 | — | — | Pending |
-| FD-06 | — | — | Pending |
-| NAV-01 | — | — | Pending |
-| NAV-02 | — | — | Pending |
-| NAV-03 | — | — | Pending |
-| NAV-04 | — | — | Pending |
-| NAV-05 | — | — | Pending |
-| MS-01 | — | — | Pending |
-| MS-02 | — | — | Pending |
-| MS-03 | — | — | Pending |
-| REG-01 | — | — | Pending |
-| REG-02 | — | — | Pending |
+| INFRA-01 | Phase 16 | — | Pending |
+| INFRA-02 | Phase 16 | — | Pending |
+| INFRA-03 | Phase 16 | — | Pending |
+| INFRA-04 | Phase 16 | — | Pending |
+| FD-01 | Phase 18 | — | Pending |
+| FD-02 | Phase 18 | — | Pending |
+| FD-03 | Phase 18 | — | Pending |
+| FD-04 | Phase 17 | — | Pending |
+| FD-05 | Phase 17 | — | Pending |
+| FD-06 | Phase 17 | — | Pending |
+| NAV-01 | Phase 17 | — | Pending |
+| NAV-02 | Phase 17 | — | Pending |
+| NAV-03 | Phase 17 | — | Pending |
+| NAV-04 | Phase 19 | — | Pending |
+| NAV-05 | Phase 19 | — | Pending |
+| MS-01 | Phase 19 | — | Pending |
+| MS-02 | Phase 17 | — | Pending |
+| MS-03 | Phase 19 | — | Pending |
+| REG-01 | Phase 20 | — | Pending |
+| REG-02 | Phase 20 | — | Pending |

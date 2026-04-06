@@ -5,9 +5,9 @@ milestone_name: Component Expansion
 status: active
 stopped_at: null
 last_updated: "2026-04-06T18:00:00.000Z"
-last_activity: "2026-04-06 — Milestone v1.3 started"
+last_activity: "2026-04-06 — v1.3 roadmap created (Phases 16-20)"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 16 — Infrastructure Baseline (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v1.3 started
+Status: Roadmap defined, ready for Phase 16 planning
+Last activity: 2026-04-06 — v1.3 roadmap created (Phases 16-20)
 
 ## Progress
 
@@ -37,23 +37,23 @@ Last activity: 2026-04-06 — Milestone v1.3 started
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.3: [          ] 0% (0/? plans) — in progress
 ```
 
-## v1.2 Phase Map
+## v1.3 Phase Map
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | COMPLETE |
-| 11. Registry Completion | Full 33-item CLI-installable registry | DX-04 | COMPLETE |
-| 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | COMPLETE |
-| 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | COMPLETE |
-| 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | COMPLETE |
-| 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | COMPLETE |
+| 16. Infrastructure Baseline | All authoring preconditions satisfied — checklist, baseline, categories, prop vocabulary | INFRA-01, INFRA-02, INFRA-03, INFRA-04 | Not started |
+| 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Not started |
+| 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Not started |
+| 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Not started |
+| 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | Not started |
 
 ## Accumulated Context
 
 ### From v1.0 (Carried Forward)
-- Token system locked: 9 blessed spacing stops, 5 semantic typography aliases, 5 layout tokens, tiered color palette
+- Token system locked: 9 blessed spacing stops, 5 semantic typography aliases, 5 layout tokens, tiered color palette (core 5 + extended), animation durations/easings
 - 29 SF-wrapped components (24 interactive + 5 layout primitives)
 - SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
@@ -65,7 +65,7 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 - SF primitives consumed across all 5 pages (32 SFSection instances)
 - Three.js in async chunk (102 kB initial shared bundle)
 
-### v1.2 Research Findings (Critical)
+### From v1.2
 - FND-01 FIRST: --signal-* CSS var defaults must exist before INT-04 wiring — missing defaults cause magenta flash via color-resolve.ts fallback
 - INT-04 performance rule: NO per-frame getComputedStyle() — module-level cache + MutationObserver or direct invalidation from SignalOverlay
 - --signal-accent is a float (hue degrees), not a color token — use parseFloat() directly, never resolveColorToken
@@ -73,31 +73,28 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 - STP-01 hydration safety: render default state first, read sessionStorage only in useEffect after mount
 - bgShift type fix: fix all consumer call sites in same commit, never @ts-ignore, run tsc --noEmit before and after
 
+### v1.3 Critical Constraints (from Research)
+- **rounded-none everywhere**: Radix-generated `rounded-full` and `rounded-md` survive the global `--radius: 0px` token. Every SF wrapper must apply `rounded-none` explicitly on every sub-element. Audit with DevTools computed styles before marking any component complete.
+- **Barrel directive rule**: `sf/index.ts` must remain directive-free permanently. `'use client'` in the barrel turns all 5 layout primitives into Client Components and silently inflates the bundle. Each interactive SF wrapper declares `'use client'` in its own file only.
+- **Bundle budget gate**: Current baseline ~102KB; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
+- **CVA `intent` prop**: Every new SF wrapper uses `intent:` as the CVA variant key. Never `variant`, `type`, `status`, or `color`.
+- **Toast position**: SFToaster defaults to `bottom-left` with `--z-toast: 100`. SignalOverlay occupies `bottom-right` at z~210 — the two must never overlap.
+- **Same-commit rule**: Component file + barrel export + registry entry must land in one commit. No partial shipments.
+- **SFProgress before SFStepper**: Hard dependency — Stepper uses Progress fill as step connector. Phase 18 must complete before Phase 19 begins.
+- **Calendar/Menubar lazy**: Both use `next/dynamic` with `ssr: false` and are NOT exported from `sf/index.ts` barrel.
+- **NavigationMenu is last in P2**: Most complex, highest keyboard-regression risk, nothing depends on it — always last.
+
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Include all 9 debt items | User wants full sweep, no deferral |
-| v1.2 (not v2.0) | Maintenance release, no breaking API changes |
-| Phase 10 groups FND-01, FND-02, INT-01 | All are mechanical zero-dependency fixes, fastest to clear together |
-| Phase 11 (registry) before Phase 14 (session) | ComponentsExplorer fully populated before session state wired |
-| Phase 12 requires Phase 10 | FND-01 CSS var defaults are prerequisite for INT-04 WebGL reads |
-| Phase 13 after Phase 12 | Provider architecture benefits from stable SIGNAL wiring |
-| --signal-* in :root not @theme | Runtime-settable vars written via JS setProperty(); @theme generates Tailwind utilities which is wrong for these |
-| bgShift clean break to string union | No boolean/string hybrid — empty string from boolean broke GSAP palette key lookup silently |
-| sf-section/sf-text have no CVA dependency in registry | Source confirmed no cva import — dependencies array accurate |
-| shadcn build handles registry:style (sf-theme) correctly | Auto-generates sf-theme.json with cssVars — no manual file needed |
-| Wrap block child, not SFSection, with SignalMotion | SFSection carries data-bg-shift queried by GSAP applyBgShift — wrapping it would break palette transitions |
-| opacity floor 0.4 (not 0) for SignalMotion from state | Content never fully invisible for slow scrollers or users who skip the scroll window |
-| Module-level signal cache (not per-instance) | Single MutationObserver across all component instances — no redundant DOM observers |
-| FBM amplitude floor 50% (not 0%) | Prevents GLSLHero going fully dark at uIntensity=0; maintains visual presence at minimum |
-| createSignalframeUX called from 'use client' wrapper, not Server Component module scope | Next.js 15 rejects 'use client' function calls from Server Component module scope — mirrors SignalCanvasLazy/GlobalEffectsLazy pattern |
-| Standalone useSignalframe export alongside factory-returned hook | Consumers can import directly without threading factory return through module |
-| useScrollRestoration in ComponentsExplorer, not app/components/page.tsx | page.tsx is a Server Component; hook must live in the already-client ComponentsExplorer |
-| showAll state in TokenTabs NOT persisted | Per research: users expect showAll to reset each visit; it controls display verbosity, not navigation context |
-| SESSION_KEYS in use-session-state.ts (not a separate constants file) | Keeps hook and key constants co-located; prevents orphaned constants |
-| SCAFFOLDING.md Section 8 appended verbatim from RESEARCH.md — no renumbering | Preserves existing doc structure; append-only keeps diff minimal and reviewable |
-| DOC-01 traceability attributes both 15-01 and 15-02 | Both plans contributed to DOC-01 — frontmatter normalization in 15-01, API contract + closure in 15-02 |
+| Phase 16 before any component | All pitfall prevention front-loaded — checklist, baseline, categories codified before first wrapper line |
+| Non-animated before animated (Phase 17 before 18) | Isolates SIGNAL layer risk from FRAME layer risk — simpler components validate pattern before adding GSAP |
+| Phase 17 groups FD-04, FD-05, FD-06 with navigation components | All are FRAME-only, Pattern A or C — same authoring complexity, logical to batch |
+| MS-02 (SFStatusDot) in Phase 17, not Phase 19 | StatusDot is FRAME-primary with a simple GSAP pulse — closer to Phase 17 complexity than P2 |
+| Phase 19 SFNavigationMenu last | Most complex Radix primitive with non-obvious data-state CSS interactions; nothing depends on it |
+| Phase 20 batches REG-01 and REG-02 with final audit | Registry-only components warrant no separate phase; Lighthouse check is natural companion |
+| DataTable deferred to v1.4 | Depends on SFPagination (Phase 19); composite block is application-layer work, not design system scope for v1.3 |
 
 ### Blockers
 - None
@@ -107,10 +104,10 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** v1.2 Tech Debt Sweep — close all carried debt
+**Current focus:** v1.3 Component Expansion — comprehensive, production-complete component library
 
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 15-02-PLAN.md — SCAFFOLDING.md Config Provider API section + DOC-01 closure (v1.2 COMPLETE)
-Resume with: v1.2 milestone shipped — no further phases planned
+Stopped at: v1.3 roadmap created — Phases 16-20 defined
+Resume with: `/pde:plan-phase 16` — Infrastructure Baseline
