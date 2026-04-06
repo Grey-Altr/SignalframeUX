@@ -66,7 +66,10 @@ Plans:
   2. Navigating away from a page containing `SignalMesh` and back again shows no increase in `renderer.info.memory.geometries` — the disposal contract is working
   3. The data-driven token visualization renders the actual token values from the design system; the canvas output is visually legible and updates when tokens change
   4. OKLCH color tokens render in the canvas at the same perceived hue and lightness as the adjacent CSS elements using the same token — no color space mismatch visible
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 08-01-PLAN.md — SignalMesh WebGL scene + color-resolve.ts TTL cache optimization
+- [ ] 08-02-PLAN.md — Canvas 2D token visualization on /tokens page
 
 ### Phase 9: Extended Scenes + Production Integration
 **Goal**: The DU/TDR aesthetic differentiators (ASCII shader, GLSL hero) are shipped; all showcase pages consume SF layout primitives and carry generative zones — the portfolio is complete as a SOTD entry
@@ -91,5 +94,5 @@ Plans:
 | 5. DX Contract & State | v1.0 | 2/2 | Complete | 2026-04-06 |
 | 6. Generative SIGNAL Foundation | v1.1 | 2/2 | In progress | - |
 | 7. SIGNAL Activation | v1.1 | 2/2 | In progress | - |
-| 8. First Generative Scenes | v1.1 | 0/? | Not started | - |
+| 8. First Generative Scenes | v1.1 | 0/2 | Not started | - |
 | 9. Extended Scenes + Production Integration | v1.1 | 0/? | Not started | - |
