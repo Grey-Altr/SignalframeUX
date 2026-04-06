@@ -11,6 +11,8 @@ import { Footer } from "@/components/layout/footer";
 import { CircuitDivider } from "@/components/animation/circuit-divider";
 import { GhostLabel } from "@/components/animation/ghost-label";
 import { SectionIndicator } from "@/components/layout/section-indicator";
+// Three.js WebGL scene — SSR-safe Client Component wrapper (mirrors SignalCanvasLazy)
+import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -23,7 +25,10 @@ export default function HomePage() {
       <Nav />
       <main id="main-content" className="transition-none">
         <div id="bg-shift-wrapper">
-          <div data-bg-shift="white" data-section="hero" data-section-label="HERO" data-cursor><Hero /></div>
+          <div data-bg-shift="white" data-section="hero" data-section-label="HERO" data-cursor className="relative">
+            <Hero />
+            <SignalMeshLazy />
+          </div>
           <div data-bg-shift="black" data-section="manifesto" data-section-label="MANIFESTO" data-cursor className="relative overflow-hidden">
             <GhostLabel text="MANIFEST" className="-left-4 top-1/2 -translate-y-1/2" />
             <ManifestoBand />
