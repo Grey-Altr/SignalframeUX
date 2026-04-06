@@ -51,6 +51,10 @@ The project's formatter modifies files on save and causes "File has been modifie
 
 The gsd-tools.cjs binary is not installed in this environment. STATE.md and ROADMAP.md must be updated manually. Key fields: Current Position Plan/Status/Last activity, Progress bar percentages, Decisions section, Session Continuity, Roadmap table status column and checkbox list.
 
+### 2026-04-06T19:31:00Z | Phase 18 | tags: sf-accordion, sf-progress, gsap-stagger, gsap-tween, radix-direct-wrap, reduced-motion
+
+SFProgress wraps Radix ProgressPrimitive directly (not shadcn base ui/progress.tsx) because the base has `transition-all` on the indicator which conflicts with GSAP, and we need ref access on the indicator element for gsap.to(). SFAccordionContent uses useEffect on mount for GSAP stagger -- Radix unmounts content when closed by default, so mount === panel open, no MutationObserver needed. The base Radix CSS animations (animate-accordion-down/up) are kept for container height; GSAP only staggers the children inside the content div. Both components use the pattern: `window.matchMedia('(prefers-reduced-motion: reduce)').matches` guard BEFORE any tween creation, matching SFStatusDot precedent.
+
 ### 2026-04-06T02:22:00Z | Phase 01 | tags: css-fallbacks, globals.css, var-consumers
 
 In globals.css, grep for `var(--color-[^,)]*)` to find color var() calls WITHOUT fallbacks — the regex excludes the comma meaning no fallback is present. Lines in @theme declarations start with `--color-` so filter with `| grep -v "@theme"`. The commented-out sf-cursor block (lines 1240–1300) contains active-looking CSS inside `/* */` comments — verify line numbers against comment open/close markers before adding fallbacks. Custom property declarations in `:root` (e.g. `--text-heading-1-family: var(--font-display)`) are NOT consumers and do not need fallbacks.
@@ -215,3 +219,19 @@ SCAFFOLDING.md was previously in `docs/` (v1.0) but Plan 16-02 creates a NEW SCA
 ### 2026-04-06T18:22:00Z | Phase 16 | tags: shadcn-install, components-json, registries-format, bundle-baseline
 
 shadcn 4.1.2 requires registry names prefixed with `@` (e.g., `@signalframe` not `signalframe`) — omitting the prefix causes "Invalid configuration" on every `shadcn add` command. Running `shadcn init` to fix config injects unwanted side-effects: duplicate color tokens in globals.css, Geist font in layout.tsx, modified lib/utils.ts — always revert these with `git checkout`. The `radix-nova` style is the correct style name for this project's shadcn version (not `new-york`). navigation-menu.tsx is the only one of 7 new bases without `'use client'` (Server Component). Lighthouse CLI headless on localhost gives inflated LCP/TTI due to Three.js/GSAP/WebGL — shared bundle size (103 KB) is the reliable regression gate metric.
+
+### 2026-04-06T18:55:00Z | Phase 17 | tags: sf-wrappers, server-component-detection, alert-no-directive, pattern-a
+
+shadcn v4 alert.tsx and breadcrumb.tsx are both Server Components (no `'use client'` directive) — their SF wrappers can also be Server Components if no hooks are used. Avatar has `'use client'` due to Radix primitives. When wrapping alert with CVA intent variants, the base's own CVA `variant` prop is bypassed entirely — the SF wrapper's `sfAlertVariants` classes merge over the base via `cn()`, and the base `variant` prop is never passed. Four Pattern A wrappers add zero bytes to the shared bundle (103 KB unchanged) because three are Server Components and one (SFCollapsible) is a thin passthrough with no new imports.
+
+### 2026-04-06T19:02:00Z | Phase 17 | tags: gsap-core-vs-split, empty-state-dither, status-dot-pulse, pattern-c
+
+SFStatusDot imports from `@/lib/gsap-core` (not `gsap-split`) because it only needs the core `gsap.to` tween for pulse animation -- no SplitText/ScrambleText plugins needed. SFEmptyState imports ScrambleText which makes it `'use client'` even though it has no hooks of its own. The Bayer dither pattern is an inline base64 PNG data URI at `opacity-[0.04]` with `image-rendering: pixelated` -- avoids a network request. ComponentsExplorer preview components are CSS-only sketches (no live SF imports) to keep the explorer bundle minimal.
+
+### 2026-04-06T19:39:00Z | Phase 18-02 | tags: sonner-unstyled, gsap-slide, toast-z-index, bundle-gate
+
+SFToast uses Sonner in `unstyled: true` mode so no default Sonner CSS leaks through -- full DU/TDR control. SFToaster is placed in `app/layout.tsx` AFTER the providers block (TooltipProvider > LenisProvider > SignalframeProvider > {children}), as a sibling before the wipe div. Position is `bottom-left` at `zIndex: 100` -- SignalOverlay is at `bottom-right` z~210, so no overlap. GSAP `fromTo(x:-40, opacity:0)` runs on mount with `prefers-reduced-motion` guard checked BEFORE tween creation. sfToast imperative API uses `toast.custom()` to render SFToastContent with intent-based border colors. Adding Sonner toaster + 3 explorer entries kept shared bundle at 102 KB (no increase from Plan 01 baseline). ComponentsExplorer entries for Phase 18 components use indices 020-022 with category FEEDBACK, subcategory SIGNAL.
+
+### 2026-04-06T20:08:00Z | Phase 19-01 | tags: toggle-group-union-type, pagination-server-component, stepper-sfprogress, writing-mode
+
+Radix ToggleGroup.Root is a discriminated union type (single | multiple overloads) -- `interface extends React.ComponentProps<typeof Root>` fails with "can only extend statically known members". Fix: use intersection type `type Props = ComponentProps<typeof Root> & VariantProps<...>` instead of interface. SFPagination is a Server Component (base pagination.tsx has no 'use client') -- thin wrappers with `rounded-none` and monospace overrides. SFStepper uses `[writing-mode:vertical-lr]` on SFProgress to create vertical connectors -- the xPercent GSAP tween fills in the writing direction. Error state connectors use `[&_[data-slot=progress-indicator]]:bg-destructive` to override the indicator color through SFProgress's slot attribute. Shared bundle stayed at 102 KB after all three components.
