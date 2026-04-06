@@ -195,8 +195,8 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
         gsap.to(el, {
           y: 0,
           opacity: 1,
-          duration: 0.7,
-          ease: "power2.out",
+          duration: 0.034, // --duration-instant (34ms) — DU-style hard cut
+          ease: "none",    // No easing on hard cut
         });
       },
     });
