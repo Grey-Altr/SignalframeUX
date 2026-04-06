@@ -881,6 +881,29 @@
       }
     },
     {
+      "name": "sf-drawer",
+      "type": "registry:ui",
+      "title": "SF Drawer",
+      "description": "Bottom-sheet overlay via vaul. Lazy-loaded via next/dynamic (ssr: false). Import sf-drawer-lazy.tsx — NOT from sf/index.ts barrel.",
+      "dependencies": ["vaul"],
+      "registryDependencies": ["drawer"],
+      "files": [
+        {
+          "path": "components/sf/sf-drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-drawer-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
       "name": "sf-input-group",
       "type": "registry:ui",
       "title": "SF InputGroup",
