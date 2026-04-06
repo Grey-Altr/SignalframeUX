@@ -3,7 +3,7 @@ import React from "react";
 
 interface SFSectionProps extends React.ComponentProps<"section"> {
   label?: string;
-  bgShift?: boolean;
+  bgShift?: "white" | "black";
   spacing?: "8" | "12" | "16" | "24";
 }
 
@@ -16,12 +16,12 @@ interface SFSectionProps extends React.ComponentProps<"section"> {
  * (scroll-triggered background toggle via GSAP).
  *
  * @param label - Optional label string applied as data-section-label
- * @param bgShift - Enables data-bg-shift presence attribute for GSAP scroll targeting
+ * @param bgShift - Background shift value for GSAP scroll targeting. "white" or "black".
  * @param spacing - Vertical padding from blessed stops. "8" | "12" | "16" | "24"
  * @param className - Merged via cn() after spacing class
  *
  * @example
- * <SFSection label="Work" spacing="24" bgShift>
+ * <SFSection label="Work" spacing="24" bgShift="white">
  *   <SFContainer>Content here</SFContainer>
  * </SFSection>
  */
@@ -35,7 +35,7 @@ const SFSection = React.forwardRef<HTMLElement, SFSectionProps>(
         ref={ref}
         data-section
         data-section-label={label}
-        data-bg-shift={bgShift ? "" : undefined}
+        data-bg-shift={bgShift}
         className={cn(`py-${spacing}`, className)}
         {...props}
       >
