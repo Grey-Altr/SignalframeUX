@@ -79,6 +79,18 @@ Canvas 2D context does not understand oklch() CSS values — resolve --color-pri
 
 In SignalframeUX error.tsx, ScrambleText must be gated with `window.matchMedia("(prefers-reduced-motion: reduce)").matches` BEFORE the async `import("@/lib/gsap-plugins")` — prevents the entire GSAP plugin bundle from loading on reduced-motion devices. For not-found.tsx, keeping it as a Server Component and using `data-anim="page-heading"` wires it to the existing `initPageHeadingScramble()` automatically — no new client boundary needed. ComponentsExplorer uses two state vars for search (`searchInput` = controlled input, `searchQuery` = debounced filter) — the empty state reset CTA must clear both or the filter stays active while the search box appears empty.
 
+### 2026-04-06T07:16:00Z | Phase 06 | tags: pnpm, package-manager, npm-arborist-bug, install-pattern
+
+SignalframeUX uses pnpm exclusively (pnpm-lock.yaml present, node_modules/.pnpm virtual store). Running `npm install` fails with `TypeError: Cannot read properties of null (reading 'matches')` from npm's arborist encountering pnpm symlinks. Always use `pnpm add <pkg>` and `pnpm add -D <pkg>` for dependency installs. Never use npm install in this project.
+
+### 2026-04-06T07:16:00Z | Phase 06 | tags: three-js, ssr-safety, transpile-packages, turbopack
+
+For Three.js SSR safety in Next.js 15 + Turbopack: do NOT add `transpilePackages: ['three']` — it causes known Turbopack issues (vercel/next.js#63230). `next/dynamic({ ssr: false })` is the complete and sufficient guard. Three.js can be installed as a regular dependency; the SSR boundary is enforced by the dynamic import wrapper pattern mirroring GlobalEffectsLazy.
+
+### 2026-04-06T07:16:00Z | Phase 06 | tags: color-resolve, oklch-probe, no-cache, color-cycle-frame
+
+`lib/color-resolve.ts` (Phase 6 onwards) must NOT implement caching because `color-cycle-frame.tsx` mutates `--color-primary` via `setProperty` at ~150ms intervals during theme transitions. Cached RGB values go stale. The 1x1 canvas probe is cheap enough to call per-frame; optimization to a cache with invalidation can be considered in Phase 8. Magenta fallback `{ r: 255, g: 0, b: 128 }` matches canvas-cursor.tsx line 34 for visual consistency.
+
 ### 2026-04-05T00:00:00Z | Phase 04 | tags: gsap-hero, animation-fast-path, data-anim-wrapper, component-count
 
 For GSAP targeting of a component that renders a canvas (e.g. HeroMesh), wrap it in a plain div with data-anim rather than passing data-anim as a prop — canvas components use className for inline styles and the data attribute needs a clean DOM node for GSAP. Use gsap.fromTo (not gsap.to) at delay:0 for first visible motion — fromTo pins the start opacity, preventing stale reads from a prior context revert. Pre-existing TypeScript errors in this project (useRef missing argument, webkitBackdropFilter type) should be fixed when first encountered as they block build verification; both patterns have minimal fixes: useRef<T | undefined>(undefined) and (element.style as CSSStyleDeclaration & { key: string }).key.
