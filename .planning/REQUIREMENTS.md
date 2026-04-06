@@ -46,4 +46,22 @@
 
 ## Traceability
 
-<!-- Filled by roadmapper -->
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| GEN-01 | Phase 6 | Pending |
+| GEN-02 | Phase 6 | Pending |
+| GEN-03 | Phase 6 | Pending |
+| GEN-04 | Phase 6 | Pending |
+| GEN-05 | Phase 6 | Pending |
+| SIG-06 | Phase 7 | Pending |
+| SIG-07 | Phase 7 | Pending |
+| SIG-08 | Phase 7 | Pending |
+| SIG-09 | Phase 7 | Pending |
+| SCN-01 | Phase 8 | Pending |
+| SCN-02 | Phase 8 | Pending |
+| SCN-03 | Phase 9 | Pending |
+| SCN-04 | Phase 9 | Pending |
+| INT-01 | Phase 9 | Pending |
+| INT-02 | Phase 9 | Pending |
+| INT-03 | Phase 9 | Pending |
+| INT-04 | Phase 9 | Pending |
