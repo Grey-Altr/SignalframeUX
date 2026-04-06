@@ -164,7 +164,10 @@ Plans:
   5. SFAlert displays intent variants (info, warning, destructive, success) with correct token-mapped colors
   6. SFCollapsible toggles content visibility without accordion semantics — single panel, no sibling coordination
   7. SFStatusDot renders at active, idle, and offline states; GSAP pulse fires only on active state and is suppressed by prefers-reduced-motion
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 17-01-PLAN.md — Install shadcn bases + SFCollapsible, SFBreadcrumb, SFAvatar, SFAlert
+- [ ] 17-02-PLAN.md — SFAlertDialog, SFEmptyState, SFStatusDot + ComponentsExplorer entries
 
 ### Phase 18: P1 Animated Components
 **Goal**: The three SIGNAL-eligible P1 components are live — Accordion stagger, Toast slide entrance, and Progress fill tween all function correctly and degrade gracefully under prefers-reduced-motion
@@ -221,8 +224,8 @@ Plans:
 | 13. Config Provider | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 14. Session Persistence | v1.2 | 1/1 | Complete | 2026-04-06 |
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
-| 16. Infrastructure Baseline | v1.3 | Complete    | 2026-04-06 | 2026-04-06 |
-| 17. P1 Non-Animated Components | v1.3 | 0/? | Not started | - |
+| 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
+| 17. P1 Non-Animated Components | v1.3 | 0/2 | Not started | - |
 | 18. P1 Animated Components | v1.3 | 0/? | Not started | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |
