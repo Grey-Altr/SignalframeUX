@@ -3,10 +3,10 @@
 ## Milestone v1.3 Requirements
 
 ### Infrastructure
-- [ ] **INFRA-01**: SF wrapper creation checklist codified in SCAFFOLDING.md — rounded-none audit, `intent` prop rule, barrel rule, registry same-commit rule, a11y smoke test, prefers-reduced-motion rule
+- [x] **INFRA-01**: SF wrapper creation checklist codified in SCAFFOLDING.md — rounded-none audit, `intent` prop rule, barrel rule, registry same-commit rule, a11y smoke test, prefers-reduced-motion rule (completed 16-02)
 - [ ] **INFRA-02**: Performance baseline captured — Lighthouse LCP/TTI/bundle size recorded before first new component
-- [ ] **INFRA-03**: ComponentsExplorer grouped by category — Forms, Feedback, Navigation, Data Display, Layout, Generative
-- [ ] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition
+- [x] **INFRA-03**: ComponentsExplorer grouped by category — Forms, Feedback, Navigation, Data Display, Layout, Generative (completed 16-02)
+- [x] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition (completed 16-02)
 
 ### Feedback & Disclosure
 - [ ] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation
@@ -56,10 +56,10 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| INFRA-01 | Phase 16 | — | Pending |
+| INFRA-01 | Phase 16 | 16-02 | Complete |
 | INFRA-02 | Phase 16 | — | Pending |
-| INFRA-03 | Phase 16 | — | Pending |
-| INFRA-04 | Phase 16 | — | Pending |
+| INFRA-03 | Phase 16 | 16-02 | Complete |
+| INFRA-04 | Phase 16 | 16-02 | Complete |
 | FD-01 | Phase 18 | — | Pending |
 | FD-02 | Phase 18 | — | Pending |
 | FD-03 | Phase 18 | — | Pending |

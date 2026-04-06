@@ -4,13 +4,13 @@ milestone: v1.3
 milestone_name: Component Expansion
 status: active
 stopped_at: null
-last_updated: "2026-04-06T18:00:00.000Z"
-last_activity: "2026-04-06 — v1.3 roadmap created (Phases 16-20)"
+last_updated: "2026-04-06T18:17:00.000Z"
+last_activity: "2026-04-06 — Plan 16-02 complete: SCAFFOLDING.md + category migration"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 2
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 16 — Infrastructure Baseline (not started)
-Plan: —
-Status: Roadmap defined, ready for Phase 16 planning
-Last activity: 2026-04-06 — v1.3 roadmap created (Phases 16-20)
+Phase: Phase 16 — Infrastructure Baseline (in progress)
+Plan: 02 complete — SCAFFOLDING.md + category migration
+Status: Plan 16-02 complete, ready for next plan
+Last activity: 2026-04-06 — Plan 16-02: SCAFFOLDING.md authoring guide + ComponentsExplorer category migration
 
 ## Progress
 
@@ -37,14 +37,14 @@ Last activity: 2026-04-06 — v1.3 roadmap created (Phases 16-20)
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [          ] 0% (0/? plans) — in progress
+v1.3: [█         ] 10% (2/? plans) — in progress
 ```
 
 ## v1.3 Phase Map
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 16. Infrastructure Baseline | All authoring preconditions satisfied — checklist, baseline, categories, prop vocabulary | INFRA-01, INFRA-02, INFRA-03, INFRA-04 | Not started |
+| 16. Infrastructure Baseline | All authoring preconditions satisfied — checklist, baseline, categories, prop vocabulary | INFRA-01, INFRA-02, INFRA-03, INFRA-04 | In progress (2/? plans) |
 | 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Not started |
 | 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Not started |
 | 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Not started |
@@ -95,6 +95,9 @@ v1.3: [          ] 0% (0/? plans) — in progress
 | Phase 19 SFNavigationMenu last | Most complex Radix primitive with non-obvious data-state CSS interactions; nothing depends on it |
 | Phase 20 batches REG-01 and REG-02 with final audit | Registry-only components warrant no separate phase; Lighthouse check is natural companion |
 | DataTable deferred to v1.4 | Depends on SFPagination (Phase 19); composite block is application-layer work, not design system scope for v1.3 |
+| SCAFFOLDING.md at project root | Maximum discoverability for Phase 17-20 executors |
+| Six named categories replace layer-based tags | Product-language taxonomy (FORMS/FEEDBACK/NAVIGATION/DATA_DISPLAY/LAYOUT/GENERATIVE) matches component purpose, not implementation layer |
+| No session migration for stale filterTag | useSessionState defaults to ALL; stale values gracefully ignored |
 
 ### Blockers
 - None
@@ -109,5 +112,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: v1.3 roadmap created — Phases 16-20 defined
-Resume with: `/pde:plan-phase 16` — Infrastructure Baseline
+Stopped at: Completed 16-02-PLAN.md
+Resume with: Next plan in Phase 16
