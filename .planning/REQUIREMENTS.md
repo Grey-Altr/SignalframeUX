@@ -74,5 +74,5 @@
 | MS-01 | Phase 19 | 19-01 | Complete |
 | MS-02 | Phase 17 | 17-02 | Complete |
 | MS-03 | Phase 19 | 19-01 | Complete |
-| REG-01 | Phase 20 | — | Pending |
-| REG-02 | Phase 20 | — | Pending |
+| REG-01 | Phase 20 | 20-01, 20-02 | Complete |
+| REG-02 | Phase 20 | 20-01, 20-02 | Complete |

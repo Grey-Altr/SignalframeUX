@@ -1,16 +1,16 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 19-02-PLAN.md
-last_updated: "2026-04-06T20:24:02.070Z"
-last_activity: "2026-04-06 — Plan 19-02: SFNavigationMenu + explorer entries, 102 KB shared"
+stopped_at: Completed 20-01-PLAN.md
+last_updated: "2026-04-06T20:49:19.731Z"
+last_activity: "2026-04-06 — Plan 20-01: SFCalendar + SFMenubar lazy, 102 KB shared"
 progress:
   total_phases: 11
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  completed_phases: 5
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 20 — P3 Registry-Only + Final Audit (in progress)
-Plan: 01 complete — SFCalendar + SFMenubar as Pattern B lazy components
-Status: Phase 20 plan 01 complete (1/2 plans), plan 02 next
-Last activity: 2026-04-06 — Plan 20-01: SFCalendar + SFMenubar lazy, 102 KB shared
+Phase: Phase 20 — P3 Registry-Only + Final Audit (COMPLETE)
+Plan: 02 complete — Final audit: meta.pattern corrections, public/r/ rebuild, SCAFFOLDING.md, ComponentsExplorer
+Status: Phase 20 complete (2/2 plans), v1.3 MILESTONE COMPLETE
+Last activity: 2026-04-06 — Plan 20-02: Final audit, 8 pattern fixes, 102 KB shared
 
 ## Progress
 
@@ -37,7 +37,7 @@ Last activity: 2026-04-06 — Plan 20-01: SFCalendar + SFMenubar lazy, 102 KB sh
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [█████████ ] 69% (9/? plans) — in progress
+v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 ```
 
 ## v1.3 Phase Map
@@ -48,17 +48,19 @@ v1.3: [█████████ ] 69% (9/? plans) — in progress
 | 17. P1 Non-Animated Components | Seven FRAME-only components live — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot | NAV-01, NAV-02, NAV-03, FD-04, FD-05, FD-06, MS-02 | Complete (2/2 plans) |
 | 18. P1 Animated Components | Accordion stagger, Toast slide, Progress fill tween live with prefers-reduced-motion guards | FD-01, FD-02, FD-03 | Complete (2/2 plans) |
 | 19. P2 Components | NavigationMenu, Pagination, Stepper (depends on SFProgress), ToggleGroup | NAV-04, NAV-05, MS-01, MS-03 | Complete (2/2 plans) |
-| 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; Lighthouse 100/100 confirmed | REG-01, REG-02 | In progress (1/2 plans) |
+| 20. P3 Registry-Only + Final Audit | Calendar and Menubar as lazy registry entries; registry audit complete | REG-01, REG-02 | Complete (2/2 plans) |
 
 ## Accumulated Context
 
 ### From v1.0 (Carried Forward)
+
 - Token system locked: 9 blessed spacing stops, 5 semantic typography aliases, 5 layout tokens, tiered color palette (core 5 + extended), animation durations/easings
 - 29 SF-wrapped components (24 interactive + 5 layout primitives)
 - SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
 - DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
 
 ### From v1.1
+
 - Singleton WebGL infrastructure: SignalCanvas, useSignalScene, color-resolve with TTL cache
 - Multi-sensory SIGNAL: audio (Web Audio), haptics (Vibration API), idle animation (grain drift + OKLCH pulse)
 - Generative scenes: SignalMesh (Three.js), TokenViz (Canvas 2D), GLSLHero (GLSL + Bayer dither)
@@ -66,6 +68,7 @@ v1.3: [█████████ ] 69% (9/? plans) — in progress
 - Three.js in async chunk (102 kB initial shared bundle)
 
 ### From v1.2
+
 - FND-01 FIRST: --signal-* CSS var defaults must exist before INT-04 wiring — missing defaults cause magenta flash via color-resolve.ts fallback
 - INT-04 performance rule: NO per-frame getComputedStyle() — module-level cache + MutationObserver or direct invalidation from SignalOverlay
 - --signal-accent is a float (hue degrees), not a color token — use parseFloat() directly, never resolveColorToken
@@ -74,6 +77,7 @@ v1.3: [█████████ ] 69% (9/? plans) — in progress
 - bgShift type fix: fix all consumer call sites in same commit, never @ts-ignore, run tsc --noEmit before and after
 
 ### v1.3 Critical Constraints (from Research)
+
 - **rounded-none everywhere**: Radix-generated `rounded-full` and `rounded-md` survive the global `--radius: 0px` token. Every SF wrapper must apply `rounded-none` explicitly on every sub-element. Audit with DevTools computed styles before marking any component complete.
 - **Barrel directive rule**: `sf/index.ts` must remain directive-free permanently. `'use client'` in the barrel turns all 5 layout primitives into Client Components and silently inflates the bundle. Each interactive SF wrapper declares `'use client'` in its own file only.
 - **Bundle budget gate**: Measured baseline 103KB shared; hard limit 200KB; gate at 150KB. Calendar and Menubar are P3/lazy — non-negotiable. Run `ANALYZE=true pnpm build` after every P1 component.
@@ -116,6 +120,7 @@ v1.3: [█████████ ] 69% (9/? plans) — in progress
 | SFMenubar wraps all 15 sub-components | Complete API parity with shadcn base, even pass-through components |
 
 ### Blockers
+
 - None
 
 ## Project Reference
@@ -128,5 +133,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 20-01-PLAN.md
-Resume with: Phase 20 Plan 02 (Final Audit / Lighthouse)
+Stopped at: Completed 20-02-PLAN.md
+Resume with: v1.3 milestone complete. Next milestone planning needed.

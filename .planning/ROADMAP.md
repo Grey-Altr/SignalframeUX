@@ -5,7 +5,7 @@
 - [x] **v1.0 Craft & Feedback** — Phases 1-5 (shipped 2026-04-05)
 - [x] **v1.1 Generative Surface** — Phases 6-9 (shipped 2026-04-06)
 - [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
-- [ ] **v1.3 Component Expansion** — Phases 16-20 (active)
+- [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
 
 ## Phases
 
@@ -209,10 +209,10 @@ Plans:
   3. `pnpm shadcn add sf-menubar` installs SFMenubar as a registry-only entry — Menubar is NOT exported from `sf/index.ts`
   4. Final `ANALYZE=true pnpm build` confirms initial bundle is under 200KB (target under 150KB); Lighthouse scores 100/100 all categories
   5. SCAFFOLDING.md and registry.json reflect all v1.3 additions — no component shipped without a registry entry and API contract entry
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 20-01-PLAN.md — SFCalendar + SFMenubar (lazy wrappers, loaders, registry entries)
-- [ ] 20-02-PLAN.md — Final audit (meta.pattern fix, public/r/ rebuild, SCAFFOLDING.md, ComponentsExplorer, bundle gate)
+- [x] 20-02-PLAN.md — Final audit (meta.pattern fix, public/r/ rebuild, SCAFFOLDING.md, ComponentsExplorer, bundle gate)
 
 ## Progress
 
@@ -237,4 +237,4 @@ Plans:
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 20. P3 Registry-Only + Final Audit | v1.3 | 1/2 | In Progress|  |
+| 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
