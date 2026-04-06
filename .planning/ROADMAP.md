@@ -181,7 +181,7 @@ Plans:
   5. All three components pass a11y smoke test: keyboard navigable, ARIA attributes correct, focus rings visible
 **Plans:** 2 plans
 Plans:
-- [ ] 18-01-PLAN.md — SFAccordion (GSAP stagger) + SFProgress (GSAP fill tween) + Sonner install
+- [x] 18-01-PLAN.md — SFAccordion (GSAP stagger) + SFProgress (GSAP fill tween) + Sonner install (completed 2026-04-06)
 - [ ] 18-02-PLAN.md — SFToast/SFToaster (Sonner + GSAP slide) + ComponentsExplorer entries + bundle gate
 
 ### Phase 19: P2 Components
@@ -229,6 +229,6 @@ Plans:
 | 15. Documentation Cleanup | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 18. P1 Animated Components | v1.3 | 0/2 | Not started | - |
+| 18. P1 Animated Components | v1.3 | 1/2 | In progress | - |
 | 19. P2 Components | v1.3 | 0/? | Not started | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |

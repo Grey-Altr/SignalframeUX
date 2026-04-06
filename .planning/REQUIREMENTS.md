@@ -9,9 +9,9 @@
 - [x] **INFRA-04**: Prop vocabulary locked and documented — `intent` for semantic variants, `size` for scale, `asChild` for composition (completed 16-02)
 
 ### Feedback & Disclosure
-- [ ] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation
+- [x] **FD-01**: User can expand/collapse content sections via SFAccordion with stagger SIGNAL animation (completed 18-01)
 - [ ] **FD-02**: User receives async notifications via SFToast (Sonner) with GSAP slide entrance, positioned bottom-left to avoid SignalOverlay conflict
-- [ ] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween
+- [x] **FD-03**: User sees task/upload progress via SFProgress with SIGNAL fill intensity tween (completed 18-01)
 - [x] **FD-04**: User confirms destructive actions via SFAlertDialog with loading state support (completed 17-02)
 - [x] **FD-05**: User sees inline feedback banners via SFAlert with intent variants (info, warning, destructive, success) (completed 17-01)
 - [x] **FD-06**: User can show/hide content via SFCollapsible without accordion semantics (completed 17-01)
@@ -60,9 +60,9 @@
 | INFRA-02 | Phase 16 | 16-01 | Complete |
 | INFRA-03 | Phase 16 | 16-02 | Complete |
 | INFRA-04 | Phase 16 | 16-02 | Complete |
-| FD-01 | Phase 18 | — | Pending |
+| FD-01 | Phase 18 | 18-01 | Complete |
 | FD-02 | Phase 18 | — | Pending |
-| FD-03 | Phase 18 | — | Pending |
+| FD-03 | Phase 18 | 18-01 | Complete |
 | FD-04 | Phase 17 | 17-02 | Complete |
 | FD-05 | Phase 17 | 17-01 | Complete |
 | FD-06 | Phase 17 | 17-01 | Complete |
