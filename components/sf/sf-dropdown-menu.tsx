@@ -12,16 +12,36 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
+/**
+ * Context menu — FRAME layer dropdown navigation primitive.
+ *
+ * Radix DropdownMenu root wrapped with SF contract. Compose with
+ * SFDropdownMenuTrigger, SFDropdownMenuContent, SFDropdownMenuGroup,
+ * SFDropdownMenuItem, SFDropdownMenuLabel, SFDropdownMenuSeparator,
+ * and SFDropdownMenuShortcut for full context menu behavior.
+ *
+ * @example
+ * <SFDropdownMenu>
+ *   <SFDropdownMenuTrigger asChild><SFButton>Options</SFButton></SFDropdownMenuTrigger>
+ *   <SFDropdownMenuContent>
+ *     <SFDropdownMenuItem>Edit</SFDropdownMenuItem>
+ *     <SFDropdownMenuSeparator />
+ *     <SFDropdownMenuItem>Delete</SFDropdownMenuItem>
+ *   </SFDropdownMenuContent>
+ * </SFDropdownMenu>
+ */
 function SFDropdownMenu(props: React.ComponentProps<typeof DropdownMenu>) {
   return <DropdownMenu {...props} />;
 }
 
+/** Sub-component of SFDropdownMenu — trigger element that opens the dropdown on click. */
 function SFDropdownMenuTrigger(
   props: React.ComponentProps<typeof DropdownMenuTrigger>
 ) {
   return <DropdownMenuTrigger {...props} />;
 }
 
+/** Sub-component of SFDropdownMenu — floating content panel with sharp corners, 2px border, and no shadow. */
 function SFDropdownMenuContent({
   className,
   ...props
@@ -37,6 +57,7 @@ function SFDropdownMenuContent({
   );
 }
 
+/** Sub-component of SFDropdownMenu — groups related items with a mono uppercase label heading. */
 function SFDropdownMenuGroup({
   className,
   ...props
@@ -52,6 +73,7 @@ function SFDropdownMenuGroup({
   );
 }
 
+/** Sub-component of SFDropdownMenu — selectable menu item; inverts colors on focus/hover. */
 function SFDropdownMenuItem({
   className,
   ...props
@@ -67,6 +89,7 @@ function SFDropdownMenuItem({
   );
 }
 
+/** Sub-component of SFDropdownMenu — non-interactive section label in muted foreground at xs size. */
 function SFDropdownMenuLabel({
   className,
   ...props
@@ -82,6 +105,7 @@ function SFDropdownMenuLabel({
   );
 }
 
+/** Sub-component of SFDropdownMenu — keyboard shortcut hint in mono uppercase, right-aligned in item. */
 function SFDropdownMenuShortcut({
   className,
   ...props
@@ -94,6 +118,7 @@ function SFDropdownMenuShortcut({
   );
 }
 
+/** Sub-component of SFDropdownMenu — full-width foreground rule separating menu sections. */
 function SFDropdownMenuSeparator({
   className,
   ...props

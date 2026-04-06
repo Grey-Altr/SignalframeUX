@@ -3,6 +3,19 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
+/**
+ * Toggle checkbox input — FRAME layer form primitive.
+ *
+ * Radix Checkbox wrapped with SF styling: sharp corners (rounded-none),
+ * 2px foreground border, primary fill on checked state, and
+ * sf-focusable keyboard indicator. Inherits all Radix CheckboxProps.
+ *
+ * @param className - Merged via cn() after base classes
+ *
+ * @example
+ * <SFCheckbox id="terms" />
+ * <SFLabel htmlFor="terms">Accept terms</SFLabel>
+ */
 export function SFCheckbox({
   className,
   ...props

@@ -12,18 +12,37 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
+/**
+ * Modal dialog — FRAME layer overlay primitive.
+ *
+ * Radix Dialog root wrapped with SF contract. Compose with
+ * SFDialogTrigger, SFDialogContent, SFDialogHeader, SFDialogTitle,
+ * SFDialogDescription, SFDialogFooter, and SFDialogClose.
+ * Content applies sharp corners, 2px border, no shadow.
+ *
+ * @example
+ * <SFDialog>
+ *   <SFDialogTrigger asChild><SFButton>Open</SFButton></SFDialogTrigger>
+ *   <SFDialogContent>
+ *     <SFDialogHeader><SFDialogTitle>Confirm</SFDialogTitle></SFDialogHeader>
+ *   </SFDialogContent>
+ * </SFDialog>
+ */
 function SFDialog(props: React.ComponentProps<typeof Dialog>) {
   return <Dialog {...props} />;
 }
 
+/** Sub-component of SFDialog — trigger element that opens the dialog on interaction. */
 function SFDialogTrigger(props: React.ComponentProps<typeof DialogTrigger>) {
   return <DialogTrigger {...props} />;
 }
 
+/** Sub-component of SFDialog — close button that dismisses the dialog when activated. */
 function SFDialogClose(props: React.ComponentProps<typeof DialogClose>) {
   return <DialogClose {...props} />;
 }
 
+/** Sub-component of SFDialog — modal content panel with sharp corners, 2px border, and no shadow. */
 function SFDialogContent({
   className,
   ...props
@@ -39,6 +58,7 @@ function SFDialogContent({
   );
 }
 
+/** Sub-component of SFDialog — header region with 2px bottom border separating it from content. */
 function SFDialogHeader({
   className,
   ...props
@@ -51,6 +71,7 @@ function SFDialogHeader({
   );
 }
 
+/** Sub-component of SFDialog — footer region with 2px top border and muted background for action buttons. */
 function SFDialogFooter({
   className,
   ...props
@@ -66,6 +87,7 @@ function SFDialogFooter({
   );
 }
 
+/** Sub-component of SFDialog — dialog title in font-mono uppercase with letter-spacing. */
 function SFDialogTitle({
   className,
   ...props
@@ -78,6 +100,7 @@ function SFDialogTitle({
   );
 }
 
+/** Sub-component of SFDialog — supporting description text in muted foreground, uppercase, xs size. */
 function SFDialogDescription({
   className,
   ...props

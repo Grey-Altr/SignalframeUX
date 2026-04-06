@@ -22,6 +22,21 @@ interface SFContainerProps
   extends React.ComponentProps<"div">,
     VariantProps<typeof sfContainerVariants> {}
 
+/**
+ * Responsive page container — FRAME layer layout primitive.
+ *
+ * Enforces max-width tokens and responsive gutters defined in globals.css.
+ * Default width is "wide" for most page sections. Use "content" for
+ * prose/readable text columns.
+ *
+ * @param width - Max-width variant. "wide" | "content" | "full"
+ * @param className - Merged via cn() after variant classes
+ *
+ * @example
+ * <SFContainer width="content">
+ *   <SFText variant="body">Readable prose column</SFText>
+ * </SFContainer>
+ */
 const SFContainer = React.forwardRef<HTMLDivElement, SFContainerProps>(
   function SFContainer({ width, className, ...props }, ref) {
     return (

@@ -13,6 +13,25 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 
+/**
+ * Command palette — FRAME layer search/navigation primitive.
+ *
+ * Radix Command wrapped with SF styling: sharp corners, 2px foreground
+ * border, dark background. Compose with SFCommandInput, SFCommandList,
+ * SFCommandGroup, and SFCommandItem for full palette functionality.
+ *
+ * @param className - Merged via cn() after base classes
+ *
+ * @example
+ * <SFCommand>
+ *   <SFCommandInput placeholder="Search..." />
+ *   <SFCommandList>
+ *     <SFCommandGroup heading="Actions">
+ *       <SFCommandItem>Open file</SFCommandItem>
+ *     </SFCommandGroup>
+ *   </SFCommandList>
+ * </SFCommand>
+ */
 function SFCommand({
   className,
   ...props
@@ -28,6 +47,7 @@ function SFCommand({
   );
 }
 
+/** Sub-component of SFCommand — modal dialog wrapper for command palette overlay usage. */
 function SFCommandDialog({
   className,
   ...props
@@ -35,6 +55,7 @@ function SFCommandDialog({
   return <CommandDialog className={cn("rounded-none", className)} {...props} />;
 }
 
+/** Sub-component of SFCommand — search input rendered in font-mono uppercase. */
 function SFCommandInput({
   className,
   ...props
@@ -47,6 +68,7 @@ function SFCommandInput({
   );
 }
 
+/** Sub-component of SFCommand — scrollable results list container in font-mono. */
 function SFCommandList({
   className,
   ...props
@@ -59,6 +81,7 @@ function SFCommandList({
   );
 }
 
+/** Sub-component of SFCommand — empty state message shown when no results match the query. */
 function SFCommandEmpty({
   className,
   ...props
@@ -71,6 +94,7 @@ function SFCommandEmpty({
   );
 }
 
+/** Sub-component of SFCommand — labeled group of related command items with mono uppercase heading. */
 function SFCommandGroup({
   className,
   ...props
@@ -86,6 +110,7 @@ function SFCommandGroup({
   );
 }
 
+/** Sub-component of SFCommand — selectable command item; highlights with inverted colors on selection. */
 function SFCommandItem({
   className,
   ...props
@@ -101,6 +126,7 @@ function SFCommandItem({
   );
 }
 
+/** Sub-component of SFCommand — keyboard shortcut label rendered in mono uppercase, right-aligned. */
 function SFCommandShortcut({
   className,
   ...props
@@ -113,6 +139,7 @@ function SFCommandShortcut({
   );
 }
 
+/** Sub-component of SFCommand — full-width foreground-colored rule dividing command groups. */
 function SFCommandSeparator({
   className,
   ...props

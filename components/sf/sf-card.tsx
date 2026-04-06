@@ -15,6 +15,23 @@ interface SFCardProps extends React.ComponentProps<typeof Card> {
   borderDraw?: boolean;
 }
 
+/**
+ * Content surface card — FRAME layer container primitive.
+ *
+ * Renders a bordered card with 2px foreground border and no shadow
+ * (SF aesthetic contract: no elevation, only edge definition). Supports
+ * optional hover color transition and SIGNAL-layer borderDraw animation.
+ *
+ * @param hoverable - Enables hover border color transition to primary
+ * @param borderDraw - Replaces color hover with SIGNAL borderDraw animation (clockwise magenta stroke)
+ * @param className - Merged via cn() after base classes
+ *
+ * @example
+ * <SFCard hoverable>
+ *   <SFCardHeader><SFCardTitle>Project Alpha</SFCardTitle></SFCardHeader>
+ *   <SFCardContent>Description text</SFCardContent>
+ * </SFCard>
+ */
 function SFCard({ className, hoverable = false, borderDraw = false, ...props }: SFCardProps) {
   const card = (
     <Card
@@ -35,6 +52,7 @@ function SFCard({ className, hoverable = false, borderDraw = false, ...props }: 
   return card;
 }
 
+/** Sub-component of SFCard — renders the card header region with reduced bottom padding. */
 function SFCardHeader({
   className,
   ...props
@@ -42,6 +60,7 @@ function SFCardHeader({
   return <CardHeader className={cn("pb-3", className)} {...props} />;
 }
 
+/** Sub-component of SFCard — renders the card title in font-mono uppercase. */
 function SFCardTitle({
   className,
   ...props
@@ -54,6 +73,7 @@ function SFCardTitle({
   );
 }
 
+/** Sub-component of SFCard — renders the card description in muted foreground at text-xs. */
 function SFCardDescription({
   className,
   ...props
@@ -66,6 +86,7 @@ function SFCardDescription({
   );
 }
 
+/** Sub-component of SFCard — renders the main card body content region with p-4 padding. */
 function SFCardContent({
   className,
   ...props
@@ -73,6 +94,7 @@ function SFCardContent({
   return <CardContent className={cn("p-4", className)} {...props} />;
 }
 
+/** Sub-component of SFCard — renders the card footer region, flush bottom with no top gap. */
 function SFCardFooter({
   className,
   ...props

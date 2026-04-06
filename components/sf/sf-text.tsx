@@ -36,6 +36,23 @@ interface SFTextProps extends React.HTMLAttributes<HTMLElement> {
   className?: string;
 }
 
+/**
+ * Semantic text primitive — FRAME layer typography enforcer.
+ *
+ * Maps semantic variants to typography alias classes (text-heading-1 etc.)
+ * defined in globals.css. Defaults to the appropriate HTML element for each
+ * variant (h1/h2/h3 for headings, p for body, span for small) but accepts
+ * `as` for override. Polymorphic — ref is cast to React.Ref<any> per
+ * TypeScript forwardRef polymorphic limitation.
+ *
+ * @param variant - Semantic text style. "heading-1" | "heading-2" | "heading-3" | "body" | "small"
+ * @param as - Override rendered element tag. Defaults: h1/h2/h3/p/span per variant
+ * @param className - Merged via cn() after variant class
+ *
+ * @example
+ * <SFText variant="heading-1">Signal Frame</SFText>
+ * <SFText variant="body" as="span">Inline body text</SFText>
+ */
 const SFText = React.forwardRef<HTMLElement, SFTextProps>(
   function SFText({ variant, as, className, ...props }, ref) {
     const Tag = as ?? defaultElementMap[variant];

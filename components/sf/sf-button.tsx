@@ -34,6 +34,22 @@ interface SFButtonProps
   extends Omit<React.ComponentProps<typeof Button>, "size">,
     VariantProps<typeof sfButtonVariants> {}
 
+/**
+ * Primary action button — FRAME layer interactive primitive.
+ *
+ * Enforces SF button contract: font-mono, uppercase, 2px border,
+ * asymmetric hover timing (100ms in / 400ms out), and press transform
+ * via .sf-pressable. "signal" intent uses primary border accent — use
+ * for brand-level CTAs only.
+ *
+ * @param intent - Visual variant. "primary" | "ghost" | "signal"
+ * @param size - Height and padding scale. "sm" | "md" | "lg" | "xl"
+ * @param className - Merged via cn() — appended, never replaces base classes
+ *
+ * @example
+ * <SFButton intent="primary" size="md">Launch</SFButton>
+ * <SFButton intent="ghost" size="sm" onClick={handleCancel}>Cancel</SFButton>
+ */
 export function SFButton({
   intent,
   size,
