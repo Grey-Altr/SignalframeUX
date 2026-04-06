@@ -196,7 +196,7 @@ Plans:
   5. All four components are exported from `sf/index.ts` barrel and have registry entries with `meta.layer` and `meta.pattern` fields
 **Plans:** 2 plans
 Plans:
-- [ ] 19-01-PLAN.md — SFToggleGroup + SFPagination + SFStepper (3 FRAME/SIGNAL components)
+- [x] 19-01-PLAN.md — SFToggleGroup + SFPagination + SFStepper (3 FRAME/SIGNAL components)
 - [ ] 19-02-PLAN.md — SFNavigationMenu (flyout + mobile SFSheet) + ComponentsExplorer entries + bundle gate
 
 ### Phase 20: P3 Registry-Only + Final Audit
@@ -233,5 +233,5 @@ Plans:
 | 16. Infrastructure Baseline | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 17. P1 Non-Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 19. P2 Components | v1.3 | 0/2 | Planned | - |
+| 19. P2 Components | v1.3 | 1/2 | In progress | - |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 0/? | Not started | - |

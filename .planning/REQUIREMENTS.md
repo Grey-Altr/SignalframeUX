@@ -21,12 +21,12 @@
 - [x] **NAV-02**: User sees navigation hierarchy via SFBreadcrumb as Server Component (completed 17-01)
 - [x] **NAV-03**: User sees designed empty states via SFEmptyState with optional ScrambleText SIGNAL treatment (completed 17-02)
 - [ ] **NAV-04**: User navigates site via SFNavigationMenu with flyout panels and defined mobile behavior
-- [ ] **NAV-05**: User navigates paginated content via SFPagination
+- [x] **NAV-05**: User navigates paginated content via SFPagination (completed 19-01)
 
 ### Multi-Step & Status
-- [ ] **MS-01**: User completes multi-step flows via SFStepper with per-step error state
+- [x] **MS-01**: User completes multi-step flows via SFStepper with per-step error state (completed 19-01)
 - [x] **MS-02**: User sees presence/status indicators via SFStatusDot with GSAP pulse on active state (completed 17-02)
-- [ ] **MS-03**: User selects from exclusive/multi toggle options via SFToggleGroup
+- [x] **MS-03**: User selects from exclusive/multi toggle options via SFToggleGroup (completed 19-01)
 
 ### Registry-Only (Lazy)
 - [ ] **REG-01**: Consumer installs SFCalendar via shadcn CLI — lazy-loaded, bundle cost annotated, `meta.heavy: true`
@@ -70,9 +70,9 @@
 | NAV-02 | Phase 17 | 17-01 | Complete |
 | NAV-03 | Phase 17 | 17-02 | Complete |
 | NAV-04 | Phase 19 | — | Pending |
-| NAV-05 | Phase 19 | — | Pending |
-| MS-01 | Phase 19 | — | Pending |
+| NAV-05 | Phase 19 | 19-01 | Complete |
+| MS-01 | Phase 19 | 19-01 | Complete |
 | MS-02 | Phase 17 | 17-02 | Complete |
-| MS-03 | Phase 19 | — | Pending |
+| MS-03 | Phase 19 | 19-01 | Complete |
 | REG-01 | Phase 20 | — | Pending |
 | REG-02 | Phase 20 | — | Pending |
