@@ -11,10 +11,27 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+/**
+ * Dropdown select input — FRAME layer form primitive.
+ *
+ * Radix Select root wrapped with SF contract. Compose with
+ * SFSelectTrigger, SFSelectContent, SFSelectItem, SFSelectValue,
+ * SFSelectGroup, and SFSelectLabel for a complete select control.
+ * Trigger enforces font-mono, uppercase, sf-border-draw-focus.
+ *
+ * @example
+ * <SFSelect>
+ *   <SFSelectTrigger><SFSelectValue placeholder="Choose..." /></SFSelectTrigger>
+ *   <SFSelectContent>
+ *     <SFSelectItem value="a">Option A</SFSelectItem>
+ *   </SFSelectContent>
+ * </SFSelect>
+ */
 function SFSelect(props: React.ComponentProps<typeof Select>) {
   return <Select {...props} />;
 }
 
+/** Sub-component of SFSelect — trigger button with sf-border-draw-focus, mono uppercase, and no ring. */
 function SFSelectTrigger({
   className,
   ...props
@@ -31,6 +48,7 @@ function SFSelectTrigger({
   );
 }
 
+/** Sub-component of SFSelect — dropdown panel with sharp corners, 2px border, and no shadow. */
 function SFSelectContent({
   className,
   ...props
@@ -46,6 +64,7 @@ function SFSelectContent({
   );
 }
 
+/** Sub-component of SFSelect — option item in mono uppercase; inverts colors on focus. */
 function SFSelectItem({
   className,
   ...props
@@ -62,14 +81,17 @@ function SFSelectItem({
   );
 }
 
+/** Sub-component of SFSelect — renders the currently selected value or placeholder inside SFSelectTrigger. */
 function SFSelectValue(props: React.ComponentProps<typeof SelectValue>) {
   return <SelectValue {...props} />;
 }
 
+/** Sub-component of SFSelect — groups related select items under a common label. */
 function SFSelectGroup(props: React.ComponentProps<typeof SelectGroup>) {
   return <SelectGroup {...props} />;
 }
 
+/** Sub-component of SFSelect — non-interactive group label in muted mono uppercase at 2xs size. */
 function SFSelectLabel({
   className,
   ...props

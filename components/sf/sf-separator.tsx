@@ -7,6 +7,21 @@ interface SFSeparatorProps extends React.ComponentProps<typeof Separator> {
   weight?: "thin" | "normal" | "heavy";
 }
 
+/**
+ * Visual divider — FRAME layer structural primitive.
+ *
+ * Radix Separator with SF foreground color and three weight variants
+ * mapped to border token values. Supports both horizontal (default)
+ * and vertical orientation.
+ *
+ * @param orientation - Layout direction. "horizontal" | "vertical"
+ * @param weight - Line thickness variant. "thin" | "normal" | "heavy"
+ * @param className - Merged via cn() after weight/orientation classes
+ *
+ * @example
+ * <SFSeparator weight="normal" />
+ * <SFSeparator orientation="vertical" weight="thin" className="h-6" />
+ */
 export function SFSeparator({
   className,
   weight = "normal",

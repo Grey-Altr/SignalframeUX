@@ -3,6 +3,20 @@
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
+/**
+ * Toggle switch input — FRAME layer form primitive.
+ *
+ * Radix Switch with SF styling: sharp corners (rounded-none), 2px
+ * foreground border, primary fill on checked state, transparent when
+ * unchecked, and sf-toggle-snap snap animation on the thumb.
+ * Inherits all Radix SwitchProps.
+ *
+ * @param className - Merged via cn() after base classes
+ *
+ * @example
+ * <SFSwitch id="notifications" defaultChecked />
+ * <SFLabel htmlFor="notifications">Enable notifications</SFLabel>
+ */
 export function SFSwitch({
   className,
   ...props

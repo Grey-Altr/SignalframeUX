@@ -10,14 +10,32 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+/**
+ * Floating content panel — FRAME layer overlay primitive.
+ *
+ * Radix Popover root wrapped with SF contract. Compose with
+ * SFPopoverTrigger, SFPopoverContent, SFPopoverHeader,
+ * SFPopoverTitle, and SFPopoverDescription for full popover structure.
+ * Content applies sharp corners, 2px border, no shadow.
+ *
+ * @example
+ * <SFPopover>
+ *   <SFPopoverTrigger asChild><SFButton size="sm">Info</SFButton></SFPopoverTrigger>
+ *   <SFPopoverContent>
+ *     <SFPopoverHeader><SFPopoverTitle>Details</SFPopoverTitle></SFPopoverHeader>
+ *   </SFPopoverContent>
+ * </SFPopover>
+ */
 function SFPopover(props: React.ComponentProps<typeof Popover>) {
   return <Popover {...props} />;
 }
 
+/** Sub-component of SFPopover — trigger element that opens the floating panel on interaction. */
 function SFPopoverTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
   return <PopoverTrigger {...props} />;
 }
 
+/** Sub-component of SFPopover — floating content panel with sharp corners, 2px border, and no shadow. */
 function SFPopoverContent({
   className,
   ...props
@@ -33,6 +51,7 @@ function SFPopoverContent({
   );
 }
 
+/** Sub-component of SFPopover — header region with 2px bottom border separating it from content. */
 function SFPopoverHeader({
   className,
   ...props
@@ -45,6 +64,7 @@ function SFPopoverHeader({
   );
 }
 
+/** Sub-component of SFPopover — title rendered in font-mono uppercase with letter-spacing. */
 function SFPopoverTitle({
   className,
   ...props
@@ -57,6 +77,7 @@ function SFPopoverTitle({
   );
 }
 
+/** Sub-component of SFPopover — supporting description text in muted foreground at text-xs. */
 function SFPopoverDescription({
   className,
   ...props

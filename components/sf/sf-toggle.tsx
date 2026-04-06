@@ -31,6 +31,21 @@ interface SFToggleProps
   extends Omit<React.ComponentProps<typeof Toggle>, "size">,
     VariantProps<typeof sfToggleVariants> {}
 
+/**
+ * Pressable toggle button — FRAME layer interactive primitive.
+ *
+ * Radix Toggle with SF styling: sharp corners, 2px border, sf-pressable
+ * press transform, and inverted fill on active state. Use for binary
+ * on/off controls like filter chips or view mode switches.
+ *
+ * @param intent - Visual variant. "default" | "primary"
+ * @param size - Height and padding scale. "sm" | "md" | "lg"
+ * @param className - Merged via cn() after variant classes
+ *
+ * @example
+ * <SFToggle intent="default" size="md">Grid</SFToggle>
+ * <SFToggle intent="primary" pressed>Active</SFToggle>
+ */
 export function SFToggle({
   intent,
   size,

@@ -3,10 +3,28 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+/**
+ * Tabbed interface — FRAME layer navigation primitive.
+ *
+ * Radix Tabs root wrapped with SF contract. Compose with
+ * SFTabsList, SFTabsTrigger, and SFTabsContent for a full tab interface.
+ * Triggers use underline active indicator (border-b-2) not background fill,
+ * with muted → foreground color transition on hover.
+ *
+ * @example
+ * <SFTabs defaultValue="overview">
+ *   <SFTabsList>
+ *     <SFTabsTrigger value="overview">Overview</SFTabsTrigger>
+ *     <SFTabsTrigger value="specs">Specs</SFTabsTrigger>
+ *   </SFTabsList>
+ *   <SFTabsContent value="overview">Content here</SFTabsContent>
+ * </SFTabs>
+ */
 function SFTabs(props: React.ComponentProps<typeof Tabs>) {
   return <Tabs {...props} />;
 }
 
+/** Sub-component of SFTabs — tab navigation bar with 2px bottom border and no padding. */
 function SFTabsList({
   className,
   ...props
@@ -22,6 +40,7 @@ function SFTabsList({
   );
 }
 
+/** Sub-component of SFTabs — tab button with underline active indicator and mono uppercase type. */
 function SFTabsTrigger({
   className,
   ...props
@@ -41,6 +60,7 @@ function SFTabsTrigger({
   );
 }
 
+/** Sub-component of SFTabs — content panel shown when its matching tab trigger is active. */
 function SFTabsContent(props: React.ComponentProps<typeof TabsContent>) {
   return <TabsContent {...props} />;
 }

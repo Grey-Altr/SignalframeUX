@@ -1,6 +1,19 @@
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
+/**
+ * Multi-line text input — FRAME layer form primitive.
+ *
+ * Enforces SF textarea contract: font-mono, uppercase, 2px foreground
+ * border, sf-border-draw-focus SIGNAL animation on focus, no shadow,
+ * no ring. Placeholder inherits uppercase and tracking styles.
+ *
+ * @param className - Merged via cn() after base classes
+ *
+ * @example
+ * <SFTextarea placeholder="Enter notes..." rows={4} />
+ * <SFTextarea placeholder="Description" className="min-h-32" />
+ */
 export function SFTextarea({
   className,
   ...props

@@ -12,18 +12,37 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
+/**
+ * Slide-out panel — FRAME layer overlay primitive.
+ *
+ * Radix Sheet root wrapped with SF contract. Compose with
+ * SFSheetTrigger, SFSheetContent, SFSheetHeader, SFSheetTitle,
+ * SFSheetDescription, SFSheetFooter, and SFSheetClose.
+ * Content slides in from the edge with sharp corners and 2px border.
+ *
+ * @example
+ * <SFSheet>
+ *   <SFSheetTrigger asChild><SFButton>Open Panel</SFButton></SFSheetTrigger>
+ *   <SFSheetContent side="right">
+ *     <SFSheetHeader><SFSheetTitle>Settings</SFSheetTitle></SFSheetHeader>
+ *   </SFSheetContent>
+ * </SFSheet>
+ */
 function SFSheet(props: React.ComponentProps<typeof Sheet>) {
   return <Sheet {...props} />;
 }
 
+/** Sub-component of SFSheet — trigger element that opens the slide-out panel on interaction. */
 function SFSheetTrigger(props: React.ComponentProps<typeof SheetTrigger>) {
   return <SheetTrigger {...props} />;
 }
 
+/** Sub-component of SFSheet — close control that dismisses the panel when activated. */
 function SFSheetClose(props: React.ComponentProps<typeof SheetClose>) {
   return <SheetClose {...props} />;
 }
 
+/** Sub-component of SFSheet — slide-out content panel with sharp corners, 2px border, and no shadow. */
 function SFSheetContent({
   className,
   ...props
@@ -39,6 +58,7 @@ function SFSheetContent({
   );
 }
 
+/** Sub-component of SFSheet — header region with 2px bottom border separating it from body content. */
 function SFSheetHeader({
   className,
   ...props
@@ -51,6 +71,7 @@ function SFSheetHeader({
   );
 }
 
+/** Sub-component of SFSheet — footer region with 2px top border and muted background for action buttons. */
 function SFSheetFooter({
   className,
   ...props
@@ -63,6 +84,7 @@ function SFSheetFooter({
   );
 }
 
+/** Sub-component of SFSheet — sheet title in font-mono uppercase with letter-spacing. */
 function SFSheetTitle({
   className,
   ...props
@@ -75,6 +97,7 @@ function SFSheetTitle({
   );
 }
 
+/** Sub-component of SFSheet — supporting description text in muted foreground, uppercase, xs size. */
 function SFSheetDescription({
   className,
   ...props
