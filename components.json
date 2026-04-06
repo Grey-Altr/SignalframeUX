@@ -22,7 +22,7 @@
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {
-    "signalframe": {
+    "@signalframe": {
       "url": "https://signalframeux.com/r/{name}.json"
     }
   }
