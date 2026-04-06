@@ -31,6 +31,7 @@ metrics:
   tasks_completed: 2
   files_modified: 6
   commits: 2
+requirements_completed: [SIG-08, SIG-09]
 ---
 
 # Phase 7 Plan 02: SIGNAL Activation — IdleOverlay + data-cursor SUMMARY

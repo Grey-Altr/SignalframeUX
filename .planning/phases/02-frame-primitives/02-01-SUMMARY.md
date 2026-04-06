@@ -27,6 +27,7 @@ metrics:
   tasks_completed: 2
   files_created: 3
   files_modified: 1
+requirements_completed: [PRM-01, PRM-02, PRM-03]
 ---
 
 # Phase 2 Plan 01: Layout Primitives Summary

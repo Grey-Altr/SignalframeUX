@@ -22,6 +22,7 @@ metrics:
   completed: "2026-04-06"
   tasks: 1
   files_modified: 2
+requirements_completed: [INT-01]
 ---
 
 # Phase 10 Plan 02: Nav Clearance + NEXT_CARDS SFSection Summary

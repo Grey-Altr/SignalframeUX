@@ -42,6 +42,7 @@ metrics:
   files_modified: 2
 requirements:
   - DX-04
+requirements_completed: [DX-04]
 ---
 
 # Phase 11 Plan 01: Registry Completion Summary

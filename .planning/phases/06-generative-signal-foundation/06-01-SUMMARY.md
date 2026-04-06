@@ -40,6 +40,7 @@ metrics:
   tasks_total: 3
   files_created: 2
   files_modified: 3
+requirements_completed: [GEN-02, GEN-04]
 ---
 
 # Phase 6 Plan 01: Three.js Infrastructure + Color Bridge Summary

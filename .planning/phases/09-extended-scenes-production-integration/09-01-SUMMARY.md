@@ -42,6 +42,7 @@ metrics:
   files_created: 2
   files_modified: 2
   commits: 2
+requirements_completed: [SCN-03, SCN-04]
 ---
 
 # Phase 09 Plan 01: GLSL Hero Shader with Bayer Dither Summary

@@ -26,6 +26,7 @@ metrics:
   tasks_completed: 2
   tasks_total: 2
   files_modified: 2
+requirements_completed: [INT-04]
 ---
 
 # Phase 12 Plan 01: Signal Wiring — CSS vars to WebGL uniforms

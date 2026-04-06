@@ -41,6 +41,7 @@ patterns-established:
   - "Stagger placement rule: data-anim='stagger' on wrapper whose direct children are the items to animate — never on grids with data-anim='comp-cell' children"
 
 requirements-completed: [INT-01, INT-02]
+requirements_completed: [INT-01, INT-02]
 
 # Metrics
 duration: 25min

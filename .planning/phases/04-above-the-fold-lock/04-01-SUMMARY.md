@@ -28,6 +28,7 @@ metrics:
   completed: "2026-04-05"
   tasks_completed: 2
   files_modified: 5
+requirements_completed: [ATF-01, ATF-02, ATF-03]
 ---
 
 # Phase 4 Plan 01: Above-the-Fold Lock — Hero Fast-Path Summary

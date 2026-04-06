@@ -24,6 +24,7 @@ metrics:
   tasks_completed: 3
   files_modified: 1
 requirements: [ATF-06]
+requirements_completed: [ATF-06]
 ---
 
 # Phase 04 Plan 03: Reduced-Motion QA and Documentation Summary

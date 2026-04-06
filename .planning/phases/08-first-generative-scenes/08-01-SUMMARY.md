@@ -50,6 +50,7 @@ patterns-established:
   - "resolveColorAsThreeColor called once at buildScene time — never in render loop"
 
 requirements-completed: [SCN-01]
+requirements_completed: [SCN-01]
 
 # Metrics
 duration: ~2min

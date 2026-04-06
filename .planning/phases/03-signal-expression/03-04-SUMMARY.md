@@ -34,6 +34,7 @@ key-decisions:
   - "Mobile collapse uses pointer:coarse (not viewport-width) — targets touch devices correctly regardless of screen size"
 
 requirements-completed: [SIG-10, SIG-06, SIG-07, SIG-08]
+requirements_completed: [SIG-10]
 
 duration: 7min
 completed: 2026-04-06

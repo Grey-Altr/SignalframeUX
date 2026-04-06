@@ -39,6 +39,7 @@ metrics:
   files_created: 0
   lines_added: 13
   lines_removed: 4
+requirements_completed: [INT-03]
 ---
 
 # Phase 12 Plan 02: SignalMotion Homepage Wiring Summary

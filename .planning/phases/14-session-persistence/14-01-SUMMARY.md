@@ -33,6 +33,7 @@ metrics:
   files_modified: 2
   completed_date: "2026-04-06"
 requirements_closed: [STP-01]
+requirements_completed: [STP-01]
 ---
 
 # Phase 14 Plan 01: Session Persistence Summary

@@ -32,6 +32,7 @@ metrics:
 requirements_satisfied:
   - FRM-01
   - FRM-07
+requirements_completed: [FRM-01, FRM-07]
 ---
 
 # Phase 01 Plan 02: Spacing Sweep + CVA Compliance Summary

@@ -26,6 +26,7 @@ metrics:
   tasks_total: 2
   files_modified: 2
   commits: 2
+requirements_completed: [SIG-04]
 ---
 
 # Phase 3 Plan 03: ScrollTrigger-Based ScrambleText and Stagger Batch Entry Summary

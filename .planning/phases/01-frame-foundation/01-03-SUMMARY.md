@@ -27,6 +27,7 @@ metrics:
   files-modified: 1
   completed-date: "2026-04-06"
   commits: [7f94179, 01118d9]
+requirements_completed: [FRM-04, FRM-08]
 ---
 
 # Phase 1 Plan 3: CSS Fallbacks and Print Stylesheet Summary

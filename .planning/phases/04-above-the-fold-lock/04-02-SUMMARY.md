@@ -31,6 +31,7 @@ metrics:
   tasks_completed: 2
   files_modified: 6
 requirements: [ATF-04, ATF-05]
+requirements_completed: [ATF-04, ATF-05]
 ---
 
 # Phase 04 Plan 02: Crafted States — FRAME+SIGNAL Design Moments Summary
