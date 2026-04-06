@@ -79,7 +79,7 @@ Plans:
   5. Reduced-motion mode presents a complete, intentional layout experience with no empty regions, invisible elements, or layout collapse where animations would have been
 **Plans:** 3 plans
 Plans:
-- [ ] 04-01-PLAN.md — Hero animation fast-path (sub-500ms first motion), component count fix, hero spacing polish
+- [x] 04-01-PLAN.md — Hero animation fast-path (sub-500ms first motion), component count fix, hero spacing polish
 - [ ] 04-02-PLAN.md — Crafted error/not-found pages (FRAME+SIGNAL) + ComponentsExplorer empty state
 - [ ] 04-03-PLAN.md — Reduced-motion QA audit, CSS coverage verification, SIGNAL-SPEC.md documentation
 
@@ -103,7 +103,7 @@ Plans:
 | 1. FRAME Foundation | 3/3 | Complete | 2026-04-06 |
 | 2. FRAME Primitives | 2/2 | Complete | 2026-04-06 |
 | 3. SIGNAL Expression | 4/4 | Complete | 2026-04-06 |
-| 4. Above-the-Fold Lock | 0/3 | Not started | - |
+| 4. Above-the-Fold Lock | 1/3 | In Progress | - |
 | 5. DX Contract & State | 0/? | Not started | - |
 
 ---

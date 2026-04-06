@@ -66,3 +66,7 @@ SIGNAL-SPEC.md (03-04) is a pure documentation task — created in a single task
 ### 2026-04-06T03:46:51Z | Phase 03 | tags: canvas-cursor, oklch-to-rgb, signal-layer, intersection-observer
 
 Canvas 2D context does not understand oklch() CSS values — resolve --color-primary to RGB by creating a probe 1x1 canvas, setting fillStyle to the raw computed property value, drawing a pixel, and reading back with getImageData(). This is the correct approach for bridging CSS custom property color values into canvas draw calls. The zIndex style prop accepts string in JSX via `as unknown as number` cast — React's CSSProperties types number only, but CSS custom property references require string values like "var(--z-cursor, 9999)".
+
+### 2026-04-05T00:00:00Z | Phase 04 | tags: gsap-hero, animation-fast-path, data-anim-wrapper, component-count
+
+For GSAP targeting of a component that renders a canvas (e.g. HeroMesh), wrap it in a plain div with data-anim rather than passing data-anim as a prop — canvas components use className for inline styles and the data attribute needs a clean DOM node for GSAP. Use gsap.fromTo (not gsap.to) at delay:0 for first visible motion — fromTo pins the start opacity, preventing stale reads from a prior context revert. Pre-existing TypeScript errors in this project (useRef missing argument, webkitBackdropFilter type) should be fixed when first encountered as they block build verification; both patterns have minimal fixes: useRef<T | undefined>(undefined) and (element.style as CSSStyleDeclaration & { key: string }).key.

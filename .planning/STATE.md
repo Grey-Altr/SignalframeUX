@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: "Completed Phase 3 Plan 03-04 — SIGNAL-SPEC.md. Phase 3 complete. Next: Phase 4 — Above-the-Fold Lock."
-last_updated: "2026-04-06T03:58:27.077Z"
-last_activity: "2026-04-06 — Plan 03-04 executed: SIGNAL-SPEC.md created as single source of truth for SIGNAL layer"
+status: active
+stopped_at: "Completed Phase 4 Plan 04-01 — Hero fast-path animation timeline + component count correction"
+last_updated: "2026-04-05T00:00:00Z"
+last_activity: "2026-04-05 — Plan 04-01 executed: hero-mesh fires at delay:0, full sequence ~3s, 28 SF components claim corrected"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 3 — SIGNAL Expression (COMPLETE)
-Plan: 03-04 (complete) — SIGNAL-SPEC.md: 9 effects specified (timing/easing/mobile/fallback), SIG-06/07/08 deferred, mobile collapse/persist matrix, progressive enhancement guarantee
-Status: Phase 3 COMPLETE — 4/4 plans complete
-Last activity: 2026-04-06 — Plan 03-04 executed: SIGNAL-SPEC.md created as single source of truth for SIGNAL layer
+Phase: Phase 4 — Above-the-Fold Lock (IN PROGRESS)
+Plan: 04-01 (complete) — Hero fast-path animation: hero-mesh delay:0, hero-char delay:0.4, full sequence ~3s; 28 SF components claim corrected in stats-band, metadata, hero right panel
+Status: Phase 4 IN PROGRESS — 1/? plans complete
+Last activity: 2026-04-05 — Plan 04-01 executed: hero-mesh fires at delay:0, full sequence ~3s, 28 SF components claim corrected
 
 ## Progress
 
@@ -37,10 +37,10 @@ Last activity: 2026-04-06 — Plan 03-04 executed: SIGNAL-SPEC.md created as sin
 Phase 1 — FRAME Foundation:    [██████████] 100% (3/3 plans) COMPLETE
 Phase 2 — FRAME Primitives:    [██████████] 100% (2/2 plans) COMPLETE
 Phase 3 — SIGNAL Expression:   [██████████] 100% (4/4 plans) COMPLETE
-Phase 4 — Above-the-Fold Lock: [░░░░░░░░░░]   0%
+Phase 4 — Above-the-Fold Lock: [██░░░░░░░░]  ~20% (1/? plans)
 Phase 5 — DX Contract & State: [░░░░░░░░░░]   0%
 
-Overall:   [██████░░░░]  64% (9/14 plans)
+Overall:   [███████░░░]  71% (10/14 plans)
 ```
 
 ## Accumulated Context
@@ -67,6 +67,10 @@ Overall:   [██████░░░░]  64% (9/14 plans)
 - Plan 03-03: stagger interval and stagger delay both set to 0.04 (40ms) — grouping window and per-item delay matched for clean cascade without bunching
 - Plan 03-04: SIGNAL-SPEC.md mobile collapse uses pointer:coarse (not viewport-width) — targets touch devices correctly regardless of screen size; this is the right signal for "no precise cursor" behavior
 - Plan 03-04: SIG-06/07/08 deferred with explicit implementation barriers — Web Audio API gesture-gating complexity, Vibration API limited Safari support, IdleOverlay visual QA deferral — documented to prevent future rediscovery
+- Plan 04-01: hero-mesh wrapped in div (not prop on canvas) — data-anim on parent div gives GSAP clean DOM target without mutating canvas component internals
+- Plan 04-01: gsap.fromTo at delay:0 (not gsap.to) — fromTo pins start state, prevents GSAP reading potentially stale opacity from a prior context revert
+- Plan 04-01: multilingual timeline delay 2.2s → 0.3s — fires at ~1.3s post-load vs ~5.3s; after hero-char chars cascade
+- Plan 04-01: SF COMPONENTS label (not COMPONENTS) — precision: only SF-layer wrapped components counted; base shadcn/ui and animation components excluded
 - Plan 03-02: CustomCursor function preserved in global-effects.tsx — not exported, tree-shaken at build; rollback capability maintained
 - Plan 02-02: SFGrid uses numeric string keys ("3") for CVA variants — allows Tailwind class strings as values without ambiguity
 - Plan 02-02: SFText uses plain Record maps not CVA — single variant dimension, CVA adds no value
@@ -92,7 +96,7 @@ Overall:   [██████░░░░]  64% (9/14 plans)
 - SIG-06 (audio), SIG-07 (haptic), SIG-08 (idle), SIG-09 (cursor), DX-04 (registry), DX-05 (API), STP-01, STP-02 (state) — all formally in scope for v1.0 per requirements, but execution strategy marks SIG-06/07/08, DX-04/05, STP-01 as deferred unless time permits. SIG-09 and STP-02 ARE in sprint scope.
 
 ### Blockers
-- Pre-existing TypeScript error in components/animation/color-cycle-frame.tsx (useRef missing argument) blocks `npx next build` — CSS compilation passes, TS check fails. Deferred to plan 01-02 investigation.
+- None — pre-existing TypeScript errors in color-cycle-frame.tsx and dark-mode-toggle.tsx were fixed during Plan 04-01 build verification.
 
 ## Roadmap
 
@@ -101,11 +105,11 @@ Overall:   [██████░░░░]  64% (9/14 plans)
 | 1 — FRAME Foundation | Token system locked and enforced | FRM-01–08 (8 reqs) | COMPLETE — 3/3 plans |
 | 2 — FRAME Primitives | Six SF primitives enforce token system | PRM-01–06 (6 reqs) | COMPLETE — 2/2 plans |
 | 3 — SIGNAL Expression | Full SIGNAL layer authored and progressively enhanced | SIG-01–10 (10 reqs) | COMPLETE — 4/4 plans |
-| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | Not started |
+| 4 — Above-the-Fold Lock | Hero wins without scroll, states crafted, reduced-motion QA'd | ATF-01–06 (6 reqs) | IN PROGRESS — 1/? plans |
 | 5 — DX Contract & State | Scaffolding spec, JSDoc, boundary, API, session state | DX-01–05, STP-01–02 (7 reqs) | Not started |
 
 ## Session Continuity
 
-Last session: 2026-04-06
-Stopped at: Completed Phase 3 Plan 03-04 — SIGNAL-SPEC.md. Phase 3 complete. Next: Phase 4 — Above-the-Fold Lock.
-Resume file: .planning/phases/04-atf/
+Last session: 2026-04-05
+Stopped at: Completed Phase 4 Plan 04-01 — Hero fast-path animation + 28 SF components claim. Next: Plan 04-02.
+Resume file: .planning/phases/04-above-the-fold-lock/
