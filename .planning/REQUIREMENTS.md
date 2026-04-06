@@ -57,12 +57,48 @@
 
 ## Traceability
 
-| REQ-ID | Phase |
-|--------|-------|
-| _(filled by roadmapper)_ | |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| FRM-01 | Phase 1 — FRAME Foundation | Pending |
+| FRM-02 | Phase 1 — FRAME Foundation | Pending |
+| FRM-03 | Phase 1 — FRAME Foundation | Pending |
+| FRM-04 | Phase 1 — FRAME Foundation | Pending |
+| FRM-05 | Phase 1 — FRAME Foundation | Pending |
+| FRM-06 | Phase 1 — FRAME Foundation | Pending |
+| FRM-07 | Phase 1 — FRAME Foundation | Pending |
+| FRM-08 | Phase 1 — FRAME Foundation | Pending |
+| PRM-01 | Phase 2 — FRAME Primitives | Pending |
+| PRM-02 | Phase 2 — FRAME Primitives | Pending |
+| PRM-03 | Phase 2 — FRAME Primitives | Pending |
+| PRM-04 | Phase 2 — FRAME Primitives | Pending |
+| PRM-05 | Phase 2 — FRAME Primitives | Pending |
+| PRM-06 | Phase 2 — FRAME Primitives | Pending |
+| SIG-01 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-02 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-03 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-04 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-05 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-06 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-07 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-08 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-09 | Phase 3 — SIGNAL Expression | Pending |
+| SIG-10 | Phase 3 — SIGNAL Expression | Pending |
+| ATF-01 | Phase 4 — Above-the-Fold Lock | Pending |
+| ATF-02 | Phase 4 — Above-the-Fold Lock | Pending |
+| ATF-03 | Phase 4 — Above-the-Fold Lock | Pending |
+| ATF-04 | Phase 4 — Above-the-Fold Lock | Pending |
+| ATF-05 | Phase 4 — Above-the-Fold Lock | Pending |
+| ATF-06 | Phase 4 — Above-the-Fold Lock | Pending |
+| DX-01 | Phase 5 — DX Contract & State | Pending |
+| DX-02 | Phase 5 — DX Contract & State | Pending |
+| DX-03 | Phase 5 — DX Contract & State | Pending |
+| DX-04 | Phase 5 — DX Contract & State | Pending |
+| DX-05 | Phase 5 — DX Contract & State | Pending |
+| STP-01 | Phase 5 — DX Contract & State | Pending |
+| STP-02 | Phase 5 — DX Contract & State | Pending |
 
 ---
 
 *Created: 2026-04-05*
 *Milestone: v1.0 Craft & Feedback*
-*Total requirements: 31*
+*Total requirements: 37 (31 core + 6 deferred-eligible per execution strategy)*
