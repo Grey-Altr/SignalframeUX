@@ -187,3 +187,23 @@ SignalMotion MUST wrap the block component child (ManifestoBand, DualLayer, etc.
 ### 2026-04-06T11:41:01Z | Phase 12 | tags: signal-cache, mutation-observer, ticker-no-dom, webgl-uniforms
 
 Module-level signal cache pattern for both glsl-hero.tsx and signal-mesh.tsx: declare `_signalIntensity/_signalSpeed/_signalAccent` at file scope + `ensureSignalObserver()` guarded by `_signalObserver` null check — ensures single MutationObserver across all component instances. `pnpm lint` is non-functional in this project (no ESLint config, `next lint` prompts interactively) — use `pnpm tsc --noEmit` + `pnpm build` as the quality gate instead.
+
+### 2026-04-06T12:01:25Z | Phase 13 | tags: use-client-factory, server-component-boundary, createcontext-factory, next15-module-scope
+
+Next.js 15 rejects calling a `'use client'` function at module scope in a Server Component — `createSignalframeUX()` called at module scope in `app/layout.tsx` fails at build time with "Attempted to call [fn] from the server but [fn] is on the client." The fix: create a thin `'use client'` wrapper file (e.g. `signalframe-config.tsx`) that holds the factory call and exports the result — `app/layout.tsx` imports from this wrapper, remains a Server Component. This mirrors SignalCanvasLazy/GlobalEffectsLazy. The standalone `useSignalframe` export (reads same context as factory-returned hook) allows consumers to import directly without threading the factory return through module scope.
+
+### 2026-04-06T12:27:25Z | Phase 14 | tags: sessionStorage, ssr-hydration, useEffect-deferral, scroll-restoration
+
+SSR-safe sessionStorage pattern in Next.js 15: initialize state with `useState(defaultValue)` (never read sessionStorage as initializer), then read sessionStorage only inside `useEffect([key])`. This guarantees server HTML and initial client render agree — zero hydration mismatch. `JSON.parse` the stored value (typed via generics) and wrap all sessionStorage access in try/catch for private browsing resilience. The `useState(defaultValue)` grep check in plan verification will fail because actual code uses `useState<T>(defaultValue)` — verify the pattern manually by line-reading the hook.
+
+### 2026-04-06T16:43:00Z | Phase 15 | tags: scaffolding-doc, api-contract, requirements-closure, doc-only-plan
+
+For documentation-only plans, verify source files BEFORE writing docs — sf-section.tsx bgShift type was already correct (Phase 10-01 fix), so Task 2 required zero code edits (verify-only). SCAFFOLDING.md section appended verbatim from RESEARCH.md sub-target spec; the plan pre-resolved the exact API surface from lib/signalframe-provider.tsx, making the write task a direct copy rather than a new authoring session. Requirements closure tasks should update both the checkbox AND the traceability table row in the same edit session to avoid partial stale state.
+
+### 2026-04-06T12:27:25Z | Phase 14 | tags: gsap-flip-guard, session-restore, filter-state, controlled-tabs
+
+GSAP Flip does NOT fire on sessionStorage filter restore in ComponentsExplorer because `flipStateRef.current` is `null` at mount time — the Flip guard (`if (!flipStateRef.current ...) return`) prevents animation. No code change needed for this behavior. For Radix Tabs, switching from uncontrolled (`defaultValue`) to controlled (`value` + `onValueChange`) is a standard first-class pattern; the `SFTabs` wrapper passes all props through via `React.ComponentProps<typeof Tabs>` so no wrapper changes needed. `useScrollRestoration` must live in a client component, not a Server Component page — place it in `ComponentsExplorer` (already client), never in `app/components/page.tsx`.
+
+### 2026-04-06T16:47:00Z | Phase 15 | tags: frontmatter-normalization, requirements-traceability, documentation-hygiene, yaml-surgical-edit
+
+When adding a canonical field to YAML frontmatter across 30 files, use the Edit tool with a unique anchor (end of `metrics:` block or last existing field before `---`) — never rewrite whole files. Some SUMMARY files used inconsistent alternatives (requirements_met, requirements_closed, requirements-completed with hyphen) — the canonical field is `requirements_completed` with underscore. Always add the canonical field even when an alternative exists; do not remove the alternative. For v1.0/v1.1 archive checkbox fixes, append completion notes inline rather than replacing the entire requirement description — the original text is the archival record.
