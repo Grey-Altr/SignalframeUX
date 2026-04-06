@@ -4,13 +4,13 @@ milestone: v1.1
 milestone_name: Generative Surface
 status: active
 stopped_at: ""
-last_updated: "2026-04-05T00:00:00.000Z"
-last_activity: "2026-04-05 — v1.1 roadmap created (Phases 6-9)"
+last_updated: "2026-04-06T07:16:00.000Z"
+last_activity: "2026-04-06 — Phase 6 Plan 01 complete: Three.js infrastructure + color bridge"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 Phase: 6 — Generative SIGNAL Foundation
-Plan: — (not started)
-Status: Roadmap created, planning Phase 6
-Last activity: 2026-04-05 — v1.1 roadmap created (Phases 6-9)
+Plan: 02 (next)
+Status: Plan 01 complete — Three.js infrastructure + color bridge delivered
+Last activity: 2026-04-06 — Plan 01 complete (3 tasks, 3 commits: 608df40, b913979, 6693f44)
 
 ## Progress
 
@@ -39,13 +39,13 @@ Phase 2 — FRAME Primitives:                    [██████████
 Phase 3 — SIGNAL Expression:                   [██████████] 100% (4/4 plans) COMPLETE
 Phase 4 — Above-the-Fold Lock:                 [██████████] 100% (3/3 plans) COMPLETE
 Phase 5 — DX Contract & State:                 [██████████] 100% (2/2 plans) COMPLETE
-Phase 6 — Generative SIGNAL Foundation:        [          ]   0% (0/? plans) Not started
+Phase 6 — Generative SIGNAL Foundation:        [█         ]  ~20% (1/? plans) In progress
 Phase 7 — SIGNAL Activation:                   [          ]   0% (0/? plans) Not started
 Phase 8 — First Generative Scenes:             [          ]   0% (0/? plans) Not started
 Phase 9 — Extended Scenes + Integration:       [          ]   0% (0/? plans) Not started
 
 v1.0: [██████████] 100% (15/15 plans) MILESTONE COMPLETE
-v1.1: [          ]   0% (0/? plans)
+v1.1: [█         ]  ~5% (1/? plans)
 ```
 
 ## Accumulated Context
@@ -78,7 +78,10 @@ v1.1: [          ]   0% (0/? plans)
 - OGL vs Three.js for ASCII shader (Phase 9) — verify OGL post-process pipeline sufficient before choosing; fallback is Three.js postprocessing with same dynamic import isolation
 
 ### Decisions
-(Filled as plans complete)
+
+**06-01:** Project uses pnpm (not npm) — pnpm-lock.yaml present, npm install fails against .pnpm virtual store. Use `pnpm add` for all installs.
+**06-01:** No transpilePackages for Three.js — next/dynamic({ ssr: false }) is sufficient SSR guard; transpilePackages has known Turbopack issues (vercel/next.js#63230).
+**06-01:** No caching in color-resolve.ts (Phase 6) — color-cycle-frame.tsx mutates --color-primary dynamically; cached values go stale. Optimize in Phase 8.
 
 ### Blockers
 - None
@@ -87,7 +90,7 @@ v1.1: [          ]   0% (0/? plans)
 
 | Phase | Goal | Requirements | Status |
 |-------|------|--------------|--------|
-| 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | Not started |
+| 6 — Generative SIGNAL Foundation | Singleton WebGL infrastructure validated, all safety constraints enforced | GEN-01–05 (5 reqs) | In progress (1/? plans) |
 | 7 — SIGNAL Activation | Dormant effects activated: cursor, idle, audio, haptic | SIG-06, SIG-07, SIG-08, SIG-09 (4 reqs) | Not started |
 | 8 — First Generative Scenes | SignalMesh validates full WebGL pipeline; token viz via Canvas 2D | SCN-01, SCN-02 (2 reqs) | Not started |
 | 9 — Extended Scenes + Integration | ASCII shader, GLSL hero, showcase pages on SF primitives | SCN-03, SCN-04, INT-01–04 (6 reqs) | Not started |
@@ -101,6 +104,6 @@ See: .planning/PROJECT.md (updated 2026-04-05)
 
 ## Session Continuity
 
-Last session: 2026-04-05
-Stopped at: v1.1 roadmap created. Phase 6 planning is next.
-Resume file: .planning/ROADMAP.md
+Last session: 2026-04-06
+Stopped at: Completed 06-01-PLAN.md (Three.js infrastructure + color bridge)
+Resume file: .planning/phases/06-generative-signal-foundation/06-02-PLAN.md
