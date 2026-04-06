@@ -896,6 +896,40 @@
         "layer": "frame",
         "pattern": "A"
       }
+    },
+    {
+      "name": "sf-hover-card",
+      "type": "registry:ui",
+      "title": "SF HoverCard",
+      "description": "FRAME-only hover/focus preview panel. Sharp 2px border, no radius, no shadow. Keyboard accessible via Radix.",
+      "registryDependencies": ["hover-card"],
+      "files": [
+        {
+          "path": "components/sf/sf-hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-input-otp",
+      "type": "registry:ui",
+      "title": "SF InputOTP",
+      "description": "OTP verification input with individual character slots. Zero border-radius, mono font, keyboard navigable.",
+      "registryDependencies": ["input-otp"],
+      "files": [
+        {
+          "path": "components/sf/sf-input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }

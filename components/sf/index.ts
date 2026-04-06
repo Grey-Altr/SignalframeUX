@@ -175,3 +175,12 @@ export {
   SFInputGroupInput,
   SFInputGroupTextarea,
 } from "./sf-input-group";
+export {
+  SFInputOTP,
+  SFInputOTPGroup,
+  SFInputOTPSlot,
+  SFInputOTPSeparator,
+} from "./sf-input-otp";
+
+// Overlays
+export { SFHoverCard, SFHoverCardTrigger, SFHoverCardContent } from "./sf-hover-card";
