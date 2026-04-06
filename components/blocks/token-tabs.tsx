@@ -344,6 +344,24 @@ export function TokenTabs() {
             </div>
           ))}
         </div>
+        {!showAll && (
+          <div className="border-t-2 border-foreground py-12 px-6 md:px-12 text-center">
+            <p className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+              {COLOR_SCALES.length - CORE_SCALE_COUNT} EXTENDED SCALES AVAILABLE
+            </p>
+            <p className="text-[var(--text-2xs)] uppercase tracking-[0.15em] text-muted-foreground/60 mb-6">
+              FULL SPECTRUM COVERAGE AT 8-DEGREE HUE INTERVALS. SELECT A SCALE TO INSPECT.
+            </p>
+            <SFButton
+              intent="ghost"
+              size="sm"
+              onClick={() => setShowAll(true)}
+              className="text-[var(--text-xs)] text-primary sf-pressable uppercase tracking-[0.2em]"
+            >
+              SHOW ALL {COLOR_SCALES.length} SCALES
+            </SFButton>
+          </div>
+        )}
       </SFTabsContent>
 
       {/* ═══ SPACING TAB ═══ */}

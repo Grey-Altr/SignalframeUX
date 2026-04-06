@@ -462,7 +462,34 @@ export function ComponentsExplorer() {
         onKeyDown={handleGridKeyDown}
         className="grid grid-cols-2 lg:grid-cols-4 list-none m-0 p-0"
       >
-        {filtered.map((comp, i) => {
+        {filtered.length === 0 ? (
+          <div className="col-span-full flex items-center justify-center py-24 px-6 border-b-2 border-foreground">
+            <div className="text-center max-w-md">
+              <div
+                aria-hidden="true"
+                className="sf-display text-[clamp(32px,4vw,48px)] text-muted-foreground mb-4 tracking-[-0.02em]"
+              >
+                0 MATCHES
+              </div>
+              <p className="text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground mb-6">
+                NO COMPONENTS MATCH THE CURRENT FILTER.
+                <br />
+                ADJUST YOUR SEARCH OR RESET FILTERS.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput("");
+                  setSearchQuery("");
+                  setActiveFilter("ALL");
+                }}
+                className="sf-pressable sf-invert-hover inline-block text-[var(--text-xs)] uppercase tracking-[0.2em] font-bold px-6 py-3 border-2 border-foreground text-foreground hover:bg-foreground hover:text-background"
+              >
+                RESET FILTERS
+              </button>
+            </div>
+          </div>
+        ) : filtered.map((comp, i) => {
           const styles = variantStyles[comp.variant];
           const isYellow = comp.variant === "yellow";
 

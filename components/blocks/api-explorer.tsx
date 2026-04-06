@@ -576,8 +576,10 @@ export function APIExplorer() {
             <SFBadge intent="outline" className="text-[var(--text-base)] py-2.5 px-8 opacity-50">
               COMING SOON
             </SFBadge>
-            <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-[0.1em] max-w-[400px] text-center leading-[1.8]">
-              THIS COMPONENT&apos;S API DOCUMENTATION IS UNDER CONSTRUCTION.
+            <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-[0.15em] max-w-[400px] text-center leading-[1.8]">
+              API DOCUMENTATION FOR THIS COMPONENT IS UNDER CONSTRUCTION.
+              <br />
+              THE SIGNAL WILL BE TRANSMITTED WHEN READY.
             </p>
             <SFButton
               intent="primary"
@@ -585,7 +587,7 @@ export function APIExplorer() {
               onClick={() => handleNavClick("button")}
               className="text-[var(--text-sm)] tracking-[0.1em]"
             >
-              VIEW BUTTON REFERENCE →
+              VIEW BUTTON REFERENCE
             </SFButton>
           </div>
         ) : (
