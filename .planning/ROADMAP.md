@@ -33,7 +33,7 @@
 
 - [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
 - [x] **Phase 11: Registry Completion** — Full 33-item registry with sf-theme token entry (COMPLETE 2026-04-06)
-- [ ] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement
+- [x] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement (COMPLETE 2026-04-06)
 - [ ] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook
 - [ ] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage
 - [ ] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs
@@ -80,7 +80,7 @@ Plans:
   5. Reduced-motion preference disables SignalMotion animations without JS errors
 **Plans:** 2 plans
 Plans:
-- [ ] 12-01-PLAN.md — CSS->WebGL signal cache bridge for glsl-hero and signal-mesh
+- [x] 12-01-PLAN.md — CSS->WebGL signal cache bridge for glsl-hero and signal-mesh
 - [x] 12-02-PLAN.md — SignalMotion placement on 4 homepage showcase sections
 
 ### Phase 13: Config Provider
@@ -139,7 +139,7 @@ Plans:
 | 9. Extended Scenes + Production Integration | v1.1 | 3/3 | Complete | 2026-04-06 |
 | 10. Foundation Fixes | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
 | 11. Registry Completion | v1.2 | Complete    | 2026-04-06 | 2026-04-06 |
-| 12. SIGNAL Wiring | v1.2 | 1/2 | In Progress | — |
+| 12. SIGNAL Wiring | v1.2 | 2/2 | Complete | 2026-04-06 |
 | 13. Config Provider | v1.2 | 0/? | Not started | — |
 | 14. Session Persistence | v1.2 | 0/? | Not started | — |
 | 15. Documentation Cleanup | v1.2 | 0/? | Not started | — |

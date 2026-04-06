@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 12-02-PLAN.md — SignalMotion wired on 4 homepage showcase sections
-last_updated: "2026-04-06T11:39:30Z"
-last_activity: "2026-04-06 — 12-02 complete: INT-03 satisfied — SignalMotion on ManifestoBand, DualLayer, CodeSection, ComponentGrid"
+stopped_at: Completed 12-01-PLAN.md — CSS→WebGL bridge via module-level signal cache + MutationObserver
+last_updated: "2026-04-06T11:41:01Z"
+last_activity: "2026-04-06 — 12-01 complete: INT-04 satisfied — signal cache wired to GLSLHero + SignalMesh uniforms"
 progress:
   total_phases: 6
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # STATE — SignalframeUX
@@ -26,17 +26,17 @@ progress:
 
 ## Current Position
 
-Phase: Phase 12 — SIGNAL Wiring (IN PROGRESS)
-Plan: 12-02 complete
-Status: 12-01 (INT-04 CSS→WebGL bridge) is next, 12-02 (INT-03 SignalMotion) complete
-Last activity: 2026-04-06 — 12-02 complete: INT-03 satisfied — SignalMotion on ManifestoBand, DualLayer, CodeSection, ComponentGrid
+Phase: Phase 12 — SIGNAL Wiring (COMPLETE)
+Plan: 12-01 complete (both 12-01 and 12-02 done)
+Status: Phase 12 done — Phase 13 Config Provider next
+Last activity: 2026-04-06 — 12-01 complete: INT-04 satisfied — signal cache wired to GLSLHero + SignalMesh uniforms
 
 ## Progress
 
 ```
 v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [████░░░░░░]  ~40% (4/? plans) IN PROGRESS — Phase 12 in progress
+v1.2: [█████░░░░░]  ~50% (5/? plans) IN PROGRESS — Phase 13 next
 ```
 
 ## v1.2 Phase Map
@@ -45,7 +45,7 @@ v1.2: [████░░░░░░]  ~40% (4/? plans) IN PROGRESS — Phase 1
 |-------|------|--------------|--------|
 | 10. Foundation Fixes | Zero type mismatches, correct CSS var defaults | FND-01, FND-02, INT-01 | COMPLETE |
 | 11. Registry Completion | Full 33-item CLI-installable registry | DX-04 | COMPLETE |
-| 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | In progress (INT-03 done) |
+| 12. SIGNAL Wiring | CSS→WebGL bridge + SignalMotion on showcase | INT-04, INT-03 | COMPLETE |
 | 13. Config Provider | createSignalframeUX factory + useSignalframe | DX-05 | Not started |
 | 14. Session Persistence | Filter/tab/scroll state via sessionStorage | STP-01 | Not started |
 | 15. Documentation Cleanup | Frontmatters, stale checkboxes, API contracts | DOC-01 | Not started |
@@ -89,6 +89,8 @@ v1.2: [████░░░░░░]  ~40% (4/? plans) IN PROGRESS — Phase 1
 | shadcn build handles registry:style (sf-theme) correctly | Auto-generates sf-theme.json with cssVars — no manual file needed |
 | Wrap block child, not SFSection, with SignalMotion | SFSection carries data-bg-shift queried by GSAP applyBgShift — wrapping it would break palette transitions |
 | opacity floor 0.4 (not 0) for SignalMotion from state | Content never fully invisible for slow scrollers or users who skip the scroll window |
+| Module-level signal cache (not per-instance) | Single MutationObserver across all component instances — no redundant DOM observers |
+| FBM amplitude floor 50% (not 0%) | Prevents GLSLHero going fully dark at uIntensity=0; maintains visual presence at minimum |
 
 ### Blockers
 - None
@@ -103,5 +105,5 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Session Continuity
 
 Last session: 2026-04-06
-Stopped at: Completed 12-02-PLAN.md — SignalMotion wired on 4 homepage showcase sections (INT-03 satisfied)
-Resume with: 12-01 (CSS→WebGL bridge, INT-04)
+Stopped at: Completed 12-01-PLAN.md — CSS→WebGL signal cache wired to GLSLHero + SignalMesh (INT-04 satisfied)
+Resume with: `/pde:plan-phase 13` (Config Provider — DX-05)
