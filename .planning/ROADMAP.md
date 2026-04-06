@@ -250,7 +250,10 @@ Plans:
   2. globals.css contains an explicit comment block documenting the absence of elevation tokens (no box-shadow scale, no z-elevation variables) as an intentional DU/TDR design decision
   3. SCAFFOLDING.md documents sidebar and chart color token behavior — including the recommendation to avoid SFSidebar and SFChart until respective milestones
   4. color-resolve.ts handles all current token values without silent failure — visual smoke test of SignalMesh and GLSLHero after every globals.css change confirms no color regression
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
+- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
 
 ### Phase 23: Remaining SF Components
 **Goal**: The component set is complete for v1.4 — every identified remaining shadcn/Radix component is SF-wrapped, registered, and in ComponentsExplorer
@@ -262,7 +265,10 @@ Plans:
   3. SFInputOTP renders an OTP input with individual character slots; the input is keyboard navigable and passes WCAG AA color contrast
   4. SFInputGroup wraps the last uncovered `ui/` component — all shadcn base components now have an SF wrapper equivalent; the gap is closed
   5. All four components have registry entries in registry.json and `/r/` artifacts, are exported from `sf/index.ts` (except SFDrawer which is lazy), and appear in ComponentsExplorer under the correct category
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
+- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
 
 ### Phase 24: Detail View Data Layer
 **Goal**: All component data needed to render the interactive detail views is authored and accessible via static TypeScript imports — no runtime fetch calls
@@ -272,7 +278,10 @@ Plans:
   1. lib/component-registry.ts exists and maps every ComponentsExplorer grid item's index to a ComponentRegistryEntry containing: variant previews (live SF component renders), a code snippet, and a docId pointer to api-docs.ts
   2. lib/api-docs.ts contains a ComponentDoc entry for every component in the registry (~49 items) — each entry has at least one PropDef with name, type, default, required, and description fields
   3. lib/code-highlight.ts exists as a server-only RSC module; calling it with a code string returns highlighted HTML using shiki/core with an OKLCH-compatible theme — zero client JS added to the bundle
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
+- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
 
 ### Phase 25: Interactive Detail Views + Site Integration
 **Goal**: Clicking any component card on /components or the homepage grid expands an inline detail panel showing variants, props, and copyable code — the milestone's primary feature
@@ -289,7 +298,10 @@ Plans:
   8. Homepage grid cards on / open the same ComponentDetail panel with identical behavior to /components
   9. The detail panel renders with DU/TDR aesthetic: sharp edges, uppercase labels, accent color on the active tab, no decorative gradients
   10. The z-index contract is enforced — the detail panel appears above content but below the canvas cursor; `[data-modal-open]` CSS rule drops cursor z-index when panel is open
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
+- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
@@ -298,7 +310,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `ANALYZE=true pnpm build` confirms the shared JS bundle is under 150 KB — ComponentDetail lazy-load, P3 component lazy-load, and shiki server-only module all verified as non-contributors to initial bundle
   2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 22-01-PLAN.md — Token migration (success/warning to @theme) + WebGL bridge audit
+- [ ] 22-02-PLAN.md — Elevation policy + deferred token groups documentation
 
 ## Progress
 
@@ -324,7 +339,7 @@ Plans:
 | 18. P1 Animated Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 19. P2 Components | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
-| 21. Tech Debt Closure | 2/2 | Complete   | 2026-04-06 | - |
+| 21. Tech Debt Closure | 2/2 | Complete    | 2026-04-06 | - |
 | 22. Token Finalization | v1.4 | 0/? | Not started | - |
 | 23. Remaining SF Components | v1.4 | 0/? | Not started | - |
 | 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
