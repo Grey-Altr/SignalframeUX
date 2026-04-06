@@ -293,6 +293,48 @@ function PreviewToast() {
   );
 }
 
+function PreviewToggleGroup() {
+  return (
+    <div className="flex gap-0">
+      <span className="w-6 h-6 border border-current" />
+      <span className="w-6 h-6 border border-current bg-current" />
+      <span className="w-6 h-6 border border-current" />
+    </div>
+  );
+}
+
+function PreviewPagination() {
+  return (
+    <div className="flex items-center gap-1">
+      <span className="text-[7px]">&lt;</span>
+      <span className="w-5 h-5 border border-current text-[7px] flex items-center justify-center bg-current text-background">1</span>
+      <span className="w-5 h-5 border border-current text-[7px] flex items-center justify-center">2</span>
+      <span className="w-5 h-5 border border-current text-[7px] flex items-center justify-center">3</span>
+      <span className="text-[7px]">&gt;</span>
+    </div>
+  );
+}
+
+function PreviewStepper() {
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <div className="w-4 h-4 border border-current bg-current" />
+      <div className="w-px h-4 bg-current" />
+      <div className="w-4 h-4 border border-current" />
+    </div>
+  );
+}
+
+function PreviewNavMenu() {
+  return (
+    <div className="flex gap-2">
+      <span className="text-[7px] uppercase border-b border-current pb-0.5">NAV</span>
+      <span className="text-[7px] uppercase border-b border-current pb-0.5">DOCS</span>
+      <span className="text-[7px] uppercase border-b border-current pb-0.5">API</span>
+    </div>
+  );
+}
+
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
@@ -306,7 +348,7 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "008", name: "BADGE", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "black", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--color-primary)" text="NEW" /> },
   { index: "009", name: "TABLE", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "DATA_DISPLAY", preview: <PreviewTable /> },
   { index: "010", name: "TOAST", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
-  { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewDots /> },
+  { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewPagination /> },
   { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
   { index: "013", name: "AVATAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewAvatar /> },
   { index: "014", name: "BREADCRUMB", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewBreadcrumb /> },
@@ -322,6 +364,9 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "020", name: "ACCORDION", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAccordion /> },
   { index: "021", name: "PROGRESS", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewProgress /> },
   { index: "022", name: "TOAST", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewToast /> },
+  { index: "023", name: "TOGGLE_GRP", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewToggleGroup /> },
+  { index: "024", name: "STEPPER", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewStepper /> },
+  { index: "025", name: "NAV_MENU", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewNavMenu /> },
 ];
 
 /* ── Variant style maps ── */
