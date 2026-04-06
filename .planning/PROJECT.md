@@ -1,95 +1,100 @@
-# Portfolio — Product Design Engineer Portfolio
+# SignalframeUX — Design System for Culture Division
 
 ## Vision
 
-A portfolio website for a product design engineer that showcases the intersection of design and engineering — from design systems and component libraries to full-stack product builds. Built as the flagship implementation of the SignalframeUX design system, the site itself is a case study in design engineering craft.
+A high-performance design system combining deterministic structure (FRAME) and generative expression (SIGNAL). Built for product design engineers who demand both precision and craft. The flagship implementation is a portfolio website that serves as both a case study and living reference.
 
 ## Product Type
 
-Software — web application (static-first with dynamic sections)
+Software — design system library + component library (TypeScript/React)
 
 ## Tech Stack
 
 - **Language:** TypeScript
-- **Framework:** Next.js 16 (App Router)
-- **UI:** React, SignalframeUX (custom design system & component library), Tailwind CSS
+- **Framework:** Next.js 15.3 (App Router, Turbopack)
+- **UI:** React, Tailwind CSS v4, CVA for variants, Radix UI via shadcn
+- **Animation:** GSAP 3.12 + ScrollTrigger, Lenis smooth scroll
 - **Design System:** SignalframeUX — housed at ~/code/projects/SignalframeUX
 - **Deployment:** Vercel
-- **Content:** MDX for case studies/writing, JSON for project data
-- **Analytics:** Vercel Analytics + Speed Insights
+- **Color Space:** OKLCH throughout
 
-## Target Users
+## Core Value
 
-- **Primary:** Design and engineering hiring managers evaluating product design engineer candidates
-- **Secondary:** Fellow design engineers and developers interested in design systems and craft
-- **Tertiary:** Potential collaborators, studios, or clients seeking design engineering expertise
+The dual-layer model: FRAME provides deterministic, legible, semantic structure. SIGNAL provides generative, parametric, animated expression. The signal runs through the frame.
 
-## Core Goals
+## Requirements
 
-1. **Case study showcase** — present design engineering work with process narratives: problem framing, design exploration, technical decisions, and measurable outcomes
-2. **Design system as proof of work** — the portfolio itself demonstrates SignalframeUX components in production, serving as a living reference
-3. **Writing/thinking** — MDX-powered articles on design engineering, design systems, interaction design, and technical craft
-4. **Professional presence** — about, contact, resume/CV, social links, and availability status
-5. **Performance + craft benchmark** — sub-1s LCP, perfect Lighthouse scores, Awwwards-quality visual execution
+### Validated
+
+- ✓ Token system locked and enforced (spacing, typography, layout, colors, animation) — v1.0
+- ✓ 5 SF layout primitives enforce tokens by construction (SFContainer, SFSection, SFStack, SFGrid, SFText) — v1.0
+- ✓ SIGNAL layer authored with timing specs, CSS fallbacks, and mobile behavior definitions — v1.0
+- ✓ Hero at 1440x900 is standalone SOTD jury moment with sub-500ms first motion — v1.0
+- ✓ Crafted error/404 pages and 3 empty states as first-class design moments — v1.0
+- ✓ Reduced-motion experience QA'd as intentional alternative design — v1.0
+- ✓ DX contract: SCAFFOLDING.md, JSDoc 28/28 components, import boundary documented — v1.0
+- ✓ Theme toggle GSAP guard prevents OKLCH/inline color conflicts — v1.0
+
+### Active
+
+- [ ] Audio feedback palette (Web Audio API) — SIG-06
+- [ ] Haptic feedback (Vibration API) — SIG-07
+- [ ] Idle state animation (grain drift, color pulse) — SIG-08
+- [ ] registry.json for AI/CLI component installation — DX-04
+- [ ] createSignalframeUX(config) + useSignalframe() API — DX-05
+- [ ] Session state persistence (filters, scroll, tabs) — STP-01
+- [ ] Portfolio pages consuming SFSection, SFStack, SFGrid primitives
+- [ ] data-anim="stagger" applied to production grid blocks
+
+### Out of Scope
+
+- Mobile app — web-first, responsive design handles mobile
+- Backend API — design system is frontend-only
+- CMS integration — MDX + JSON for content
+
+## Context
+
+**Shipped v1.0 Craft & Feedback** (2026-04-06):
+- 115 files modified, +12,440 lines across 82 commits
+- 29 SF-wrapped components (24 interactive + 5 layout primitives)
+- Token system: 9 blessed spacing stops, 5 semantic typography aliases, 5 layout tokens, tiered color palette
+- SIGNAL layer: ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut, canvas cursor, stagger batch
+- DX: SCAFFOLDING.md (337 lines), JSDoc coverage, DX-SPEC.md with deferred interface sketches
+- SIGNAL-SPEC.md (259 lines) documenting all effects with timing, fallback, mobile, reduced-motion
+
+**Known tech debt:**
+- 3 primitives (SFSection, SFStack, SFGrid) exported but awaiting first production consumer
+- data-anim="stagger" wired but no block uses it yet
+- Both resolve when portfolio pages are built
+
+## Key Decisions
+
+| Decision | Milestone | Outcome |
+|----------|-----------|---------|
+| Dual-layer FRAME/SIGNAL model | v1.0 | ✓ Good — clean separation of structure and expression |
+| OKLCH color space throughout | v1.0 | ✓ Good — perceptually uniform, canvas bridge works via probe |
+| Zero border-radius everywhere | v1.0 | ✓ Good — defines the DU/TDR industrial aesthetic |
+| CVA `intent` as standard variant prop | v1.0 | ✓ Good — consistent API across all SF components |
+| Deferred SIG-06/07/08 to post-v1.0 | v1.0 | — Pending — audio/haptic/idle remain as interface sketches |
+| Server Components default for primitives | v1.0 | ✓ Good — no 'use client' on any layout primitive |
 
 ## Constraints
 
-- Must achieve Lighthouse 100/100 across all categories
-- Dark mode as primary theme (design/dev audience), light mode available
-- Mobile-first responsive design — portfolio browsing happens heavily on phones
-- No JavaScript required for core content (progressive enhancement)
-- Accessibility: WCAG AA minimum, keyboard-navigable throughout
-- Page weight budget: < 200KB initial load (excluding images)
-- Visual execution must reflect design engineering standards — no generic templates
+- Lighthouse 100/100 all categories
+- Dark mode primary, light mode available
+- WCAG AA minimum, keyboard-navigable
+- Page weight < 200KB initial (excluding images)
+- LCP < 1.0s, CLS = 0, TTI < 1.5s
+- Zero border-radius — DU/TDR industrial edges
+- No generic dark-mode aesthetic — borrow directly from DU/TDR visual language
 
-## Key Feature Areas
+## Relationship to Culture Division
 
-- Case study gallery with filtering by discipline (design, engineering, hybrid)
-- Case study detail pages with process narratives, before/after, and interactive demos
-- Blog/writing section with MDX support and syntax highlighting
-- About/bio page with professional timeline and skills matrix
-- Contact section with availability indicator
-- Design system showcase page (interactive component playground)
-- Dark/light theme toggle with system preference detection
-- SEO optimization with dynamic OG images
-- RSS feed for blog posts
-- Command palette for keyboard-first navigation (cmdk)
-- Micro-interactions and motion design that demonstrate craft
+SignalframeUX is the design system for Culture Division. It powers the portfolio (first consumer), cdOS (internal tool, future), and CD-Operator (studio role, future).
 
-## Success Metrics
-
-- Lighthouse: 100/100 all categories
-- LCP < 1.0s on 4G connection
-- Time to Interactive < 1.5s
-- Zero layout shift (CLS = 0)
-- Awwwards SOTD quality (>= 8.0 weighted score across Design 4x, Usability 3x, Creativity 2x, Content 1x)
-
-## Current Milestone: v1.0 Craft & Feedback
-
-**Goal:** Stabilize the Frame foundation, amplify Signal-layer craft to SOTD level, and make the DX so fluent that AI agents produce award-quality output without friction.
-
-**Pillars:**
-- **Foundation** — lock tokens, primitives, and constraints (spacing, typography, layout, colors, animation)
-- **Feeling** — SOTD-level micro and macro feedback (hover, click, scroll, transitions, state changes, content reveals)
-- **Fluency** — AI/developer DX contract so clean that SignalframeUX is "as easy as feeling"
-
-**Target features:**
-- Token system stabilization (blessed spacing, semantic typography, layout tokens, color tiers)
-- SF primitives (SFContainer, SFSection, SFStack, SFGrid, SFText)
-- Satisfying micro-interactions and macro-transitions across all components
-- AI DX scaffolding contract (component templates, CVA shapes, barrel export patterns)
-- Progressive enhancement guarantees (Signal fallbacks, GSAP load failure resilience)
-- 90-second jury moment — above-the-fold at 1440px must win without scroll
-- Crafted empty states and error pages as first-class design moments
-
-## Relationship to SignalframeUX
-
-This portfolio is the first consumer of the SignalframeUX design system. It imports tokens, components, and patterns from the library. Design decisions made during this pipeline should feed back into SignalframeUX as validated patterns.
-
-- **SignalframeUX location:** ~/code/projects/SignalframeUX (current directory)
+- **SignalframeUX location:** ~/code/projects/SignalframeUX
 - **Portfolio location:** ~/code/projects/portfolio (to be created)
 
 ---
 
-*Created for PDE pressure test — greenfield fixture*
-*Product concept: Personal developer portfolio built on SignalframeUX design system*
+*Last updated: 2026-04-06 after v1.0 Craft & Feedback milestone*
