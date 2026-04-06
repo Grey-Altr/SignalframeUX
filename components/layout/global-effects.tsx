@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "@/lib/gsap-core";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
+import { CanvasCursor } from "@/components/animation/canvas-cursor";
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
 function CustomCursor() {
@@ -204,7 +205,7 @@ export function GlobalEffects() {
   return (
     <>
       <VHSOverlay />
-      {/* <CustomCursor /> */}
+      <CanvasCursor />
       <ScrollProgress />
       <ScrollToTop />
       <VHSBadge />
