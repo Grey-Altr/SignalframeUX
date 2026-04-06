@@ -1,14 +1,14 @@
 ---
 pde_state_version: 1.0
-milestone: v1.4
-milestone_name: Feature Complete
-status: 22-02 shipped — TK-02 and TK-03 resolved (elevation policy, deferred token groups documented)
+milestone: v1.0
+milestone_name: milestone
+status: 22-02 shipped — TK-02, TK-03 resolved (elevation policy + deferred token groups documented)
 stopped_at: Completed 22-02-PLAN.md — TK-02, TK-03 resolved
-last_updated: "2026-04-06T22:30:00.000Z"
+last_updated: "2026-04-06T22:32:03.639Z"
 last_activity: 2026-04-06 — 22-02 complete (2 tasks, 2 files, ~5min)
 progress:
   total_phases: 17
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
   completed_plans: 4
 ---
