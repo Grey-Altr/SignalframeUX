@@ -335,6 +335,35 @@ function PreviewNavMenu() {
   );
 }
 
+function PreviewCalendar() {
+  return (
+    <div className="w-[70%]">
+      <div className="grid grid-cols-7 gap-px">
+        {Array.from({ length: 7 }, (_, i) => (
+          <span key={i} className="w-3 h-3 border border-current text-[5px] flex items-center justify-center">
+            {i + 1}
+          </span>
+        ))}
+        {Array.from({ length: 7 }, (_, i) => (
+          <span key={i + 7} className={`w-3 h-3 border border-current text-[5px] flex items-center justify-center ${i === 3 ? "bg-primary text-background" : ""}`}>
+            {i + 8}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PreviewMenubar() {
+  return (
+    <div className="flex gap-0 border border-current">
+      <span className="text-[6px] uppercase px-1.5 py-0.5 border-r border-current font-mono">FILE</span>
+      <span className="text-[6px] uppercase px-1.5 py-0.5 border-r border-current font-mono">EDIT</span>
+      <span className="text-[6px] uppercase px-1.5 py-0.5 font-mono">VIEW</span>
+    </div>
+  );
+}
+
 /* ── Component data ── */
 
 const COMPONENTS: ComponentEntry[] = [
@@ -367,6 +396,8 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "023", name: "TOGGLE_GRP", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewToggleGroup /> },
   { index: "024", name: "STEPPER", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewStepper /> },
   { index: "025", name: "NAV_MENU", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewNavMenu /> },
+  { index: "026", name: "CALENDAR", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewCalendar /> },
+  { index: "027", name: "MENUBAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewMenubar /> },
 ];
 
 /* ── Variant style maps ── */

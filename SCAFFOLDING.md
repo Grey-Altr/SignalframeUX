@@ -2,6 +2,7 @@
 
 > Canonical reference for v1.3 component expansion.
 > Every new SF wrapper must pass all 9 checklist items before merge.
+> **v1.3 final state:** 42 SF component files (35 Pattern A, 2 Pattern B lazy, 5 Pattern C pure-SF) + 4 animation/generative entries + sf-theme = 49 registry items total.
 
 ## SF Wrapper Creation Checklist
 
@@ -125,5 +126,5 @@ Note: Omit `"dependencies": ["class-variance-authority"]` if the component does 
 
 1. **`rounded-full` survives `--radius: 0px`**: The global CSS custom property `--radius: 0px` does NOT affect literal Tailwind classes like `rounded-full` or `rounded-xl`. Every SF wrapper must explicitly apply `rounded-none` on each sub-element.
 2. **`'use client'` in barrel kills Server Components**: Adding `'use client'` to `sf/index.ts` turns ALL 5 layout primitives into Client Components, silently inflating the bundle. Each interactive wrapper declares `'use client'` in its own file only.
-3. **`meta.pattern` values in existing registry**: Existing entries use `"B"` inconsistently (should be `"C"` for pure-SF components). New entries must use the correct value. Do not fix existing entries until Phase 20 final audit.
+3. **`meta.pattern` values in existing registry**: **RESOLVED** — Fixed in Phase 20 final audit. All 49 registry entries now use correct A/B/C pattern values: 35 Pattern A (Radix-wrapped), 2 Pattern B (lazy/P3: sf-calendar, sf-menubar), 12 Pattern C (pure-SF + animation + non-SF entries).
 4. **shadcn version pinning**: Use `pnpm dlx shadcn@4.1.2 add` to stay on the pinned version. `@latest` may generate different class patterns.
