@@ -236,6 +236,12 @@
   --text-small-leading: 1.4;
 }
 
+/* ── Detail Panel Z-Index Override ── */
+/* When detail panel is open, drop canvas cursor below content layer */
+[data-modal-open] .sf-cursor {
+  z-index: var(--z-content);
+}
+
 /* ── Dark Mode ── */
 .dark {
   --color-background: oklch(0.145 0 0);

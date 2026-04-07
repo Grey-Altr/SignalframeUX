@@ -1,10 +1,19 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { SFButton, SFInput, SFBadge } from "@/components/sf";
 import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
+import { COMPONENT_REGISTRY } from "@/lib/component-registry";
+import { API_DOCS } from "@/lib/api-docs";
 type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
+
+// ComponentDetail is loaded lazily — NOT in the shared bundle (DV-12 bundle gate)
+const ComponentDetailLazy = dynamic(
+  () => import("@/components/blocks/component-detail").then((m) => ({ default: m.ComponentDetail })),
+  { ssr: false, loading: () => null }
+);
 
 const CATEGORIES = [
   "ALL",
@@ -492,8 +501,9 @@ function FilterIndicator({
   );
 }
 
-export function ComponentsExplorer() {
+export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap: Record<string, string> }) {
   const [activeFilter, setActiveFilter] = useSessionState<Category>(SESSION_KEYS.COMPONENTS_FILTER, "ALL");
+  const [openIndex, setOpenIndex] = useSessionState<string | null>(SESSION_KEYS.DETAIL_OPEN, null);
   useScrollRestoration();
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -503,6 +513,7 @@ export function ComponentsExplorer() {
   const flipStateRef = useRef<ReturnType<typeof import("gsap/Flip").Flip.getState> | null>(null);
   const gsapRef = useRef<FlipModule | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const triggerRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Lazy-load GSAP plugins on mount
   useEffect(() => {
@@ -536,6 +547,17 @@ export function ComponentsExplorer() {
       }, 150);
     },
     [captureFlipState]
+  );
+
+  const handleCardClick = useCallback(
+    (index: string) => {
+      if (openIndex === index) {
+        setOpenIndex(null);
+      } else {
+        setOpenIndex(index);
+      }
+    },
+    [openIndex, setOpenIndex]
   );
 
   useEffect(() => {
@@ -714,11 +736,14 @@ export function ComponentsExplorer() {
             <div
               role="option"
               aria-selected={i === focusedIndex}
+              aria-expanded={openIndex === comp.index}
               key={comp.index}
               data-flip-id={comp.index}
               tabIndex={i === focusedIndex ? 0 : -1}
               aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
-              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] ${styles.cell} ${styles.hoverCell}`}
+              ref={(el) => { triggerRefs.current[comp.index] = el; }}
+              onClick={() => handleCardClick(comp.index)}
+              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] cursor-pointer ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow
@@ -767,6 +792,17 @@ export function ComponentsExplorer() {
           );
         })}
       </div>
+
+      {/* Detail Panel — DOM sibling OUTSIDE Flip grid (DV-11) */}
+      {openIndex && COMPONENT_REGISTRY[openIndex] && (
+        <ComponentDetailLazy
+          entry={COMPONENT_REGISTRY[openIndex]}
+          doc={API_DOCS[COMPONENT_REGISTRY[openIndex].docId]}
+          highlightedCode={highlightedCodeMap[openIndex] ?? ""}
+          onClose={() => setOpenIndex(null)}
+          triggerRef={{ current: triggerRefs.current[openIndex] ?? null }}
+        />
+      )}
 
       {/* ── Detail Hint Bar ── */}
       <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">

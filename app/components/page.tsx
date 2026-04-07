@@ -6,13 +6,26 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 // Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
 import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
 import { SFSection } from "@/components/sf";
+import { highlight } from "@/lib/code-highlight";
+import { COMPONENT_REGISTRY } from "@/lib/component-registry";
 
 export const metadata: Metadata = {
   title: "Components — SIGNALFRAME//UX",
   description: "Browse 340+ Signal and Frame components with live previews, filtering, and code examples.",
 };
 
-export default function ComponentsPage() {
+export default async function ComponentsPage() {
+  // Pre-compute all highlighted code snippets (server-only, zero client JS cost)
+  const highlightedCodeMap: Record<string, string> = {};
+  const entries = Object.entries(COMPONENT_REGISTRY);
+  await Promise.all(
+    entries.map(async ([index, entry]) => {
+      if (entry.code) {
+        highlightedCodeMap[index] = await highlight(entry.code);
+      }
+    })
+  );
+
   return (
     <>
       <Nav />
@@ -53,7 +66,7 @@ export default function ComponentsPage() {
           </div>
         </SFSection>
 
-        <ComponentsExplorer />
+        <ComponentsExplorer highlightedCodeMap={highlightedCodeMap} />
       </main>
       <Footer />
     </>
