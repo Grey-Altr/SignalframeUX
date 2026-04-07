@@ -7,13 +7,13 @@
 - [x] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
 
 ## Token System
-- [ ] **TK-01**: --color-success and --color-warning moved into @theme block in globals.css
-- [ ] **TK-02**: Elevation absence explicitly documented in globals.css and SCAFFOLDING.md
-- [ ] **TK-03**: Sidebar and chart color tokens documented in SCAFFOLDING.md
-- [ ] **TK-04**: WebGL color bridge (color-resolve.ts) audited for token dependency safety
+- [x] **TK-01**: --color-success and --color-warning moved into @theme block in globals.css
+- [x] **TK-02**: Elevation absence explicitly documented in globals.css and SCAFFOLDING.md
+- [x] **TK-03**: Sidebar and chart color tokens documented in SCAFFOLDING.md
+- [x] **TK-04**: WebGL color bridge (color-resolve.ts) audited for token dependency safety
 
 ## Components
-- [ ] **CMP-01**: SFDrawer (vaul-based, lazy, meta.heavy: true) with registry + explorer entry
+- [x] **CMP-01**: SFDrawer (vaul-based, lazy, meta.heavy: true) with registry + explorer entry
 - [x] **CMP-02**: SFHoverCard (FRAME-only, Pattern A) with registry + explorer entry
 - [x] **CMP-03**: SFInputOTP (input-otp, Pattern A) with registry + explorer entry
 - [x] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
@@ -24,21 +24,26 @@
 - [x] **DV-03**: lib/code-highlight.ts (shiki/core, server-only RSC module) for syntax highlighting
 
 ## Interactive Detail Views
-- [ ] **DV-04**: ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE) and GSAP height animation
-- [ ] **DV-05**: Variant grid renders all intent/size values as live SF components
-- [ ] **DV-06**: Props table with name, type, default, required, description per component
-- [ ] **DV-07**: Code tab with usage snippet + CLI install command, both copy-to-clipboard
-- [ ] **DV-08**: FRAME/SIGNAL layer badge and pattern tier (A/B/C) visible in detail header
-- [ ] **DV-09**: Animation token callout per component (durations, easings used)
-- [ ] **DV-10**: Keyboard accessible (Escape closes, focus returns to trigger card)
-- [ ] **DV-11**: Detail panel as DOM sibling outside GSAP Flip grid (not child)
-- [ ] **DV-12**: next/dynamic lazy load for ComponentDetail (bundle gate compliance)
+- [x] **DV-04**: ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE) and GSAP height animation
+- [x] **DV-05**: Variant grid renders all intent/size values as live SF components
+- [x] **DV-06**: Props table with name, type, default, required, description per component
+- [x] **DV-07**: Code tab with usage snippet + CLI install command, both copy-to-clipboard
+- [x] **DV-08**: FRAME/SIGNAL layer badge and pattern tier (A/B/C) visible in detail header
+- [x] **DV-09**: Animation token callout per component (durations, easings used)
+- [x] **DV-10**: Keyboard accessible (Escape closes, focus returns to trigger card)
+- [x] **DV-11**: Detail panel as DOM sibling outside GSAP Flip grid (not child)
+- [x] **DV-12**: next/dynamic lazy load for ComponentDetail (bundle gate compliance)
 
 ## Site Integration
-- [ ] **SI-01**: ComponentsExplorer onClick expands detail panel with session state persistence
-- [ ] **SI-02**: Homepage grid cards clickable with same detail expansion behavior
-- [ ] **SI-03**: DU/TDR aesthetic on detail panel (sharp edges, uppercase labels, accent on selected)
-- [ ] **SI-04**: Z-index contract for detail panel vs canvas cursor and SignalOverlay
+- [x] **SI-01**: ComponentsExplorer onClick expands detail panel with session state persistence
+- [x] **SI-02**: Homepage grid cards clickable with same detail expansion behavior
+- [x] **SI-03**: DU/TDR aesthetic on detail panel (sharp edges, uppercase labels, accent on selected)
+- [x] **SI-04**: Z-index contract for detail panel vs canvas cursor and SignalOverlay
+
+## Integration Bug Fixes (Gap Closure)
+- [ ] **IBF-01**: Homepage COMPONENTS IDs remapped to correct COMPONENT_REGISTRY keys (P0 critical)
+- [ ] **IBF-02**: SignalOverlay z-210 suppressed by [data-modal-open] rule (P1 minor)
+- [ ] **IBF-03**: Registry entry 102 docId corrected from 'waveform' to 'waveformSignal' (P2 cosmetic)
 
 ## Verification
 - [ ] **VF-01**: Shared JS bundle remains under 150 KB gate after all additions
@@ -68,29 +73,32 @@
 | TD-02 | Phase 21 | Complete — 21-01 (1ff1156) |
 | TD-03 | Phase 21 | Complete |
 | TD-04 | Phase 21 | Complete — 21-01 (823c95b) |
-| TK-01 | Phase 22 | Pending |
-| TK-02 | Phase 22 | Pending |
-| TK-03 | Phase 22 | Pending |
-| TK-04 | Phase 22 | Pending |
-| CMP-01 | Phase 23 | Pending |
+| TK-01 | Phase 22 | Complete |
+| TK-02 | Phase 22 | Complete |
+| TK-03 | Phase 22 | Complete |
+| TK-04 | Phase 22 | Complete |
+| CMP-01 | Phase 23 | Complete |
 | CMP-02 | Phase 23 | Complete |
 | CMP-03 | Phase 23 | Complete |
 | CMP-04 | Phase 23 | Complete |
 | DV-01 | Phase 24 | Complete |
 | DV-02 | Phase 24 | Complete |
 | DV-03 | Phase 24 | Complete |
-| DV-04 | Phase 25 | Pending |
-| DV-05 | Phase 25 | Pending |
-| DV-06 | Phase 25 | Pending |
-| DV-07 | Phase 25 | Pending |
-| DV-08 | Phase 25 | Pending |
-| DV-09 | Phase 25 | Pending |
-| DV-10 | Phase 25 | Pending |
-| DV-11 | Phase 25 | Pending |
-| DV-12 | Phase 25 | Pending |
-| SI-01 | Phase 25 | Pending |
-| SI-02 | Phase 25 | Pending |
-| SI-03 | Phase 25 | Pending |
-| SI-04 | Phase 25 | Pending |
+| DV-04 | Phase 25 | Complete |
+| DV-05 | Phase 25 | Complete |
+| DV-06 | Phase 25 | Complete |
+| DV-07 | Phase 25 | Complete |
+| DV-08 | Phase 25 | Complete |
+| DV-09 | Phase 25 | Complete |
+| DV-10 | Phase 25 | Complete |
+| DV-11 | Phase 25 | Complete |
+| DV-12 | Phase 25 | Complete |
+| SI-01 | Phase 25 | Complete |
+| SI-02 | Phase 25 | Complete |
+| SI-03 | Phase 25 | Complete |
+| SI-04 | Phase 25 | Complete |
 | VF-01 | Phase 26 | Pending |
 | VF-02 | Phase 26 | Pending |
+| IBF-01 | Phase 27 | Pending |
+| IBF-02 | Phase 27 | Pending |
+| IBF-03 | Phase 27 | Pending |

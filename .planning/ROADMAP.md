@@ -6,7 +6,7 @@
 - [x] **v1.1 Generative Surface** — Phases 6-9 (shipped 2026-04-06)
 - [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
-- [ ] **v1.4 Feature Complete** — Phases 21-26 (in progress)
+- [ ] **v1.4 Feature Complete** — Phases 21-27 (in progress)
 
 ## Phases
 
@@ -61,6 +61,7 @@
 - [x] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP (completed 2026-04-06)
 - [x] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC) (completed 2026-04-07)
 - [x] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring (completed 2026-04-07)
+- [ ] **Phase 27: Integration Bug Fixes** — homepage ID mismatch, SignalOverlay z-index, stale docId (gap closure)
 - [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
 
 ## Phase Details
@@ -303,9 +304,22 @@ Plans:
 - [x] 25-01-PLAN.md — ComponentDetail panel + ComponentsExplorer wiring
 - [x] 25-02-PLAN.md — Homepage grid integration + bundle gate verification
 
+### Phase 27: Integration Bug Fixes
+**Goal**: All integration bugs found during milestone audit are resolved — homepage cards open correct detail panels, z-index contract is airtight, and registry data is accurate
+**Depends on**: Phase 25 (bugs found in Phase 25 deliverables)
+**Requirements**: IBF-01, IBF-02, IBF-03
+**Gap Closure:** Closes P0, P1, P2 integration gaps + homepage flow break from v1.4 audit
+**Success Criteria** (what must be TRUE):
+  1. Clicking any homepage grid card opens the ComponentDetail panel for the correct component — the COMPONENTS array IDs map to their intended COMPONENT_REGISTRY keys
+  2. Opening a detail panel with `[data-modal-open]` suppresses SignalOverlay toggle (z-210) below the panel z-index — overlay is not clickable over the detail panel
+  3. Registry entry 102 docId reads `waveformSignal` and resolves to the current Phase-24 doc with correct importPath
+**Plans:** 1 plan
+Plans:
+- [ ] 27-01-PLAN.md — [To be planned]
+
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
-**Depends on**: Phase 25 (all features complete before final verification)
+**Depends on**: Phase 27 (all integration bugs fixed before final verification)
 **Requirements**: VF-01, VF-02
 **Success Criteria** (what must be TRUE):
   1. `ANALYZE=true pnpm build` confirms the shared JS bundle is under 150 KB — ComponentDetail lazy-load, P3 component lazy-load, and shiki server-only module all verified as non-contributors to initial bundle
@@ -344,4 +358,5 @@ Plans:
 | 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
 | 24. Detail View Data Layer | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
 | 25. Interactive Detail Views + Site Integration | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
+| 27. Integration Bug Fixes | v1.4 | 0/1 | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
