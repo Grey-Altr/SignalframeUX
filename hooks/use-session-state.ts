@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from "react";
 export const SESSION_KEYS = {
   COMPONENTS_FILTER: "sfux.components.filter",
   TOKENS_TAB: "sfux.tokens.tab",
+  DETAIL_OPEN: "sfux.detail.open",
 } as const;
 
 /**
