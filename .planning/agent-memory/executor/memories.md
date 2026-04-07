@@ -291,3 +291,9 @@ shiki OKLCH theme values MUST be hardcoded strings in the theme object (not CSS 
 
 ### 2026-04-07T00:47:18Z | Phase 24 | tags: shiki, singleton, server-only-guard, build-verification
 `import 'server-only'` guard is verified by running `pnpm build` (full production build) — TypeScript compilation alone does not catch server-only violations, only the full build tree-shaking does. Shiki singleton pattern: module-level `let highlighterPromise = null` with lazy init on first call avoids per-render 10–100ms grammar re-initialization in RSC context.
+
+### 2026-04-07T00:53:00Z | Phase 24 | tags: api-docs, data-authoring, key-collision, uppercase-convention
+api-docs.ts key naming: existing 27 entries use lowercase (input, card, modal, badge, etc.); new Phase 24 entries use camelCase sf-prefix (sfButton, sfCard, sfInput) to avoid collision and signal they are new entries with real import paths. When existing entries with similar names exist (noisebg, waveform, glitchtext), add new keys with disambiguating suffixes (noiseBg, waveformSignal, glitchTextSignal) rather than overwrite — TypeScript would error on duplicate keys and the plan spec says DO NOT modify existing entries.
+
+### 2026-04-07T00:53:00Z | Phase 24 | tags: api-docs, insertion-point, preview-data, line-count
+api-docs.ts has PREVIEW_DATA as a separate `const` after the API_DOCS closing `};`. New entries must be inserted BEFORE the `};` closing of API_DOCS — NOT after it. The node regex count pattern `^\s{2}\w+:\s*\{$` counts all two-space-indented top-level keys including those in PREVIEW_DATA, giving inflated totals. Use the actual key names list for coverage verification rather than raw line-pattern counts.
