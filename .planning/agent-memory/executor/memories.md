@@ -285,3 +285,9 @@ SFDrawer Pattern B follows sf-calendar-lazy.tsx exactly: real impl in sf-drawer.
 
 ### 2026-04-06T23:30:00Z | Phase 23 | tags: components-explorer, registry-build, preview-functions, css-only-sketches
 ComponentsExplorer preview functions are CSS-only span/div sketches (not live SF components) — lightweight thumbnails for the /components grid. New entries append after the last FRAME index (027 MENUBAR) with sequential indices 028-030. DRAWER at 012 version was updated from v2.0.0 to v1.4.0 to match actual ship milestone. `pnpm run registry:build` runs `shadcn build` and generates all /r/ JSON artifacts from registry.json entries in one pass.
+
+### 2026-04-07T00:47:18Z | Phase 24 | tags: shiki, server-only, component-registry, data-module
+shiki OKLCH theme values MUST be hardcoded strings in the theme object (not CSS var() refs) — shiki runs server-side Node.js and cannot resolve CSS custom properties. Comments containing the literal text `'use client'` will match grep AC checks; rephrase to avoid false positives in acceptance criteria validation. The ComponentsExplorer COMPONENTS array has 34 entries (001–030 + 101–104), not 35 as stated in the plan spec — always use the actual source file as count authority.
+
+### 2026-04-07T00:47:18Z | Phase 24 | tags: shiki, singleton, server-only-guard, build-verification
+`import 'server-only'` guard is verified by running `pnpm build` (full production build) — TypeScript compilation alone does not catch server-only violations, only the full build tree-shaking does. Shiki singleton pattern: module-level `let highlighterPromise = null` with lazy init on first call avoids per-render 10–100ms grammar re-initialization in RSC context.
