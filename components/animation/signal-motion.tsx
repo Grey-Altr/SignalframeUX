@@ -76,12 +76,13 @@ export function SignalMotion({
 
       // Reduced-motion guard: render at `to` state immediately, no animation
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(inner, to);
+        gsap.set(inner, { ...to, visibility: "visible" });
         return;
       }
 
       gsap.fromTo(inner, from, {
         ...to,
+        visibility: "visible",
         scrollTrigger: {
           trigger: container,
           start,
@@ -96,7 +97,7 @@ export function SignalMotion({
 
   return (
     <div ref={containerRef} className={cn(className)}>
-      <div ref={innerRef}>{children}</div>
+      <div ref={innerRef} className="sf-motion-hidden">{children}</div>
     </div>
   );
 }

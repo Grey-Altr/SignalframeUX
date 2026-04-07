@@ -100,7 +100,7 @@ export function SectionIndicator({ selector = "[data-section]", className }: Sec
             onClick={() => scrollTo(i)}
             aria-label={`Jump to ${section.label}`}
             aria-current={isActive ? "true" : undefined}
-            className="relative p-2 group"
+            className="relative p-3 group"
             title={section.label}
           >
             {isEndpoint ? (

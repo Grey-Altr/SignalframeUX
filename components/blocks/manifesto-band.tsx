@@ -5,7 +5,7 @@ import Link from "next/link";
 
 /* ── Link style constant (kept DRY) ── */
 const LINK_CLASS =
-  "text-primary no-underline relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-[-1px] after:w-full after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100";
+  "text-primary no-underline relative inline-block py-0.5 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-primary after:scale-x-0 after:origin-left after:transition-transform after:duration-200 hover:after:scale-x-100";
 
 /* ── Manifesto content definition ── */
 type Segment =

@@ -1067,6 +1067,9 @@
   visibility: hidden;
   opacity: 0;
 }
+.sf-motion-hidden {
+  visibility: hidden;
+}
 [data-anim="hero-mesh"] {
   opacity: 0;
 }
