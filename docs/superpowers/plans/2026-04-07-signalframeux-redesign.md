@@ -764,3 +764,54 @@ Deploy to Vercel preview and run Lighthouse against the deployed URL. All catego
 ```bash
 git commit --allow-empty -m "Chore: redesign complete — bundle gate passed, Lighthouse verified"
 ```
+
+---
+
+## Task 16: Custom Typeface — Pipeline Kickoff
+
+**Files:**
+- Create: `docs/typeface/README.md`
+
+This task does NOT produce a typeface — it sets up the pipeline and runs Phase 1 (Fast Discovery) of the typeface innovation system. The custom typeface replaces the Geist/Inter/Anton/Electrolize stack with bespoke type designed from SignalframeUX's aesthetic DNA.
+
+**Why now:** Custom type is the ultimate differentiator. No other design system has bespoke type designed from its own principles. It generates revenue as a standalone product AND proves craft for hiring.
+
+- [ ] **Step 1: Create typeface project directory and brief**
+
+```bash
+mkdir -p ~/code/projects/SignalframeUX/docs/typeface
+```
+
+Create `docs/typeface/README.md` with:
+- The typeface brief derived from SignalframeUX's design DNA
+- Design sources: Rudnick (bespoke letterforms), tDR (industrial precision), DU (coded catalog), Brody (legibility/expression boundary)
+- Constraints: sharp terminals, zero unnecessary curves, tension between mechanical and organic (cybernetic biophilia)
+- NOT: generic geometric sans, trendy variable-width display, "tech startup" type
+- Family plan: CD Display (replaces Anton), CD Text (replaces Inter), CD Mono (replaces JetBrains Mono)
+- Variable font with SIGNAL-responsive parametric variation
+- Target: recognizable as belonging to SIGNAL//FRAME
+
+- [ ] **Step 2: Run Phase 1 — Fast Discovery**
+
+Using the typeface innovation prompt (see `wiki/entities/cd-typeface-system.md` for full pipeline):
+- Define 2-4 buyer personas
+- Identify primary use-cases
+- Generate 3 differentiated directions (A/B/C) with positioning, formal logic, signature glyph intent, derivative risk
+- Recommend primary + backup direction
+
+- [ ] **Step 3: Commit the brief**
+
+```bash
+git add docs/typeface/README.md
+git commit -m "Feat: typeface pipeline — brief + Phase 1 discovery"
+```
+
+- [ ] **Step 4: Phase 2-5 continue in subsequent sessions**
+
+Phase 2 (Originality-Lock), Phase 3 (System Architecture), Phase 4 (AI Generation), Phase 5 (Commercial Packaging) are each separate work sessions. The brief and Phase 1 output inform all subsequent phases.
+
+**Commercial targets:**
+- Essential tier: $49-79 (1 family, 4 weights)
+- Professional tier: $149-249 (full family + italics)
+- Enterprise tier: $499+ (superfamily + variable + custom licensing)
+- Distribution: CD website + Future Fonts / type.today
