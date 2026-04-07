@@ -37,6 +37,16 @@
 import { useRef, useCallback, useEffect } from "react";
 import { triggerColorStutter } from "@/lib/color-stutter";
 
+// Lazy-imported inside triggerLocalWipe to avoid SSR issues
+let _gsap: typeof import("gsap").default | null = null;
+async function getGsap() {
+  if (!_gsap) {
+    const mod = await import("@/lib/gsap-core");
+    _gsap = mod.gsap;
+  }
+  return _gsap;
+}
+
 const ACCENT_COLORS = [
   "oklch(0.7 0.18 195)",   // Cyan
   "oklch(0.75 0.3 140)",   // Lime
@@ -51,57 +61,83 @@ const SCROLL_THRESHOLD = 60;
 const IDLE_MS = 200;
 const WIPE_DURATION = 150;
 
-function triggerLocalWipe(container: HTMLElement, direction: number, onMid: () => void) {
-  let wipeEl = container.querySelector<HTMLDivElement>(".sf-frame-wipe");
-  if (!wipeEl) {
-    wipeEl = document.createElement("div");
-    wipeEl.className = "sf-frame-wipe";
-    Object.assign(wipeEl.style, {
-      position: "absolute",
-      inset: "0",
-      zIndex: "1",
-      background: "#000",
-      pointerEvents: "none",
-      transform: "scaleY(0)",
-      willChange: "transform",
-    });
-    wipeEl.setAttribute("aria-hidden", "true");
-    container.style.position = "relative";
-    container.style.overflow = "hidden";
-    container.appendChild(wipeEl);
-  }
+/**
+ * Text-clipped wipe: animates a hard-edge gradient via GSAP so the wipe
+ * is only visible inside the letterforms (background-clip: text).
+ *
+ * A proxy value 0→1→2 drives gradient stop positions:
+ *   0→1: black edge sweeps down, covering text. At 1: fully black, onMid fires.
+ *   1→2: black edge sweeps out, revealing new color.
+ */
+async function triggerLocalWipe(container: HTMLElement, direction: number, onMid: () => void) {
+  const gsap = await getGsap();
+  // Remove any old child-div wipe elements from previous implementation
+  const oldWipe = container.querySelector<HTMLDivElement>(".sf-frame-wipe");
+  if (oldWipe) oldWipe.remove();
 
-  const fromDir = direction > 0 ? "top" : "bottom";
-  const toDir = direction > 0 ? "bottom" : "top";
+  const s = container.style;
+  const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() || "oklch(0.65 0.3 350)";
+  const coverColor = "oklch(0.145 0 0)";
+  const gradDir = direction > 0 ? "to bottom" : "to top";
 
-  wipeEl.style.transition = "none";
-  wipeEl.style.transformOrigin = fromDir;
-  wipeEl.style.transform = "scaleY(0)";
-  void wipeEl.offsetHeight;
+  // Enable text-clip mode
+  s.setProperty("-webkit-background-clip", "text");
+  s.setProperty("background-clip", "text");
+  s.setProperty("-webkit-text-fill-color", "transparent");
 
-  wipeEl.style.transition = `transform ${WIPE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-  wipeEl.style.transform = "scaleY(1)";
+  let midFired = false;
+  let activeColor = currentColor;
+  const proxy = { v: 0 };
 
-  let covered = false;
-  const handleCover = () => {
-    if (covered) return;
-    covered = true;
-    wipeEl!.removeEventListener("transitionend", handleCover);
-    onMid();
+  const updateGradient = () => {
+    const v = proxy.v;
 
-    wipeEl!.style.transition = "none";
-    wipeEl!.style.transformOrigin = toDir;
-    void wipeEl!.offsetHeight;
-
-    wipeEl!.style.transition = `transform ${WIPE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-    wipeEl!.style.transform = "scaleY(0)";
-
-    // Safety: force hide if transitionend doesn't fire on reveal
-    setTimeout(() => { wipeEl!.style.transform = "scaleY(0)"; }, WIPE_DURATION + 50);
+    if (v <= 1) {
+      // Phase 1: cover — black edge sweeps in
+      const edge = v * 100;
+      s.setProperty("background-image",
+        `linear-gradient(${gradDir}, ${coverColor} ${edge}%, ${activeColor} ${edge}%)`
+      );
+    } else {
+      // Phase 2: reveal — black edge sweeps out
+      const edge = (v - 1) * 100;
+      s.setProperty("background-image",
+        `linear-gradient(${gradDir}, ${activeColor} ${edge}%, ${coverColor} ${edge}%)`
+      );
+    }
   };
-  wipeEl.addEventListener("transitionend", handleCover, { once: true });
-  // Safety: force cover callback if transitionend doesn't fire
-  setTimeout(handleCover, WIPE_DURATION + 50);
+
+  // Set initial state
+  updateGradient();
+
+  // Phase 1: cover (0 → 1)
+  gsap.to(proxy, {
+    v: 1,
+    duration: WIPE_DURATION / 1000,
+    ease: "power2.inOut",
+    onUpdate: updateGradient,
+    onComplete: () => {
+      // Text fully covered — swap color
+      onMid();
+      midFired = true;
+      activeColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() || currentColor;
+
+      // Phase 2: reveal (1 → 2)
+      gsap.to(proxy, {
+        v: 2,
+        duration: WIPE_DURATION / 1000,
+        ease: "power2.inOut",
+        onUpdate: updateGradient,
+        onComplete: () => {
+          // Cleanup — restore normal text rendering
+          s.removeProperty("background-image");
+          s.removeProperty("-webkit-text-fill-color");
+          s.removeProperty("background-clip");
+          s.removeProperty("-webkit-background-clip");
+        },
+      });
+    },
+  });
 }
 
 export function ColorCycleFrame({ children, className }: { children: React.ReactNode; className?: string }) {

@@ -102,7 +102,7 @@ async function initHeroAnimations(
     duration: 0.35,
     ease: "power3.out",
     stagger: 0.02,
-    delay: 0.4,
+    delay: 1.5,
     onComplete: () => revealMultilingual(),
   });
 
