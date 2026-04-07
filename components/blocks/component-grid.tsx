@@ -1,4 +1,7 @@
-import Link from "next/link";
+'use client';
+
+import { useState, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import {
   SFButton,
   SFInput,
@@ -16,6 +19,14 @@ import {
 } from "@/components/sf";
 import { GRAIN_SVG } from "@/lib/grain";
 import { PreviewTabs } from "@/components/blocks/preview-tabs";
+import { COMPONENT_REGISTRY } from "@/lib/component-registry";
+import { API_DOCS } from "@/lib/api-docs";
+
+/* ── Lazy-load ComponentDetail to keep it out of the shared bundle ── */
+const ComponentDetailLazy = dynamic(
+  () => import('@/components/blocks/component-detail').then((m) => ({ default: m.ComponentDetail })),
+  { ssr: false, loading: () => null }
+);
 
 /* ── Live preview renderers for each component cell ──
  * These use actual SF primitives (SFButton, SFCard, etc.) for rich demos.
@@ -260,7 +271,14 @@ const COMPONENTS = [
   { id: "012", name: "WAVEFORM", bg: "black", layer: "SIGNAL" },
 ];
 
-export function ComponentGrid() {
+export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Record<string, string> }) {
+  const [openIndex, setOpenIndex] = useState<string | null>(null);
+  const triggerRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  const handleCardClick = useCallback((id: string) => {
+    setOpenIndex((prev) => (prev === id ? null : id));
+  }, []);
+
   return (
     <section className="border-b-4 border-foreground h-screen h-[100dvh] flex flex-col overflow-hidden">
       {/* Section header */}
@@ -279,12 +297,22 @@ export function ComponentGrid() {
           const Preview = PREVIEW_MAP[comp.id];
 
           return (
-            <Link
+            <div
               key={comp.id}
-              href="/components"
+              role="button"
+              tabIndex={0}
+              ref={(el) => { triggerRefs.current[comp.id] = el; }}
+              onClick={() => handleCardClick(comp.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCardClick(comp.id);
+                }
+              }}
+              aria-expanded={openIndex === comp.id}
               data-anim="comp-cell"
               aria-label={`${comp.name} component`}
-              className="relative border-r-2 border-b-2 border-foreground group no-underline hover:border-primary transition-colors duration-150"
+              className="relative border-r-2 border-b-2 border-foreground group cursor-pointer hover:border-primary transition-colors duration-150"
               style={{
                 aspectRatio: "1",
                 backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--sf-cell-light-bg)",
@@ -308,10 +336,21 @@ export function ComponentGrid() {
               <span className={`absolute bottom-3 right-3 text-[var(--text-xs)] uppercase tracking-[0.15em] ${isBlack ? "opacity-60" : "opacity-40"}`}>
                 {comp.layer}
               </span>
-            </Link>
+            </div>
           );
         })}
       </div>
+
+      {/* Detail Panel — DOM sibling below grid */}
+      {openIndex && COMPONENT_REGISTRY[openIndex] && (
+        <ComponentDetailLazy
+          entry={COMPONENT_REGISTRY[openIndex]}
+          doc={API_DOCS[COMPONENT_REGISTRY[openIndex].docId]}
+          highlightedCode={highlightedCodeMap[openIndex] ?? ''}
+          onClose={() => setOpenIndex(null)}
+          triggerRef={{ current: triggerRefs.current[openIndex] ?? null }}
+        />
+      )}
     </section>
   );
 }
