@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 25, Plan 01 complete — ComponentDetail panel + explorer wiring shipped
-last_updated: "2026-04-07T01:36:21Z"
-last_activity: 2026-04-07 — 25-01 complete (2 tasks, 5 files, ~5min)
+stopped_at: Phase 25, Plan 02 complete — homepage ComponentGrid wired with detail panel, Phase 25 complete
+last_updated: "2026-04-07T02:08:00Z"
+last_activity: 2026-04-07 — 25-02 complete (2 tasks, 2 files, ~4min)
 progress:
   total_phases: 17
   completed_phases: 4
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 25 (1/2 plans complete) — 25-02 next
-Plan: 25-01 complete
-Status: 25-01 shipped — ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE), GSAP animation, bundle gate. ComponentsExplorer wired with dynamic import, session state, triggerRefs. Server-side shiki pre-computation. Shared bundle held at 102 kB.
-Last activity: 2026-04-07 — 25-01 complete (2 tasks, 5 files, ~5min)
+Phase: Phase 25 complete (2/2 plans) — Phase 26 next
+Plan: 25-02 complete
+Status: Phase 25 complete — ComponentDetail panel (25-01) + homepage ComponentGrid wiring (25-02). Both pages have identical click-to-expand detail behavior. Bundle held at 102 kB (gate: 150 kB). SI-02 requirement delivered.
+Last activity: 2026-04-07 — 25-02 complete (2 tasks, 2 files, ~4min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [████████__] ~78% (10/? plans) IN PROGRESS
+v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -49,7 +49,7 @@ v1.4: [████████__] ~78% (10/? plans) IN PROGRESS
 | 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Complete (2/2 plans — all 4 CMP requirements delivered) |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
-| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | In progress (1/2 plans) |
+| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Complete (2/2 plans) |
 | 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
 
 ## Accumulated Context
@@ -135,6 +135,9 @@ v1.4: [████████__] ~78% (10/? plans) IN PROGRESS
 - [Phase 25]: ShikiOutput dedicated wrapper for server-generated HTML documents trust boundary explicitly
 - [Phase 25]: triggerRefs as Record<string, HTMLDivElement | null> keyed by comp.index enables O(1) focus return
 - [Phase 25]: highlightedCodeMap pre-computed server-side via Promise.all — zero client JS cost for shiki
+- [Phase 25]: Homepage ComponentGrid uses plain useState(openIndex) — not useSessionState — session persistence scoped to /components only per SI-01
+- [Phase 25]: triggerRefs keyed by comp.id matching homepage COMPONENTS array — consistent with /components pattern but uses string id not numeric index
+- [Phase 25]: Shared bundle held at 102 kB after homepage integration — both pages use next/dynamic for ComponentDetail, neither leaks static import
 
 ### Blockers
 
@@ -149,6 +152,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T01:36:21Z
-Stopped at: Phase 25 Plan 01 complete — ComponentDetail panel + ComponentsExplorer wiring shipped
-Resume with: `/pde:execute-phase 25 02` — Phase 25 Plan 02 (homepage integration, SI-01/SI-02 requirements)
+Last session: 2026-04-07T02:08:00Z
+Stopped at: Phase 25 Plan 02 complete — homepage ComponentGrid wired, Phase 25 complete
+Resume with: `/pde:execute-phase 26 01` — Phase 26 Plan 01 (bundle gate + Lighthouse verification)

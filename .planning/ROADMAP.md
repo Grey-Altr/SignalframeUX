@@ -60,7 +60,7 @@
 - [x] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audited, sidebar/chart tokens documented (completed 2026-04-06)
 - [x] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP (completed 2026-04-06)
 - [x] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC) (completed 2026-04-07)
-- [ ] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring
+- [x] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring (completed 2026-04-07)
 - [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
 
 ## Phase Details
@@ -301,7 +301,7 @@ Plans:
 **Plans:** 2 plans
 Plans:
 - [x] 25-01-PLAN.md — ComponentDetail panel + ComponentsExplorer wiring
-- [ ] 25-02-PLAN.md — Homepage grid integration + bundle gate verification
+- [x] 25-02-PLAN.md — Homepage grid integration + bundle gate verification
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
@@ -343,5 +343,5 @@ Plans:
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
 | 24. Detail View Data Layer | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
-| 25. Interactive Detail Views + Site Integration | v1.4 | 1/2 | In progress | 25-01 complete |
+| 25. Interactive Detail Views + Site Integration | v1.4 | Complete | 2026-04-07 | 2026-04-07 |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
