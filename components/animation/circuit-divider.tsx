@@ -109,6 +109,7 @@ const DefaultCircuit = forwardRef<SVGSVGElement>(function DefaultCircuit(_, ref)
   return (
     <svg
       ref={ref}
+      aria-hidden="true"
       viewBox="0 0 1200 48"
       fill="none"
       className="w-full h-6"
@@ -177,6 +178,7 @@ const ComplexCircuit = forwardRef<SVGSVGElement>(function ComplexCircuit(_, ref)
   return (
     <svg
       ref={ref}
+      aria-hidden="true"
       viewBox="0 0 1200 64"
       fill="none"
       className="w-full h-8"
@@ -283,6 +285,7 @@ const MinimalCircuit = forwardRef<SVGSVGElement>(function MinimalCircuit(_, ref)
   return (
     <svg
       ref={ref}
+      aria-hidden="true"
       viewBox="0 0 1200 32"
       fill="none"
       className="w-full h-4"

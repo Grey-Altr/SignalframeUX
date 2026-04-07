@@ -1,6 +1,6 @@
 "use client";
 
-import { SFTabs, SFTabsList, SFTabsTrigger } from "@/components/sf";
+import { SFTabs, SFTabsList, SFTabsTrigger, SFTabsContent } from "@/components/sf";
 
 export function PreviewTabs() {
   return (
@@ -10,6 +10,8 @@ export function PreviewTabs() {
           <SFTabsTrigger value="signal" className="text-[var(--text-sm)]">SIGNAL</SFTabsTrigger>
           <SFTabsTrigger value="frame" className="text-[var(--text-sm)]">FRAME</SFTabsTrigger>
         </SFTabsList>
+        <SFTabsContent value="signal" />
+        <SFTabsContent value="frame" />
       </SFTabs>
     </div>
   );

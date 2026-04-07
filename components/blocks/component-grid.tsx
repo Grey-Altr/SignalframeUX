@@ -304,7 +304,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               }}
               aria-expanded={openIndex === comp.id}
               data-anim="comp-cell"
-              aria-label={`${comp.name} component`}
+              aria-roledescription="component card"
               className="relative border-r-2 border-b-2 border-foreground group cursor-pointer hover:border-primary transition-colors duration-150"
               style={{
                 aspectRatio: "1",

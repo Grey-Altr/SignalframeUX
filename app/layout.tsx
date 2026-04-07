@@ -84,7 +84,7 @@ export default async function RootLayout({
             so server="nonce-xxx" but client="" — this is expected, not a real mismatch. */}
         <script nonce={nonce} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
-          <style>{`.sf-hero-deferred, .sf-anim-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"], [data-anim="manifesto-word"], [data-anim="hero-mesh"], [data-anim="error-code"], [data-anim="stagger"] > * { opacity: 1 !important; transform: none !important; }`}</style>
+          <style>{`.sf-hero-deferred, .sf-anim-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"], [data-anim="manifesto-word"], [data-anim="hero-mesh"], [data-anim="error-code"], [data-anim="stagger"] > * { opacity: 1 !important; visibility: visible !important; transform: none !important; }`}</style>
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden">

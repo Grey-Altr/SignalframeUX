@@ -207,8 +207,26 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
         gsap.to(el, {
           y: 0,
           opacity: 1,
+          visibility: "visible",
           duration: 0.034, // --duration-instant (34ms) — DU-style hard cut
           ease: "none",    // No easing on hard cut
+        });
+      },
+    });
+  });
+
+  // ── Ghost labels — reveal with parent section scroll ──
+  document.querySelectorAll("[data-anim='ghost-label']").forEach((el) => {
+    ScrollTrigger.create({
+      trigger: el.parentElement ?? el,
+      start: "top 85%",
+      once: true,
+      onEnter: () => {
+        gsap.to(el, {
+          opacity: 0.03,
+          visibility: "visible",
+          duration: 0.034,
+          ease: "none",
         });
       },
     });
@@ -279,6 +297,7 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
 
         gsap.to(cells, {
           opacity: 1,
+          visibility: "visible",
           x: 0,
           y: 0,
           scale: 1,

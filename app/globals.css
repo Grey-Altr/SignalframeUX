@@ -1051,6 +1051,7 @@
   transform: translateY(24px) !important;
 }
 [data-anim="section-reveal"] {
+  visibility: hidden;
   opacity: 0;
   transform: translateY(40px);
 }
@@ -1059,6 +1060,11 @@
   transform: scale(0.8);
 }
 [data-anim="comp-cell"] {
+  visibility: hidden;
+  opacity: 0;
+}
+[data-anim="ghost-label"] {
+  visibility: hidden;
   opacity: 0;
 }
 [data-anim="hero-mesh"] {

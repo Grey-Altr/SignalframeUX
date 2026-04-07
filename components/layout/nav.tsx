@@ -39,7 +39,7 @@ const NavLink = memo(function NavLink({ href, label, delay, isActive, ariaLabel,
         data-anim="nav-link"
         aria-label={ariaLabel ?? label}
         aria-current={isActive ? "page" : undefined}
-        className={`nav-hover-link relative no-underline mr-[clamp(12px,2vw,28px)] inline-block transition-colors duration-300 hover:text-primary ${isActive ? "text-primary" : "text-foreground"}`}
+        className={`nav-hover-link relative no-underline mr-[clamp(12px,2vw,28px)] inline-block transition-colors duration-300 hover:text-primary min-h-6 py-0.5 ${isActive ? "text-primary" : "text-foreground"}`}
         onMouseEnter={handleMouseEnter}
         {...linkProps}
       >
@@ -54,7 +54,7 @@ const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string; extern
   { href: "/components", label: "COMPONENTS" },
   { href: "/reference", label: "API" },
   { href: "/tokens", label: "TOKENS" },
-  { href: "/start", label: "START", ariaLabel: "Get started with SignalframeUX" },
+  { href: "/start", label: "GET STARTED" },
   { href: "https://github.com/signalframeux", label: "GITHUB", external: true },
 ];
 

@@ -47,14 +47,14 @@ export default async function HomePage() {
           </SFSection>
           <SFSection label="MANIFESTO" data-bg-shift="black" data-section="manifesto" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="MANIFEST" className="-left-4 top-1/2 -translate-y-1/2" />
-            <SignalMotion from={{ opacity: 0.4, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
+            <SignalMotion from={{ opacity: 0.5, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
               <ManifestoBand />
             </SignalMotion>
           </SFSection>
           <CircuitDivider variant="default" />
           <SFSection label="SIGNAL / FRAME" data-bg-shift="white" data-section="signal" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="SIGNAL" className="right-0 top-0" />
-            <SignalMotion from={{ opacity: 0.4, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
+            <SignalMotion from={{ opacity: 0.5, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
               <DualLayer />
             </SignalMotion>
           </SFSection>
@@ -64,13 +64,13 @@ export default async function HomePage() {
           <CircuitDivider variant="complex" />
           <SFSection label="API" data-bg-shift="white" data-section="code" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="CODE" className="-left-4 top-1/4" />
-            <SignalMotion from={{ opacity: 0.4, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
+            <SignalMotion from={{ opacity: 0.5, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
               <CodeSection />
             </SignalMotion>
           </SFSection>
           <SFSection label="COMPONENTS" data-bg-shift="black" data-section="grid" data-cursor className="py-0 relative overflow-hidden">
             <GhostLabel text="GRID" className="right-0 bottom-0" />
-            <SignalMotion from={{ opacity: 0.4, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
+            <SignalMotion from={{ opacity: 0.5, y: 24 }} to={{ opacity: 1, y: 0 }} scrub={1}>
               <ComponentGrid highlightedCodeMap={highlightedCodeMap} />
             </SignalMotion>
           </SFSection>
