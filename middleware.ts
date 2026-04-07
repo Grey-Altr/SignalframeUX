@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   // and CSS-in-JS. Nonce-based style-src would require patching every inline style tag.
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval'`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' 'unsafe-eval'`,
     `style-src 'self' 'unsafe-inline'`,
     "img-src 'self' blob: data:",
     "font-src 'self'",
