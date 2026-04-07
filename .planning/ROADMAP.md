@@ -300,8 +300,8 @@ Plans:
   10. The z-index contract is enforced — the detail panel appears above content but below the canvas cursor; `[data-modal-open]` CSS rule drops cursor z-index when panel is open
 **Plans:** 2 plans
 Plans:
-- [ ] 25-01-PLAN.md — [To be planned]
-- [ ] 25-02-PLAN.md — [To be planned]
+- [ ] 25-01-PLAN.md — ComponentDetail panel + ComponentsExplorer wiring
+- [ ] 25-02-PLAN.md — Homepage grid integration + bundle gate verification
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
