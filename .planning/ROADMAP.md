@@ -315,7 +315,7 @@ Plans:
   3. Registry entry 102 docId reads `waveformSignal` and resolves to the current Phase-24 doc with correct importPath
 **Plans:** 1 plan
 Plans:
-- [ ] 27-01-PLAN.md — [To be planned]
+- [ ] 27-01-PLAN.md — Homepage ID remap + SignalOverlay suppression + docId fix
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
