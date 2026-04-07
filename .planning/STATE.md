@@ -1,16 +1,16 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 24 context gathered
-last_updated: "2026-04-07T00:28:33.417Z"
+stopped_at: Completed 24-01-PLAN.md (code-highlight.ts + component-registry.ts)
+last_updated: "2026-04-07T00:52:00.230Z"
 last_activity: 2026-04-06 — 23-02 complete (2 tasks, 8 files, ~5min)
 progress:
   total_phases: 17
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # STATE — SignalframeUX
@@ -128,6 +128,9 @@ v1.4: [█████_____] ~50% (7/? plans) IN PROGRESS
 | SFDrawerContent uses cn() rounded-none override — beats vaul's data-[vaul-drawer-direction=bottom]:rounded-t-xl | cn() appends rounded-none last; Tailwind resolution picks it up correctly, matching SFSheetContent pattern |
 | SFDrawer NOT in sf/index.ts barrel — heavy component (vaul SSR-unsafe), Pattern B lazy-only | Consistent with sf-calendar and sf-menubar precedent; consumers must import sf-drawer-lazy.tsx directly |
 
+- [Phase 24]: 34 entries in COMPONENT_REGISTRY matches actual COMPONENTS array count (plan spec of 35 was off-by-one)
+- [Phase 24]: docId convention: camelCase SF component name (sfButton, sfCard) to align with Plan 02 api-docs.ts new entries
+
 ### Blockers
 
 - None
@@ -141,6 +144,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T00:28:33.413Z
-Stopped at: Phase 24 context gathered
+Last session: 2026-04-07T00:52:00.227Z
+Stopped at: Completed 24-01-PLAN.md (code-highlight.ts + component-registry.ts)
 Resume with: `/pde:execute-phase 24 01` — Detail View Data Layer (api-docs.ts authoring, shiki RSC setup)

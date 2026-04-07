@@ -278,9 +278,9 @@ Plans:
   1. lib/component-registry.ts exists and maps every ComponentsExplorer grid item's index to a ComponentRegistryEntry containing: variant previews (live SF component renders), a code snippet, and a docId pointer to api-docs.ts
   2. lib/api-docs.ts contains a ComponentDoc entry for every component in the registry (~49 items) — each entry has at least one PropDef with name, type, default, required, and description fields
   3. lib/code-highlight.ts exists as a server-only RSC module; calling it with a code string returns highlighted HTML using shiki/core with an OKLCH-compatible theme — zero client JS added to the bundle
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 24-01-PLAN.md — Shiki RSC module (code-highlight.ts) + component-registry.ts (35 grid entries)
+- [x] 24-01-PLAN.md — Shiki RSC module (code-highlight.ts) + component-registry.ts (35 grid entries)
 - [ ] 24-02-PLAN.md — api-docs.ts extension (~36 new ComponentDoc entries for full registry coverage)
 
 ### Phase 25: Interactive Detail Views + Site Integration
@@ -342,6 +342,6 @@ Plans:
 | 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
-| 24. Detail View Data Layer | v1.4 | 0/2 | Not started | - |
+| 24. Detail View Data Layer | v1.4 | 1/2 | In Progress|  |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
