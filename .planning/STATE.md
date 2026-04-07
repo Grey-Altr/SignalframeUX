@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 25 Plan 02 complete — homepage ComponentGrid wired, Phase 25 complete
-last_updated: "2026-04-07T01:52:03.407Z"
-last_activity: 2026-04-07 — 25-02 complete (2 tasks, 2 files, ~4min)
+stopped_at: Phase 27 Plan 01 complete — three integration bugs fixed (IBF-01/02/03), pnpm build clean
+last_updated: "2026-04-07T03:00:16Z"
+last_activity: 2026-04-07 — 27-01 complete (3 tasks, 5 files, ~8min)
 progress:
-  total_phases: 17
-  completed_phases: 5
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 18
+  completed_phases: 6
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 25 complete (2/2 plans) — Phase 26 next
-Plan: 25-02 complete
-Status: Phase 25 complete — ComponentDetail panel (25-01) + homepage ComponentGrid wiring (25-02). Both pages have identical click-to-expand detail behavior. Bundle held at 102 kB (gate: 150 kB). SI-02 requirement delivered.
-Last activity: 2026-04-07 — 25-02 complete (2 tasks, 2 files, ~4min)
+Phase: Phase 27 complete (1/1 plans) — Phase 26 next (verification)
+Plan: 27-01 complete
+Status: Phase 27 complete — three integration bugs fixed. COMPONENTS IDs now match COMPONENT_REGISTRY keys (IBF-01). SignalOverlay suppressed under [data-modal-open] (IBF-02). WAVEFORM docId corrected to waveformSignal (IBF-03). Bundle still at 102 kB.
+Last activity: 2026-04-07 — 27-01 complete (3 tasks, 5 files, ~8min)
 
 ## Progress
 
@@ -51,6 +51,7 @@ v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
 | 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Complete (2/2 plans) |
 | 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
+| 27. Integration Bug Fixes | Fix 3 integration bugs found during v1.4 audit | IBF-01, IBF-02, IBF-03 | Complete (1/1 plans) |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 | Phase 24 (data) before Phase 25 (UI) | Detail UI has no value without data; decoupling data authoring reduces Phase 25 tail risk |
 | Phase 25 includes SI-01 through SI-04 | Site integration is inseparable from detail view feature — they form one delivery boundary |
 | Phase 26 is standalone verification | Bundle + Lighthouse audit is a gate, not implementation work — isolated phase keeps it verifiable |
+| PreviewBadge uses intent=outline | SFBadge has no secondary intent — outline is most visually distinct valid alternative |
+| pointer-events:none + opacity:0.4 for SignalOverlay suppression | No z-index escalation needed — CSS pointer-events blocks interaction without touching stacking context |
+| docId waveform -> waveformSignal for registry entry 102 | waveformSignal doc has correct importPath @/components/animation/waveform (Phase-24 authored) |
 | CMP-02 (SFHoverCard) and CMP-03 (SFInputOTP) in Phase 23 | Research originally deferred these to v1.4.x but REQUIREMENTS.md scopes them to v1.4 — included |
 | lenisRef pattern for page-transition.tsx | transitionend DOM handler cannot safely close over React hook values — store Lenis in useRef updated via useEffect |
 | immediate: true for scroll restoration and page wipe | Matches original instant-scroll intent; smooth scroll is inappropriate while wipe panel covers the viewport |
@@ -138,6 +142,9 @@ v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 - [Phase 25]: Homepage ComponentGrid uses plain useState(openIndex) — not useSessionState — session persistence scoped to /components only per SI-01
 - [Phase 25]: triggerRefs keyed by comp.id matching homepage COMPONENTS array — consistent with /components pattern but uses string id not numeric index
 - [Phase 25]: Shared bundle held at 102 kB after homepage integration — both pages use next/dynamic for ComponentDetail, neither leaks static import
+- [Phase 27]: COMPONENTS IDs must match COMPONENT_REGISTRY keys exactly — sequential 001-012 vs registry key ranges (100s for SIGNAL components) was the root cause of IBF-01
+- [Phase 27]: SFBadge intent values are default/primary/outline/signal — no "secondary" intent
+- [Phase 27]: signal-overlay-toggle stable CSS class must be first cn() argument to be targetable from globals.css suppression rule
 
 ### Blockers
 
@@ -152,6 +159,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T02:08:00Z
-Stopped at: Phase 25 Plan 02 complete — homepage ComponentGrid wired, Phase 25 complete
+Last session: 2026-04-07T03:00:16Z
+Stopped at: Phase 27 Plan 01 complete — three integration bugs fixed (IBF-01/02/03)
 Resume with: `/pde:execute-phase 26 01` — Phase 26 Plan 01 (bundle gate + Lighthouse verification)

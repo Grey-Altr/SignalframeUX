@@ -41,9 +41,9 @@
 - [x] **SI-04**: Z-index contract for detail panel vs canvas cursor and SignalOverlay
 
 ## Integration Bug Fixes (Gap Closure)
-- [ ] **IBF-01**: Homepage COMPONENTS IDs remapped to correct COMPONENT_REGISTRY keys (P0 critical)
-- [ ] **IBF-02**: SignalOverlay z-210 suppressed by [data-modal-open] rule (P1 minor)
-- [ ] **IBF-03**: Registry entry 102 docId corrected from 'waveform' to 'waveformSignal' (P2 cosmetic)
+- [x] **IBF-01**: Homepage COMPONENTS IDs remapped to correct COMPONENT_REGISTRY keys (P0 critical)
+- [x] **IBF-02**: SignalOverlay z-210 suppressed by [data-modal-open] rule (P1 minor)
+- [x] **IBF-03**: Registry entry 102 docId corrected from 'waveform' to 'waveformSignal' (P2 cosmetic)
 
 ## Verification
 - [ ] **VF-01**: Shared JS bundle remains under 150 KB gate after all additions
@@ -99,6 +99,6 @@
 | SI-04 | Phase 25 | Complete |
 | VF-01 | Phase 26 | Pending |
 | VF-02 | Phase 26 | Pending |
-| IBF-01 | Phase 27 | Pending |
-| IBF-02 | Phase 27 | Pending |
-| IBF-03 | Phase 27 | Pending |
+| IBF-01 | Phase 27 | Complete — 27-01 (d2466f4) |
+| IBF-02 | Phase 27 | Complete — 27-01 (37fb914) |
+| IBF-03 | Phase 27 | Complete — 27-01 (37fb914) |

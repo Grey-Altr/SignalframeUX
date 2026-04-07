@@ -61,7 +61,7 @@
 - [x] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP (completed 2026-04-06)
 - [x] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC) (completed 2026-04-07)
 - [x] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring (completed 2026-04-07)
-- [ ] **Phase 27: Integration Bug Fixes** — homepage ID mismatch, SignalOverlay z-index, stale docId (gap closure)
+- [x] **Phase 27: Integration Bug Fixes** — homepage ID mismatch, SignalOverlay suppression, stale docId (completed 2026-04-07)
 - [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
 
 ## Phase Details
@@ -315,7 +315,7 @@ Plans:
   3. Registry entry 102 docId reads `waveformSignal` and resolves to the current Phase-24 doc with correct importPath
 **Plans:** 1 plan
 Plans:
-- [ ] 27-01-PLAN.md — Homepage ID remap + SignalOverlay suppression + docId fix
+- [x] 27-01-PLAN.md — Homepage ID remap + SignalOverlay suppression + docId fix
 
 ### Phase 26: Verification + Launch Gate
 **Goal**: The v1.4 milestone meets all hard performance constraints — bundle gate and Lighthouse audit pass against the deployed URL
