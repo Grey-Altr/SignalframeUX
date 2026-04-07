@@ -82,6 +82,25 @@ DO NOT: redesign the system, rename arbitrarily, introduce large abstractions, o
 **Visual QA:** Render examples → evaluate alignment/spacing/hierarchy/clarity → fix → re-test.
 **Consistency:** Remove inconsistencies, normalize naming, unify spacing, align APIs.
 
+## cdSB — Design Intelligence Layer
+
+SignalframeUX's intellectual lineage, aesthetic rationale, and design theory live in the second-brain wiki:
+`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/`
+
+**Start here:** `wiki/analyses/culture-division-operating-principles.md`
+
+**FRAME/SIGNAL is not just a naming convention.** It draws from six converging traditions — Shannon's signal/noise, Goffman's frame analysis, Wiener's cybernetics, architectural framing, music production signal chains, and the grid/gesture duality in design theory. See `wiki/analyses/frame-signal-intellectual-lineage.md`.
+
+**Every SF component decision should be traceable** to a wiki influence:
+- DU → hard-cut toggle, VHS overlay, idle grain, "slightly tense" register
+- tDR → maximum-minimalism, total design, coded naming
+- Ikeda → data-as-material, perception thresholds, `--signal-intensity`
+- Autechre → generative rules (not randomness), per-entity artwork, coded nomenclature
+- Brody/Fuse → legibility/expression boundary = FRAME/SIGNAL tension in type
+- Owens → brutalist romanticism, truth to materials, exposed construction
+
+**Quality bar:** Awwwards SOTD execution within Culture Division's aesthetic. Scalable to all product types.
+
 ## Quality Bar
 
 - CRT critique score: >= 90/100
