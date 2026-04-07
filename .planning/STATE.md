@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 27 Plan 01 complete — three integration bugs fixed (IBF-01/02/03)
-last_updated: "2026-04-07T03:07:49.422Z"
-last_activity: 2026-04-07 — 27-01 complete (3 tasks, 5 files, ~8min)
+stopped_at: Phase 26 Plan 01 complete — bundle gate VF-01 verified at 100.0 KB gzip, 15/15 Playwright tests passing
+last_updated: "2026-04-07T05:22:34Z"
+last_activity: 2026-04-07 — 26-01 complete (2 tasks, 0 files modified, ~4min)
 progress:
   total_phases: 18
   completed_phases: 6
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 27 complete (1/1 plans) — Phase 26 next (verification)
-Plan: 27-01 complete
-Status: Phase 27 complete — three integration bugs fixed. COMPONENTS IDs now match COMPONENT_REGISTRY keys (IBF-01). SignalOverlay suppressed under [data-modal-open] (IBF-02). WAVEFORM docId corrected to waveformSignal (IBF-03). Bundle still at 102 kB.
-Last activity: 2026-04-07 — 27-01 complete (3 tasks, 5 files, ~8min)
+Phase: Phase 26 (1/2 plans complete) — Plan 02 (Lighthouse 100/100) next
+Plan: 26-01 complete
+Status: Phase 26 Plan 01 complete — VF-01 satisfied. Bundle gate: 100.0 KB gzip (gate: 150 KB, margin: 50 KB). ComponentDetail/shiki/SFCalendar/SFMenubar confirmed isolated from shared bundle. All 15 Playwright tests pass (10 phase-25 + 5 phase-27). Next: Plan 02 Lighthouse verification.
+Last activity: 2026-04-07 — 26-01 complete (2 tasks, 0 files modified, ~4min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
+v1.4: [█████████_] ~92% (13/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -50,7 +50,7 @@ v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Complete (2/2 plans — all 4 CMP requirements delivered) |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
 | 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Complete (2/2 plans) |
-| 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
+| 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | In Progress (1/2 plans — VF-01 bundle gate passed at 100.0 KB) |
 | 27. Integration Bug Fixes | Fix 3 integration bugs found during v1.4 audit | IBF-01, IBF-02, IBF-03 | Complete (1/1 plans) |
 
 ## Accumulated Context
@@ -145,6 +145,8 @@ v1.4: [█████████_] ~90% (12/? plans) IN PROGRESS
 - [Phase 27]: COMPONENTS IDs must match COMPONENT_REGISTRY keys exactly — sequential 001-012 vs registry key ranges (100s for SIGNAL components) was the root cause of IBF-01
 - [Phase 27]: SFBadge intent values are default/primary/outline/signal — no "secondary" intent
 - [Phase 27]: signal-overlay-toggle stable CSS class must be first cn() argument to be targetable from globals.css suppression rule
+- [Phase 26]: Playwright tests require warm port 3000 dev server — cold-starting port 3001 causes 10s timeouts waiting for compiled routes; always run against established server
+- [Phase 26]: Bundle gate measurement: python3 gzip.compress at compresslevel=9 against rootMainFiles from build-manifest.json — run before pnpm dev to avoid .next/ overwrite from Turbopack
 
 ### Blockers
 
@@ -159,6 +161,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T03:00:16Z
-Stopped at: Phase 27 Plan 01 complete — three integration bugs fixed (IBF-01/02/03)
-Resume with: `/pde:execute-phase 26 01` — Phase 26 Plan 01 (bundle gate + Lighthouse verification)
+Last session: 2026-04-07T05:22:34Z
+Stopped at: Phase 26 Plan 01 complete — bundle gate VF-01 verified at 100.0 KB gzip, 15/15 Playwright tests passing
+Resume with: `/pde:execute-phase 26 02` — Phase 26 Plan 02 (Lighthouse 100/100 against deployed URL)

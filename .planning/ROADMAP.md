@@ -62,7 +62,7 @@
 - [x] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC) (completed 2026-04-07)
 - [x] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring (completed 2026-04-07)
 - [x] **Phase 27: Integration Bug Fixes** — homepage ID mismatch, SignalOverlay suppression, stale docId (completed 2026-04-07)
-- [ ] **Phase 26: Verification + Launch Gate** — bundle gate, Lighthouse deployed audit
+- [ ] **Phase 26: Verification + Launch Gate** — bundle gate (VF-01 PASSED 100.0 KB), Lighthouse deployed audit (VF-02 pending)
 
 ## Phase Details
 
@@ -326,7 +326,7 @@ Plans:
   2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
 **Plans:** 2 plans (2 waves)
 Plans:
-- [ ] 26-01-PLAN.md — Bundle gate verification (ANALYZE=true build + rootMainFiles measurement + Playwright regression)
+- [x] 26-01-PLAN.md — Bundle gate verification (ANALYZE=true build + rootMainFiles measurement + Playwright regression)
 - [ ] 26-02-PLAN.md — Vercel deploy + Lighthouse 100/100 audit against production URL
 
 ## Progress
@@ -359,4 +359,4 @@ Plans:
 | 24. Detail View Data Layer | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
 | 25. Interactive Detail Views + Site Integration | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
 | 27. Integration Bug Fixes | v1.4 | Complete    | 2026-04-07 | - |
-| 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
+| 26. Verification + Launch Gate | v1.4 | 1/2 | In Progress | - |
