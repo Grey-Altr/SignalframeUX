@@ -230,7 +230,7 @@ import SFCalendarLazy from '@/components/sf/sf-calendar-lazy'
     </SFDialogHeader>
   </SFDialogContent>
 </SFDialog>`,
-    docId: "sfModal",
+    docId: "sfDialog",
     layer: "frame",
     pattern: "A",
     category: "LAYOUT",
@@ -758,7 +758,7 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
     code: `import GlitchText from '@/components/animation/glitch-text'
 
 <GlitchText>SIGNAL ACTIVE</GlitchText>`,
-    docId: "glitchText",
+    docId: "glitchTextSignal",
     layer: "signal",
     pattern: "C",
     category: "GENERATIVE",
