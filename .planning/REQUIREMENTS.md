@@ -19,9 +19,9 @@
 - [x] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
 
 ## Detail View Data
-- [ ] **DV-01**: lib/component-registry.ts maps all grid items to variants, code snippets, doc pointers
-- [ ] **DV-02**: lib/api-docs.ts extended with ComponentDoc entries for all ~45 components
-- [ ] **DV-03**: lib/code-highlight.ts (shiki/core, server-only RSC module) for syntax highlighting
+- [x] **DV-01**: lib/component-registry.ts maps all grid items to variants, code snippets, doc pointers
+- [x] **DV-02**: lib/api-docs.ts extended with ComponentDoc entries for all ~45 components
+- [x] **DV-03**: lib/code-highlight.ts (shiki/core, server-only RSC module) for syntax highlighting
 
 ## Interactive Detail Views
 - [ ] **DV-04**: ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE) and GSAP height animation
@@ -76,9 +76,9 @@
 | CMP-02 | Phase 23 | Complete |
 | CMP-03 | Phase 23 | Complete |
 | CMP-04 | Phase 23 | Complete |
-| DV-01 | Phase 24 | Pending |
-| DV-02 | Phase 24 | Pending |
-| DV-03 | Phase 24 | Pending |
+| DV-01 | Phase 24 | Complete |
+| DV-02 | Phase 24 | Complete |
+| DV-03 | Phase 24 | Complete |
 | DV-04 | Phase 25 | Pending |
 | DV-05 | Phase 25 | Pending |
 | DV-06 | Phase 25 | Pending |

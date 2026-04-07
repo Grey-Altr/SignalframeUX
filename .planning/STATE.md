@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 24-01-PLAN.md (code-highlight.ts + component-registry.ts)
-last_updated: "2026-04-07T00:52:00.230Z"
+stopped_at: Completed 24-02-PLAN.md
+last_updated: "2026-04-07T00:53:46.848Z"
 last_activity: 2026-04-06 — 23-02 complete (2 tasks, 8 files, ~5min)
 progress:
   total_phases: 17
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 23 COMPLETE (2/2 plans complete) — Phase 24 next
-Plan: 23-02 complete
-Status: 23-02 shipped — CMP-01 complete (SFDrawer Pattern B, lazy, vaul). All 4 Phase 23 requirements delivered.
-Last activity: 2026-04-06 — 23-02 complete (2 tasks, 8 files, ~5min)
+Phase: Phase 24 (2/2 plans complete) — Phase 25 next
+Plan: 24-02 complete
+Status: 24-02 shipped — DV-02 complete (api-docs.ts extended to 107 entries, full registry coverage). Both Phase 24 plans delivered.
+Last activity: 2026-04-07 — 24-02 complete (1 task, 1 file, ~25min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [█████_____] ~50% (7/? plans) IN PROGRESS
+v1.4: [███████___] ~67% (9/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -48,7 +48,7 @@ v1.4: [█████_____] ~50% (7/? plans) IN PROGRESS
 | 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Complete (2/2 plans) |
 | 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Complete (2/2 plans — all 4 CMP requirements delivered) |
-| 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Not started |
+| 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
 | 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Not started |
 | 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
 
@@ -130,6 +130,7 @@ v1.4: [█████_____] ~50% (7/? plans) IN PROGRESS
 
 - [Phase 24]: 34 entries in COMPONENT_REGISTRY matches actual COMPONENTS array count (plan spec of 35 was off-by-one)
 - [Phase 24]: docId convention: camelCase SF component name (sfButton, sfCard) to align with Plan 02 api-docs.ts new entries
+- [Phase 24]: camelCase sf-prefixed keys for new api-docs entries — avoids collision with existing lowercase keys
 
 ### Blockers
 
@@ -144,6 +145,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T00:52:00.227Z
-Stopped at: Completed 24-01-PLAN.md (code-highlight.ts + component-registry.ts)
+Last session: 2026-04-07T00:53:46.845Z
+Stopped at: Completed 24-02-PLAN.md
 Resume with: `/pde:execute-phase 24 01` — Detail View Data Layer (api-docs.ts authoring, shiki RSC setup)
