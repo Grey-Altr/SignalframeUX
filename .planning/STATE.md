@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 26 Plan 01 complete — bundle gate VF-01 verified at 100.0 KB gzip, 15/15 Playwright tests passing
-last_updated: "2026-04-07T05:22:34Z"
-last_activity: 2026-04-07 — 26-01 complete (2 tasks, 0 files modified, ~4min)
+stopped_at: Phase 26 Plan 02 in progress — Task 1 (pre-deploy audit) complete, deployed to Vercel prod, Lighthouse median 97/90/100/80 — Accessibility (90) and SEO (80) need fixes
+last_updated: "2026-04-07T23:50:00Z"
+last_activity: 2026-04-07 — 26-02 Task 1-3 partial (deployed, Lighthouse run, fixing a11y+SEO next)
 progress:
   total_phases: 18
   completed_phases: 6
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 26 (1/2 plans complete) — Plan 02 (Lighthouse 100/100) next
-Plan: 26-01 complete
-Status: Phase 26 Plan 01 complete — VF-01 satisfied. Bundle gate: 100.0 KB gzip (gate: 150 KB, margin: 50 KB). ComponentDetail/shiki/SFCalendar/SFMenubar confirmed isolated from shared bundle. All 15 Playwright tests pass (10 phase-25 + 5 phase-27). Next: Plan 02 Lighthouse verification.
-Last activity: 2026-04-07 — 26-01 complete (2 tasks, 0 files modified, ~4min)
+Phase: Phase 26 (1/2 plans complete) — Plan 02 (Lighthouse 100/100) in progress
+Plan: 26-02 in progress (Task 1 complete, Task 2 complete, Task 3 partial)
+Status: Deployed to Vercel prod (https://signalframeux.vercel.app). Lighthouse 5-run median: Performance 97, Accessibility 90, Best Practices 100, SEO 80. A11y and SEO are deterministic misses needing code fixes. Pre-deploy audit passed (all canvas ARIA, no console errors, SEO metadata present, next/font correct).
+Last activity: 2026-04-07 — 26-02 Tasks 1-3 partial (deployed, 5x Lighthouse runs complete, need a11y+SEO diagnosis)
 
 ## Progress
 
@@ -161,6 +161,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T05:22:34Z
-Stopped at: Phase 26 Plan 01 complete — bundle gate VF-01 verified at 100.0 KB gzip, 15/15 Playwright tests passing
-Resume with: `/pde:execute-phase 26 02` — Phase 26 Plan 02 (Lighthouse 100/100 against deployed URL)
+Last session: 2026-04-07T23:50:00Z
+Stopped at: Phase 26 Plan 02 in progress — deployed to Vercel prod, Lighthouse 5-run median 97/90/100/80, need to fix Accessibility (90→100) and SEO (80→100)
+Resume with: Expand Lighthouse Accessibility and SEO sections to see failing audit items, then fix in codebase, redeploy, and re-test
