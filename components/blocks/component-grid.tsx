@@ -178,18 +178,11 @@ function PreviewGlitchText() {
   );
 }
 
-function PreviewDropdown() {
+function PreviewBadge() {
   return (
-    <div className="w-[80%] max-w-[180px]">
-      <div className="border-2 border-foreground px-3 py-1.5 flex items-center justify-between text-[var(--text-xs)] uppercase tracking-wider">
-        <span>SELECT</span>
-        <span className="text-muted-foreground">▾</span>
-      </div>
-      <div className="border-2 border-t-0 border-foreground">
-        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground">OPTION A</div>
-        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider text-muted-foreground">OPTION B</div>
-        <div className="px-3 py-1 text-[var(--text-sm)] uppercase tracking-wider text-muted-foreground">OPTION C</div>
-      </div>
+    <div className="flex flex-col items-center gap-2">
+      <SFBadge intent="default">DEFAULT</SFBadge>
+      <SFBadge intent="outline">OUTLINE</SFBadge>
     </div>
   );
 }
@@ -244,31 +237,31 @@ function PreviewWaveform() {
 const PREVIEW_MAP: Record<string, () => React.ReactNode> = {
   "001": PreviewButton,
   "002": PreviewInput,
-  "003": PreviewCard,
-  "004": PreviewModal,
-  "005": PreviewTable,
-  "006": PreviewToast,
-  "007": PreviewNoiseBg,
-  "008": PreviewParticleMesh,
-  "009": PreviewGlitchText,
-  "010": PreviewDropdown,
-  "011": PreviewTabs,
-  "012": PreviewWaveform,
+  "005": PreviewCard,
+  "006": PreviewModal,
+  "009": PreviewTable,
+  "010": PreviewToast,
+  "101": PreviewNoiseBg,
+  "104": PreviewParticleMesh,
+  "103": PreviewGlitchText,
+  "008": PreviewBadge,
+  "007": PreviewTabs,
+  "102": PreviewWaveform,
 };
 
 const COMPONENTS = [
   { id: "001", name: "BUTTON", bg: "white", layer: "FRAME" },
   { id: "002", name: "INPUT", bg: "black", layer: "FRAME" },
-  { id: "003", name: "CARD", bg: "white", layer: "FRAME" },
-  { id: "004", name: "MODAL", bg: "white", layer: "FRAME" },
-  { id: "005", name: "TABLE", bg: "white", layer: "FRAME" },
-  { id: "006", name: "TOAST", bg: "white", layer: "FRAME" },
-  { id: "007", name: "NOISE_BG", bg: "black", layer: "SIGNAL" },
-  { id: "008", name: "PARTICLE_MESH", bg: "black", layer: "SIGNAL" },
-  { id: "009", name: "GLITCH_TEXT", bg: "black", layer: "SIGNAL" },
-  { id: "010", name: "DROPDOWN", bg: "white", layer: "FRAME" },
-  { id: "011", name: "TABS", bg: "white", layer: "FRAME" },
-  { id: "012", name: "WAVEFORM", bg: "black", layer: "SIGNAL" },
+  { id: "005", name: "CARD", bg: "white", layer: "FRAME" },
+  { id: "006", name: "MODAL", bg: "white", layer: "FRAME" },
+  { id: "009", name: "TABLE", bg: "white", layer: "FRAME" },
+  { id: "010", name: "TOAST", bg: "white", layer: "FRAME" },
+  { id: "101", name: "NOISE_BG", bg: "black", layer: "SIGNAL" },
+  { id: "104", name: "PARTICLE_MESH", bg: "black", layer: "SIGNAL" },
+  { id: "103", name: "GLITCH_TEXT", bg: "black", layer: "SIGNAL" },
+  { id: "008", name: "BADGE", bg: "black", layer: "FRAME" },
+  { id: "007", name: "TABS", bg: "white", layer: "FRAME" },
+  { id: "102", name: "WAVEFORM", bg: "black", layer: "SIGNAL" },
 ];
 
 export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Record<string, string> }) {

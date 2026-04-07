@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Pre-compute highlighted code for homepage grid components (ids 001-012)
-  const homepageIds = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012'];
+  const homepageIds = ['001', '002', '005', '006', '009', '010', '101', '104', '103', '008', '007', '102'];
   const highlightedCodeMap: Record<string, string> = {};
   await Promise.all(
     homepageIds.map(async (id) => {
