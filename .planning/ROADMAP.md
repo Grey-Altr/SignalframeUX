@@ -324,10 +324,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `ANALYZE=true pnpm build` confirms the shared JS bundle is under 150 KB — ComponentDetail lazy-load, P3 component lazy-load, and shiki server-only module all verified as non-contributors to initial bundle
   2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
-**Plans:** 2 plans
+**Plans:** 2 plans (2 waves)
 Plans:
-- [ ] 26-01-PLAN.md — [To be planned]
-- [ ] 26-02-PLAN.md — [To be planned]
+- [ ] 26-01-PLAN.md — Bundle gate verification (ANALYZE=true build + rootMainFiles measurement + Playwright regression)
+- [ ] 26-02-PLAN.md — Vercel deploy + Lighthouse 100/100 audit against production URL
 
 ## Progress
 
