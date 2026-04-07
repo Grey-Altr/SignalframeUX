@@ -2,15 +2,15 @@
 pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 25 context gathered
-last_updated: "2026-04-07T01:07:18.271Z"
-last_activity: 2026-04-07 — 24-02 complete (1 task, 1 file, ~25min)
+status: in_progress
+stopped_at: Phase 25, Plan 01 complete — ComponentDetail panel + explorer wiring shipped
+last_updated: "2026-04-07T01:36:21Z"
+last_activity: 2026-04-07 — 25-01 complete (2 tasks, 5 files, ~5min)
 progress:
   total_phases: 17
   completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 24 (2/2 plans complete) — Phase 25 next
-Plan: 24-02 complete
-Status: 24-02 shipped — DV-02 complete (api-docs.ts extended to 107 entries, full registry coverage). Both Phase 24 plans delivered.
-Last activity: 2026-04-07 — 24-02 complete (1 task, 1 file, ~25min)
+Phase: Phase 25 (1/2 plans complete) — 25-02 next
+Plan: 25-01 complete
+Status: 25-01 shipped — ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE), GSAP animation, bundle gate. ComponentsExplorer wired with dynamic import, session state, triggerRefs. Server-side shiki pre-computation. Shared bundle held at 102 kB.
+Last activity: 2026-04-07 — 25-01 complete (2 tasks, 5 files, ~5min)
 
 ## Progress
 
@@ -38,7 +38,7 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [███████___] ~67% (9/? plans) IN PROGRESS
+v1.4: [████████__] ~78% (10/? plans) IN PROGRESS
 ```
 
 ## v1.4 Phase Map
@@ -49,7 +49,7 @@ v1.4: [███████___] ~67% (9/? plans) IN PROGRESS
 | 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
 | 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Complete (2/2 plans — all 4 CMP requirements delivered) |
 | 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
-| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Not started |
+| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | In progress (1/2 plans) |
 | 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Not started |
 
 ## Accumulated Context
@@ -131,6 +131,10 @@ v1.4: [███████___] ~67% (9/? plans) IN PROGRESS
 - [Phase 24]: 34 entries in COMPONENT_REGISTRY matches actual COMPONENTS array count (plan spec of 35 was off-by-one)
 - [Phase 24]: docId convention: camelCase SF component name (sfButton, sfCard) to align with Plan 02 api-docs.ts new entries
 - [Phase 24]: camelCase sf-prefixed keys for new api-docs entries — avoids collision with existing lowercase keys
+- [Phase 25]: ComponentDetail loaded via next/dynamic ssr:false — shared bundle held at 102 kB (gate: 150 kB)
+- [Phase 25]: ShikiOutput dedicated wrapper for server-generated HTML documents trust boundary explicitly
+- [Phase 25]: triggerRefs as Record<string, HTMLDivElement | null> keyed by comp.index enables O(1) focus return
+- [Phase 25]: highlightedCodeMap pre-computed server-side via Promise.all — zero client JS cost for shiki
 
 ### Blockers
 
@@ -145,6 +149,6 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Session Continuity
 
-Last session: 2026-04-07T01:07:18.267Z
-Stopped at: Phase 25 context gathered
-Resume with: `/pde:execute-phase 24 01` — Detail View Data Layer (api-docs.ts authoring, shiki RSC setup)
+Last session: 2026-04-07T01:36:21Z
+Stopped at: Phase 25 Plan 01 complete — ComponentDetail panel + ComponentsExplorer wiring shipped
+Resume with: `/pde:execute-phase 25 02` — Phase 25 Plan 02 (homepage integration, SI-01/SI-02 requirements)
