@@ -280,8 +280,8 @@ Plans:
   3. lib/code-highlight.ts exists as a server-only RSC module; calling it with a code string returns highlighted HTML using shiki/core with an OKLCH-compatible theme — zero client JS added to the bundle
 **Plans:** 2 plans
 Plans:
-- [ ] 24-01-PLAN.md — [To be planned]
-- [ ] 24-02-PLAN.md — [To be planned]
+- [ ] 24-01-PLAN.md — Shiki RSC module (code-highlight.ts) + component-registry.ts (35 grid entries)
+- [ ] 24-02-PLAN.md — api-docs.ts extension (~36 new ComponentDoc entries for full registry coverage)
 
 ### Phase 25: Interactive Detail Views + Site Integration
 **Goal**: Clicking any component card on /components or the homepage grid expands an inline detail panel showing variants, props, and copyable code — the milestone's primary feature
@@ -342,6 +342,6 @@ Plans:
 | 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
-| 24. Detail View Data Layer | v1.4 | 0/? | Not started | - |
+| 24. Detail View Data Layer | v1.4 | 0/2 | Not started | - |
 | 25. Interactive Detail Views + Site Integration | v1.4 | 0/? | Not started | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
