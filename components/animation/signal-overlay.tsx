@@ -167,6 +167,7 @@ export function SignalOverlay() {
         aria-expanded={isOpen}
         aria-controls="signal-overlay-panel"
         className={cn(
+          "signal-overlay-toggle",
           "fixed bottom-4 right-4 z-[calc(var(--z-scroll-top,9000)+10)]",
           "w-8 h-8 border-2 border-foreground",
           "bg-background text-foreground",

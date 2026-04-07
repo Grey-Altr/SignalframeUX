@@ -242,6 +242,13 @@
   z-index: var(--z-content);
 }
 
+/* Suppress SignalOverlay toggle and panel when detail is open (IBF-02) */
+[data-modal-open] .signal-overlay-toggle,
+[data-modal-open] #signal-overlay-panel {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
 /* ── Dark Mode ── */
 .dark {
   --color-background: oklch(0.145 0 0);

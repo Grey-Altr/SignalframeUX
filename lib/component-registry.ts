@@ -741,7 +741,7 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
     code: `import Waveform from '@/components/animation/waveform'
 
 <Waveform />`,
-    docId: "waveform",
+    docId: "waveformSignal",
     layer: "signal",
     pattern: "C",
     category: "GENERATIVE",
