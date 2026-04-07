@@ -313,7 +313,7 @@ Plans:
   1. Clicking any homepage grid card opens the ComponentDetail panel for the correct component — the COMPONENTS array IDs map to their intended COMPONENT_REGISTRY keys
   2. Opening a detail panel with `[data-modal-open]` suppresses SignalOverlay toggle (z-210) below the panel z-index — overlay is not clickable over the detail panel
   3. Registry entry 102 docId reads `waveformSignal` and resolves to the current Phase-24 doc with correct importPath
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
 - [x] 27-01-PLAN.md — Homepage ID remap + SignalOverlay suppression + docId fix
 
@@ -358,5 +358,5 @@ Plans:
 | 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
 | 24. Detail View Data Layer | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
 | 25. Interactive Detail Views + Site Integration | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
-| 27. Integration Bug Fixes | v1.4 | 0/1 | Not started | - |
+| 27. Integration Bug Fixes | v1.4 | Complete    | 2026-04-07 | - |
 | 26. Verification + Launch Gate | v1.4 | 0/? | Not started | - |
