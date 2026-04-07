@@ -879,6 +879,80 @@
         "pattern": "B",
         "heavy": true
       }
+    },
+    {
+      "name": "sf-drawer",
+      "type": "registry:ui",
+      "title": "SF Drawer",
+      "description": "Bottom-sheet overlay via vaul. Lazy-loaded via next/dynamic (ssr: false). Import sf-drawer-lazy.tsx — NOT from sf/index.ts barrel.",
+      "dependencies": ["vaul"],
+      "registryDependencies": ["drawer"],
+      "files": [
+        {
+          "path": "components/sf/sf-drawer.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-drawer-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
+      "name": "sf-input-group",
+      "type": "registry:ui",
+      "title": "SF InputGroup",
+      "description": "Grouped input with inline addons and action buttons. Zero border-radius on all sub-elements.",
+      "registryDependencies": ["input-group"],
+      "files": [
+        {
+          "path": "components/sf/sf-input-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-hover-card",
+      "type": "registry:ui",
+      "title": "SF HoverCard",
+      "description": "FRAME-only hover/focus preview panel. Sharp 2px border, no radius, no shadow. Keyboard accessible via Radix.",
+      "registryDependencies": ["hover-card"],
+      "files": [
+        {
+          "path": "components/sf/sf-hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
+    },
+    {
+      "name": "sf-input-otp",
+      "type": "registry:ui",
+      "title": "SF InputOTP",
+      "description": "OTP verification input with individual character slots. Zero border-radius, mono font, keyboard navigable.",
+      "registryDependencies": ["input-otp"],
+      "files": [
+        {
+          "path": "components/sf/sf-input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "A"
+      }
     }
   ]
 }

@@ -103,6 +103,10 @@ Canvas 2D context does not understand oklch() CSS values — resolve --color-pri
 
 SignalframeUX COMPONENT_REGISTRY uses semantic keys (001-030 for FRAME components, 101-104+ for SIGNAL/generative) — never assume sequential 001-N mapping. SFBadge intent values are `default | primary | outline | signal` only — no "secondary". For CSS suppression of floating elements under a data attribute, add a stable className (not just Tailwind utilities) to enable external targeting, then use `[data-attr] .stable-class { pointer-events: none; opacity: 0.4 }` in globals.css — no z-index manipulation required.
 
+### 2026-04-07T05:22:34Z | Phase 26 | tags: playwright, bundle-gate, dev-server, gzip-measurement
+
+Playwright tests require a warm dev server on port 3000 — spawning a fresh server on port 3001 causes 10s timeouts because the `/components` route and dynamic imports haven't compiled yet. Always run `pnpm exec playwright test` against the default config port (3000) with an already-running server. Bundle gate measurement must run `ANALYZE=true pnpm build` BEFORE starting `pnpm dev`, because `pnpm dev` (Turbopack) overwrites `.next/build-manifest.json` with dev artifacts — run python3 gzip measurement immediately after the production build completes, before any dev server start.
+
 ### 2026-04-05T00:00:00Z | Phase 04 | tags: crafted-states, frame-signal, scrambletext, reduced-motion-guard
 
 In SignalframeUX error.tsx, ScrambleText must be gated with `window.matchMedia("(prefers-reduced-motion: reduce)").matches` BEFORE the async `import("@/lib/gsap-plugins")` — prevents the entire GSAP plugin bundle from loading on reduced-motion devices. For not-found.tsx, keeping it as a Server Component and using `data-anim="page-heading"` wires it to the existing `initPageHeadingScramble()` automatically — no new client boundary needed. ComponentsExplorer uses two state vars for search (`searchInput` = controlled input, `searchQuery` = debounced filter) — the empty state reset CTA must clear both or the filter stays active while the search box appears empty.
@@ -138,6 +142,10 @@ In SignalframeUX, files in `lib/` that contain React components with JSX syntax 
 ### 2026-04-06T07:23:00Z | Phase 06 | tags: signal-canvas, gsap-ticker, scissor-viewport, webgl-singleton
 
 The SignalCanvas singleton uses `gsap.ticker.add(tickerCallback)` exclusively — never `renderer.setAnimationLoop()` or raw `requestAnimationFrame`. The ticker callback checks `state.reducedMotion` and `state.scenes.size === 0` to skip rendering when unnecessary. The scissor Y-axis conversion is: `canvasY = renderer.domElement.clientHeight - rect.bottom` (Three.js is Y-up, DOM is Y-down).
+
+### 2026-04-07T06:00:00Z | Phase 26 | tags: lighthouse-audit, canvas-aria, multi-line-jsx, grep-false-positive
+
+Canvas ARIA audit via `grep "<canvas" | grep -v "aria-hidden"` produces false positives when ARIA attributes appear on a separate JSX line from `<canvas` — all three canvas elements in SignalframeUX (hero-mesh, token-viz, canvas-cursor) are correctly attributed but span multiple lines. Always follow canvas grep with `-A5` context or grep for the aria attribute near the canvas line. Next.js 15 App Router provides default viewport meta (`width=device-width, initial-scale=1`) when no `viewport` export is present — omitting it is correct, not a Lighthouse risk.
 
 ### 2026-04-06T07:23:00Z | Phase 06 | tags: use-signal-scene, dispose-pattern, intersection-observer
 
