@@ -45,11 +45,11 @@
 
 ## SIGNAL Section
 
-- [ ] **SG-01**: Full-viewport generative WebGL scene (SignalMesh or new shader) at maximum SIGNAL intensity
-- [ ] **SG-02**: 150vh scroll distance with slow parallax — atmospheric breathing section
-- [ ] **SG-03**: Minimal or no text — pure visual/generative experience
-- [ ] **SG-04**: SIGNAL parameters animated by scroll position (intensity ramps up as user scrolls through)
-- [ ] **SG-05**: prefers-reduced-motion: static frame of the generative output, no animation
+- [x] **SG-01**: Full-viewport generative WebGL scene (SignalMesh or new shader) at maximum SIGNAL intensity
+- [x] **SG-02**: 150vh scroll distance with slow parallax — atmospheric breathing section
+- [x] **SG-03**: Minimal or no text — pure visual/generative experience
+- [x] **SG-04**: SIGNAL parameters animated by scroll position (intensity ramps up as user scrolls through)
+- [x] **SG-05**: prefers-reduced-motion: static frame of the generative output, no animation
 
 ## ACQUISITION Section
 
@@ -120,11 +120,11 @@
 | TH-04 | Phase 31 | Pending |
 | TH-05 | Phase 31 | Pending |
 | TH-06 | Phase 31 | Pending |
-| SG-01 | Phase 32 | Pending |
-| SG-02 | Phase 32 | Pending |
-| SG-03 | Phase 32 | Pending |
-| SG-04 | Phase 32 | Pending |
-| SG-05 | Phase 32 | Pending |
+| SG-01 | Phase 32 | Complete |
+| SG-02 | Phase 32 | Complete |
+| SG-03 | Phase 32 | Complete |
+| SG-04 | Phase 32 | Complete |
+| SG-05 | Phase 32 | Complete |
 | PR-01 | Phase 32 | Pending |
 | PR-02 | Phase 32 | Pending |
 | PR-03 | Phase 32 | Pending |
