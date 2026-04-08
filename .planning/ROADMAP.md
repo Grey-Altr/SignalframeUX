@@ -387,8 +387,8 @@ Plans:
   6. CircuitDivider and MarqueeBand components are removed from the homepage — section transitions use hard cuts or scroll-driven reveals with no decorative dividers
 **Plans:** 2 plans
 Plans:
-- [x] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
-- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
+- [ ] 30-01-PLAN.md — Page rewrite + EntrySection + stub sections + test scaffold (RA-05, EN-01, EN-02, EN-03, VL-03, VL-07)
+- [ ] 30-02-PLAN.md — Nav scroll reveal + mouse-responsive shader (EN-04, EN-05)
 
 ### Phase 31: THESIS Section
 **Goal**: The manifesto occupies 200-300vh of scroll distance, placing individual type statements across the viewport as the user scrolls — the primary signature interaction that defines the Awwwards submission
