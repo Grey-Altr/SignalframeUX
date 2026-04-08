@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
 import { SectionIndicator } from "@/components/layout/section-indicator";
 import { EntrySection } from "@/components/blocks/entry-section";
+import { ProofSection } from "@/components/blocks/proof-section";
 import { ThesisSection } from "@/components/blocks/thesis-section";
 
 export const metadata: Metadata = {
@@ -40,17 +41,15 @@ export default function HomePage() {
             <ThesisSection />
           </SFSection>
 
-          {/* PROOF — 100vh stub (Phase 32 fills) */}
+          {/* PROOF — interactive SIGNAL/FRAME layer demo (Phase 32) */}
           <SFSection
             label="PROOF"
             bgShift="black"
             id="proof"
             data-section="proof"
-            className="py-0 min-h-screen flex items-center justify-center"
+            className="py-0"
           >
-            <h2 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">
-              PROOF
-            </h2>
+            <ProofSection />
           </SFSection>
 
           {/* INVENTORY — 100vh stub (Phase 33 fills) */}

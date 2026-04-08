@@ -195,6 +195,13 @@ export function ProofSection() {
       };
 
       // ── ScrollTrigger lifecycle — AC-10: NO pin, NO scrub ─────────────────
+      //
+      // ScrollTrigger is kept for AC-10 compliance (must have onEnter/onLeave/
+      // onEnterBack/onLeaveBack). However, when Lenis is active alongside GSAP's
+      // pin system, ScrollTrigger may compute PROOF's start/end positions based
+      // on pre-pin layout, putting them out of sync with the native DOM. The
+      // IntersectionObserver below provides a reliable native visibility gate
+      // that is immune to coordinate mismatches.
       const trigger = ScrollTrigger.create({
         trigger: section,
         start: "top bottom",
@@ -231,7 +238,31 @@ export function ProofSection() {
         trigger.end,
       );
 
+      // ── IntersectionObserver — reliable native visibility gate ────────────
+      //
+      // When GSAP's pin system inflates the DOM, ScrollTrigger positions may be
+      // stale until a refresh. IntersectionObserver uses native layout geometry
+      // and is always accurate. It mirrors the onEnter/onLeave activate/deactivate
+      // pattern, ensuring the rAF loop and pointer listeners are active exactly
+      // when the section is visible in the viewport.
+      const intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            activatePointerListener();
+            startLerpLoop(section, skeletonRef.current);
+          } else {
+            deactivatePointerListener();
+            stopLerpLoop();
+            section.style.setProperty("--signal-intensity", "1.0");
+            if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
+          }
+        },
+        { threshold: 0.01 }, // fire when >=1% of section is visible
+      );
+      intersectionObserver.observe(section);
+
       return () => {
+        intersectionObserver.disconnect();
         deactivatePointerListener();
         stopLerpLoop();
         if (gyroAttached) {

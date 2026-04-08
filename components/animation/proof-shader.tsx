@@ -323,25 +323,35 @@ export function ProofShader({ sectionRef }: ProofShaderProps) {
     { scope: containerRef, dependencies: [hasWebGL] },
   );
 
-  // Reduced-motion fallback — static div, no WebGL
-  if (
+  // Determine if we should render the WebGL canvas or static fallback.
+  // The layer wrapper (with the proof-layer shader attr) is always rendered
+  // so PR-03 finds exactly 1 layer-A element regardless of WebGL/reduced-motion.
+  const isReducedMotion =
     typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  ) {
-    return <ProofShaderFallback />;
-  }
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // No WebGL support fallback
-  if (!hasWebGL) {
-    return <ProofShaderFallback />;
-  }
+  const showFallback = isReducedMotion || !hasWebGL;
 
   return (
     <div
-      ref={containerRef}
       data-proof-layer="shader"
       className="absolute inset-0 z-0 rounded-none"
       aria-hidden="true"
-    />
+    >
+      {showFallback ? (
+        // Static fallback: solid color background, no canvas, no WebGL
+        <div
+          data-proof-shader-fallback
+          className="absolute inset-0 rounded-none"
+          style={{ backgroundColor: "var(--color-primary)", opacity: 0.1 }}
+        />
+      ) : (
+        // WebGL canvas target — SignalCanvas singleton renders into this element
+        <div
+          ref={containerRef}
+          className="absolute inset-0 rounded-none"
+        />
+      )}
+    </div>
   );
 }

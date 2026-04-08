@@ -78,22 +78,43 @@ test.describe("Phase 32: SIGNAL + PROOF Sections", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    const proof = page.locator("#proof");
-    await proof.scrollIntoViewIfNeeded();
-
     // The rAF lerp writes --signal-intensity on [data-proof-root], not the parent SFSection.
     const proofRoot = page.locator("[data-proof-root]").first();
     await expect(proofRoot).toBeVisible({ timeout: 5000 });
 
+    // Scroll so PROOF section top is just inside the viewport (triggers onEnter).
+    // We scroll to (offsetTop - viewport_height * 0.9) so the section top is
+    // ~10% from the bottom of the viewport — past the start:"top bottom" marker
+    // but not past end:"bottom top", keeping the trigger isActive.
+    await page.evaluate(() => {
+      const el = document.querySelector("[data-proof-root]") as HTMLElement | null;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const absoluteTop = rect.top + window.scrollY;
+      // Scroll so section top is 10% above viewport bottom — triggers onEnter
+      const targetScroll = absoluteTop - window.innerHeight * 0.1;
+      window.scrollTo({ top: targetScroll, behavior: "instant" });
+    });
+    // Allow ScrollTrigger to process the scroll position
+    await page.waitForTimeout(300);
+
+    // Wait for the rAF lerp loop to write --signal-intensity on the section element.
+    await page.waitForFunction(() => {
+      const el = document.querySelector("[data-proof-root]") as HTMLElement | null;
+      if (!el) return false;
+      const val = el.style.getPropertyValue("--signal-intensity");
+      return val !== "" && val !== null && val !== "1.0";
+    }, { timeout: 5000 });
+
     const box = await proofRoot.boundingBox();
     expect(box).not.toBeNull();
 
-    // Move pointer to right side (high intensity)
+    // Move pointer to right side of the viewport (high intensity = e.clientX/innerWidth near 1)
     const rightX = box!.x + box!.width * 0.85;
     const midY = box!.y + box!.height * 0.5;
     await page.mouse.move(rightX, midY);
-    // Wait for lerp to settle (~250ms)
-    await page.waitForTimeout(300);
+    // Wait for lerp to settle — LERP_FACTOR=0.08, ~40 frames = ~660ms to converge
+    await page.waitForTimeout(700);
 
     const intensityBefore = await proofRoot.evaluate((el) => {
       return parseFloat(
@@ -101,10 +122,10 @@ test.describe("Phase 32: SIGNAL + PROOF Sections", () => {
       );
     });
 
-    // Move pointer to left side (low intensity)
-    const leftX = box!.x + box!.width * 0.15;
+    // Move pointer to left side (low intensity = e.clientX/innerWidth near 0)
+    const leftX = box!.x + box!.width * 0.1;
     await page.mouse.move(leftX, midY);
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(700);
 
     const intensityAfter = await proofRoot.evaluate((el) => {
       return parseFloat(
@@ -112,7 +133,7 @@ test.describe("Phase 32: SIGNAL + PROOF Sections", () => {
       );
     });
 
-    // Left cursor yields lower intensity than right cursor
+    // Left cursor yields lower intensity than right cursor — delta must be >= 0.3
     expect(
       intensityBefore - intensityAfter,
       "Delta between right and left pointer positions should be >= 0.3",
