@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
 import { SectionIndicator } from "@/components/layout/section-indicator";
 import { EntrySection } from "@/components/blocks/entry-section";
-import { PinnedSection } from "@/components/animation/pinned-section";
+import { ThesisSection } from "@/components/blocks/thesis-section";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -29,7 +29,7 @@ export default function HomePage() {
             <EntrySection />
           </SFSection>
 
-          {/* THESIS — 200vh pinned stub (Phase 31 fills real content) */}
+          {/* THESIS — 200-300vh pinned manifesto (Phase 31) */}
           <SFSection
             label="THESIS"
             bgShift="white"
@@ -37,13 +37,7 @@ export default function HomePage() {
             data-section="thesis"
             className="py-0"
           >
-            <PinnedSection scrollDistance={2} id="thesis-pin">
-              <div className="h-full flex items-center justify-center">
-                <h2 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">
-                  THESIS
-                </h2>
-              </div>
-            </PinnedSection>
+            <ThesisSection />
           </SFSection>
 
           {/* PROOF — 100vh stub (Phase 32 fills) */}
