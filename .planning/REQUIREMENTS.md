@@ -1,104 +1,117 @@
-# Requirements — v1.4 Feature Complete
+# Requirements — v1.5 Redesign
 
-## Tech Debt
-- [x] **TD-01**: MutationObserver in signal-mesh.tsx and glsl-hero.tsx disconnects on unmount
-- [x] **TD-02**: readSignalVars has explicit isNaN() guard in both WebGL scenes
-- [x] **TD-03**: Programmatic scroll routes through lenis.scrollTo (not window.scrollTo)
-- [x] **TD-04**: Duplicate TOAST entries in ComponentsExplorer resolved (unique names/indices)
+## Route Architecture
 
-## Token System
-- [x] **TK-01**: --color-success and --color-warning moved into @theme block in globals.css
-- [x] **TK-02**: Elevation absence explicitly documented in globals.css and SCAFFOLDING.md
-- [x] **TK-03**: Sidebar and chart color tokens documented in SCAFFOLDING.md
-- [x] **TK-04**: WebGL color bridge (color-resolve.ts) audited for token dependency safety
+- [ ] **RA-01**: `/components` route renamed to `/inventory` with redirect from old path
+- [ ] **RA-02**: `/tokens` route renamed to `/system` with redirect from old path
+- [ ] **RA-03**: `/start` route renamed to `/init` with redirect from old path
+- [ ] **RA-04**: All internal links, nav items, and footer links updated to new route names
+- [ ] **RA-05**: Homepage `page.tsx` restructured with 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
 
-## Components
-- [x] **CMP-01**: SFDrawer (vaul-based, lazy, meta.heavy: true) with registry + explorer entry
-- [x] **CMP-02**: SFHoverCard (FRAME-only, Pattern A) with registry + explorer entry
-- [x] **CMP-03**: SFInputOTP (input-otp, Pattern A) with registry + explorer entry
-- [x] **CMP-04**: SFInputGroup wrapper closes last unwrapped ui/ component gap
+## ENTRY Section
 
-## Detail View Data
-- [x] **DV-01**: lib/component-registry.ts maps all grid items to variants, code snippets, doc pointers
-- [x] **DV-02**: lib/api-docs.ts extended with ComponentDoc entries for all ~45 components
-- [x] **DV-03**: lib/code-highlight.ts (shiki/core, server-only RSC module) for syntax highlighting
+- [ ] **EN-01**: GLSL hero shader fills 100vh — not contained in a padded section, IS the viewport
+- [ ] **EN-02**: `SIGNALFRAME//UX` rendered at 120px+ (Anton or current display font) centered on shader
+- [ ] **EN-03**: Single subtitle line only — no paragraph, no description, no scroll indicator
+- [ ] **EN-04**: No visible navigation on initial viewport — nav reveals on scroll (sticky after ENTRY)
+- [ ] **EN-05**: Shader parameters respond to mouse position on ENTRY section (subtle, not overwhelming)
 
-## Interactive Detail Views
-- [x] **DV-04**: ComponentDetail panel with 3 tabs (VARIANTS/PROPS/CODE) and GSAP height animation
-- [x] **DV-05**: Variant grid renders all intent/size values as live SF components
-- [x] **DV-06**: Props table with name, type, default, required, description per component
-- [x] **DV-07**: Code tab with usage snippet + CLI install command, both copy-to-clipboard
-- [x] **DV-08**: FRAME/SIGNAL layer badge and pattern tier (A/B/C) visible in detail header
-- [x] **DV-09**: Animation token callout per component (durations, easings used)
-- [x] **DV-10**: Keyboard accessible (Escape closes, focus returns to trigger card)
-- [x] **DV-11**: Detail panel as DOM sibling outside GSAP Flip grid (not child)
-- [x] **DV-12**: next/dynamic lazy load for ComponentDetail (bundle gate compliance)
+## THESIS Section
 
-## Site Integration
-- [x] **SI-01**: ComponentsExplorer onClick expands detail panel with session state persistence
-- [x] **SI-02**: Homepage grid cards clickable with same detail expansion behavior
-- [x] **SI-03**: DU/TDR aesthetic on detail panel (sharp edges, uppercase labels, accent on selected)
-- [x] **SI-04**: Z-index contract for detail panel vs canvas cursor and SignalOverlay
+- [ ] **TH-01**: Scroll-driven typographic layout spanning 200–300vh of scroll distance
+- [ ] **TH-02**: Manifesto phrases placed individually across viewport via GSAP ScrollTrigger pin/scrub — not flowing paragraph text
+- [ ] **TH-03**: At least 3 type moments at 80px+ that dominate their scroll frame
+- [ ] **TH-04**: Negative space between phrases is intentional design material (minimum 30vh gaps between key statements)
+- [ ] **TH-05**: Content includes SIGNAL/FRAME thesis, Enhanced Flat Design position, and cybernetic biophilia concept — as statements, not explanations
+- [ ] **TH-06**: prefers-reduced-motion: instant placement of all text, no scroll-driven animation
 
-## Integration Bug Fixes (Gap Closure)
-- [x] **IBF-01**: Homepage COMPONENTS IDs remapped to correct COMPONENT_REGISTRY keys (P0 critical)
-- [x] **IBF-02**: SignalOverlay z-210 suppressed by [data-modal-open] rule (P1 minor)
-- [x] **IBF-03**: Registry entry 102 docId corrected from 'waveform' to 'waveformSignal' (P2 cosmetic)
+## PROOF Section
 
-## Verification
-- [x] **VF-01**: Shared JS bundle remains under 150 KB gate after all additions
-- [x] **VF-02**: Lighthouse audit against deployed URL (target 100/100)
+- [ ] **PR-01**: Full-viewport interactive demonstration of SIGNAL/FRAME layer separation
+- [ ] **PR-02**: Mouse/pointer position controls SIGNAL layer intensity in real-time (no overlay panel needed)
+- [ ] **PR-03**: Visual separation of SIGNAL and FRAME layers — user can see the generative expression separate from the deterministic structure
+- [ ] **PR-04**: Stats (component count, bundle size, Lighthouse score, etc.) integrated as data points within the interactive section, not as a separate band
+- [ ] **PR-05**: Touch support — tap and drag on mobile produces the same SIGNAL/FRAME separation effect
+- [ ] **PR-06**: prefers-reduced-motion: static split view showing both layers side-by-side
 
-## Future Requirements (v1.4.x)
-- Component composition callout in detail view (which SF components compose another)
-- Token usage callout per component in detail view
+## INVENTORY Section
 
-## Out of Scope
-- SFCarousel — GSAP animation frame conflict; DU/TDR aesthetic misalignment
-- SFChart — recharts ~50KB dependency; no current consumer
-- SFResizable — no identified use case
-- SFContextMenu — inaccessible on touch; aesthetic misalignment
-- SFSidebar — deferred to cdOS milestone (large composable system)
-- DataTable composite block — deferred to cdOS milestone
-- Storybook — duplicates existing in-site explorer
-- MDX pipeline — TypeScript data in api-docs.ts is established pattern
-- Interactive prop knobs — show all variants statically instead
-- Localization (JFM) — separate future milestone
+- [ ] **IV-01**: Component catalog uses coded nomenclature: `SF//BTN-001`, `SF//CRD-002`, etc.
+- [ ] **IV-02**: Each catalog entry displays layer tag (`[//SIGNAL]` / `[FRAME]`), pattern tier (`A` / `B` / `C`), and component name
+- [ ] **IV-03**: Monospaced type for catalog entries — dense, systematic, not card-based
+- [ ] **IV-04**: Click/tap expands existing ComponentDetail panel (Phase 25 feature preserved)
+- [ ] **IV-05**: Homepage INVENTORY section shows 12-item subset; `/inventory` page shows full catalog
+- [ ] **IV-06**: Filter by layer, pattern, and category functional on `/inventory` page (existing filter logic preserved)
+
+## SIGNAL Section
+
+- [ ] **SG-01**: Full-viewport generative WebGL scene (SignalMesh or new shader) at maximum SIGNAL intensity
+- [ ] **SG-02**: 150vh scroll distance with slow parallax — atmospheric breathing section
+- [ ] **SG-03**: Minimal or no text — pure visual/generative experience
+- [ ] **SG-04**: SIGNAL parameters animated by scroll position (intensity ramps up as user scrolls through)
+- [ ] **SG-05**: prefers-reduced-motion: static frame of the generative output, no animation
+
+## ACQUISITION Section
+
+- [ ] **AQ-01**: CLI command `npx signalframeux init` displayed prominently in monospaced type with copy-to-clipboard
+- [ ] **AQ-02**: Key system stats (component count, bundle size, Lighthouse scores) as monospaced data points
+- [ ] **AQ-03**: Links to `/init` (full guide) and `/inventory` (full catalog)
+- [ ] **AQ-04**: Section height ≤ 50vh — sharp and short, no padding inflation
+- [ ] **AQ-05**: No "Get Started" button energy — technical instrument presentation
+
+## Visual Language
+
+- [ ] **VL-01**: Ghost labels scaled to 200px+ — architectural elements, not background decoration
+- [ ] **VL-02**: Display type moments at 120px+ in at least 3 locations across the site
+- [ ] **VL-03**: CircuitDivider replaced or removed — section transitions use hard cuts or scroll-driven reveals
+- [ ] **VL-04**: Negative space audit: minimum 40% of viewport is intentional void in key sections
+- [ ] **VL-05**: Magenta accent used in ≤ 5 moments per page — fewer instances, bigger impact
+- [ ] **VL-06**: Section indicators redesigned as system readout HUD (monospaced, coded, data-dense)
+- [ ] **VL-07**: MarqueeBand removed or redesigned to fit the new information hierarchy
+
+## Subpage Redesign
+
+- [ ] **SP-01**: `/system` (tokens) — token groups presented as specimen-style visual diagrams, not tables
+- [ ] **SP-02**: `/system` — spacing scale, type scale, color palette, motion tokens each get designed visual sections
+- [ ] **SP-03**: `/init` — getting started reframed as system initialization; sharp, technical, minimal prose
+- [ ] **SP-04**: `/reference` — API docs styled as technical schematics; monospaced, dense layout
+- [ ] **SP-05**: All subpages share the redesigned nav (hidden on initial viewport, sticky on scroll) and footer
+
+## Performance
+
+- [ ] **PF-01**: Shared JS bundle remains under 150 KB gzip after all redesign changes
+- [ ] **PF-02**: Lighthouse 100/100 on all four categories against deployed URL
+- [ ] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
+- [ ] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
+- [ ] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
+- [ ] **PF-06**: prefers-reduced-motion fully functional across all new sections
+
+## Launch Readiness
+
+- [ ] **LR-01**: Awwwards submission package prepared (project description, technologies, screenshots)
+- [ ] **LR-02**: Open Graph / social meta tags updated for redesigned site (title, description, preview image)
+- [ ] **LR-03**: Vercel production deployment live with no console errors
+- [ ] **LR-04**: Mobile responsive across all new sections (tested at 375px, 768px, 1440px)
+
+---
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| TD-01 | Phase 21 | Complete — 21-01 (1ff1156) |
-| TD-02 | Phase 21 | Complete — 21-01 (1ff1156) |
-| TD-03 | Phase 21 | Complete |
-| TD-04 | Phase 21 | Complete — 21-01 (823c95b) |
-| TK-01 | Phase 22 | Complete |
-| TK-02 | Phase 22 | Complete |
-| TK-03 | Phase 22 | Complete |
-| TK-04 | Phase 22 | Complete |
-| CMP-01 | Phase 23 | Complete |
-| CMP-02 | Phase 23 | Complete |
-| CMP-03 | Phase 23 | Complete |
-| CMP-04 | Phase 23 | Complete |
-| DV-01 | Phase 24 | Complete |
-| DV-02 | Phase 24 | Complete |
-| DV-03 | Phase 24 | Complete |
-| DV-04 | Phase 25 | Complete |
-| DV-05 | Phase 25 | Complete |
-| DV-06 | Phase 25 | Complete |
-| DV-07 | Phase 25 | Complete |
-| DV-08 | Phase 25 | Complete |
-| DV-09 | Phase 25 | Complete |
-| DV-10 | Phase 25 | Complete |
-| DV-11 | Phase 25 | Complete |
-| DV-12 | Phase 25 | Complete |
-| SI-01 | Phase 25 | Complete |
-| SI-02 | Phase 25 | Complete |
-| SI-03 | Phase 25 | Complete |
-| SI-04 | Phase 25 | Complete |
-| VF-01 | Phase 26 | Complete — 26-01 (bundle gate 100.0 KB) |
-| VF-02 | Phase 26 | Complete — 26-02 (Lighthouse 100/100/100 PageSpeed) |
-| IBF-01 | Phase 27 | Complete — 27-01 (d2466f4) |
-| IBF-02 | Phase 27 | Complete — 27-01 (37fb914) |
-| IBF-03 | Phase 27 | Complete — 27-01 (37fb914) |
+(Populated by roadmap)
+
+---
+
+## Future Requirements (Deferred)
+
+- Audio layer (Web Audio API) — deferred to v2+
+- Haptic layer (Vibration API) — deferred to v2+
+- Registry namespace strategy — deferred to v2+
+
+## Out of Scope
+
+- React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
+- ScrollSmoother — excluded; Lenis integration validated at Lighthouse 100/100, migration risk unjustified
+- New animation libraries — GSAP + Lenis handle everything
+- Aurora/gradient backgrounds — anti-feature per Awwwards SOTD research
+- Glassmorphism — anti-feature per DU/TDR aesthetic
+- Rounded corners — zero border-radius everywhere (existing constraint)
