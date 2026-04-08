@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
+  async redirects() {
+    return [
+      { source: "/components", destination: "/inventory", permanent: true },
+      { source: "/components/:path*", destination: "/inventory/:path*", permanent: true },
+      { source: "/tokens", destination: "/system", permanent: true },
+      { source: "/tokens/:path*", destination: "/system/:path*", permanent: true },
+      { source: "/start", destination: "/init", permanent: true },
+      { source: "/start/:path*", destination: "/init/:path*", permanent: true },
+    ];
+  },
 };
 
 export default analyzer(nextConfig);
