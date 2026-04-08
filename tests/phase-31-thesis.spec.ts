@@ -132,5 +132,163 @@ test.describe("Phase 31: THESIS Section", () => {
     expect(src).toContain("invalidateOnRefresh: true");
   });
 
-  // Plan 02 Task 3 will append TH-01, TH-02, TH-03, TH-04, TH-06 browser-level tests below this line.
+  // ── TH-01: scroll distance 200-300vh (browser) ──────────────────────────────
+
+  test("TH-01: THESIS occupies 200-300vh of active scroll distance", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    const thesis = page.locator("#thesis");
+    await expect(thesis).toBeVisible({ timeout: 5000 });
+    await page.waitForLoadState("networkidle");
+
+    // TH-01 requires 200-300vh of *active scroll distance* (what the user
+    // scrolls through while the pin is engaged). GSAP ScrollTrigger's pin
+    // creates a pin-spacer that inflates the DOM bounding box by the pinned
+    // element's own 100vh PLUS the scrollDistance. So:
+    //   bbox.height = (1.0 + scrollDistance) * viewportHeight
+    // For scrollDistance in [2.0, 3.0], bbox.height / viewportHeight falls
+    // in [3.0, 4.0]. We assert that range and the comment documents why.
+    const box = await thesis.boundingBox();
+    expect(box).not.toBeNull();
+    const viewportHeight = page.viewportSize()!.height;
+    const bboxMultiple = box!.height / viewportHeight;
+    expect(bboxMultiple, "bbox = 1.0 (pin) + scrollDistance").toBeGreaterThanOrEqual(3.0);
+    expect(bboxMultiple, "bbox = 1.0 (pin) + scrollDistance").toBeLessThanOrEqual(4.0);
+
+    // Derived active scroll distance (what TH-01 actually constrains)
+    const activeScrollMultiple = bboxMultiple - 1.0;
+    expect(activeScrollMultiple, "active scroll distance").toBeGreaterThanOrEqual(2.0);
+    expect(activeScrollMultiple, "active scroll distance").toBeLessThanOrEqual(3.0);
+  });
+
+  // ── TH-02: statements positioned individually via pin ───────────────────────
+
+  test("TH-02: exactly 6 statements rendered absolutely-positioned inside pinned stage", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#thesis").scrollIntoViewIfNeeded();
+    await page.waitForLoadState("networkidle");
+
+    const stage = page.locator("#thesis [data-stage]");
+    await expect(stage).toHaveCount(1);
+
+    const statements = page.locator("#thesis [data-statement]");
+    await expect(statements).toHaveCount(6);
+
+    // Every statement's direct parent must be absolutely positioned
+    const count = await statements.count();
+    for (let i = 0; i < count; i++) {
+      const parentPosition = await statements.nth(i).evaluate((el) => {
+        const parent = el.parentElement;
+        if (!parent) return null;
+        return getComputedStyle(parent).position;
+      });
+      expect(parentPosition, `statement ${i} parent position`).toBe("absolute");
+    }
+  });
+
+  // ── TH-03: every statement renders at >= 80px (all 6 are anchors) ───────────
+
+  test("TH-03: all 6 anchor statements render at 80px or larger on desktop", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#thesis").scrollIntoViewIfNeeded();
+    await page.waitForLoadState("networkidle");
+
+    const anchors = page.locator("#thesis [data-statement-size='anchor']");
+    await expect(anchors).toHaveCount(6);
+
+    const count = await anchors.count();
+    for (let i = 0; i < count; i++) {
+      const fontSize = await anchors.nth(i).evaluate((el) =>
+        parseFloat(getComputedStyle(el).fontSize),
+      );
+      expect(fontSize, `anchor ${i} font-size`).toBeGreaterThanOrEqual(80);
+    }
+  });
+
+  // ── TH-04: weighted-arc 30vh void at structural bookends ────────────────────
+
+  test("TH-04: at least 2 statements have data-void-before >= 30", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#thesis").scrollIntoViewIfNeeded();
+    await page.waitForLoadState("networkidle");
+
+    const statements = await page
+      .locator("#thesis [data-statement-size='anchor']")
+      .all();
+    expect(statements.length).toBe(6);
+
+    let voidCount = 0;
+    for (const s of statements) {
+      // data-void-before is on the absolutely-positioned parent div, not the span.
+      // Walk up one level to read it.
+      const voidBefore = await s.evaluate(
+        (el) => el.parentElement?.getAttribute("data-void-before") ?? null,
+      );
+      if (voidBefore !== null && parseInt(voidBefore, 10) >= 30) {
+        voidCount++;
+      }
+    }
+    // Weighted arc guarantees S1 (index 0) and S6 (index 5) hit the 40vh bookend
+    expect(voidCount, "statements with >=30vh void before").toBeGreaterThanOrEqual(2);
+  });
+
+  // ── TH-06: reduced-motion fallback ──────────────────────────────────────────
+
+  test("TH-06: reduced-motion renders stacked specimen with no pin", async ({ browser }) => {
+    const ctx = await browser.newContext({
+      reducedMotion: "reduce",
+      viewport: { width: 1440, height: 900 },
+    });
+    const rmPage = await ctx.newPage();
+    const rmJsErrors: string[] = [];
+    rmPage.on("console", (msg) => {
+      if (msg.type() === "error") rmJsErrors.push(msg.text());
+    });
+    rmPage.on("pageerror", (err) => rmJsErrors.push(err.message));
+
+    await rmPage.goto("/");
+    const thesis = rmPage.locator("#thesis");
+    await expect(thesis).toBeVisible({ timeout: 5000 });
+    await rmPage.waitForLoadState("networkidle");
+
+    // All 6 statements should be present in the DOM regardless of mode
+    const statements = rmPage.locator("#thesis [data-statement]");
+    await expect(statements).toHaveCount(6);
+
+    // Section height should NOT be inflated by pin-spacer (no pin in reduced-motion)
+    const box = await thesis.boundingBox();
+    expect(box).not.toBeNull();
+    const scrollMultiple = box!.height / 900;
+    expect(scrollMultiple, "reduced-motion section is not pinned").toBeLessThan(2.0);
+
+    // Stacked specimen marker should be present
+    const reducedMotionMarker = rmPage.locator(
+      "#thesis [data-thesis-reduced-motion]",
+    );
+    await expect(reducedMotionMarker).toHaveCount(1);
+
+    // No console errors
+    expect(rmJsErrors, "reduced-motion homepage console errors").toHaveLength(0);
+
+    await ctx.close();
+  });
+
+  // ── Regression: zero console errors on default load ─────────────────────────
+
+  test("Phase 31 regression: homepage loads without console errors", async ({ page }) => {
+    const jsErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") jsErrors.push(msg.text());
+    });
+    page.on("pageerror", (err) => jsErrors.push(err.message));
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    // Scroll into THESIS to engage the pin and exercise the GSAP code path
+    await page.locator("#thesis").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    expect(jsErrors).toHaveLength(0);
+  });
 });
