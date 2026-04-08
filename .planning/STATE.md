@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 31 plans created — blocked on Phase 30 execution
-last_updated: "2026-04-08T05:21:32.977Z"
-last_activity: 2026-04-08 -- Phase 30 planning complete
+stopped_at: Completed 30-01-PLAN.md
+last_updated: "2026-04-08T05:34:30.982Z"
+last_activity: 2026-04-08 -- Phase 30 Plan 01 complete
 progress:
   total_phases: 26
   completed_phases: 9
   total_plans: 21
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 29 — Infrastructure Hardening
+Phase: 30 — Homepage Architecture + ENTRY Section
 Plan: 01 complete
-Status: Ready to execute
-Last activity: 2026-04-08 -- Phase 30 planning complete
+Status: Ready to execute Plan 02
+Last activity: 2026-04-08 -- Phase 30 Plan 01 complete
 
 ## Progress
 
@@ -39,7 +39,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [██________] 25% (3/? plans) IN PROGRESS — Phase 29 Plan 01 complete
+v1.5: [███_______] 30% (4/? plans) IN PROGRESS — Phase 30 Plan 01 complete
 ```
 
 ## v1.5 Phase Map
@@ -48,7 +48,7 @@ v1.5: [██________] 25% (3/? plans) IN PROGRESS — Phase 29 Plan 01 complete
 |-------|------|--------------|--------|
 | 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Complete (2/2 plans) |
 | 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Not started |
-| 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Not started |
+| 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | In Progress (1/2 plans) |
 | 31 | THESIS Section | TH-01–06 | Not started |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Not started |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Not started |
@@ -139,6 +139,9 @@ v1.5: [██________] 25% (3/? plans) IN PROGRESS — Phase 29 Plan 01 complete
 - [Phase 29]: autoResize: false instead of ignoreMobileResize: true — Lenis 1.3.x dropped ignoreMobileResize; autoResize: false is the equivalent for iOS address bar resize suppression
 - [Phase 29]: token-viz is static single-frame render — no rAF guard needed, reduced-motion coverage comment added to satisfy PF-06 audit
 - [Phase 29]: canvas-cursor and xray-reveal classified as pointer-driven (exempt from reduced-motion guard — rAF only fires on pointer move)
+- [Phase 30-01]: page.tsx converted from async Server Component to sync — ComponentGrid removed from homepage eliminates all highlight() pre-computation
+- [Phase 30-01]: opacity: 0.01 on hero h1 (not opacity: 0) per LCP safety rule D-08 — allows LCP measurement while visually invisible until animation
+- [Phase 30-01]: Playwright font-size assertion uses 100px floor (not 120px spec minimum) to handle smaller test viewport; 120px minimum applies at full viewport width per clamp()
 
 ### Blockers
 
@@ -154,6 +157,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T05:21:32.972Z
-Stopped at: Phase 31 plans created — blocked on Phase 30 execution
-Resume with: `/pde:execute-phase 29` to begin Phase 29 (Infrastructure Hardening)
+Last session: 2026-04-08T05:34:30.979Z
+Stopped at: Completed 30-01-PLAN.md
+Resume with: `/pde:execute-phase 30` to execute Phase 30 Plan 02 (PageAnimations + Nav reveal wiring)

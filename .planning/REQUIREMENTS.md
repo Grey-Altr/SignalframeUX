@@ -6,13 +6,13 @@
 - [ ] **RA-02**: `/tokens` route renamed to `/system` with redirect from old path
 - [ ] **RA-03**: `/start` route renamed to `/init` with redirect from old path
 - [x] **RA-04**: All internal links, nav items, and footer links updated to new route names
-- [ ] **RA-05**: Homepage `page.tsx` restructured with 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
+- [x] **RA-05**: Homepage `page.tsx` restructured with 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
 
 ## ENTRY Section
 
-- [ ] **EN-01**: GLSL hero shader fills 100vh — not contained in a padded section, IS the viewport
-- [ ] **EN-02**: `SIGNALFRAME//UX` rendered at 120px+ (Anton or current display font) centered on shader
-- [ ] **EN-03**: Single subtitle line only — no paragraph, no description, no scroll indicator
+- [x] **EN-01**: GLSL hero shader fills 100vh — not contained in a padded section, IS the viewport
+- [x] **EN-02**: `SIGNALFRAME//UX` rendered at 120px+ (Anton or current display font) centered on shader
+- [x] **EN-03**: Single subtitle line only — no paragraph, no description, no scroll indicator
 - [ ] **EN-04**: No visible navigation on initial viewport — nav reveals on scroll (sticky after ENTRY)
 - [ ] **EN-05**: Shader parameters respond to mouse position on ENTRY section (subtle, not overwhelming)
 
@@ -63,11 +63,11 @@
 
 - [ ] **VL-01**: Ghost labels scaled to 200px+ — architectural elements, not background decoration
 - [ ] **VL-02**: Display type moments at 120px+ in at least 3 locations across the site
-- [ ] **VL-03**: CircuitDivider replaced or removed — section transitions use hard cuts or scroll-driven reveals
+- [x] **VL-03**: CircuitDivider replaced or removed — section transitions use hard cuts or scroll-driven reveals
 - [ ] **VL-04**: Negative space audit: minimum 40% of viewport is intentional void in key sections
 - [ ] **VL-05**: Magenta accent used in ≤ 5 moments per page — fewer instances, bigger impact
 - [ ] **VL-06**: Section indicators redesigned as system readout HUD (monospaced, coded, data-dense)
-- [ ] **VL-07**: MarqueeBand removed or redesigned to fit the new information hierarchy
+- [x] **VL-07**: MarqueeBand removed or redesigned to fit the new information hierarchy
 
 ## Subpage Redesign
 
@@ -106,14 +106,14 @@
 | PF-04 | Phase 29 | Complete |
 | PF-05 | Phase 29 | Complete |
 | PF-06 | Phase 29 | Complete |
-| RA-05 | Phase 30 | Pending |
-| EN-01 | Phase 30 | Pending |
-| EN-02 | Phase 30 | Pending |
-| EN-03 | Phase 30 | Pending |
+| RA-05 | Phase 30 | Complete |
+| EN-01 | Phase 30 | Complete |
+| EN-02 | Phase 30 | Complete |
+| EN-03 | Phase 30 | Complete |
 | EN-04 | Phase 30 | Pending |
 | EN-05 | Phase 30 | Pending |
-| VL-03 | Phase 30 | Pending |
-| VL-07 | Phase 30 | Pending |
+| VL-03 | Phase 30 | Complete |
+| VL-07 | Phase 30 | Complete |
 | TH-01 | Phase 31 | Pending |
 | TH-02 | Phase 31 | Pending |
 | TH-03 | Phase 31 | Pending |
