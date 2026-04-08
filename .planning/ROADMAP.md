@@ -70,7 +70,7 @@
 
 **v1.5 Redesign (Phases 28-35):**
 
-- [ ] **Phase 28: Route Infrastructure** — Rename routes, add redirects, update all internal links
+- [x] **Phase 28: Route Infrastructure** — Rename routes, add redirects, update all internal links (1/2 plans complete)
 - [ ] **Phase 29: Infrastructure Hardening** — Fonts-ready, overscroll-behavior, Lenis audit, Observer registration, PinnedSection primitive
 - [ ] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader
 - [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments

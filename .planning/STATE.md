@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: Roadmap created
-stopped_at: Phase 28 context gathered
-last_updated: "2026-04-08T01:58:51.451Z"
-last_activity: 2026-04-07 — v1.5 roadmap written (8 phases, 60 requirements)
+milestone: v1.5
+milestone_name: v1.5 Redesign
+status: In progress
+stopped_at: Phase 28 Plan 01 complete
+last_updated: "2026-04-08T02:17:23Z"
+last_activity: 2026-04-08 — Phase 28 Plan 01 complete (308 redirects + route directory renames)
 progress:
   total_phases: 26
   completed_phases: 7
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 14
+  completed_plans: 14
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (roadmap created — awaiting Phase 28 plan)
-Plan: —
-Status: Roadmap created
-Last activity: 2026-04-07 — v1.5 roadmap written (8 phases, 60 requirements)
+Phase: 28 — Route Infrastructure
+Plan: 01 complete, Plan 02 next
+Status: In progress
+Last activity: 2026-04-08 — Phase 28 Plan 01 complete (308 redirects + route directory renames)
 
 ## Progress
 
@@ -39,14 +39,14 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [__________] 0% (0/? plans) ROADMAP CREATED — Phase 28 next
+v1.5: [_____/____] 10% (1/? plans) IN PROGRESS — Phase 28 Plan 01 complete
 ```
 
 ## v1.5 Phase Map
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Not started |
+| 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | In progress (1/2 plans) |
 | 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Not started |
 | 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Not started |
 | 31 | THESIS Section | TH-01–06 | Not started |
@@ -148,6 +148,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T01:58:51.447Z
-Stopped at: Phase 28 context gathered
-Resume with: `/pde:plan-phase 28` to begin Route Infrastructure
+Last session: 2026-04-08T02:17:23Z
+Stopped at: Phase 28 Plan 01 complete — 308 redirects + route directory renames
+Resume with: `/pde:execute-phase 28` to run Plan 02 (link surgery)
