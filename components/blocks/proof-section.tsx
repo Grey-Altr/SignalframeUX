@@ -39,7 +39,7 @@
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-core";
 import { cn } from "@/lib/utils";
-import { ProofShader } from "@/components/animation/proof-shader";
+import { ProofShaderLazy as ProofShader } from "@/components/animation/proof-shader-lazy";
 import { SkeletonGrid } from "@/components/animation/component-skeleton";
 import { PROOF_COMPONENT_SKELETONS } from "@/lib/proof-components";
 
