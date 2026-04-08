@@ -109,5 +109,28 @@ test.describe("Phase 31: THESIS Section", () => {
     }
   });
 
-  // Plan 02 will append TH-01, TH-02, TH-03, TH-04, TH-06 browser-level tests below this line.
+  // ── Task 0 (Plan 02): PinnedSection forwardRef upgrade (source-level) ───────
+
+  test("Plan 02 Task 0: PinnedSection is wrapped in React.forwardRef", () => {
+    const src = fs.readFileSync(
+      path.resolve(ROOT, "components/animation/pinned-section.tsx"),
+      "utf-8",
+    );
+    // Must import forwardRef and useImperativeHandle from React
+    expect(src).toMatch(/import\s*\{[^}]*forwardRef[^}]*\}\s*from\s*"react"/);
+    expect(src).toMatch(/import\s*\{[^}]*useImperativeHandle[^}]*\}\s*from\s*"react"/);
+    // Must use forwardRef with the correct generic signature
+    expect(src).toMatch(/forwardRef<HTMLDivElement,\s*PinnedSectionProps>/);
+    // Must set displayName for React DevTools
+    expect(src).toMatch(/PinnedSection\.displayName\s*=\s*"PinnedSection"/);
+    // The reduced-motion early return must still be present (phase-29 PF-06 contract)
+    expect(src).toContain("prefers-reduced-motion: reduce");
+    // The ScrollTrigger config must be preserved
+    expect(src).toContain("pin: true");
+    expect(src).toContain("scrub: 1");
+    expect(src).toContain("anticipatePin: 1");
+    expect(src).toContain("invalidateOnRefresh: true");
+  });
+
+  // Plan 02 Task 3 will append TH-01, TH-02, TH-03, TH-04, TH-06 browser-level tests below this line.
 });
