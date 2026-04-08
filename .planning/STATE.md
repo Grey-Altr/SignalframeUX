@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Redesign
-status: "Defining requirements"
+status: "Roadmap created — ready for Phase 28"
 stopped_at: null
 last_updated: "2026-04-07T12:00:00.000Z"
 last_activity: 2026-04-07
 progress:
-  total_phases: 0
+  total_phases: 8
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,16 +21,16 @@ progress:
 | Property | Value |
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
-| Core Value | Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression |
+| Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
 | Current Focus | v1.5 Redesign — transform site into Awwwards SOTD-level designed artifact |
 | Milestone | v1.5 Redesign |
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap created — awaiting Phase 28 plan)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-07 — Milestone v1.5 started
+Status: Roadmap created
+Last activity: 2026-04-07 — v1.5 roadmap written (8 phases, 60 requirements)
 
 ## Progress
 
@@ -40,12 +40,21 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [__________] 0% (0/0 plans) DEFINING REQUIREMENTS
+v1.5: [__________] 0% (0/? plans) ROADMAP CREATED — Phase 28 next
 ```
 
 ## v1.5 Phase Map
 
-(Pending roadmap creation)
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Not started |
+| 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Not started |
+| 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Not started |
+| 31 | THESIS Section | TH-01–06 | Not started |
+| 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Not started |
+| 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Not started |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Not started |
+| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Not started |
 
 ## Accumulated Context
 
@@ -85,7 +94,7 @@ v1.5: [__________] 0% (0/0 plans) DEFINING REQUIREMENTS
 - Calendar/Menubar lazy: Both use `next/dynamic` with `ssr: false` and are NOT exported from `sf/index.ts` barrel.
 - Component count at v1.3 ship: 49-item registry, 45 SF components total (includes 5 layout primitives)
 
-### v1.4 Critical Constraints (from Research)
+### From v1.4
 
 - **Phase ordering is dependency-forced**: tech debt → tokens → components → detail data → detail views → verification. Do not reorder.
 - **MutationObserver disconnect FIRST**: Detail views dramatically increase mount/unmount frequency. Observer accumulation without disconnect causes WebGL jank. TD-01 MUST precede Phase 25.
@@ -95,66 +104,51 @@ v1.5: [__________] 0% (0/0 plans) DEFINING REQUIREMENTS
 - **Z-index contract**: Canvas cursor at z-500; detail panel must use `--z-overlay` token; add `[data-modal-open]` CSS rule dropping cursor z-index below panel when open. See SI-04.
 - **lenis.scrollTo only**: Any programmatic scroll from detail view code must use `lenis.scrollTo`. Never `window.scrollTo`. Grep check before Phase 25.
 - **vaul transitive check**: vaul may already be present transitively via Sonner. Check `pnpm-lock.yaml` before Phase 23 begins.
-- **api-docs.ts audit at Phase 24 start**: ~15 of 31+ grid components have existing entries. Exact delta must be confirmed via pre-phase audit before estimating authoring effort.
-- **shiki OKLCH theme prototype at Phase 25 start**: The custom OKLCH theme object construction must be prototyped before full implementation begins.
-- **color-resolve.ts alpha syntax**: Audit `oklch(L C H / A)` parser support before Phase 22 modifies any color tokens.
+- **Bundle gate at v1.4 ship**: 100.0 KB gzip shared bundle (50 KB under 150 KB gate)
+- **Lighthouse at v1.4 ship**: 100/100 all categories confirmed against deployed URL
+
+### v1.5 Critical Constraints (from Research)
+
+- **Infrastructure before features**: fonts-ready, overscroll-behavior, Lenis audit, and Observer registration MUST precede any new scroll or WebGL work. Phase 29 is non-negotiable before Phase 30+.
+- **MutationObserver consolidation before 3rd WebGL scene**: Phase 32 (SIGNAL section) adds a 3rd concurrent WebGL scene. Singleton Observer consolidation must be complete — confirmed at Phase 29 close.
+- **PinnedSection before THESIS**: PinnedSection component must exist and be tested in isolation (Phase 29) before Phase 31 uses it for 200-300vh manifesto scroll.
+- **LCP suppression hazard**: `SIGNALFRAME//UX` heading must NOT use `opacity: 0` as its start state. Use `opacity: 0.01` or `clip-path` reveal. Applies to Phase 30 ENTRY implementation.
+- **iOS Safari address bar**: `ignoreMobileResize: true` must be confirmed in Lenis config at Phase 29. Do not defer.
+- **WebGL context limit on mobile**: Safari iOS enforces 2-8 WebGL contexts. SignalCanvas scissor singleton already handles this — do not create additional renderers in Phase 32.
+- **Manifesto copy is a Phase 31 dependency**: The scroll manifesto engineering (TH-01 through TH-06) requires finalized text content covering SIGNAL/FRAME thesis, Enhanced Flat Design position, and cybernetic biophilia — as statements, not explanations. Resolve content before Phase 31 planning.
+- **SF//[CAT]-NNN schema**: The 6 category abbreviations for coded nomenclature must be validated against all 49 registry components before Phase 33 implementation begins.
+- **Route rename first**: RA-01 through RA-04 (Phase 28) uses `next.config.ts` redirects (308 permanent). Confirm redirect config syntax for Next.js 15.3 before writing.
+- **SIGNAL/FRAME ordering**: Always written as SIGNAL/FRAME (signal first), never FRAME/SIGNAL, in all code comments, docs, and UI labels.
+- **Zero new npm packages**: All animation via GSAP ScrollTrigger + Lenis (already in stack). No new runtime dependencies in v1.5.
+- **Physical iOS Safari testing**: Mandatory after Phase 32. Simulators do not replicate address bar behavior.
 
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Phase 21 before any v1.4 feature work | MutationObserver, Lenis, and TOAST naming issues are directly activated by detail view patterns — fix first |
-| readSignalVars uses isNaN() guard via inline raw() helper (not || fallback) | getPropertyValue can return truthy non-numeric strings ("auto", " ") — || fallback is bypassed, NaN propagates to shader uniforms |
-| Observer disconnect inside useGSAP cleanup return (not separate useEffect) | Fires in same teardown pass as ticker removal; avoids separate cleanup lifecycle and potential ordering issues |
-| TOAST display names use (FRAME) / (SIGNAL) suffix matching subcategory field | Consistent with existing data model; enables Phase 25 routing by name without schema changes |
-| Phase 22 (tokens) before Phase 23 (components) | New SF wrappers must use the final token vocabulary; WebGL bridge audit happens before any OKLCH values are touched |
-| Elevation comment placed between COLOR TIERS and @theme — highest discoverability in globals.css read path | Authors looking at the token file will immediately see the elevation policy before entering @theme |
-| Sidebar/chart tokens kept in @theme (not removed) — shadcn CLI requires them; documentation marks the boundary | Removal would break `pnpm dlx shadcn add sidebar` — documentation is the correct guard, not deletion |
-| success/warning in @theme not :root | Tailwind v4 only generates bg-*/text-*/border-* utilities from @theme; :root custom properties are invisible to the utility generator |
-| Phase 23 (components) before Phase 24 (data) | Component set must be final before documenting all components in api-docs.ts and component-registry.ts |
-| Phase 24 (data) before Phase 25 (UI) | Detail UI has no value without data; decoupling data authoring reduces Phase 25 tail risk |
-| Phase 25 includes SI-01 through SI-04 | Site integration is inseparable from detail view feature — they form one delivery boundary |
-| Phase 26 is standalone verification | Bundle + Lighthouse audit is a gate, not implementation work — isolated phase keeps it verifiable |
-| PreviewBadge uses intent=outline | SFBadge has no secondary intent — outline is most visually distinct valid alternative |
-| pointer-events:none + opacity:0.4 for SignalOverlay suppression | No z-index escalation needed — CSS pointer-events blocks interaction without touching stacking context |
-| docId waveform -> waveformSignal for registry entry 102 | waveformSignal doc has correct importPath @/components/animation/waveform (Phase-24 authored) |
-| CMP-02 (SFHoverCard) and CMP-03 (SFInputOTP) in Phase 23 | Research originally deferred these to v1.4.x but REQUIREMENTS.md scopes them to v1.4 — included |
-| lenisRef pattern for page-transition.tsx | transitionend DOM handler cannot safely close over React hook values — store Lenis in useRef updated via useEffect |
-| immediate: true for scroll restoration and page wipe | Matches original instant-scroll intent; smooth scroll is inappropriate while wipe panel covers the viewport |
-| SFInputOTPSlot uses first:rounded-none + last:rounded-none to beat base's first:rounded-l-lg + last:rounded-r-lg | Tailwind Merge respects class order — explicit overrides required for positional pseudo-class variants |
-| SFInputGroupAddon uses [>kbd]:rounded-none to reach inside CVA-generated radius | CVA applies radius at sub-element level; outer rounded-none does not cascade into CVA children |
-| SFDrawerContent uses cn() rounded-none override — beats vaul's data-[vaul-drawer-direction=bottom]:rounded-t-xl | cn() appends rounded-none last; Tailwind resolution picks it up correctly, matching SFSheetContent pattern |
-| SFDrawer NOT in sf/index.ts barrel — heavy component (vaul SSR-unsafe), Pattern B lazy-only | Consistent with sf-calendar and sf-menubar precedent; consumers must import sf-drawer-lazy.tsx directly |
-
-- [Phase 24]: 34 entries in COMPONENT_REGISTRY matches actual COMPONENTS array count (plan spec of 35 was off-by-one)
-- [Phase 24]: docId convention: camelCase SF component name (sfButton, sfCard) to align with Plan 02 api-docs.ts new entries
-- [Phase 24]: camelCase sf-prefixed keys for new api-docs entries — avoids collision with existing lowercase keys
-- [Phase 25]: ComponentDetail loaded via next/dynamic ssr:false — shared bundle held at 102 kB (gate: 150 kB)
-- [Phase 25]: ShikiOutput dedicated wrapper for server-generated HTML documents trust boundary explicitly
-- [Phase 25]: triggerRefs as Record<string, HTMLDivElement | null> keyed by comp.index enables O(1) focus return
-- [Phase 25]: highlightedCodeMap pre-computed server-side via Promise.all — zero client JS cost for shiki
-- [Phase 25]: Homepage ComponentGrid uses plain useState(openIndex) — not useSessionState — session persistence scoped to /components only per SI-01
-- [Phase 25]: triggerRefs keyed by comp.id matching homepage COMPONENTS array — consistent with /components pattern but uses string id not numeric index
-- [Phase 25]: Shared bundle held at 102 kB after homepage integration — both pages use next/dynamic for ComponentDetail, neither leaks static import
-- [Phase 27]: COMPONENTS IDs must match COMPONENT_REGISTRY keys exactly — sequential 001-012 vs registry key ranges (100s for SIGNAL components) was the root cause of IBF-01
-- [Phase 27]: SFBadge intent values are default/primary/outline/signal — no "secondary" intent
-- [Phase 27]: signal-overlay-toggle stable CSS class must be first cn() argument to be targetable from globals.css suppression rule
-- [Phase 26]: Playwright tests require warm port 3000 dev server — cold-starting port 3001 causes 10s timeouts waiting for compiled routes; always run against established server
-- [Phase 26]: Bundle gate measurement: python3 gzip.compress at compresslevel=9 against rootMainFiles from build-manifest.json — run before pnpm dev to avoid .next/ overwrite from Turbopack
+| 8 phases (28-35) not 9 | Observer consolidation absorbed into Phase 29 Infrastructure Hardening — avoids a phase with zero explicit requirement coverage |
+| Phase 28 first (route renames) | Zero risk, zero dependencies; permanent redirects land before any structural work touches the pages |
+| Phase 29 (infrastructure) before Phase 30 (homepage) | Lenis, fonts-ready, Observer, and PinnedSection must all be proven before scroll-driven features build on them |
+| THESIS in its own phase (31) | 200-300vh manifesto is the primary SOTD signature interaction — deserves isolated delivery boundary and content dependency callout |
+| SIGNAL + PROOF together in Phase 32 | Both are full-viewport sections with WebGL involvement; shipping together respects the 3rd-scene Observer dependency |
+| INVENTORY + ACQUISITION together in Phase 33 | Both deliver the catalog experience; ACQUISITION depends on INVENTORY section slot existing |
+| Visual language + subpages together in Phase 34 | Ghost labels and HUD indicators apply across all subpages — more efficient to audit and apply globally in one phase |
+| Phase 35 is standalone verification | Launch gate is a hard gate, not implementation work — isolated phase keeps it verifiable and non-skippable |
 
 ### Blockers
 
-- None
+- **Manifesto copy**: Text content for THESIS section (TH-05) is not yet determined. Must be resolved before Phase 31 planning begins. (Research gap noted 2026-04-07)
+- **SF//[CAT]-NNN schema**: 6 category abbreviations not yet validated against full 49-item registry. Must be resolved before Phase 33 planning begins. (Research gap noted 2026-04-07)
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-06)
+See: .planning/PROJECT.md (updated 2026-04-07)
 
-**Core value:** Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression
-**Current focus:** v1.4 Feature Complete — all remaining components, token finalization, interactive showcase detail views
+**Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
+**Current focus:** v1.5 Redesign — transform site into Awwwards SOTD-level designed artifact
 
 ## Session Continuity
 
-Last session: 2026-04-07T23:50:00Z
-Stopped at: Phase 26 Plan 02 in progress — deployed to Vercel prod, Lighthouse 5-run median 97/90/100/80, need to fix Accessibility (90→100) and SEO (80→100)
-Resume with: Expand Lighthouse Accessibility and SEO sections to see failing audit items, then fix in codebase, redeploy, and re-test
+Last session: 2026-04-07
+Stopped at: v1.5 roadmap created — 8 phases, 60 requirements fully mapped
+Resume with: `/pde:plan-phase 28` to begin Route Infrastructure

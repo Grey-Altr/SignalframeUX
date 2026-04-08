@@ -6,7 +6,8 @@
 - [x] **v1.1 Generative Surface** — Phases 6-9 (shipped 2026-04-06)
 - [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
-- [ ] **v1.4 Feature Complete** — Phases 21-27 (in progress)
+- [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
+- [ ] **v1.5 Redesign** — Phases 28-35 (in progress)
 
 ## Phases
 
@@ -34,35 +35,49 @@
 <details>
 <summary>v1.2 Tech Debt Sweep (Phases 10-15) — SHIPPED 2026-04-06</summary>
 
-- [x] **Phase 10: Foundation Fixes** — CSS var defaults, bgShift type, reference page layout (COMPLETE 2026-04-06)
-- [x] **Phase 11: Registry Completion** — Full 33-item registry with meta.layer/meta.pattern fields (COMPLETE 2026-04-06)
-- [x] **Phase 12: SIGNAL Wiring** — CSS->WebGL bridge + SignalMotion placement (COMPLETE 2026-04-06)
-- [x] **Phase 13: Config Provider** — createSignalframeUX factory + useSignalframe hook (COMPLETE 2026-04-06)
-- [x] **Phase 14: Session Persistence** — Filter, tab, and scroll state via sessionStorage (COMPLETE 2026-04-06)
-- [x] **Phase 15: Documentation Cleanup** — Frontmatters, stale checkboxes, API contract docs (COMPLETE 2026-04-06)
+- [x] Phase 10: Foundation Fixes (2/2 plans) — completed 2026-04-06
+- [x] Phase 11: Registry Completion (1/1 plans) — completed 2026-04-06
+- [x] Phase 12: SIGNAL Wiring (2/2 plans) — completed 2026-04-06
+- [x] Phase 13: Config Provider (1/1 plans) — completed 2026-04-06
+- [x] Phase 14: Session Persistence (1/1 plans) — completed 2026-04-06
+- [x] Phase 15: Documentation Cleanup (2/2 plans) — completed 2026-04-06
 
 </details>
 
 <details>
 <summary>v1.3 Component Expansion (Phases 16-20) — SHIPPED 2026-04-06</summary>
 
-- [x] **Phase 16: Infrastructure Baseline** — SF wrapper checklist, performance baseline, ComponentsExplorer categories, prop vocabulary (completed 2026-04-06)
-- [x] **Phase 17: P1 Non-Animated Components** — Avatar, Breadcrumb, EmptyState, AlertDialog, Alert, Collapsible, StatusDot (FRAME-only) (completed 2026-04-06)
-- [x] **Phase 18: P1 Animated Components** — Accordion (stagger), Toast/Toaster (slide), Progress (fill tween) (completed 2026-04-06)
-- [x] **Phase 19: P2 Components** — NavigationMenu, Pagination, Stepper, ToggleGroup (completed 2026-04-06)
-- [x] **Phase 20: P3 Registry-Only + Final Audit** — Calendar (lazy), Menubar (lazy), Lighthouse check (completed 2026-04-06)
+- [x] Phase 16: Infrastructure Baseline (2/2 plans) — completed 2026-04-06
+- [x] Phase 17: P1 Non-Animated Components (2/2 plans) — completed 2026-04-06
+- [x] Phase 18: P1 Animated Components (2/2 plans) — completed 2026-04-06
+- [x] Phase 19: P2 Components (2/2 plans) — completed 2026-04-06
+- [x] Phase 20: P3 Registry-Only + Final Audit (2/2 plans) — completed 2026-04-06
 
 </details>
 
-**v1.4 Feature Complete (Phases 21-26):**
+<details>
+<summary>v1.4 Feature Complete (Phases 21-27) — SHIPPED 2026-04-08</summary>
 
-- [x] **Phase 21: Tech Debt Closure** — MutationObserver disconnect, NaN guard, Lenis scroll race, duplicate TOAST entry (completed 2026-04-06)
-- [x] **Phase 22: Token Finalization** — success/warning into @theme, elevation absence documented, WebGL bridge audited, sidebar/chart tokens documented (completed 2026-04-06)
-- [x] **Phase 23: Remaining SF Components** — SFInputGroup, SFDrawer, SFHoverCard, SFInputOTP (completed 2026-04-06)
-- [x] **Phase 24: Detail View Data Layer** — component-registry.ts, api-docs.ts extensions, code-highlight.ts (shiki RSC) (completed 2026-04-07)
-- [x] **Phase 25: Interactive Detail Views + Site Integration** — ComponentDetail panel, ComponentsExplorer wiring, homepage grid wiring (completed 2026-04-07)
-- [x] **Phase 27: Integration Bug Fixes** — homepage ID mismatch, SignalOverlay suppression, stale docId (completed 2026-04-07)
-- [ ] **Phase 26: Verification + Launch Gate** — bundle gate (VF-01 PASSED 100.0 KB), Lighthouse deployed audit (VF-02 pending)
+- [x] Phase 21: Tech Debt Closure (2/2 plans) — completed 2026-04-06
+- [x] Phase 22: Token Finalization (2/2 plans) — completed 2026-04-06
+- [x] Phase 23: Remaining SF Components (2/2 plans) — completed 2026-04-06
+- [x] Phase 24: Detail View Data Layer (2/2 plans) — completed 2026-04-07
+- [x] Phase 25: Interactive Detail Views + Site Integration (2/2 plans) — completed 2026-04-07
+- [x] Phase 26: Verification + Launch Gate (2/2 plans) — completed 2026-04-08
+- [x] Phase 27: Integration Bug Fixes (1/1 plans) — completed 2026-04-07
+
+</details>
+
+**v1.5 Redesign (Phases 28-35):**
+
+- [ ] **Phase 28: Route Infrastructure** — Rename routes, add redirects, update all internal links
+- [ ] **Phase 29: Infrastructure Hardening** — Fonts-ready, overscroll-behavior, Lenis audit, Observer registration, PinnedSection primitive
+- [ ] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader
+- [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments
+- [ ] **Phase 32: SIGNAL + PROOF Sections** — Atmospheric WebGL scene, interactive SIGNAL/FRAME layer separation demo
+- [ ] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel
+- [ ] **Phase 34: Visual Language + Subpage Redesign** — Ghost labels, display type audit, HUD indicators, specimen-style subpages
+- [ ] **Phase 35: Performance + Launch Gate** — Bundle gate, Lighthouse 100/100, OG tags, Awwwards package
 
 ## Phase Details
 
@@ -324,10 +339,118 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `ANALYZE=true pnpm build` confirms the shared JS bundle is under 150 KB — ComponentDetail lazy-load, P3 component lazy-load, and shiki server-only module all verified as non-contributors to initial bundle
   2. Lighthouse audit against the deployed Vercel URL (not CLI headless) returns 100/100 on Performance, Accessibility, Best Practices, and SEO — LCP < 1.0s, CLS = 0, TTI < 1.5s
-**Plans:** 2 plans (2 waves)
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 26-01-PLAN.md — Bundle gate verification (ANALYZE=true build + rootMainFiles measurement + Playwright regression)
-- [ ] 26-02-PLAN.md — Vercel deploy + Lighthouse 100/100 audit against production URL
+- [x] 26-02-PLAN.md — Vercel deploy + Lighthouse 100/100 audit against production URL
+
+### Phase 28: Route Infrastructure
+**Goal**: All route renames are in effect with permanent redirects and zero broken internal links — users and crawlers always land on the correct URL
+**Depends on**: Nothing (first phase of v1.5; zero-risk, zero dependencies)
+**Requirements**: RA-01, RA-02, RA-03, RA-04
+**Success Criteria** (what must be TRUE):
+  1. Navigating to `/components` returns a 308 redirect to `/inventory`; navigating to `/tokens` returns 308 to `/system`; navigating to `/start` returns 308 to `/init` — all verified via `curl -I`
+  2. Every internal `<Link>` component, nav item, and footer link in the codebase points to the new route names — `grep -r '"/components"' src/` and `grep -r '"/tokens"'` return zero results
+  3. The `/inventory`, `/system`, and `/init` page files exist in `app/` and render without console errors
+  4. Existing functionality on all three renamed pages is unaffected — ComponentsExplorer, TokenTabs, and getting-started content are intact
+**Plans**: TBD
+
+### Phase 29: Infrastructure Hardening
+**Goal**: The codebase is hardened against known Awwwards-class integration hazards — scroll, font, and Observer infrastructure are correct before any new scroll or WebGL work begins
+**Depends on**: Phase 28 (routes stable before adding scroll infrastructure on top of them)
+**Requirements**: PF-04, PF-05, PF-06
+**Success Criteria** (what must be TRUE):
+  1. `document.fonts.ready.then(ScrollTrigger.refresh)` fires in root layout — font reflow cannot cause CLS or ScrollTrigger pin miscalculation after Phase 31 manifesto lands
+  2. `overscroll-behavior: none` is set on `<html>` in globals.css — iOS Safari rubber-band scrolling cannot flicker pinned sections
+  3. GSAP Observer plugin is registered in `lib/gsap-plugins.ts` alongside ScrollTrigger — available for all Phase 30+ work without repeated imports
+  4. Lenis config is audited: `ignoreMobileResize: true` is active, rAF ticker pattern matches the load-bearing pattern from v1.2, and `scrollerProxy` is confirmed absent
+  5. PinnedSection component exists in `components/animation/` with `pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true` — tested in isolation with a placeholder before Phase 31 uses it in production
+  6. A prefers-reduced-motion CSS media query and a JS `matchMedia` utility are confirmed present and covering all GSAP contexts before scroll-driven work begins (PF-06 gate)
+**Plans**: TBD
+
+### Phase 30: Homepage Architecture + ENTRY Section
+**Goal**: The homepage delivers a cinematic first impression — six-section architecture replaces the old page, the full-viewport GLSL hero is the entry point, and navigation is invisible until the user scrolls
+**Depends on**: Phase 29 (PinnedSection primitive ready; Lenis + ScrollTrigger hardened; fonts-ready pattern in place)
+**Requirements**: RA-05, EN-01, EN-02, EN-03, EN-04, EN-05, VL-03, VL-07
+**Success Criteria** (what must be TRUE):
+  1. `app/page.tsx` contains exactly six section landmarks in order: ENTRY, THESIS, PROOF, INVENTORY, SIGNAL, ACQUISITION — no legacy section structure remains
+  2. The GLSL hero fills 100vh with zero padding or containment — it IS the viewport on load; no scrollbar, no nav bar, no sub-section padding visible above the fold
+  3. `SIGNALFRAME//UX` renders at minimum 120px (Anton) centered on the shader — visible immediately, not deferred behind a fade that could suppress LCP
+  4. The navigation bar is invisible on the initial viewport and becomes sticky after the user scrolls past ENTRY — confirmed at 0px scroll and at ENTRY-bottom scroll position
+  5. Moving the mouse over the ENTRY section produces subtle, non-overwhelming shader parameter variation — the effect is present but does not distract from the typography
+  6. CircuitDivider and MarqueeBand components are removed from the homepage — section transitions use hard cuts or scroll-driven reveals with no decorative dividers
+**Plans**: TBD
+
+### Phase 31: THESIS Section
+**Goal**: The manifesto occupies 200-300vh of scroll distance, placing individual type statements across the viewport as the user scrolls — the primary signature interaction that defines the Awwwards submission
+**Depends on**: Phase 30 (homepage architecture must exist; PinnedSection must be production-proven in ENTRY before THESIS uses it)
+**Requirements**: TH-01, TH-02, TH-03, TH-04, TH-05, TH-06
+**Success Criteria** (what must be TRUE):
+  1. THESIS occupies between 200vh and 300vh of scroll distance — measured in browser DevTools scroll height; not a flowing paragraph but a pinned scroll sequence
+  2. Each manifesto phrase is positioned individually across the viewport via GSAP ScrollTrigger pin/scrub — statements do not flow as running text
+  3. At least 3 type moments render at 80px or larger and occupy their full scroll frame as the dominant visual element
+  4. Gaps between key statements measure at least 30vh in scroll distance — the void is visible and intentional, not collapsed by browser layout
+  5. The content covers the SIGNAL/FRAME thesis, the Enhanced Flat Design position, and cybernetic biophilia — as declarative statements, not explanatory prose
+  6. With `prefers-reduced-motion` active, all manifesto text is instantly placed at its final position with no scroll-driven animation — the content is readable without scrolling
+**Plans**: TBD
+
+### Phase 32: SIGNAL + PROOF Sections
+**Goal**: Two consecutive full-viewport sections deliver the generative identity and the interactive layer separation demo — the site's technical credibility is visible and interactable
+**Depends on**: Phase 31 (THESIS complete; MutationObserver singleton confirmed solid before adding 3rd WebGL scene in SIGNAL)
+**Requirements**: SG-01, SG-02, SG-03, SG-04, SG-05, PR-01, PR-02, PR-03, PR-04, PR-05, PR-06
+**Success Criteria** (what must be TRUE):
+  1. The SIGNAL section contains a full-viewport WebGL scene (SignalMesh or new shader) rendering at maximum intensity — no text overlay competes with the generative output
+  2. SIGNAL section scroll distance is 150vh; the scene intensity ramps up as the user scrolls through — confirmed by observing uniform value change via GSAP ticker log
+  3. With `prefers-reduced-motion` active, the SIGNAL section shows a static frame of the generative output with no animation
+  4. The PROOF section demonstrates SIGNAL/FRAME layer separation — the user can directly observe the generative expression separate from the deterministic structure without any explanatory panel
+  5. Moving the mouse (or dragging on touch) across PROOF changes the SIGNAL layer intensity in real time — the effect is immediate and proportional to pointer position
+  6. System stats (component count, bundle size, Lighthouse score) appear as data points within the PROOF section, not as a separate band above or below it
+  7. Touch support on PROOF is functional — tap and drag on a 375px mobile viewport produces the same SIGNAL/FRAME separation effect as mouse on desktop
+  8. With `prefers-reduced-motion` active, PROOF shows a static split view with both layers visible side-by-side
+**Plans**: TBD
+
+### Phase 33: INVENTORY + ACQUISITION Sections
+**Goal**: The component catalog presents as a technical instrument with coded nomenclature, and the acquisition panel delivers the CLI command as the sharp close of the homepage
+**Depends on**: Phase 30 (homepage architecture; INVENTORY section slot must exist before catalog is populated)
+**Requirements**: IV-01, IV-02, IV-03, IV-04, IV-05, IV-06, AQ-01, AQ-02, AQ-03, AQ-04, AQ-05
+**Success Criteria** (what must be TRUE):
+  1. Every component in the catalog displays a coded identifier in `SF//[CAT]-NNN` format — no component renders with its plain name as the primary label
+  2. Each catalog entry shows its layer tag (`[//SIGNAL]` or `[FRAME]`), pattern tier (`A`, `B`, or `C`), and component name — all three data points visible without expanding the entry
+  3. Catalog entries use monospaced type (JetBrains Mono) in a dense list or grid layout — no card-based rounded-corner UI
+  4. Clicking or tapping any catalog entry on the homepage or `/inventory` page opens the Phase 25 ComponentDetail panel with correct component data
+  5. The homepage INVENTORY section shows exactly 12 components; the `/inventory` page shows the full catalog with filter controls (layer, pattern, category) functional
+  6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
+**Plans**: TBD
+
+### Phase 34: Visual Language + Subpage Redesign
+**Goal**: The full visual language system is applied site-wide — ghost labels, display type moments, HUD indicators, and redesigned subpages complete the transformation from docs site to designed artifact
+**Depends on**: Phase 33 (homepage complete; all sections established before visual language audit runs across them)
+**Requirements**: VL-01, VL-02, VL-04, VL-05, VL-06, SP-01, SP-02, SP-03, SP-04, SP-05
+**Success Criteria** (what must be TRUE):
+  1. Ghost labels (architectural text elements scaled to 200px or larger) appear in at least 2 locations as structural elements, not background decoration — they are positioned with intent in the layout grid
+  2. Display type moments at 120px or larger exist in at least 3 locations across the site — ENTRY counts as one; two additional locations are required
+  3. At least 40% of viewport is intentional void in THESIS and SIGNAL sections — measured by eye; negative space is the design material, not a gap to fill
+  4. Magenta accent color appears in 5 or fewer distinct moments per page — counted by scanning each page; high impact, low frequency
+  5. Section indicators across all pages display as system readout HUD — monospaced type, coded labels (e.g. `[01//ENTRY]`), data-dense — no decorative or generic nav dot styling
+  6. The `/system` page presents token groups as specimen-style visual diagrams for spacing scale, type scale, color palette, and motion tokens — no plain tables
+  7. The `/init` page uses the system initialization framing — sharp, technical, minimal prose; no "Get Started" button energy
+  8. The `/reference` page uses monospaced, dense schematic layout for API docs — consistent with the DU/TDR coded aesthetic
+  9. All subpages share the redesigned nav (hidden on initial viewport if applicable, sticky on scroll) and footer from Phase 30
+**Plans**: TBD
+
+### Phase 35: Performance + Launch Gate
+**Goal**: v1.5 Redesign meets all hard performance and launch constraints — the site is ready for Awwwards submission
+**Depends on**: Phase 34 (all features complete before final audit)
+**Requirements**: PF-01, PF-02, PF-03, LR-01, LR-02, LR-03, LR-04
+**Success Criteria** (what must be TRUE):
+  1. `ANALYZE=true pnpm build` confirms shared JS bundle is under 150 KB gzip after all v1.5 redesign changes — Three.js chunk remains async, no new sync imports
+  2. Lighthouse audit against the deployed Vercel URL returns 100/100 on Performance, Accessibility, Best Practices, and SEO — not CLI headless
+  3. LCP on the homepage measures under 1.0s — `SIGNALFRAME//UX` heading uses `opacity: 0.01` or `clip-path` start (not `opacity: 0`) to avoid LCP suppression
+  4. CLS = 0 across all pages — scroll-driven animations produce zero layout shift, confirmed in PageSpeed Insights field data
+  5. The Awwwards submission package is prepared: project description, technology stack, 5+ screenshots at 1440x900, and live URL
+  6. Open Graph meta tags are updated for the redesigned site — title, description, and preview image reflect the v1.5 identity
+  7. The production Vercel deployment is live with zero console errors — confirmed by opening DevTools on the deployed URL
+**Plans**: TBD
 
 ## Progress
 
@@ -355,8 +478,16 @@ Plans:
 | 20. P3 Registry-Only + Final Audit | v1.3 | 2/2 | Complete | 2026-04-06 |
 | 21. Tech Debt Closure | v1.4 | 2/2 | Complete | 2026-04-06 |
 | 22. Token Finalization | v1.4 | 2/2 | Complete | 2026-04-06 |
-| 23. Remaining SF Components | v1.4 | Complete    | 2026-04-06 | 2026-04-06 |
-| 24. Detail View Data Layer | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
-| 25. Interactive Detail Views + Site Integration | v1.4 | Complete    | 2026-04-07 | 2026-04-07 |
-| 27. Integration Bug Fixes | v1.4 | Complete    | 2026-04-07 | - |
-| 26. Verification + Launch Gate | v1.4 | 1/2 | In Progress | - |
+| 23. Remaining SF Components | v1.4 | 2/2 | Complete | 2026-04-06 |
+| 24. Detail View Data Layer | v1.4 | 2/2 | Complete | 2026-04-07 |
+| 25. Interactive Detail Views + Site Integration | v1.4 | 2/2 | Complete | 2026-04-07 |
+| 26. Verification + Launch Gate | v1.4 | 2/2 | Complete | 2026-04-08 |
+| 27. Integration Bug Fixes | v1.4 | 1/1 | Complete | 2026-04-07 |
+| 28. Route Infrastructure | v1.5 | 0/? | Not started | - |
+| 29. Infrastructure Hardening | v1.5 | 0/? | Not started | - |
+| 30. Homepage Architecture + ENTRY Section | v1.5 | 0/? | Not started | - |
+| 31. THESIS Section | v1.5 | 0/? | Not started | - |
+| 32. SIGNAL + PROOF Sections | v1.5 | 0/? | Not started | - |
+| 33. INVENTORY + ACQUISITION Sections | v1.5 | 0/? | Not started | - |
+| 34. Visual Language + Subpage Redesign | v1.5 | 0/? | Not started | - |
+| 35. Performance + Launch Gate | v1.5 | 0/? | Not started | - |

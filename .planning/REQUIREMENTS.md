@@ -97,7 +97,68 @@
 
 ## Traceability
 
-(Populated by roadmap)
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| RA-01 | Phase 28 | Pending |
+| RA-02 | Phase 28 | Pending |
+| RA-03 | Phase 28 | Pending |
+| RA-04 | Phase 28 | Pending |
+| PF-04 | Phase 29 | Pending |
+| PF-05 | Phase 29 | Pending |
+| PF-06 | Phase 29 | Pending |
+| RA-05 | Phase 30 | Pending |
+| EN-01 | Phase 30 | Pending |
+| EN-02 | Phase 30 | Pending |
+| EN-03 | Phase 30 | Pending |
+| EN-04 | Phase 30 | Pending |
+| EN-05 | Phase 30 | Pending |
+| VL-03 | Phase 30 | Pending |
+| VL-07 | Phase 30 | Pending |
+| TH-01 | Phase 31 | Pending |
+| TH-02 | Phase 31 | Pending |
+| TH-03 | Phase 31 | Pending |
+| TH-04 | Phase 31 | Pending |
+| TH-05 | Phase 31 | Pending |
+| TH-06 | Phase 31 | Pending |
+| SG-01 | Phase 32 | Pending |
+| SG-02 | Phase 32 | Pending |
+| SG-03 | Phase 32 | Pending |
+| SG-04 | Phase 32 | Pending |
+| SG-05 | Phase 32 | Pending |
+| PR-01 | Phase 32 | Pending |
+| PR-02 | Phase 32 | Pending |
+| PR-03 | Phase 32 | Pending |
+| PR-04 | Phase 32 | Pending |
+| PR-05 | Phase 32 | Pending |
+| PR-06 | Phase 32 | Pending |
+| IV-01 | Phase 33 | Pending |
+| IV-02 | Phase 33 | Pending |
+| IV-03 | Phase 33 | Pending |
+| IV-04 | Phase 33 | Pending |
+| IV-05 | Phase 33 | Pending |
+| IV-06 | Phase 33 | Pending |
+| AQ-01 | Phase 33 | Pending |
+| AQ-02 | Phase 33 | Pending |
+| AQ-03 | Phase 33 | Pending |
+| AQ-04 | Phase 33 | Pending |
+| AQ-05 | Phase 33 | Pending |
+| VL-01 | Phase 34 | Pending |
+| VL-02 | Phase 34 | Pending |
+| VL-04 | Phase 34 | Pending |
+| VL-05 | Phase 34 | Pending |
+| VL-06 | Phase 34 | Pending |
+| SP-01 | Phase 34 | Pending |
+| SP-02 | Phase 34 | Pending |
+| SP-03 | Phase 34 | Pending |
+| SP-04 | Phase 34 | Pending |
+| SP-05 | Phase 34 | Pending |
+| PF-01 | Phase 35 | Pending |
+| PF-02 | Phase 35 | Pending |
+| PF-03 | Phase 35 | Pending |
+| LR-01 | Phase 35 | Pending |
+| LR-02 | Phase 35 | Pending |
+| LR-03 | Phase 35 | Pending |
+| LR-04 | Phase 35 | Pending |
 
 ---
 
