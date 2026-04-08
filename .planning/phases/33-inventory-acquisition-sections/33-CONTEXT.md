@@ -47,8 +47,8 @@ SF//GEN-001    SCRAMBLE_TEXT   [//SIGNAL] C    →
 |---|------|------|-------|------|
 | 1 | SF//FRM-001 | BUTTON | FRAME | A |
 | 2 | SF//FRM-002 | INPUT | FRAME | A |
-| 3 | SF//LAY-001 | CONTAINER | FRAME | A |
-| 4 | SF//LAY-002 | SECTION | FRAME | A |
+| 3 | SF//LAY-001 | CARD | FRAME | A |
+| 4 | SF//LAY-002 | HOVER_CARD | FRAME | A |
 | 5 | SF//NAV-001 | NAV_MENU | FRAME | A |
 | 6 | SF//NAV-002 | BREADCRUMB | FRAME | A |
 | 7 | SF//FBK-001 | TOAST | SIGNAL | A |
@@ -157,7 +157,7 @@ Particle-field astronomical forms — the same register as SF's existing generat
 - `.planning/phases/32-signal-proof-sections/32-02-SUMMARY.md` — GLSLSignal ScrollTrigger setup; INVENTORY ScrollTrigger must not conflict with SIGNAL's `scrub: 2` parallax
 - `.planning/phases/25-interactive-detail-views-site-integration/` — ComponentDetail panel implementation, GSAP height animation, `data-modal-open` contract, z-index
 - `components/blocks/components-explorer.tsx` — existing filter logic (useMemo pattern), extend for layer + pattern filters
-- `lib/component-registry.ts` — full registry with `layer`, `pattern`, `category` fields; add `code` field here
+- `lib/component-registry.ts` — full registry with `layer`, `pattern`, `category` fields; add `sfCode` field here (NOT `code` — that field is already used for the usage snippet)
 - `.planning/STATE.md` — z-index contract: `--z-overlay` token, `[data-modal-open]` cursor z-index rule
 
 ### Quality Tests
@@ -174,7 +174,13 @@ Particle-field astronomical forms — the same register as SF's existing generat
 
 ### Coded nomenclature generation
 
-Derive codes programmatically — do not hardcode 54 strings:
+**AMENDMENT 2026-04-08:** Registry has 34 entries (not 54). Grey confirmed: reconcile registry first — add all missing shipped SF components before locking stats. Plan 1 of Phase 33 must include a registry audit + fill task. Authoritative component count is determined by the reconciled registry, not prior documentation.
+
+**AMENDMENT 2026-04-08:** `code` field name collision — use `sfCode` (not `code`). The `code` field on `ComponentRegistryEntry` is already the usage snippet template literal. The nomenclature field MUST be `sfCode`.
+
+**AMENDMENT 2026-04-08:** 12-item LAYOUT subset — CONTAINER/SECTION do not exist. Use CARD (LAY-001) + HOVER_CARD (LAY-002).
+
+Derive codes programmatically — do not hardcode the count:
 
 ```typescript
 // In lib/component-registry.ts or a separate lib/nomenclature.ts
@@ -192,8 +198,8 @@ function assignCodes(registry: ComponentRegistryEntry[]): ComponentRegistryEntry
   return registry.map(entry => {
     const cat = CATEGORY_CODE[entry.category] ?? 'UNK'
     counters[cat] = (counters[cat] ?? 0) + 1
-    const code = `SF//${cat}-${String(counters[cat]).padStart(3, '0')}`
-    return { ...entry, code }
+    const sfCode = `SF//${cat}-${String(counters[cat]).padStart(3, '0')}`
+    return { ...entry, sfCode }
   })
 }
 ```
