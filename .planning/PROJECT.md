@@ -66,7 +66,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
-(Defining requirements for v1.4)
+(See REQUIREMENTS.md for v1.5 Redesign requirements)
 
 ### Out of Scope
 
@@ -76,17 +76,19 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.4 Feature Complete
+## Current Milestone: v1.5 Redesign
 
-**Goal:** Ship every remaining component, finalize tokens, and build an interactive showcase site where each component expands to show props, variants, and implementation details.
+**Goal:** Transform SignalframeUX from a design system docs site into a designed artifact — a career weapon that competes at Awwwards SOTD level.
 
 **Target features:**
-- All remaining shadcn/Radix components SF-wrapped and registered
-- Token system finalized — no gaps
-- Site as coherent showcase demonstrating every component
-- Interactive component detail views (click to expand props, variants, usage, implementation info)
-- Homepage grid components clickable with same detail expansion
-- Close all outstanding tech debt from v1.2/v1.3
+- Homepage restructured into 6-section cinematic architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
+- Route renames: /components→/inventory, /tokens→/system, /start→/init
+- Full-viewport GLSL hero shader with 120px+ typography, scroll-driven typographic manifesto
+- Interactive FRAME/SIGNAL layer separation demo (PROOF section)
+- Coded nomenclature for component catalog (SF//BTN-001 format)
+- All 4 subpages redesigned with specimen-style layouts
+- Visual language overhaul: ghost labels, hard-cut transitions, HUD section indicators
+- Performance gates maintained: 150 KB bundle, Lighthouse 100/100, LCP < 1.0s
 
 ## Context
 
@@ -181,4 +183,4 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 
 ---
 
-*Last updated: 2026-04-06 after v1.4 Feature Complete milestone started*
+*Last updated: 2026-04-07 after v1.5 Redesign milestone started*

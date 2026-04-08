@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: "Deployed to Vercel prod (https://signalframeux.vercel.app). PageSpeed Insights (mobile): Performance 80, Accessibility 100, Best Practices 100, SEO 100. CDT desktop: Performance 94, Accessibility 100, Best Practices 100, SEO 100. Local Lighthouse: 100/100/100 on both mobile and desktop. VF-01 (bundle gate) and VF-02 (Lighthouse) both passed."
-stopped_at: Phase 26 Plan 02 in progress — deployed to Vercel prod, Lighthouse 5-run median 97/90/100/80, need to fix Accessibility (90→100) and SEO (80→100)
-last_updated: "2026-04-08T00:58:36.044Z"
-last_activity: 2026-04-08
+milestone: v1.5
+milestone_name: Redesign
+status: "Defining requirements"
+stopped_at: null
+last_updated: "2026-04-07T12:00:00.000Z"
+last_activity: 2026-04-07
 progress:
-  total_phases: 18
-  completed_phases: 7
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # STATE — SignalframeUX
@@ -22,15 +22,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer FRAME/SIGNAL model — deterministic structure + generative expression |
-| Current Focus | v1.4 Feature Complete — tech debt, token finalization, remaining components, interactive detail views |
-| Milestone | v1.4 Feature Complete |
+| Current Focus | v1.5 Redesign — transform site into Awwwards SOTD-level designed artifact |
+| Milestone | v1.5 Redesign |
 
 ## Current Position
 
-Phase: Phase 26 COMPLETE (2/2 plans) — Verification + Launch Gate passed
-Plan: 26-02 complete
-Status: Deployed to Vercel prod (https://signalframeux.vercel.app). PageSpeed Insights (mobile): Performance 80, Accessibility 100, Best Practices 100, SEO 100. CDT desktop: Performance 94, Accessibility 100, Best Practices 100, SEO 100. Local Lighthouse: 100/100/100 on both mobile and desktop. VF-01 (bundle gate) and VF-02 (Lighthouse) both passed.
-Last activity: 2026-04-08
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-07 — Milestone v1.5 started
 
 ## Progress
 
@@ -39,20 +39,13 @@ v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE —
 v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [█████████_] ~92% (13/? plans) IN PROGRESS
+v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
+v1.5: [__________] 0% (0/0 plans) DEFINING REQUIREMENTS
 ```
 
-## v1.4 Phase Map
+## v1.5 Phase Map
 
-| Phase | Goal | Requirements | Status |
-|-------|------|--------------|--------|
-| 21. Tech Debt Closure | Eliminate all known instability before feature work | TD-01, TD-02, TD-03, TD-04 | Complete (2/2 plans) |
-| 22. Token Finalization | Token system complete, WebGL bridge audited | TK-01, TK-02, TK-03, TK-04 | Complete (2/2 plans) |
-| 23. Remaining SF Components | Component set complete for v1.4 | CMP-01, CMP-02, CMP-03, CMP-04 | Complete (2/2 plans — all 4 CMP requirements delivered) |
-| 24. Detail View Data Layer | All component data authored, shiki RSC wired | DV-01, DV-02, DV-03 | Complete (2/2 plans — DV-01 component-registry.ts, DV-02 api-docs.ts full coverage, DV-03 shiki RSC) |
-| 25. Interactive Detail Views + Site Integration | Inline detail panel live on /components and homepage | DV-04–DV-12, SI-01–SI-04 | Complete (2/2 plans) |
-| 26. Verification + Launch Gate | Bundle gate + Lighthouse 100/100 against deployed URL | VF-01, VF-02 | Complete (2/2 plans — VF-01 bundle 100.0 KB, VF-02 Lighthouse 100/100/100) |
-| 27. Integration Bug Fixes | Fix 3 integration bugs found during v1.4 audit | IBF-01, IBF-02, IBF-03 | Complete (1/1 plans) |
+(Pending roadmap creation)
 
 ## Accumulated Context
 
