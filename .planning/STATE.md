@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 30 context gathered
-last_updated: "2026-04-08T03:42:58.816Z"
+stopped_at: Phase 30 UI-SPEC approved
+last_updated: "2026-04-08T03:52:49.406Z"
 last_activity: 2026-04-08 — Phase 29 Plan 01 complete (infrastructure hardening — overscroll, Lenis autoResize, Observer, fonts-ready)
 progress:
   total_phases: 26
   completed_phases: 9
   total_plans: 17
   completed_plans: 17
-  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -155,6 +154,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T03:42:58.811Z
-Stopped at: Phase 30 context gathered
+Last session: 2026-04-08T03:52:49.402Z
+Stopped at: Phase 30 UI-SPEC approved
 Resume with: `/pde:execute-phase 29` to begin Phase 29 (Infrastructure Hardening)
