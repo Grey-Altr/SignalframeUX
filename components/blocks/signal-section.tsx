@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap-core";
-import { GLSLSignal } from "@/components/animation/glsl-signal";
+import { GLSLSignalLazy } from "@/components/animation/glsl-signal-lazy";
 
 /**
  * SignalSection — 150vh atmospheric parallax section.
@@ -67,7 +67,6 @@ export function SignalSection() {
   return (
     <section
       ref={sectionRef}
-      data-section="signal"
       data-signal-root
       data-anim
       style={{ height: "150vh", position: "relative", overflow: "hidden" }}
@@ -82,7 +81,7 @@ export function SignalSection() {
         className="absolute inset-0 rounded-none"
         style={{ transform: "translateY(0px)" }}
       >
-        <GLSLSignal />
+        <GLSLSignalLazy />
       </div>
       {/* SG-03: zero text inside SIGNAL section — pure visual/generative experience.
           Ikeda reference: perceptual threshold, not informational.

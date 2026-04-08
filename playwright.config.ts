@@ -17,7 +17,14 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // Enable SwiftShader software WebGL in headless Chromium so WebGL-dependent
+        // tests (SG-01, AC-12) pass without a physical GPU in CI / headless mode.
+        launchOptions: {
+          args: ["--use-gl=swiftshader", "--enable-webgl"],
+        },
+      },
     },
   ],
   // Dev server already running — do not start a new one
