@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap-split";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-split";
 import { PinnedSection } from "@/components/animation/pinned-section";
 import { ManifestoStatement } from "@/components/blocks/manifesto-statement";
 import { THESIS_MANIFESTO } from "@/lib/thesis-manifesto";
 
-// Per-statement timeline budget — enter (0.5) + hold (0.3) + exit (0.3) = 1.1s.
-// Statements are placed at `i * TIMELINE_UNIT` inside the master timeline,
-// which ScrollTrigger then scrubs against the pin window.
-const TIMELINE_UNIT = 1.1;
-const ENTER_DURATION = 0.5;
+// Per-statement timeline budget — enter → hold → exit.
+// Whole-span animation (no per-char stagger) keeps the scrub predictable
+// and the timeline duration easy to reason about.
+const TIMELINE_UNIT = 1.0;
+const ENTER_DURATION = 0.35;
 const HOLD_DURATION = 0.3;
-const EXIT_DURATION = 0.3;
+const EXIT_DURATION = 0.35;
 
 // Weighted-arc void budget (vh) — S1 (signal-frame opener) and S6 (signal-frame
 // closer) are structural bookends that get breathing room; S2-S5 share a tighter
@@ -71,48 +71,51 @@ export function ThesisSection() {
       const pinned = pinnedRef.current;
       if (!stage || !pinned) return;
 
+      const spans = stage.querySelectorAll<HTMLSpanElement>("[data-statement]");
+      if (spans.length === 0) return;
+
+      // Seed every statement's initial state so the first render of the
+      // scrubbed timeline has all spans hidden.
+      gsap.set(spans, { opacity: 0, yPercent: 20 });
+
       const tl = gsap.timeline({ paused: true });
 
-      // Parent-owned SplitText orchestration — find every statement span,
-      // split it in place, and attach enter/hold/exit tweens at the correct
-      // timeline position. Explicit position offsets (not ">" chaining) so
-      // asynchronous onSplit callbacks cannot corrupt the order.
-      const spans = stage.querySelectorAll<HTMLSpanElement>("[data-statement]");
+      // Each statement gets its own 1.0-unit slice: 0.35 enter → 0.3 hold →
+      // 0.35 exit. Absolute position offsets (not ">" chaining) guarantee the
+      // order is deterministic even if tween registration is reordered.
       spans.forEach((span, i) => {
-        const position = i * TIMELINE_UNIT;
-        SplitText.create(span, {
-          type: "chars",
-          mask: "chars",
-          autoSplit: true,
-          onSplit(self: { chars: Element[] }) {
-            tl.from(
-              self.chars,
-              {
-                yPercent: 100,
-                opacity: 0,
-                duration: ENTER_DURATION,
-                stagger: 0.02,
-                ease: "sf-snap",
-              },
-              position,
-            ).to(
-              self.chars,
-              {
-                opacity: 0,
-                duration: EXIT_DURATION,
-                ease: "power1.in",
-              },
-              position + ENTER_DURATION + HOLD_DURATION,
-            );
+        const enterStart = i * TIMELINE_UNIT;
+        const exitStart = enterStart + ENTER_DURATION + HOLD_DURATION;
+        tl.to(
+          span,
+          {
+            opacity: 1,
+            yPercent: 0,
+            duration: ENTER_DURATION,
+            ease: "sf-snap",
           },
-        });
+          enterStart,
+        ).to(
+          span,
+          {
+            opacity: 0,
+            yPercent: -20,
+            duration: EXIT_DURATION,
+            ease: "power1.in",
+          },
+          exitStart,
+        );
       });
 
       ScrollTrigger.create({
         trigger: stage,
         pinnedContainer: pinned,
         start: "top top",
-        end: "bottom bottom",
+        // Explicit +=Npx end is mandatory: "bottom bottom" on a 100vh-tall
+        // trigger resolves to the SAME scroll position as "top top" (zero
+        // range), and scrub would never advance. Match the outer PinnedSection's
+        // pin distance so the inner scrub spans the full pin window.
+        end: () => `+=${scrollDistance * window.innerHeight}`,
         scrub: 1,
         animation: tl,
         invalidateOnRefresh: true,
