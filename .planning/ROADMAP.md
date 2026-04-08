@@ -508,7 +508,7 @@ Plans:
 | 26. Verification + Launch Gate | v1.4 | 2/2 | Complete | 2026-04-08 |
 | 27. Integration Bug Fixes | v1.4 | 1/1 | Complete | 2026-04-07 |
 | 28. Route Infrastructure | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
-| 29. Infrastructure Hardening | v1.5 | 2/2 | Complete   | 2026-04-08 |
+| 29. Infrastructure Hardening | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
 | 30. Homepage Architecture + ENTRY Section | v1.5 | 0/? | Not started | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
 | 32. SIGNAL + PROOF Sections | v1.5 | 0/? | Not started | - |
