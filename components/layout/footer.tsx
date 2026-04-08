@@ -51,8 +51,10 @@ export function Footer() {
               <p className="text-[var(--text-sm)] font-mono uppercase tracking-wider text-foreground mb-3 font-bold">
                 INSTALL
               </p>
-              <div className="bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-3 font-mono text-[var(--text-base)] border-2 border-foreground relative overflow-visible">
-                <CopyButton />
+              <div className="bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-4 py-3 font-mono text-[var(--text-base)] border-2 border-foreground relative">
+                <div className="flex justify-end mb-1">
+                  <CopyButton />
+                </div>
                 <span className="text-[var(--sf-primary-on-dark)] select-all">pnpm dlx shadcn@latest add</span>
                 <br />
                 <span className="select-all">&quot;https://signalframeux.com/r/base.json&quot;</span>
