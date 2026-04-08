@@ -393,7 +393,7 @@ import SFDrawerLazy from '@/components/sf/sf-drawer-lazy'
     <SFNavigationMenuItem>
       <SFNavigationMenuTrigger>SYSTEM</SFNavigationMenuTrigger>
       <SFNavigationMenuContent>
-        <SFNavigationMenuLink href="/components">COMPONENTS</SFNavigationMenuLink>
+        <SFNavigationMenuLink href="/inventory">COMPONENTS</SFNavigationMenuLink>
       </SFNavigationMenuContent>
     </SFNavigationMenuItem>
   </SFNavigationMenuList>

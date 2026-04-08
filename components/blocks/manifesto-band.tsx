@@ -35,7 +35,7 @@ const SEGMENTS: Segment[] = [
   { type: "space" },
   { type: "word", text: "a" },
   { type: "space" },
-  { type: "link", text: "programmable surface", href: "/start" },
+  { type: "link", text: "programmable surface", href: "/init" },
   { type: "word", text: "." },
   { type: "space" },
   // "Build. Ship. Signal. Repeat.™"
@@ -62,11 +62,11 @@ const SEGMENTS: Segment[] = [
   { type: "word", text: "nowhere." },
   { type: "space" },
   // Links row
-  { type: "link", text: "340+ components", href: "/components" },
+  { type: "link", text: "340+ components", href: "/inventory" },
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
-  { type: "link", text: "OKLCH tokens", href: "/tokens" },
+  { type: "link", text: "OKLCH tokens", href: "/system" },
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
@@ -74,7 +74,7 @@ const SEGMENTS: Segment[] = [
   { type: "space" },
   { type: "word", text: "·" },
   { type: "space" },
-  { type: "link", text: "React + TypeScript", href: "/start" },
+  { type: "link", text: "React + TypeScript", href: "/init" },
   { type: "word", text: "." },
 ];
 

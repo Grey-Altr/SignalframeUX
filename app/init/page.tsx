@@ -133,9 +133,9 @@ const CHECKLIST = [
 ];
 
 const NEXT_CARDS = [
-  { title: "BROWSE COMPONENTS", description: "EXPLORE ALL 340+ SIGNAL AND FRAME COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.", arrow: "COMPONENT LIBRARY", href: "/components" },
+  { title: "BROWSE COMPONENTS", description: "EXPLORE ALL 340+ SIGNAL AND FRAME COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.", arrow: "COMPONENT LIBRARY", href: "/inventory" },
   { title: "API REFERENCE", description: "DIVE INTO THE FULL API \u2014 PROPS, HOOKS, TOKENS, AND THE PROGRAMMABLE SURFACE.", arrow: "API DOCS", href: "/reference" },
-  { title: "TOKEN EXPLORER", description: "VISUALIZE AND CUSTOMIZE THE OKLCH COLOR SCALES, SPACING, TYPE, AND MOTION TOKENS.", arrow: "TOKEN EXPLORER", href: "/tokens" },
+  { title: "TOKEN EXPLORER", description: "VISUALIZE AND CUSTOMIZE THE OKLCH COLOR SCALES, SPACING, TYPE, AND MOTION TOKENS.", arrow: "TOKEN EXPLORER", href: "/system" },
 ];
 
 type CodePart = { text: string; cls?: string };
@@ -363,7 +363,7 @@ export default function StartPage() {
             <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
               SignalframeUX&trade; is open source. Built by people who believe
               design systems should be{" "}
-              <Link href="/components" className="text-primary no-underline hover:underline">
+              <Link href="/inventory" className="text-primary no-underline hover:underline">
                 programmable surfaces
               </Link>
               , not static pattern libraries. Work. Build. Signal. Repeat.&trade;

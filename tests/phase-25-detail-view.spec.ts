@@ -9,11 +9,11 @@ import { test, expect } from "@playwright/test";
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
- * Click the first component card on /components and wait for the detail panel
+ * Click the first component card on /inventory and wait for the detail panel
  * to appear. Returns the panel locator.
  */
 async function openFirstDetailOnComponentsPage(page: import("@playwright/test").Page) {
-  await page.goto("/components");
+  await page.goto("/inventory");
   // Wait for the explorer grid to be visible
   await page.waitForSelector('[role="listbox"]', { timeout: 10000 });
   // Click the first card (index 001 — BUTTON)
@@ -143,7 +143,7 @@ test("DV-08: Detail header shows layer badge (FRAME/SIGNAL) and pattern tier (A/
 // ── DV-09: Animation token callout for SIGNAL layer components ────────────────
 
 test("DV-09: Animation token callout is shown for SIGNAL-layer components", async ({ page }) => {
-  await page.goto("/components");
+  await page.goto("/inventory");
   await page.waitForSelector('[role="listbox"]', { timeout: 10000 });
 
   // Find a SIGNAL layer card — index 101 (NOISE_BG) is SIGNAL/GENERATIVE
@@ -168,7 +168,7 @@ test("DV-09: Animation token callout is shown for SIGNAL-layer components", asyn
 // ── DV-10: Keyboard accessible — Escape closes panel, focus returns ───────────
 
 test("DV-10: Pressing Escape closes the detail panel and returns focus to trigger card", async ({ page }) => {
-  await page.goto("/components");
+  await page.goto("/inventory");
   await page.waitForSelector('[role="listbox"]', { timeout: 10000 });
 
   const firstCard = page.locator('[role="option"]').first();
@@ -200,7 +200,7 @@ test("SI-01: Detail panel open state persists via sessionStorage across navigati
   await page.waitForLoadState("networkidle");
 
   // Navigate back
-  await page.goto("/components");
+  await page.goto("/inventory");
   await page.waitForSelector('[role="listbox"]', { timeout: 10000 });
 
   // SessionStorage should restore the previously opened component

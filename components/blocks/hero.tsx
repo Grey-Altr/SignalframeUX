@@ -96,7 +96,7 @@ export function Hero() {
         {/* CTAs with border-draw animation */}
         <div className="flex gap-[clamp(8px,1.5vw,16px)] mt-[clamp(16px,3vh,40px)]">
           <Link
-            href="/start"
+            href="/init"
             data-anim="cta-btn"
             className="hero-cta-btn primary relative inline-block no-underline bg-foreground text-background px-[clamp(16px,2vw,28px)] py-[clamp(8px,1.2vh,14px)] text-[clamp(9px,0.8vw,12px)] font-bold uppercase tracking-[0.15em] border-2 border-foreground overflow-hidden"
           >
