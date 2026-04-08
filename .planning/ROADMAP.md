@@ -403,8 +403,8 @@ Plans:
   6. With `prefers-reduced-motion` active, all manifesto text is instantly placed at its final position with no scroll-driven animation — the content is readable without scrolling
 **Plans:** 2 plans
 Plans:
-- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
-- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
+- [ ] 31-01-PLAN.md — Manifesto authoring (typed lib/thesis-manifesto.ts) + TH-05 content tests (TH-05)
+- [ ] 31-02-PLAN.md — ThesisSection engineering: PinnedSection forwardRef + nested ScrollTrigger + reduced-motion fallback + TH-01..04, TH-06 browser tests (TH-01, TH-02, TH-03, TH-04, TH-06)
 
 ### Phase 32: SIGNAL + PROOF Sections
 **Goal**: Two consecutive full-viewport sections deliver the generative identity and the interactive layer separation demo — the site's technical credibility is visible and interactable
