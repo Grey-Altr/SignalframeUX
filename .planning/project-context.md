@@ -4,66 +4,56 @@
 > Regenerate with /pde:new-milestone or /pde:new-project.
 
 ## Tech Stack
-TypeScript · Next.js 15.3 (App Router, Turbopack) · React 19.1 · Tailwind CSS v4 (@theme in globals.css) · CVA for variants · Radix UI via shadcn → SF-wrapped layer · GSAP 3.12 + ScrollTrigger · Lenis · OKLCH color space · Lucide React · Vercel · Raw Three.js (not R3F) · Web Audio API · Vibration API · Sonner · shiki/core (v1.4+, server-only RSC)
+Next.js 15.3 (App Router, Turbopack), TypeScript 5.8, Tailwind CSS v4, CVA for variants, Radix UI via shadcn, GSAP 3.12 + ScrollTrigger, Lenis smooth scroll, Three.js (async chunk), OKLCH color space, Vercel
 
 ## Conventions
-- SF-wrapped components in `sf/` with barrel export from `sf/index.ts`
-- shadcn base in `ui/` (don't modify), SF layer in `sf/` (PascalCase with SF prefix)
-- Animation components in `components/animation/`, blocks in `components/blocks/`
-- `cn()` from `lib/utils.ts` for class merging
-- Server Components default; `'use client'` only when needed
-- All tokens defined in `app/globals.css`
-- Zero border-radius everywhere — explicit `rounded-none` on Radix sub-elements
-- Dual-layer: FRAME = structural, SIGNAL = expressive
-- CVA `intent` as standard variant prop (never `variant`, `type`, `color`)
-- Barrel `sf/index.ts` must remain directive-free (no `'use client'`)
-- Same-commit rule: component file + barrel export + registry entry in one commit
-- pnpm over npm
+- CommonJS (.cjs) modules in bin/lib/
+- Markdown-based state in .planning/
+- Zero npm dependencies at plugin root
+- Server Components default; 'use client' only when needed
+- CVA `intent` as standard variant prop
+- Zero border-radius everywhere
+- SIGNAL/FRAME ordering (signal first, never FRAME/SIGNAL)
 
 ## Constraints
 - Lighthouse 100/100 all categories
-- WCAG AA minimum, keyboard-navigable
-- LCP < 1.0s, CLS = 0, TTI < 1.5s
-- Page weight < 200KB initial (excluding images), gate at 150KB
 - Dark mode primary, light mode available
-- No skeuomorphism, no fake depth, no decorative gradients
-- No R3F (rAF conflicts with GSAP timeScale(0)), no Lottie
+- WCAG AA minimum, keyboard-navigable
+- Page weight < 200KB initial (excluding images)
+- LCP < 1.0s, CLS = 0, TTI < 1.5s
 - Zero border-radius — DU/TDR industrial edges
+- No generic dark-mode aesthetic — borrow directly from DU/TDR visual language
 
 ## Current Milestone
-Feature Complete (v1.4) — 6 phases (21–26)
-Status: Roadmap defined, ready for Phase 21 planning
+v1.5 Redesign — 8 phases (28–35)
+Status: Roadmap created, Phase 28 next
 
 ## Key Decisions
 | Decision | Milestone | Outcome |
 |----------|-----------|---------|
+| Raw Three.js over React Three Fiber | v1.1 | ✓ Good — R3F's independent rAF conflicts with GSAP timeScale(0) |
+| GSAP ticker as WebGL render driver | v1.1 | ✓ Good — single animation loop, reduced-motion kills everything |
+| Module-level MutationObserver cache for signal uniforms | v1.2 | ✓ Good — zero getComputedStyle in GSAP ticker |
 | Hole-in-the-donut SSR pattern for SignalframeProvider | v1.2 | ✓ Good — layout primitives stay Server Components |
 | Pattern B for lazy P3 components (next/dynamic + ssr:false) | v1.3 | ✓ Good — Calendar/Menubar zero bundle cost |
-| SFToggleGroup imports Radix directly (not through ui/ base) | v1.3 | ✓ Good — avoids variant→intent CVA remapping conflict |
-| CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix provides built-in data-motion |
-| Phase ordering dependency-forced for v1.4 | v1.4 | tech debt → tokens → components → detail data → detail views → verification |
-| ComponentDetail as DOM sibling of Flip grid | v1.4 | Child position corrupts GSAP Flip state captures |
-| shiki/core only (not bundle/web or bundle/full) | v1.4 | ~50-80 KB async server-only vs 695 KB or 6.4 MB |
-| Inline expand for detail views (not full page or drawer) | v1.4 | Grid context preserved; GSAP FLIP pattern-consistent |
+| Sonner with unstyled:true for SFToast | v1.3 | ✓ Good — full DU/TDR aesthetic control |
+| CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix built-in data-motion |
+| 8 phases (28-35) not 9 for v1.5 | v1.5 | Observer consolidation absorbed into Infrastructure Hardening |
+| Lenis kept over ScrollSmoother | v1.5 | Validated at Lighthouse 100/100; ScrollSmoother migration risk unjustified |
+| Zero new npm packages for v1.5 | v1.5 | GSAP 3.14.2 has SplitText mask, Observer, ScrambleText all free |
 
 ## Active Requirements
-- [ ] **TD-01**: MutationObserver disconnect on unmount
-- [ ] **TD-02**: readSignalVars isNaN() guard
-- [ ] **TD-03**: lenis.scrollTo replaces window.scrollTo
-- [ ] **TD-04**: Duplicate TOAST entries resolved
-- [ ] **TK-01**: success/warning tokens into @theme
-- [ ] **TK-02**: Elevation absence documented
-- [ ] **TK-03**: Sidebar/chart tokens documented
-- [ ] **TK-04**: WebGL color bridge audited
-- [ ] **CMP-01**: SFDrawer (vaul, lazy)
-- [ ] **CMP-02**: SFHoverCard (FRAME-only)
-- [ ] **CMP-03**: SFInputOTP
-- [ ] **CMP-04**: SFInputGroup wrapper
-- [ ] **DV-01**: component-registry.ts data map
-- [ ] **DV-02**: api-docs.ts full coverage
-- [ ] **DV-03**: code-highlight.ts (shiki RSC)
-- [ ] **DV-04**: ComponentDetail panel (3 tabs, GSAP)
-- [ ] **DV-05**: Variant grid (live SF renders)
-- [ ] **DV-06**: Props table
-- [ ] **DV-07**: Code tab + copy-to-clipboard
-- [ ] **DV-08**: FRAME/SIGNAL badge + pattern tier
+- [ ] **RA-01**: /components renamed to /inventory with redirect
+- [ ] **RA-05**: Homepage 6-section architecture (ENTRY→THESIS→PROOF→INVENTORY→SIGNAL→ACQUISITION)
+- [ ] **EN-01**: GLSL hero fills 100vh — IS the viewport
+- [ ] **EN-02**: SIGNALFRAME//UX at 120px+ centered on shader
+- [ ] **TH-01**: Scroll-driven layout 200–300vh
+- [ ] **TH-02**: Manifesto phrases via GSAP pin/scrub
+- [ ] **PR-01**: Full-viewport interactive SIGNAL/FRAME demo
+- [ ] **IV-01**: Coded nomenclature SF//BTN-001
+- [ ] **SG-01**: Full-viewport WebGL at max SIGNAL intensity
+- [ ] **VL-01**: Ghost labels 200px+
+- [ ] **SP-01**: /system specimen-style diagrams
+- [ ] **PF-01**: Bundle under 150 KB gzip
+- [ ] **PF-02**: Lighthouse 100/100 all categories
+- [ ] **LR-01**: Awwwards submission package
