@@ -19,13 +19,15 @@ Phase 31 delivers ONE section (THESIS) plus the manifesto content that drives it
 ## Implementation Decisions
 
 > All decisions below were auto-selected as recommended defaults under `--auto` mode. Each decision is the lowest-friction path that satisfies the requirements and respects prior phase constraints. Review and override before plan-phase if any choice is wrong.
+>
+> **Override (2026-04-08):** B-01 resolved against the locked wiki copy at `wiki/analyses/v1.5-thesis-copy-draft.md` (Grey-approved 2026-04-07). D-02, D-04, D-14, D-15, D-17 below are revised to match the wiki copy's all-anchor structure. D-16 (foreground-only) is preserved — the wiki copy's magenta accent on "SIGNAL" is dropped per user decision.
 
 ### Manifesto Copy (the blocker)
-- **D-01:** Claude drafts the manifesto text during plan-phase (not discuss-phase) by reading cdSB wiki sources — `wiki/analyses/culture-division-operating-principles.md` and `wiki/analyses/frame-signal-intellectual-lineage.md` — and producing 7-9 declarative phrases. User reviews and revises before any TH-01 engineering begins.
-- **D-02:** Statement count: 7-9 phrases. Each phrase is 5-15 words. Three of the phrases are "anchor statements" rendered at 80px+ (TH-03 floor); the rest are connectors.
-- **D-03:** Tone register: aphoristic, declarative, no hedging. Statements assert the position; they do not explain it. Drawn from the DU/TDR/Brody/Ikeda lineage register, not marketing copy.
-- **D-04:** Content coverage requirement: at minimum one anchor statement for each of (a) SIGNAL/FRAME thesis, (b) Enhanced Flat Design, (c) cybernetic biophilia. Connector phrases bridge transitions.
-- **D-05:** Manifesto text lives as a typed array constant (e.g., `lib/thesis-manifesto.ts`) — not MDX, not JSON. Co-located with the THESIS component for ease of revision.
+- **D-01:** ~~Claude drafts the manifesto text during plan-phase~~ **SUPERSEDED.** Manifesto copy is the 6 Grey-approved statements locked in `wiki/analyses/v1.5-thesis-copy-draft.md` (2026-04-07). Plan 01 transcribes those statements verbatim into `lib/thesis-manifesto.ts` — no fresh authorship.
+- **D-02:** **Statement count: exactly 6 phrases** (per locked wiki copy). Each phrase is 2-8 words. **All 6 are anchor statements** rendered at Anton 80-120px+ — no connector tier. TH-03 floor (≥3 at 80px+) is over-satisfied.
+- **D-03:** Tone register: aphoristic, declarative, no hedging. Statements assert the position; they do not explain it. Drawn from the DU/TDR/Brody/Ikeda lineage register, not marketing copy. **Voice is "precise, quiet authority. No superlatives."** per wiki copy §Design Intent.
+- **D-04:** **Content coverage (5 pillars, expanded from wiki copy):** exactly one anchor statement for each of (a) SIGNAL/FRAME thesis [2 statements: opener + closer], (b) Enhanced Flat Design, (c) Culture-as-Infrastructure, (d) cybernetic biophilia, (e) memetic engineering. TH-05 requires only pillars (a), (b), (d); pillars (c) and (e) are wiki-copy extensions, kept.
+- **D-05:** Manifesto text lives as a typed array constant at `lib/thesis-manifesto.ts` — not MDX, not JSON. Co-located with the THESIS component for ease of revision. Statements rendered in **ALL CAPS** per wiki copy specification (matches Anton display character).
 
 ### Layout Choreography
 - **D-06:** Asymmetric anchor positioning. Each statement has its own viewport anchor (e.g., top-left, center-baseline, bottom-right, far-left mid). No centered stack. DU/TDR off-grid placement is the visual signature.
@@ -40,11 +42,11 @@ Phase 31 delivers ONE section (THESIS) plus the manifesto content that drives it
 - **D-13:** Animate the inner content children only — never animate the PinnedSection root or its immediate child stage div. Animating the pinned element breaks GSAP's pin measurements (STACK.md key constraint).
 
 ### Type Scale & Hierarchy
-- **D-14:** Anchor statements use Anton at 80-160px desktop (`clamp(56px, 12vw, 160px)` mobile). Three minimum, satisfying TH-03.
-- **D-15:** Connector statements use Inter at heading-1 (`text-3xl` ~40px) or heading-2 (`text-2xl` ~32px). They visually subordinate to anchors.
-- **D-16:** Color: foreground token only. No per-phrase color shifts, no accent overlays. Motion and position carry the design — color stays restrained per Enhanced Flat Design rules.
-- **D-17:** Letter-spacing: tight on Anton (matches existing display headline pattern); default on Inter.
-- **D-18:** Use the existing `--text-*` token scale where it fits the size; for anchor statements above `--text-4xl` (80px), use direct `clamp()` because the token scale stops at 80px. This is acceptable per TH-03 ("80px or larger").
+- **D-14:** **All 6 statements use Anton at 80-120px+ desktop** (`clamp(56px, 10vw, 120px)` default, with per-statement overrides in Plan 02 where a statement wants to press against the 160px upper limit). Wiki copy specifies "All statements: Anton at 80-120px+. No small supporting text. Every statement is a display moment." Over-satisfies TH-03's 3-moment floor (6 moments ≥ 80px).
+- **D-15:** ~~Connector statements use Inter at heading-1 or heading-2~~ **REMOVED.** No connector tier exists in the wiki copy. Every statement is a display-scale anchor. Inter does not appear in the THESIS section.
+- **D-16:** Color: foreground token only. No per-phrase color shifts, no accent overlays. Motion and position carry the design — color stays restrained per Enhanced Flat Design rules. **Note:** The wiki copy specifies magenta on "SIGNAL" in statement 6 ("THE FRAME HOLDS. THE SIGNAL MOVES.") but user decision 2026-04-08 overrides this to foreground-only per D-16's restraint principle.
+- **D-17:** Letter-spacing: tight on Anton (matches existing display headline pattern). Inter is not used in this section.
+- **D-18:** Use direct `clamp()` for statement sizing because every statement sits above the token scale's `--text-4xl` (80px) ceiling. Acceptable per TH-03 ("80px or larger").
 
 ### Pinned Composition
 - **D-19:** Single `PinnedSection` instance wrapping the THESIS section. `scrollDistance={2.5}` (= 250vh of scroll distance). Inside the bounds of TH-01 (200-300vh).
@@ -113,9 +115,14 @@ Phase 31 delivers ONE section (THESIS) plus the manifesto content that drives it
 - `.planning/research/FEATURES.md` lines 70, 100-110, 145, 159, 188, 213, 225-233 — Manifesto section feature spec, "structure and content first" principle
 - `.planning/research/SUMMARY.md` lines 12, 30, 64, 72 — Signature interaction framing, manifesto blocker callout
 
-### Design Intelligence (cdSB wiki — required for D-01 manifesto authoring)
-- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/analyses/culture-division-operating-principles.md` — Operating principles, FRAME/SIGNAL philosophy
-- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/analyses/frame-signal-intellectual-lineage.md` — Six converging traditions: Shannon, Goffman, Wiener, architecture, music production, design grid/gesture
+### Design Intelligence (cdSB wiki)
+- **`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/analyses/v1.5-thesis-copy-draft.md`** — **THE canonical manifesto source.** Grey-approved, locked 2026-04-07. 6 statements, all ALL-CAPS, all Anton 80-120px+. Pillar assignments + wiki-source traces per statement. Plan 01 transcribes verbatim.
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/concepts/frame-signal-architecture.md` — Wiki source for S1 (DETERMINISTIC STRUCTURE. GENERATIVE EXPRESSION.) and S6 (THE FRAME HOLDS. THE SIGNAL MOVES.)
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/concepts/enhanced-flat-design.md` — Wiki source for S2 (ZERO RADIUS. ZERO COMPROMISE.)
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/concepts/cybernetic-biophilia.md` — Wiki source for S4 (STRUCTURE THAT BREATHES.)
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/concepts/memetic-engineering.md` — Wiki source for S5 (FORMAT IS STRATEGY.)
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/analyses/culture-division-operating-principles.md` — Background context for S3 (CULTURE AS INFRASTRUCTURE.)
+- `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/analyses/frame-signal-intellectual-lineage.md` — Shannon inversion + six-tradition background (not directly cited by any wiki-copy statement; kept as conceptual background)
 
 ### Prior Phase Context
 - `.planning/phases/29-infrastructure-hardening/29-CONTEXT.md` — PinnedSection API design, reduced-motion gate, Lenis hardening
@@ -187,7 +194,7 @@ Phase 31 delivers ONE section (THESIS) plus the manifesto content that drives it
 <blockers>
 ## Blockers
 
-- **B-01: Manifesto Copy** (carried from STATE.md) — The 7-9 declarative statements covering SIGNAL/FRAME thesis, Enhanced Flat Design, and cybernetic biophilia are not yet authored. **Resolution path (D-01):** Claude drafts initial text during plan-phase by reading the cdSB wiki sources, user reviews and revises before TH-01 engineering begins. This blocker is not a STOP — it is a sequence requirement. Plan-phase produces the draft as its first deliverable.
+- **B-01: Manifesto Copy** — **RESOLVED 2026-04-08.** The 6 declarative statements are the locked Grey-approved wiki copy at `wiki/analyses/v1.5-thesis-copy-draft.md` (authored 2026-04-07). Coverage: SIGNAL/FRAME thesis (S1, S6), Enhanced Flat Design (S2), Culture-as-Infrastructure (S3), cybernetic biophilia (S4), memetic engineering (S5). TH-05's three required pillars are all satisfied; two additional pillars (culture, memetic) are wiki-copy extensions. Plan 01 transcribes the statements verbatim — no authorship loop.
 
 </blockers>
 
