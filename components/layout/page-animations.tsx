@@ -43,6 +43,12 @@ export function PageAnimations() {
         initCoreAnimations(clickCleanups);
       });
 
+      // Font-ready ScrollTrigger recalculation — prevents CLS from font reflow
+      // after Anton/Electrolize swap in. Must fire after GSAP context is established.
+      document.fonts.ready.then(() => {
+        if (!cancelledRef.current) ScrollTrigger.refresh();
+      });
+
       // ── Hero animations — loaded async, tracked in a separate context ──
       const heroTitle = document.querySelector("[data-anim='hero-title']");
       if (heroTitle) {

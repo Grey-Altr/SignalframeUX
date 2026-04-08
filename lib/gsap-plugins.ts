@@ -6,6 +6,7 @@ import { SplitText } from "gsap/SplitText";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { Flip } from "gsap/Flip";
 import { CustomEase } from "gsap/CustomEase";
+import { Observer } from "gsap/Observer";
 import { useGSAP } from "@gsap/react";
 
 import { registerSFEasings } from "./gsap-easings";
@@ -16,6 +17,7 @@ gsap.registerPlugin(
   ScrambleTextPlugin,
   Flip,
   CustomEase,
+  Observer,
   useGSAP
 );
 registerSFEasings();
@@ -52,4 +54,4 @@ export function initReducedMotion(): () => void {
   return motionCleanup;
 }
 
-export { gsap, ScrollTrigger, SplitText, ScrambleTextPlugin, Flip, CustomEase, useGSAP };
+export { gsap, ScrollTrigger, SplitText, ScrambleTextPlugin, Flip, CustomEase, Observer, useGSAP };
