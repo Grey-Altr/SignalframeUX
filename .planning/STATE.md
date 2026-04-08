@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 30-02-PLAN.md (Phase 30 complete)
-last_updated: "2026-04-08T05:44:33.034Z"
-last_activity: 2026-04-08 -- Phase 30 complete (both plans)
+stopped_at: Completed 31-02-PLAN.md (Phase 31 complete)
+last_updated: "2026-04-08T09:00:00.000Z"
+last_activity: 2026-04-08 -- Phase 31 complete (THESIS section, 15/15 tests green)
 progress:
   total_phases: 26
   completed_phases: 10
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 30 — Homepage Architecture + ENTRY Section
-Plan: 02 complete (Phase 30 COMPLETE)
-Status: Ready to discuss/plan Phase 31 (THESIS Section)
-Last activity: 2026-04-08 -- Phase 30 complete (homepage shell + ENTRY + nav reveal + uMouse)
+Phase: 31 — THESIS Section
+Plan: 02 complete (Phase 31 COMPLETE)
+Status: Ready to discuss/plan Phase 32 (SIGNAL + PROOF Sections)
+Last activity: 2026-04-08 -- Phase 31 complete (250vh pinned manifesto scroll, 15/15 tests green)
 
 ## Progress
 
@@ -39,7 +39,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [████______] 36% (5/? plans) IN PROGRESS — Phase 30 complete (homepage shell + ENTRY interactivity)
+v1.5: [█████_____] 45% (7/? plans) IN PROGRESS — Phase 31 complete (THESIS pinned manifesto scroll)
 ```
 
 ## v1.5 Phase Map
@@ -49,7 +49,7 @@ v1.5: [████______] 36% (5/? plans) IN PROGRESS — Phase 30 complete (ho
 | 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Complete (2/2 plans) |
 | 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Not started |
 | 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Complete (2/2 plans) |
-| 31 | THESIS Section | TH-01–06 | Not started |
+| 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Not started |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Not started |
 | 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Not started |
@@ -145,7 +145,7 @@ v1.5: [████______] 36% (5/? plans) IN PROGRESS — Phase 30 complete (ho
 
 ### Blockers
 
-- **Manifesto copy**: Text content for THESIS section (TH-05) is not yet determined. Must be resolved before Phase 31 planning begins. (Research gap noted 2026-04-07)
+- **Manifesto copy**: ✅ RESOLVED — 6 wiki-locked statements shipped in Phase 31 (`lib/thesis-manifesto.ts`)
 - **SF//[CAT]-NNN schema**: 6 category abbreviations not yet validated against full 49-item registry. Must be resolved before Phase 33 planning begins. (Research gap noted 2026-04-07)
 
 ## Project Reference
@@ -157,6 +157,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T05:44:33.030Z
-Stopped at: Completed 30-02-PLAN.md (Phase 30 complete)
-Resume with: `/pde:execute-phase 30` to execute Phase 30 Plan 02 (PageAnimations + Nav reveal wiring)
+Last session: 2026-04-08T09:00:00.000Z
+Stopped at: Completed 31-02-PLAN.md (Phase 31 complete)
+Resume with: `/pde:plan-phase 32` (SIGNAL + PROOF Sections)
