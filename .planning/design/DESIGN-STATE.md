@@ -82,6 +82,7 @@ Schema: 1.0
 | MCK | hi-fi mockup complete, 5 screens, v1 | 2026-03-31 |
 | HIG | HIG audit complete, WCAG 2.2 AA, project-tailored guidelines | 2026-03-31 |
 | HND | handoff complete, 5 screens, implementation spec v1 | 2026-03-31 |
+| HIG | HIG audit v1 complete, platform: web, fidelity: hifi, 23 findings | 2026-04-07 |
 
 ---
 
@@ -102,6 +103,7 @@ Schema: 1.0
 | MCK-mockup-spec-v1 | v1 | Created by /pde:mockup | 2026-03-31 |
 | HIG-guidelines-v1 | v1 | Created by /pde:hig | 2026-03-31 |
 | HND-handoff-v1 | v1 | Created by /pde:handoff | 2026-03-31 |
+| HIG-audit-v1 | v1 | Created by /pde:hig | 2026-04-07 |
 
 ---
 

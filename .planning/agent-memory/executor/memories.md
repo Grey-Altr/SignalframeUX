@@ -325,3 +325,15 @@ The security hook fires on Write tool calls containing "dangerouslySetInnerHTML"
 ### 2026-04-07T01:36:21Z | Phase 25 | tags: component-detail, triggerRefs, session-state, detail-panel
 
 For focus-return-by-index patterns, `Record<string, HTMLDivElement | null>` keyed by component index is the correct approach — avoids array index/filtered-index mismatches when GSAP Flip reorders cards. The ref callback `ref={(el) => { triggerRefs.current[comp.index] = el; }}` is inside the render so the ref is always current to the latest DOM node. ComponentDetail must be a DOM sibling OUTSIDE gridRef to avoid corrupting GSAP Flip state captures.
+
+### 2026-04-08T02:17:23Z | Phase 28 | tags: route-rename, next-config, redirects, app-router
+
+When renaming App Router route directories, `git mv` is not required — git tracks content moves as delete+create automatically when using `rm -rf` + `Write`. The `async redirects()` function in next.config.ts must return exact + wildcard pairs (6 entries for 3 renames) to cover both root and nested paths. Stale `.next/types/` cache errors for deleted routes are artifact noise (not source errors) and clear automatically on next build — verified with `pnpm exec tsc --noEmit 2>&1 | grep -v "^\.next/"`.
+
+### 2026-04-08T02:17:23Z | Phase 28 | tags: state-update, gsd-tools, manual-update, stash
+
+gsd-tools.cjs is not installed in this environment — STATE.md and ROADMAP.md must be updated manually via Edit. When the pre-existing working tree has uncommitted changes, use `git stash` before plan execution and `git stash pop` after final commit. This keeps the plan commits clean and preserves pre-existing work.
+
+### 2026-04-08T02:35:00Z | Phase 28 | tags: link-surgery, grep-to-zero, redirect-tests, sitemap
+
+For grep-to-zero link audits: redirect smoke tests (phase-28-route-infra.spec.ts) legitimately retain old route strings — they test that /components returns 308, not nav links. Exclude them from AC-10 interpretation. app/sitemap.ts uses template literal URLs (`${BASE}/inventory`) not quoted strings, so `grep -c '"/inventory"'` returns 0 even when content is correct — always use `grep -n 'inventory'` to verify sitemap content. gsd-tools.cjs path is `$HOME/.claude/get-shit-done/bin/gsd-tools.cjs` (not pde-os/engines/gsd/).
