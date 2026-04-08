@@ -41,7 +41,12 @@ export function useSignalScene(
   elementRef: React.RefObject<HTMLElement | null>,
   buildScene: () => SceneBuildResult
 ): void {
-  const idRef = useRef(crypto.randomUUID());
+  // crypto.randomUUID() requires iOS 15.4+; use a fallback for older devices
+  const idRef = useRef(
+    typeof crypto?.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`
+  );
 
   useEffect(() => {
     const element = elementRef.current;
