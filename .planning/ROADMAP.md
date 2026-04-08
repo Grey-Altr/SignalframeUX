@@ -371,8 +371,8 @@ Plans:
   6. A prefers-reduced-motion CSS media query and a JS `matchMedia` utility are confirmed present and covering all GSAP contexts before scroll-driven work begins (PF-06 gate)
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 30: Homepage Architecture + ENTRY Section
 **Goal**: The homepage delivers a cinematic first impression — six-section architecture replaces the old page, the full-viewport GLSL hero is the entry point, and navigation is invisible until the user scrolls
@@ -387,8 +387,8 @@ Plans:
   6. CircuitDivider and MarqueeBand components are removed from the homepage — section transitions use hard cuts or scroll-driven reveals with no decorative dividers
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 31: THESIS Section
 **Goal**: The manifesto occupies 200-300vh of scroll distance, placing individual type statements across the viewport as the user scrolls — the primary signature interaction that defines the Awwwards submission
@@ -403,8 +403,8 @@ Plans:
   6. With `prefers-reduced-motion` active, all manifesto text is instantly placed at its final position with no scroll-driven animation — the content is readable without scrolling
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 32: SIGNAL + PROOF Sections
 **Goal**: Two consecutive full-viewport sections deliver the generative identity and the interactive layer separation demo — the site's technical credibility is visible and interactable
@@ -421,8 +421,8 @@ Plans:
   8. With `prefers-reduced-motion` active, PROOF shows a static split view with both layers visible side-by-side
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 33: INVENTORY + ACQUISITION Sections
 **Goal**: The component catalog presents as a technical instrument with coded nomenclature, and the acquisition panel delivers the CLI command as the sharp close of the homepage
@@ -437,8 +437,8 @@ Plans:
   6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 34: Visual Language + Subpage Redesign
 **Goal**: The full visual language system is applied site-wide — ghost labels, display type moments, HUD indicators, and redesigned subpages complete the transformation from docs site to designed artifact
@@ -456,8 +456,8 @@ Plans:
   9. All subpages share the redesigned nav (hidden on initial viewport if applicable, sticky on scroll) and footer from Phase 30
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 35: Performance + Launch Gate
 **Goal**: v1.5 Redesign meets all hard performance and launch constraints — the site is ready for Awwwards submission
@@ -473,8 +473,8 @@ Plans:
   7. The production Vercel deployment is live with zero console errors — confirmed by opening DevTools on the deployed URL
 **Plans:** 2 plans
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ## Progress
 
