@@ -13,8 +13,8 @@
 - [x] **EN-01**: GLSL hero shader fills 100vh — not contained in a padded section, IS the viewport
 - [x] **EN-02**: `SIGNALFRAME//UX` rendered at 120px+ (Anton or current display font) centered on shader
 - [x] **EN-03**: Single subtitle line only — no paragraph, no description, no scroll indicator
-- [ ] **EN-04**: No visible navigation on initial viewport — nav reveals on scroll (sticky after ENTRY)
-- [ ] **EN-05**: Shader parameters respond to mouse position on ENTRY section (subtle, not overwhelming)
+- [x] **EN-04**: No visible navigation on initial viewport — nav reveals on scroll (sticky after ENTRY)
+- [x] **EN-05**: Shader parameters respond to mouse position on ENTRY section (subtle, not overwhelming)
 
 ## THESIS Section
 
@@ -110,8 +110,8 @@
 | EN-01 | Phase 30 | Complete |
 | EN-02 | Phase 30 | Complete |
 | EN-03 | Phase 30 | Complete |
-| EN-04 | Phase 30 | Pending |
-| EN-05 | Phase 30 | Pending |
+| EN-04 | Phase 30 | Complete |
+| EN-05 | Phase 30 | Complete |
 | VL-03 | Phase 30 | Complete |
 | VL-07 | Phase 30 | Complete |
 | TH-01 | Phase 31 | Pending |

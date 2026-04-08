@@ -72,7 +72,7 @@
 
 - [x] **Phase 28: Route Infrastructure** — Rename routes, add redirects, update all internal links (1/2 plans complete)
 - [x] **Phase 29: Infrastructure Hardening** — Fonts-ready, overscroll-behavior, Lenis audit, Observer registration, PinnedSection primitive (completed 2026-04-08)
-- [ ] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader
+- [x] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader (completed 2026-04-08)
 - [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments
 - [ ] **Phase 32: SIGNAL + PROOF Sections** — Atmospheric WebGL scene, interactive SIGNAL/FRAME layer separation demo
 - [ ] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel
@@ -385,7 +385,7 @@ Plans:
   4. The navigation bar is invisible on the initial viewport and becomes sticky after the user scrolls past ENTRY — confirmed at 0px scroll and at ENTRY-bottom scroll position
   5. Moving the mouse over the ENTRY section produces subtle, non-overwhelming shader parameter variation — the effect is present but does not distract from the typography
   6. CircuitDivider and MarqueeBand components are removed from the homepage — section transitions use hard cuts or scroll-driven reveals with no decorative dividers
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 30-01-PLAN.md — Page rewrite + EntrySection + stub sections + test scaffold (RA-05, EN-01, EN-02, EN-03, VL-03, VL-07)
 - [ ] 30-02-PLAN.md — Nav scroll reveal + mouse-responsive shader (EN-04, EN-05)
@@ -509,7 +509,7 @@ Plans:
 | 27. Integration Bug Fixes | v1.4 | 1/1 | Complete | 2026-04-07 |
 | 28. Route Infrastructure | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
 | 29. Infrastructure Hardening | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
-| 30. Homepage Architecture + ENTRY Section | 1/2 | In Progress|  | - |
+| 30. Homepage Architecture + ENTRY Section | 2/2 | Complete   | 2026-04-08 | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
 | 32. SIGNAL + PROOF Sections | v1.5 | 0/? | Not started | - |
 | 33. INVENTORY + ACQUISITION Sections | v1.5 | 0/? | Not started | - |
