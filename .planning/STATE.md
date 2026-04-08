@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 28-02-PLAN.md
-last_updated: "2026-04-08T02:22:37.754Z"
+stopped_at: Phase 28 Plan 02 complete — link surgery, zero old route strings in source
+last_updated: "2026-04-08T02:27:05.830Z"
 last_activity: 2026-04-08 — Phase 28 Plan 02 complete (link surgery — zero old route strings in source)
 progress:
   total_phases: 26
   completed_phases: 8
   total_plans: 15
   completed_plans: 15
-  percent: 100
 ---
 
 # STATE — SignalframeUX
