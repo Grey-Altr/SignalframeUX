@@ -222,6 +222,10 @@ export function TokenViz() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Reduced-motion: single-frame static render — no animation loop to guard.
+    // draw() fires once (and on mutation/resize) — never runs a requestAnimationFrame loop.
+    // prefers-reduced-motion has no effect here; all draws are immediate and non-looping.
+
     // Wait for fonts before first draw to avoid system-font flash
     document.fonts.ready.then(() => draw());
 
