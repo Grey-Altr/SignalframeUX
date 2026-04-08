@@ -6,6 +6,7 @@ import { SectionIndicator } from "@/components/layout/section-indicator";
 import { EntrySection } from "@/components/blocks/entry-section";
 import { ProofSection } from "@/components/blocks/proof-section";
 import { ThesisSection } from "@/components/blocks/thesis-section";
+import { SignalSection } from "@/components/blocks/signal-section";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -65,17 +66,15 @@ export default function HomePage() {
             </h2>
           </SFSection>
 
-          {/* SIGNAL — 100vh stub (Phase 32 fills) */}
+          {/* SIGNAL — 150vh atmospheric parallax (Phase 32) */}
           <SFSection
             label="SIGNAL"
             bgShift="black"
             id="signal"
             data-section="signal"
-            className="py-0 min-h-screen flex items-center justify-center"
+            className="py-0"
           >
-            <h2 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">
-              SIGNAL
-            </h2>
+            <SignalSection />
           </SFSection>
 
           {/* ACQUISITION — 100vh stub (Phase 33 fills) */}

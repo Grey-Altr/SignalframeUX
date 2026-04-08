@@ -303,4 +303,90 @@ test.describe("Phase 32: SIGNAL + PROOF Sections", () => {
 
   // Plan 02 (SIGNAL section) will append SG-01 through SG-05 tests below this marker.
   // ------------------------------------------------------------------------------
+
+  // ── SG-01: SIGNAL section has a registered WebGL scene ─────────────────────
+
+  test("SG-01: SIGNAL section full-viewport WebGL scene registered", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.locator("#signal").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400); // let ScrollTrigger onEnter fire + scene register
+
+    // Under normal motion: GLSLSignal renders data-signal-scene="glsl-signal" inside the section
+    const scene = page.locator('#signal [data-signal-scene="glsl-signal"]');
+    await expect(scene).toHaveCount(1);
+  });
+
+  // ── SG-02: SIGNAL section is ~150vh ────────────────────────────────────────
+
+  test("SG-02: SIGNAL section scroll distance is ~150vh", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    // Target the inner SignalSection root (data-signal-root) — the SFSection wrapper
+    // may have different intrinsic height behavior
+    const signalRoot = page.locator("#signal [data-signal-root]").first();
+    await expect(signalRoot).toHaveCount(1);
+    const box = await signalRoot.boundingBox();
+    expect(box).not.toBeNull();
+    const vh = page.viewportSize()!.height;
+    expect(box!.height / vh).toBeGreaterThanOrEqual(1.45);
+    expect(box!.height / vh).toBeLessThanOrEqual(1.55);
+  });
+
+  // ── SG-03: SIGNAL has minimal or no text (<= 20 chars) ─────────────────────
+
+  test("SG-03: SIGNAL section has minimal/no text content", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.locator("#signal").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
+
+    // Read innerText of the inner SignalSection root (excludes SectionIndicator HUD etc)
+    const signalRoot = page.locator("#signal [data-signal-root]").first();
+    const text = (await signalRoot.innerText()).trim();
+    expect(text.length).toBeLessThanOrEqual(20);
+  });
+
+  // ── SG-04: --signal-intensity set to 1.0 onEnter (documentElement) ─────────
+
+  test("SG-04: scroll into SIGNAL sets --signal-intensity to 1.0", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.locator("#signal").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(400); // onEnter + lerp settle
+
+    const intensity = await page.evaluate(() => {
+      return document.documentElement.style.getPropertyValue("--signal-intensity");
+    });
+    // The value is either set explicitly by SignalSection's onEnter or has been
+    // touched by earlier sections. The assertion is exact equality to "1.0" at
+    // the moment SIGNAL is in view, per the SG-04 requirement.
+    expect(intensity.trim()).toBe("1.0");
+  });
+
+  // ── SG-05: reduced-motion renders static fallback, no live canvas scene ─────
+
+  test("SG-05: SIGNAL reduced-motion static fallback (no canvas scene)", async ({ browser }) => {
+    const ctx = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.locator("#signal").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
+
+    // Under reduced motion, GLSLSignal returns the static fallback with
+    // data-signal-scene="static-fallback" — NOT "glsl-signal"
+    const liveScene = page.locator('#signal [data-signal-scene="glsl-signal"]');
+    await expect(liveScene).toHaveCount(0);
+    const fallback = page.locator('#signal [data-signal-scene="static-fallback"]');
+    await expect(fallback).toHaveCount(1);
+
+    await ctx.close();
+  });
 });
