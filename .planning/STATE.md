@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 29 context gathered
-last_updated: "2026-04-08T02:53:13.285Z"
-last_activity: 2026-04-08 — Phase 28 Plan 02 complete (link surgery — zero old route strings in source)
+stopped_at: Completed 29-01-PLAN.md
+last_updated: "2026-04-08T03:18:17.340Z"
+last_activity: 2026-04-08 — Phase 29 Plan 01 complete (infrastructure hardening — overscroll, Lenis autoResize, Observer, fonts-ready)
 progress:
   total_phases: 26
   completed_phases: 8
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 17
+  completed_plans: 16
+  percent: 94
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 28 — Route Infrastructure
-Plan: 02 complete, Phase 28 complete
+Phase: 29 — Infrastructure Hardening
+Plan: 01 complete
 Status: In progress
-Last activity: 2026-04-08 — Phase 28 Plan 02 complete (link surgery — zero old route strings in source)
+Last activity: 2026-04-08 — Phase 29 Plan 01 complete (infrastructure hardening — overscroll, Lenis autoResize, Observer, fonts-ready)
 
 ## Progress
 
@@ -39,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█_________] 20% (2/? plans) IN PROGRESS — Phase 28 complete (2/2 plans)
+v1.5: [██________] 25% (3/? plans) IN PROGRESS — Phase 29 Plan 01 complete
 ```
 
 ## v1.5 Phase Map
@@ -136,6 +137,7 @@ v1.5: [█_________] 20% (2/? plans) IN PROGRESS — Phase 28 complete (2/2 plan
 
 - [Phase 28]: phase-28-route-infra.spec.ts retains old route strings — intentional redirect verification tests, not stale nav links
 - [Phase 28]: sitemap.ts uses template literals (${BASE}/route) not quoted strings — grep pattern must account for this syntax
+- [Phase 29]: autoResize: false instead of ignoreMobileResize: true — Lenis 1.3.x dropped ignoreMobileResize; autoResize: false is the equivalent for iOS address bar resize suppression
 
 ### Blockers
 
@@ -151,6 +153,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T02:53:13.281Z
-Stopped at: Phase 29 context gathered
+Last session: 2026-04-08T03:18:17.336Z
+Stopped at: Completed 29-01-PLAN.md
 Resume with: `/pde:execute-phase 29` to begin Phase 29 (Infrastructure Hardening)

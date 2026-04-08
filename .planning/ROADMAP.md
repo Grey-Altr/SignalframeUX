@@ -369,9 +369,9 @@ Plans:
   4. Lenis config is audited: `ignoreMobileResize: true` is active, rAF ticker pattern matches the load-bearing pattern from v1.2, and `scrollerProxy` is confirmed absent
   5. PinnedSection component exists in `components/animation/` with `pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true` — tested in isolation with a placeholder before Phase 31 uses it in production
   6. A prefers-reduced-motion CSS media query and a JS `matchMedia` utility are confirmed present and covering all GSAP contexts before scroll-driven work begins (PF-06 gate)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
+- [x] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
 - [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
 
 ### Phase 30: Homepage Architecture + ENTRY Section
@@ -508,7 +508,7 @@ Plans:
 | 26. Verification + Launch Gate | v1.4 | 2/2 | Complete | 2026-04-08 |
 | 27. Integration Bug Fixes | v1.4 | 1/1 | Complete | 2026-04-07 |
 | 28. Route Infrastructure | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
-| 29. Infrastructure Hardening | v1.5 | 0/? | Not started | - |
+| 29. Infrastructure Hardening | v1.5 | 1/2 | In Progress|  |
 | 30. Homepage Architecture + ENTRY Section | v1.5 | 0/? | Not started | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
 | 32. SIGNAL + PROOF Sections | v1.5 | 0/? | Not started | - |

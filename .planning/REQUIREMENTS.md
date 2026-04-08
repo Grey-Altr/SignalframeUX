@@ -82,8 +82,8 @@
 - [ ] **PF-01**: Shared JS bundle remains under 150 KB gzip after all redesign changes
 - [ ] **PF-02**: Lighthouse 100/100 on all four categories against deployed URL
 - [ ] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
-- [ ] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
-- [ ] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
+- [x] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
+- [x] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
 - [ ] **PF-06**: prefers-reduced-motion fully functional across all new sections
 
 ## Launch Readiness
@@ -103,8 +103,8 @@
 | RA-02 | Phase 28 | Pending |
 | RA-03 | Phase 28 | Pending |
 | RA-04 | Phase 28 | Complete |
-| PF-04 | Phase 29 | Pending |
-| PF-05 | Phase 29 | Pending |
+| PF-04 | Phase 29 | Complete |
+| PF-05 | Phase 29 | Complete |
 | PF-06 | Phase 29 | Pending |
 | RA-05 | Phase 30 | Pending |
 | EN-01 | Phase 30 | Pending |
