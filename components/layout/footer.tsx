@@ -30,9 +30,9 @@ export function Footer() {
                 DOCS
               </p>
               <ul className="space-y-0 text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><Link href="/start" className="sf-link-draw hover:text-foreground py-2 inline-block">Getting Started</Link></li>
-                <li><Link href="/components" className="sf-link-draw hover:text-foreground py-2 inline-block">Components</Link></li>
-                <li><Link href="/tokens" className="sf-link-draw hover:text-foreground py-2 inline-block">Tokens</Link></li>
+                <li><Link href="/init" className="sf-link-draw hover:text-foreground py-2 inline-block">Getting Started</Link></li>
+                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-2 inline-block">Components</Link></li>
+                <li><Link href="/system" className="sf-link-draw hover:text-foreground py-2 inline-block">Tokens</Link></li>
                 <li><Link href="/reference" className="sf-link-draw hover:text-foreground py-2 inline-block">API Reference</Link></li>
               </ul>
             </div>
@@ -43,7 +43,7 @@ export function Footer() {
               </p>
               <ul className="space-y-0 text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
                 <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-2 inline-block">GitHub<span className="sr-only"> (opens in new tab)</span></a></li>
-                <li><Link href="/components" className="sf-link-draw hover:text-foreground py-2 inline-block">Registry</Link></li>
+                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-2 inline-block">Registry</Link></li>
               </ul>
             </div>
 

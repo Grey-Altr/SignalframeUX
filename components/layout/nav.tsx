@@ -51,10 +51,10 @@ const NavLink = memo(function NavLink({ href, label, delay, isActive, ariaLabel,
 });
 
 const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string; external?: boolean }> = [
-  { href: "/components", label: "COMPONENTS" },
+  { href: "/inventory", label: "INVENTORY" },
   { href: "/reference", label: "API" },
-  { href: "/tokens", label: "TOKENS" },
-  { href: "/start", label: "GET STARTED" },
+  { href: "/system", label: "SYSTEM" },
+  { href: "/init", label: "GET STARTED" },
   { href: "https://github.com/signalframeux", label: "GITHUB", external: true },
 ];
 

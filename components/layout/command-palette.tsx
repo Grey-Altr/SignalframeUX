@@ -18,10 +18,10 @@ import {
 
 const NAV_ITEMS = [
   { label: "HOME", href: "/", shortcut: "H" },
-  { label: "COMPONENTS", href: "/components", shortcut: "C" },
+  { label: "INVENTORY", href: "/inventory", shortcut: "C" },
   { label: "API REFERENCE", href: "/reference", shortcut: "A" },
-  { label: "TOKENS", href: "/tokens", shortcut: "T" },
-  { label: "GET STARTED", href: "/start", shortcut: "S" },
+  { label: "SYSTEM", href: "/system", shortcut: "T" },
+  { label: "GET STARTED", href: "/init", shortcut: "S" },
 ];
 
 const EXTERNAL_ITEMS = [

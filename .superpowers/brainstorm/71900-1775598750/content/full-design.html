@@ -1,0 +1,219 @@
+<style>
+  .page-section {
+    margin-bottom: 2.5rem;
+    border: 1px solid #333;
+    background: #111;
+    padding: 1.5rem;
+  }
+  .page-section h3 {
+    color: #e0e0e0;
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .page-section .route {
+    color: #e500a4;
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .flow-item {
+    border-left: 2px solid #e500a4;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: #1a1a1a;
+  }
+  .flow-item strong { color: #e0e0e0; }
+  .flow-item p { color: #999; margin: 0.25rem 0 0 0; font-size: 0.85rem; }
+  .principle {
+    display: inline-block;
+    border: 1px solid #555;
+    padding: 0.35rem 0.75rem;
+    margin: 0.25rem;
+    font-size: 0.75rem;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .core-box {
+    border: 2px solid #e500a4;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    background: #0a0a0a;
+  }
+  .core-box h3 { color: #e500a4; margin-top: 0; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+  .stat {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #333;
+  }
+  .stat strong {
+    display: block;
+    font-size: 2rem;
+    color: #e500a4;
+    line-height: 1;
+  }
+  .stat span {
+    font-size: 0.7rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+</style>
+
+<h2>SignalframeUX — Full Redesign Spec</h2>
+<p class="subtitle">Clear cleverness. The smartest move looks obvious.</p>
+
+<div class="core-box">
+  <h3>Core Design Principle</h3>
+  <p style="color: #e0e0e0; font-size: 1rem; margin: 0;">"Why doesn't every design system work this way?"</p>
+  <p style="color: #999; font-size: 0.85rem; margin: 0.5rem 0 0 0;">The site IS the design system performing. Every page is simultaneously: a visceral experience (gets you hired), a functional reference (developers use it), and a proof of craft (the components build the page you're reading).</p>
+  <div style="margin-top: 1rem;">
+    <span class="principle">Clarity over cleverness</span>
+    <span class="principle">Desire over explanation</span>
+    <span class="principle">API-first</span>
+    <span class="principle">The site IS the proof</span>
+    <span class="principle">Culture Division</span>
+  </div>
+</div>
+
+<div class="page-section">
+  <h3>Homepage — The Controlled Detonation</h3>
+  <div class="route">/</div>
+
+  <div class="flow-item">
+    <strong>1. Hero — Full Viewport, GLSL Shader Dominant</strong>
+    <p>No split panel. Dark. Shader at full intensity. SIGNAL//FRAME typography at max scale, clipped/alive through the generative layer. One line: "The design system with a nervous system." Install command visible immediately.</p>
+  </div>
+
+  <div class="flow-item">
+    <strong>2. The Flip — FRAME vs FRAME+SIGNAL</strong>
+    <p>Same UI shown twice. FRAME: clean, professional, any design system. SIGNAL activated: grain, OKLCH shifts, weight, life. Interactive toggle. "Every design system gives you this. Only one gives you this." The user plays with it. Playing = wanting.</p>
+  </div>
+
+  <div class="flow-item">
+    <strong>3. Components — Interactive Vignettes</strong>
+    <p>6-8 hero components, each in a live interactive moment. SFButton with SIGNAL hover. SFToast with hard-cut. SFDialog with VHS wipe. Not a grid of previews — designed moments. One-click copy install for each.</p>
+  </div>
+
+  <div class="flow-item">
+    <strong>4. The System — Token Architecture at a Glance</strong>
+    <p>Dense visual map. OKLCH scales as living gradients. Spacing shown physically. Type scale as real text. The system is visible, not described.</p>
+  </div>
+
+  <div class="flow-item">
+    <strong>5. The Proof — Numbers as Typography</strong>
+    <p>Dense band, DU/tDR density. Each number links to its proof.</p>
+  </div>
+
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;">
+    <div class="stat"><strong>45</strong><span>SF Components</span></div>
+    <div class="stat"><strong>516</strong><span>OKLCH Tokens</span></div>
+    <div class="stat"><strong>100KB</strong><span>Shared Bundle</span></div>
+    <div class="stat"><strong>100</strong><span>Lighthouse</span></div>
+    <div class="stat"><strong>0</strong><span>Border Radius</span></div>
+  </div>
+
+  <div class="flow-item">
+    <strong>6. The Close — Install + Signature</strong>
+    <p>"Deterministic interface. Generative expression." Install command, big, copyable. Culture Division · Portland · 2026.</p>
+  </div>
+</div>
+
+<div class="page-section">
+  <h3>Components — The Playground</h3>
+  <div class="route">/components</div>
+
+  <div class="flow-item">
+    <strong>Header</strong>
+    <p>"COMPONENTS" at massive scale. "45 SF Components · FRAME + SIGNAL" beneath. WebGL mesh fills header background.</p>
+  </div>
+  <div class="flow-item">
+    <strong>Filter as SIGNAL Demo</strong>
+    <p>Filter tabs demonstrate SIGNAL themselves: 34ms hard-cut selection, grain hover, magenta snap indicator. Search has scanline focus.</p>
+  </div>
+  <div class="flow-item">
+    <strong>Dark Stages, Not White Cards</strong>
+    <p>Each component on a dark stage. Live, interactive. Hover → SIGNAL activates. Click → expands to full detail: preview, code (OKLCH shiki theme), props, variants.</p>
+  </div>
+  <div class="flow-item">
+    <strong>Sections Not Filters</strong>
+    <p>Scroll through FRAME components then SIGNAL components. tDR-density headers per section. Filter bar becomes jump-nav.</p>
+  </div>
+</div>
+
+<div class="page-section">
+  <h3>Tokens — Clear System, API-Ready</h3>
+  <div class="route">/tokens</div>
+
+  <div class="flow-item">
+    <strong>Every Section: SEE IT → UNDERSTAND IT → USE IT</strong>
+    <p>Token name + visual demo + copy-ready code (CSS variable, Tailwind class, import path). Click any value → copies to clipboard.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="flow-item">
+      <strong>Color</strong>
+      <p>Grid stays. Hover → token name. Click → copy. One sentence OKLCH explanation. Import code below.</p>
+    </div>
+    <div class="flow-item">
+      <strong>Spacing</strong>
+      <p>9 stops rendered physically + API columns. Visual | Token | Tailwind | px value.</p>
+    </div>
+    <div class="flow-item">
+      <strong>Typography</strong>
+      <p>Live text at each scale. What it looks like | How to use it. Font stack visible.</p>
+    </div>
+    <div class="flow-item">
+      <strong>Motion</strong>
+      <p>Live animations per duration/easing. Token names alongside. "34ms hard-cut. 600ms glacial."</p>
+    </div>
+  </div>
+</div>
+
+<div class="page-section">
+  <h3>API Reference — The Contract</h3>
+  <div class="route">/reference</div>
+
+  <div class="flow-item">
+    <strong>No Prose. Tables, Code, Types.</strong>
+    <p>Every SF component: name, typed props, defaults, variants, import path. Expandable to live preview + code. Instant search. Token API with copy-click on everything. Real usage patterns, not toy examples. A senior engineer scans this in 60 seconds and knows the system is real.</p>
+  </div>
+</div>
+
+<div class="page-section">
+  <h3>Get Started — Speed Is the Design</h3>
+  <div class="route">/start</div>
+
+  <div class="flow-item">
+    <strong>"Install. Configure. Ship."</strong>
+    <p>5 steps. Each: number + title + code block + one sentence. Code blocks are the star — large, highlighted, copy-button prominent. Zero to installed in under 3 minutes. No decoration between steps — just space and type.</p>
+  </div>
+</div>
+
+<div class="core-box" style="margin-top: 2rem;">
+  <h3>Visual Language (All Pages)</h3>
+  <div class="two-col">
+    <div>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>Dark dominant.</strong> Near-black backgrounds. White/light foreground text. Magenta as the only accent.</p>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>Zero border-radius.</strong> Everything sharp. No rounded corners anywhere.</p>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>4px borders.</strong> Heavy structural lines between sections. The grid is visible.</p>
+    </div>
+    <div>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>SIGNAL layer present but controlled.</strong> Grain, OKLCH color shifts, generative textures — but they serve clarity, never fight it.</p>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>Typography-led.</strong> Anton for display. Inter for body. JetBrains Mono for code. Electrolize for system labels.</p>
+      <p style="color: #e0e0e0; font-size: 0.85rem;"><strong>Density over whitespace.</strong> tDR poster density — every element earns its space.</p>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 2rem; border-top: 1px solid #333; margin-top: 2rem;">
+  <p style="color: #999; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;">Review the full spec above. Does this feel right?</p>
+</div>
