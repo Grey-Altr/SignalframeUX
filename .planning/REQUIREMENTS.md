@@ -5,7 +5,7 @@
 - [ ] **RA-01**: `/components` route renamed to `/inventory` with redirect from old path
 - [ ] **RA-02**: `/tokens` route renamed to `/system` with redirect from old path
 - [ ] **RA-03**: `/start` route renamed to `/init` with redirect from old path
-- [ ] **RA-04**: All internal links, nav items, and footer links updated to new route names
+- [x] **RA-04**: All internal links, nav items, and footer links updated to new route names
 - [ ] **RA-05**: Homepage `page.tsx` restructured with 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
 
 ## ENTRY Section
@@ -102,7 +102,7 @@
 | RA-01 | Phase 28 | Pending |
 | RA-02 | Phase 28 | Pending |
 | RA-03 | Phase 28 | Pending |
-| RA-04 | Phase 28 | Pending |
+| RA-04 | Phase 28 | Complete |
 | PF-04 | Phase 29 | Pending |
 | PF-05 | Phase 29 | Pending |
 | PF-06 | Phase 29 | Pending |

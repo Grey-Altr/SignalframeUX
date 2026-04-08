@@ -353,10 +353,10 @@ Plans:
   2. Every internal `<Link>` component, nav item, and footer link in the codebase points to the new route names — `grep -r '"/components"' src/` and `grep -r '"/tokens"'` return zero results
   3. The `/inventory`, `/system`, and `/init` page files exist in `app/` and render without console errors
   4. Existing functionality on all three renamed pages is unaffected — ComponentsExplorer, TokenTabs, and getting-started content are intact
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
-- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
+- [x] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [x] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 29: Infrastructure Hardening
 **Goal**: The codebase is hardened against known Awwwards-class integration hazards — scroll, font, and Observer infrastructure are correct before any new scroll or WebGL work begins
@@ -507,7 +507,7 @@ Plans:
 | 25. Interactive Detail Views + Site Integration | v1.4 | 2/2 | Complete | 2026-04-07 |
 | 26. Verification + Launch Gate | v1.4 | 2/2 | Complete | 2026-04-08 |
 | 27. Integration Bug Fixes | v1.4 | 1/1 | Complete | 2026-04-07 |
-| 28. Route Infrastructure | v1.5 | 0/? | Not started | - |
+| 28. Route Infrastructure | v1.5 | 2/2 | Complete   | 2026-04-08 |
 | 29. Infrastructure Hardening | v1.5 | 0/? | Not started | - |
 | 30. Homepage Architecture + ENTRY Section | v1.5 | 0/? | Not started | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
