@@ -1,261 +1,309 @@
 # Pitfalls Research
 
-**Domain:** Adding remaining SF components, interactive component detail views, token finalization — SignalframeUX v1.4
-**Researched:** 2026-04-06
-**Confidence:** HIGH (tech debt items, bundle, barrel boundary — verified directly in codebase) / HIGH (interactive doc patterns — verified against component architecture) / MEDIUM (token finalization edge cases — based on Tailwind v4 behavior)
+**Domain:** Adding scroll-driven animations (200-300vh), multiple full-viewport WebGL scenes, route renames, interactive demos, and Awwwards-level polish to an existing Next.js 15.3 + GSAP + Three.js + Lenis site — SignalframeUX v1.5
+**Researched:** 2026-04-07
+**Confidence:** HIGH (GSAP ScrollTrigger/Lenis — verified across GSAP community forums and official docs) / HIGH (WebGL context limits — verified against Three.js forum and browser bug trackers) / MEDIUM (Route rename SEO — standard practice, well-documented) / MEDIUM (LCP + canvas — verified via Lighthouse issue tracker) / HIGH (Lenis + pin integration — extensively documented in GSAP community)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Module-Level MutationObserver Never Disconnects — Memory and Double-Registration Risk
+### Pitfall 1: ScrollTrigger Pin + iOS Address Bar Causes Scroll Position Jumps
 
 **What goes wrong:**
-`signal-mesh.tsx` and `glsl-hero.tsx` both create a module-level `_signalObserver` via `ensureSignalObserver()`. This observer is initialized once and never disconnected. In development (HMR), modules re-execute on hot reload, creating a new MutationObserver instance while the old one may still be running. In production, if SignalMesh is conditionally rendered and re-mounted (e.g., navigating away and back to a page that contains it), `ensureSignalObserver()` guards against double-registration with `if (_signalObserver) return` — but only if the module is not re-evaluated. In Next.js App Router, page transitions that unmount and remount the component tree can trigger effects re-running against a stale module state.
+When `pin: true` is used on a 200-300vh section, GSAP inserts a `pin-spacer` div that doubles the element's height in document flow. On iOS Safari (portrait, any version) and Chrome iOS, the browser's dynamic address bar hides and shows as the user scrolls. Each visibility change resizes the viewport, which forces ScrollTrigger to recalculate start/end positions. The result is a visible "jump" — the page scroll position snaps to a wrong offset after the user pauses scrolling. This is most severe when multiple pinned sections are stacked, because each recalculation compounds the error.
 
-The practical v1.4 risk: if interactive component detail views embed live component previews (including any animated SF component that triggers GSAP effects), every preview mount/unmount cycle can accumulate stale observers. The total effect is subtle jank as the observer fires more than once per CSS variable change.
+ScrollTrigger 3.12.2 changed its 100vh calculation specifically because of this issue, but the address bar physics on iOS (portrait + forced browser chrome) remain impossible to fully resolve via the library. The only partial mitigation is `ScrollTrigger.config({ ignoreMobileResize: true })`, which suppresses the recalculation at the cost of not responding to legitimate resize events.
 
 **Why it happens:**
-Module-level singletons are a reasonable optimization (avoid re-observing on re-render), but they require explicit lifecycle management. The v1.2 implementation notes this as "non-blocking" debt, but v1.4's interactive detail views increase the mount/unmount frequency significantly.
+`pin: true` relies on knowing the viewport height at initialization. Mobile browser chrome is outside JavaScript's control. Every address bar state change invalidates the initialized measurements. With 200-300vh of pinned scroll space, even a 60px address bar change causes a visible offset error.
 
 **How to avoid:**
-Close the tech debt before building interactive detail views. Add `disconnect()` in the cleanup phase of the component that owns the WebGL context. Pattern:
+- Call `ScrollTrigger.normalizeScroll(true)` — the GSAP-provided normalization layer absorbs address bar changes before they propagate to ScrollTrigger calculations.
+- Add `ScrollTrigger.config({ ignoreMobileResize: true })` as a fallback.
+- Test pinned sections specifically on an iPhone 14/15 in portrait Safari before shipping. Simulator does not replicate address bar behavior.
+- If the scroll-driven section can work without `pin: true` (i.e., the pinning is aesthetic, not structural), use `scrub` without `pin` — eliminates the spacer problem entirely.
+- Verify with a real device, not Chrome DevTools mobile simulation.
 
+**Warning signs:**
+- Page jumps after the user finishes scrolling through a pinned section on mobile.
+- Pin-spacer height in DevTools does not match the section's intended scroll distance.
+- `ScrollTrigger.refresh()` called after font load does not fix the jump on iOS.
+
+**Phase to address:** First scroll animation implementation phase. Establish the normalize/ignoreMobileResize config at the global GSAP setup before any pinned section is built. Retrofitting is painful.
+
+---
+
+### Pitfall 2: Font Load After ScrollTrigger Init Invalidates Pin-Spacer Dimensions
+
+**What goes wrong:**
+ScrollTrigger calculates all pin-spacer heights and trigger offsets at initialization (inside `useGSAP`). If custom fonts — Inter, JetBrains Mono, Electrolize, Anton — finish loading after this init call, the text blocks reflow. Any section containing text above a pinned section grows or shrinks by the font's line-height difference vs the fallback font. The pin-spacer was sized against the fallback layout, not the final layout. The visual result: animations fire too early or late by 20-80px, scroll progress bars are offset, and scrubbed animations feel desynced.
+
+With `font-display: swap` (Next.js default), this reflow happens within the first 100-300ms of page load — after the React tree hydrates and GSAP initializes.
+
+**Why it happens:**
+`useGSAP` runs after the React component mounts, but font loading is asynchronous and not coordinated with the component lifecycle. Developers assume fonts are ready at mount time because `next/font` preloads them — but preloading only begins the request sooner; it does not guarantee the font is decoded and applied before the first render.
+
+**How to avoid:**
+- Call `ScrollTrigger.refresh()` inside a `document.fonts.ready` promise:
+  ```typescript
+  document.fonts.ready.then(() => {
+    ScrollTrigger.refresh();
+  });
+  ```
+- Place this call in the root layout's `useGSAP` effect, not in individual page components. It only needs to fire once per page load.
+- With Anton (the display font used in heading-1 / `SFHeadline`), the dimension change between system fallback and final font can be 30-50px on a full-width heading. This is enough to shift a 300vh scroll sequence by a full trigger point.
+
+**Warning signs:**
+- Scroll animations that feel "correct" in dev (where fonts are cached) but are offset on first load or incognito.
+- Pinned section animations that start slightly early on first visit, then work correctly on refresh.
+- Lighthouse simulated throttling shows animation desynced from scroll progress.
+
+**Phase to address:** Scroll animation architecture phase. Add `document.fonts.ready.then(ScrollTrigger.refresh)` to the global GSAP provider before building any scroll sequence.
+
+---
+
+### Pitfall 3: Multiple WebGL Contexts Crash Mobile — Hard Browser Limits Apply
+
+**What goes wrong:**
+Chrome enforces a limit of 16 active WebGL contexts per page. Safari iOS enforces a limit of 2-8 (device-dependent, documented in Mozilla bug tracker as 2 per "principal" on some configurations). Three.js creates one WebGLRenderer per canvas. With "multiple full-viewport WebGL scenes" on a single page route, a page with 3+ Three.js canvases will silently lose the oldest WebGL context on iOS Safari — the canvas goes black with no error in the console for the end user.
+
+The project already has `glsl-hero.tsx`, `signal-mesh.tsx`, and `hero-mesh.tsx` as separate Three.js instances. Adding new full-viewport WebGL sections to the same page route will trigger this limit on mobile.
+
+**Why it happens:**
+WebGL contexts are GPU resources managed by the browser, not JavaScript heap. Browsers impose hard limits independent of available RAM. Three.js does not warn you when a context is lost due to this limit — it fires the `webglcontextlost` event on the canvas, which most implementations don't handle. Resources (geometry, materials, textures) cannot be shared between WebGL contexts.
+
+**How to avoid:**
+- One WebGLRenderer per page route maximum on mobile. Use scene switching (render different Three.js scenes through one renderer via `renderer.setRenderTarget` and scene/camera swapping) rather than multiple canvas elements.
+- For sections that need "different" visual worlds: composite them as different scenes rendered to the same canvas, switching with ScrollTrigger scroll progress as the control signal.
+- For non-hero WebGL sections that can tolerate static imagery on mobile: detect GPU tier and disable Three.js on low-tier or mobile devices. `@pmndrs/detect-gpu` provides GPU tier detection.
+- If multiple canvases are architecturally required: call `renderer.dispose()` and `renderer.forceContextLoss()` when a canvas scrolls out of view (IntersectionObserver), then reinitialize on scroll-back-in. This is complex and prone to flicker.
+- Add a `webglcontextlost` handler to every canvas to degrade gracefully (show a static fallback image) rather than a black rectangle.
+
+**Warning signs:**
+- "WARNING: Too many active WebGL contexts. Oldest context will be lost." in the browser console.
+- One of the Three.js canvases on the page renders as black or shows only the clear color.
+- GPU memory usage climbs with each page navigation and does not return to baseline after navigating away.
+
+**Phase to address:** WebGL scene planning phase. Decide on single-renderer architecture before building any new WebGL section. Retrofitting multiple scenes into one renderer after they're built is a significant rewrite.
+
+---
+
+### Pitfall 4: Three.js Resources Not Disposed on Route Navigation — GPU Memory Leak
+
+**What goes wrong:**
+Next.js App Router navigates between routes without a full page reload. The Three.js renderer, geometries, materials, and textures allocated on page A remain in GPU memory after navigating to page B unless explicitly disposed. In a design system site with multiple routes each showing WebGL scenes, repeated navigation creates a GPU memory leak that grows until the browser tab crashes or forces a context loss.
+
+The specific failure: removing a Three.js component from the React tree does not garbage-collect GPU resources. `geometry.dispose()`, `material.dispose()`, `texture.dispose()`, and `renderer.dispose()` must be called explicitly. ImageBitmap textures (common in glTF loaders) additionally require `imageBitmap.close()` — a step that `texture.dispose()` does not handle in Three.js as of 2025.
+
+**Why it happens:**
+Developers familiar with JavaScript GC assume removing the object reference is sufficient. GPU resources are unmanaged buffers — they live outside the JS heap and have no automatic GC. The problem is invisible in dev (short sessions, few routes), but accumulates over a 10-minute user session exploring multiple pages.
+
+**How to avoid:**
+- In every `useGSAP` or `useEffect` that creates a Three.js renderer or scene, the cleanup function must traverse the scene and dispose all resources:
+  ```typescript
+  return () => {
+    scene.traverse((obj) => {
+      if (obj instanceof THREE.Mesh) {
+        obj.geometry.dispose();
+        if (Array.isArray(obj.material)) {
+          obj.material.forEach(m => m.dispose());
+        } else {
+          obj.material.dispose();
+        }
+      }
+    });
+    renderer.dispose();
+    renderer.forceContextLoss();
+  };
+  ```
+- For textures loaded via `TextureLoader` or `GLTFLoader`: explicitly call `texture.dispose()` on each texture reference. For `ImageBitmap` textures, call `imageBitmap.close()` on the source.
+- The existing `signal-mesh.tsx` and `glsl-hero.tsx` cleanup must be audited for completeness before adding new WebGL scenes. The v1.4 pitfall research flagged the MutationObserver disconnect gap — confirm the dispose sequence is also complete.
+
+**Warning signs:**
+- Chrome DevTools `Memory` tab (GPU Memory) climbs with each route navigation and does not return to baseline.
+- After 5-6 route navigations, one of the WebGL canvases produces a context lost warning.
+- `renderer.info.memory` logged to console shows geometries/textures accumulating between navigations.
+
+**Phase to address:** WebGL cleanup audit phase (early, before new scenes are added). Run the Memory DevTools profiler on the existing routes before adding any new Three.js scenes.
+
+---
+
+### Pitfall 5: Lenis + ScrollTrigger Pin Flicker in Safari — The Integration Is Load-Bearing
+
+**What goes wrong:**
+When Lenis is driving the scroll and ScrollTrigger is pinning sections, Safari (desktop and iOS) exhibits a flicker inside the pinned section. The content inside the pinned element renders at the wrong position for one or two frames as Lenis and ScrollTrigger negotiate scroll position. This is a known issue with no complete fix — it is a timing conflict between Lenis's rAF loop and ScrollTrigger's scroll event listener.
+
+The correct integration (verified against GSAP community discussions and darkroomengineering/lenis README) requires:
 ```typescript
-// In signal-mesh.tsx useGSAP cleanup:
-return () => {
-  gsap.ticker.remove(tickerFn);
-  if (_signalObserver) {
-    _signalObserver.disconnect();
-    _signalObserver = null; // allow re-init on next mount
-  }
-};
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+gsap.ticker.lagSmoothing(0);
+// Lenis must be initialized with: autoRaf: false
 ```
 
-Same fix applies to `glsl-hero.tsx`. Do this in the tech debt phase before adding interactive detail views.
+Deviating from this exact pattern — particularly forgetting `autoRaf: false`, or using `scrollerProxy` (the older pattern) instead of the ticker approach — causes the flicker. The `scrollerProxy` approach is deprecated for Lenis and should not be used in new work.
+
+A second Safari-specific issue: `ScrollTrigger.normalizeScroll()` conflicts with Lenis when both are active. Enable one or the other, not both.
+
+**Why it happens:**
+Lenis runs its own rAF loop to apply smooth scroll offsets. ScrollTrigger's scroll event fires from the native scroll event, which Lenis has overridden. If ScrollTrigger reads the scroll position before Lenis has applied its interpolated offset for the current frame, there is a one-frame discrepancy that manifests as flicker in pinned elements (which are positioned based on scroll offset).
+
+**How to avoid:**
+- Use the GSAP ticker integration pattern (shown above) exclusively. Do not use `scrollerProxy`.
+- Initialize Lenis with `autoRaf: false`.
+- Do not enable `ScrollTrigger.normalizeScroll()` when Lenis is active.
+- Test pinned sections specifically in Safari (desktop) with Lenis active — Chrome does not exhibit the same flicker timing.
+- The SignalframeUX project already has Lenis integrated. Before adding any new pinned sections, verify the existing integration matches the ticker pattern above.
 
 **Warning signs:**
-- HMR in dev shows console warnings about duplicate observers or double-firing effects
-- CSS variable slider in SignalOverlay causes two renders per change instead of one (observable via React DevTools Profiler)
-- Interactive detail views with animated component previews cause increasing animation jank over time
+- Pinned section content flickers for 1-2 frames in Safari when scrolling into the pinned zone.
+- A blank space appears below a pinned section after it unpins (symptom of `once: true` + `pin: true` + `scrub: true` with Lenis — a documented blank-space bug).
+- Scroll progress animations are slightly behind scroll position in Safari but correct in Chrome.
 
-**Phase to address:** Tech debt closure phase (first phase). Must close before interactive detail views introduce high mount/unmount frequency.
+**Phase to address:** Before the first new pinned section is built. Audit the existing Lenis integration against the ticker pattern. Fix any deviations before new scroll work begins.
 
 ---
 
-### Pitfall 2: `readSignalVars` NaN Propagation Into WebGL Uniforms
+### Pitfall 6: WebGL Canvas Is Invisible to LCP — Server-Rendered Text Overlay Is the LCP Element
 
 **What goes wrong:**
-`readSignalVars()` does `parseFloat(style.getPropertyValue("--signal-intensity") || "0.5")`. The fallback `"0.5"` guards against empty string. But `getPropertyValue` can return a string with leading/trailing whitespace (e.g., `" 0.5"` — a common CSS variable serialization behavior). `parseFloat(" 0.5")` returns `0.5` correctly, so whitespace is handled.
+Lighthouse and Chrome's LCP algorithm do not track `<canvas>` elements as LCP candidates. Canvas content — including Three.js WebGL output — is opaque to the performance measurement stack. For a full-viewport WebGL hero with a text overlay, the LCP element is the text, not the canvas. This is actually the correct behavior and can be leveraged.
 
-However: if any component sets `--signal-intensity` to a non-numeric value (even temporarily during a CSS transition or GSAP tween to a color value), `parseFloat` returns `NaN`. The OR fallback does not trigger because `parseFloat("invalid")` returns `NaN`, not an empty string, and `NaN || "0.5"` correctly falls back — but only because `NaN` is falsy. This means the guard works for full garbage values but fails for partial cases where `parseFloat` returns something non-NaN but wrong (e.g., `parseFloat("0.5px")` returns `0.5`, which is correct; `parseFloat("0.5em")` returns `0.5`, which may not be intended).
+The failure mode: developers who animate the text overlay into view (opacity 0 to 1, or a GSAP fade-in) inadvertently tell Chrome that the LCP element never becomes visible. Chrome's LCP observer stops tracking when an element's opacity is animated from 0 — a known Chromium bug triggered specifically by opacity animations. The result: Lighthouse reports `NO_LCP` or shows an artificially high LCP time, destroying the Lighthouse score.
 
-The actual failure mode: if a new SF component or token finalization work accidentally writes a string value to `--signal-intensity` or `--signal-speed` that begins with a number but has a unit suffix, the WebGL uniform gets a plausible-but-wrong value. The animation does not break obviously — it just behaves unexpectedly. Debugging is non-trivial because the WebGL output provides no error.
+The second failure mode: if the overlay text is a client-rendered component (rendered after hydration), the text does not exist in the initial HTML. The LCP element is only in the DOM after JavaScript runs, which Lighthouse measures as a much later LCP time than the actual visual paint.
 
 **Why it happens:**
-CSS custom property values are untyped strings. Any code can write any value. The guard was not written with unit-suffix edge cases in mind.
+- Server-rendering the text is necessary for LCP but often overlooked when text is part of an animated component.
+- Opacity-from-zero animations are a common aesthetic choice that Lighthouse penalizes via a Chromium bug that has persisted since at least 2021.
 
 **How to avoid:**
-Replace the current guard with an explicit NaN guard:
-
-```typescript
-function safeParseSignalFloat(raw: string, fallback: number): number {
-  const n = parseFloat(raw);
-  return isNaN(n) ? fallback : n;
-}
-
-function readSignalVars(): void {
-  const style = getComputedStyle(document.documentElement);
-  _signalIntensity = safeParseSignalFloat(style.getPropertyValue("--signal-intensity"), 0.5);
-  _signalSpeed     = safeParseSignalFloat(style.getPropertyValue("--signal-speed"), 1.0);
-  _signalAccent    = safeParseSignalFloat(style.getPropertyValue("--signal-accent"), 0.0);
-}
-```
-
-Apply the same fix to `glsl-hero.tsx` which duplicates this pattern.
+- Server-render all text overlays above WebGL scenes. The text must be in the initial HTML response. No `'use client'` on the text component unless required for interactivity. Hydrate interactivity separately.
+- For reveal animations on LCP text: start from `opacity: 0.01` (not `0`) or use `visibility: hidden` → `visible` instead. The Chromium bug is triggered specifically by `opacity: 0`. Starting at `0.01` avoids it.
+- Alternatively: use `clip-path` or `transform: translateY` animations for the text reveal rather than opacity. These do not suppress LCP measurement.
+- Preload Anton and Electrolize (the fonts used in display headings) with `rel="preload"` or rely on `next/font`'s preload behavior. A font-blocked LCP text element tanks LCP.
 
 **Warning signs:**
-- SignalMesh or GLSL hero behaves differently on pages that also run CSS animations that touch custom properties
-- GSAP tweens on new animated components produce unexpected WebGL behavior
-- Token finalization work that adds unit-bearing values to the `:root` block
+- Lighthouse reports `NO_LCP` or a LCP time > 2s on a page with a WebGL hero.
+- Chrome DevTools Performance timeline shows LCP firing very late (after all animations complete) on a page with animated overlay text.
+- PageSpeed Insights flags "Largest Contentful Paint element" as a GSAP-animated text element.
 
-**Phase to address:** Tech debt closure phase. Fix before token finalization work modifies globals.css.
+**Phase to address:** Hero/WebGL section implementation phase. Establish the SSR-text-over-client-canvas pattern before building any hero section. Verify Lighthouse score immediately after the first hero implementation — do not defer this check.
 
 ---
 
-### Pitfall 3: Interactive Detail Views Breaking ComponentsExplorer's Server Component Rendering Path
+### Pitfall 7: Route Renames Without Redirects Break Vercel's Edge Network Cache and Social Shares
 
 **What goes wrong:**
-`ComponentsExplorer` is a Client Component (`'use client'` — it uses `useState` for filter and focus). The v1.4 goal is to make each component card clickable to reveal props, variants, and implementation details. The natural implementation reaches for a `Dialog` or `Sheet` modal pattern with `selectedComponent` state.
+When a route is renamed in Next.js App Router (a directory rename in `app/`), any previously shared URLs (social, bookmarks, backlinks) 404. The SEO impact of a 404 is worse than a 301 redirect — a 301 passes ~90-99% of link equity to the new URL, while a 404 signals deletion and may cause deindexing. Vercel's edge cache for the old URL also needs to be invalidated.
 
-The pitfall: if detail view content (props table, code snippets, variant previews) is imported at the top of `components-explorer.tsx`, it brings all imported component previews into the same client bundle. With 49+ components in the registry, each needing a live preview in the detail view, this can multiply the client JS for the page significantly. The current ComponentsExplorer already renders 31 static preview elements — adding live interactive detail previews for all 49 entries will balloon the component if handled naively.
+The secondary issue specific to this project: the `app/reference/` and `app/start/` routes may be renamed as part of the v1.5 redesign. Each rename that is not covered by a redirect in `next.config.ts` creates a silent 404 for any external link. The sitemap at `app/sitemap.ts` also needs updating — a sitemap pointing to old URLs tells Google to crawl URLs that no longer exist.
 
-Second failure vector: if the detail view content is a separate Server Component (ideal for static prop tables and code blocks), it cannot be composed directly inside a Client Component's JSX without going through the `children` prop boundary. Authors unfamiliar with the hole-in-the-donut pattern will put a `fetch`-based or static Server Component inside a Client Component and get the wrong behavior silently in dev (works due to React's automatic Client boundary promotion) but may cause issues in production with certain cache behaviors.
+The tertiary issue: Next.js `next.config.ts` static redirects have a 1,024 limit on Vercel. This project is unlikely to exceed this limit for route renames (single-digit count of renamed routes), so the static redirect approach is appropriate. Do not use Middleware for this — it adds latency to every request.
 
 **Why it happens:**
-Modal/drawer patterns are client-side by nature (state: open/closed). Developers default to putting all content inside the same client file for simplicity. At 49 components with live previews, "simplicity" becomes a performance problem.
+Route renames feel like a local change (rename a folder), but they are breaking changes to the URL structure. In SPAs, navigating within the app uses the router, masking the 404. The 404 only appears to external traffic and search engines.
 
 **How to avoid:**
-- Detail view content must be lazy-loaded: use `next/dynamic` for the detail panel component, with `loading` state showing a skeleton.
-- Props tables and code examples are static — consider generating them from the registry JSON at build time (`generateStaticParams` pattern for `/components/[slug]` routes) rather than rendering them in a modal. This keeps interactive explorer fast and gives each component a dedicated URL for deep-linking.
-- If modal approach is used, load detail content only when the card is clicked — not on page load. The data-source for props/variants should be the registry JSON (already exists), not component imports.
-- Keep the detail view component in a separate file with its own `'use client'` boundary. Do not co-locate with ComponentsExplorer.
+- For every directory renamed in `app/`, add a `permanent: true` redirect in `next.config.ts` before the rename is deployed:
+  ```typescript
+  redirects: async () => [
+    { source: '/old-route', destination: '/new-route', permanent: true },
+    { source: '/old-route/:path*', destination: '/new-route/:path*', permanent: true },
+  ]
+  ```
+- Update `app/sitemap.ts` in the same commit as the rename.
+- After deploy, use Google Search Console's URL Inspection tool to request indexing of new URLs and submit the updated sitemap.
+- `permanent: true` generates a 308 (Next.js) / 301 (traditional). Both pass link equity. Use `permanent: true` for all route renames — these are permanent, not temporary moves.
 
 **Warning signs:**
-- `ANALYZE=true pnpm build` shows ComponentsExplorer's client chunk growing by more than 20KB after adding detail views
-- Detail view file imported at the top level of `components-explorer.tsx` (not lazily)
-- Live component previews for 49 components all instantiated in the DOM on page load
+- Any renamed `app/` directory without a corresponding redirect in `next.config.ts`.
+- `app/sitemap.ts` still references old route paths after a rename.
+- Vercel deployment log shows no redirect entries for renamed routes.
 
-**Phase to address:** Interactive detail views phase. Establish the lazy-load + data-from-registry pattern before building any detail view content.
+**Phase to address:** Route architecture phase (before any routes are renamed). Establish the redirect-before-rename protocol. Add a pre-deploy check: `grep` for old route strings in `next.config.ts` to confirm coverage.
 
 ---
 
-### Pitfall 4: Lenis Scroll Race on Pages With Scroll-Linked Detail Panel Animations
+### Pitfall 8: GSAP ScrollTrigger Accumulates Instances Across React Re-Renders Without Cleanup
 
 **What goes wrong:**
-The known v1.2/v1.3 debt: `useScrollRestoration` uses an `rAF` to give Lenis time to initialize before calling `window.scrollTo`. This is a timing workaround, not a structural fix. The documented risk: "if Lenis overrides the position, use `lenis.scrollTo(y, { immediate: true })` instead."
+In Next.js App Router with React Strict Mode (development), effects run twice. Without proper cleanup, each double-invocation creates two ScrollTrigger instances for the same element. In production, route navigation that re-mounts a page component creates a fresh ScrollTrigger instance without killing the previous one — because the previous component unmounted but its ScrollTrigger was not killed.
 
-In v1.4, interactive detail views may introduce new scroll behavior: opening a detail panel might scroll the user to a specific section, or a detail panel opening might trigger GSAP ScrollTrigger recalculation. Lenis intercepts `window.scrollTo` calls. If the detail panel's open animation and Lenis's scroll normalization fire in the same frame, the page scroll position snaps back to the top (Lenis wins the race).
-
-This is not a new bug — it is a latent race that becomes more likely as v1.4 introduces more programmatic scroll interactions on the same pages where Lenis is active.
+With 200-300vh scroll sections and multiple `ScrollTrigger.create()` calls per page, accumulated stale instances cause animations to fire multiple times per scroll event, produce incorrect pin behavior (two pin-spacers for one element), and degrade scroll performance.
 
 **Why it happens:**
-Lenis wraps native scroll and processes position changes in its own rAF loop. `window.scrollTo` called outside Lenis's tick gets overridden. The rAF workaround delays by one frame, which is usually sufficient — but "usually" is not "always" on slow devices or when multiple scroll-affecting effects fire simultaneously.
+`ScrollTrigger.create()` registers globally. If the component that created it is unmounted without calling `trigger.kill()`, the trigger persists in ScrollTrigger's global registry. The next mount creates a duplicate. This is the single most common GSAP + React bug.
 
 **How to avoid:**
-Close the tech debt structurally: expose the Lenis instance via the existing `useSignalframe()` hook or a dedicated `useLenis()` hook. Any code needing programmatic scroll must call `lenis.scrollTo(y, { immediate: true })` instead of `window.scrollTo`. This eliminates the race entirely.
-
-```typescript
-// In the provider, expose the lenis instance:
-const lenis = useLenisRef(); // or however it's stored
-// On scroll restoration:
-lenis?.scrollTo(savedY, { immediate: true });
-// On detail panel open/close that needs scroll adjustment:
-lenis?.scrollTo(targetY, { duration: 0.4, easing: ... });
-```
-
-Do NOT add more rAF delays as a band-aid for new race conditions.
+- Use `useGSAP()` hook exclusively (from `@gsap/react`). It provides automatic context-based cleanup: all ScrollTriggers created within the `useGSAP` callback are automatically killed when the component unmounts.
+- Never use `useEffect` for GSAP animations in this codebase — `useGSAP` handles cleanup correctly, `useEffect` requires manual `gsap.context().revert()` or `trigger.kill()`.
+- In the GSAP provider / root layout, call `ScrollTrigger.clearScrollMemory()` on route change if any stale triggers are suspected.
+- The existing animation components in this project use `useGSAP` — maintain this pattern for all v1.5 scroll work.
 
 **Warning signs:**
-- Page scrolls to position 0 after opening a detail panel on mobile
-- Scroll restoration works on desktop but fails intermittently on devices where the `rAF` delay is insufficient (throttled CPU)
-- Adding a new `window.scrollTo` call anywhere in the codebase (grep check: any new `window.scrollTo` is an automatic red flag)
+- An animation fires twice per scroll event.
+- Two `pin-spacer` elements around the same section in the DOM.
+- `ScrollTrigger.getAll().length` grows with each page navigation rather than staying constant.
 
-**Phase to address:** Tech debt closure phase. Fix before interactive detail views add new programmatic scroll interactions.
+**Phase to address:** Scroll animation architecture phase. Audit all existing `useGSAP` usages before adding new scroll sections to confirm cleanup is present. Then apply consistently to all v1.5 scroll work.
 
 ---
 
-### Pitfall 5: Token Finalization Introducing Dark Mode OKLCH Values That Break the WebGL Color Bridge
+### Pitfall 9: Bundle Size Bloat From Importing GSAP Plugins and Three.js at Module Level
 
 **What goes wrong:**
-The WebGL color bridge (`color-resolve.ts`) reads OKLCH values from CSS custom properties via `getComputedStyle`, parses them, and converts to `THREE.Color` RGB values for shader uniforms. It has a TTL cache. If token finalization work changes the numeric OKLCH values of any color tokens (e.g., adjusting `--color-primary` chroma or lightness for WCAG contrast), the cached WebGL colors become stale until the TTL expires.
+GSAP's `ScrollTrigger` plugin adds ~48KB (minified, pre-gzip). Three.js adds ~600KB (minified). If these are imported at the top of a component that is included in the root layout, they are bundled into the initial JS chunk and block TTI. On a portfolio/design-system site where some routes have no animations, this overhead is unnecessary.
 
-More critically: if token finalization adds new dark-mode overrides that use OKLCH values with `oklch(L C H / A)` alpha syntax, the existing parser may not handle the alpha channel, silently producing an incorrect color.
+The existing project already has lazy-loaded variants (`glsl-hero-lazy.tsx`, `signal-mesh-lazy.tsx`, `signal-overlay-lazy.tsx`) — this pattern is correct and must be extended to all new WebGL sections in v1.5.
 
-The second vector: if token finalization introduces CSS `color-mix()` expressions as token values (a pattern growing in Tailwind v4 work), `getComputedStyle` returns the computed (resolved) value, which should be fine — but only if the CSS is evaluated. During SSR, `getComputedStyle` does not exist, and the WebGL color bridge has an SSR guard. If a new token is added that the SSR guard does not cover, the server render may throw.
+The second vector: if multiple new scroll-animated sections each import GSAP plugins independently without a centralized registration, Next.js may bundle ScrollTrigger multiple times if tree-shaking does not deduplicate across dynamic import boundaries.
 
 **Why it happens:**
-Token finalization happens in `globals.css` — a file that is modified frequently. The WebGL color bridge is a separate system that depends on those values without any type-checked contract between them. Changes to token values do not trigger any warning in the bridge.
+Adding an import to a component is the path of least resistance. The bundle impact is invisible during development. Bundle analysis is typically only run at milestone end, after the damage is done.
 
 **How to avoid:**
-- Before finalizing tokens, document every token consumed by the WebGL color bridge in `SCAFFOLDING.md`. These are the tokens that cannot be changed without testing the WebGL output.
-- After any OKLCH value change, clear the TTL cache and verify WebGL scenes visually (SignalMesh, GLSL hero) in both light and dark mode.
-- Extend the color parser to handle `oklch(L C H / A)` if alpha syntax is used anywhere in the token system.
-- Never use `color-mix()` as a token value if that token feeds the WebGL bridge.
+- All new Three.js components must use the `-lazy.tsx` pattern: `next/dynamic` with `ssr: false` and `loading` skeleton.
+- Register GSAP plugins (ScrollTrigger, ScrollSmoother) once in a centralized provider or root layout effect — not in each component:
+  ```typescript
+  gsap.registerPlugin(ScrollTrigger);
+  ```
+- Run `ANALYZE=true pnpm build` after implementing each new major scroll section, not just at milestone end.
+- Target: initial JS bundle should not grow by more than 15KB per new scroll section (excluding the lazily-loaded Three.js payloads).
+- The 200KB initial page weight limit from `CLAUDE.md` applies. Track this at each phase, not just at the end.
 
 **Warning signs:**
-- GLSL hero shows wrong accent color after a globals.css change
-- SignalMesh mesh color does not shift when theme is toggled (cache stale)
-- Console error during SSR on a page that renders a WebGL-dependent component
+- `ANALYZE=true pnpm build` shows a new chunk containing both GSAP and page component code in the initial load.
+- `next/dynamic` is not used for any new Three.js component.
+- GSAP plugin registration appears in more than one component file.
 
-**Phase to address:** Token finalization phase. Audit WebGL bridge dependencies before modifying any OKLCH value.
+**Phase to address:** Every scroll/WebGL implementation phase. Run bundle analyzer after each phase as a gate condition before moving to the next.
 
 ---
 
-### Pitfall 6: Interactive Detail Views Creating Z-Index Conflicts With Fixed-Position System Chrome
+### Pitfall 10: Overscroll and Rubber-Banding Break Lenis on iOS
 
 **What goes wrong:**
-The fixed-position element inventory (from globals.css):
-- `--z-nav`: 9999 (nav bar, top)
-- `--z-vhs`: 99999 (VHS overlay, full-screen)
-- `--z-cursor`: 500 (canvas cursor)
-- `--z-scroll-top`: 200 (SignalOverlay button, bottom-right)
-- `--z-skip`: 900 (skip-to-content link)
-- `--z-progress`: 300 (progress bar)
+iOS Safari implements native rubber-banding (elastic overscroll) at the document level. Lenis intercepts scroll events to apply smooth scrolling, but when the user overscrolls past the top or bottom of the page, the native rubber-band animation fights Lenis's scroll normalization. The result: the page snaps back to the Lenis-controlled position instead of rubber-banding smoothly, which feels broken and unnatural.
 
-A detail panel (Dialog or Sheet) rendered by shadcn Radix defaults to `z-index: 50` in the shadcn stylesheet. This is below the canvas cursor (500) and SignalOverlay (200). The practical result: the detail panel opens and the canvas cursor appears on top of the panel content, and the SignalOverlay button appears to float over the modal backdrop.
-
-Additionally, if the detail view uses `SFSheet` (the right-side drawer pattern used for NavigationMenu mobile), the Radix Sheet portal mounts at the document body — which is correct — but the z-index of 50 means the custom canvas cursor (z-500) continues to track on top of the sheet content. This is visually broken: the custom cursor bleeds over the modal.
+With 200-300vh scroll sections, users frequently reach the "bottom" of a section that is still mid-scroll, and the overscroll behavior fires unexpectedly at section boundaries.
 
 **Why it happens:**
-Modal z-index is set by Radix/shadcn at values from their default scale (z-50). The SignalframeUX z-index scale uses entirely different numeric values from the Tailwind default. The mismatch is not obvious until the panel opens next to other fixed-position elements.
+Lenis uses `overflow: hidden` on the `<html>` element and drives scroll via `transform` on the document body (in virtual scroll mode) or via `window.scrollTo` with `behavior: instant` (in native scroll mode). The collision between Lenis's scroll model and iOS's rubber-band implementation is documented in the lenis GitHub issues. The `prevent` option and `overscroll-behavior: none` CSS are the standard mitigations.
 
 **How to avoid:**
-- Any detail view implementation (Dialog, Sheet, or custom panel) must use `--z-overlay` token (100) as a minimum, and the backdrop must use `--z-overlay - 1` (99).
-- The canvas cursor must be suspended when a modal is open. Add a `data-modal-open` attribute to `<body>` when any detail panel opens, and use a CSS rule to reduce cursor z-index below the modal: `[data-modal-open] .sf-cursor { z-index: 99; }`.
-- When using `SFDialog` or `SFSheet` for detail views, override the Radix portal z-index via the `className` prop to use `--z-overlay`.
-- Suppress the SignalOverlay panel (collapse it) when a detail view opens, or ensure its z-index is below the modal backdrop.
+- Add `overscroll-behavior: none` to `<html>` in `globals.css`. This disables the native rubber-band on iOS and Android Chrome, which is acceptable since Lenis provides its own scroll feel.
+- Configure Lenis with `overscroll: false` if the version supports it.
+- Test scroll behavior specifically at the top and bottom of each scroll section on a physical iOS device, not simulator.
+- For sections where overscroll is intentional (pull-to-refresh patterns, if any) — exempt those from the `overscroll-behavior` rule. This project has no such patterns.
 
 **Warning signs:**
-- Canvas cursor visible on top of an open detail panel
-- SignalOverlay button floating above the modal backdrop
-- Backdrop click-through to underlying page elements
+- Page feels "stuck" or "snaps back" when scrolling past the bottom of a pinned section on iOS.
+- Console shows Lenis fighting with native scroll position during the rubber-band animation frame.
+- `scrollY` reported by Lenis does not match `window.scrollY` during overscroll.
 
-**Phase to address:** Interactive detail views phase. Define the z-index contract for detail panels before building the first panel implementation.
-
----
-
-### Pitfall 7: Duplicate TOAST Entry in ComponentsExplorer Breaking Filter Logic
-
-**What goes wrong:**
-Known v1.3 tech debt: `components-explorer.tsx` has two entries with `name: "TOAST"` — index `"010"` (FEEDBACK/FRAME, v2.0.0) and index `"022"` (FEEDBACK/SIGNAL, v1.3.0). Currently cosmetic because each has a unique `index` key. However:
-
-1. If any filter logic is added that groups by `name` (plausible for the detail view feature — "show all variants of TOAST"), both entries will conflate.
-2. If the detail view uses `name` as a URL slug (e.g., `/components/toast`), both entries resolve to the same slug, creating ambiguous routing.
-3. Adding search that highlights by component name will highlight both entries — which is confusing when they have different subcategories (FRAME vs. SIGNAL) and versions.
-
-v1.4's interactive detail views make this cosmetic problem structural.
-
-**Why it happens:**
-The two TOAST entries represent the same component with different SIGNAL/FRAME subcategories. The registry models them as separate items. The naming convention (`name` = component name, not `name` = unique display name) creates the collision.
-
-**How to avoid:**
-Before building detail views, resolve the naming:
-- Option A: Rename index `"010"` to `"TOAST/FRAME"` and `"022"` to `"TOAST/SIGNAL"` (disambiguates display and URL).
-- Option B: Merge into a single entry with both FRAME and SIGNAL subcategory indicators shown in the grid cell.
-- Option C: Use `index` (not `name`) as the URL slug for detail views — `"010"` and `"022"` are already unique.
-
-Recommended: Option C for URL slug (zero changes to existing data), rename display labels to `TOAST (FRAME)` and `TOAST (SIGNAL)` for grid display.
-
-**Warning signs:**
-- Any new code that groups or routes by `name` field
-- Search highlighting lighting up two different cells for "TOAST"
-- A `/components/toast` route that matches two entries
-
-**Phase to address:** Tech debt closure phase. Fix naming before building detail view routing.
-
----
-
-### Pitfall 8: Remaining SF Component Wrappers Introducing Arbitrary Spacing Values
-
-**What goes wrong:**
-The blessed spacing stops are: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96px. This was enforced during v1.3 for the components built in that milestone. For remaining components (anything not yet SF-wrapped), the pressure to match a specific Figma/design spec for a given component can result in a developer using `p-[18px]`, `gap-[10px]`, or `m-[6px]` — values not in the blessed set.
-
-The compound problem: once one component uses `p-[18px]`, the next developer sees it in the codebase and treats it as a precedent. The spacing system degrades by addition, not deletion.
-
-**Why it happens:**
-Spacing intent ("this needs a little more than 16px but less than 24px") is a natural design reflex. Without a linting rule enforcing the blessed set, arbitrary values are a zero-friction addition.
-
-**How to avoid:**
-- The 9-point SF wrapper checklist already includes spacing verification. Enforce it.
-- Add a verification step to every PR for new SF wrappers: `grep -rn "\[.*px\]\|\[.*rem\]" components/sf/` must return zero new matches.
-- When a design requires a spacing value outside the blessed set, the answer is: round to the nearest blessed stop, or escalate the request as a token addition (which requires architectural review, per globals.css comment on line 22).
-
-**Warning signs:**
-- `grep -rn "\[.*px\]" components/sf/` returns new lines after each component addition
-- A component that visually "looks right" but uses `p-[18px]` instead of `p-4` or `p-5`
-
-**Phase to address:** All component phases. Same-commit audit per component.
+**Phase to address:** Scroll infrastructure phase. Add `overscroll-behavior: none` to `globals.css` before any new scroll sections are implemented.
 
 ---
 
@@ -265,60 +313,58 @@ Shortcuts that seem reasonable but create long-term problems.
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Keeping MutationObserver without disconnect | No code change needed | Double-firing in dev HMR; accumulating observers in detail view mount/unmount cycles | Never — close before v1.4 detail views |
-| Keeping `readSignalVars` without NaN guard | No code change needed | Silent wrong WebGL uniforms when CSS variables carry unit suffixes from new tokens | Never — close before token finalization |
-| Using `window.scrollTo` in new detail view code instead of `lenis.scrollTo` | Simpler API | Scroll races with Lenis on scroll restoration and programmatic navigation | Never |
-| Putting all 49 component detail previews in ComponentsExplorer client bundle | Simpler import | Client bundle 3-5x larger; page load degraded; Lighthouse score drops | Never |
-| Using `name` field as detail view URL slug without resolving the duplicate TOAST | Faster routing setup | Ambiguous routes, broken deep-links for TOAST component | Never |
-| Hardcoding z-index values in detail view instead of using `--z-overlay` token | Faster implementation | Conflicts with cursor, SignalOverlay, or nav at specific z-values | Never |
-| Adding token values without checking WebGL bridge dependency | Faster token work | Stale cached colors, wrong WebGL output, silent visual regression | Never |
+| Multiple Three.js renderers (one per canvas) | Simple component isolation | Mobile context limit crash on iOS Safari at 3+ canvases | Never for routes with 3+ WebGL sections |
+| `useEffect` instead of `useGSAP` for scroll animations | Familiar React API | ScrollTrigger instances leak across route navigations; double-fire in React Strict Mode | Never |
+| Opacity `0` for text reveal on LCP element | Common animation choice | Chromium bug reports NO_LCP to Lighthouse; Lighthouse score tanks | Never — use `0.01` or clip-path instead |
+| Importing Three.js in a non-lazy component | Simpler import structure | ~600KB in initial JS bundle, TTI/LCP destroyed | Never for above-fold components |
+| Static redirects only (no sitemap update on rename) | Faster rename workflow | Search Console crawls old URLs; deindexing risk | Never |
+| Skipping `document.fonts.ready` ScrollTrigger refresh | One less async wait | Scroll animations desynced on first load when fonts cause reflow | Never on pages with Anton/display fonts |
+| `ScrollTrigger.normalizeScroll()` + Lenis together | Seems like belt-and-suspenders | Conflicts produce double-normalization, scroll position errors in Safari | Never — pick one |
 
 ---
 
 ## Integration Gotchas
 
-Common mistakes when connecting new features to existing system infrastructure.
+Common mistakes when wiring new features into the existing system.
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Detail view modal + canvas cursor | Cursor z-500 bleeds over modal | Add `[data-modal-open]` CSS rule dropping cursor z-index below modal when panel is open |
-| Detail view modal + SignalOverlay | Overlay button floats above backdrop | Collapse SignalOverlay when modal is open, or assign modal backdrop z to be above `--z-scroll-top` (200) |
-| ComponentsExplorer + lazy detail content | Import detail component at top of file | Use `next/dynamic` with `ssr: false` for the detail panel; load only on card click |
-| Registry JSON + detail view props | Fetch registry JSON client-side on each click | Import registry JSON at build time (it's static) — `import registryData from '@/registry.json'` |
-| New SF wrappers + barrel export | Create wrapper but forget barrel update | Add to `sf/index.ts` in the same commit as the wrapper file |
-| Lenis + programmatic scroll from detail view | `window.scrollTo(0, 0)` to reset after panel close | `lenis.scrollTo(0, { immediate: true })` via the hook — never call window.scrollTo directly |
-| Token finalization + WebGL bridge | Update `--color-primary` OKLCH values without testing WebGL | After any color token change: toggle theme, verify SignalMesh and GLSL hero colors update correctly |
-| Remaining SF wrappers + Radix rounded classes | New component adds `rounded-*` classes from base UI | Explicit `rounded-none` on every element inheriting from the Radix base — no exceptions |
+| Lenis + new pinned sections | Use `scrollerProxy` (old pattern) | Use GSAP ticker integration: `lenis.on('scroll', ScrollTrigger.update)` + `gsap.ticker.add((time) => lenis.raf(time * 1000))` with `autoRaf: false` |
+| Three.js + route navigation | Skip cleanup on component unmount | `renderer.dispose()` + `renderer.forceContextLoss()` + scene traverse dispose in `useGSAP`/`useEffect` cleanup |
+| Animated text overlay on WebGL | Start opacity at `0` | Start at `opacity: 0.01` or use `clip-path`/`translateY` reveal — avoid LCP suppression bug |
+| New WebGL section + mobile | One renderer per canvas | One renderer per route; switch scenes through single renderer, or use IntersectionObserver to dispose/reinit |
+| Route rename + SEO | Rename directory, deploy, add redirect later | Add redirect to `next.config.ts` first, then rename, deploy both changes together |
+| GSAP ScrollTrigger + React Strict Mode | `useEffect` with manual cleanup | `useGSAP` hook — it handles double-invocation in Strict Mode correctly |
+| Bundle size + Three.js sections | Direct import at top of component | `next/dynamic` with `ssr: false` for all Three.js components, following the existing `*-lazy.tsx` pattern |
 
 ---
 
 ## Performance Traps
 
-Patterns that work at small scale but fail as detail views are added.
+Patterns that work at small scale but fail with multiple scroll sections.
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Instantiating all 49 component previews in detail view on page load | Slow initial paint, large JS chunk for ComponentsExplorer page | Render detail view content only when panel opens (lazy); use registry JSON for static data | First page load after detail views are added |
-| Multiple GSAP ScrollTrigger instances from detail panel animations | Page scroll jank when detail panels animate open/close | Use CSS transitions for panel open/close; reserve GSAP for content within panels | 3+ concurrent ScrollTrigger instances |
-| Stale MutationObserver accumulation in animated previews | WebGL animation speed doubles or triples over repeated panel open/close | Fix disconnect tech debt before building previews | After 3+ mount/unmount cycles of a WebGL-containing detail view |
-| `@next/bundle-analyzer` not run after adding detail view component | Bundle budget breached silently | Run `ANALYZE=true pnpm build` after each phase that adds new imports | At milestone end, when rollback is costly |
-| detail view generating all variant previews as rendered React trees | React reconciliation cost on every filter interaction | Render live previews only for the open panel; use static screenshots or CSS for thumbnails | With 49+ entries, all variants rendered |
+| 3+ WebGL contexts on one page route | Black canvas on iOS Safari; "too many active WebGL contexts" warning | One renderer per route; scene switching | 3 canvases on iPhone Safari |
+| GPU memory not disposed between routes | Tab crash after 5-10 navigation events; GPU memory climbs in Chrome DevTools | Explicit dispose in every Three.js component cleanup | After ~5 route navigations |
+| Pin-spacer dimensions wrong after font load | Scroll animations offset on first load; correct after refresh | `document.fonts.ready.then(ScrollTrigger.refresh)` in root layout | On every first page load with Anton/display fonts |
+| ScrollTrigger instances accumulating | Animations fire multiple times; two pin-spacers on one element | `useGSAP` exclusively for all GSAP work | After 2+ route navigations to pages with scroll animations |
+| GSAP + Three.js in initial bundle | LCP > 2s; TTI > 3s on mobile | `next/dynamic` with `ssr: false` for all heavy animation components | Immediately, on first mobile Lighthouse run |
+| `overscroll-behavior` not set | iOS rubber-band fights Lenis on section boundaries | `overscroll-behavior: none` in `globals.css` | On every scroll-intensive route on iOS |
 
 ---
 
 ## UX Pitfalls
 
-Common experience mistakes specific to interactive component documentation.
+Common experience mistakes when adding Awwwards-level scroll animations.
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Detail view with no keyboard shortcut to close | Keyboard users trapped in modal, rely on Tab to reach close button | Escape key always closes; also add `data-dialog-close` on panel backdrop click |
-| Code snippets in detail view without copy button | High friction for the primary use case (copying implementation code) | Every code block in detail view must have a copy-to-clipboard button using the Clipboard API |
-| Detail view showing only props without usage example | User understands props but not how to compose them | Each detail view must include at minimum: prop table, one live preview, one code snippet |
-| Component detail URL that cannot be deep-linked | User cannot share a specific component's documentation | Use URL-based routing (`/reference/[component-slug]`) not purely modal state for detail views |
-| Opening detail view scrolling the main page underneath | Scroll bleed through modal on mobile touch | Lock body scroll when detail panel is open (`overflow: hidden` on `<body>` or Lenis stop); restore on close |
-| Animated detail panel open conflicting with page scroll | Panel appears to fight Lenis during open animation | Use `lenis.stop()` at panel open start, `lenis.start()` at panel open complete |
-| Filter reset not closing open detail panel | User applies filter, old detail view stays open showing wrong context | Filter change should close any open detail panel before applying the new filter |
+| Scroll animations with no `prefers-reduced-motion` check | Users with vestibular disorders experience disorientation or nausea | Wrap all GSAP ScrollTrigger animations in a `prefers-reduced-motion` check; disable scroll-driven animations (keep layout, remove motion) |
+| 300vh pinned section with no scroll progress indicator | Users don't know how much scroll travel remains; feel lost | Use an `SFProgressBar` or subtle scroll indicator tied to scroll progress |
+| WebGL section that blocks interaction during load | Clicks on nav/links during WebGL init are lost | Show the page chrome (nav, text) before Three.js loads; use Suspense/skeleton for canvas |
+| Horizontal scroll inside a vertical scroll page | Mobile users get confused by scroll axis switching | Only use horizontal scroll on dedicated sections with clear affordance cues |
+| Transition out of pinned section feels abrupt | Jarring snap from pinned to flowing layout | Add a short unpin animation (ease-out over 200-300ms) when leaving the pinned zone |
 
 ---
 
@@ -326,21 +372,18 @@ Common experience mistakes specific to interactive component documentation.
 
 Things that appear complete but are missing critical pieces.
 
-- [ ] **Tech debt — MutationObserver:** `signal-mesh.tsx` and `glsl-hero.tsx` both disconnect and null `_signalObserver` in the GSAP context cleanup return — verify no observer leak after component unmount
-- [ ] **Tech debt — NaN guard:** `readSignalVars` in both `signal-mesh.tsx` and `glsl-hero.tsx` uses `isNaN()` guard, not relying on `NaN || fallback` behavior
-- [ ] **Tech debt — Lenis race:** No `window.scrollTo` calls remain in codebase — all programmatic scroll goes through `lenis.scrollTo` — verify with `grep -rn "window.scrollTo"`
-- [ ] **Tech debt — Duplicate TOAST:** `components-explorer.tsx` has unique display names for both TOAST entries; routing logic uses `index` field not `name` field
-- [ ] **Interactive detail views — z-index:** Detail panel uses `--z-overlay` token; canvas cursor suppressed when panel open; SignalOverlay does not float over backdrop
-- [ ] **Interactive detail views — bundle:** `ANALYZE=true pnpm build` shows ComponentsExplorer page chunk did NOT grow by more than 30KB after adding detail view feature
-- [ ] **Interactive detail views — deep link:** Each component has a URL (`/reference/[slug]`) that can be navigated to directly without opening ComponentsExplorer first
-- [ ] **Interactive detail views — scroll lock:** Body scroll locked on panel open, restored on close; Lenis stopped and restarted correctly
-- [ ] **Interactive detail views — keyboard:** Escape closes panel; Tab trap within open panel; focus returns to trigger card on close
-- [ ] **Token finalization — WebGL bridge:** After any OKLCH value change in globals.css, SignalMesh and GLSL hero colors verified in both light and dark mode
-- [ ] **Token finalization — dark mode:** All new tokens have dark-mode overrides in the `.dark` block (not just the light-mode `:root` block)
-- [ ] **Remaining SF wrappers:** `rounded-none` on all elements from Radix base — verified with DevTools computed styles
-- [ ] **Remaining SF wrappers:** `intent` as primary CVA variant prop — no `variant`, `type`, or `color` prop names for visual variants
-- [ ] **Remaining SF wrappers:** Added to `sf/index.ts` barrel AND registry in same commit
-- [ ] **Registry:** `pnpm registry:build` clean after each new component; no schema errors
+- [ ] **WebGL cleanup:** Every Three.js component has `renderer.dispose()` + scene traverse dispose in cleanup — verify with `renderer.info.memory` logged before/after route navigation
+- [ ] **ScrollTrigger cleanup:** `ScrollTrigger.getAll().length` stays constant across route navigations — not growing
+- [ ] **iOS pin jump:** Pinned sections tested on a physical iPhone in portrait Safari — no position jump after scrolling through pinned zone
+- [ ] **Font-ready refresh:** `document.fonts.ready.then(ScrollTrigger.refresh)` exists in root layout GSAP provider
+- [ ] **LCP text overlay:** All hero text overlays start at `opacity: 0.01` (not `0`) or use non-opacity reveal — Lighthouse does not report NO_LCP
+- [ ] **Lenis integration pattern:** `autoRaf: false` is set; no `scrollerProxy` usage; ticker integration is the active pattern
+- [ ] **Bundle:** `ANALYZE=true pnpm build` run after each new scroll/WebGL section — no Three.js in initial chunk
+- [ ] **Route redirects:** Every renamed route has a permanent redirect in `next.config.ts` AND `sitemap.ts` is updated
+- [ ] **overscroll-behavior:** `overscroll-behavior: none` present in `globals.css` or root layout styles
+- [ ] **WebGL context count:** Maximum 2 Three.js canvases active simultaneously on any page route (accounting for existing `glsl-hero` and `signal-mesh`)
+- [ ] **prefers-reduced-motion:** All new scroll animations check `window.matchMedia('(prefers-reduced-motion: reduce)')` or use CSS `@media (prefers-reduced-motion)` override
+- [ ] **Lighthouse gate:** Lighthouse 100/100 confirmed after each phase, not just at milestone end
 
 ---
 
@@ -350,13 +393,15 @@ When pitfalls occur despite prevention, how to recover.
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| MutationObserver leak discovered after detail views shipped | MEDIUM | Add disconnect to GSAP context cleanup in signal-mesh and glsl-hero. Verify with DevTools Memory tab: mount/unmount component 5x, confirm no accumulation. |
-| NaN in WebGL uniforms causing wrong animation | LOW | Add `safeParseSignalFloat` guard to readSignalVars. Immediate fix, no API changes. |
-| Lenis race causing scroll-snap-to-top in detail views | MEDIUM | Replace all `window.scrollTo` calls with `lenis.scrollTo`. Requires exposing lenis instance via hook if not already available. |
-| Detail view bundle bloat discovered at milestone end | HIGH | Convert detail panel to lazy dynamic import. May require restructuring data source from component imports to registry JSON. Expensive to retrofit. |
-| Z-index conflict with cursor and detail panel | LOW | Add `[data-modal-open]` CSS rule, set `data-modal-open` attribute on open. Two-line fix. |
-| Token OKLCH change breaks WebGL color bridge | LOW | Clear TTL cache (or reduce TTL to 0 for debugging), verify color resolve output in console, restore correct OKLCH values. |
-| Duplicate TOAST routing conflict after detail views launch | MEDIUM | Rename display labels, switch routing key to `index` field. Requires updating any generated URLs. |
+| iOS pin jump discovered in QA | MEDIUM | Add `ScrollTrigger.normalizeScroll(true)` + `ignoreMobileResize: true` config. Retest on physical device. |
+| WebGL context loss on mobile | HIGH | Refactor to single-renderer architecture with scene switching. Timeline: 1-2 days per affected section. |
+| GPU memory leak discovered | MEDIUM | Add dispose traverse to each Three.js component cleanup. Profile with Chrome Memory tab to confirm fix. |
+| LCP score tanked by animated text | LOW | Change `opacity: 0` to `opacity: 0.01` in GSAP fromTo. Immediate deploy fix. |
+| Font reflow offsetting scroll animations | LOW | Add `document.fonts.ready.then(ScrollTrigger.refresh)` to root layout. One-line fix, fast deploy. |
+| Stale ScrollTrigger instances | MEDIUM | Convert offending `useEffect` to `useGSAP`. Verify with `ScrollTrigger.getAll().length` logging. |
+| Route 404 from missing redirect | LOW | Add redirect to `next.config.ts`, deploy. Google deindexing risk if the route was live for more than 48h without redirect. |
+| Bundle bloat from non-lazy Three.js | MEDIUM | Convert to `next/dynamic` with `ssr: false`. May require component restructuring if state was shared. |
+| Lenis + pin flicker in Safari | MEDIUM | Audit integration pattern; switch from scrollerProxy to ticker integration; `autoRaf: false`. Test cycle per section. |
 
 ---
 
@@ -366,35 +411,47 @@ How roadmap phases should address these pitfalls.
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| MutationObserver no disconnect | Tech debt closure phase (Phase 1) | GSAP context cleanup returns include `_signalObserver.disconnect()` and null reset |
-| NaN guard in readSignalVars | Tech debt closure phase (Phase 1) | `isNaN()` check present in both signal-mesh.tsx and glsl-hero.tsx |
-| Lenis scroll race | Tech debt closure phase (Phase 1) | `grep -rn "window.scrollTo"` returns zero matches after fix |
-| Duplicate TOAST naming | Tech debt closure phase (Phase 1) | ComponentsExplorer entries have unique display names; routing uses `index` not `name` |
-| Detail view bundle bloat | Interactive detail views phase (lazy architecture required) | `ANALYZE=true pnpm build` — ComponentsExplorer chunk under 150KB gate after feature |
-| Detail view z-index conflicts | Interactive detail views phase (pre-implementation design) | Visual test: open detail panel with cursor active, SignalOverlay visible — no overlap |
-| Detail view scroll lock | Interactive detail views phase | Mobile touch test: scroll does not bleed through open panel; Lenis stops/starts cleanly |
-| Token finalization WebGL bridge breakage | Token finalization phase (audit WebGL deps first) | After each globals.css OKLCH change: visual verify WebGL scenes in light + dark |
-| Token dark mode gaps | Token finalization phase | All new tokens appear in `.dark` block — `grep -n "\.dark"` in globals.css covers them |
-| Remaining wrapper rounded-none regressions | Each remaining component phase | DevTools computed styles: `border-radius: 0px` on every sub-element |
-| Arbitrary spacing in remaining wrappers | Each remaining component phase | `grep -rn "\[.*px\]" components/sf/` returns zero new matches per phase |
-| Registry drift | Each remaining component phase | `pnpm registry:build` clean after each addition |
+| Lenis + pin flicker in Safari | Scroll infrastructure setup (first) | Ticker integration pattern confirmed; no scrollerProxy; autoRaf: false |
+| Font-ready ScrollTrigger refresh | Scroll infrastructure setup (first) | `document.fonts.ready.then(ScrollTrigger.refresh)` in root layout |
+| overscroll-behavior iOS | Scroll infrastructure setup (first) | `overscroll-behavior: none` in globals.css |
+| ScrollTrigger cleanup / useGSAP audit | Scroll infrastructure setup (first) | `ScrollTrigger.getAll().length` stable across navigations |
+| iOS address bar pin jump | First pinned section implementation | Physical iPhone Safari test — no jump |
+| WebGL context architecture | WebGL scene planning (before first new canvas) | Max 2 simultaneous Three.js contexts per route confirmed |
+| Three.js dispose on route change | WebGL scene planning (audit existing before adding new) | `renderer.info.memory` stable across navigations |
+| LCP text overlay opacity bug | Hero section implementation | Lighthouse does not report NO_LCP; LCP < 1.0s |
+| Bundle size per section | Each scroll/WebGL implementation phase (gate) | `ANALYZE=true pnpm build` — no Three.js in initial chunk |
+| Route redirects | Route architecture phase | Every renamed route has redirect + sitemap updated |
+| prefers-reduced-motion | Each animation implementation phase | All scroll animations wrapped in motion preference check |
+| Lighthouse 100/100 gate | End of each phase | Lighthouse run — 100/100 across all categories |
 
 ---
 
 ## Sources
 
-- Existing codebase — `components/animation/signal-mesh.tsx` lines 51–67: module-level MutationObserver with no disconnect in cleanup
-- Existing codebase — `components/animation/glsl-hero.tsx` lines 49–66: same pattern duplicated
-- Existing codebase — `components/animation/token-viz.tsx` lines 229–230: local MutationObserver with correct `return () => observer.disconnect()` at line 208 (this one IS cleaned up — the pattern exists, just not applied to the module-level observers)
-- Existing codebase — `hooks/use-scroll-restoration.ts` lines 20–22: Lenis race acknowledged in code comment
-- Existing codebase — `components/blocks/components-explorer.tsx` lines 379, 395: duplicate TOAST entries at indices 010 and 022
-- Existing codebase — `app/globals.css` lines 179–188: z-index scale — canvas cursor at 500 is above any standard modal (z-50)
-- PROJECT.md minor tech debt section (v1.2 and v1.3 non-blocking items)
-- Next.js App Router — lazy imports: https://nextjs.org/docs/app/guides/lazy-loading
-- Radix UI Dialog — portal z-index: https://www.radix-ui.com/primitives/docs/components/dialog
-- WAI-ARIA modal dialog keyboard pattern: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+- GSAP ScrollTrigger — iOS address bar and pin position jump: https://gsap.com/community/forums/topic/40393-gsap-scrolltrigger-pin-position-is-jumping-on-ios-due-to-its-address-bar/
+- GSAP ScrollTrigger — normalizeScroll docs: https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll()/
+- GSAP ScrollTrigger — 3.12.2 viewport height calculation change: https://gsap.com/community/forums/topic/37591-scrolltrigger-100vh-calculation-change-in-3122/
+- GSAP ScrollTrigger — mobile page jump after pinned section: https://gsap.com/community/forums/topic/37244-page-jump-on-mobile-after-scrolling-past-scrolltrigger-pinned-section/
+- Lenis + ScrollTrigger — pin flickering in Safari: https://gsap.com/community/forums/topic/37653-lenis-scrolltrigger-pin-flickering-issue-in-safari/
+- Lenis + ScrollTrigger — blank space with once/pin/scrub: https://gsap.com/community/forums/topic/44795-scrolltrigger-once-with-pin-and-scrub-lenis-creates-a-blank-space/
+- Lenis + ScrollTrigger — synchronization patterns in React/Next: https://gsap.com/community/forums/topic/40426-patterns-for-synchronizing-scrolltrigger-and-lenis-in-reactnext/
+- Lenis GitHub — iOS scroll top problem: https://github.com/darkroomengineering/lenis/issues/288
+- Three.js forum — too many active WebGL contexts: https://discourse.threejs.org/t/i-have-a-problem-in-warning-too-many-active-webgl-contexts-oldest-context-will-be-lost/41300
+- Three.js forum — dispose things correctly: https://discourse.threejs.org/t/dispose-things-correctly-in-three-js/6534
+- Three.js forum — context lost and memory: https://discourse.threejs.org/t/three-webglrenderer-context-lost-performance-ram/44213
+- react-three-fiber — Too many active WebGL contexts on Safari: https://github.com/pmndrs/react-three-fiber/discussions/2457
+- Mozilla Bugzilla — mobile WebGL 2-context limit: https://bugzilla.mozilla.org/show_bug.cgi?id=1421481
+- Three.js — ImageBitmap texture dispose bug: https://github.com/mrdoob/three.js/issues/23953
+- Lighthouse — NO_LCP error from opacity animation: https://renaissance-design.net/2024/fixing-the-no_lcp-error-in-lighthouse/
+- Lighthouse — opacity: 0 LCP suppression bug: https://dev.to/roman_guivan_17680f142e28/google-lighthouse-failing-with-nolcp-error-1mjo
+- Next.js — redirecting guide: https://nextjs.org/docs/app/guides/redirecting
+- Vercel — redirect limits and dynamic redirects: https://vercel.com/kb/guide/how-can-i-increase-the-limit-of-redirects-or-use-dynamic-redirects-on-vercel
+- Google Search Central — 301 redirects: https://developers.google.com/search/docs/crawling-indexing/301-redirects
+- Next.js bundle optimization and code splitting: https://medium.com/@sohail_saifi/code-splitting-in-next-js-how-i-reduced-initial-bundle-size-by-70-73a4c328cc6c
+- GSAP + Next.js 15 best practices: https://medium.com/@thomasaugot/optimizing-gsap-animations-in-next-js-15-best-practices-for-initialization-and-cleanup-2ebaba7d0232
+- Evil Martians — OffscreenCanvas + Three.js for Web Workers: https://evilmartians.com/chronicles/faster-webgl-three-js-3d-graphics-with-offscreencanvas-and-web-workers
 
 ---
 
-*Pitfalls research for: SignalframeUX v1.4 — interactive detail views, remaining components, token finalization, tech debt closure*
-*Researched: 2026-04-06*
+*Pitfalls research for: SignalframeUX v1.5 — scroll-driven animations, multiple WebGL scenes, route renames, Awwwards-level polish*
+*Researched: 2026-04-07*

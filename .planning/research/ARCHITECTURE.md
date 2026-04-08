@@ -1,230 +1,423 @@
-# Architecture Research — v1.4 Feature Complete
+# Architecture Research — v1.5 Redesign
 
-**Domain:** Design system showcase site — remaining SF components + interactive component detail views + token finalization
-**Researched:** 2026-04-06
-**Confidence:** HIGH — all findings verified against direct codebase audit
+**Domain:** Design system showcase site — 6-section homepage, route renames, 200-300vh scroll sections, multiple WebGL scenes, 4 redesigned subpages
+**Researched:** 2026-04-07
+**Confidence:** HIGH — all findings based on direct codebase audit of existing implementation
 
 ---
 
-## Standard Architecture
-
-### System Overview
+## System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     ROUTE LAYER (app/)                           │
-│                                                                   │
-│  /              /components       /reference      /tokens        │
-│  page.tsx       page.tsx          page.tsx        page.tsx       │
-│  (Server)       (Server)          (Server)        (Server)       │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-┌────────────────────────▼────────────────────────────────────────┐
-│                   BLOCK LAYER (components/blocks/)               │
-│                                                                   │
-│  ComponentsExplorer       APIExplorer      ComponentDetail       │
-│  (Client — grid +         (Client —        (Client — NEW         │
-│   filter + GSAP Flip)      sidebar+tabs)    expandable panel)    │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-┌────────────────────────▼────────────────────────────────────────┐
-│                    SF LAYER (components/sf/)                      │
-│                                                                   │
-│  Layout Primitives    Interactive        Animated (SIGNAL)       │
-│  SFContainer          SFButton           SFAccordion             │
-│  SFSection            SFDialog           SFProgress              │
-│  SFGrid               SFSheet            SFToast/SFToaster       │
-│  SFStack              SFSelect           SFStepper               │
-│  SFText               SFNavigationMenu   (+ all others)          │
-│                       SFInputGroup  ←── NEW                      │
-└────────────────────────┬────────────────────────────────────────┘
-                         │
-┌────────────────────────▼────────────────────────────────────────┐
-│              DATA LAYER (lib/ + public/r/ + globals.css)         │
-│                                                                   │
-│  api-docs.ts           component-registry.ts  (NEW)             │
-│  ComponentDoc type     ComponentRegistryEntry type               │
-│  (~15 entries)         (one per grid cell — bridges to doc)      │
-│                                                                   │
-│  public/r/registry.json   globals.css @theme                    │
-│  49 registry items        Token source of truth                  │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                      ROUTE LAYER (app/)                              │
+│                                                                       │
+│  /           /inventory      /tokens     /start    /reference        │
+│  (was /)     (was /components) (same)    (same)    (same)            │
+│  Server      Server           Server     Server    Server            │
+│                                                                       │
+│  next.config.ts: redirects /components → /inventory (308 permanent) │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │
+┌──────────────────────────▼──────────────────────────────────────────┐
+│                     BLOCK LAYER (components/blocks/)                  │
+│                                                                       │
+│  HomePage sections (NEW):     Existing subpage blocks:               │
+│  EntryHero                    ComponentsExplorer (→/inventory)       │
+│  ProofSection                 ComponentDetail                        │
+│  SignalSection                APIExplorer                            │
+│  SystemSection                TokenExplorer                          │
+│  PhilosophySection            StartGuide                             │
+│  CtaSection                                                          │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │
+┌──────────────────────────▼──────────────────────────────────────────┐
+│                   WEBGL LAYER (SignalCanvas singleton)                │
+│                                                                       │
+│  SignalCanvas (fixed canvas, z:-1, full viewport)                    │
+│  ┌────────────────────────────────────────────────────────────────┐  │
+│  │  Map<id, SceneEntry>                                            │  │
+│  │                                                                  │  │
+│  │  Scene A: EntryHero GLSL field (GLSLHero pattern)               │  │
+│  │  Scene B: ProofSection demo mesh (SignalMesh pattern)           │  │
+│  │  Scene C: SignalSection generative field                        │  │
+│  │                                                                  │  │
+│  │  renderAllScenes() — scissor/viewport split per scene rect      │  │
+│  │  IntersectionObserver per scene — offscreen scenes skip loop    │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+│                                                                       │
+│  GSAP ticker: single RAF loop drives all 3 scenes simultaneously     │
+└──────────────────────────┬──────────────────────────────────────────┘
+                            │
+┌──────────────────────────▼──────────────────────────────────────────┐
+│              SCROLL LAYER (Lenis + GSAP ScrollTrigger)                │
+│                                                                       │
+│  LenisProvider: instance.on("scroll", ScrollTrigger.update)          │
+│  gsap.ticker drives both Lenis.raf() AND SignalCanvas render loop    │
+│                                                                       │
+│  Per-section ScrollTriggers:                                          │
+│  - Standard sections: once: true reveal animations                   │
+│  - PinnedSection (200-300vh): pin: true, scrub: 1, anticipatePin:1   │
+│    ↳ gsap.context().revert() on unmount — critical for cleanup       │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
 | Component | Responsibility | State |
 |-----------|----------------|-------|
-| `app/components/page.tsx` | Route shell, Server Component, metadata | Exists |
-| `ComponentsExplorer` | Grid browse, filter/search, GSAP Flip, detail trigger | Exists — needs click handler + activeDetail state |
-| `APIExplorer` | Sidebar nav + tabbed doc viewer at /reference | Exists — needs doc entries for v1.3 components |
-| `ComponentDetail` | Expandable panel: props, variants, code, a11y | **NEW** |
-| `lib/api-docs.ts` | `ComponentDoc` type + prop/usage/a11y data | Exists — needs entries for all 31 grid items |
-| `lib/component-registry.ts` | Bridge: grid cell index → ComponentDoc id + variants + code snippet | **NEW** |
-| `public/r/*.json` | Registry items with meta.layer, meta.pattern | Exists (49 items) |
-| `components/sf/sf-input-group.tsx` | SF wrapper for `ui/input-group.tsx` | **NEW — only remaining gap** |
+| `app/page.tsx` | 6-section homepage shell, Server Component, metadata | REWRITE |
+| `components/blocks/entry-hero.tsx` | ENTRY section — hero content + GLSLHero WebGL background | NEW |
+| `components/blocks/proof-section.tsx` | PROOF section — live component demo + SignalMesh WebGL | NEW |
+| `components/blocks/signal-section.tsx` | SIGNAL section — generative surface explainer + 3rd WebGL scene | NEW |
+| `components/blocks/system-section.tsx` | SYSTEM section — token/component counts, static or mild animation | NEW |
+| `components/blocks/philosophy-section.tsx` | PHILOSOPHY section — FRAME/SIGNAL theory, DU/TDR lineage | NEW |
+| `components/blocks/cta-section.tsx` | CTA section — call to action, links to /inventory and /start | NEW |
+| `components/animation/pinned-section.tsx` | 200-300vh pin/scrub scroll container — reusable wrapper | NEW |
+| `app/inventory/page.tsx` | Renamed /components route — identical to current /components/page.tsx | NEW (copy) |
+| `app/components/` directory | Deleted after redirect is confirmed working | DELETE |
+| `next.config.ts` | Permanent 308 redirects: /components → /inventory | MODIFY |
+| `lib/signal-canvas.tsx` | No changes required — singleton handles N scenes already | UNCHANGED |
+| `hooks/use-signal-scene.ts` | No changes required — UUID-keyed, supports concurrent registrations | UNCHANGED |
+| `components/layout/page-animations.tsx` | Add data-anim selectors for new homepage sections | MODIFY |
 
 ---
 
-## Recommended Project Structure
+## Question 1: Can SignalCanvas Handle 3 WebGL Scenes on One Page?
 
-No new top-level directories. All v1.4 work fits the existing structure:
+**Answer: YES — the architecture already supports this. No changes to the singleton required.**
 
-```
-components/
-├── blocks/
-│   ├── components-explorer.tsx   # MODIFY: add onClick, activeDetail state
-│   └── component-detail.tsx      # NEW: expandable detail panel
-├── sf/
-│   └── sf-input-group.tsx        # NEW: only remaining unwrapped ui/ component
-lib/
-│   ├── api-docs.ts               # MODIFY: add entries for all 31 grid components
-│   └── component-registry.ts     # NEW: static map of grid index → detail data
-hooks/
-│   └── use-session-state.ts      # MODIFY: add SESSION_KEYS.DETAIL_OPEN
-app/
-│   └── globals.css               # MODIFY: move --color-success/warning into @theme
-public/r/
-│   ├── sf-input-group.json       # NEW: registry entry
-│   └── registry.json             # MODIFY: append sf-input-group
-```
+The singleton uses `Map<string, SceneEntry>` keyed by `crypto.randomUUID()`. Each `useSignalScene()` call registers one entry. The `renderAllScenes()` function iterates all entries and uses WebGL scissor/viewport splitting to isolate each scene to its container's `getBoundingClientRect()`. Three concurrent scenes means three scissor calls per GSAP ticker frame.
 
-### Structure Rationale
+**Key verified facts from codebase audit:**
+- `registerScene()` and `deregisterScene()` are already N-safe — no singleton assumptions about exactly 1 scene
+- `IntersectionObserver` per scene already gates offscreen scenes out of the render loop — critical when 3 scenes exist and the user is not in all of their viewports simultaneously
+- `disposeScene()` is called on unmount by the hook — GPU memory for unmounted scenes is correctly freed
+- The single WebGL renderer is reused across all scenes — this is correct; multiple WebGLRenderer instances on one page is a known GPU context limit pitfall
 
-- **No new routes for component detail:** The detail view is an in-page expansion below the grid, not a separate URL. This preserves browse UX (filter/scroll state intact), avoids full-page navigation cost, and matches the DU/TDR aesthetic of revealing structure rather than overlaying it.
-- **`lib/component-registry.ts` as new data file:** The `COMPONENTS[]` array in `components-explorer.tsx` stores only thumbnail previews. Richer detail data (variants, live preview, code snippet, pointer to `ComponentDoc`) lives in a separate `lib/` file. This keeps the explorer file lean and makes the detail panel's data access synchronous and tree-shakeable.
-- **`api-docs.ts` stays the props/usage source of truth:** `ComponentDoc` already has the correct shape. The detail panel reads from this — no duplication of prop tables.
-- **`sf-input-group.tsx` is the only missing wrapper:** Direct diff of `components/ui/` vs `components/sf/` confirms `input-group.tsx` has no SF counterpart. Every other `ui/` component is wrapped. All other "new" SF items (`SFContainer`, `SFEmptyState`, etc.) were v1.3 pure-SF constructions that already exist.
+**Performance constraint:** Three scenes that are all simultaneously visible will all render every ticker frame. The existing `if (!entry.visible) return` guard in `renderAllScenes()` relies on the IntersectionObserver correctly tracking visibility. If the page is laid out such that all 3 scene containers are on-screen at the same time, all 3 will render. Design the sections to have sufficient height so only 1-2 are intersecting at any given scroll position.
+
+**MutationObserver duplication risk:** Each WebGL component (`GLSLHero`, `SignalMesh`) declares its own module-level `_signalObserver`. If a third component follows the same pattern with a module-level variable, all three will share-clobber the same observer slot at the module level. The fix: move MutationObserver management into the singleton (`lib/signal-canvas.tsx`) as a shared observer, called once. Each scene reads the cached values from the singleton. This prevents 3 separate observers on `document.documentElement`.
 
 ---
 
-## Architectural Patterns
+## Question 2: Route Rename — /components → /inventory
 
-### Pattern 1: In-Page Detail Expansion (Not Modal, Not Route)
+**Mechanism: `next.config.ts` `redirects` array + new `app/inventory/` directory.**
 
-**What:** Clicking a component card expands a full-width detail panel rendered as a sibling to the flip grid div, after it in the DOM. The panel height animates from 0 to auto using GSAP. A close button (or Escape key) collapses it.
+This is the lowest-risk approach. The redirects function runs at the edge, before React rendering. No middleware needed.
 
-**When to use:** When the content is contextually related to the item clicked, the user should maintain browse context, and there is no need for a shareable URL per item.
+**Exact implementation pattern** (verified against Next.js App Router docs):
 
-**Trade-offs:**
-- Pros: No focus trap needed, no overlay layer, grid remains visible above the panel, no route change.
-- Cons: In-page layout shift on expand — mitigated by GSAP `--ease-spring` and keeping the grid container height stable (the grid div does not resize; the panel appears below it as a new full-width block).
-
-**Critical constraint:** `ComponentDetail` must render OUTSIDE the GSAP Flip container. The flip grid div is `gridRef`. If the detail panel is inside `gridRef`, `Flip.getState()` captures its geometry and produces wrong animation origins when the filter changes.
-
-**Example structure in ComponentsExplorer:**
 ```typescript
-// Outside the flip grid:
-<div ref={gridRef} className="grid grid-cols-2 lg:grid-cols-4">
-  {filtered.map(comp => (
-    <div
-      key={comp.index}
-      className="flip-card ..."
-      onClick={() => setActiveDetail(comp.index)}
-    >
-      ...
-    </div>
-  ))}
-</div>
-
-{/* Sibling — NOT inside gridRef */}
-<ComponentDetail
-  componentId={activeDetail}
-  onClose={() => setActiveDetail(null)}
-/>
-```
-
-### Pattern 2: Static Detail Data in `lib/component-registry.ts`
-
-**What:** A static TypeScript map keyed by `ComponentEntry.index` (the three-digit string like `"001"`) that stores: variant list with preview JSX, the copy-ready primary code snippet, and a `docId` pointer to the `ComponentDoc` in `api-docs.ts`.
-
-**When to use:** The detail panel needs richer data than the thumbnail previews in `COMPONENTS[]`, but all of this data is static and bounded. No runtime fetching needed.
-
-**Trade-offs:** Static TypeScript means zero loading states, zero CLS, tree-shakeable. The file grows as components are added — acceptable given the system has a bounded component set.
-
-**Type contract:**
-```typescript
-// lib/component-registry.ts
-export interface ComponentRegistryEntry {
-  id: string;               // matches ComponentEntry.index ("001", "002" ...)
-  docId: string;            // matches ComponentDoc.id in api-docs.ts
-  name: string;             // human label ("BUTTON")
-  variants: {
-    label: string;          // "PRIMARY", "GHOST", "SIGNAL"
-    preview: React.ReactNode;
-  }[];
-  codeSnippet: string;      // primary usage — raw string for SharedCodeBlock
-  registryFile?: string;    // "sf-button.json" — for registry link display
-}
-
-export const COMPONENT_REGISTRY: Record<string, ComponentRegistryEntry> = {
-  "001": { id: "001", docId: "button", name: "BUTTON", ... },
-  // one entry per item in COMPONENTS[]
+// next.config.ts
+const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/components",
+        destination: "/inventory",
+        permanent: true,  // 308 — tells search engines and browsers to update bookmarks
+      },
+      {
+        source: "/components/:path*",
+        destination: "/inventory/:path*",
+        permanent: true,  // Covers any subroutes that may exist in future
+      },
+    ];
+  },
 };
 ```
 
-### Pattern 3: Token Finalization as CSS-Only Work
+**Build order for this rename:**
+1. Create `app/inventory/` directory with `page.tsx` (copy from `app/components/page.tsx`)
+2. Add redirects to `next.config.ts`
+3. Update all internal `href="/components"` links (Nav, any CTA buttons) to `href="/inventory"`
+4. Verify redirect works in dev before deleting `app/components/`
+5. Delete `app/components/` directory
 
-**What:** All structural tokens are already defined in `globals.css`. "Finalization" means:
-1. Moving `--color-success` and `--color-warning` from `:root` into the `@theme` block so Tailwind v4 generates `bg-success` / `text-warning` utilities.
-2. Auditing all components for arbitrary spacing values that should use blessed stops.
-3. No net-new tokens — the token freeze holds.
+**Internal link audit targets** — these must be found and updated:
+- `components/layout/nav.tsx` — nav links
+- Any `href="/components"` in block components
+- `app/sitemap.ts` — sitemap entries
 
-**Why `--color-success` / `--color-warning` are not yet in `@theme`:** These were added to `:root` in v1.2 as extension variables. Tailwind v4 only generates utilities for values declared inside `@theme {}`. Moving them there is a one-line change per token — zero visual change, zero risk, unlocks `bg-success` and `text-warning` as proper utilities.
+**Status code choice: 308 not 307.** 308 is permanent redirect (preserves POST method, same as 301 but method-preserving). `permanent: true` in Next.js config emits 308. Crawlers and browsers will update cached URLs. For a design system docs site where the URL is referenced externally, 308 is correct.
 
-**Z-index tokens:** The `--z-*` scale exists in `:root` and is correctly NOT in `@theme`. CSS custom properties are the right mechanism for z-index — Tailwind utilities for z-index would conflict with Tailwind's own `z-*` scale. No change needed here.
+---
+
+## Question 3: 200-300vh Scroll-Driven Section Architecture
+
+**Pattern: Pinned wrapper component with GSAP timeline + scrub.**
+
+The existing `HorizontalScroll` component in `components/animation/horizontal-scroll.tsx` establishes the pattern for pin/scrub sections. The v1.5 scroll section needs a vertical pin variant.
+
+**Verified integration with Lenis:** The existing `LenisProvider` already wires `instance.on("scroll", ScrollTrigger.update)` and drives Lenis via `gsap.ticker`. This is the correct integration. ScrollTrigger receives Lenis-smoothed scroll positions. Pin/scrub sections work with this setup without additional configuration.
+
+**Known Lenis + pin issue from community research:** When `pin: true` is combined with `once: false` (scrub), window resize while scrolled can cause ScrollTrigger positions to shift. The fix is `invalidateOnRefresh: true` on the ScrollTrigger config, which tells GSAP to recalculate start/end positions on refresh. The existing `HorizontalScroll` already uses this pattern.
+
+**Reusable PinnedSection component pattern:**
+
+```typescript
+// components/animation/pinned-section.tsx
+"use client";
+
+import { useRef, useEffect, type ReactNode } from "react";
+import { gsap, ScrollTrigger } from "@/lib/gsap-core";
+
+interface PinnedSectionProps {
+  children: (progress: gsap.core.Tween) => ReactNode;
+  /** Total scroll distance in viewport heights. Default: 2 (200vh) */
+  scrollVh?: number;
+  /** Scrub smoothing. 1 = 1s lag. true = instant. Default: 1 */
+  scrub?: number | boolean;
+  className?: string;
+}
+
+export function PinnedSection({ children, scrollVh = 2, scrub = 1, className }: PinnedSectionProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          pin: true,
+          scrub,
+          anticipatePin: 1,           // prevents pin flash on fast scroll
+          start: "top top",
+          end: () => `+=${scrollVh * window.innerHeight}`,
+          invalidateOnRefresh: true,  // recalculate on resize — required for Lenis compat
+        },
+      });
+      timelineRef.current = tl;
+    });
+
+    return () => ctx.revert();
+  }, [scrollVh, scrub]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden ${className ?? ""}`}
+      style={{ height: "100vh" }}  // Viewport height — pin adds scroll space automatically
+    >
+      {/* children receive no timeline ref — they use data-anim selectors driven by PageAnimations */}
+      {typeof children === "function" ? children(timelineRef.current!) : children}
+    </div>
+  );
+}
+```
+
+**Simpler alternative for v1.5 (recommended):** Rather than a render-prop pattern, use a straightforward block component where the pinned section's internal animations are wired in `PageAnimations.initCoreAnimations()` via `data-anim` selectors. This keeps WebGL and scroll logic separated and avoids prop-drilling the timeline.
+
+**Critical measurement:** GSAP's `pin: true` creates a spacer div equal to the scroll distance (`end - start`). For a 200vh pin, the total page height increases by 200vh. This is expected and intentional — the user scrolls 200vh while the element stays fixed. The spacer ensures downstream content scrolls correctly after the pin releases.
+
+---
+
+## Question 4: 6-Section Homepage and SFSection/data-anim System
+
+**The 6-section structure slots directly into the existing system. No architectural changes needed to SFSection, PageAnimations, or the bg-shift system.**
+
+**Current homepage:** 7 SFSection instances (hero, manifesto, signal/frame, stats, code, components) using `data-bg-shift`, `data-section`, `data-section-label`, `data-anim` attributes. `PageAnimations` wires all animations via `document.querySelectorAll("[data-anim='...']")`.
+
+**v1.5 homepage:** 6 named SFSection instances (ENTRY, PROOF, SIGNAL, SYSTEM, PHILOSOPHY, CTA). The existing attribute system supports this without modification.
+
+**New data-anim values needed for v1.5 sections:**
+
+| Section | data-anim values | Notes |
+|---------|-----------------|-------|
+| ENTRY | `hero-title`, `hero-subtitle`, `cta-btn` | Reuse existing values where semantics match |
+| PROOF | `proof-demo`, `proof-label` | New — component demo live preview |
+| SIGNAL | `signal-mesh` | WebGL scene — same as existing `hero-mesh` pattern |
+| SYSTEM | `stat-number` (reuse), `system-label` | Reuse stat count-up pattern |
+| PHILOSOPHY | `section-reveal` (reuse) | Standard stagger reveal is sufficient |
+| CTA | `cta-btn` (reuse) | Existing click-pop behavior already handles this |
+
+**bg-shift for 6 sections:** The existing `applyBgShift()` function reads `data-bg-shift` attribute and switches between the dark/light backgrounds. For 6 sections, assign alternating values:
+
+```
+ENTRY:       data-bg-shift="black"
+PROOF:       data-bg-shift="white"
+SIGNAL:      data-bg-shift="black"
+SYSTEM:      data-bg-shift="white"
+PHILOSOPHY:  data-bg-shift="black"
+CTA:         data-bg-shift="white"
+```
+
+**SFSection spacing for scroll-pinned sections:** Any section containing a `PinnedSection` should use `className="py-0"` on the SFSection wrapper, as the pinned content manages its own internal layout. All other sections continue using the existing `spacing` prop.
+
+**The existing `#bg-shift-wrapper` div wraps all SFSection instances.** The new homepage structure continues this pattern — all 6 sections go inside `#bg-shift-wrapper`, and CTA/footer go outside it as now.
+
+---
+
+## Question 5: Build Order
+
+Dependencies drive the sequence. Each phase has a hard prerequisite.
+
+### Phase 1: Route Infrastructure (no prerequisites)
+
+**1a.** Create `app/inventory/` directory and copy/adapt `app/components/page.tsx` → `app/inventory/page.tsx`. Update metadata title.
+
+**1b.** Add `redirects()` to `next.config.ts` with two entries: `/components` and `/components/:path*`.
+
+**1c.** Audit and update all internal `href="/components"` links in Nav, blocks, sitemap.
+
+**1d.** Verify redirect works in `next dev`. Delete `app/components/` directory.
+
+**Why first:** Route infrastructure is pure filesystem + config work. Zero risk of breaking existing pages. Establishes the correct URL structure before new pages reference it.
+
+**Output:** Working `/inventory` route, `/components` → `/inventory` permanent redirect, clean internal links.
+
+---
+
+### Phase 2: SignalCanvas MutationObserver Consolidation (depends on: nothing, but unblocks Phase 3)
+
+Move the module-level `_signalObserver` / `readSignalVars()` / `ensureSignalObserver()` pattern from individual components (`glsl-hero.tsx`, `signal-mesh.tsx`) into `lib/signal-canvas.tsx` as a shared module-level observer. Expose `getSignalVars()` function that returns cached `{ intensity, speed, accent }`. Both existing and new WebGL components call `getSignalVars()` from the ticker instead of maintaining their own observers.
+
+**Why this phase, why now:** With 3 WebGL scenes on the homepage, three separate MutationObservers watching `document.documentElement` would fire `readSignalVars()` 3x on every `:root` style change. One shared observer fires once. This is a small refactor (~30 lines) with zero visual impact.
+
+**Output:** Updated `lib/signal-canvas.tsx`, updated `glsl-hero.tsx`, updated `signal-mesh.tsx`.
+
+---
+
+### Phase 3: PinnedSection Component (depends on: Phase 2 optional, but clean)
+
+Create `components/animation/pinned-section.tsx` as a reusable 200-300vh scroll container. Wire its internal `data-anim` targets into `PageAnimations.initCoreAnimations()`. Test with a placeholder content section before connecting WebGL scenes.
+
+**Critical config:**
+```
+pin: true
+scrub: 1
+anticipatePin: 1
+invalidateOnRefresh: true
+start: "top top"
+end: () => `+=${scrollVh * window.innerHeight}`
+```
+
+**Mobile fallback:** For viewport width < 768px, skip the pin and render content as a standard scroll section (same pattern as `HorizontalScroll`). Pin/scrub UX requires sufficient vertical scroll space that mobile viewports often don't provide cleanly.
+
+**Output:** `components/animation/pinned-section.tsx`.
+
+---
+
+### Phase 4: New WebGL Scene Component (depends on: Phase 2 MutationObserver consolidation)
+
+Build the third WebGL scene for the SIGNAL section. Follow the `GLSLHero` pattern exactly:
+- `useSignalScene()` hook with `buildScene()` factory
+- Uniforms stored in ref for ticker/ScrollTrigger mutation
+- `IntersectionObserver` already handled by `useSignalScene()`
+- Reduced-motion → static fallback div
+- Export as `SignalField` or similar, with a `*-lazy.tsx` wrapper using `next/dynamic({ ssr: false })`
+
+**Why Phase 4 not Phase 1:** The singleton consolidation in Phase 2 should happen before adding a third scene component that would otherwise introduce a third MutationObserver.
+
+**Output:** `components/animation/signal-field.tsx` (or similar), `components/animation/signal-field-lazy.tsx`.
+
+---
+
+### Phase 5: 6-Section Homepage Block Components (depends on: Phases 3-4 components exist)
+
+Build 6 block components in `components/blocks/`:
+
+- `entry-hero.tsx` — replaces existing `Hero` block. Uses existing `GLSLHeroLazy` as WebGL background. Reuses existing hero animation system (`data-anim='hero-title'` etc). This is primarily a **content and layout redesign** of the existing hero.
+- `proof-section.tsx` — uses existing `SignalMeshLazy` for WebGL. Live demo of a component (likely `SFButton` or `SFCard`) as PROOF of system quality.
+- `signal-section.tsx` — uses new `SignalFieldLazy`. Contains `PinnedSection` wrapper if the 200-300vh scroll section lives here.
+- `system-section.tsx` — stats, component counts. Reuses `data-anim='stat-number'` count-up pattern.
+- `philosophy-section.tsx` — text-driven, standard `section-reveal` animation.
+- `cta-section.tsx` — links to `/inventory` and `/start`. Reuses `data-anim='cta-btn'`.
+
+**Rewrite `app/page.tsx`** to compose these 6 blocks within `#bg-shift-wrapper` with the correct `data-bg-shift` alternation.
+
+**Output:** 6 new/rewritten block files, rewritten `app/page.tsx`.
+
+---
+
+### Phase 6: PageAnimations Update + Subpage Redesigns (depends on: Phase 5 page exists in DOM)
+
+**6a.** Add `data-anim` selectors for any new values introduced in Phase 5 to `initCoreAnimations()` in `page-animations.tsx`. Existing selectors continue to work unchanged.
+
+**6b.** Redesign the 4 subpages (`/inventory`, `/tokens`, `/start`, `/reference`). These are independent of the homepage work — each can be built incrementally. The existing block components for these pages are the starting point.
+
+**Output:** Updated `page-animations.tsx`, redesigned subpage blocks.
 
 ---
 
 ## Data Flow
 
-### Component Detail Request Flow
+### WebGL Multi-Scene Render Flow (3 scenes, one page)
 
 ```
-User clicks grid cell
+GSAP ticker fires (~60fps)
     ↓
-ComponentsExplorer.onClick fires → setActiveDetail(comp.index)
+LenisProvider tickerCallback: lenis.raf(time * 1000)
     ↓
-activeDetail stored to sessionStorage via useSessionState(SESSION_KEYS.DETAIL_OPEN)
+SignalCanvas tickerCallback: renderAllScenes(state)
     ↓
-ComponentDetail renders with componentId = activeDetail
+For each SceneEntry in state.scenes Map:
+    ├── entry.visible === false? → skip (IntersectionObserver gate)
+    ├── entry.element.getBoundingClientRect() → scissor rect
+    ├── renderer.setScissor(rect) + renderer.setViewport(rect)
+    └── entry.renderFn(scene, camera) → WebGL draw call
     ↓
-ComponentDetail reads COMPONENT_REGISTRY[componentId]   (synchronous, static import)
-    ↓
-ComponentDetail reads API_DOCS[entry.docId]             (synchronous, static import)
-    ↓
-Renders:  SFTabs (Props | Variants | Code | A11y)
-          SFScrollArea for overflow
-          SharedCodeBlock for code panel
-          Variant switcher for live previews
-    ↓
-GSAP: gsap.fromTo(panelRef, { height: 0 }, { height: "auto", duration: 0.4, ease: "sf-snap" })
-    ↓
-User clicks close or presses Escape
-    ↓
-GSAP: gsap.to(panelRef, { height: 0, duration: 0.3 }) → then setActiveDetail(null)
+Each component's ScrollTrigger onUpdate:
+    └── directly mutates entry's uniformsRef.current values
+        (no setState, no re-render — pure uniform mutation)
 ```
 
-### State Management
+### Route Rename Redirect Flow
 
 ```
-sessionStorage (useSessionState)
-    ↓ (SSR-safe: defaultValue on server, reads from storage after mount)
-ComponentsExplorer state:
-  - activeFilter: Category              (SESSION_KEYS.COMPONENTS_FILTER)
-  - searchQuery: string
-  - activeDetail: string | null         (SESSION_KEYS.DETAIL_OPEN — NEW)
+Browser requests /components
     ↓
-GSAP Flip: captures grid state before filter change, animates card reposition
-ComponentDetail: mounts when activeDetail !== null, unmounts on close
+Next.js edge: matches redirects[0].source === "/components"
+    ↓
+308 Permanent Redirect → Location: /inventory
+    ↓
+Browser requests /inventory
+    ↓
+app/inventory/page.tsx renders (Server Component)
 ```
 
-### Key Data Flows
+### Scroll-Pinned Section Flow
 
-1. **Grid → Detail:** `ComponentEntry.index` (e.g. `"001"`) is the primary key. It maps to `ComponentRegistryEntry` in `component-registry.ts`, which contains `docId` for looking up the `ComponentDoc` in `api-docs.ts`.
-2. **Filter → GSAP Flip:** Existing behavior. `captureFlipState()` before filter update, `Flip.from()` after. The detail panel must be outside `gridRef` — its height changes must not be captured in Flip state.
-3. **Token → Component:** All tokens flow `globals.css @theme` → Tailwind v4 utility classes → component `className`. The one exception is `color-resolve.ts` (WebGL uniform bridge), which reads CSS custom properties via a probe element.
-4. **Registry → Consumer:** `public/r/registry.json` and individual `public/r/sf-*.json` files are served statically. External consumers use `pnpm dlx shadcn@latest add [url]`. No v1.4 changes needed to this pipeline beyond adding the `sf-input-group.json` entry.
+```
+User scrolls into PinnedSection trigger
+    ↓
+GSAP ScrollTrigger: pin: true → element switches to position: fixed
+                    spacer div inserted to maintain document flow
+    ↓
+As user continues scrolling (200-300vh of scroll space consumed):
+    scrub: 1 → timeline.progress() updates with 1s lag
+    onUpdate → data-anim targets animate (opacity, transform, etc.)
+    WebGL uniforms mutate directly via ScrollTrigger onUpdate
+    ↓
+User exits pin range:
+    element unpins → returns to document flow
+    spacer div removed
+```
+
+### MutationObserver Signal Bridge (consolidated)
+
+```
+CSS: document.documentElement.style.setProperty("--signal-intensity", "0.8")
+    ↓
+MutationObserver (ONE, in signal-canvas.tsx singleton): fires readSignalVars()
+    ↓
+Updates module-level cache: { intensity: 0.8, speed: 1.0, accent: 0.0 }
+    ↓
+GSAP ticker (each frame):
+    Scene A tickerFn: reads getSignalVars().intensity → uniform update
+    Scene B tickerFn: reads getSignalVars().intensity → uniform update
+    Scene C tickerFn: reads getSignalVars().intensity → uniform update
+```
 
 ---
 
@@ -234,148 +427,89 @@ ComponentDetail: mounts when activeDetail !== null, unmounts on close
 
 | File | Change Type | What Changes | Integrates With |
 |------|------------|--------------|-----------------|
-| `components/blocks/component-detail.tsx` | NEW | Full new file | `api-docs.ts`, `component-registry.ts`, `SharedCodeBlock`, `SFTabs`, `SFScrollArea` |
-| `lib/component-registry.ts` | NEW | Full new file | `component-detail.tsx`, `api-docs.ts` |
-| `components/sf/sf-input-group.tsx` | NEW | Single SF wrapper | `ui/input-group.tsx`, `sf/index.ts` |
-| `public/r/sf-input-group.json` | NEW | Registry entry | `public/r/registry.json` |
-| `components/blocks/components-explorer.tsx` | MODIFY | Add `activeDetail` state + cell onClick handler | `component-registry.ts`, `use-session-state.ts` |
-| `lib/api-docs.ts` | MODIFY | Add `ComponentDoc` entries for all 31 grid items | `component-detail.tsx` |
-| `hooks/use-session-state.ts` | MODIFY | Add `SESSION_KEYS.DETAIL_OPEN` constant | `components-explorer.tsx` |
-| `app/globals.css` | MODIFY | Move `--color-success` / `--color-warning` into `@theme` | Tailwind v4 utility generation |
-| `components/sf/index.ts` | MODIFY | Append `SFInputGroup` export | All consumers |
-| `public/r/registry.json` | MODIFY | Append `sf-input-group` entry | shadcn CLI consumers |
+| `app/inventory/page.tsx` | NEW (copy) | Renamed route | `components/blocks/components-explorer.tsx`, `component-registry.ts` |
+| `app/inventory/` dir | NEW | Directory for renamed route | Next.js App Router |
+| `app/components/` dir | DELETE | Removed after redirect verified | n/a |
+| `next.config.ts` | MODIFY | Add `redirects()` async function | Next.js edge layer |
+| `app/page.tsx` | REWRITE | 6-section structure, 3 WebGL scenes | 6 new block components, `SignalCanvasLazy` |
+| `components/blocks/entry-hero.tsx` | NEW | ENTRY section with GLSLHero WebGL | `GLSLHeroLazy`, existing hero animation data-anim selectors |
+| `components/blocks/proof-section.tsx` | NEW | PROOF section with SignalMesh | `SignalMeshLazy` |
+| `components/blocks/signal-section.tsx` | NEW | SIGNAL section + optional pinned scroll | `signal-field-lazy.tsx`, `pinned-section.tsx` |
+| `components/blocks/system-section.tsx` | NEW | System stats section | `data-anim='stat-number'` count-up, existing pattern |
+| `components/blocks/philosophy-section.tsx` | NEW | Philosophy text section | `data-anim='section-reveal'`, existing pattern |
+| `components/blocks/cta-section.tsx` | NEW | CTA section | `href="/inventory"`, `href="/start"` |
+| `components/animation/pinned-section.tsx` | NEW | 200-300vh pin/scrub wrapper | `lib/gsap-core.ts`, `ScrollTrigger` |
+| `components/animation/signal-field.tsx` | NEW | 3rd WebGL scene component | `lib/signal-canvas.tsx`, `useSignalScene`, `gsap-core` |
+| `components/animation/signal-field-lazy.tsx` | NEW | SSR-safe dynamic import wrapper | `signal-field.tsx` |
+| `lib/signal-canvas.tsx` | MODIFY | Add shared MutationObserver + `getSignalVars()` | All WebGL scene components |
+| `components/animation/glsl-hero.tsx` | MODIFY | Remove local MutationObserver, use `getSignalVars()` | `lib/signal-canvas.tsx` |
+| `components/animation/signal-mesh.tsx` | MODIFY | Remove local MutationObserver, use `getSignalVars()` | `lib/signal-canvas.tsx` |
+| `components/layout/page-animations.tsx` | MODIFY | Add data-anim selectors for new sections | New block components |
+| `components/layout/nav.tsx` | MODIFY | Update `/components` → `/inventory` in nav links | Router |
+| `app/sitemap.ts` | MODIFY | Update `/components` → `/inventory` | Crawler |
 
 ### Internal Boundaries
 
 | Boundary | Communication | Constraint |
 |----------|---------------|------------|
-| `ComponentsExplorer` ↔ `ComponentDetail` | `activeDetail: string \| null` prop/state | Detail is a sibling of the flip grid div, not a child |
-| `ComponentDetail` ↔ `api-docs.ts` | Direct static import | `ComponentDoc` type is the stable contract |
-| `ComponentDetail` ↔ `component-registry.ts` | Direct static import | `ComponentRegistryEntry` is the stable contract |
-| `ComponentsExplorer` ↔ `sessionStorage` | `useSessionState` hook | Add `DETAIL_OPEN` key (null = no active detail) |
-| `sf/` ↔ `ui/` | SF wrapper imports from `ui/` base | One-way: `sf/` → `ui/`. `ui/` never imports `sf/` |
-| `sf/` ↔ consumer pages/blocks | Barrel import from `sf/index.ts` | P3 lazy components (Calendar, Menubar) NOT in barrel — import from their `-lazy.tsx` file directly |
-
----
-
-## Build Order
-
-Dependencies determine sequencing. Each phase has a hard prerequisite.
-
-### Phase 1: Token Finalization (no prerequisites — pure CSS)
-
-Move `--color-success` and `--color-warning` into the `@theme {}` block in `globals.css`. This is a two-line change. Verify with `bg-success` on SFStatusDot after the change.
-
-**Output:** Updated `globals.css`.
-**Risk:** Zero — CSS custom property values are unchanged, only the declaration context moves.
-
-### Phase 2: Remaining SF Component — SFInputGroup (depends on: Phase 1 tokens)
-
-Create `components/sf/sf-input-group.tsx`. The base `ui/input-group.tsx` already uses `var(--radius)` which resolves to `0px` — the SF wrapper's main job is stripping the generic border radius and adding SF border conventions (`border-2 border-foreground`). Add to `sf/index.ts` barrel. Create `public/r/sf-input-group.json` and append to `registry.json`.
-
-**Output:** `sf-input-group.tsx`, `sf/index.ts` (modified), `public/r/sf-input-group.json`, `registry.json` (modified).
-**Note:** `ui/input-group.tsx` has `"use client"` — the SF wrapper needs it too.
-
-### Phase 3: Detail Data Authoring (depends on: Phases 1-2 so component list is final)
-
-Two parallel tasks:
-
-**3a.** Create `lib/component-registry.ts` with `ComponentRegistryEntry` for all 31+ items in `COMPONENTS[]`. Each entry needs: `docId` pointing to `api-docs.ts`, `variants[]` with preview JSX, `codeSnippet` string.
-
-**3b.** Extend `lib/api-docs.ts` with `ComponentDoc` entries for all components that are in the grid but lack a doc entry. The v1.3 additions (Avatar, Breadcrumb, Alert, AlertDialog, Collapsible, EmptyState, StatusDot, Accordion, Toast, Progress, ToggleGroup, Stepper, NavMenu, Calendar, Menubar, Pagination) likely need entries; the existing entries cover Core/Button/Input/Card/Modal/Table/Tabs/Dropdown/Badge/Drawer plus SIGNAL layer.
-
-**Output:** `lib/component-registry.ts` (new), extended `lib/api-docs.ts`.
-
-### Phase 4: ComponentDetail Panel (depends on: Phase 3 data exists)
-
-Build `components/blocks/component-detail.tsx` as a Client Component (`'use client'`). Accepts `componentId: string | null` and `onClose: () => void`.
-
-Internal structure:
-- Top bar: component name (SF display type), layer badge (SFBadge), close button (SFButton ghost)
-- Tab bar: `SFTabs` with triggers: PROPS / VARIANTS / CODE / A11Y
-- PROPS tab: `SFTable` rendering `doc.props[]` — name, type, default, description
-- VARIANTS tab: variant switcher buttons + live preview area
-- CODE tab: `SharedCodeBlock` with `entry.codeSnippet`
-- A11Y tab: `SFScrollArea` with `doc.a11y[]` list
-
-GSAP integration:
-```typescript
-// Open: animate height from 0 to auto
-gsap.fromTo(panelRef.current,
-  { height: 0, opacity: 0 },
-  { height: "auto", opacity: 1, duration: 0.4, ease: "sf-snap" }
-);
-
-// Close: animate height to 0 before calling onClose
-gsap.to(panelRef.current,
-  { height: 0, opacity: 0, duration: 0.3, ease: "power2.in",
-    onComplete: onClose }
-);
-```
-
-**Output:** `components/blocks/component-detail.tsx`.
-
-### Phase 5: Explorer Integration (depends on: Phase 4 component exists)
-
-Modify `ComponentsExplorer`:
-1. Add `SESSION_KEYS.DETAIL_OPEN` to `hooks/use-session-state.ts`.
-2. Add `activeDetail` / `setActiveDetail` via `useSessionState(SESSION_KEYS.DETAIL_OPEN, null)`.
-3. Add `onClick={() => setActiveDetail(comp.index)}` to each grid cell div.
-4. Add `onKeyDown` handler: Enter/Space opens detail, Escape closes. Extend existing `handleGridKeyDown`.
-5. Render `<ComponentDetail componentId={activeDetail} onClose={() => setActiveDetail(null)} />` as a sibling after the `gridRef` div, inside the same parent.
-
-**Output:** Modified `components-explorer.tsx`, modified `hooks/use-session-state.ts`.
-
-### Phase 6: Audit and Tech Debt (depends on: all above)
-
-- Verify duplicate TOAST entry (indices 010 and 022) — resolve to single correct entry
-- Confirm Lighthouse 100/100 not regressed by new client components
-- Close v1.3 deferred human validation (NavigationMenu flyout, keyboard nav, Stepper connectors)
-- Update SCAFFOLDING.md with SFInputGroup API contract
+| WebGL scenes ↔ SignalCanvas singleton | `useSignalScene()` hook → `registerScene()` / `deregisterScene()` | One-way registration; singleton does not call back into components |
+| WebGL scenes ↔ CSS signal vars | `getSignalVars()` from singleton (module-level cache) | Never read CSS in GSAP ticker — always read cached values |
+| ScrollTrigger ↔ WebGL uniforms | Direct `uniformsRef.current.uFoo.value = x` mutation | No React state, no re-render — uniform mutation only |
+| PinnedSection ↔ Lenis | `ScrollTrigger.update` called on every Lenis scroll event | Already wired in `LenisProvider`; pin sections inherit this automatically |
+| New routes ↔ /components redirect | 308 redirect in `next.config.ts` | Processed at edge before React; no component code needed |
+| SF block components ↔ SFSection | `data-bg-shift`, `data-section`, `data-anim` attributes | Attribute-driven — no prop APIs needed between section and PageAnimations |
 
 ---
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: ComponentDetail Inside the GSAP Flip Container
+### Anti-Pattern 1: Multiple WebGLRenderer Instances
 
-**What people do:** Render the detail panel inside the `gridRef` div so it flows naturally below the grid cards.
+**What people do:** Create a `new THREE.WebGLRenderer()` inside each WebGL component, one per scene.
 
-**Why it's wrong:** `Flip.getState()` captures the geometry of everything inside `gridRef`, including the variable-height detail panel. When a filter change triggers `Flip.from()`, the panel's old geometry is baked into the Flip snapshot — producing wrong animation origins and jumpy card positions.
+**Why it's wrong:** Browsers enforce a limit on concurrent WebGL contexts (typically 8-16, but can be lower on mobile and lower-powered hardware). Three scenes on one page with three renderers consumes 3 contexts. More critically, each renderer maintains its own GPU resources and runs its own render loop, producing CPU/GPU contention and jank.
 
-**Do this instead:** Render `ComponentDetail` as a sibling after `gridRef` in the DOM, inside the same containing section. The grid Flip animation is unaffected; the panel appears/disappears below without being captured.
+**Do this instead:** The existing SignalCanvas singleton pattern is the correct answer — one renderer, multiple scenes rendered via scissor/viewport split per GSAP ticker frame. Never create a renderer outside the singleton.
 
-### Anti-Pattern 2: Fetching Component Data at Runtime
+---
 
-**What people do:** Store component metadata in a JSON file and `fetch()` it when a card is clicked.
+### Anti-Pattern 2: Creating a MutationObserver per WebGL Component
 
-**Why it's wrong:** Adds loading state, waterfall delay on interaction, and breaks the performance budget. All component data is static and known at build time.
+**What people do:** Each component file declares its own module-level `_signalObserver` watching `document.documentElement`.
 
-**Do this instead:** Static imports from `lib/component-registry.ts` and `lib/api-docs.ts`. Synchronous, zero loading states, tree-shakeable, no API.
+**Why it's wrong:** With 3 WebGL components, 3 observers fire `readSignalVars()` on every `:root` style change. With the current pattern (module-level variable), the third component's observer clobbers the previous two's state — they share the same module-level variable name but each component's module has its own isolated copy. The result is 3x observer callbacks on every CSS variable change.
 
-### Anti-Pattern 3: New Route per Component (`/components/[slug]`)
+**Do this instead:** Move `readSignalVars()`, the cached variables, and the observer lifecycle into `lib/signal-canvas.tsx`. Expose a `getSignalVars()` function. One observer fires once; all 3 ticker functions read the same cache.
 
-**What people do:** Create `app/components/[slug]/page.tsx` so each component has a dedicated URL.
+---
 
-**Why it's wrong:** Full-page navigation destroys the browse UX. The user is exploring a filterable grid — a route change loses filter/scroll context even with session restoration. The showcase intent does not require per-component URLs.
+### Anti-Pattern 3: Routing the Rename via `middleware.ts`
 
-**Do this instead:** In-page expansion. If shareable component URLs become needed later, they can be added as `?component=button` query params (read on mount via `useSearchParams`) without route changes.
+**What people do:** Use Next.js middleware to match `/components` and call `NextResponse.redirect()`.
 
-### Anti-Pattern 4: Duplicating ComponentDoc Data in ComponentEntry
+**Why it's wrong:** Middleware runs on every request, including static assets. It adds latency to all routes, not just the renamed one. It's overkill for a permanent URL rename that is known at build time.
 
-**What people do:** Add `props`, `description`, and usage examples directly to the `ComponentEntry` type in `components-explorer.tsx`.
+**Do this instead:** `next.config.ts` `redirects()` array. Processed at the routing/edge layer before middleware, zero runtime cost after the initial 308 response is cached by browsers and crawlers.
 
-**Why it's wrong:** `api-docs.ts` already owns this data with a well-defined, documented type. Duplication creates drift between the grid view and the reference page.
+---
 
-**Do this instead:** `ComponentEntry` stays minimal (index, name, category, variant, thumbnail preview). `ComponentRegistryEntry` in `lib/component-registry.ts` bridges to `ComponentDoc` via `docId`. Single source of truth.
+### Anti-Pattern 4: Putting PinnedSection Inside a SFSection with Overflow Hidden
 
-### Anti-Pattern 5: Adding New Tokens for the Detail Panel
+**What people do:** Wrap a GSAP-pinned element inside a parent with `overflow: hidden` thinking it will contain the pinned content.
 
-**What people do:** Add `--sf-panel-bg`, `--sf-panel-border`, `--sf-panel-header-height` tokens for the new detail component.
+**Why it's wrong:** `overflow: hidden` on a parent clips `position: fixed` children in some browsers. GSAP's pin mechanism switches the element to `position: fixed` during the pin phase. A clipping parent will cause the pinned element to disappear or be incorrectly clipped during the scroll.
 
-**Why it's wrong:** The token expansion policy is explicit: new tokens require architectural review and must be needed by three or more components. The detail panel is a single component — use existing tokens (`background`, `foreground`, `border`, `--border-section`, `--space-*`).
+**Do this instead:** The SFSection wrapping a PinnedSection must NOT have `overflow: hidden`. Use `className="py-0"` (no `overflow-hidden`) on the SFSection. The PinnedSection itself may have `overflow: hidden` on its internal content area, but not on the element that GSAP pins.
 
-**Do this instead:** Build `ComponentDetail` entirely from the existing token vocabulary. If a value is truly unique to this one component, use an inline Tailwind class — not a new token.
+---
+
+### Anti-Pattern 5: Animating in useEffect Without gsap.context
+
+**What people do:** Write `useEffect(() => { gsap.to(...); ScrollTrigger.create(...) }, [])` without wrapping in `gsap.context()`.
+
+**Why it's wrong:** Without `gsap.context()`, ScrollTrigger instances and tweens are not automatically collected. They must be manually killed on cleanup. Missed cleanup causes memory leaks, duplicate animations, and "ghost" ScrollTriggers that fire after the component unmounts — especially visible in React StrictMode with double-invoke of effects.
+
+**Do this instead:** All new scroll animation code follows the existing `HorizontalScroll` pattern: `const ctx = gsap.context(() => { ... }); return () => ctx.revert();`. The `PinnedSection` component codifies this pattern.
 
 ---
 
@@ -383,28 +517,31 @@ Modify `ComponentsExplorer`:
 
 | Scale | Architecture Note |
 |-------|-------------------|
-| Current (31 grid items) | Static data in `lib/` — no changes needed |
-| 60+ components | Split `component-registry.ts` by category; lazy-import the active category's data in the detail panel |
-| External consumers (portfolio, cdOS) | `ComponentDoc` type and registry JSON are already the public contract — no structural changes needed |
+| 3 WebGL scenes (v1.5) | Scissor/viewport split works. IntersectionObserver gates keep non-visible scenes out of the render loop. Performance risk only if all 3 are simultaneously in viewport. |
+| 5+ WebGL scenes | Still manageable with scissor pattern, but consider page-scoped scene management: scenes on the homepage are not relevant on /inventory. The singleton already handles this via `deregisterScene()` on unmount. |
+| Pinned sections on multiple pages | Each `PinnedSection` instance creates its own ScrollTrigger context. `ctx.revert()` on unmount cleans up. No global state issues. |
+| Redirect table growth | `next.config.ts` redirects are evaluated in order, linearly. For 10+ redirects, order by specificity (most specific first). Current 2-entry table has zero performance concerns. |
 
 ---
 
 ## Sources
 
-- Direct codebase audit (all findings verified):
-  - `components/blocks/components-explorer.tsx` — COMPONENTS array (31 entries), flip grid, session state
-  - `components/sf/index.ts` — barrel (46 exports confirmed)
-  - `components/ui/` vs `components/sf/` diff — `input-group.tsx` is the only unwrapped base component
-  - `lib/api-docs.ts` — `ComponentDoc` type, existing entries (~15 covering CORE + legacy COMPONENTS section)
-  - `lib/signalframe-provider.tsx` — SSR-safe provider pattern
-  - `hooks/use-session-state.ts` — `SESSION_KEYS` (2 keys currently)
-  - `public/r/registry.json` — 49 items confirmed
-  - `app/globals.css` — `--color-success` / `--color-warning` in `:root`, NOT in `@theme` (confirmed gap)
-  - `components/blocks/shared-code-block.tsx` — reusable code display component (usable in detail panel)
-- Project context: `.planning/PROJECT.md` — v1.4 goal definition confirmed
-- System rules: `CLAUDE.md` — token policy, dual-layer model, component conventions
+- Direct codebase audit (all findings verified against current implementation):
+  - `lib/signal-canvas.tsx` — `Map<string, SceneEntry>`, `registerScene()`, `renderAllScenes()` scissor pattern, `getState()` singleton
+  - `hooks/use-signal-scene.ts` — `IntersectionObserver` visibility gate, `crypto.randomUUID()` keying, `disposeScene()` on unmount
+  - `components/animation/glsl-hero.tsx` — module-level `_signalObserver`, `ensureSignalObserver()`, `readSignalVars()` pattern
+  - `components/animation/signal-mesh.tsx` — identical MutationObserver pattern (confirms duplication risk)
+  - `components/animation/horizontal-scroll.tsx` — existing pin/scrub implementation, `invalidateOnRefresh: true`, mobile breakpoint fallback
+  - `components/layout/lenis-provider.tsx` — `instance.on("scroll", ScrollTrigger.update)`, GSAP ticker integration
+  - `components/layout/page-animations.tsx` — `data-anim` selector system, `applyBgShift()`, `#bg-shift-wrapper`
+  - `components/sf/sf-section.tsx` — SFSection prop API, data attribute system
+  - `app/page.tsx` — current homepage structure, 7 SFSection instances
+  - `app/layout.tsx` — `SignalCanvasLazy`, `LenisProvider`, `PageAnimations` mounting order
+  - `next.config.ts` — current config (no redirects — confirmed gap)
+- Next.js App Router docs: `redirects()` function, `permanent: true` → 308 status code
+- GSAP ScrollTrigger docs: `pin`, `pinSpacing`, `scrub`, `anticipatePin`, `invalidateOnRefresh`
 
 ---
 
-*Architecture research for: SignalframeUX v1.4 Feature Complete*
-*Researched: 2026-04-06*
+*Architecture research for: SignalframeUX v1.5 Redesign*
+*Researched: 2026-04-07*
