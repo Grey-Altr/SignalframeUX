@@ -18,6 +18,7 @@ export interface ComponentRegistryEntry {
   layer: "frame" | "signal";
   pattern: "A" | "B" | "C";
   category: string;       // matches COMPONENTS[n].category exactly
+  sfCode?: string;        // computed by assignCodes() in lib/nomenclature.ts — undefined until util runs
 }
 
 export const COMPONENT_REGISTRY: Record<string, ComponentRegistryEntry> = {
@@ -780,4 +781,51 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
     pattern: "C",
     category: "GENERATIVE",
   },
+
+  // Reconciled in Phase 33 — shipped components added to registry
+  // Both exist in components/animation/ and are Pattern C GENERATIVE components
+  "105": {
+    index: "105",
+    name: "SCRAMBLE_TEXT",
+    component: "ScrambleText",
+    importPath: "@/components/animation/scramble-text",
+    variants: [
+      { label: "DEFAULT", props: { text: "SIGNAL ACTIVE" } },
+    ],
+    code: `import ScrambleText from '@/components/animation/scramble-text'
+
+<ScrambleText text="SIGNAL ACTIVE" />`,
+    docId: "scrambleText",
+    layer: "signal",
+    pattern: "C",
+    category: "GENERATIVE",
+  },
+
+  "106": {
+    index: "106",
+    name: "CIRCUIT_DIVIDER",
+    component: "CircuitDivider",
+    importPath: "@/components/animation/circuit-divider",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import CircuitDivider from '@/components/animation/circuit-divider'
+
+<CircuitDivider />`,
+    docId: "circuitDivider",
+    layer: "signal",
+    pattern: "C",
+    category: "GENERATIVE",
+  },
+
+  // ── HOMEPAGE INVENTORY SUBSET ──────────────────────────────────────────────
+  // 12-item breadth sample — 2 per category. Resolved indices (Task 0 audit):
+  // FRM: "001" BUTTON, "002" INPUT
+  // LAY: "005" CARD, "028" HOVER_CARD  (CONTAINER/SECTION not in registry)
+  // NAV: "025" NAV_MENU, "014" BREADCRUMB
+  // FBK: "021" PROGRESS, "022" TOAST (SIGNAL)
+  // DAT: "009" TABLE, "019" STATUS_DOT  (BADGE is FEEDBACK not DATA_DISPLAY)
+  // GEN: "105" SCRAMBLE_TEXT, "106" CIRCUIT_DIVIDER  (added above)
+  // HOMEPAGE_INVENTORY_INDICES = ["001","002","005","028","025","014","021","022","009","019","105","106"]
+  // These indices are exported from lib/nomenclature.ts as HOMEPAGE_INVENTORY_INDICES
 };
