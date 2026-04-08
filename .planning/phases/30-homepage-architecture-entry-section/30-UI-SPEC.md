@@ -46,31 +46,44 @@ Blessed stops from `globals.css` — Tailwind 4px base. No arbitrary values perm
 
 Exceptions:
 - ENTRY section: zero padding in all directions (`p-0`, `m-0`). The shader IS the viewport — no insets.
-- Nav bar: `--nav-height: 83px` — existing token, do not change.
 - Stub section minimum heights use Tailwind viewport units (`min-h-screen` = 100vh), not spacing tokens.
+
+### Inherited System Tokens (exempt from spacing contract)
+
+These tokens are pre-existing locked values that cannot change. They are recorded here for reference only and are NOT subject to the 4px-grid spacing contract.
+
+| Token | Value | Justification |
+|-------|-------|---------------|
+| `--nav-height` | 83px | Existing locked token set by Nav component. Changing it would break the sticky header offset across all pages. Do not alter. |
 
 ---
 
 ## Typography
 
-### Semantic Aliases (use these for all new work)
+### Phase 30 Declared Type Scale (4 sizes, 2 weights)
+
+These are the only type sizes that render in Phase 30:
+
+| Role | Font | px | Weight | Line Height | Notes |
+|------|------|----|--------|-------------|-------|
+| Hero title | Anton (`--font-display`) | **120px minimum** — `clamp(7.5rem, 12vw, 10rem)` | 700 | 0.9 | `SIGNALFRAME//UX`. Centered. Letter spacing 0.02em. EN-02. |
+| Subtitle | Inter (`--font-sans`) | 16px (`--text-md`) | 400 | 1.4 | Single line only. EN-03. Letter spacing `--sf-tracking-label`. |
+| Body / nav links | Inter (`--font-sans`) | 13px (`--text-base`) | 400 | 1.5 | Nav uppercase, tracking 0.15em. ScrambleText pattern. |
+| Small / stub labels | JetBrains Mono (`--font-mono`) | 11px (`--text-sm`) | 400 | 1.4 | `--color-muted-foreground`. Uppercase. Centered. |
+
+**Weights in use: 400 (regular) and 700 (bold) only.**
+
+### System-Wide Semantic Alias Reference (informational — not phase-specific contract)
+
+> The following table documents the full SignalframeUX semantic alias system for implementor reference. Only the 4 sizes above are active in Phase 30.
 
 | Alias | Font | Size Token | px | Weight | Line Height |
 |-------|------|------------|-----|--------|-------------|
 | `heading-1` | Anton (`--font-display`) | `--text-3xl` | 48px | 700 | 0.9 |
 | `heading-2` | Inter (`--font-sans`) | `--text-2xl` | 32px | 700 | 1.1 |
-| `heading-3` | Inter (`--font-sans`) | `--text-xl` | 24px | 600 | 1.2 |
+| `heading-3` | Inter (`--font-sans`) | `--text-xl` | 24px | 700 | 1.2 |
 | `body` | Inter (`--font-sans`) | `--text-base` | 13px | 400 | 1.5 |
 | `small` | Inter (`--font-sans`) | `--text-sm` | 11px | 400 | 1.4 |
-
-### Phase-Specific Overrides
-
-| Element | Font | Size | Weight | Notes |
-|---------|------|------|--------|-------|
-| `SIGNALFRAME//UX` hero title | Anton (`--font-display`) | **120px minimum** (clamp: `clamp(7.5rem, 12vw, 10rem)`) | 700 | EN-02. Centered. Hard-cut letter spacing 0.02em. |
-| Hero subtitle | Inter (`--font-sans`) | `--text-md` (16px) | 400 | Single line only. EN-03. Letter spacing `--sf-tracking-label`. |
-| Stub section labels | JetBrains Mono (`--font-mono`) | `--text-sm` (11px) | 400 | `--color-muted-foreground`. Centered. Uppercase. |
-| Nav links | Inter (`--font-sans`) | `--text-sm` (11px) | 400 | Existing ScrambleText pattern. Uppercase. Tracking 0.15em. |
 
 ### LCP Safety Rule
 
@@ -165,7 +178,6 @@ All other stubs: `min-h-screen`.
 | `--max-w-full` | 100% | ENTRY section, all full-bleed sections |
 | `--max-w-wide` | 1280px | Content within stub sections |
 | `--gutter` | 24px | Standard horizontal padding for content overlays |
-| `--nav-height` | 83px | Nav bar height (do not change) |
 | `--z-nav` | 9999 | Nav z-index |
 | `--z-content` | 10 | Hero title overlay z-index |
 
