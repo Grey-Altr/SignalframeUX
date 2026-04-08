@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, memo, useRef, useCallback } from "react";
+import { useState, memo, useRef, useCallback, useEffect } from "react";
+import { gsap, ScrollTrigger } from "@/lib/gsap-core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CommandPalette } from "@/components/layout/command-palette";
@@ -67,9 +68,47 @@ export function Nav() {
   const pathname = usePathname();
   const [commandOpen, setCommandOpen] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    // Reduced-motion: nav visible from page load, no ScrollTrigger
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      nav.classList.remove("sf-nav-hidden");
+      nav.classList.add("sf-nav-visible");
+      return;
+    }
+
+    // Check if ENTRY section exists (homepage only)
+    const entrySection = document.querySelector("[data-entry-section]");
+    if (!entrySection) {
+      // Not on homepage — nav visible immediately
+      nav.classList.remove("sf-nav-hidden");
+      nav.classList.add("sf-nav-visible");
+      return;
+    }
+
+    // Homepage: nav starts hidden, ScrollTrigger reveals at ENTRY boundary
+    const trigger = ScrollTrigger.create({
+      trigger: entrySection,
+      start: "bottom top",
+      onEnter: () => {
+        nav.classList.remove("sf-nav-hidden");
+        nav.classList.add("sf-nav-visible");
+      },
+      onLeaveBack: () => {
+        nav.classList.remove("sf-nav-visible");
+        nav.classList.add("sf-nav-hidden");
+      },
+    });
+
+    return () => trigger.kill();
+  }, []);
 
   return (
-    <nav aria-label="Main navigation" className="fixed top-0 left-0 right-0 z-[var(--z-nav)] bg-background border-b-[3px] border-foreground sf-nav-roll-up">
+    <nav ref={navRef} aria-label="Main navigation" className="fixed top-0 left-0 right-0 z-[var(--z-nav)] bg-background border-b-[3px] border-foreground sf-nav-hidden">
       <div className="flex items-center px-[clamp(8px,1.2vw,16px)] py-[clamp(2px,0.5vw,4px)] text-[clamp(10px,1.3vw,15px)] font-bold uppercase tracking-[0.15em]">
         {/* Logo: SF//UX */}
         <LogoMark />
