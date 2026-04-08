@@ -337,3 +337,7 @@ gsd-tools.cjs is not installed in this environment — STATE.md and ROADMAP.md m
 ### 2026-04-08T02:35:00Z | Phase 28 | tags: link-surgery, grep-to-zero, redirect-tests, sitemap
 
 For grep-to-zero link audits: redirect smoke tests (phase-28-route-infra.spec.ts) legitimately retain old route strings — they test that /components returns 308, not nav links. Exclude them from AC-10 interpretation. app/sitemap.ts uses template literal URLs (`${BASE}/inventory`) not quoted strings, so `grep -c '"/inventory"'` returns 0 even when content is correct — always use `grep -n 'inventory'` to verify sitemap content. gsd-tools.cjs path is `$HOME/.claude/get-shit-done/bin/gsd-tools.cjs` (not pde-os/engines/gsd/).
+
+### 2026-04-08T03:18:00Z | Phase 29 | tags: lenis, gsap-observer, playwright-source-tests, ios-scroll
+
+Lenis 1.3.x (installed 1.3.21) removed `ignoreMobileResize` from `LenisOptions` — the equivalent iOS address bar suppression option is `autoResize: false`. Any plan specifying `ignoreMobileResize` against this version will fail TypeScript build. Phase 29 Playwright source-level tests use `fs.readFileSync` + `path.resolve(__dirname, "..")` to read project files — this pattern works in Playwright because tests run in Node context, not browser context. Dev server returning 500 during Playwright browser tests is a transient post-build compilation state; kill and restart with `pnpm dev` and wait for 200 before re-running.
