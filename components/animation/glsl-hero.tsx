@@ -93,6 +93,7 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform vec2  uResolution;
   uniform float uIntensity;  // 0.0-1.0, scales FBM noise amplitude
   uniform float uAccent;     // 0-360, hue rotation degrees (reserved for future use)
+  uniform vec2  uMouse;    // normalized [0,1] pointer position, default center (0.5, 0.5)
 
   // ---------------------------------------------------------------------------
   // Hash function — deterministic pseudo-random from 2D input
@@ -175,7 +176,9 @@ const FRAGMENT_SHADER = /* glsl */ `
     vec2 uv = gl_FragCoord.xy / uResolution;
 
     // FBM noise — slow drift via uTime, scroll modulates scale inside fbm()
-    float n = fbm(uv * 4.0 + vec2(uTime * 0.1, uTime * 0.07)) * (0.5 + uIntensity * 0.5);
+    float fbmOffsetX = uTime * 0.1 + (uMouse.x - 0.5) * 0.3;
+    float fbmOffsetY = uTime * 0.07 + (uMouse.y - 0.5) * 0.3;
+    float n = fbm(uv * 4.0 + vec2(fbmOffsetX, fbmOffsetY)) * (0.5 + uIntensity * 0.5);
 
     // Geometric grid lines — thin lines at regular intervals on both axes
     float gridX = step(fract(uv.x * uGridDensity), 0.02);
@@ -231,6 +234,7 @@ export function GLSLHero() {
     uResolution:    THREE.IUniform<THREE.Vector2>;
     uIntensity:     THREE.IUniform<number>;
     uAccent:        THREE.IUniform<number>;
+    uMouse:         THREE.IUniform<THREE.Vector2>;
   } | null>(null);
 
   // ResizeObserver — update uResolution uniform on container resize
@@ -273,6 +277,7 @@ export function GLSLHero() {
       uResolution:    { value: new THREE.Vector2(container.clientWidth, container.clientHeight) },
       uIntensity:     { value: 0.5 },
       uAccent:        { value: 0.0 },
+      uMouse:         { value: new THREE.Vector2(0.5, 0.5) },
     };
     uniformsRef.current = uniforms;
 
@@ -345,6 +350,30 @@ export function GLSLHero() {
     },
     { scope: containerRef, dependencies: [hasWebGL] }
   );
+
+  // EN-05: Pointer-driven FBM offset — subtle mouse interaction on ENTRY section
+  useEffect(() => {
+    if (!hasWebGL) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // No mouse interaction in reduced-motion mode
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!uniformsRef.current) return;
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = 1.0 - (e.clientY - rect.top) / rect.height;
+      uniformsRef.current.uMouse.value.set(x, y);
+    };
+
+    container.addEventListener("pointermove", handlePointerMove, { passive: true });
+
+    return () => {
+      container.removeEventListener("pointermove", handlePointerMove);
+    };
+  }, [hasWebGL]);
 
   // Reduced-motion fallback — static div, no WebGL loop
   if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
