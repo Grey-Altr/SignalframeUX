@@ -341,3 +341,11 @@ For grep-to-zero link audits: redirect smoke tests (phase-28-route-infra.spec.ts
 ### 2026-04-08T03:18:00Z | Phase 29 | tags: lenis, gsap-observer, playwright-source-tests, ios-scroll
 
 Lenis 1.3.x (installed 1.3.21) removed `ignoreMobileResize` from `LenisOptions` — the equivalent iOS address bar suppression option is `autoResize: false`. Any plan specifying `ignoreMobileResize` against this version will fail TypeScript build. Phase 29 Playwright source-level tests use `fs.readFileSync` + `path.resolve(__dirname, "..")` to read project files — this pattern works in Playwright because tests run in Node context, not browser context. Dev server returning 500 during Playwright browser tests is a transient post-build compilation state; kill and restart with `pnpm dev` and wait for 200 before re-running.
+
+### 2026-04-08T04:30:00Z | Phase 29 | tags: pinned-section, scrolltrigger-pin, reduced-motion, gsap-context
+
+PinnedSection pin/scrub pattern: use `ScrollTrigger.create({ pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true, end: () => \`+=${scrollDistance * window.innerHeight}\` })` inside `gsap.context()`. Root div must NOT have `overflow: hidden` — GSAP switches pinned element to `position: fixed` and clipping parents break the pin geometry. Import from `@/lib/gsap-core` (not gsap-plugins).
+
+### 2026-04-08T04:30:00Z | Phase 29 | tags: token-viz, canvas-2d, reduced-motion-audit, static-render
+
+token-viz.tsx is a static single-frame draw (MutationObserver + ResizeObserver triggers, no rAF loop) — reduced-motion guard is not needed. Coverage comment suffices for PF-06 audit. canvas-cursor and xray-reveal are pointer-driven rAF (only fire on pointer move) — also exempt from decorative animation reduced-motion requirements.
