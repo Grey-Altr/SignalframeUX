@@ -421,8 +421,8 @@ Plans:
   8. With `prefers-reduced-motion` active, PROOF shows a static split view with both layers visible side-by-side
 **Plans:** 2 plans
 Plans:
-- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
-- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
+- [ ] 32-01-PLAN.md — PROOF section (A+B+C concurrent layers, rAF lerp, pointer/gyroscope, ScrollTrigger lifecycle) [PR-01..06]
+- [ ] 32-02-PLAN.md — SIGNAL section (150vh scrub:2 parallax, GLSLSignal 3rd concurrent WebGL scene, reduced-motion static) [SG-01..05]
 
 ### Phase 33: INVENTORY + ACQUISITION Sections
 **Goal**: The component catalog presents as a technical instrument with coded nomenclature, and the acquisition panel delivers the CLI command as the sharp close of the homepage
