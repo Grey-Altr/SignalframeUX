@@ -419,7 +419,7 @@ Plans:
   6. System stats (component count, bundle size, Lighthouse score) appear as data points within the PROOF section, not as a separate band above or below it
   7. Touch support on PROOF is functional — tap and drag on a 375px mobile viewport produces the same SIGNAL/FRAME separation effect as mouse on desktop
   8. With `prefers-reduced-motion` active, PROOF shows a static split view with both layers visible side-by-side
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 32-01-PLAN.md — PROOF section (A+B+C concurrent layers, rAF lerp, pointer/gyroscope, ScrollTrigger lifecycle) [PR-01..06]
 - [ ] 32-02-PLAN.md — SIGNAL section (150vh scrub:2 parallax, GLSLSignal 3rd concurrent WebGL scene, reduced-motion static) [SG-01..05]
@@ -511,7 +511,7 @@ Plans:
 | 29. Infrastructure Hardening | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
 | 30. Homepage Architecture + ENTRY Section | 2/2 | Complete   | 2026-04-08 | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
-| 32. SIGNAL + PROOF Sections | v1.5 | 0/? | Not started | - |
+| 32. SIGNAL + PROOF Sections | 1/2 | In Progress|  | - |
 | 33. INVENTORY + ACQUISITION Sections | v1.5 | 0/? | Not started | - |
 | 34. Visual Language + Subpage Redesign | v1.5 | 0/? | Not started | - |
 | 35. Performance + Launch Gate | v1.5 | 0/? | Not started | - |
