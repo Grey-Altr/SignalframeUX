@@ -353,7 +353,10 @@ Plans:
   2. Every internal `<Link>` component, nav item, and footer link in the codebase points to the new route names — `grep -r '"/components"' src/` and `grep -r '"/tokens"'` return zero results
   3. The `/inventory`, `/system`, and `/init` page files exist in `app/` and render without console errors
   4. Existing functionality on all three renamed pages is unaffected — ComponentsExplorer, TokenTabs, and getting-started content are intact
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 29: Infrastructure Hardening
 **Goal**: The codebase is hardened against known Awwwards-class integration hazards — scroll, font, and Observer infrastructure are correct before any new scroll or WebGL work begins
@@ -366,7 +369,10 @@ Plans:
   4. Lenis config is audited: `ignoreMobileResize: true` is active, rAF ticker pattern matches the load-bearing pattern from v1.2, and `scrollerProxy` is confirmed absent
   5. PinnedSection component exists in `components/animation/` with `pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true` — tested in isolation with a placeholder before Phase 31 uses it in production
   6. A prefers-reduced-motion CSS media query and a JS `matchMedia` utility are confirmed present and covering all GSAP contexts before scroll-driven work begins (PF-06 gate)
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 30: Homepage Architecture + ENTRY Section
 **Goal**: The homepage delivers a cinematic first impression — six-section architecture replaces the old page, the full-viewport GLSL hero is the entry point, and navigation is invisible until the user scrolls
@@ -379,7 +385,10 @@ Plans:
   4. The navigation bar is invisible on the initial viewport and becomes sticky after the user scrolls past ENTRY — confirmed at 0px scroll and at ENTRY-bottom scroll position
   5. Moving the mouse over the ENTRY section produces subtle, non-overwhelming shader parameter variation — the effect is present but does not distract from the typography
   6. CircuitDivider and MarqueeBand components are removed from the homepage — section transitions use hard cuts or scroll-driven reveals with no decorative dividers
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 31: THESIS Section
 **Goal**: The manifesto occupies 200-300vh of scroll distance, placing individual type statements across the viewport as the user scrolls — the primary signature interaction that defines the Awwwards submission
@@ -392,7 +401,10 @@ Plans:
   4. Gaps between key statements measure at least 30vh in scroll distance — the void is visible and intentional, not collapsed by browser layout
   5. The content covers the SIGNAL/FRAME thesis, the Enhanced Flat Design position, and cybernetic biophilia — as declarative statements, not explanatory prose
   6. With `prefers-reduced-motion` active, all manifesto text is instantly placed at its final position with no scroll-driven animation — the content is readable without scrolling
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 32: SIGNAL + PROOF Sections
 **Goal**: Two consecutive full-viewport sections deliver the generative identity and the interactive layer separation demo — the site's technical credibility is visible and interactable
@@ -407,7 +419,10 @@ Plans:
   6. System stats (component count, bundle size, Lighthouse score) appear as data points within the PROOF section, not as a separate band above or below it
   7. Touch support on PROOF is functional — tap and drag on a 375px mobile viewport produces the same SIGNAL/FRAME separation effect as mouse on desktop
   8. With `prefers-reduced-motion` active, PROOF shows a static split view with both layers visible side-by-side
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 33: INVENTORY + ACQUISITION Sections
 **Goal**: The component catalog presents as a technical instrument with coded nomenclature, and the acquisition panel delivers the CLI command as the sharp close of the homepage
@@ -420,7 +435,10 @@ Plans:
   4. Clicking or tapping any catalog entry on the homepage or `/inventory` page opens the Phase 25 ComponentDetail panel with correct component data
   5. The homepage INVENTORY section shows exactly 12 components; the `/inventory` page shows the full catalog with filter controls (layer, pattern, category) functional
   6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 34: Visual Language + Subpage Redesign
 **Goal**: The full visual language system is applied site-wide — ghost labels, display type moments, HUD indicators, and redesigned subpages complete the transformation from docs site to designed artifact
@@ -436,7 +454,10 @@ Plans:
   7. The `/init` page uses the system initialization framing — sharp, technical, minimal prose; no "Get Started" button energy
   8. The `/reference` page uses monospaced, dense schematic layout for API docs — consistent with the DU/TDR coded aesthetic
   9. All subpages share the redesigned nav (hidden on initial viewport if applicable, sticky on scroll) and footer from Phase 30
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ### Phase 35: Performance + Launch Gate
 **Goal**: v1.5 Redesign meets all hard performance and launch constraints — the site is ready for Awwwards submission
@@ -450,7 +471,10 @@ Plans:
   5. The Awwwards submission package is prepared: project description, technology stack, 5+ screenshots at 1440x900, and live URL
   6. Open Graph meta tags are updated for the redesigned site — title, description, and preview image reflect the v1.5 identity
   7. The production Vercel deployment is live with zero console errors — confirmed by opening DevTools on the deployed URL
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 28-01-PLAN.md — 308 redirects config + directory moves (RA-01, RA-02, RA-03)
+- [ ] 28-02-PLAN.md — Internal link surgery + test updates (RA-04)
 
 ## Progress
 
