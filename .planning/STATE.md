@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 29-01-PLAN.md
-last_updated: "2026-04-08T03:18:17.340Z"
+stopped_at: Completed 29-02-PLAN.md
+last_updated: "2026-04-08T03:23:03.725Z"
 last_activity: 2026-04-08 — Phase 29 Plan 01 complete (infrastructure hardening — overscroll, Lenis autoResize, Observer, fonts-ready)
 progress:
   total_phases: 26
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 17
-  completed_plans: 16
-  percent: 94
+  completed_plans: 17
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -138,6 +138,8 @@ v1.5: [██________] 25% (3/? plans) IN PROGRESS — Phase 29 Plan 01 complete
 - [Phase 28]: phase-28-route-infra.spec.ts retains old route strings — intentional redirect verification tests, not stale nav links
 - [Phase 28]: sitemap.ts uses template literals (${BASE}/route) not quoted strings — grep pattern must account for this syntax
 - [Phase 29]: autoResize: false instead of ignoreMobileResize: true — Lenis 1.3.x dropped ignoreMobileResize; autoResize: false is the equivalent for iOS address bar resize suppression
+- [Phase 29]: token-viz is static single-frame render — no rAF guard needed, reduced-motion coverage comment added to satisfy PF-06 audit
+- [Phase 29]: canvas-cursor and xray-reveal classified as pointer-driven (exempt from reduced-motion guard — rAF only fires on pointer move)
 
 ### Blockers
 
@@ -153,6 +155,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-08T03:18:17.336Z
-Stopped at: Completed 29-01-PLAN.md
+Last session: 2026-04-08T03:22:58.884Z
+Stopped at: Completed 29-02-PLAN.md
 Resume with: `/pde:execute-phase 29` to begin Phase 29 (Infrastructure Hardening)

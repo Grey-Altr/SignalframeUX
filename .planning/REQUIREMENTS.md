@@ -84,7 +84,7 @@
 - [ ] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
 - [x] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
 - [x] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
-- [ ] **PF-06**: prefers-reduced-motion fully functional across all new sections
+- [x] **PF-06**: prefers-reduced-motion fully functional across all new sections
 
 ## Launch Readiness
 
@@ -105,7 +105,7 @@
 | RA-04 | Phase 28 | Complete |
 | PF-04 | Phase 29 | Complete |
 | PF-05 | Phase 29 | Complete |
-| PF-06 | Phase 29 | Pending |
+| PF-06 | Phase 29 | Complete |
 | RA-05 | Phase 30 | Pending |
 | EN-01 | Phase 30 | Pending |
 | EN-02 | Phase 30 | Pending |
