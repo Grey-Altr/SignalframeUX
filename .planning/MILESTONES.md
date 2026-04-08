@@ -1,10 +1,30 @@
 # Milestones
 
+## v1.4 Feature Complete (Shipped: 2026-04-08)
+
+**Phases completed:** 7 phases, 13 plans, 6 tasks
+
+**Key accomplishments:**
+
+- TD-01 — MutationObserver disconnect on unmount
+- One-liner:
+- Elevation absence and deferred sidebar/chart token groups documented in globals.css and SCAFFOLDING.md with explicit DU/TDR rationale and do-not-use guidance for v1.4
+- lib/code-highlight.ts
+- One-liner:
+- One-liner:
+- One-liner:
+- Production build at 100.0 KB gzip shared bundle (50 KB under 150 KB gate), all lazy-load isolation verified, 15/15 Playwright tests passing.
+- Accessibility (90→100):
+- IBF-01 (ID/registry mismatch):
+
+---
+
 ## v1.3 Component Expansion (Shipped: 2026-04-06)
 
 **Phases completed:** 5 phases, 10 plans, 6 tasks
 
 **Key accomplishments:**
+
 - (none recorded)
 
 ---
@@ -14,6 +34,7 @@
 **Phases completed:** 6 phases, 9 plans, 6 tasks
 
 **Key accomplishments:**
+
 - (none recorded)
 
 ---
@@ -27,6 +48,7 @@
 **Nyquist:** 0/4 phases compliant (all draft)
 
 **Key accomplishments:**
+
 - Singleton WebGL infrastructure: SignalCanvas renderer, useSignalScene hook, color-resolve OKLCH→sRGB bridge with TTL cache
 - Multi-sensory SIGNAL activation: audio feedback (Web Audio square wave), haptic feedback (Vibration API), idle animation (8s grain drift + OKLCH ±5% lightness pulse)
 - Two generative scenes: SignalMesh (IcosahedronGeometry + vertex displacement + ScrollTrigger) and TokenViz (Canvas 2D self-depicting token visualization)
@@ -35,6 +57,7 @@
 - SignalMotion scroll-driven wrapper + SignalOverlay live parameter panel with Shift+S toggle
 
 **Known gaps (accepted):**
+
 - INT-03: SignalMotion built but zero consumers — component exists with no page placement
 - INT-04: SignalOverlay writes CSS vars (--signal-intensity, --signal-speed, --signal-accent) but no WebGL scene reads them
 - INT-01 minor: reference page missing mt-[var(--nav-height)], start NEXT_CARDS grid not SFSection-wrapped
@@ -53,6 +76,7 @@
 **Nyquist:** 5/5 phases compliant
 
 **Key accomplishments:**
+
 - Token system locked and enforced — 9 blessed spacing stops, 5 semantic typography aliases, 3 layout tokens, tiered color palette (core 5 + extended), animation durations/easings
 - 6 SF primitives built (SFContainer, SFSection, SFStack, SFGrid, SFText, SFButton) enforcing tokens by construction with CVA variants and TypeScript enforcement
 - SIGNAL layer authored — ScrambleText, asymmetric hover (100ms/400ms), 34ms hard-cut section reveals, 40ms stagger cascades, canvas cursor with IntersectionObserver scoping
@@ -60,6 +84,7 @@
 - DX contract established — SCAFFOLDING.md (337 lines), JSDoc on all 28 SF components, FRAME/SIGNAL import boundary documented, deferred items with interface sketches in DX-SPEC.md
 
 **Known gaps (accepted):**
+
 - SIG-06/07/08: Audio, haptic, idle state — deferred with rationale
 - DX-04/05: Registry, API factory — deferred with interface sketches
 - STP-01: Session persistence — deferred with interface sketch
