@@ -29,12 +29,25 @@ import { getState } from "@/lib/signal-canvas";
 // WebGL availability check — runs once at module level on client
 // ---------------------------------------------------------------------------
 
+// Cache on globalThis so the check survives HMR hot reloads without creating
+// a new WebGL context on every remount (iOS Safari enforces a 2-8 context limit).
+const _g = globalThis as unknown as { __sf_has_webgl?: boolean };
+
 function checkWebGL(): boolean {
   if (typeof window === "undefined") return false;
+  if (_g.__sf_has_webgl !== undefined) return _g.__sf_has_webgl;
   try {
     const canvas = document.createElement("canvas");
-    return !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+    const ctx = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    _g.__sf_has_webgl = !!ctx;
+    // Force-lose the test context immediately so it doesn't count against the limit
+    if (ctx) {
+      const ext = (ctx as WebGLRenderingContext).getExtension("WEBGL_lose_context");
+      ext?.loseContext();
+    }
+    return _g.__sf_has_webgl;
   } catch {
+    _g.__sf_has_webgl = false;
     return false;
   }
 }
