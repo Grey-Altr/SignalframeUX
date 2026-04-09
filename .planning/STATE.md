@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Phase 34 Plan 04 complete -- 4/4 plans shipped, Phase 34 Visual Language + Subpage Redesign closed
-last_updated: "2026-04-09T09:36:47.121Z"
+milestone: v1.5
+milestone_name: v1.5 Redesign
+status: ready_to_execute
+stopped_at: Phase 34 closed (human sign-off 2026-04-09) -- awaiting Phase 35 Performance + Launch Gate start
+last_updated: "2026-04-09T15:30:00.000Z"
 last_activity: 2026-04-09
 progress:
   total_phases: 26
-  completed_phases: 13
-  total_plans: 31
-  completed_plans: 30
+  completed_phases: 14
+  total_plans: 35
+  completed_plans: 34
   percent: 97
 ---
 
@@ -27,9 +27,9 @@ progress:
 
 ## Current Position
 
-Phase: 34 — Visual Language + Subpage Redesign
-Plan: 4 of 4 — COMPLETE (auto-mode, Wave 2 parallel; 34-01 and 34-03 also shipped; 34-04 still running)
-Status: Ready to execute
+Phase: 35 — Performance + Launch Gate (ready to start)
+Previous: Phase 34 Visual Language + Subpage Redesign — CLOSED 2026-04-09 after human sign-off (fix commit e1e7af5 + hero moment feat commit fcc811d)
+Status: Ready to plan
 Last activity: 2026-04-09
 
 ## Progress
@@ -40,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█████████_] 94% (15/15+ plans) IN PROGRESS — Phase 34 Plans 01+02+03 shipped (Wave 2 parallel 34-04 still running)
+v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28-34 CLOSED; Phase 35 Launch Gate pending
 ```
 
 ## v1.5 Phase Map
@@ -53,8 +53,8 @@ v1.5: [█████████_] 94% (15/15+ plans) IN PROGRESS — Phase 34
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (3/4 plans — 34-01 + 34-02 + 34-03 shipped, Wave 2 34-04 still running parallel) |
-| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Not started |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Complete (4/4 plans shipped, Nyquist-compliant 77/77, human sign-off 2026-04-09) |
+| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Ready to start |
 
 ## Accumulated Context
 
@@ -175,6 +175,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-09T09:36:47.117Z
-Stopped at: Phase 34 Plan 04 complete -- 4/4 plans shipped, Phase 34 Visual Language + Subpage Redesign closed
-Resume with: Orchestrator awaits Wave 2 parallel siblings (34-02 /system specimen diagrams, 34-04 /reference schematic API index) to complete; then Phase 35 launch gate
+Last session: 2026-04-09T15:30:00.000Z
+Stopped at: Phase 34 closed after human sign-off -- 2 fix commits (e1e7af5 nav-reveal gap + metadata polish, fcc811d VL-05 hero magenta moment)
+Resume with: Start Phase 35 Performance + Launch Gate via /pde:discuss-phase 35 or /pde:plan-phase 35
