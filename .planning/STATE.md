@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 34 Plan 01 complete -- Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked
-last_updated: "2026-04-09T09:10:04.602Z"
-last_activity: 2026-04-09 -- Phase 34 Plan 01 complete (InstrumentHUD + useNavReveal + GhostLabel pair + magenta trim + breadcrumb restyle, auto-mode)
+stopped_at: Phase 34 Plan 03 complete -- /init reframed as bringup sequence, 10 SP-03 tests green (Wave 2 parallel)
+last_updated: "2026-04-09T09:35:00.000Z"
+last_activity: 2026-04-09 -- Phase 34 Plan 03 complete (/init STEPS preserved, onboarding blocks stripped, [01//INIT]-[05//DEPLOY] coded indicators, [OK] SYSTEM READY terminal footer)
 progress:
   total_phases: 26
   completed_phases: 12
   total_plans: 31
-  completed_plans: 27
-  percent: 87
+  completed_plans: 28
+  percent: 90
 ---
 
 # STATE — SignalframeUX
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 34 — Visual Language + Subpage Redesign
-Plan: 01 of 4 — COMPLETE (checkpoint:human-verify auto-approved)
-Status: Plan 01 ships InstrumentHUD site-wide, useNavReveal hook, NavRevealMount island, GhostLabel brief-locked pair, subpage h1 bumps, /inventory copy fix, magenta trim (5 files), breadcrumb monospaced restyle. Production build green (102 kB shared). Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked.
-Last activity: 2026-04-09 -- Phase 34 Plan 01 complete (InstrumentHUD + useNavReveal + GhostLabel pair + magenta trim + breadcrumb restyle, auto-mode)
+Plan: 03 of 4 — COMPLETE (auto-mode, Wave 2 parallel)
+Status: Plan 03 ships /init register reframe. STEPS data array + CodeBlock helper + COLOR_MAP.kw syntax highlight preserved verbatim; CHECKLIST + NEXT_CARDS + SETUP_CHECKLIST + NEXT STEPS + COMMUNITY BAND blocks stripped entirely. New render: single-column bringup sequence with divide-foreground/15 rules between 5 steps, [01//INIT]-[05//DEPLOY] coded indicators, step numbers at clamp(80px,10vw,160px), [00//BOOT] hero label, INITIA/LIZE h1 split, "[OK] SYSTEM READY" terminal footer. 10 SP-03 Playwright tests green + 2 SP-05 /init + VL-01 brief-lock (GhostLabel NOT on /init). File shrinks 397 -> 271 lines; /init route 782 B, 293 kB First Load; 102 kB shared bundle unchanged.
+Last activity: 2026-04-09 -- Phase 34 Plan 03 complete (/init bringup sequence reframe, auto-mode, Wave 2 parallel)
 
 ## Progress
 
@@ -40,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█████████_] 87% (13/15+ plans) IN PROGRESS — Phase 34 Plan 01 complete (InstrumentHUD site-wide)
+v1.5: [█████████_] 93% (14/15+ plans) IN PROGRESS — Phase 34 Plan 03 complete (/init bringup sequence reframe; Wave 2 parallel 34-02/34-04 running)
 ```
 
 ## v1.5 Phase Map
@@ -53,7 +53,7 @@ v1.5: [█████████_] 87% (13/15+ plans) IN PROGRESS — Phase 34
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (1/4 plans) |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (2/4 plans — 34-01 + 34-03 shipped, Wave 2 34-02/34-04 running parallel) |
 | 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Not started |
 
 ## Accumulated Context

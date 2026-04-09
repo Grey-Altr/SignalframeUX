@@ -73,7 +73,7 @@
 
 - [ ] **SP-01**: `/system` (tokens) — token groups presented as specimen-style visual diagrams, not tables
 - [ ] **SP-02**: `/system` — spacing scale, type scale, color palette, motion tokens each get designed visual sections
-- [ ] **SP-03**: `/init` — getting started reframed as system initialization; sharp, technical, minimal prose
+- [x] **SP-03**: `/init` — getting started reframed as system initialization; sharp, technical, minimal prose
 - [ ] **SP-04**: `/reference` — API docs styled as technical schematics; monospaced, dense layout
 - [x] **SP-05**: All subpages share the redesigned nav (hidden on initial viewport, sticky on scroll) and footer
 
@@ -149,7 +149,7 @@
 | VL-06 | Phase 34 | Complete |
 | SP-01 | Phase 34 | Pending |
 | SP-02 | Phase 34 | Pending |
-| SP-03 | Phase 34 | Pending |
+| SP-03 | Phase 34 | Complete |
 | SP-04 | Phase 34 | Pending |
 | SP-05 | Phase 34 | Complete |
 | PF-01 | Phase 35 | Pending |

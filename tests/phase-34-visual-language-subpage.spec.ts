@@ -418,4 +418,132 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(src).not.toMatch(/text-primary|bg-primary|border-primary/);
     expect(src).toMatch(/aria-current/);
   });
+
+  // ── SP-01 (34-02): specimen directory + TokenTabs imports ─────────
+
+  test("SP-01: source — components/blocks/token-specimens/ directory exists with 4 files", () => {
+    const dir = path.resolve(ROOT, "components/blocks/token-specimens");
+    expect(fs.existsSync(dir)).toBe(true);
+    expect(fs.existsSync(path.join(dir, "spacing-specimen.tsx"))).toBe(true);
+    expect(fs.existsSync(path.join(dir, "type-specimen.tsx"))).toBe(true);
+    expect(fs.existsSync(path.join(dir, "color-specimen.tsx"))).toBe(true);
+    expect(fs.existsSync(path.join(dir, "motion-specimen.tsx"))).toBe(true);
+  });
+
+  test("SP-01: source — token-tabs imports all 4 specimens", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/token-tabs.tsx"), "utf-8");
+    expect(src).toContain('from "./token-specimens/spacing-specimen"');
+    expect(src).toContain('from "./token-specimens/type-specimen"');
+    expect(src).toContain('from "./token-specimens/color-specimen"');
+    expect(src).toContain('from "./token-specimens/motion-specimen"');
+  });
+
+  test("SP-01: source — token-tabs renders each specimen + preserves data arrays + session state", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/token-tabs.tsx"), "utf-8");
+    expect(src).toMatch(/<SpacingSpecimen/);
+    expect(src).toMatch(/<TypeSpecimen/);
+    expect(src).toMatch(/<ColorSpecimen/);
+    expect(src).toMatch(/<MotionSpecimen/);
+    // Data arrays still live in token-tabs.tsx (not moved to a separate file)
+    expect(src).toMatch(/const\s+COLOR_SCALES\s*=/);
+    expect(src).toMatch(/const\s+SPACING\s*=/);
+    expect(src).toMatch(/const\s+TYPE_SCALE\s*=/);
+    expect(src).toMatch(/const\s+MOTION_TOKENS\s*=/);
+    // Session state preserved
+    expect(src).toMatch(/useSessionState[\s\S]*SESSION_KEYS\.TOKENS_TAB[\s\S]*"COLOR"/);
+  });
+
+  test("SP-01: source — legacy ELEVATION/RADIUS/BREAKPOINTS tabs still present (out of SP-02 scope)", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/token-tabs.tsx"), "utf-8");
+    expect(src).toContain('value="ELEVATION"');
+    expect(src).toContain('value="RADIUS"');
+    expect(src).toContain('value="BREAKPOINTS"');
+  });
+
+  // ── SP-02 (34-02): each specimen renders its token data ──────────
+
+  test("SP-02: DOM — /system SPACING tab renders 9 ruler bars", async ({ page }) => {
+    await page.goto("/system");
+    await page.getByRole("tab", { name: /SPACING/i }).click();
+    await expect(page.locator("[data-spacing-token]")).toHaveCount(9);
+  });
+
+  test("SP-02: DOM — /system TYPOGRAPHY tab renders >=7 type samples", async ({ page }) => {
+    await page.goto("/system");
+    await page.getByRole("tab", { name: /TYPOGRAPHY/i }).click();
+    const count = await page.locator("[data-type-sample]").count();
+    expect(count).toBeGreaterThanOrEqual(7);
+  });
+
+  test("SP-02: DOM — /system COLOR tab renders OKLCH swatch matrix with L/C/H labels", async ({ page }) => {
+    await page.goto("/system");
+    await page.getByRole("tab", { name: /COLOR/i }).click();
+    // L / C / H axis labels visible
+    await expect(page.getByText(/LIGHTNESS/i).first()).toBeVisible();
+    await expect(page.getByText(/CHROMA/i).first()).toBeVisible();
+    await expect(page.getByText(/HUE/i).first()).toBeVisible();
+    // At least 60 swatches in core default state (6 scales x 12 steps = 72)
+    const swatchCount = await page.locator("[data-oklch-swatch]").count();
+    expect(swatchCount).toBeGreaterThanOrEqual(60);
+    // First swatch aria-label contains "oklch("
+    const firstAria = await page.locator("[data-oklch-swatch]").first().getAttribute("aria-label");
+    expect(firstAria).toContain("oklch(");
+  });
+
+  test("SP-02: DOM — /system COLOR tab SHOW ALL toggle expands to all 49 scales", async ({ page }) => {
+    await page.goto("/system");
+    await page.getByRole("tab", { name: /COLOR/i }).click();
+    const toggle = page.getByRole("button", { name: /SHOW ALL 49/i });
+    await toggle.click();
+    // 49 scales x 12 steps = 588
+    const swatchCount = await page.locator("[data-oklch-swatch]").count();
+    expect(swatchCount).toBeGreaterThanOrEqual(588);
+  });
+
+  test("SP-02: DOM — /system MOTION tab renders SVG curve plots", async ({ page }) => {
+    await page.goto("/system");
+    await page.getByRole("tab", { name: /MOTION/i }).click();
+    const svgCount = await page.locator("[data-motion-token] svg").count();
+    expect(svgCount).toBeGreaterThanOrEqual(5);
+    const curveCount = await page.locator("[data-motion-curve]").count();
+    expect(curveCount).toBeGreaterThanOrEqual(5);
+  });
+
+  test("SP-02: source — no <table>, <tr>, <td> in any specimen file", () => {
+    const files = [
+      "components/blocks/token-specimens/spacing-specimen.tsx",
+      "components/blocks/token-specimens/type-specimen.tsx",
+      "components/blocks/token-specimens/color-specimen.tsx",
+      "components/blocks/token-specimens/motion-specimen.tsx",
+    ];
+    for (const f of files) {
+      const src = fs.readFileSync(path.resolve(ROOT, f), "utf-8");
+      expect(src).not.toMatch(/<table[\s>]/);
+      expect(src).not.toMatch(/<tr[\s>]/);
+      expect(src).not.toMatch(/<td[\s>]/);
+    }
+  });
+
+  test("SP-02: source — ColorSpecimen is a Client Component, others are Server Components", () => {
+    const color = fs.readFileSync(path.resolve(ROOT, "components/blocks/token-specimens/color-specimen.tsx"), "utf-8");
+    expect(color).toMatch(/^"use client"/m);
+    for (const f of [
+      "components/blocks/token-specimens/spacing-specimen.tsx",
+      "components/blocks/token-specimens/type-specimen.tsx",
+      "components/blocks/token-specimens/motion-specimen.tsx",
+    ]) {
+      const src = fs.readFileSync(path.resolve(ROOT, f), "utf-8");
+      expect(src).not.toMatch(/^"use client"/m);
+    }
+  });
+
+  // ── SP-05 (34-02 reinforcement): /system renders NavRevealMount + header trigger ──
+
+  test("SP-05: source — /system renders NavRevealMount + header[data-nav-reveal-trigger]", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/system/page.tsx"), "utf-8");
+    expect(src).toContain("NavRevealMount");
+    expect(src).toContain("data-nav-reveal-trigger");
+    // Must not rely on the safety fallback
+    expect(src).not.toMatch(/trigger\s*===\s*null/);
+  });
 });
