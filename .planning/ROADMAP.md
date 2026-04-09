@@ -435,10 +435,12 @@ Plans:
   4. Clicking or tapping any catalog entry on the homepage or `/inventory` page opens the Phase 25 ComponentDetail panel with correct component data
   5. The homepage INVENTORY section shows exactly 12 components; the `/inventory` page shows the full catalog with filter controls (layer, pattern, category) functional
   6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 Plans:
-- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
-- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
+- [x] 33-01-PLAN.md — Nomenclature system + registry reconciliation + Playwright scaffold
+- [x] 33-02-PLAN.md — InventorySection homepage UI + homepage wire-up
+- [x] 33-03-PLAN.md — ComponentsExplorer layer+pattern filters + live registry bridge (36 items)
+- [ ] 33-04-PLAN.md — ACQUISITION section
 
 ### Phase 34: Visual Language + Subpage Redesign
 **Goal**: The full visual language system is applied site-wide — ghost labels, display type moments, HUD indicators, and redesigned subpages complete the transformation from docs site to designed artifact
