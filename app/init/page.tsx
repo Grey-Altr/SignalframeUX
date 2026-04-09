@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
-import { SFButton, SFBadge, SFSection } from "@/components/sf";
-import Link from "next/link";
+import { SFSection } from "@/components/sf";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 
 
 export const metadata: Metadata = {
@@ -123,21 +123,6 @@ const STEPS: Array<{ number: string; title: string; description: string; code: C
   },
 ];
 
-const CHECKLIST = [
-  { label: "INSTALL @SFUX/CORE AND DEPENDENCIES", done: true, status: "COMPLETE" },
-  { label: "WRAP APP IN SFUXPROVIDER", done: true, status: "COMPLETE" },
-  { label: "IMPORT AND USE FRAME COMPONENTS", done: true, status: "COMPLETE" },
-  { label: "CONFIGURE OKLCH TOKEN OVERRIDES", done: false, status: "OPTIONAL" },
-  { label: "ENABLE SIGNAL LAYER EFFECTS", done: false, status: "OPTIONAL" },
-  { label: "SET UP STORYBOOK FOR DEVELOPMENT", done: false, status: "RECOMMENDED" },
-];
-
-const NEXT_CARDS = [
-  { title: "BROWSE COMPONENTS", description: "EXPLORE ALL 340+ SIGNAL AND FRAME COMPONENTS WITH LIVE PREVIEWS AND CODE EXAMPLES.", arrow: "COMPONENT LIBRARY", href: "/inventory" },
-  { title: "API REFERENCE", description: "DIVE INTO THE FULL API \u2014 PROPS, HOOKS, TOKENS, AND THE PROGRAMMABLE SURFACE.", arrow: "API DOCS", href: "/reference" },
-  { title: "TOKEN EXPLORER", description: "VISUALIZE AND CUSTOMIZE THE OKLCH COLOR SCALES, SPACING, TYPE, AND MOTION TOKENS.", arrow: "TOKEN EXPLORER", href: "/system" },
-];
-
 type CodePart = { text: string; cls?: string };
 type CodeLine =
   | { type: "comment"; text: string }
@@ -181,213 +166,102 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
   );
 }
 
-export default function StartPage() {
+export default function InitPage() {
   return (
     <>
       <Nav />
       <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
-        <Breadcrumb segments={[{ label: "GET STARTED" }]} />
-        {/* ═══ HERO ═══ */}
-        <SFSection label="GET STARTED" className="py-0 bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
-          {/* Yellow accent bar */}
-          <div className="h-[6px] bg-[var(--sf-yellow)]" aria-hidden="true" />
+        <Breadcrumb segments={[{ label: "INIT" }]} />
+
+        {/* SP-05: nav hides until the page header scrolls out of view
+            (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
+        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
+
+        {/* ═══ PAGE HEADER ═══ */}
+        <SFSection label="INIT" className="py-0 relative overflow-hidden">
           <header
             data-nav-reveal-trigger
-            className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]"
+            className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end relative z-10"
           >
-            <div className="flex items-start justify-between">
+            <div className="px-6 md:px-12 pt-10 pb-6">
+              <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+                [00//BOOT]
+              </div>
               <h1
-                className="sf-display mb-6"
+                aria-label="Initialize"
+                className="sf-display leading-[0.9] uppercase tracking-[-0.02em]"
                 style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
               >
-                <span data-anim="page-heading" suppressHydrationWarning>GET</span>
+                <span data-anim="page-heading" suppressHydrationWarning>INITIA</span>
                 <br />
-                <span data-anim="page-heading" suppressHydrationWarning>STARTED</span>
+                <span data-anim="page-heading" suppressHydrationWarning>LIZE</span>
               </h1>
-              {/* Monogram watermark */}
-              <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/15 select-none leading-none hidden md:block" aria-hidden="true">
-                SF
-              </span>
             </div>
-            <p className="text-md text-muted-foreground uppercase tracking-[0.2em] max-w-[600px] leading-[1.5]">
-              FROM ZERO TO SIGNAL//FRAME&trade; IN 5 MINUTES. ACCEPT THE
-              INTERFACE INTO YOUR LIFE.
-            </p>
-            <p className="mt-6 text-sm text-primary uppercase tracking-[0.15em]">
-              &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
-            </p>
+            <div className="px-6 md:px-12 pb-6 text-right font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+              5 STEP SEQUENCE
+            </div>
           </header>
         </SFSection>
 
-        {/* ═══ STEPS ═══ */}
-        {STEPS.map((step) => (
-          <SFSection
-            key={step.number}
-            label={step.title}
-            aria-label={`Step ${step.number}: ${step.title}`}
-            className="py-0 grid grid-cols-[60px_1fr] md:grid-cols-[80px_1fr] border-b-[3px] border-foreground min-h-[200px]"
-          >
-            {/* Step number column */}
-            <div
-              className={`flex items-center justify-center border-r-[3px] border-foreground transition-colors duration-200 sf-display ${
-                step.highlight
-                  ? "bg-[var(--sf-yellow)] text-foreground"
-                  : "bg-foreground text-background hover:bg-foreground/80"
-              }`}
-              style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
-            >
-              {step.number}
-            </div>
-
-            {/* Step content column */}
-            <div
-              className={`py-10 px-[clamp(20px,4vw,48px)] relative ${
-                step.highlight ? "bg-[var(--sf-yellow)] sf-grain" : ""
-              }`}
-            >
-              <h2
-                className="sf-display leading-none mb-4 text-foreground"
-                style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
-              >
-                {step.title}
-              </h2>
-              <p
-                className={`text-base leading-[1.8] max-w-[600px] mb-5 ${
-                  step.highlight
-                    ? "text-foreground"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {step.description}
-              </p>
-              <CodeBlock lines={step.code} />
-              {step.note && (
-                <div className="mt-4 text-sm text-muted-foreground uppercase tracking-[0.1em] py-3 px-4 border-l-[3px] border-primary">
-                  {step.note}
-                </div>
-              )}
-            </div>
-          </SFSection>
-        ))}
-
-        {/* ═══ CHECKLIST ═══ */}
-        <SFSection label="SETUP CHECKLIST" className="border-b-[3px] border-foreground py-10 px-[clamp(20px,4vw,48px)]">
-          <h2
-            className="sf-display mb-6"
-            style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
-          >
-            SETUP_CHECKLIST
-          </h2>
-          <div>
-            {CHECKLIST.map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-4 py-3 border-b border-border text-base uppercase tracking-[0.08em]"
-              >
-                <div
-                  role="img"
-                  aria-label={item.done ? "Complete" : "Incomplete"}
-                  className={`w-5 h-5 border-2 flex items-center justify-center text-sm shrink-0 ${
-                    item.done
-                      ? "bg-foreground border-foreground text-background"
-                      : "border-foreground"
-                  }`}
+        {/* ═══ BRINGUP SEQUENCE ═══ */}
+        <SFSection label="SEQUENCE" className="py-0">
+          <div className="divide-y divide-foreground/15">
+            {STEPS.map((step, i) => {
+              const CODES = ["INIT", "HANDSHAKE", "LINK", "TRANSMIT", "DEPLOY"] as const;
+              const code = `[${step.number}//${CODES[i]}]`;
+              return (
+                <article
+                  key={step.number}
+                  data-init-step={step.number}
+                  className="grid grid-cols-[auto_1fr] gap-8 md:gap-12 py-12 md:py-16 px-6 md:px-12"
                 >
-                  {item.done ? "\u2713" : ""}
-                </div>
-                <div className="flex-1">{item.label}</div>
-                <SFBadge
-                  intent={item.done ? "primary" : "outline"}
-                  className="text-sm"
-                >
-                  {item.status}
-                </SFBadge>
-              </div>
-            ))}
+                  {/* Step number at display size */}
+                  <div
+                    className="sf-display leading-none text-foreground tabular-nums"
+                    style={{ fontSize: "clamp(80px, 10vw, 160px)" }}
+                  >
+                    {step.number}
+                  </div>
+
+                  <div className="min-w-0">
+                    {/* Coded indicator */}
+                    <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                      {code}
+                    </div>
+
+                    {/* Title */}
+                    <h2
+                      className="sf-display uppercase tracking-tight mb-5 leading-[0.95]"
+                      style={{ fontSize: "var(--text-3xl)" }}
+                    >
+                      {step.title}
+                    </h2>
+
+                    {/* Description — all caps monospace, tracking tight */}
+                    <p className="font-mono uppercase text-[var(--text-sm)] leading-relaxed tracking-tight text-muted-foreground max-w-prose mb-6">
+                      {step.description}
+                    </p>
+
+                    {/* Code block — preserve CodeBlock helper */}
+                    <CodeBlock lines={step.code} />
+
+                    {/* Optional note — terminal comment register */}
+                    {step.note && (
+                      <div className="mt-4 font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+                        {"// " + step.note}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </SFSection>
 
-        {/* ═══ NEXT STEPS ═══ */}
-        <SFSection label="NEXT STEPS" className="py-0">
-          <div data-anim="stagger" className="grid grid-cols-1 sm:grid-cols-3 border-b-[3px] border-foreground">
-          {NEXT_CARDS.map((card, i) => (
-            <Link
-              key={card.title}
-              href={card.href}
-              className={`group relative overflow-hidden py-10 px-8 transition-all duration-150 no-underline text-foreground ${
-                i < NEXT_CARDS.length - 1
-                  ? "border-b-[3px] sm:border-b-0 sm:border-r-[3px] border-foreground"
-                  : ""
-              } hover:bg-foreground hover:text-background`}
-            >
-              {/* Animated border lines */}
-              <span className="absolute top-0 left-0 h-[2px] bg-foreground w-0 group-hover:w-full transition-all duration-100" />
-              <span className="absolute top-0 right-0 w-[2px] bg-foreground h-0 group-hover:h-full transition-all duration-100 delay-100" />
-              <span className="absolute bottom-0 right-0 h-[2px] bg-foreground w-0 group-hover:w-full transition-all duration-100 delay-200" />
-              <span className="absolute bottom-0 left-0 w-[2px] bg-foreground h-0 group-hover:h-full transition-all duration-100 delay-300" />
-
-              <h3 className="sf-display text-base mb-3 transition-colors duration-150 group-hover:text-foreground">
-                {card.title}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-[1.7] transition-colors duration-150">
-                {card.description}
-              </p>
-              <div className="mt-4 text-sm text-foreground uppercase tracking-[0.15em]">
-                &rarr; {card.arrow}
-              </div>
-            </Link>
-          ))}
-          </div>
-        </SFSection>
-
-        {/* ═══ COMMUNITY BAND ═══ */}
-        <SFSection label="COMMUNITY" className="py-0 sf-yellow-band sf-grain border-b-[3px] border-foreground relative overflow-hidden">
-
-          {/* Marquee */}
-          <span className="sr-only">Open source. Built by engineers. Work. Build. Signal. Repeat.</span>
-          <div className="h-8 overflow-hidden relative z-[var(--z-above-bg)]">
-            <div
-              aria-hidden="true"
-              className="flex whitespace-nowrap uppercase tracking-[0.15em] leading-8 text-foreground sf-display text-md"
-              style={{ animation: "sf-marquee-scroll 12s linear infinite" }}
-            >
-              {[...Array(4)].map((_, i) => (
-                <span key={i} className="inline-block pr-12">
-                  OPEN SOURCE // BUILT BY ENGINEERS // WORK BUILD SIGNAL REPEAT //
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="py-10 px-[clamp(20px,4vw,48px)] relative z-[var(--z-above-bg)]">
-            <h2
-              className="sf-display text-foreground mb-3"
-              style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
-            >
-              JOIN THE SIGNAL&trade;
-            </h2>
-            <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
-              SignalframeUX&trade; is open source. Built by people who believe
-              design systems should be{" "}
-              <Link href="/inventory" className="text-foreground no-underline hover:underline">
-                programmable surfaces
-              </Link>
-              , not static pattern libraries. Work. Build. Signal. Repeat.&trade;
-            </p>
-            <div className="mt-5 flex gap-4">
-              <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
-                <a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer">
-                  GITHUB
-                  <span className="sr-only">(opens in new tab)</span>
-                </a>
-              </SFButton>
-              <SFButton asChild intent="signal" className="bg-foreground text-[var(--sf-yellow)] border-foreground hover:bg-foreground/90">
-                <a href="https://github.com/signalframeux/storybook" target="_blank" rel="noopener noreferrer">
-                  STORYBOOK
-                  <span className="sr-only">(opens in new tab)</span>
-                </a>
-              </SFButton>
-            </div>
+        {/* ═══ TERMINAL FOOTER ═══ */}
+        <SFSection label="TERMINAL" className="border-t-4 border-foreground py-16 px-6 md:px-12">
+          <div className="font-mono uppercase tracking-[0.15em] text-muted-foreground">
+            [OK] SYSTEM READY
           </div>
         </SFSection>
       </main>
