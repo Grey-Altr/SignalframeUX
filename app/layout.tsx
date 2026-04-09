@@ -10,6 +10,7 @@ import { PageTransition } from "@/components/animation/page-transition";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SignalframeProvider } from "@/components/layout/signalframe-config";
 import { SFToaster } from "@/components/sf";
+import { InstrumentHUD } from "@/components/layout/instrument-hud";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -119,6 +120,7 @@ export default async function RootLayout({
         <SignalCanvasLazy />
         <PageAnimations />
         <PageTransition />
+        <InstrumentHUD />
       </body>
     </html>
   );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
-import { SectionIndicator } from "@/components/layout/section-indicator";
 import { EntrySection } from "@/components/blocks/entry-section";
 import { ProofSection } from "@/components/blocks/proof-section";
 import { ThesisSection } from "@/components/blocks/thesis-section";
@@ -88,7 +87,6 @@ export default function HomePage() {
             <AcquisitionSection />
           </SFSection>
         </div>
-        <SectionIndicator />
       </main>
       <Footer />
     </>
