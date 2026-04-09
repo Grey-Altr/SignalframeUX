@@ -61,12 +61,12 @@
 
 ## Visual Language
 
-- [ ] **VL-01**: Ghost labels scaled to 200px+ — architectural elements, not background decoration
-- [ ] **VL-02**: Display type moments at 120px+ in at least 3 locations across the site
+- [x] **VL-01**: Ghost labels scaled to 200px+ — architectural elements, not background decoration
+- [x] **VL-02**: Display type moments at 120px+ in at least 3 locations across the site
 - [x] **VL-03**: CircuitDivider replaced or removed — section transitions use hard cuts or scroll-driven reveals
-- [ ] **VL-04**: Negative space audit: minimum 40% of viewport is intentional void in key sections
-- [ ] **VL-05**: Magenta accent used in ≤ 5 moments per page — fewer instances, bigger impact
-- [ ] **VL-06**: Section indicators redesigned as system readout HUD (monospaced, coded, data-dense)
+- [x] **VL-04**: Negative space audit: minimum 40% of viewport is intentional void in key sections
+- [x] **VL-05**: Magenta accent used in ≤ 5 moments per page — fewer instances, bigger impact
+- [x] **VL-06**: Section indicators redesigned as system readout HUD (monospaced, coded, data-dense)
 - [x] **VL-07**: MarqueeBand removed or redesigned to fit the new information hierarchy
 
 ## Subpage Redesign
@@ -75,7 +75,7 @@
 - [ ] **SP-02**: `/system` — spacing scale, type scale, color palette, motion tokens each get designed visual sections
 - [ ] **SP-03**: `/init` — getting started reframed as system initialization; sharp, technical, minimal prose
 - [ ] **SP-04**: `/reference` — API docs styled as technical schematics; monospaced, dense layout
-- [ ] **SP-05**: All subpages share the redesigned nav (hidden on initial viewport, sticky on scroll) and footer
+- [x] **SP-05**: All subpages share the redesigned nav (hidden on initial viewport, sticky on scroll) and footer
 
 ## Performance
 
@@ -142,16 +142,16 @@
 | AQ-03 | Phase 33 | Complete |
 | AQ-04 | Phase 33 | Complete |
 | AQ-05 | Phase 33 | Complete |
-| VL-01 | Phase 34 | Pending |
-| VL-02 | Phase 34 | Pending |
-| VL-04 | Phase 34 | Pending |
-| VL-05 | Phase 34 | Pending |
-| VL-06 | Phase 34 | Pending |
+| VL-01 | Phase 34 | Complete |
+| VL-02 | Phase 34 | Complete |
+| VL-04 | Phase 34 | Complete |
+| VL-05 | Phase 34 | Complete |
+| VL-06 | Phase 34 | Complete |
 | SP-01 | Phase 34 | Pending |
 | SP-02 | Phase 34 | Pending |
 | SP-03 | Phase 34 | Pending |
 | SP-04 | Phase 34 | Pending |
-| SP-05 | Phase 34 | Pending |
+| SP-05 | Phase 34 | Complete |
 | PF-01 | Phase 35 | Pending |
 | PF-02 | Phase 35 | Pending |
 | PF-03 | Phase 35 | Pending |

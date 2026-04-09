@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 34 context gathered
-last_updated: "2026-04-09T06:13:01.702Z"
-last_activity: 2026-04-09 -- Phase 33 Plan 04 complete (AcquisitionSection + ProofSection SYSTEM_STATS refactor, human-verify approved)
+status: executing
+stopped_at: Phase 34 Plan 01 complete -- Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked
+last_updated: "2026-04-09T09:10:04.602Z"
+last_activity: 2026-04-09 -- Phase 34 Plan 01 complete (InstrumentHUD + useNavReveal + GhostLabel pair + magenta trim + breadcrumb restyle, auto-mode)
 progress:
   total_phases: 26
   completed_phases: 12
-  total_plans: 27
-  completed_plans: 26
+  total_plans: 31
+  completed_plans: 27
+  percent: 87
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 33 — INVENTORY + ACQUISITION Sections (automated work complete, awaiting orchestrator reconciliation)
-Plan: 04 of 4 — COMPLETE (checkpoint:human-verify approved)
-Status: Phase 33 automated work complete; all 4 plans shipped; 13/13 Playwright tests green; AQ-01..05 + IV-06 closed. Ready for phase transition or orchestrator verification.
-Last activity: 2026-04-09 -- Phase 33 Plan 04 complete (AcquisitionSection + ProofSection SYSTEM_STATS refactor, human-verify approved)
+Phase: 34 — Visual Language + Subpage Redesign
+Plan: 01 of 4 — COMPLETE (checkpoint:human-verify auto-approved)
+Status: Plan 01 ships InstrumentHUD site-wide, useNavReveal hook, NavRevealMount island, GhostLabel brief-locked pair, subpage h1 bumps, /inventory copy fix, magenta trim (5 files), breadcrumb monospaced restyle. Production build green (102 kB shared). Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked.
+Last activity: 2026-04-09 -- Phase 34 Plan 01 complete (InstrumentHUD + useNavReveal + GhostLabel pair + magenta trim + breadcrumb restyle, auto-mode)
 
 ## Progress
 
@@ -39,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█████████_] 80% (12/? plans) IN PROGRESS — Phase 33 complete (all 4 plans shipped, AcquisitionSection live)
+v1.5: [█████████_] 87% (13/15+ plans) IN PROGRESS — Phase 34 Plan 01 complete (InstrumentHUD site-wide)
 ```
 
 ## v1.5 Phase Map
@@ -52,7 +53,7 @@ v1.5: [█████████_] 80% (12/? plans) IN PROGRESS — Phase 33 c
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Not started |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (1/4 plans) |
 | 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Not started |
 
 ## Accumulated Context
@@ -142,6 +143,11 @@ v1.5: [█████████_] 80% (12/? plans) IN PROGRESS — Phase 33 c
 - [Phase 30-01]: page.tsx converted from async Server Component to sync — ComponentGrid removed from homepage eliminates all highlight() pre-computation
 - [Phase 30-01]: opacity: 0.01 on hero h1 (not opacity: 0) per LCP safety rule D-08 — allows LCP measurement while visually invisible until animation
 - [Phase 30-01]: Playwright font-size assertion uses 100px floor (not 120px spec minimum) to handle smaller test viewport; 120px minimum applies at full viewport width per clamp()
+- [Phase 34-01]: InstrumentHUD is a singleton mounted in app/layout.tsx with no props — selector hardcoded to `[data-section]`. Per-frame fields (scroll%, SIG intensity) use scrollRef/sigRef + requestAnimationFrame direct textContent writes; NEVER useState in the rAF loop.
+- [Phase 34-01]: Nav reveal decoupled from `nav.tsx` entirely. `useNavReveal(triggerRef)` flips `body.dataset.navVisible`; CSS `body[data-nav-visible="true"] .sf-nav-hidden` mirrors the flag. `NavRevealMount` per-page client island resolves the target selector and drives the hook. Nav itself no longer imports `ScrollTrigger`.
+- [Phase 34-01]: GhostLabel deployment locked to brief pair (app/page.tsx THESIS + app/system/page.tsx hero); playwright test greps those exact files — children block files DO NOT count toward the count.
+- [Phase 34-01]: Magenta audit is a tactical CSS-rule count proxy, not canonical visual moments. 5 target files held to ≤5 grep hits; canonical per-page moment count deferred to Phase 34 umbrella verification.
+- [Phase 34-01]: Breadcrumb auto-prepends `[SFUX]` root (coded `[SFUX]//[SEGMENT]` format) — consumer pages pass only their own segments; the root never needs to be wired up.
 
 ### Blockers
 
@@ -157,6 +163,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-09T06:13:01.697Z
-Stopped at: Phase 34 context gathered
+Last session: 2026-04-09T09:10:04.598Z
+Stopped at: Phase 34 Plan 01 complete -- Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked
 Resume with: Orchestrator phase reconciliation for Phase 33, then `/pde:plan-phase 34` (Visual Language + Subpage Redesign)
