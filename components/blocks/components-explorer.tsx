@@ -85,7 +85,7 @@ function PreviewSlider() {
   return (
     <div className="relative w-[80%] h-1 bg-current">
       <div
-        className="absolute top-[-4px] h-3 w-2 bg-primary"
+        className="absolute top-[-4px] h-3 w-2 bg-foreground"
         style={{ left: "60%" }}
       />
     </div>
@@ -130,7 +130,7 @@ function PreviewBadge({ color, text }: { color: string; text: string }) {
   const needsDarkText = color === "var(--sf-green)" || color === "var(--sf-yellow)";
   return (
     <span
-      className={`inline-block px-2.5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-primary-foreground"}`}
+      className={`inline-block px-2.5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
       style={{ background: color }}
     >
       {text}
@@ -149,7 +149,7 @@ function PreviewTable() {
 function PreviewDots() {
   return (
     <div className="flex gap-1">
-      <span className="w-2 h-2 border bg-primary border-primary" />
+      <span className="w-2 h-2 border bg-foreground border-foreground" />
       <span className="w-2 h-2 border border-current" />
       <span className="w-2 h-2 border border-current" />
       <span className="w-2 h-2 border border-current" />
@@ -228,7 +228,7 @@ function PreviewBreadcrumb() {
 
 function PreviewAlert() {
   return (
-    <div className="w-[80%] h-6 border-2 border-primary bg-primary/10 flex items-center px-1.5 text-[7px] uppercase font-mono">
+    <div className="w-[80%] h-6 border-2 border-foreground bg-foreground/10 flex items-center px-1.5 text-[7px] uppercase font-mono">
       INFO
     </div>
   );
@@ -297,7 +297,7 @@ function PreviewAccordion() {
 function PreviewProgress() {
   return (
     <div className="w-[80%] h-1 bg-muted">
-      <div className="h-full bg-primary" style={{ width: "60%" }} />
+      <div className="h-full bg-foreground" style={{ width: "60%" }} />
     </div>
   );
 }
@@ -362,7 +362,7 @@ function PreviewCalendar() {
           </span>
         ))}
         {Array.from({ length: 7 }, (_, i) => (
-          <span key={i + 7} className={`w-3 h-3 border border-current text-[5px] flex items-center justify-center ${i === 3 ? "bg-primary text-background" : ""}`}>
+          <span key={i + 7} className={`w-3 h-3 border border-current text-[5px] flex items-center justify-center ${i === 3 ? "bg-foreground text-background" : ""}`}>
             {i + 8}
           </span>
         ))}
@@ -477,18 +477,18 @@ const variantStyles: Record<
 > = {
   default: {
     cell: "bg-background text-foreground",
-    hoverCell: "hover:bg-foreground hover:text-background hover:border-primary",
-    titleHover: "group-hover:text-primary",
+    hoverCell: "hover:bg-foreground hover:text-background hover:border-foreground",
+    titleHover: "group-hover:text-foreground",
   },
   black: {
     cell: "bg-foreground text-background",
-    hoverCell: "hover:bg-primary hover:text-background",
+    hoverCell: "hover:bg-foreground/80 hover:text-background",
     titleHover: "group-hover:text-background",
   },
   yellow: {
     cell: "text-foreground",
-    hoverCell: "hover:bg-foreground hover:text-background hover:border-primary",
-    titleHover: "group-hover:text-primary",
+    hoverCell: "hover:bg-foreground hover:text-background hover:border-foreground",
+    titleHover: "group-hover:text-foreground",
   },
 };
 
@@ -875,10 +875,10 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               <div
                 className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-150 mt-2 mb-2 ${
                   comp.variant === "black"
-                    ? "border-[var(--sf-subtle-border)] group-hover:border-primary"
+                    ? "border-[var(--sf-subtle-border)] group-hover:border-foreground"
                     : comp.variant === "yellow"
                       ? "border-foreground"
-                      : "border-border/40 group-hover:border-primary"
+                      : "border-border/40 group-hover:border-foreground"
                 }`}
                 style={{ boxShadow: "var(--sf-inset-shadow)" }}
               >

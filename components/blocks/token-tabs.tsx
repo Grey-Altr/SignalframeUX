@@ -381,7 +381,7 @@ export function TokenTabs() {
           <SFTableBody>
             {SPACING.map((s) => (
               <SFTableRow key={s.name}>
-                <SFTableCell className="font-bold text-[var(--text-sm)] text-primary">{s.name}</SFTableCell>
+                <SFTableCell className="font-bold text-[var(--text-sm)] text-foreground">{s.name}</SFTableCell>
                 <SFTableCell className="text-[var(--text-sm)] text-muted-foreground">{s.rem}</SFTableCell>
                 <SFTableCell>
                   <div
@@ -414,7 +414,7 @@ export function TokenTabs() {
           <SFTableBody>
             {TYPE_SCALE.map((t) => (
               <SFTableRow key={t.name} className="align-baseline">
-                <SFTableCell className="p-6 text-[var(--text-xs)] text-primary font-bold w-[160px]">
+                <SFTableCell className="p-6 text-[var(--text-xs)] text-foreground font-bold w-[160px]">
                   {t.name}
                 </SFTableCell>
                 <SFTableCell
@@ -463,7 +463,7 @@ export function TokenTabs() {
           <SFTableBody>
             {MOTION_TOKENS.map((m, i) => (
               <SFTableRow key={m.name}>
-                <SFTableCell className="py-4 font-bold text-[var(--text-sm)] text-primary w-[200px]">
+                <SFTableCell className="py-4 font-bold text-[var(--text-sm)] text-foreground w-[200px]">
                   {m.name}
                 </SFTableCell>
                 <SFTableCell className="py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
@@ -505,7 +505,7 @@ export function TokenTabs() {
           <SFTableBody>
             {ELEVATION_TOKENS.map((e) => (
               <SFTableRow key={e.name}>
-                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-primary w-[200px]">
+                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-foreground w-[200px]">
                   {e.name}
                 </SFTableCell>
                 <SFTableCell className="p-6 px-6">
@@ -552,19 +552,19 @@ export function TokenTabs() {
           <SFTableBody>
             {RADIUS_TOKENS.map((r) => (
               <SFTableRow key={r.name}>
-                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-primary">
+                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-foreground">
                   {r.name}
                 </SFTableCell>
                 <SFTableCell className="p-6 px-6">
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-center gap-1">
                       <div
-                        className="w-14 h-10 border-2 border-foreground bg-primary/20"
+                        className="w-14 h-10 border-2 border-foreground bg-foreground/20"
                         style={{ borderRadius: "0px" }}
                         role="img"
                         aria-label="SF//UX: 0px radius"
                       />
-                      <span className="text-[var(--text-2xs)] text-primary font-bold uppercase">SF//UX</span>
+                      <span className="text-[var(--text-2xs)] text-foreground font-bold uppercase">SF//UX</span>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                       <div
@@ -607,7 +607,7 @@ export function TokenTabs() {
           <SFTableBody>
             {BREAKPOINT_TOKENS.map((bp) => (
               <SFTableRow key={bp.name}>
-                <SFTableCell className="font-bold text-[var(--text-sm)] text-primary">{bp.name}</SFTableCell>
+                <SFTableCell className="font-bold text-[var(--text-sm)] text-foreground">{bp.name}</SFTableCell>
                 <SFTableCell className="text-[var(--text-sm)] text-muted-foreground font-mono">{bp.px}px</SFTableCell>
                 <SFTableCell>
                   <div className="relative h-4 bg-muted">

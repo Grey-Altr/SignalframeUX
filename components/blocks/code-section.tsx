@@ -21,24 +21,29 @@ const CODE_LINES: CodeLine[] = [
   { text: "btn.render({ variant: 'signal' })" },
 ];
 
-/** Annotation layer — token values revealed via X-ray cursor */
+/** Annotation layer — token values revealed via X-ray cursor.
+ * Annotation color uses --sf-muted-text-dark (neutral) per Phase 34 magenta audit;
+ * the 3 load-bearing anchor annotations keep var(--color-primary) accent to
+ * mark the highest-signal system callouts. */
+const ANNOTATION_ACCENT = "var(--color-primary)";
+const ANNOTATION_MUTED = "var(--sf-muted-text-dark)";
 const ANNOTATION_LINES: CodeLine[] = [
   { text: "" },
-  { text: "// ← @sfux/core v2.1.0 — 12KB gzipped", color: "var(--color-primary)" },
+  { text: "// ← @sfux/core v2.1.0 — 12KB gzipped", color: ANNOTATION_ACCENT },
   { text: "" },
-  { text: "// ← Returns SFUXInstance", color: "var(--color-primary)" },
-  { text: "// ← oklch(0.145 0 0) — foreground base", color: "var(--color-primary)" },
-  { text: "// ← 49 OKLCH scales auto-generated", color: "var(--color-primary)" },
+  { text: "// ← Returns SFUXInstance", color: ANNOTATION_MUTED },
+  { text: "// ← oklch(0.145 0 0) — foreground base", color: ANNOTATION_ACCENT },
+  { text: "// ← 49 OKLCH scales auto-generated", color: ANNOTATION_MUTED },
   { text: "" },
-  { text: "// ← Frame layer active", color: "var(--color-primary)" },
-  { text: "// ← 0–1 float, maps to --sf-grain-opacity", color: "var(--color-primary)" },
-  { text: "// ← 'cursor' | 'scroll' | 'audio'", color: "var(--color-primary)" },
-  { text: "" },
-  { text: "" },
+  { text: "// ← Frame layer active", color: ANNOTATION_MUTED },
+  { text: "// ← 0–1 float, maps to --sf-grain-opacity", color: ANNOTATION_MUTED },
+  { text: "// ← 'cursor' | 'scroll' | 'audio'", color: ANNOTATION_MUTED },
   { text: "" },
   { text: "" },
-  { text: "// ← Returns ComponentAPI<Button>", color: "var(--color-primary)" },
-  { text: "// ← Renders to nearest SFUXProvider", color: "var(--color-primary)" },
+  { text: "" },
+  { text: "" },
+  { text: "// ← Returns ComponentAPI<Button>", color: ANNOTATION_MUTED },
+  { text: "// ← Renders to nearest SFUXProvider", color: ANNOTATION_ACCENT },
 ];
 
 export function CodeSection() {
@@ -57,7 +62,7 @@ export function CodeSection() {
           COMPONENT, AND FRAME EFFECT IS ADDRESSABLE
           THROUGH A UNIFIED INTERFACE.
         </p>
-        <p className="mt-4 text-[var(--text-xs)] uppercase tracking-[0.15em] text-primary font-bold hidden md:block">
+        <p className="mt-4 text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground font-bold hidden md:block">
           ◎ HOVER CODE TO REVEAL ANNOTATIONS
         </p>
       </div>

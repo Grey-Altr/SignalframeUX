@@ -185,7 +185,7 @@ function DataDrivenDoc({ doc }: { doc: ComponentDoc }) {
         <SFTableBody>
           {doc.props.map((prop) => (
             <SFTableRow key={prop.name}>
-              <SFTableCell className="text-primary font-bold">{prop.name}</SFTableCell>
+              <SFTableCell className="text-foreground font-bold">{prop.name}</SFTableCell>
               <SFTableCell>
                 <code className="text-[var(--text-xs)] bg-muted px-1.5 py-0.5">{prop.type}</code>
               </SFTableCell>
@@ -560,8 +560,8 @@ export function APIExplorer() {
           }}
         />
         <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground mb-6">
-          <span className="text-primary">API</span> /{" "}
-          <span className="text-primary">{activeItem.section}</span> / {activeItem.label.toUpperCase()}
+          <span className="text-foreground">API</span> /{" "}
+          <span className="text-foreground">{activeItem.section}</span> / {activeItem.label.toUpperCase()}
         </div>
 
         {activeNav !== "button" && API_DOCS[activeNav] ? (
@@ -602,16 +602,16 @@ export function APIExplorer() {
         <h2 className="sf-display text-[var(--text-xl)] mt-12 mb-4 pt-6 border-t-2 border-foreground">IMPORT</h2>
         <div data-anim="api-import-code">
         <CodeBlock label="TSX" className="my-4">
-          <span className="text-primary">import</span>
+          <span className="text-[var(--sf-code-keyword)]">import</span>
           {" { "}<span className="text-[var(--sf-code-text)]">Button</span>{" } "}
-          <span className="text-primary">from</span>{" "}
+          <span className="text-[var(--sf-code-keyword)]">from</span>{" "}
           <span className="text-[var(--sf-yellow)]">{"'@sfux/components'"}</span>
           {"\n\n"}
           <span className="text-[var(--sf-dim-text)]">{"// OR DIRECT IMPORT"}</span>
           {"\n"}
-          <span className="text-primary">import</span>
+          <span className="text-[var(--sf-code-keyword)]">import</span>
           {" { "}<span className="text-[var(--sf-code-text)]">Button</span>{" } "}
-          <span className="text-primary">from</span>{" "}
+          <span className="text-[var(--sf-code-keyword)]">from</span>{" "}
           <span className="text-[var(--sf-yellow)]">{"'@sfux/components/Button'"}</span>
         </CodeBlock>
         </div>
@@ -629,7 +629,7 @@ export function APIExplorer() {
           <SFTableBody>
             {BUTTON_PROPS.map((prop) => (
               <SFTableRow key={prop.name}>
-                <SFTableCell className="text-primary font-bold">{prop.name}</SFTableCell>
+                <SFTableCell className="text-foreground font-bold">{prop.name}</SFTableCell>
                 <SFTableCell>
                   <code className="text-[var(--text-xs)] bg-muted px-1.5 py-0.5">{prop.type}</code>
                 </SFTableCell>
@@ -692,7 +692,7 @@ export function APIExplorer() {
       </div>
 
       {/* RIGHT PANEL — Context-Aware Preview */}
-      <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-primary-foreground hidden md:block">
+      <aside className="sticky top-[var(--nav-height)] h-[calc(100vh-var(--nav-height))] bg-[var(--sf-darkest-surface)] text-background hidden md:block">
         <SFScrollArea className="h-full">
           <div className="flex items-center justify-between border-b border-[var(--sf-subtle-border)] p-4">
             <span className="text-[var(--text-sm)] uppercase tracking-[0.2em] text-muted-foreground">
@@ -720,7 +720,7 @@ export function APIExplorer() {
             style={{
               background:
                 previewTheme === "LIGHT" ? "var(--sf-preview-light-bg)"
-                : previewTheme === "FRAME" ? "var(--color-primary)"
+                : previewTheme === "FRAME" ? "var(--color-foreground)"
                 : undefined,
             }}
           >
@@ -780,7 +780,7 @@ export function APIExplorer() {
             {"\n"}
             {activeNav === "button" ? (
               <>
-                &lt;<span className="text-primary">Button</span>
+                &lt;<span className="text-[var(--sf-code-keyword)]">Button</span>
                 {"\n  "}<span className="text-[var(--sf-code-keyword)]">variant</span>=
                 <span className="text-[var(--sf-yellow)]">{'"signal"'}</span>
                 {"\n  "}<span className="text-[var(--sf-code-keyword)]">size</span>=
@@ -796,7 +796,7 @@ export function APIExplorer() {
 
           {/* VHS badge */}
           <div className="absolute bottom-4 right-4 flex items-center gap-1.5 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground opacity-40">
-            <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+            <span className="inline-block w-1.5 h-1.5 bg-foreground animate-pulse" />
             <span>SF//UX</span>
           </div>
         </SFScrollArea>

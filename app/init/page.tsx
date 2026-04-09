@@ -232,7 +232,7 @@ export default function StartPage() {
               className={`flex items-center justify-center border-r-[3px] border-foreground transition-colors duration-200 sf-display ${
                 step.highlight
                   ? "bg-[var(--sf-yellow)] text-foreground"
-                  : "bg-foreground text-background hover:bg-primary"
+                  : "bg-foreground text-background hover:bg-foreground/80"
               }`}
               style={{ fontSize: "clamp(24px, 4vw, 48px)" }}
             >
@@ -289,7 +289,7 @@ export default function StartPage() {
                   aria-label={item.done ? "Complete" : "Incomplete"}
                   className={`w-5 h-5 border-2 flex items-center justify-center text-sm shrink-0 ${
                     item.done
-                      ? "bg-primary border-primary text-primary-foreground"
+                      ? "bg-foreground border-foreground text-background"
                       : "border-foreground"
                   }`}
                 >
@@ -321,18 +321,18 @@ export default function StartPage() {
               } hover:bg-foreground hover:text-background`}
             >
               {/* Animated border lines */}
-              <span className="absolute top-0 left-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-100" />
-              <span className="absolute top-0 right-0 w-[2px] bg-primary h-0 group-hover:h-full transition-all duration-100 delay-100" />
-              <span className="absolute bottom-0 right-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-100 delay-200" />
-              <span className="absolute bottom-0 left-0 w-[2px] bg-primary h-0 group-hover:h-full transition-all duration-100 delay-300" />
+              <span className="absolute top-0 left-0 h-[2px] bg-foreground w-0 group-hover:w-full transition-all duration-100" />
+              <span className="absolute top-0 right-0 w-[2px] bg-foreground h-0 group-hover:h-full transition-all duration-100 delay-100" />
+              <span className="absolute bottom-0 right-0 h-[2px] bg-foreground w-0 group-hover:w-full transition-all duration-100 delay-200" />
+              <span className="absolute bottom-0 left-0 w-[2px] bg-foreground h-0 group-hover:h-full transition-all duration-100 delay-300" />
 
-              <h3 className="sf-display text-base mb-3 transition-colors duration-150 group-hover:text-primary">
+              <h3 className="sf-display text-base mb-3 transition-colors duration-150 group-hover:text-foreground">
                 {card.title}
               </h3>
               <p className="text-xs text-muted-foreground leading-[1.7] transition-colors duration-150">
                 {card.description}
               </p>
-              <div className="mt-4 text-sm text-primary uppercase tracking-[0.15em]">
+              <div className="mt-4 text-sm text-foreground uppercase tracking-[0.15em]">
                 &rarr; {card.arrow}
               </div>
             </Link>
@@ -369,7 +369,7 @@ export default function StartPage() {
             <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
               SignalframeUX&trade; is open source. Built by people who believe
               design systems should be{" "}
-              <Link href="/inventory" className="text-primary no-underline hover:underline">
+              <Link href="/inventory" className="text-foreground no-underline hover:underline">
                 programmable surfaces
               </Link>
               , not static pattern libraries. Work. Build. Signal. Repeat.&trade;
