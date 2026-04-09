@@ -435,7 +435,7 @@ Plans:
   4. Clicking or tapping any catalog entry on the homepage or `/inventory` page opens the Phase 25 ComponentDetail panel with correct component data
   5. The homepage INVENTORY section shows exactly 12 components; the `/inventory` page shows the full catalog with filter controls (layer, pattern, category) functional
   6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 Plans:
 - [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
 - [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
@@ -512,6 +512,6 @@ Plans:
 | 30. Homepage Architecture + ENTRY Section | 2/2 | Complete   | 2026-04-08 | - |
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
 | 32. SIGNAL + PROOF Sections | 2/2 | Complete   | 2026-04-08 | - |
-| 33. INVENTORY + ACQUISITION Sections | 1/4 | In Progress|  | - |
+| 33. INVENTORY + ACQUISITION Sections | 2/4 | In Progress|  | - |
 | 34. Visual Language + Subpage Redesign | v1.5 | 0/? | Not started | - |
 | 35. Performance + Launch Gate | v1.5 | 0/? | Not started | - |
