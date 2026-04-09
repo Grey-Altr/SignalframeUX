@@ -839,6 +839,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               aria-expanded={openIndex === comp.index}
               key={comp.index}
               data-flip-id={comp.index}
+              data-component-index={comp.index}
               tabIndex={i === focusedIndex ? 0 : -1}
               aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
               ref={(el) => { triggerRefs.current[comp.index] = el; }}
