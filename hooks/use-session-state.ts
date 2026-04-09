@@ -12,6 +12,8 @@ export const SESSION_KEYS = {
   COMPONENTS_FILTER: "sfux.components.filter",
   TOKENS_TAB: "sfux.tokens.tab",
   DETAIL_OPEN: "sfux.detail.open",
+  COMPONENTS_LAYER: "sfux.components.layer",     // layer filter persistence (FRAME | SIGNAL | ALL)
+  COMPONENTS_PATTERN: "sfux.components.pattern", // pattern filter persistence (A | B | C | ALL)
 } as const;
 
 /**
