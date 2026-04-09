@@ -75,7 +75,7 @@
 - [x] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader (completed 2026-04-08)
 - [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments
 - [x] **Phase 32: SIGNAL + PROOF Sections** — Atmospheric WebGL scene, interactive SIGNAL/FRAME layer separation demo (completed 2026-04-08)
-- [ ] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel
+- [x] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel (completed 2026-04-09)
 - [ ] **Phase 34: Visual Language + Subpage Redesign** — Ghost labels, display type audit, HUD indicators, specimen-style subpages
 - [ ] **Phase 35: Performance + Launch Gate** — Bundle gate, Lighthouse 100/100, OG tags, Awwwards package
 
@@ -435,12 +435,12 @@ Plans:
   4. Clicking or tapping any catalog entry on the homepage or `/inventory` page opens the Phase 25 ComponentDetail panel with correct component data
   5. The homepage INVENTORY section shows exactly 12 components; the `/inventory` page shows the full catalog with filter controls (layer, pattern, category) functional
   6. The ACQUISITION section renders at or below 50vh height; it contains the `npx signalframeux init` CLI command in monospaced type with a working copy-to-clipboard button, key system stats as monospaced data points, and links to `/init` and `/inventory`
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 - [x] 33-01-PLAN.md — Nomenclature system + registry reconciliation + Playwright scaffold
 - [x] 33-02-PLAN.md — InventorySection homepage UI + homepage wire-up
 - [x] 33-03-PLAN.md — ComponentsExplorer layer+pattern filters + live registry bridge (36 items)
-- [ ] 33-04-PLAN.md — ACQUISITION section
+- [x] 33-04-PLAN.md — AcquisitionSection terminal panel + ProofSection SYSTEM_STATS refactor [AQ-01..05, IV-06]
 
 ### Phase 34: Visual Language + Subpage Redesign
 **Goal**: The full visual language system is applied site-wide — ghost labels, display type moments, HUD indicators, and redesigned subpages complete the transformation from docs site to designed artifact

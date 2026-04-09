@@ -41,7 +41,7 @@
 - [x] **IV-03**: Monospaced type for catalog entries — dense, systematic, not card-based
 - [x] **IV-04**: Click/tap expands existing ComponentDetail panel (Phase 25 feature preserved)
 - [x] **IV-05**: Homepage INVENTORY section shows 12-item subset; `/inventory` page shows full catalog
-- [ ] **IV-06**: Filter by layer, pattern, and category functional on `/inventory` page (existing filter logic preserved)
+- [x] **IV-06**: Filter by layer, pattern, and category functional on `/inventory` page (existing filter logic preserved)
 
 ## SIGNAL Section
 
@@ -53,11 +53,11 @@
 
 ## ACQUISITION Section
 
-- [ ] **AQ-01**: CLI command `npx signalframeux init` displayed prominently in monospaced type with copy-to-clipboard
-- [ ] **AQ-02**: Key system stats (component count, bundle size, Lighthouse scores) as monospaced data points
-- [ ] **AQ-03**: Links to `/init` (full guide) and `/inventory` (full catalog)
-- [ ] **AQ-04**: Section height ≤ 50vh — sharp and short, no padding inflation
-- [ ] **AQ-05**: No "Get Started" button energy — technical instrument presentation
+- [x] **AQ-01**: CLI command `npx signalframeux init` displayed prominently in monospaced type with copy-to-clipboard
+- [x] **AQ-02**: Key system stats (component count, bundle size, Lighthouse scores) as monospaced data points
+- [x] **AQ-03**: Links to `/init` (full guide) and `/inventory` (full catalog)
+- [x] **AQ-04**: Section height ≤ 50vh — sharp and short, no padding inflation
+- [x] **AQ-05**: No "Get Started" button energy — technical instrument presentation
 
 ## Visual Language
 
@@ -136,12 +136,12 @@
 | IV-03 | Phase 33 | Complete |
 | IV-04 | Phase 33 | Complete |
 | IV-05 | Phase 33 | Complete |
-| IV-06 | Phase 33 | Pending |
-| AQ-01 | Phase 33 | Pending |
-| AQ-02 | Phase 33 | Pending |
-| AQ-03 | Phase 33 | Pending |
-| AQ-04 | Phase 33 | Pending |
-| AQ-05 | Phase 33 | Pending |
+| IV-06 | Phase 33 | Complete |
+| AQ-01 | Phase 33 | Complete |
+| AQ-02 | Phase 33 | Complete |
+| AQ-03 | Phase 33 | Complete |
+| AQ-04 | Phase 33 | Complete |
+| AQ-05 | Phase 33 | Complete |
 | VL-01 | Phase 34 | Pending |
 | VL-02 | Phase 34 | Pending |
 | VL-04 | Phase 34 | Pending |
