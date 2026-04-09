@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 34 Plan 03 complete -- /init reframed as bringup sequence, 10 SP-03 tests green (Wave 2 parallel)
-last_updated: "2026-04-09T09:35:00.000Z"
-last_activity: 2026-04-09 -- Phase 34 Plan 03 complete (/init STEPS preserved, onboarding blocks stripped, [01//INIT]-[05//DEPLOY] coded indicators, [OK] SYSTEM READY terminal footer)
+stopped_at: Phase 34 Plan 02 complete -- token specimens + /system NavRevealMount (Wave 2 parallel, 34-04 still running)
+last_updated: "2026-04-09T09:30:00.000Z"
+last_activity: 2026-04-09 -- Phase 34 Plan 02 complete (4 token specimens replace SFTable bodies; /system NavRevealMount wired; 11 new SP-01/SP-02 tests green)
 progress:
   total_phases: 26
   completed_phases: 12
   total_plans: 31
-  completed_plans: 28
-  percent: 90
+  completed_plans: 29
+  percent: 94
 ---
 
 # STATE — SignalframeUX
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 34 — Visual Language + Subpage Redesign
-Plan: 03 of 4 — COMPLETE (auto-mode, Wave 2 parallel)
-Status: Plan 03 ships /init register reframe. STEPS data array + CodeBlock helper + COLOR_MAP.kw syntax highlight preserved verbatim; CHECKLIST + NEXT_CARDS + SETUP_CHECKLIST + NEXT STEPS + COMMUNITY BAND blocks stripped entirely. New render: single-column bringup sequence with divide-foreground/15 rules between 5 steps, [01//INIT]-[05//DEPLOY] coded indicators, step numbers at clamp(80px,10vw,160px), [00//BOOT] hero label, INITIA/LIZE h1 split, "[OK] SYSTEM READY" terminal footer. 10 SP-03 Playwright tests green + 2 SP-05 /init + VL-01 brief-lock (GhostLabel NOT on /init). File shrinks 397 -> 271 lines; /init route 782 B, 293 kB First Load; 102 kB shared bundle unchanged.
-Last activity: 2026-04-09 -- Phase 34 Plan 03 complete (/init bringup sequence reframe, auto-mode, Wave 2 parallel)
+Plan: 02 of 4 — COMPLETE (auto-mode, Wave 2 parallel; 34-01 and 34-03 also shipped; 34-04 still running)
+Status: Plan 02 ships 4 dedicated token specimens replacing SFTable-driven tab bodies on /system. SpacingSpecimen (architectural ruler with 4px ticks + proportional bars, 9 blessed stops), TypeSpecimen (Brody/Fuse sample sheet, flush-left samples + mono metadata, 7 scale entries), ColorSpecimen (OKLCH matrix with L/C/H axis legend, SHOW ALL toggle for 6→49 scales, arrow-key navigation, focus readout — only Client Component in the set), MotionSpecimen (static SVG cubic-bezier curve plots with grid frame, control-point tangents, endpoint markers). TokenTabs orchestrator shrinks 631 → 372 lines (-259); data arrays, useSessionState(TOKENS_TAB), showAll, focusedSwatch all preserved. Legacy ELEVATION/RADIUS/BREAKPOINTS tabs untouched. app/system/page.tsx renders <NavRevealMount targetSelector="[data-nav-reveal-trigger]"/> after <Breadcrumb>; the <header data-nav-reveal-trigger> wrapper was already wired in 34-01. 11 new Phase 34 Playwright assertions (4 SP-01 source + 6 SP-02 source/DOM + 1 SP-05 source) all green. Production build green (102 KB shared, /system 8.04 kB). Zero new npm deps.
+Last activity: 2026-04-09 -- Phase 34 Plan 02 complete (4 token specimens + TokenTabs orchestrator rewire + /system NavRevealMount + 11 SP-01/SP-02 tests)
 
 ## Progress
 
@@ -40,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█████████_] 93% (14/15+ plans) IN PROGRESS — Phase 34 Plan 03 complete (/init bringup sequence reframe; Wave 2 parallel 34-02/34-04 running)
+v1.5: [█████████_] 94% (15/15+ plans) IN PROGRESS — Phase 34 Plans 01+02+03 shipped (Wave 2 parallel 34-04 still running)
 ```
 
 ## v1.5 Phase Map
@@ -53,7 +53,7 @@ v1.5: [█████████_] 93% (14/15+ plans) IN PROGRESS — Phase 34
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (2/4 plans — 34-01 + 34-03 shipped, Wave 2 34-02/34-04 running parallel) |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | In progress (3/4 plans — 34-01 + 34-02 + 34-03 shipped, Wave 2 34-04 still running parallel) |
 | 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Not started |
 
 ## Accumulated Context
@@ -148,6 +148,14 @@ v1.5: [█████████_] 93% (14/15+ plans) IN PROGRESS — Phase 34
 - [Phase 34-01]: GhostLabel deployment locked to brief pair (app/page.tsx THESIS + app/system/page.tsx hero); playwright test greps those exact files — children block files DO NOT count toward the count.
 - [Phase 34-01]: Magenta audit is a tactical CSS-rule count proxy, not canonical visual moments. 5 target files held to ≤5 grep hits; canonical per-page moment count deferred to Phase 34 umbrella verification.
 - [Phase 34-01]: Breadcrumb auto-prepends `[SFUX]` root (coded `[SFUX]//[SEGMENT]` format) — consumer pages pass only their own segments; the root never needs to be wired up.
+- [Phase 34-03]: /init register reframe is STRUCTURAL, not copy-only. NEXT_CARDS / SETUP_CHECKLIST / COMMUNITY BAND violate the locked bringup-sequence register at the LAYOUT level (cards-with-CTAs, checklist-with-checkboxes, community-invite-band) — no copy rewrite can rescue a `<div className="grid grid-cols-3">{NEXT_CARDS.map(...)}</div>` into register. Brief's "copy rewrite first" gate is bypassable when the structure itself violates the register at the layout level.
+- [Phase 34-03]: Terminal footer LOCKED literal is `[OK] SYSTEM READY` — not `[EXIT 0]`, not `[OK] BOOT COMPLETE` (Wipeout-instruction-booklet authority). Tests grep for this exact string.
+- [Phase 34-03]: Coded indicator mapping is a RENDER-only const `CODES = ["INIT","HANDSHAKE","LINK","TRANSMIT","DEPLOY"]` inside `STEPS.map((step, i) => ...)` — STEPS data array is NEVER mutated. Step number (01-05) comes from `step.number`, code label from `CODES[i]`.
+- [Phase 34-03]: Plan JSX sketches can contradict 34-01 brief-locks — the 34-03 plan sketch included `<GhostLabel text="INIT" />` on /init, but VL-01 brief-lock (enforced by 34-01 spec test line 173-178) restricts GhostLabel to app/page.tsx + app/system/page.tsx only. Test is canonical; plan sketch was wrong. Verify brief-locks in the canonical test file before following plan sketches.
+- [Phase 34-03]: Parallel Wave 2 executors can race on shared state files (STATE.md, ROADMAP.md) — the filesystem watcher and autoformatter can silently revert unstaged `.planning/*.md` edits when sibling executors commit. Fix: `git add .planning/FILE.md` immediately after every Edit, before any subsequent Edit or Bash call. Do not rely on batching edits and staging later.
+- [Phase 34]: [Phase 34-02]: ColorSpecimen owns its own visibleScales slice; TokenTabs no longer computes visibleScales locally. Data arrays stay in token-tabs.tsx orchestrator and pass into specimens as props.
+- [Phase 34]: [Phase 34-02]: Specimen prop types match live data array shapes (px: number, size: number); plan sketch had drifted to string types. Always read source before writing props.
+- [Phase 34]: [Phase 34-02]: ColorSpecimen is 'use client' (keyboard nav + focus state); SpacingSpecimen, TypeSpecimen, MotionSpecimen are Server Components (pure render, no interactivity).
 
 ### Blockers
 
@@ -163,6 +171,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-09T09:10:04.598Z
-Stopped at: Phase 34 Plan 01 complete -- Wave 2 subpage redesigns (34-02, 34-03, 34-04) unblocked
-Resume with: Orchestrator phase reconciliation for Phase 33, then `/pde:plan-phase 34` (Visual Language + Subpage Redesign)
+Last session: 2026-04-09T09:29:45.729Z
+Stopped at: Phase 34 Plan 02 complete -- token specimens + /system NavRevealMount
+Resume with: Orchestrator awaits Wave 2 parallel siblings (34-02 /system specimen diagrams, 34-04 /reference schematic API index) to complete; then Phase 35 launch gate
