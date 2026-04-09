@@ -76,6 +76,17 @@ export function InventorySection() {
     setOpenIndex(null);
   }, []);
 
+  // Portal-level Escape handler — catches close even if ComponentDetail
+  // lazy chunk hasn't loaded or GSAP animation hasn't completed
+  useEffect(() => {
+    if (!openIndex) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [openIndex, handleClose]);
+
   const openEntry = openIndex ? COMPONENT_REGISTRY[openIndex] : null;
   const openDoc = openEntry ? API_DOCS[openEntry.docId] : undefined;
 
