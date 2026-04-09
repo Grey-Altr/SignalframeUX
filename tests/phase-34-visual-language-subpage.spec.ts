@@ -318,6 +318,95 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true");
   });
 
+  // ── SP-03 (/init boot-sequence reframe — Plan 34-03) ──────────────
+
+  test("SP-03: DOM — /init preserves 5 STEPS", async ({ page }) => {
+    await page.goto("/init");
+    await expect(page.locator("[data-init-step]")).toHaveCount(5);
+  });
+
+  test("SP-03: DOM — /init removes NEXT_CARDS/SETUP_CHECKLIST/COMMUNITY blocks", async ({ page }) => {
+    await page.goto("/init");
+    await expect(page.getByText("SETUP_CHECKLIST", { exact: false })).toHaveCount(0);
+    await expect(page.getByText("NEXT STEPS", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("JOIN THE SIGNAL", { exact: false })).toHaveCount(0);
+    await expect(page.getByText("ESTIMATED TIME", { exact: false })).toHaveCount(0);
+  });
+
+  test("SP-03: source — /init does not contain removed block identifiers", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
+    expect(src).not.toContain("const CHECKLIST");
+    expect(src).not.toContain("const NEXT_CARDS");
+    expect(src).not.toContain("SETUP_CHECKLIST");
+    expect(src).not.toContain("JOIN THE SIGNAL");
+    expect(src).not.toContain("ESTIMATED TIME");
+  });
+
+  test("SP-03: DOM — /init terminal footer '[OK] SYSTEM READY'", async ({ page }) => {
+    await page.goto("/init");
+    await expect(page.getByText("[OK] SYSTEM READY", { exact: true })).toBeVisible();
+  });
+
+  test("SP-03: DOM — /init each step has [NN//CODE] coded indicator", async ({ page }) => {
+    await page.goto("/init");
+    const steps = page.locator("[data-init-step]");
+    const count = await steps.count();
+    expect(count).toBe(5);
+    const expected = [
+      /\[01\/\/INIT\]/,
+      /\[02\/\/HANDSHAKE\]/,
+      /\[03\/\/LINK\]/,
+      /\[04\/\/TRANSMIT\]/,
+      /\[05\/\/DEPLOY\]/,
+    ];
+    for (let i = 0; i < 5; i++) {
+      const stepText = await steps.nth(i).textContent();
+      expect(stepText).toMatch(expected[i]);
+    }
+  });
+
+  test("SP-03: DOM — /init hero has [00//BOOT] and INITIALIZE display", async ({ page }) => {
+    await page.goto("/init");
+    await expect(page.getByText("[00//BOOT]", { exact: true })).toBeVisible();
+    const h1 = page.locator("h1").first();
+    const text = await h1.textContent();
+    expect(text).toMatch(/INITIA/);
+    expect(text).toMatch(/LIZE/);
+  });
+
+  test("SP-03: DOM — /init step number rendered at >= 80px", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/init");
+    const firstStep = page.locator("[data-init-step]").first();
+    const numberEl = firstStep.locator("div").first();
+    const fontSize = await numberEl.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(fontSize).toBeGreaterThanOrEqual(80);
+  });
+
+  test("SP-03: source — /init magenta count <= 5", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
+    const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
+    expect(matches.length).toBeLessThanOrEqual(5);
+  });
+
+  test("SP-03: source — /init renders NavRevealMount + has header[data-nav-reveal-trigger]", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
+    expect(src).toContain("NavRevealMount");
+    expect(src).toContain("data-nav-reveal-trigger");
+    // Anti-pattern check: must NOT rely on the safety fallback
+    expect(src).not.toMatch(/trigger\s*===\s*null/);
+  });
+
+  test("SP-03: source — /init preserves STEPS array + CodeBlock helper + COLOR_MAP.kw", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
+    expect(src).toContain("const STEPS");
+    expect(src).toContain("function CodeBlock");
+    expect(src).toContain('kw: "text-primary"');
+    // STEPS array must still contain 5 entries (grep proxy: number: "0...)
+    const stepCount = (src.match(/number: "0/g) || []).length;
+    expect(stepCount).toBe(5);
+  });
+
   // ── AC-9 (Breadcrumb restyle — brief §SP-05 bonus) ─────────────────
 
   test("AC-9: source — Breadcrumb uses font-mono and no chevrons", () => {
