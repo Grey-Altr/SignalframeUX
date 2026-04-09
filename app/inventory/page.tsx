@@ -3,6 +3,7 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 // Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
 import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
 import { SFSection } from "@/components/sf";
@@ -31,6 +32,8 @@ export default async function ComponentsPage() {
       <Nav />
       <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
+        {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
+        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
         {/* ── Page Header: INVE\nNTORY + 54 stat ── */}
         <SFSection label="INVENTORY" className="py-0">
           <header

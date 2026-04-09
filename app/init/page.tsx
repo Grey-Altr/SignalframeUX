@@ -8,7 +8,7 @@ import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 
 
 export const metadata: Metadata = {
-  title: "Get Started — SIGNALFRAME//UX",
+  title: "[00//BOOT] — SIGNALFRAME//UX",
   description: "From zero to Signal//Frame in 5 minutes. Install, initialize, and deploy.",
 };
 
