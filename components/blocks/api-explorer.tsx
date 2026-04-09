@@ -167,8 +167,8 @@ export function APIExplorer() {
     >
       {/* ── FILTER BAR ─────────────────────────────────────────── */}
       <div className="sticky top-[var(--nav-height)] z-[var(--z-content)] border-b border-foreground/25 bg-background">
-        <label className="flex items-center gap-4 px-6 md:px-12 py-4 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground">
-          <span aria-hidden="true">FILTER //</span>
+        <label className="flex items-center gap-4 px-6 md:px-12 py-4 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground min-w-0">
+          <span aria-hidden="true" className="shrink-0">FILTER //</span>
           <input
             data-api-search
             type="text"
@@ -178,11 +178,11 @@ export function APIExplorer() {
             aria-label="Filter API entries"
             spellCheck={false}
             autoComplete="off"
-            className="flex-1 bg-transparent border-none outline-none text-foreground font-mono text-[var(--text-sm)] tracking-tight placeholder:text-muted-foreground/40 focus:placeholder:text-muted-foreground/60"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none text-foreground font-mono text-[var(--text-sm)] tracking-tight placeholder:text-muted-foreground/40 focus:placeholder:text-muted-foreground/60"
           />
           <span
             aria-live="polite"
-            className="tabular-nums text-muted-foreground"
+            className="tabular-nums text-muted-foreground shrink-0"
           >
             {String(totalVisible).padStart(2, "0")}/{String(totalAll).padStart(2, "0")}
           </span>
