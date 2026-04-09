@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import {
   SFTabs,
@@ -13,9 +13,11 @@ import {
   SFTableBody,
   SFTableRow,
   SFTableCell,
-  SFButton,
-  SFBadge,
 } from "@/components/sf";
+import { SpacingSpecimen } from "./token-specimens/spacing-specimen";
+import { TypeSpecimen } from "./token-specimens/type-specimen";
+import { ColorSpecimen } from "./token-specimens/color-specimen";
+import { MotionSpecimen } from "./token-specimens/motion-specimen";
 
 const CORE_SCALE_COUNT = 6;
 
@@ -175,7 +177,6 @@ export function TokenTabs() {
   const [activeTab, setActiveTab] = useSessionState<string>(SESSION_KEYS.TOKENS_TAB, "COLOR");
   const [showAll, setShowAll] = useState(false);
   const [focusedSwatch, setFocusedSwatch] = useState<{ scale: number; step: number }>({ scale: 0, step: 0 });
-  const visibleScales = showAll ? COLOR_SCALES : COLOR_SCALES.slice(0, CORE_SCALE_COUNT);
 
   return (
     <SFTabs value={activeTab} onValueChange={setActiveTab}>
@@ -202,288 +203,29 @@ export function TokenTabs() {
 
       {/* ═══ COLOR TAB ═══ */}
       <SFTabsContent value="COLOR" className="mt-0">
-        <div className="sf-yellow-band border-b-4 border-foreground relative py-12 px-6 md:px-12">
-          <h2 className="sf-display text-foreground mb-4" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-            OKLCH COLOR SYSTEM&trade;
-          </h2>
-          <p className="text-sm leading-[1.7] text-foreground max-w-[700px]">
-            SignalframeUX&trade; uses{" "}
-            <code className="bg-foreground/10 px-1.5 py-0.5 text-[var(--text-xs)]">
-              oklch()
-            </code>{" "}
-            for perceptually uniform color. Every scale maintains consistent
-            lightness across hues. No more blue looking darker than yellow at
-            the same step. {COLOR_SCALES.length} scales × 12 steps = {COLOR_SCALES.length * 12} color tokens. Accept
-            color into your life.&trade;
-          </p>
-          <div className="h-8 overflow-hidden relative mt-6 border-t border-foreground/10 border-b border-b-foreground/10">
-            <div
-              aria-hidden="true"
-              className="flex items-center h-full whitespace-nowrap animate-marquee"
-            >
-              <span className="font-mono text-[var(--text-xs)] font-bold uppercase tracking-[0.15em] text-foreground">
-                PERCEPTUALLY UNIFORM // OKLCH COLOR SPACE // 588 TOKENS //
-                CONSISTENT ACROSS HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY
-                UNIFORM // OKLCH COLOR SPACE // 588 TOKENS // CONSISTENT ACROSS
-                HUES //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH
-                COLOR SPACE // 588 TOKENS // CONSISTENT ACROSS HUES
-                //&nbsp;&nbsp;&nbsp;&nbsp;PERCEPTUALLY UNIFORM // OKLCH COLOR
-                SPACE // 588 TOKENS // CONSISTENT ACROSS HUES
-                //&nbsp;&nbsp;&nbsp;&nbsp;
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-baseline justify-between px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground">
-          <div className="sf-display" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-            COLOR_SCALES ( {COLOR_SCALES.length} )
-          </div>
-          <SFButton
-            intent="ghost"
-            size="sm"
-            onClick={() => setShowAll((v) => !v)}
-            aria-expanded={showAll}
-            aria-controls="color-scale-grid"
-            className="text-[var(--text-sm)] text-primary sf-pressable"
-          >
-            {showAll ? "SHOW CORE" : `SHOW ALL ${COLOR_SCALES.length}`}
-          </SFButton>
-        </div>
-        <div id="color-scale-grid" role="grid" aria-label="Color scales" data-anim="stagger" className="overflow-x-auto relative">
-          <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-border">
-            ← SCROLL →
-          </div>
-          {visibleScales.map((scale, scaleIdx) => (
-            <div
-              key={scale.name}
-              role="row"
-              className="grid grid-cols-[120px_repeat(12,minmax(48px,1fr))] md:grid-cols-[200px_repeat(12,1fr)] border-b-2 border-foreground min-w-[700px]"
-              onKeyDown={(e) => {
-                const stepCount = scale.swatches.length;
-                const currentStep = focusedSwatch.scale === scaleIdx ? focusedSwatch.step : 0;
-                let next = currentStep;
-                switch (e.key) {
-                  case "ArrowRight": next = Math.min(currentStep + 1, stepCount - 1); break;
-                  case "ArrowLeft": next = Math.max(currentStep - 1, 0); break;
-                  case "Home": next = 0; break;
-                  case "End": next = stepCount - 1; break;
-                  case "ArrowDown": {
-                    e.preventDefault();
-                    const grid = e.currentTarget.parentElement;
-                    const rows = grid?.querySelectorAll<HTMLElement>("[role='row']");
-                    if (!rows) return;
-                    const rowArr = Array.from(rows);
-                    const curRowIdx = rowArr.indexOf(e.currentTarget);
-                    const nextRow = rowArr[curRowIdx + 1];
-                    if (!nextRow) return;
-                    const targetSwatch = nextRow.querySelectorAll<HTMLElement>("[data-swatch]")[currentStep];
-                    if (targetSwatch) {
-                      setFocusedSwatch({ scale: scaleIdx + 1, step: currentStep });
-                      targetSwatch.focus();
-                    }
-                    return;
-                  }
-                  case "ArrowUp": {
-                    e.preventDefault();
-                    const grid = e.currentTarget.parentElement;
-                    const rows = grid?.querySelectorAll<HTMLElement>("[role='row']");
-                    if (!rows) return;
-                    const rowArr = Array.from(rows);
-                    const curRowIdx = rowArr.indexOf(e.currentTarget);
-                    if (curRowIdx <= 0) return;
-                    const prevRow = rowArr[curRowIdx - 1];
-                    const targetSwatch = prevRow.querySelectorAll<HTMLElement>("[data-swatch]")[currentStep];
-                    if (targetSwatch) {
-                      setFocusedSwatch({ scale: scaleIdx - 1, step: currentStep });
-                      targetSwatch.focus();
-                    }
-                    return;
-                  }
-                  default: return;
-                }
-                e.preventDefault();
-                setFocusedSwatch({ scale: scaleIdx, step: next });
-                const row = e.currentTarget;
-                const swatches = row.querySelectorAll<HTMLElement>("[data-swatch]");
-                swatches[next]?.focus();
-              }}
-            >
-              <div role="rowheader" className="px-6 flex items-center text-[var(--text-sm)] font-bold uppercase tracking-[0.1em] border-r-2 border-foreground bg-foreground text-background">
-                {scale.name}
-              </div>
-              {scale.swatches.map((sw, stepIdx) => {
-                const isDark = sw.l < 0.55;
-                const oklchStr = sw.c === 0
-                  ? `oklch(${sw.l} 0 0)`
-                  : `oklch(${sw.l} ${sw.c} ${sw.h})`;
-                const isFocused = focusedSwatch.scale === scaleIdx && focusedSwatch.step === stepIdx;
-                return (
-                  <div
-                    key={sw.step}
-                    data-swatch
-                    role="gridcell"
-                    aria-label={`${scale.name} ${sw.step}: ${oklchStr}`}
-                    tabIndex={isFocused ? 0 : -1}
-                    onFocus={() => setFocusedSwatch({ scale: scaleIdx, step: stepIdx })}
-                    className="group/swatch aspect-square flex flex-col items-center justify-center relative border-r border-foreground/10 cursor-crosshair focus:outline-2 focus:outline-primary focus:outline-offset-[-2px]"
-                    style={{
-                      background: oklchStr,
-                      color: isDark ? "var(--color-background)" : "var(--color-foreground)",
-                    }}
-                  >
-                    <span className="text-[var(--text-xs)] font-bold uppercase opacity-70 group-hover/swatch:opacity-0 group-focus/swatch:opacity-0 transition-opacity duration-100" aria-hidden="true">
-                      {sw.step}
-                    </span>
-                    <span className="absolute inset-0 flex items-center justify-center text-[var(--text-2xs)] font-mono font-bold opacity-0 group-hover/swatch:opacity-100 group-focus/swatch:opacity-100 transition-opacity duration-100 px-0.5 text-center leading-tight" aria-hidden="true">
-                      {oklchStr}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        {!showAll && (
-          <div className="border-t-2 border-foreground py-12 px-6 md:px-12 text-center">
-            <p className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              {COLOR_SCALES.length - CORE_SCALE_COUNT} EXTENDED SCALES AVAILABLE
-            </p>
-            <p className="text-[var(--text-2xs)] uppercase tracking-[0.15em] text-muted-foreground/60 mb-6">
-              FULL SPECTRUM COVERAGE AT 8-DEGREE HUE INTERVALS. SELECT A SCALE TO INSPECT.
-            </p>
-            <SFButton
-              intent="ghost"
-              size="sm"
-              onClick={() => setShowAll(true)}
-              className="text-[var(--text-xs)] text-primary sf-pressable uppercase tracking-[0.2em]"
-            >
-              SHOW ALL {COLOR_SCALES.length} SCALES
-            </SFButton>
-          </div>
-        )}
+        <ColorSpecimen
+          scales={COLOR_SCALES}
+          coreCount={CORE_SCALE_COUNT}
+          showAll={showAll}
+          onToggleShowAll={() => setShowAll((v) => !v)}
+          focusedSwatch={focusedSwatch}
+          onFocusSwatch={setFocusedSwatch}
+        />
       </SFTabsContent>
 
       {/* ═══ SPACING TAB ═══ */}
       <SFTabsContent value="SPACING" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-          SPACING_SCALE
-        </div>
-        <SFTable className="border-b-4 border-foreground">
-          <SFTableHeader>
-            <SFTableRow>
-              <SFTableHead className="w-[120px]">TOKEN</SFTableHead>
-              <SFTableHead className="w-[200px]">VALUE</SFTableHead>
-              <SFTableHead>VISUAL</SFTableHead>
-              <SFTableHead className="w-[120px]">PX</SFTableHead>
-            </SFTableRow>
-          </SFTableHeader>
-          <SFTableBody>
-            {SPACING.map((s) => (
-              <SFTableRow key={s.name}>
-                <SFTableCell className="font-bold text-[var(--text-sm)] text-foreground">{s.name}</SFTableCell>
-                <SFTableCell className="text-[var(--text-sm)] text-muted-foreground">{s.rem}</SFTableCell>
-                <SFTableCell>
-                  <div
-                    className="h-4 bg-foreground transition-[width] duration-300"
-                    style={{ width: `${s.px}px` }}
-                    role="img"
-                    aria-label={`${s.px} pixels wide`}
-                  />
-                </SFTableCell>
-                <SFTableCell className="text-[var(--text-xs)] text-muted-foreground text-right">{s.px}px</SFTableCell>
-              </SFTableRow>
-            ))}
-          </SFTableBody>
-        </SFTable>
+        <SpacingSpecimen tokens={SPACING} />
       </SFTabsContent>
 
       {/* ═══ TYPOGRAPHY TAB ═══ */}
       <SFTabsContent value="TYPOGRAPHY" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-          TYPE_SCALE ( MINOR THIRD · 1.2 )
-        </div>
-        <SFTable className="border-b-4 border-foreground">
-          <SFTableHeader className="sr-only">
-            <SFTableRow>
-              <SFTableHead>Token</SFTableHead>
-              <SFTableHead>Sample</SFTableHead>
-              <SFTableHead>Specification</SFTableHead>
-            </SFTableRow>
-          </SFTableHeader>
-          <SFTableBody>
-            {TYPE_SCALE.map((t) => (
-              <SFTableRow key={t.name} className="align-baseline">
-                <SFTableCell className="p-6 text-[var(--text-xs)] text-foreground font-bold w-[160px]">
-                  {t.name}
-                </SFTableCell>
-                <SFTableCell
-                  className="p-6 overflow-hidden whitespace-nowrap text-ellipsis"
-                  style={{
-                    fontFamily: t.font,
-                    fontSize: `${t.size}px`,
-                    fontWeight: t.weight,
-                    lineHeight: 1,
-                    textTransform: t.uppercase ? "uppercase" : undefined,
-                    letterSpacing: t.uppercase ? "0.15em" : undefined,
-                    ...(t.code
-                      ? {
-                          color: "var(--sf-code-text)",
-                          background: "var(--sf-code-bg)",
-                          padding: "8px 12px",
-                          margin: "12px 16px",
-                        }
-                      : {}),
-                  }}
-                >
-                  {t.sample}
-                </SFTableCell>
-                <SFTableCell className="p-6 text-[var(--text-sm)] text-muted-foreground text-right w-[200px]">
-                  {t.meta}
-                </SFTableCell>
-              </SFTableRow>
-            ))}
-          </SFTableBody>
-        </SFTable>
+        <TypeSpecimen tokens={TYPE_SCALE} />
       </SFTabsContent>
 
       {/* ═══ MOTION TAB ═══ */}
       <SFTabsContent value="MOTION" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
-          MOTION_TOKENS
-        </div>
-        <SFTable className="border-b-4 border-foreground">
-          <SFTableHeader className="sr-only">
-            <SFTableRow>
-              <SFTableHead>Token</SFTableHead>
-              <SFTableHead>Preview</SFTableHead>
-              <SFTableHead>Value</SFTableHead>
-            </SFTableRow>
-          </SFTableHeader>
-          <SFTableBody>
-            {MOTION_TOKENS.map((m, i) => (
-              <SFTableRow key={m.name}>
-                <SFTableCell className="py-4 font-bold text-[var(--text-sm)] text-foreground w-[200px]">
-                  {m.name}
-                </SFTableCell>
-                <SFTableCell className="py-4 relative h-6" aria-label={`Animation preview: ${m.css}`}>
-                  <div
-                    data-motion-preview
-                    className="w-7 h-7 bg-foreground absolute top-[calc(50%-14px)]"
-                    aria-hidden="true"
-                    style={{
-                      animation: "sf-motion-slide 2s infinite alternate",
-                      animationTimingFunction: m.easing,
-                    }}
-                  />
-                </SFTableCell>
-                <SFTableCell className="py-4 text-[var(--text-xs)] text-muted-foreground text-right w-[200px]">
-                  {m.css}
-                </SFTableCell>
-              </SFTableRow>
-            ))}
-          </SFTableBody>
-        </SFTable>
+        <MotionSpecimen tokens={MOTION_TOKENS} />
       </SFTabsContent>
 
       {/* ═══ ELEVATION TAB ═══ */}

@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { TokenVizLoader } from "@/components/animation/token-viz-loader";
 import { SFSection } from "@/components/sf";
 import { GhostLabel } from "@/components/animation/ghost-label";
+import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 
 export const metadata: Metadata = {
   title: "Token Explorer — SIGNALFRAME//UX",
@@ -18,6 +19,8 @@ export default function TokensPage() {
       <Nav />
       <main id="main-content" data-cursor className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
+        {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
+        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
         {/* ═══ PAGE HEADER ═══ */}
         <SFSection label="TOKENS" className="py-0">
           <div className="relative overflow-hidden">
