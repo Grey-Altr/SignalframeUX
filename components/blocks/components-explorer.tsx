@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
 import { SFButton, SFInput, SFBadge } from "@/components/sf";
 import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
@@ -36,7 +37,14 @@ interface ComponentEntry {
   variant: "default" | "black" | "yellow";
   filterTag: Category;
   preview: React.ReactNode;
+  pattern: "A" | "B" | "C";
 }
+
+const LAYERS = ["ALL", "FRAME", "SIGNAL"] as const;
+type LayerFilter = (typeof LAYERS)[number];
+
+const PATTERNS = ["ALL", "A", "B", "C"] as const;
+type PatternFilter = (typeof PATTERNS)[number];
 
 /* ── CSS-only preview components ──
  * Lightweight span/div sketches for the /components explorer grid.
@@ -405,41 +413,60 @@ function PreviewInputGroup() {
 
 /* ── Component data ── */
 
+function PreviewScrambleText() {
+  return (
+    <span className="font-mono text-[var(--text-xs)] uppercase tracking-widest" style={{ color: "var(--sf-green)" }}>
+      S!GN#L &gt;&gt; TX
+    </span>
+  );
+}
+
+function PreviewCircuitDivider() {
+  return (
+    <div className="w-[80%] h-px relative" style={{ background: "currentColor" }}>
+      <span className="absolute left-[30%] -top-1 w-2 h-2 border border-current bg-background" />
+      <span className="absolute left-[60%] -top-1 w-2 h-2 border border-current bg-background" />
+    </div>
+  );
+}
+
 const COMPONENTS: ComponentEntry[] = [
-  { index: "001", name: "BUTTON", category: "FORMS", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "FORMS", preview: <PreviewButton /> },
-  { index: "002", name: "INPUT", category: "FORMS", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "FORMS", preview: <PreviewInput /> },
-  { index: "003", name: "TOGGLE", category: "FORMS", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FORMS", preview: <PreviewToggle /> },
-  { index: "004", name: "SLIDER", category: "FORMS", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FORMS", preview: <PreviewSlider /> },
-  { index: "005", name: "CARD", category: "LAYOUT", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "LAYOUT", preview: <PreviewCard /> },
-  { index: "006", name: "MODAL", category: "LAYOUT", subcategory: "FRAME", version: "v2.0.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewModal /> },
-  { index: "007", name: "TABS", category: "NAVIGATION", subcategory: "FRAME", version: "v2.1.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewTabs /> },
-  { index: "008", name: "BADGE", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "black", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--color-primary)" text="NEW" /> },
-  { index: "009", name: "TABLE", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v2.1.0", variant: "black", filterTag: "DATA_DISPLAY", preview: <PreviewTable /> },
-  { index: "010", name: "TOAST (FRAME)", category: "FEEDBACK", subcategory: "FRAME", version: "v2.0.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
-  { index: "011", name: "PAGINATION", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewPagination /> },
-  { index: "012", name: "DRAWER", category: "LAYOUT", subcategory: "FRAME", version: "v1.4.0", variant: "yellow", filterTag: "LAYOUT", preview: <PreviewDrawer /> },
-  { index: "013", name: "AVATAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewAvatar /> },
-  { index: "014", name: "BREADCRUMB", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewBreadcrumb /> },
-  { index: "015", name: "ALERT", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAlert /> },
-  { index: "016", name: "DIALOG_CFM", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "yellow", filterTag: "FEEDBACK", preview: <PreviewAlertDialog /> },
-  { index: "017", name: "COLLAPSE", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewCollapsible /> },
-  { index: "018", name: "EMPTY", category: "FEEDBACK", subcategory: "FRAME", version: "v1.3.0", variant: "black", filterTag: "FEEDBACK", preview: <PreviewEmptyState /> },
-  { index: "019", name: "STATUS_DOT", category: "DATA_DISPLAY", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "DATA_DISPLAY", preview: <PreviewStatusDot /> },
-  { index: "101", name: "NOISE_BG", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewNoise /> },
-  { index: "102", name: "WAVEFORM", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewWave /> },
-  { index: "103", name: "GLITCH_TXT", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewGlitch /> },
-  { index: "104", name: "PARTICLE", category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black", filterTag: "GENERATIVE", preview: <PreviewParticle /> },
-  { index: "020", name: "ACCORDION", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewAccordion /> },
-  { index: "021", name: "PROGRESS", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewProgress /> },
-  { index: "022", name: "TOAST (SIGNAL)", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewToast /> },
-  { index: "023", name: "TOGGLE_GRP", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewToggleGroup /> },
-  { index: "024", name: "STEPPER", category: "FEEDBACK", subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK", preview: <PreviewStepper /> },
-  { index: "025", name: "NAV_MENU", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewNavMenu /> },
-  { index: "026", name: "CALENDAR", category: "FORMS", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "FORMS", preview: <PreviewCalendar /> },
-  { index: "027", name: "MENUBAR", category: "NAVIGATION", subcategory: "FRAME", version: "v1.3.0", variant: "default", filterTag: "NAVIGATION", preview: <PreviewMenubar /> },
-  { index: "028", name: "HOVER_CARD", category: "LAYOUT", subcategory: "FRAME", version: "v1.4.0", variant: "default", filterTag: "LAYOUT", preview: <PreviewHoverCard /> },
-  { index: "029", name: "INPUT_OTP", category: "FORMS", subcategory: "FRAME", version: "v1.4.0", variant: "black", filterTag: "FORMS", preview: <PreviewInputOTP /> },
-  { index: "030", name: "INPUT_GROUP", category: "FORMS", subcategory: "FRAME", version: "v1.4.0", variant: "default", filterTag: "FORMS", preview: <PreviewInputGroup /> },
+  { index: "001", name: "BUTTON",       category: "FORMS",        subcategory: "FRAME",  version: "v2.1.0", variant: "default", filterTag: "FORMS",        pattern: "A", preview: <PreviewButton /> },
+  { index: "002", name: "INPUT",        category: "FORMS",        subcategory: "FRAME",  version: "v2.1.0", variant: "black",   filterTag: "FORMS",        pattern: "A", preview: <PreviewInput /> },
+  { index: "003", name: "TOGGLE",       category: "FORMS",        subcategory: "FRAME",  version: "v2.0.0", variant: "default", filterTag: "FORMS",        pattern: "A", preview: <PreviewToggle /> },
+  { index: "004", name: "SLIDER",       category: "FORMS",        subcategory: "FRAME",  version: "v2.0.0", variant: "default", filterTag: "FORMS",        pattern: "A", preview: <PreviewSlider /> },
+  { index: "005", name: "CARD",         category: "LAYOUT",       subcategory: "FRAME",  version: "v2.1.0", variant: "default", filterTag: "LAYOUT",       pattern: "A", preview: <PreviewCard /> },
+  { index: "006", name: "MODAL",        category: "LAYOUT",       subcategory: "FRAME",  version: "v2.0.0", variant: "yellow",  filterTag: "LAYOUT",       pattern: "A", preview: <PreviewModal /> },
+  { index: "007", name: "TABS",         category: "NAVIGATION",   subcategory: "FRAME",  version: "v2.1.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewTabs /> },
+  { index: "008", name: "BADGE",        category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "black",   filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--color-primary)" text="NEW" /> },
+  { index: "009", name: "TABLE",        category: "DATA_DISPLAY", subcategory: "FRAME",  version: "v2.1.0", variant: "black",   filterTag: "DATA_DISPLAY", pattern: "A", preview: <PreviewTable /> },
+  { index: "010", name: "TOAST (FRAME)",category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
+  { index: "011", name: "PAGINATION",   category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewPagination /> },
+  { index: "012", name: "DRAWER",       category: "LAYOUT",       subcategory: "FRAME",  version: "v1.4.0", variant: "yellow",  filterTag: "LAYOUT",       pattern: "B", preview: <PreviewDrawer /> },
+  { index: "013", name: "AVATAR",       category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewAvatar /> },
+  { index: "014", name: "BREADCRUMB",   category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewBreadcrumb /> },
+  { index: "015", name: "ALERT",        category: "FEEDBACK",     subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewAlert /> },
+  { index: "016", name: "DIALOG_CFM",   category: "FEEDBACK",     subcategory: "FRAME",  version: "v1.3.0", variant: "yellow",  filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewAlertDialog /> },
+  { index: "017", name: "COLLAPSE",     category: "FEEDBACK",     subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewCollapsible /> },
+  { index: "018", name: "EMPTY",        category: "FEEDBACK",     subcategory: "FRAME",  version: "v1.3.0", variant: "black",   filterTag: "FEEDBACK",     pattern: "C", preview: <PreviewEmptyState /> },
+  { index: "019", name: "STATUS_DOT",   category: "DATA_DISPLAY", subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "DATA_DISPLAY", pattern: "C", preview: <PreviewStatusDot /> },
+  { index: "020", name: "ACCORDION",    category: "FEEDBACK",     subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewAccordion /> },
+  { index: "021", name: "PROGRESS",     category: "FEEDBACK",     subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewProgress /> },
+  { index: "022", name: "TOAST (SIGNAL)",category: "FEEDBACK",    subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewToast /> },
+  { index: "023", name: "TOGGLE_GRP",   category: "FORMS",        subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "FORMS",        pattern: "A", preview: <PreviewToggleGroup /> },
+  { index: "024", name: "STEPPER",      category: "FEEDBACK",     subcategory: "SIGNAL", version: "v1.3.0", variant: "default", filterTag: "FEEDBACK",     pattern: "C", preview: <PreviewStepper /> },
+  { index: "025", name: "NAV_MENU",     category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewNavMenu /> },
+  { index: "026", name: "CALENDAR",     category: "FORMS",        subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "FORMS",        pattern: "B", preview: <PreviewCalendar /> },
+  { index: "027", name: "MENUBAR",      category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "B", preview: <PreviewMenubar /> },
+  { index: "028", name: "HOVER_CARD",   category: "LAYOUT",       subcategory: "FRAME",  version: "v1.4.0", variant: "default", filterTag: "LAYOUT",       pattern: "A", preview: <PreviewHoverCard /> },
+  { index: "029", name: "INPUT_OTP",    category: "FORMS",        subcategory: "FRAME",  version: "v1.4.0", variant: "black",   filterTag: "FORMS",        pattern: "A", preview: <PreviewInputOTP /> },
+  { index: "030", name: "INPUT_GROUP",  category: "FORMS",        subcategory: "FRAME",  version: "v1.4.0", variant: "default", filterTag: "FORMS",        pattern: "A", preview: <PreviewInputGroup /> },
+  { index: "101", name: "NOISE_BG",     category: "GENERATIVE",   subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewNoise /> },
+  { index: "102", name: "WAVEFORM",     category: "GENERATIVE",   subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewWave /> },
+  { index: "103", name: "GLITCH_TXT",   category: "GENERATIVE",   subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewGlitch /> },
+  { index: "104", name: "PARTICLE",     category: "GENERATIVE",   subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewParticle /> },
+  { index: "105", name: "SCRAMBLE_TEXT",category: "GENERATIVE",   subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewScrambleText /> },
+  { index: "106", name: "CIRCUIT_DIVIDER",category: "GENERATIVE", subcategory: "SIGNAL", version: "v1.0.0", variant: "black",   filterTag: "GENERATIVE",   pattern: "C", preview: <PreviewCircuitDivider /> },
 ];
 
 /* ── Variant style maps ── */
@@ -503,6 +530,8 @@ function FilterIndicator({
 
 export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap: Record<string, string> }) {
   const [activeFilter, setActiveFilter] = useSessionState<Category>(SESSION_KEYS.COMPONENTS_FILTER, "ALL");
+  const [activeLayer, setActiveLayer] = useSessionState<LayerFilter>(SESSION_KEYS.COMPONENTS_LAYER, "ALL");
+  const [activePattern, setActivePattern] = useSessionState<PatternFilter>(SESSION_KEYS.COMPONENTS_PATTERN, "ALL");
   const [openIndex, setOpenIndex] = useSessionState<string | null>(SESSION_KEYS.DETAIL_OPEN, null);
   useScrollRestoration();
   const [searchInput, setSearchInput] = useState("");
@@ -537,6 +566,24 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
     [captureFlipState]
   );
 
+  const handleLayerFilter = useCallback(
+    (layer: LayerFilter) => {
+      if (layer === activeLayer) return;
+      captureFlipState();
+      setActiveLayer(layer);
+    },
+    [activeLayer, captureFlipState, setActiveLayer]
+  );
+
+  const handlePatternFilter = useCallback(
+    (pattern: PatternFilter) => {
+      if (pattern === activePattern) return;
+      captureFlipState();
+      setActivePattern(pattern);
+    },
+    [activePattern, captureFlipState, setActivePattern]
+  );
+
   const handleSearch = useCallback(
     (value: string) => {
       setSearchInput(value);
@@ -564,21 +611,29 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
     return () => clearTimeout(debounceRef.current);
   }, []);
 
-  const filtered = useMemo(() => COMPONENTS.filter((comp) => {
-    const matchesCategory =
-      activeFilter === "ALL" || comp.filterTag === activeFilter;
-    const matchesSearch =
-      searchQuery === "" ||
-      comp.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  }), [activeFilter, searchQuery]);
+  const filtered = useMemo(
+    () =>
+      COMPONENTS.filter((comp) => {
+        const matchesCategory =
+          activeFilter === "ALL" || comp.filterTag === activeFilter;
+        const matchesSearch =
+          searchQuery === "" ||
+          comp.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesLayer =
+          activeLayer === "ALL" || comp.subcategory === activeLayer;
+        const matchesPattern =
+          activePattern === "ALL" || comp.pattern === activePattern;
+        return matchesCategory && matchesSearch && matchesLayer && matchesPattern;
+      }),
+    [activeFilter, searchQuery, activeLayer, activePattern]
+  );
 
   const resultCount = filtered.length;
 
   // Reset focus index when filter/search changes
   useEffect(() => {
     setFocusedIndex(0);
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, activeLayer, activePattern]);
 
   const handleGridKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -652,7 +707,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
           ease: "power2.in",
         }),
     });
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, activeLayer, activePattern]);
 
   return (
     <>
@@ -691,6 +746,51 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
         </div>
         {/* Filter indicator bar */}
         <FilterIndicator filterBarRef={filterBarRef} activeFilter={activeFilter} />
+      </div>
+
+      {/* ── Layer + Pattern Filter Bar ── */}
+      <div className="flex flex-wrap border-b-2 border-foreground/40 bg-background">
+        <div className="flex items-center border-r-2 border-foreground/40 px-6 py-2 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+          LAYER
+        </div>
+        <div className="flex" role="group" aria-label="Filter by layer">
+          {LAYERS.map((layer) => (
+            <button
+              key={layer}
+              data-layer-filter={layer}
+              onClick={() => handleLayerFilter(layer)}
+              className={cn(
+                "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
+                "transition-colors duration-[34ms]",
+                activeLayer === layer
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+              )}
+            >
+              {layer}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center border-r-2 border-l-2 border-foreground/40 px-6 py-2 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+          TIER
+        </div>
+        <div className="flex" role="group" aria-label="Filter by pattern">
+          {PATTERNS.map((pattern) => (
+            <button
+              key={pattern}
+              onClick={() => handlePatternFilter(pattern)}
+              className={cn(
+                "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
+                "transition-colors duration-[34ms]",
+                activePattern === pattern
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
+              )}
+            >
+              {pattern === "ALL" ? "ALL" : `TIER ${pattern}`}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Component Grid ── */}
