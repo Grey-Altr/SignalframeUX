@@ -76,7 +76,7 @@
 - [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments
 - [x] **Phase 32: SIGNAL + PROOF Sections** — Atmospheric WebGL scene, interactive SIGNAL/FRAME layer separation demo (completed 2026-04-08)
 - [x] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel (completed 2026-04-09)
-- [ ] **Phase 34: Visual Language + Subpage Redesign** — Ghost labels, display type audit, HUD indicators, specimen-style subpages
+- [x] **Phase 34: Visual Language + Subpage Redesign** — Ghost labels, display type audit, HUD indicators, specimen-style subpages (completed 2026-04-09)
 - [ ] **Phase 35: Performance + Launch Gate** — Bundle gate, Lighthouse 100/100, OG tags, Awwwards package
 
 ## Phase Details
@@ -456,12 +456,12 @@ Plans:
   7. The `/init` page uses the system initialization framing — sharp, technical, minimal prose; no "Get Started" button energy
   8. The `/reference` page uses monospaced, dense schematic layout for API docs — consistent with the DU/TDR coded aesthetic
   9. All subpages share the redesigned nav (hidden on initial viewport if applicable, sticky on scroll) and footer from Phase 30
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 - [x] 34-01-PLAN.md — Visual language pass: HUD indicator, GhostLabel deploy, useNavReveal extract, magenta audit, display-type bumps, /inventory h1 fix [VL-01, VL-02, VL-04, VL-05, VL-06, SP-05]
 - [x] 34-02-PLAN.md — /system specimen redesign: 4 specimen sub-components replacing TokenTabs render bodies [SP-01, SP-02, SP-05]
 - [x] 34-03-PLAN.md — /init bringup sequence redesign: STEPS data preserved, onboarding blocks stripped, [01//INIT]-[05//DEPLOY] coded indicators, [OK] SYSTEM READY terminal footer [SP-03, SP-05]
-- [ ] 34-04-PLAN.md — /reference schematic APIExplorer restyle: grouped index + props data sheet [SP-04, SP-05]
+- [x] 34-04-PLAN.md — /reference schematic APIExplorer restyle: grouped index + props data sheet [SP-04, SP-05]
 
 ### Phase 35: Performance + Launch Gate
 **Goal**: v1.5 Redesign meets all hard performance and launch constraints — the site is ready for Awwwards submission
@@ -517,5 +517,5 @@ Plans:
 | 31. THESIS Section | v1.5 | 0/? | Not started | - |
 | 32. SIGNAL + PROOF Sections | 2/2 | Complete   | 2026-04-08 | - |
 | 33. INVENTORY + ACQUISITION Sections | 2/4 | Complete    | 2026-04-09 | - |
-| 34. Visual Language + Subpage Redesign | v1.5 | 3/4 | In Progress|  |
+| 34. Visual Language + Subpage Redesign | v1.5 | 4/4 | Complete   | 2026-04-09 |
 | 35. Performance + Launch Gate | v1.5 | 0/? | Not started | - |

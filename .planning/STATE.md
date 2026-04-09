@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 34 Plan 02 complete -- token specimens + /system NavRevealMount (Wave 2 parallel, 34-04 still running)
-last_updated: "2026-04-09T09:30:00.000Z"
-last_activity: 2026-04-09 -- Phase 34 Plan 02 complete (4 token specimens replace SFTable bodies; /system NavRevealMount wired; 11 new SP-01/SP-02 tests green)
+stopped_at: Phase 34 Plan 04 complete -- 4/4 plans shipped, Phase 34 Visual Language + Subpage Redesign closed
+last_updated: "2026-04-09T09:36:47.121Z"
+last_activity: 2026-04-09
 progress:
   total_phases: 26
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 31
-  completed_plans: 29
-  percent: 94
+  completed_plans: 30
+  percent: 97
 ---
 
 # STATE — SignalframeUX
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 34 — Visual Language + Subpage Redesign
-Plan: 02 of 4 — COMPLETE (auto-mode, Wave 2 parallel; 34-01 and 34-03 also shipped; 34-04 still running)
-Status: Plan 02 ships 4 dedicated token specimens replacing SFTable-driven tab bodies on /system. SpacingSpecimen (architectural ruler with 4px ticks + proportional bars, 9 blessed stops), TypeSpecimen (Brody/Fuse sample sheet, flush-left samples + mono metadata, 7 scale entries), ColorSpecimen (OKLCH matrix with L/C/H axis legend, SHOW ALL toggle for 6→49 scales, arrow-key navigation, focus readout — only Client Component in the set), MotionSpecimen (static SVG cubic-bezier curve plots with grid frame, control-point tangents, endpoint markers). TokenTabs orchestrator shrinks 631 → 372 lines (-259); data arrays, useSessionState(TOKENS_TAB), showAll, focusedSwatch all preserved. Legacy ELEVATION/RADIUS/BREAKPOINTS tabs untouched. app/system/page.tsx renders <NavRevealMount targetSelector="[data-nav-reveal-trigger]"/> after <Breadcrumb>; the <header data-nav-reveal-trigger> wrapper was already wired in 34-01. 11 new Phase 34 Playwright assertions (4 SP-01 source + 6 SP-02 source/DOM + 1 SP-05 source) all green. Production build green (102 KB shared, /system 8.04 kB). Zero new npm deps.
-Last activity: 2026-04-09 -- Phase 34 Plan 02 complete (4 token specimens + TokenTabs orchestrator rewire + /system NavRevealMount + 11 SP-01/SP-02 tests)
+Plan: 4 of 4 — COMPLETE (auto-mode, Wave 2 parallel; 34-01 and 34-03 also shipped; 34-04 still running)
+Status: Ready to execute
+Last activity: 2026-04-09
 
 ## Progress
 
@@ -156,6 +156,10 @@ v1.5: [█████████_] 94% (15/15+ plans) IN PROGRESS — Phase 34
 - [Phase 34]: [Phase 34-02]: ColorSpecimen owns its own visibleScales slice; TokenTabs no longer computes visibleScales locally. Data arrays stay in token-tabs.tsx orchestrator and pass into specimens as props.
 - [Phase 34]: [Phase 34-02]: Specimen prop types match live data array shapes (px: number, size: number); plan sketch had drifted to string types. Always read source before writing props.
 - [Phase 34]: [Phase 34-02]: ColorSpecimen is 'use client' (keyboard nav + focus state); SpacingSpecimen, TypeSpecimen, MotionSpecimen are Server Components (pure render, no interactivity).
+- [Phase 34]: 34-04: DataDrivenDoc replaced by file-private EntryDataSheet — shadcn chrome (SFTable/SFTabs/SFBadge) conflicts with schematic register; zero SF-wrapper imports in final api-explorer.tsx
+- [Phase 34]: 34-04: Surface groups classified via API_DOCS[id].layer (HOOK->HOOKS, TOKEN->TOKENS, CORE/FRAME/SIGNAL->COMPONENTS) not NAV_SECTIONS.title — authoritative data field wins
+- [Phase 34]: 34-04: HudTelemetry sub-component dropped — InstrumentHUD site-wide from 34-01 carries cockpit role globally, duplicating on /reference dilutes register
+- [Phase 34]: 34-04: Rule 1/2 auto-fix horizontal scroll at 375px (Footer URL break-all, /reference header responsive grid, api-explorer filter bar min-w-0) landed accidentally in sibling 34-03 docs commit due to parallel-wave git race; code correct, attribution wrong, no rollback
 
 ### Blockers
 
@@ -171,6 +175,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-09T09:29:45.729Z
-Stopped at: Phase 34 Plan 02 complete -- token specimens + /system NavRevealMount
+Last session: 2026-04-09T09:36:47.117Z
+Stopped at: Phase 34 Plan 04 complete -- 4/4 plans shipped, Phase 34 Visual Language + Subpage Redesign closed
 Resume with: Orchestrator awaits Wave 2 parallel siblings (34-02 /system specimen diagrams, 34-04 /reference schematic API index) to complete; then Phase 35 launch gate
