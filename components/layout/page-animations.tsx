@@ -196,6 +196,31 @@ async function initHeroAnimations(
     gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.inOut", delay: 3.0 });
   }
 
+  // ── 9. Hero slash moment — canonical magenta signal-intensity scrub (VL-05) ──
+  // Triangle curve peaks at t=0.3 so the signal-burst hits while the wordmark
+  // is still center-viewport (entry-section 810px, wordmark centered ~y=405,
+  // so t=0.3 ≈ scrollY 243 keeps wordmark on-screen). Rise: 0.25 → 1.0 over
+  // t=[0, 0.3]. Fall: 1.0 → 0.2 over t=[0.3, 1.0] as thesis emerges.
+  // FRAME/SIGNAL read: the signal punches through the ghosted wordmark as the
+  // user engages, then recedes to let THESIS take over. Ikeda-lineage.
+  const slashMoment = document.querySelector("[data-anim='hero-slash-moment']") as HTMLElement | null;
+  const entrySection = document.querySelector("[data-entry-section]") as HTMLElement | null;
+  if (slashMoment && entrySection) {
+    ScrollTrigger.create({
+      trigger: entrySection,
+      start: "top top",
+      end: "bottom top",
+      onUpdate: (self) => {
+        const t = self.progress;
+        const peak = 0.3;
+        const intensity = t < peak
+          ? 0.25 + (t / peak) * 0.75         // 0.25 → 1.0
+          : 1.0 - ((t - peak) / (1 - peak)) * 0.8; // 1.0 → 0.2
+        slashMoment.style.opacity = String(intensity);
+      },
+    });
+  }
+
   }); // end gsap.context
 
   registerCtx(ctx);
