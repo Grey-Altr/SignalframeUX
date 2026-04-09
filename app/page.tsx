@@ -8,6 +8,8 @@ import { ThesisSection } from "@/components/blocks/thesis-section";
 import { SignalSection } from "@/components/blocks/signal-section";
 import { InventorySection } from "@/components/blocks/inventory-section";
 import { AcquisitionSection } from "@/components/blocks/acquisition-section";
+import { GhostLabel } from "@/components/animation/ghost-label";
+import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -20,6 +22,7 @@ export default function HomePage() {
     <>
       <Nav />
       <main id="main-content">
+        <NavRevealMount targetSelector="[data-entry-section]" />
         <div id="bg-shift-wrapper">
           {/* ENTRY — full-viewport GLSL hero with title overlay */}
           <SFSection
@@ -38,8 +41,12 @@ export default function HomePage() {
             bgShift="white"
             id="thesis"
             data-section="thesis"
-            className="py-0"
+            className="py-0 relative overflow-hidden"
           >
+            <GhostLabel
+              text="THESIS"
+              className="-left-[3vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
+            />
             <ThesisSection />
           </SFSection>
 

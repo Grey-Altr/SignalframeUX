@@ -5,6 +5,7 @@ import { TokenTabs } from "@/components/blocks/token-tabs";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { TokenVizLoader } from "@/components/animation/token-viz-loader";
 import { SFSection } from "@/components/sf";
+import { GhostLabel } from "@/components/animation/ghost-label";
 
 export const metadata: Metadata = {
   title: "Token Explorer — SIGNALFRAME//UX",
@@ -19,19 +20,28 @@ export default function TokensPage() {
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
         {/* ═══ PAGE HEADER ═══ */}
         <SFSection label="TOKENS" className="py-0">
-          <div className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end">
-            <h1
-              aria-label="Token Explorer"
-              className="sf-display px-6 md:px-12 pt-10 pb-6"
-              style={{ fontSize: "clamp(60px, 9vw, 100px)" }}
+          <div className="relative overflow-hidden">
+            <GhostLabel
+              text="SYSTEM"
+              className="-left-[2vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
+            />
+            <header
+              data-nav-reveal-trigger
+              className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end"
             >
-              <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>
-              <br />
-              <span data-anim="page-heading" suppressHydrationWarning>EXPLORER</span>
-            </h1>
-            <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              OKLCH COLOR SPACE · 49 SCALES
-            </div>
+              <h1
+                aria-label="Token Explorer"
+                className="sf-display px-6 md:px-12 pt-10 pb-6 relative z-10"
+                style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+              >
+                <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>
+                <br />
+                <span data-anim="page-heading" suppressHydrationWarning>EXPLORER</span>
+              </h1>
+              <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground relative z-10">
+                OKLCH COLOR SPACE · 49 SCALES
+              </div>
+            </header>
           </div>
         </SFSection>
 

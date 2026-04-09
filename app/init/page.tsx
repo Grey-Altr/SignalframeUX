@@ -191,12 +191,18 @@ export default function StartPage() {
         <SFSection label="GET STARTED" className="py-0 bg-foreground text-background border-b-4 border-foreground relative overflow-hidden">
           {/* Yellow accent bar */}
           <div className="h-[6px] bg-[var(--sf-yellow)]" aria-hidden="true" />
-          <div className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]">
+          <header
+            data-nav-reveal-trigger
+            className="py-[clamp(48px,8vw,80px)] px-[clamp(20px,4vw,48px)]"
+          >
             <div className="flex items-start justify-between">
-              <h1 className="sf-display text-[clamp(48px,11vw,120px)] mb-6">
+              <h1
+                className="sf-display mb-6"
+                style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+              >
                 <span data-anim="page-heading" suppressHydrationWarning>GET</span>
                 <br />
-                <span data-anim="page-heading" className="text-primary" suppressHydrationWarning>STARTED</span>
+                <span data-anim="page-heading" suppressHydrationWarning>STARTED</span>
               </h1>
               {/* Monogram watermark */}
               <span className="sf-display text-[clamp(60px,12vw,160px)] text-background/15 select-none leading-none hidden md:block" aria-hidden="true">
@@ -210,7 +216,7 @@ export default function StartPage() {
             <p className="mt-6 text-sm text-primary uppercase tracking-[0.15em]">
               &bull; ESTIMATED TIME: 5 MIN &bull; SIGNALFRAMEUX V2.0
             </p>
-          </div>
+          </header>
         </SFSection>
 
         {/* ═══ STEPS ═══ */}
