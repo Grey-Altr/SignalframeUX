@@ -36,11 +36,11 @@
 
 ## INVENTORY Section
 
-- [ ] **IV-01**: Component catalog uses coded nomenclature: `SF//BTN-001`, `SF//CRD-002`, etc.
-- [ ] **IV-02**: Each catalog entry displays layer tag (`[//SIGNAL]` / `[FRAME]`), pattern tier (`A` / `B` / `C`), and component name
+- [x] **IV-01**: Component catalog uses coded nomenclature: `SF//BTN-001`, `SF//CRD-002`, etc.
+- [x] **IV-02**: Each catalog entry displays layer tag (`[//SIGNAL]` / `[FRAME]`), pattern tier (`A` / `B` / `C`), and component name
 - [ ] **IV-03**: Monospaced type for catalog entries — dense, systematic, not card-based
 - [ ] **IV-04**: Click/tap expands existing ComponentDetail panel (Phase 25 feature preserved)
-- [ ] **IV-05**: Homepage INVENTORY section shows 12-item subset; `/inventory` page shows full catalog
+- [x] **IV-05**: Homepage INVENTORY section shows 12-item subset; `/inventory` page shows full catalog
 - [ ] **IV-06**: Filter by layer, pattern, and category functional on `/inventory` page (existing filter logic preserved)
 
 ## SIGNAL Section
@@ -131,11 +131,11 @@
 | PR-04 | Phase 32 | Pending |
 | PR-05 | Phase 32 | Pending |
 | PR-06 | Phase 32 | Pending |
-| IV-01 | Phase 33 | Pending |
-| IV-02 | Phase 33 | Pending |
+| IV-01 | Phase 33 | Complete |
+| IV-02 | Phase 33 | Complete |
 | IV-03 | Phase 33 | Pending |
 | IV-04 | Phase 33 | Pending |
-| IV-05 | Phase 33 | Pending |
+| IV-05 | Phase 33 | Complete |
 | IV-06 | Phase 33 | Pending |
 | AQ-01 | Phase 33 | Pending |
 | AQ-02 | Phase 33 | Pending |
