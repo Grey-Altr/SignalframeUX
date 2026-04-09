@@ -456,10 +456,12 @@ Plans:
   7. The `/init` page uses the system initialization framing — sharp, technical, minimal prose; no "Get Started" button energy
   8. The `/reference` page uses monospaced, dense schematic layout for API docs — consistent with the DU/TDR coded aesthetic
   9. All subpages share the redesigned nav (hidden on initial viewport if applicable, sticky on scroll) and footer from Phase 30
-**Plans:** 2 plans
+**Plans:** 4 plans
 Plans:
-- [ ] 29-01-PLAN.md — Infrastructure micro-edits + Playwright tests (PF-04, PF-05)
-- [ ] 29-02-PLAN.md — PinnedSection component + reduced-motion gate (PF-04, PF-06)
+- [ ] 34-01-PLAN.md — Visual language pass: HUD indicator, GhostLabel deploy, useNavReveal extract, magenta audit, display-type bumps, /inventory h1 fix [VL-01, VL-02, VL-04, VL-05, VL-06, SP-05]
+- [ ] 34-02-PLAN.md — /system specimen redesign: 4 specimen sub-components replacing TokenTabs render bodies [SP-01, SP-02, SP-05]
+- [ ] 34-03-PLAN.md — /init boot-sequence redesign: reframe STEPS JSX, strip onboarding blocks, terminal footer [SP-03, SP-05]
+- [ ] 34-04-PLAN.md — /reference schematic APIExplorer restyle: grouped index + props data sheet [SP-04, SP-05]
 
 ### Phase 35: Performance + Launch Gate
 **Goal**: v1.5 Redesign meets all hard performance and launch constraints — the site is ready for Awwwards submission
