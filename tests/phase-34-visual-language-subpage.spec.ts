@@ -546,4 +546,116 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     // Must not rely on the safety fallback
     expect(src).not.toMatch(/trigger\s*===\s*null/);
   });
+
+  // ── SP-04 (34-04): /reference schematic API index ────────────────
+
+  test("SP-04: DOM — /reference page header h1 at >= 80px", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/reference");
+    const h1 = page.locator("h1").first();
+    await expect(h1).toBeVisible();
+    const text = await h1.textContent();
+    expect(text).toMatch(/API/i);
+    expect(text).toMatch(/REFERENCE/i);
+    const fontSize = await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(fontSize).toBeGreaterThanOrEqual(80);
+  });
+
+  test("SP-04: DOM — /reference renders 3 surface groups (COMPONENTS/HOOKS/TOKENS)", async ({ page }) => {
+    await page.goto("/reference");
+    const groups = page.locator("[data-api-surface-group]");
+    await expect(groups).toHaveCount(3);
+    const keys = await groups.evaluateAll((els) =>
+      els.map((el) => el.getAttribute("data-api-surface-group")),
+    );
+    expect(keys).toEqual(expect.arrayContaining(["COMPONENTS", "HOOKS", "TOKENS"]));
+  });
+
+  test("SP-04: DOM — /reference click entry shows props data sheet", async ({ page }) => {
+    await page.goto("/reference");
+    const firstEntry = page
+      .locator('[data-api-surface-group="COMPONENTS"] [data-api-entry]')
+      .first();
+    await expect(firstEntry).toBeVisible();
+    await firstEntry.click();
+    const propsTable = page.locator("[data-api-props-table]").first();
+    await expect(propsTable).toBeVisible({ timeout: 3000 });
+    const display = await propsTable.evaluate((el) => getComputedStyle(el).display);
+    expect(display).toBe("grid");
+  });
+
+  test("SP-04: DOM — /reference keyboard ArrowDown moves focus between entries", async ({ page }) => {
+    await page.goto("/reference");
+    const firstEntry = page.locator("[data-api-entry]").first();
+    await firstEntry.focus();
+    const firstId = await firstEntry.getAttribute("data-api-entry");
+    await page.keyboard.press("ArrowDown");
+    const focusedId = await page.evaluate(() =>
+      document.activeElement?.getAttribute("data-api-entry"),
+    );
+    expect(focusedId).toBeTruthy();
+    expect(focusedId).not.toBe(firstId);
+  });
+
+  test("SP-04: DOM — /reference search input filters entries", async ({ page }) => {
+    await page.goto("/reference");
+    const initialCount = await page.locator("[data-api-entry]").count();
+    expect(initialCount).toBeGreaterThan(0);
+    await page.locator("[data-api-search]").fill("XYZMATCHNOTHING");
+    await page.waitForTimeout(150);
+    const filteredCount = await page.locator("[data-api-entry]").count();
+    expect(filteredCount).toBeLessThan(initialCount);
+    await page.locator("[data-api-search]").fill("");
+    await page.waitForTimeout(150);
+    const restoredCount = await page.locator("[data-api-entry]").count();
+    expect(restoredCount).toBe(initialCount);
+  });
+
+  test("SP-04: DOM — /reference no horizontal scroll at 375px viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/reference");
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
+  });
+
+  test("SP-04: source — lib/api-docs.ts untouched structure preserved", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "lib/api-docs.ts"), "utf-8");
+    expect(src).toContain("export const API_DOCS");
+    expect(src).toContain("export interface ComponentDoc");
+  });
+
+  test("SP-04: source — api-explorer has no rounded-* classes", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
+    expect(src).not.toMatch(/\brounded-[a-z0-9]+/);
+  });
+
+  test("SP-04: source — api-explorer no longer references --api-sidebar-w / --api-preview-w", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
+    expect(src).not.toMatch(/--api-sidebar-w/);
+    expect(src).not.toMatch(/--api-preview-w/);
+  });
+
+  test("SP-04: source — api-explorer magenta count <= 5", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
+    const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
+    expect(matches.length).toBeLessThanOrEqual(5);
+  });
+
+  test("SP-04: source — api-explorer renders all 5 schematic data attrs + keyboard handler", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
+    expect(src).toContain("data-api-surface-group");
+    expect(src).toContain("data-api-entry");
+    expect(src).toContain("data-api-props-table");
+    expect(src).toContain("data-api-search");
+    expect(src).toMatch(/ArrowDown|ArrowUp/);
+  });
+
+  test("SP-04: source — app/reference/page.tsx renders NavRevealMount + has header[data-nav-reveal-trigger]", () => {
+    const src = fs.readFileSync(path.resolve(ROOT, "app/reference/page.tsx"), "utf-8");
+    expect(src).toContain("NavRevealMount");
+    expect(src).toContain("data-nav-reveal-trigger");
+    expect(src).toMatch(/clamp\(80px,\s*12vw,\s*160px\)/);
+    expect(src).not.toMatch(/trigger\s*===\s*null/);
+  });
 });
