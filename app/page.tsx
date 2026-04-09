@@ -8,6 +8,7 @@ import { ProofSection } from "@/components/blocks/proof-section";
 import { ThesisSection } from "@/components/blocks/thesis-section";
 import { SignalSection } from "@/components/blocks/signal-section";
 import { InventorySection } from "@/components/blocks/inventory-section";
+import { AcquisitionSection } from "@/components/blocks/acquisition-section";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -76,17 +77,15 @@ export default function HomePage() {
             <SignalSection />
           </SFSection>
 
-          {/* ACQUISITION — 100vh stub (Phase 33 fills) */}
+          {/* ACQUISITION — terminal instrument panel, ≤50vh (Phase 33) */}
           <SFSection
             label="ACQUISITION"
-            bgShift="white"
+            bgShift="black"
             id="acquisition"
             data-section="acquisition"
-            className="py-0 min-h-screen flex items-center justify-center"
+            className="py-0"
           >
-            <h2 className="font-mono text-sm text-muted-foreground uppercase tracking-widest">
-              ACQUISITION
-            </h2>
+            <AcquisitionSection />
           </SFSection>
         </div>
         <SectionIndicator />

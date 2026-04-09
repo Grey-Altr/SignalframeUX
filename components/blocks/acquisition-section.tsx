@@ -11,7 +11,7 @@
  * Constraints:
  *   - data-acquisition-root on section root (required by Phase 33 AQ-04 test)
  *   - maxHeight: '50vh' hard cap — if content exceeds 50vh it clips (overflow-hidden)
- *   - Zero rounded corners, zero SFButton, zero "Get Started" energy
+ *   - Zero border-radius, no styled buttons, no CTA copy
  *   - Stats sourced from SYSTEM_STATS — single source of truth
  *   - Two text anchors only: → /init and → /inventory (no buttons)
  *
