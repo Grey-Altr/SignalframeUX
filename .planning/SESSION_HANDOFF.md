@@ -2,108 +2,106 @@
 
 ## Where we stopped
 
-**Phase 34 — Visual Language + Subpage Redesign** is fully planned and verified. Execution was about to begin (`/pde:execute-phase 34 --auto --no-transition`) when interrupted for `/pfcr`.
+**Phase 34 — Visual Language + Subpage Redesign** is fully executed, verified, and Nyquist-audited. Waiting on your sign-off for 5 subjective/visual items (voice register, negative space, canonical magenta audit, /reference density, SP-05 nav-reveal scroll behavior).
 
-The discuss → plan auto-chain was completed in this session. Execute step did not start — orchestrator was interrupted before the first `init execute-phase` call returned.
+### This session's work
 
-### Phase 34 artifacts in `.planning/phases/34-visual-language-subpage-redesign/` (all committed)
+1. `/pde:execute-phase 34 --auto` — ran 4 plans across 2 waves:
+   - **Wave 1:** 34-01 (InstrumentHUD site-wide, useNavReveal, GhostLabel deployment, subpage h1 bumps, breadcrumb restyle, magenta audit) — checkpoint auto-approved per auto-mode
+   - **Wave 2 parallel:** 34-02 (token specimens), 34-03 (/init bringup sequence), 34-04 (/reference schematic API index)
+2. Reconciliation → `34-RECONCILIATION.md` (status: `deviations_found`, 5 documented auto-fixes)
+3. Verification → `34-VERIFICATION.md` (status: `human_needed`, 42/42 automated checks pass)
+4. `/pde:validate-phase 34` — Nyquist audit:
+   - Full suite: 75/77 → fixed 2 flaky DOM assertions → **77/77 green** (19.6s)
+   - `34-VALIDATION.md` updated: `nyquist_compliant: true`, full audit trail appended
 
-| File | Status | Notes |
-|------|--------|-------|
-| `34-CONTEXT.md` | ✓ committed `4d50099` | Auto-mode decisions, all gray areas resolved |
-| `34-RESEARCH.md` | ✓ committed `d2cce0d` | HIGH confidence, includes Validation Architecture section |
-| `34-VALIDATION.md` | ✓ committed `d2cce0d` | 25 task verify entries, Wave 0 contract |
-| `34-01-PLAN.md` | ✓ committed `4b1d4e6` → revised `f9c3b0a` | Visual language pass — 7 tasks (1 Wave 0 + 5 impl + 1 checkpoint:human-verify) |
-| `34-02-PLAN.md` | ✓ committed `4b1d4e6` → revised `f9c3b0a` | /system specimens — 3 tasks |
-| `34-03-PLAN.md` | ✓ committed `4b1d4e6` → revised `f9c3b0a` | /init boot-sequence — 2 tasks |
-| `34-04-PLAN.md` | ✓ committed `4b1d4e6` → revised `f9c3b0a` | /reference schematic — 2 tasks |
-| `34-DEPENDENCY-GAPS.md` | ✓ committed `a0a6382` | Plan checker output — PASS |
-| `34-EDGE-CASES.md` | ✓ committed `a0a6382` | 4 findings (2 HIGH, 2 MEDIUM) — non-blocking |
-| `34-INTEGRATION-CHECK.md` | ✓ committed `a0a6382` | 3 forward-references to 34-01-SUMMARY.md (resolved by wave order) |
+### Phase 34 status
 
-**Plan checker:** PASSED on iteration 2 (after fixing 1 blocker + 2 warnings in iteration 1).
+| Gate | Status |
+|------|--------|
+| Plans executed | 4/4 ✓ |
+| Automated verification | 42/42 ✓ |
+| Reconciliation | `deviations_found` (all documented auto-fixes, not blockers) |
+| Goal verification | `human_needed` (5 subjective items) |
+| Nyquist (validation) | `compliant` ✓ |
+| Phase checkbox in ROADMAP | **still open** — waiting on human sign-off |
+| Auto-advance to Phase 35 | **halted** — `--auto` does not fire on `human_needed` |
 
-### Iteration 1 fixes that landed
-1. **34-04 Task 1** — malformed shell verify command (`"^$"npx tsc...`) → replaced with single well-formed chain ending in `[ -z "$(git diff --name-only lib/api-docs.ts)" ]`
-2. **SP-05 nav reveal** — plans had softened CONTEXT.md's locked decision to "trigger===null → visible immediately"; corrected to: subpages wrap h1 in `<header data-nav-reveal-trigger>` and render `<NavRevealMount targetSelector="[data-nav-reveal-trigger]" />`. Hook is single-arg `useNavReveal(triggerRef)` flipping `body[data-nav-visible]`. New file `components/layout/nav-reveal-mount.tsx` is created in 34-01 Task 3.
-3. **34-01 Task 0** — Wave 0 verify now confirms RED state via `... && ! npx playwright test ... --reporter=line`
+### 5 items needing your eyes
+
+1. **VL-04 negative-space audit** — 10% grid overlay count on THESIS + SIGNAL sections (≥40% empty cells per brief §VL-04)
+2. **VL-05 canonical magenta moment audit** — tactical CSS count passes; per-page visible-moment audit still needs human pass
+3. **SP-03 /init voice register** — Dischord/Wipeout/MIDI/8bitdo anchor test. Note: `app/init/page.tsx:11` metadata.title still reads "Get Started — SIGNALFRAME//UX" (body is reframed, browser tab title is a minor copy polish)
+4. **SP-04 /reference schematic density** — engineer-documentation feel check
+5. **SP-05 nav-reveal runtime scroll behavior** — chrome-devtools MCP scroll-test required per your standing rule (`feedback_visual_verification.md`)
 
 ## Uncommitted changes
 
 ```
-M .planning/agent-memory/executor/memories.md   (planner appended iter 1 entry)
-M .planning/agent-memory/verifier/memories.md   (in-flight from earlier session)
-M .planning/config.json                         (workflow._auto_chain_active set true)
+M .planning/agent-memory/executor/memories.md    (executors appended entries throughout phase execution)
+M .planning/agent-memory/verifier/memories.md    (verifier appended entry)
+M .planning/config.json                          (workflow._auto_chain_active = true from --auto invocation)
+?? test-results/                                  (Playwright output directory — gitignored territory)
 ```
 
-These are operational state from the in-flight auto chain. The `_auto_chain_active: true` flag is important — see "Resume notes" below.
+None of these need to be committed before context refresh. `config.json` chain flag will auto-reset on next non-`--auto` PDE command.
 
-## Plan structure summary (for orientation)
-
-- **Wave 0:** 34-01 Task 0 — create `tests/phase-34-visual-language-subpage.spec.ts` in RED state
-- **Wave 1:** 34-01 Tasks 1–6 — HUD `SectionIndicator` replacement, GhostLabel deployment ×5+, `useNavReveal`/`NavRevealMount` extraction, display type bumps, magenta audit (≤5/page), VL-04 negative space human-verify checkpoint
-- **Wave 2 (parallel):** 34-02 (/system specimens), 34-03 (/init boot sequence), 34-04 (/reference schematic)
-- **34-01 is `autonomous: false`** because it contains the VL-04 `checkpoint:human-verify` task (auto-mode will auto-approve as `"approved"`)
-
-**Key new files Phase 34 will create:**
-- `hooks/use-nav-reveal.ts`
-- `components/layout/nav-reveal-mount.tsx`
-- `components/blocks/token-specimens/{spacing,type,color,motion}-specimen.tsx`
-- `tests/phase-34-visual-language-subpage.spec.ts`
-
-**Key files Phase 34 modifies (preserves filename + behavior):**
-- `components/layout/section-indicator.tsx` (replace contents — HUD coded readout)
-- `components/layout/nav.tsx` (remove inline ScrollTrigger)
-- `components/blocks/token-tabs.tsx` (replace render bodies, preserve data layer)
-- `components/blocks/api-explorer.tsx` (schematic restyle, preserve `API_DOCS` + keyboard nav + search)
-- `app/{system,init,reference,inventory}/page.tsx` (h1 bumps, ghost labels, NavRevealMount wiring; /inventory only gets h1 string update)
-- `app/globals.css` (new `body[data-nav-visible="true"]` rule)
-- `app/page.tsx` (NavRevealMount on ENTRY trigger, ghost labels on THESIS + INVENTORY)
-
-## Next action
+## Recent commits this session (newest first)
 
 ```
-/pde:execute-phase 34 --auto
+8beaf60 docs(phase-34): update validation strategy — Nyquist audit complete
+0b889e8 test(phase-34): fix 2 flaky DOM assertions (Nyquist audit)
+c1552c8 docs(34): reconciliation + verification reports (pre-validate-phase snapshot)
+6de3045 docs(34-04): complete /reference schematic API index plan
+6490af4 docs(34-02): complete token specimens plan
+17ee2d9 docs(34-03): complete /init bringup sequence plan
+4ddd632 test(34-04): add SP-04 schematic API index assertions
+536a3a0 docs(34-03): complete /init bringup sequence plan  ← labeled 34-03, contains 34-04 fixes (git add race)
+ae98f33 refactor(34-04): restyle APIExplorer as grouped schematic index
+dd40fa2 test(34-03): add SP-03 /init bringup sequence assertions
+c5b1964 feat(34-03): reframe /init as bringup sequence — strip onboarding blocks
+deadd89 test(34-02): add SP-01/SP-02 specimen assertions + SP-05 /system source check
+b338e10 feat(34-02): wire specimens into TokenTabs + NavRevealMount on /system
+5a5a60f feat(34-02): add 4 token-specimen sub-components
+c3dd946 docs(34-01): complete visual language + subpage redesign plan
+d682cd3 refactor(34-01): breadcrumb monospaced coded register (brief SP-05 bonus)
+f5cebfc refactor(34-01): trim magenta to <= 5 per target file (VL-05 tactical proxy)
+2778337 feat(34-01): deploy GhostLabel, bump subpage h1s, fix inventory copy
+81dcf95 feat(34-01): extract useNavReveal hook + NavRevealMount client island
+b756eda feat(34-01): retire SectionIndicator, ship InstrumentHUD site-wide
+d68d7dd feat(34-01): add data-ghost-label attribute to GhostLabel
+f3d66b1 test(34-01): add Phase 34 Playwright spec (RED state)
 ```
 
-This will pick up where the chain left off. Wave 0 → Wave 1 (with auto-approved checkpoint at the end) → Wave 2 parallel → reconcile → verify → roadmap update.
+## Next actions (choose one)
 
-**Heads up:** Phase 34 is a heavy execution — 14 tasks across 4 plans, ~16 files modified, includes a Playwright spec scaffold. Fresh context recommended before kickoff.
+**A. Sign off on the 5 items → close Phase 34 → auto-advance to Phase 35**
+1. `pnpm dev` and use chrome-devtools MCP to scroll-test SP-05 on all subpages
+2. Visually inspect negative space + /reference density + /init voice register
+3. When satisfied: reply `"approved"` and I'll run `update_roadmap` → transition to Phase 35 (Performance + Launch Gate)
 
-## Resume notes
+**B. Conversational UAT**
+```
+/pde:verify-work 34
+```
+Walks you through the 5 human items interactively.
 
-1. **Auto chain flag is currently `true`** in `.planning/config.json`. If you run `/pde:execute-phase 34 --auto`, it will continue the chain. If you run any PDE command WITHOUT `--auto`, the workflow init step will reset the flag to false (this is the workflow's chain-sync logic, not a bug).
+**C. Fix `/init` metadata.title polish (optional)**
+`app/init/page.tsx:11` — change "Get Started — SIGNALFRAME//UX" to something matching the bringup-sequence register (e.g., `"[00//BOOT] — SIGNALFRAME//UX"`). One-liner, gets captured in Phase 34 closing commit.
 
-2. **`--no-transition` flag is for in-session chains.** When resuming in a fresh session, use `/pde:execute-phase 34 --auto` (without `--no-transition`) so transition can run after verification. The in-flight chain was using `--no-transition` because plan-phase had spawned execute-phase as a child.
+**D. Defer Phase 34 closure, jump elsewhere**
+Phase 35 is blocked until Phase 34 closes. Phase 31 (THESIS) is still incomplete — D-34 physical iPhone verification pending. Backlog / other milestones also fair game.
 
-3. **CONTEXT.md §VL — Nav reveal pattern is the LOCKED decision.** During iteration 1 the planner softened it to "either interpretation allowed"; the checker caught it. If execution introduces drift, re-anchor on this section.
+## Roadmap status at session end
 
-4. **Two HIGH-severity edge cases** the plan checker flagged (non-blocking, in `34-EDGE-CASES.md`):
-   - `NavRevealMount` querySelector timing under future Suspense refactor (not a current bug)
-   - Reduced-motion users on 375px viewport: nav-visible-immediately may overlap h1 LCP element (no test asserts no-overlap)
-   - Both produce BDD candidates the verifier may pick up.
-
-5. **Phase 31 (THESIS Section) is still incomplete** in the roadmap (`- [ ] Phase 31`). It was deferred — physical iPhone Safari verification (D-34) is pending. Phase 34 does NOT depend on Phase 31 completion (CONTEXT.md addresses ghost label deployment on THESIS background as a "place when section is ready" task).
-
-6. **Recent commits this session (newest first):**
-   ```
-   a0a6382 docs(34): plan checker artifacts (verification passed)
-   f9c3b0a docs(34): revise plans (iteration 1) — fix verify cmd, lock SP-05 nav reveal
-   4b1d4e6 docs(34): create 4 plans for visual language + subpage redesign
-   d2cce0d docs(34): add research + validation strategy
-   fe7636a docs(state): record phase 34 context session
-   4d50099 docs(34): capture phase context
-   ```
-
-## Roadmap status
-
-- ✓ Phase 30: Homepage Architecture + ENTRY (complete 2026-04-08)
 - ☐ Phase 31: THESIS Section (incomplete — D-34 iPhone verification pending)
 - ✓ Phase 32: SIGNAL + PROOF Sections (complete 2026-04-08)
 - ✓ Phase 33: INVENTORY + ACQUISITION Sections (complete 2026-04-09)
-- ☐ **Phase 34: Visual Language + Subpage Redesign** ← planned, ready to execute
-- ☐ Phase 35: Performance + Launch Gate (depends on Phase 34)
+- ▣ **Phase 34: Visual Language + Subpage Redesign** ← executed + verified + Nyquist-compliant; awaiting human sign-off on 5 subjective items
+- ☐ Phase 35: Performance + Launch Gate (blocked on Phase 34 closure)
+
+v1.5 milestone: 16/16 plans shipped, awaiting Phase 34 sign-off + Phase 35.
 
 ---
 
-*Session window ended at planning/verification gate. Plans approved on iteration 2. Ready to execute on fresh context.*
+*Session window: /pde:execute-phase 34 --auto → reconciliation → verification → /pde:validate-phase 34 → ready to close phase. Fresh context should resume by reading this handoff + `.planning/phases/34-visual-language-subpage-redesign/34-VERIFICATION.md` → decide on path A/B/C/D.*
