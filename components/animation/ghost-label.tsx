@@ -13,6 +13,7 @@ export function GhostLabel({ text, className }: GhostLabelProps) {
     <span
       aria-hidden="true"
       data-anim="ghost-label"
+      data-ghost-label="true"
       className={`sf-display pointer-events-none select-none absolute leading-none ${className ?? ""}`}
       style={{ fontSize: "clamp(200px, 25vw, 400px)" }}
     >
