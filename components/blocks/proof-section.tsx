@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 import { ProofShaderLazy as ProofShader } from "@/components/animation/proof-shader-lazy";
 import { SkeletonGrid } from "@/components/animation/component-skeleton";
 import { PROOF_COMPONENT_SKELETONS } from "@/lib/proof-components";
+import { SYSTEM_STATS } from "@/lib/system-stats";
 
 // ── rAF lerp state (module-level — single ProofSection instance on page) ────
 //
@@ -309,14 +310,14 @@ export function ProofSection() {
         )}
         style={{ width: "320px" }}
       >
-        {/* System stats — AC-4: 51, 100KB, 100/100 must be present */}
+        {/* System stats — sourced from SYSTEM_STATS (single source of truth, Phase 33) */}
         <div className="flex flex-col gap-2">
           <span className="text-[9px] uppercase tracking-widest opacity-60">
             SYSTEM READOUT
           </span>
-          <span>COMPONENTS // 51</span>
-          <span>BUNDLE // 100KB</span>
-          <span>LIGHTHOUSE // 100/100</span>
+          <span>COMPONENTS // {SYSTEM_STATS.components}</span>
+          <span>BUNDLE // {SYSTEM_STATS.bundle}</span>
+          <span>LIGHTHOUSE // {SYSTEM_STATS.lighthouse}/100</span>
         </div>
 
         {/* INVENTORY PREVIEW — first 6 SF//[CAT]-NNN identifiers */}
