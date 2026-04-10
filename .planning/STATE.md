@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: v1.5 Redesign
-status: ready_to_execute
-stopped_at: Phase 34 closed (human sign-off 2026-04-09) -- awaiting Phase 35 Performance + Launch Gate start
-last_updated: "2026-04-09T15:30:00.000Z"
+pde_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: planning
+stopped_at: Completed 35-01-PLAN.md
+last_updated: "2026-04-10T16:21:35.326Z"
 last_activity: 2026-04-09
 progress:
   total_phases: 26
-  completed_phases: 14
-  total_plans: 35
-  completed_plans: 34
-  percent: 97
+  completed_phases: 13
+  total_plans: 36
+  completed_plans: 31
 ---
 
 # STATE — SignalframeUX
@@ -175,6 +174,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-09T15:30:00.000Z
-Stopped at: Phase 34 closed after human sign-off -- 2 fix commits (e1e7af5 nav-reveal gap + metadata polish, fcc811d VL-05 hero magenta moment)
+Last session: 2026-04-10T16:21:35.322Z
+Stopped at: Completed 35-01-PLAN.md
 Resume with: Start Phase 35 Performance + Launch Gate via /pde:discuss-phase 35 or /pde:plan-phase 35
