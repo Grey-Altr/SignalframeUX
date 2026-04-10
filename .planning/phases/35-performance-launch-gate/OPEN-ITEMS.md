@@ -9,15 +9,18 @@
 
 **Brief reference:** §LR-01 "Credits attribution — OPEN (Grey to decide)"
 
+**RESOLVED 2026-04-10 — Grey's decision:** `Culture Division` (studio attribution only).
+
 Choose ONE or BOTH:
-- [ ] Culture Division (studio attribution only)
+- [x] Culture Division (studio attribution only)
 - [ ] Grey Altaer (personal attribution only)
 - [ ] Both (Culture Division as studio, Grey Altaer as designer + developer)
 
 **Brief default suggestion:** both. **Brief final word:** "this is a branding decision Grey owns outright."
 
-**Blocks:** 35-04 Task "Author Awwwards description deck" — the credits line cannot be
-written until Grey decides.
+**Resolved:** Credits line in `awwwards-description.md` reads "Culture Division" only.
+
+**Unblocks:** 35-04 Task 6 "Author awwwards-description.md" — credits line written as resolved.
 
 ## OPEN-2: LR-02 metadataBase production URL — RESOLVED
 
