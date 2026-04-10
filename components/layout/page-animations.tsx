@@ -83,11 +83,15 @@ async function initHeroAnimations(
   // ── 0. Hero mesh — FIRST visible motion, fires at delay:0 (<500ms from load) ──
   // Initial opacity:0 is set in CSS ([data-anim="hero-mesh"]) and in hero.tsx wrapper.
   // GSAP controls the fade-in to 0.45 opacity.
-  gsap.fromTo(
-    "[data-anim='hero-mesh']",
-    { opacity: 0 },
-    { opacity: 0.45, duration: 0.3, ease: "power2.out", delay: 0 }
-  );
+  // Guard: hero-mesh was retired at Phase 30 (commit 86237fd); only animate if present.
+  const heroMesh = document.querySelector("[data-anim='hero-mesh']");
+  if (heroMesh) {
+    gsap.fromTo(
+      heroMesh,
+      { opacity: 0 },
+      { opacity: 0.45, duration: 0.3, ease: "power2.out", delay: 0 }
+    );
+  }
 
   // ── 1. Hero slashes — slide left to right (fires as chars begin) ──
   const slashes = document.querySelector("[data-anim='hero-slashes']");
@@ -97,20 +101,26 @@ async function initHeroAnimations(
   }
 
   // ── 2. Hero headline — SplitText char reveal (fires at 0.4s — visible within 1s) ──
-  const split = SplitText.create("[data-anim='hero-char']", {
-    type: "chars",
-  });
+  // Guard: hero-char was retired at Phase 30 (commit 86237fd); SplitText on a missing
+  // element produces empty split.chars arrays that generate GSAP "target not found"
+  // warnings. Only run this block if the element exists.
+  const heroCharEl = document.querySelector("[data-anim='hero-char']");
+  if (heroCharEl) {
+    const split = SplitText.create(heroCharEl, {
+      type: "chars",
+    });
 
-  gsap.set(split.chars, { y: "100%", opacity: 0 });
-  gsap.to(split.chars, {
-    y: 0,
-    opacity: 1,
-    duration: 0.35,
-    ease: "power3.out",
-    stagger: 0.02,
-    delay: 1.5,
-    onComplete: () => revealMultilingual(),
-  });
+    gsap.set(split.chars, { y: "100%", opacity: 0 });
+    gsap.to(split.chars, {
+      y: 0,
+      opacity: 1,
+      duration: 0.35,
+      ease: "power3.out",
+      stagger: 0.02,
+      delay: 1.5,
+      onComplete: () => revealMultilingual(),
+    });
+  }
 
   // ── 3. Multilingual scramble sequence (fires ~1.3s after load) ──
   function revealMultilingual() {
@@ -157,14 +167,18 @@ async function initHeroAnimations(
   }
 
   // ── 6. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
-  gsap.to("[data-anim='cta-btn']", {
-    y: 0,
-    opacity: 1,
-    duration: 0.5,
-    ease: "power2.out",
-    stagger: 0.1,
-    delay: 1.5,
-  });
+  // Guard: cta-btn was retired at Phase 30 (commit 86237fd); only animate if present.
+  const ctaBtn = document.querySelector("[data-anim='cta-btn']");
+  if (ctaBtn) {
+    gsap.to("[data-anim='cta-btn']", {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.out",
+      stagger: 0.1,
+      delay: 1.5,
+    });
+  }
 
   // ── 7. Accent color cycle — flash through palette and land on magenta ──
   const accentColors = [
