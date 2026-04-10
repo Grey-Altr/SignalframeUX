@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   // Nonce-based CSP removed: when a nonce is present in script-src,
   // browsers ignore 'unsafe-inline' per CSP3 spec — this caused all
   // Next.js static chunk <script> tags to be blocked (no matching nonce),
