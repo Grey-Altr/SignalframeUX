@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "35-03-PLAN.md — CHECKPOINT:DECISION Task 3 (OPEN-2 metadataBase URL). Tasks 1+2+5 complete (commits 7a5a30b, 2261ddb, f49d4c6, 62db80a). Tasks 3+4 pending Grey's URL confirmation."
-last_updated: "2026-04-10T17:00:00.000Z"
+stopped_at: "Completed 35-02-PLAN.md — Wave 1 test suite (8 spec files + 5 agent reports). 35-03 in progress at CHECKPOINT:DECISION Task 3 (OPEN-2 metadataBase URL). Tasks 1+2+5 complete (commits 7a5a30b, 2261ddb, f49d4c6, 62db80a). Tasks 3+4 pending Grey's URL confirmation."
+last_updated: "2026-04-10T17:08:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 26
   completed_phases: 13
   total_plans: 36
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # STATE — SignalframeUX
@@ -158,6 +158,9 @@ v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28
 - [Phase 34]: 34-04: DataDrivenDoc replaced by file-private EntryDataSheet — shadcn chrome (SFTable/SFTabs/SFBadge) conflicts with schematic register; zero SF-wrapper imports in final api-explorer.tsx
 - [Phase 34]: 34-04: Surface groups classified via API_DOCS[id].layer (HOOK->HOOKS, TOKEN->TOKENS, CORE/FRAME/SIGNAL->COMPONENTS) not NAV_SECTIONS.title — authoritative data field wins
 - [Phase 34]: 34-04: HudTelemetry sub-component dropped — InstrumentHUD site-wide from 34-01 carries cockpit role globally, duplicating on /reference dilutes register
+- [Phase 35-02]: All runtime Playwright tests (nav-reveal, HUD, DOM, LCP, CLS) are ERR_CONNECTION_REFUSED when no server is running — Wave 1 test authoring does not require a live server; Wave 3 re-runs against pnpm build && pnpm start
+- [Phase 35-02]: schematic register font-mono source-read targets wrong file — font-mono lives in components/blocks/api-explorer.tsx (lines 166, 181, 291, 315), not app/reference/page.tsx; test path fix is Wave 3 triage item
+- [Phase 35-02]: PF-01 bundle gate is server-independent — reads .next/build-manifest.json directly; passes even without a running server; confirmed 100.0 KB gzip (50 KB under 150 KB gate)
 - [Phase 34]: 34-04: Rule 1/2 auto-fix horizontal scroll at 375px (Footer URL break-all, /reference header responsive grid, api-explorer filter bar min-w-0) landed accidentally in sibling 34-03 docs commit due to parallel-wave git race; code correct, attribution wrong, no rollback
 - [Phase 35-03]: OG image mono font is GeistMono (Option A — Grey 2026-04-09 ~20:40 PDT), not JetBrains Mono. Live site uses JetBrains Mono; OG image intentionally diverges to honor brief §LR-02 literal "GeistMono" reference. Sourced from geist@1.7.0 npm package.
 - [Phase 35-03]: chrome-launcher is a transitive dep of lighthouse — pnpm doesn't hoist it, so TypeScript can't resolve the ES import. Typed via inline interface shim in scripts/launch-gate.ts; runtime (tsx) resolves correctly.
