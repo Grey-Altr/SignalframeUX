@@ -49,10 +49,11 @@ test.describe("@phase35 /system — Agent 2", () => {
 
       // ── Nav-reveal contract (Gap 1 tightened) ───────────────────────────
       test("nav-reveal: hidden on load, visible after scroll", async ({ page }) => {
+        // Wave 3 T-03 fix: page.mouse.wheel drives Lenis; window.scrollBy does not.
         await page.goto("/system", { waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 500 });
-        await page.evaluate(() => window.scrollBy(0, 600));
-        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 500 });
+        await page.mouse.wheel(0, 800);
+        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 2000 });
       });
 
       // ── [SYS//TOK] HUD label ────────────────────────────────────────────

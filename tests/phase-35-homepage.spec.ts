@@ -25,10 +25,14 @@ test.describe("@phase35 homepage / — Agent 1", () => {
       // ── Nav-reveal contract ──────────────────────────────────────────────
       test("nav-reveal: hidden on load, visible after scroll", async ({ page }) => {
         // Phase 35 tightened pattern (Gap 1) — waitUntil domcontentloaded + timeout 500ms
+        // Wave 3 T-03 fix: window.scrollBy does not drive Lenis (Lenis intercepts native scroll
+        // but wheel events trigger its internal pipeline). Use page.mouse.wheel instead — Playwright
+        // wheel events are real WheelEvent dispatches that Lenis picks up via its event listeners.
         await page.goto("/", { waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 500 });
-        await page.evaluate(() => window.scrollBy(0, 600));
-        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 500 });
+        // Scroll via wheel event — drives Lenis, which updates ScrollTrigger, which flips data-nav-visible
+        await page.mouse.wheel(0, 800);
+        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 2000 });
       });
 
       // ── InstrumentHUD shape + [01//ENTRY] label ──────────────────────────
