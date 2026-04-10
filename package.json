@@ -37,7 +37,7 @@
     "@eslint/eslintrc": "^3.3.5",
     "@next/bundle-analyzer": "^16.2.2",
     "@playwright/test": "^1.59.1",
-    "@tailwindcss/postcss": "^4.1.4",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -48,7 +48,7 @@
     "geist": "^1.7.0",
     "lighthouse": "^13.1.0",
     "shadcn": "^4.1.2",
-    "tailwindcss": "^4.1.4",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5.8.3"
   }
 }
