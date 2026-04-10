@@ -43,3 +43,6 @@ next-env.d.ts
 
 # lighthouse advisory audit trails (gitignored per plan 35-03)
 .planning/phases/35-performance-launch-gate/launch-gate-*.json
+
+# vitest coverage output
+/coverage
