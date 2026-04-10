@@ -475,11 +475,11 @@ Plans:
   5. The Awwwards submission package is prepared: project description, technology stack, 5+ screenshots at 1440x900, and live URL
   6. Open Graph meta tags are updated for the redesigned site — title, description, and preview image reflect the v1.5 identity
   7. The production Vercel deployment is live with zero console errors — confirmed by opening DevTools on the deployed URL
-**Plans:** 1/5 plans executed
+**Plans:** 1/5 plans executed (35-03 partial — Tasks 1+2+5 complete, Tasks 3+4 pending OPEN-2 checkpoint)
 Plans:
-- [ ] 35-01-PLAN.md — Wave 0 scaffolding: ROADMAP fix, Vercel CLI upgrade, Gap 2 test + RED stubs [PF-01, PF-03]
+- [x] 35-01-PLAN.md — Wave 0 scaffolding: ROADMAP fix, Vercel CLI upgrade, Gap 2 test + RED stubs [PF-01, PF-03]
 - [ ] 35-02-PLAN.md — Wave 1 Playwright agent test suites (5 routes x 3 viewports) [PF-01, PF-03, LR-04]
-- [ ] 35-03-PLAN.md — OG image + metadata + launch-gate.ts advisory tool [LR-02, PF-02]
+- [ ] 35-03-PLAN.md — OG image + metadata + launch-gate.ts advisory tool [LR-02, PF-02] — PARTIAL: Tasks 1+2+5 done; Task 3 CHECKPOINT:DECISION awaiting OPEN-2 (metadataBase URL)
 - [ ] 35-04-PLAN.md — Wave 2 chrome-devtools MCP pass + Wave 3 triage + Awwwards package [LR-01]
 - [ ] 35-05-PLAN.md — Wave 4 production deploy + LR-03 console sweep + close [LR-03, PF-02]
 
