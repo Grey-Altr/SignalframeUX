@@ -117,11 +117,11 @@ export function InventorySection() {
           )}
           aria-hidden="true"
         >
-          <span>SF//</span>
-          <span>NAME</span>
-          <span>LAYER</span>
-          <span>TIER</span>
-          <span>—</span>
+          <span role="columnheader">SF//</span>
+          <span role="columnheader">NAME</span>
+          <span role="columnheader">LAYER</span>
+          <span role="columnheader">TIER</span>
+          <span role="columnheader">—</span>
         </div>
 
         {/* Data rows */}
@@ -150,11 +150,12 @@ export function InventorySection() {
             }}
             aria-label={`Open ${row.name} component detail`}
           >
-            <span data-sf-code className="text-primary">
+            <span role="cell" data-sf-code className="text-primary">
               {row.sfCode}
             </span>
-            <span>{row.name}</span>
+            <span role="cell">{row.name}</span>
             <span
+              role="cell"
               data-layer-tag
               className={
                 row.layer === "signal"
@@ -164,10 +165,10 @@ export function InventorySection() {
             >
               {row.layer === "signal" ? "[//SIGNAL]" : "[FRAME]"}
             </span>
-            <span data-pattern-tier className="text-muted-foreground">
+            <span role="cell" data-pattern-tier className="text-muted-foreground">
               {row.pattern}
             </span>
-            <span aria-hidden="true">→</span>
+            <span role="cell" aria-hidden="true">→</span>
           </div>
         ))}
       </div>

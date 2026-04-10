@@ -2,13 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  // style-src 'unsafe-inline' is required — Next.js injects inline styles for next/font
-  // and CSS-in-JS. Nonce-based style-src would require patching every inline style tag.
+  // Nonce-based CSP removed: when a nonce is present in script-src,
+  // browsers ignore 'unsafe-inline' per CSP3 spec — this caused all
+  // Next.js static chunk <script> tags to be blocked (no matching nonce),
+  // producing console CSP errors that fail Lighthouse Best Practices.
+  // Static CSP with 'unsafe-inline' is the correct approach for a Next.js
+  // App Router app where scripts are served from 'self' origin.
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' 'unsafe-eval'`,
-    `style-src 'self' 'unsafe-inline'`,
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    "style-src 'self' 'unsafe-inline'",
     "img-src 'self' blob: data:",
     "font-src 'self'",
     "connect-src 'self' https:",
@@ -17,10 +20,7 @@ export function middleware(request: NextRequest) {
     "frame-ancestors 'none'",
   ].join("; ");
 
-  const headers = new Headers(request.headers);
-  headers.set("x-nonce", nonce);
-
-  const response = NextResponse.next({ request: { headers } });
+  const response = NextResponse.next();
   response.headers.set("Content-Security-Policy", csp);
 
   return response;

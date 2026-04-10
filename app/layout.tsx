@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Electrolize, JetBrains_Mono, Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
@@ -70,14 +69,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
-
   // Static string literal for theme detection — no user input interpolated, safe from XSS.
+  // CSP has 'unsafe-inline' for script-src so nonce is not required for this inline script.
+  // Removing headers() here is critical: calling headers() forces dynamic rendering which
+  // defers Next.js metadata injection into the body via streaming, breaking SEO (Lighthouse
+  // fails meta-description because the tag lands after </head>).
   const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()`;
 
   return (
@@ -87,10 +88,8 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Blocking theme script — prevents FOUC. CSP nonce injected from middleware. */}
-        {/* suppressHydrationWarning: browsers strip nonce from DOM after parsing (security feature),
-            so server="nonce-xxx" but client="" — this is expected, not a real mismatch. */}
-        <script nonce={nonce} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Blocking theme script — prevents FOUC. */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
         <noscript>
           <style>{`.sf-hero-deferred, .sf-anim-hidden, .sf-motion-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"], [data-anim="manifesto-word"], [data-anim="hero-mesh"], [data-anim="error-code"], [data-anim="ghost-label"], [data-anim="stagger"] > * { opacity: 1 !important; visibility: visible !important; transform: none !important; }`}</style>
         </noscript>
