@@ -527,6 +527,11 @@ Plans:
 - [ ] 37-02-PLAN.md — Full test suite verification + Lighthouse gate + use cache PoC
 
 ### Phase 38: Test & Quality Hardening
+**Plans:** 3 plans
+Plans:
+- [ ] 38-01-PLAN.md — Vitest setup + unit tests for lib/ utilities
+- [ ] 38-02-PLAN.md — axe-core WCAG AA audit + reduced-motion Playwright specs
+- [ ] 38-03-PLAN.md — Husky + lint-staged pre-commit hooks
 **Goal**: Comprehensive automated quality gates — unit tests, accessibility, and developer workflow hooks
 **Depends on**: Phase 37 (framework stable before adding test infrastructure on top)
 **Requirements**: QA-01 (unit tests), QA-02 (a11y automation), QA-03 (dev workflow)
