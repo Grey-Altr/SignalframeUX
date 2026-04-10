@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 36 context gathered
-last_updated: "2026-04-10T20:19:57.458Z"
+stopped_at: Completed 36-02-PLAN.md (ESLint flat config, pnpm lint clean)
+last_updated: "2026-04-10T20:45:59.346Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 14
-  total_plans: 36
-  completed_plans: 35
+  total_plans: 38
+  completed_plans: 36
+  percent: 95
 ---
 
 # STATE — SignalframeUX
@@ -181,6 +182,8 @@ v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 - [Phase 35-03]: OPEN-2 (metadataBase URL) unresolved — app/layout.tsx metadata edit (Task 4) BLOCKED until Grey confirms production URL. Default candidate: https://signalframeux.vercel.app (from app/sitemap.ts).
 - [Phase 35]: OPEN-2 resolved: metadataBase is https://signalframe.culturedivision.com (Grey 2026-04-10) — SF//UX ships under Culture Division domain
 - [Phase 35]: 35-03: Do not specify openGraph.images or twitter.images — file-based convention takes precedence; double-specification triggers Next.js warning
+- [Phase 36]: @typescript-eslint packages need direct devDep install in pnpm projects — transitive deps are not hoisted and cannot be imported from project ESM code
+- [Phase 36]: JSX // text content must be wrapped in {"//"} expressions — react/jsx-no-comment-textnodes fires on any // sequence in JSX children, including DU/TDR design tokens like SF//UX and //SIGNAL
 
 ### Blockers
 
@@ -196,6 +199,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T20:19:57.450Z
-Stopped at: Phase 36 context gathered
+Last session: 2026-04-10T20:45:53.409Z
+Stopped at: Completed 36-02-PLAN.md (ESLint flat config, pnpm lint clean)
 Resume with: Grey submits to Awwwards (outside phase scope) OR begin v1.6 kickoff via /pde:discuss-milestone v1.6

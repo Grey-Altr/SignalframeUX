@@ -504,10 +504,10 @@ Plans:
   4. ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
   5. Vercel CLI upgraded to 50.42.0+
   6. All stale ROADMAP.md entries corrected (Phase 31, 35 checkboxes and counts)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 36-01-PLAN.md — Lighthouse 100/100 + test fixes + REQUIREMENTS.md v1.6 + ROADMAP verify
-- [ ] 36-02-PLAN.md — ESLint 9 flat config + zero-violation cleanup
+- [x] 36-02-PLAN.md — ESLint 9 flat config + zero-violation cleanup
 
 
 ### Phase 37: Next.js 16 Migration
@@ -607,7 +607,7 @@ Plans:
 | 33. INVENTORY + ACQUISITION Sections | 2/4 | Complete    | 2026-04-09 | - |
 | 34. Visual Language + Subpage Redesign | v1.5 | 4/4 | Complete   | 2026-04-09 |
 | 35. Performance + Launch Gate | v1.5 | 5/5 | Complete | 2026-04-10 |
-| 36. Housekeeping & Carry-Overs | v1.6 | 0/? | Not started | - |
+| 36. Housekeeping & Carry-Overs | v1.6 | 1/2 | In Progress|  |
 | 37. Next.js 16 Migration | v1.6 | 0/? | Not started | - |
 | 38. Test & Quality Hardening | v1.6 | 0/? | Not started | - |
 | 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
