@@ -487,7 +487,7 @@ Plans:
 **v1.6 API-Ready (Phases 36-41):**
 
 - [x] **Phase 36: Housekeeping & Carry-Overs** — v1.5 carry-over fixes (Lighthouse BP/SEO → 100, test path fix), ESLint config, Vercel CLI upgrade (completed 2026-04-10)
-- [ ] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions
+- [x] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions (completed 2026-04-10)
 - [ ] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check)
 - [ ] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation)
 - [ ] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide
@@ -521,7 +521,7 @@ Plans:
   4. Turbopack dev mode functional
   5. No new TypeScript errors introduced
   6. Bundle size remains under 150KB first-load JS gzip
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 37-01-PLAN.md — Tailwind upgrade + Next.js 16 codemod + middleware-to-proxy rename
 - [ ] 37-02-PLAN.md — Full test suite verification + Lighthouse gate + use cache PoC
@@ -612,7 +612,7 @@ Plans:
 | 34. Visual Language + Subpage Redesign | v1.5 | 4/4 | Complete   | 2026-04-09 |
 | 35. Performance + Launch Gate | v1.5 | 5/5 | Complete | 2026-04-10 |
 | 36. Housekeeping & Carry-Overs | v1.6 | Complete    | 2026-04-10 |  |
-| 37. Next.js 16 Migration | 1/2 | In Progress|  | - |
+| 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
 | 38. Test & Quality Hardening | v1.6 | 0/? | Not started | - |
 | 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
 | 40. API Documentation & DX | v1.6 | 0/? | Not started | - |

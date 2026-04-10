@@ -178,8 +178,8 @@
 
 ### Next.js 16 Migration (Phase 37)
 - [ ] **MG-01**: Next.js upgraded to ^16.x.x, app builds and starts without errors
-- [ ] **MG-02**: All 18 Playwright E2E tests pass on Next 16 with zero regressions
-- [ ] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
+- [x] **MG-02**: All 18 Playwright E2E tests pass on Next 16 with zero regressions
+- [x] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
 
 ### Test & Quality Hardening (Phase 38)
 - [ ] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
