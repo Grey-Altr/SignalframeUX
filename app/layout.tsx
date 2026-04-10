@@ -39,6 +39,7 @@ const anton = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://signalframe.culturedivision.com"),
   title: "SIGNALFRAME//UX",
   description:
     "Universal design system combining clarity (Signal) and generative depth (Frame). Built for product design engineers.",
@@ -55,6 +56,7 @@ export const metadata: Metadata = {
     description: "Deterministic interface. Generative expression. The programmable design system for digital surfaces.",
     type: "website",
     siteName: "SignalframeUX",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
