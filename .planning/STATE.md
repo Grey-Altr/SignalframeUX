@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 38 context gathered
-last_updated: "2026-04-10T23:35:49.613Z"
+stopped_at: "Completed 38-01-PLAN.md"
+last_updated: "2026-04-10T23:55:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 16
   total_plans: 40
-  completed_plans: 39
+  completed_plans: 40
 ---
 
 # STATE — SignalframeUX
@@ -26,9 +26,9 @@ progress:
 
 ## Current Position
 
-Phase: 36 — Housekeeping & Carry-Overs (IN PROGRESS — 1/2 plans complete)
-Previous: Phase 35 Performance + Launch Gate — CLOSED 2026-04-10 (v1.5 shipped)
-Status: v1.6 milestone active — 0/6 phases complete; 36-01 done, 36-02 done (ESLint)
+Phase: 38 — Test & Quality Hardening (IN PROGRESS — 1/3 plans complete)
+Previous: Phase 37 Next.js 16 Migration — CLOSED 2026-04-10
+Status: v1.6 milestone active — 38-01 done (Vitest + unit tests); 38-02 and 38-03 pending
 Last activity: 2026-04-10
 
 ## Progress
@@ -40,7 +40,7 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
-v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
+v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 ```
 
 ## v1.6 Phase Map
@@ -49,7 +49,7 @@ v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 |-------|------|--------------|--------|
 | 36 | Housekeeping & Carry-Overs | CO-01, CO-02, CO-03, CO-04 | Not started |
 | 37 | Next.js 16 Migration | MG-01, MG-02, MG-03 | Not started |
-| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | Not started |
+| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | In progress (1/3 plans) |
 | 39 | Library Build Pipeline | LIB-01, LIB-02, LIB-03 | Not started |
 | 40 | API Documentation & DX | DOC-01, DOC-02, DOC-03, DOC-04 | Not started |
 | 41 | Distribution & Launch Gate | DIST-01, DIST-02, DIST-03, DIST-04 | Not started |
@@ -188,6 +188,9 @@ v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 - [Phase 36-01]: tsx CJS/ESM interop breaks lighthouse@13 (type:module) — fileURLToPath(import.meta.url) inside lighthouse fails under tsx transform. Use native ESM .mjs runner with createRequire for chrome-launcher
 - [Phase 36-01]: role="row" requires role="cell"/"gridcell"/"columnheader" children per ARIA spec — <span> children inside role="row" have no implicit cell role
 - [Phase 37]: Manual upgrade instead of codemod — codemod requires interactive TTY; direct pnpm add was equivalent — Codemod launched interactive UI incompatible with automated shell; same dependency versions achieved via pnpm add next@latest
+- [Phase 38]: passWithNoTests: true required in vitest.config.ts — vitest 4.x exits code 1 on empty suite by default; needed so pnpm test exits 0 before test files exist and in CI
+- [Phase 38]: tsconfig.test.json scopes vitest/globals to lib/ include only — prevents type conflict with @playwright/test globals which also declare `test`, `expect`, `describe` in the global namespace
+- [Phase 38]: THESIS_MANIFESTO is the actual export (not MANIFESTO_STATEMENTS) — plan interface section had drifted; always read source before writing tests
 
 ### Blockers
 
@@ -203,6 +206,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T23:35:49.607Z
-Stopped at: Phase 38 context gathered
-Resume with: Phase 36 is 2/2 plans done (36-01 + 36-02) — Phase 36 complete. Begin Phase 37 (Next.js 16 Migration) via /pde:execute-phase 37
+Last session: 2026-04-10T23:55:00.000Z
+Stopped at: Completed 38-01-PLAN.md
+Resume with: Phase 38 is 1/3 plans done (38-01 Vitest + unit tests complete). Continue with 38-02 (axe-core a11y + reduced-motion) via /pde:execute-phase 38

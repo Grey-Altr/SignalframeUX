@@ -488,7 +488,7 @@ Plans:
 
 - [x] **Phase 36: Housekeeping & Carry-Overs** — v1.5 carry-over fixes (Lighthouse BP/SEO → 100, test path fix), ESLint config, Vercel CLI upgrade (completed 2026-04-10)
 - [x] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions (completed 2026-04-10)
-- [ ] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check)
+- [ ] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check) (1/3 plans complete)
 - [ ] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation)
 - [ ] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide
 - [ ] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100
@@ -527,9 +527,9 @@ Plans:
 - [ ] 37-02-PLAN.md — Full test suite verification + Lighthouse gate + use cache PoC
 
 ### Phase 38: Test & Quality Hardening
-**Plans:** 3 plans
+**Plans:** 3 plans (1/3 complete)
 Plans:
-- [ ] 38-01-PLAN.md — Vitest setup + unit tests for lib/ utilities
+- [x] 38-01-PLAN.md — Vitest setup + unit tests for lib/ utilities
 - [ ] 38-02-PLAN.md — axe-core WCAG AA audit + reduced-motion Playwright specs
 - [ ] 38-03-PLAN.md — Husky + lint-staged pre-commit hooks
 **Goal**: Comprehensive automated quality gates — unit tests, accessibility, and developer workflow hooks
