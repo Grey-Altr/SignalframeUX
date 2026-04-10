@@ -10,15 +10,13 @@
 
 ## Lighthouse Advisory Result
 
-**Script:** `scripts/launch-gate.ts` — requires a deployed URL (`--url` flag or `VERCEL_PREVIEW_URL`).
-
-The script was NOT run in this wave because no deployed URL is available locally. The advisory run requires a public Vercel preview URL and is a manual step per brief §PF-02 "Hybrid D mechanism."
+**Script:** `scripts/launch-gate.ts` run via Lighthouse CLI (tsx/ESM incompatibility workaround — see deviation note below).
 
 **Bundle gate (PF-01):** PASS — 100.0 KB gzip (confirmed, file-system test, no server needed).
 
 **LCP (PF-03):** PASS — `tests/phase-35-lcp-homepage.spec.ts` passed in 634ms against production server.
 
-**Lighthouse advisory:** DEFERRED — run `pnpm tsx scripts/launch-gate.ts --url <vercel-preview-url>` after deploy.
+**Lighthouse advisory:** RUN — see full results in §Lighthouse Advisory (from scripts/launch-gate.ts) below.
 
 ---
 
@@ -195,7 +193,7 @@ Items T-01 and T-02 (CLS) are the same root cause and may count as 1 fix. T-03 m
 | Bundle gate (PF-01) | PASS |
 | LCP (PF-03) | PASS |
 | CLS (PF-04) | BLOCK on all 5 routes |
-| Lighthouse advisory | DEFERRED (needs deployed URL) |
+| Lighthouse advisory | FAIL — Performance 52, Accessibility 95, Best Practices 96, SEO 91 (worst of 3 runs) |
 | VL-05 regression | PASS |
 | Nav functional | PASS (loads hidden; scroll-reveal blocked by Lenis/Playwright issue) |
 | HUD field count | PASS |
@@ -206,3 +204,49 @@ Items T-01 and T-02 (CLS) are the same root cause and may count as 1 fix. T-03 m
 | EDGE-2 gap (h1/nav overlap) | PASS |
 | Terminal footer literal | PASS |
 | Bringup-sequence labels | PASS |
+
+---
+
+## Lighthouse Advisory (from scripts/launch-gate.ts)
+
+**Run date:** 2026-04-10 17:29
+**URL audited:** http://localhost:3000
+**Runs:** 3 (worst-score-per-category mitigation)
+
+**Deviation note:** `pnpm exec tsx scripts/launch-gate.ts` failed with a Lighthouse 13.x / tsx CJS incompatibility (`import.meta.url` is `undefined` when lighthouse's ESM modules are CJS-transformed by tsx). Workaround: ran Lighthouse CLI (`./node_modules/.bin/lighthouse`) 3× with identical flags (`--output json --chrome-flags="--headless"`), parsed results with the same worst-score-per-category logic as the script. JSON artifact written to `launch-gate-2026-04-10T17-29-18-000Z.json` (gitignored). No deployed Vercel URL was available for current commits (latest deploy 3 days old, predates Phase 35 work commits 8e69c10–0f2e769); local production server used per task fallback protocol.
+
+| Category | Worst score | Status |
+|----------|-------------|--------|
+| Performance | 52 | FAIL |
+| Accessibility | 95 | FAIL |
+| Best Practices | 96 | FAIL |
+| SEO | 91 | FAIL |
+
+**Individual runs:**
+
+| Run | Performance | Accessibility | Best Practices | SEO |
+|-----|-------------|---------------|----------------|-----|
+| 1 | 52 | 95 | 96 | 91 |
+| 2 | 88 | 95 | 96 | 91 |
+| 3 | 88 | 95 | 96 | 91 |
+
+**Advisory result:** FAIL — categories < 100: Performance (52), Accessibility (95), Best Practices (96), SEO (91)
+
+**Severity classification per task spec:**
+- Performance 52 < 80 → **BLOCK** (catastrophic; will dominate Lighthouse score)
+- Accessibility 95 < 100 → **BLOCK** (brief requires 100/100 all categories)
+- Best Practices 96 < 100 → **FLAG**
+- SEO 91 < 100 → **FLAG**
+
+**Wave 3 triage additions from Lighthouse run:**
+
+| Rank | ID | Issue | Severity | Source |
+|------|----|-------|----------|--------|
+| — | LH-01 | Lighthouse Performance score 52 (worst) / 88 (typical) — /system CLS 0.485 is the primary driver | BLOCK | Lighthouse advisory run 2026-04-10 |
+| — | LH-02 | Lighthouse Accessibility score 95 — specific audit failures in JSON artifact | BLOCK | Lighthouse advisory run 2026-04-10 |
+| — | LH-03 | Lighthouse Best Practices score 96 | FLAG | Lighthouse advisory run 2026-04-10 |
+| — | LH-04 | Lighthouse SEO score 91 | FLAG | Lighthouse advisory run 2026-04-10 |
+
+**Note:** LH-01 (Performance) is almost certainly the same root cause as BLOCK-2 (CLS > 0.001 on /system at 0.485). Fixing CLS will likely bring Performance back to the v1.4 baseline of 100/100. LH-02 through LH-04 require inspection of the full JSON artifact to identify specific failing audits.
+
+**Full JSON audit trail:** `launch-gate-2026-04-10T17-29-18-000Z.json` (gitignored)
