@@ -2,7 +2,8 @@
 
 **Date:** 2026-04-10
 **Production URL:** https://signalframeux.vercel.app
-**Deploy commit:** b2ab769db8390d3b096d48a0060e15709785e8f4
+**Deploy commit (initial sweep):** b2ab769db8390d3b096d48a0060e15709785e8f4
+**Deploy commit (re-sweep after fix):** 955dc6c
 **Driver:** Playwright chromium headless against production URL (see §Driver Note below)
 
 ---
@@ -17,11 +18,13 @@ Brief §LR-03 specifies chrome-devtools MCP. The chrome-devtools MCP tools were 
 
 | Route | Errors | Warnings | Info | Log | Status |
 |-------|--------|----------|------|-----|--------|
-| `/` | 0 | 6 | 0 | 2 | TRIAGE REQUIRED |
+| `/` | 0 | 0 | 0 | 2 | PASS |
 | `/system` | 0 | 0 | 0 | 0 | PASS |
 | `/init` | 0 | 0 | 0 | 0 | PASS |
 | `/reference` | 0 | 0 | 0 | 0 | PASS |
 | `/inventory` | 0 | 0 | 0 | 1 | PASS |
+
+**Re-sweep note (commit 955dc6c):** GSAP stale target warnings on `/` resolved. Cap overflow slot 6 used — Grey approved 2026-04-10. All 5 routes now PASS.
 
 **Note on `/` Log count:** 2 debug messages (`[PROOF ST] start: 720 end: 2160`, `[SIGNAL ST] start: 2092 end: 3892`) — ScrollTrigger debug output, severity `debug` not `log`. No user-facing logs.
 
@@ -73,20 +76,7 @@ Wave 3 used all 5 slots (wave-3-triage.md):
 | 4 | InstrumentHUD subpage label fix (commit 309c009) |
 | 5 | Specimen ladder test path fix (commit 556695b) |
 
-**Cap overflow status:** Wave 3 cap is at 5/5. The GSAP warnings are a new finding from the LR-03 pass. Per brief §LR-03 protocol, options are:
-
-1. **Fix within cap** — cap has zero headroom. Not available without Grey's explicit cap expansion.
-2. **Cap overflow escalation** — `Cap expanded from 5 to 6 because [production console warnings from stale page-animations.tsx hero targets]`
-3. **Accept-as-risk** — these are cosmetic GSAP warnings with zero functional impact, pre-existing since Phase 30. Tolerable for launch.
-
-**Recommendation: Accept-as-risk.** Rationale:
-- Zero functional impact — no user-facing degradation
-- Zero security impact — not a CSP violation or data leak
-- Pre-existing since April 7 (3 weeks of preview deploys with this state)
-- Simple fix tracked in v1.6-carry-overs.md as a 30-minute cleanup item
-- Expanding cap for a cosmetic console warning delays Phase 35 close
-
-**Grey's decision required for close commit:** If Grey accepts-as-risk, the close commit string below reflects actual observed counts. If Grey expands cap, executor must land fix commit and re-run sweep.
+**Cap overflow status:** Cap expanded from 5 to 6 — Grey approved 2026-04-10 (task 3 objective). Fix landed at commit 955dc6c. Re-sweep confirmed 0 warnings on `/`.
 
 ---
 
@@ -117,24 +107,14 @@ VL-05 lock intact through Wave 4.
 
 ## Close Commit String (pending Grey decision)
 
-If accepted-as-risk:
-
 ```
-Production console verified on 2026-04-10 at commit b2ab769:
-  /:          0 errors, 6 warnings (GSAP legacy hero targets — accepted-as-risk, v1.6-WARN-01)
-  /system:    0 errors, 0 warnings
-  /init:      0 errors, 0 warnings
-  /reference: 0 errors, 0 warnings
-  /inventory: 0 errors, 0 warnings
-```
-
-If Grey expands cap and fix lands:
-
-```
-Production console verified on 2026-04-10 at commit {fix-sha}:
+Production console verified on 2026-04-10 at commit 955dc6c:
   /:          0 errors, 0 warnings
   /system:    0 errors, 0 warnings
   /init:      0 errors, 0 warnings
   /reference: 0 errors, 0 warnings
   /inventory: 0 errors, 0 warnings
 ```
+
+Cap expanded from 5 to 6 — Grey approved 2026-04-10. Fix: guarded stale hero.tsx targets
+(hero-mesh, hero-char, cta-btn) in initHeroAnimations() with querySelector null checks.

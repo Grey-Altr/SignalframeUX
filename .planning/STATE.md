@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: 35-05 Task 1 COMPLETE — vercel --prod deployed (dpl_35jchDRCGDg7DDPYdvsmjiMUZQdH), production URL https://signalframeux.vercel.app, all 5 routes HTTP 200
-last_updated: "2026-04-10T20:30:00.000Z"
+stopped_at: 35-05 Task 3 COMPLETE — GSAP stale targets fixed (commit 955dc6c), redeployed prod, re-sweep confirms 0 errors 0 warnings all 5 routes; AC-3 + AC-8 satisfied; ready for Task 4 (launch-gate.ts Lighthouse run)
+last_updated: "2026-04-10T21:00:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 26
