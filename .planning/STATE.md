@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: 35-04 Task 7 COMPLETE — awwwards-description.md metrics corrected (54 components, 238 tests, 634ms LCP), v1.6-carry-overs.md complete, plan 35-04 all 7 tasks done (commit 53ae950)
-last_updated: "2026-04-10T18:10:00.000Z"
+stopped_at: 35-05 Task 1 COMPLETE — vercel --prod deployed (dpl_35jchDRCGDg7DDPYdvsmjiMUZQdH), production URL https://signalframeux.vercel.app, all 5 routes HTTP 200
+last_updated: "2026-04-10T20:30:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 26
