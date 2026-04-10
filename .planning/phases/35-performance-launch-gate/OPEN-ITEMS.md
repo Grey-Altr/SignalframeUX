@@ -19,14 +19,12 @@ Choose ONE or BOTH:
 **Blocks:** 35-04 Task "Author Awwwards description deck" — the credits line cannot be
 written until Grey decides.
 
-## OPEN-2: LR-02 metadataBase production URL
+## OPEN-2: LR-02 metadataBase production URL — RESOLVED
 
 **Brief reference:** §LR-02 "metadataBase is the single pre-ship lock that needs a real URL"
 
-Current best candidate: `https://signalframeux.vercel.app` (from `app/sitemap.ts:3`).
+**RESOLVED 2026-04-10 — Grey's decision:** `https://signalframe.culturedivision.com` (subdomain under CD). SF//UX ships under the Culture Division domain.
 
-Grey confirms final v1.5 production URL before Phase 35 close commit. Default stays
-as the sitemap URL unless Grey chooses a custom domain.
+Previous candidate `https://signalframeux.vercel.app` (from `app/sitemap.ts:3`) is superseded. `app/sitemap.ts` updated in the same commit as this resolution.
 
-**Blocks:** 35-03 Task "Wire metadataBase in app/layout.tsx" — the literal URL string
-that ships in production requires written confirmation.
+**Unblocks:** 35-03 Task 3 "Wire metadataBase in app/layout.tsx" — the literal URL string is now confirmed. 35-03 Task 4 (remaining metadata) also unblocked.

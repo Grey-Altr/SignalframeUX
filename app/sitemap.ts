@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = "https://signalframeux.vercel.app";
+const BASE = "https://signalframe.culturedivision.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
