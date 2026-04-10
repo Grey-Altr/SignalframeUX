@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.6
-milestone_name: API-Ready
-status: in_progress
+pde_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: completed
 stopped_at: Completed 36-01-PLAN.md (Lighthouse 100/100 BP+SEO+A11y, test fixes, v1.6 requirements)
-last_updated: "2026-04-10T21:00:00.000Z"
+last_updated: "2026-04-10T21:01:09.559Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
-  completed_phases: 14
+  completed_phases: 15
   total_plans: 38
   completed_plans: 37
-  percent: 97
 ---
 
 # STATE — SignalframeUX
