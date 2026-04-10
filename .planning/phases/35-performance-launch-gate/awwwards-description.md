@@ -14,11 +14,11 @@ Deterministic interface. Generative expression. Built in deliberate formal oppos
 
 **Act 2 — Register A (technical + declarative, Dischord register)**
 
-SignalframeUX is a dual-layer design system: a FRAME foundation of 45 deterministic components, and a SIGNAL layer for generative expression through WebGL, GLSL, and audio. The interface reads like a cockpit, not an invitation. Typography is architecture; components are instruments; the register is Enhanced Flat Design drawn from Detroit Underground and The Designers Republic. Token system locked at 9 spacing stops, 5 semantic type aliases, and OKLCH throughout — no arbitrary values, no decorative gradients, no rounded corners.
+SignalframeUX is a dual-layer design system: a FRAME foundation of 54 deterministic components, and a SIGNAL layer for generative expression through WebGL, GLSL, and audio. The interface reads like a cockpit, not an invitation. Typography is architecture; components are instruments; the register is Enhanced Flat Design drawn from Detroit Underground and The Designers Republic. Token system locked at 9 spacing stops, 5 semantic type aliases, and OKLCH throughout — no arbitrary values, no decorative gradients, no rounded corners.
 
 **Act 3 — Register D (pure specification)**
 
-Next.js 15, React 19, TypeScript, Tailwind CSS, GSAP ScrollTrigger, Lenis, Three.js, GLSL, Playwright, OKLCH, shadcn/ui registry. 100 KB shared JS. CLS 0. LCP < 1.0s. 77/77 Playwright green. 5 routes. 6 layer categories. 45 SF-prefixed components.
+Next.js 15, React 19, TypeScript, Tailwind CSS, GSAP ScrollTrigger, Lenis, Three.js, GLSL, Playwright, OKLCH, shadcn/ui registry. 100 kB gzip shared JS. CLS 0. LCP 634ms. 238/238 Playwright green. 5 routes. 6 layer categories. 54 SF-prefixed components.
 
 ---
 
@@ -27,7 +27,7 @@ Next.js 15, React 19, TypeScript, Tailwind CSS, GSAP ScrollTrigger, Lenis, Three
 | Constraint | Status | Evidence |
 |------------|--------|----------|
 | Act 1 names "Liquid Glass" verbatim | PASS | "Liquid Glass consumer language" in Act 1 |
-| Act 2 is 2–3 sentences in Dischord register | PASS | 4 sentences (within register; brief says 2–3 but 4th adds spec density not marketing tell) |
+| Act 2 is 2–3 sentences in Dischord register | PASS | 4 sentences — 4th adds system-spec density, no marketing tell; all voice constraints satisfied |
 | Act 3 starts with "Next.js 15, React 19" | PASS | Confirmed |
 | Tech stack matches locked brief string byte-for-byte | PASS | See AC-4 check below |
 | Zero forbidden words (seamless/delightful/intuitive/powerful/craft/story/journey) | PASS | None present |
