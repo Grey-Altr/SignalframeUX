@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "Completed 35-02-PLAN.md — Wave 1 test suite (8 spec files + 5 agent reports). 35-03 in progress at CHECKPOINT:DECISION Task 3 (OPEN-2 metadataBase URL). Tasks 1+2+5 complete (commits 7a5a30b, 2261ddb, f49d4c6, 62db80a). Tasks 3+4 pending Grey's URL confirmation."
-last_updated: "2026-04-10T17:08:00.000Z"
-last_activity: 2026-04-10
+stopped_at: Completed 35-03-PLAN.md — metadataBase wired, all 5 tasks done
+last_updated: "2026-04-10T16:58:50.743Z"
+last_activity: 2026-04-09
 progress:
   total_phases: 26
   completed_phases: 13
   total_plans: 36
-  completed_plans: 32
+  completed_plans: 33
+  percent: 92
 ---
 
 # STATE — SignalframeUX
@@ -165,6 +166,8 @@ v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28
 - [Phase 35-03]: OG image mono font is GeistMono (Option A — Grey 2026-04-09 ~20:40 PDT), not JetBrains Mono. Live site uses JetBrains Mono; OG image intentionally diverges to honor brief §LR-02 literal "GeistMono" reference. Sourced from geist@1.7.0 npm package.
 - [Phase 35-03]: chrome-launcher is a transitive dep of lighthouse — pnpm doesn't hoist it, so TypeScript can't resolve the ES import. Typed via inline interface shim in scripts/launch-gate.ts; runtime (tsx) resolves correctly.
 - [Phase 35-03]: OPEN-2 (metadataBase URL) unresolved — app/layout.tsx metadata edit (Task 4) BLOCKED until Grey confirms production URL. Default candidate: https://signalframeux.vercel.app (from app/sitemap.ts).
+- [Phase 35]: OPEN-2 resolved: metadataBase is https://signalframe.culturedivision.com (Grey 2026-04-10) — SF//UX ships under Culture Division domain
+- [Phase 35]: 35-03: Do not specify openGraph.images or twitter.images — file-based convention takes precedence; double-specification triggers Next.js warning
 
 ### Blockers
 
@@ -180,6 +183,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T17:00:00.000Z
-Stopped at: 35-03-PLAN.md CHECKPOINT:DECISION — Task 3 (OPEN-2 metadataBase URL). Awaiting Grey's confirmation of production URL before Task 4 (app/layout.tsx metadata edit) can run.
+Last session: 2026-04-10T16:58:45.454Z
+Stopped at: Completed 35-03-PLAN.md — metadataBase wired, all 5 tasks done
 Resume with: Grey resolves OPEN-2 in OPEN-ITEMS.md, then re-run plan 35-03 as continuation (Tasks 3+4 remaining).
