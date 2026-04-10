@@ -521,6 +521,10 @@ Plans:
   4. Turbopack dev mode functional
   5. No new TypeScript errors introduced
   6. Bundle size remains under 150KB first-load JS gzip
+**Plans:** 2 plans
+Plans:
+- [ ] 37-01-PLAN.md — Tailwind upgrade + Next.js 16 codemod + middleware-to-proxy rename
+- [ ] 37-02-PLAN.md — Full test suite verification + Lighthouse gate + use cache PoC
 
 ### Phase 38: Test & Quality Hardening
 **Goal**: Comprehensive automated quality gates — unit tests, accessibility, and developer workflow hooks
