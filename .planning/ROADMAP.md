@@ -7,7 +7,8 @@
 - [x] **v1.2 Tech Debt Sweep** — Phases 10-15 (shipped 2026-04-06)
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
 - [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
-- [ ] **v1.5 Redesign** — Phases 28-35 (in progress)
+- [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
+- [ ] **v1.6 API-Ready** — Phases 36-41 (in progress)
 
 ## Phases
 
@@ -73,11 +74,11 @@
 - [x] **Phase 28: Route Infrastructure** — Rename routes, add redirects, update all internal links (1/2 plans complete)
 - [x] **Phase 29: Infrastructure Hardening** — Fonts-ready, overscroll-behavior, Lenis audit, Observer registration, PinnedSection primitive (completed 2026-04-08)
 - [x] **Phase 30: Homepage Architecture + ENTRY Section** — 6-section restructure, full-viewport GLSL hero, nav reveal, mouse-responsive shader (completed 2026-04-08)
-- [ ] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments
+- [x] **Phase 31: THESIS Section** — Scroll-driven typographic manifesto, 200-300vh pinned scroll, large type moments (completed 2026-04-08)
 - [x] **Phase 32: SIGNAL + PROOF Sections** — Atmospheric WebGL scene, interactive SIGNAL/FRAME layer separation demo (completed 2026-04-08)
 - [x] **Phase 33: INVENTORY + ACQUISITION Sections** — Coded nomenclature catalog, CLI acquisition panel (completed 2026-04-09)
 - [x] **Phase 34: Visual Language + Subpage Redesign** — Ghost labels, display type audit, HUD indicators, specimen-style subpages (completed 2026-04-09)
-- [ ] **Phase 35: Performance + Launch Gate** — Bundle gate, Lighthouse 100/100, OG tags, Awwwards package (2/4 plans complete)
+- [x] **Phase 35: Performance + Launch Gate** — Bundle gate, Lighthouse 100/100, OG tags, Awwwards package (completed 2026-04-10)
 
 ## Phase Details
 
@@ -475,13 +476,97 @@ Plans:
   5. The Awwwards submission package is prepared: project description, technology stack, 5+ screenshots at 1440x900, and live URL
   6. Open Graph meta tags are updated for the redesigned site — title, description, and preview image reflect the v1.5 identity
   7. The production Vercel deployment is live with zero console errors — confirmed by opening DevTools on the deployed URL
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans executed
 Plans:
 - [x] 35-01-PLAN.md — Wave 0 scaffolding: ROADMAP fix, Vercel CLI upgrade, Gap 2 test + RED stubs [PF-01, PF-03]
 - [x] 35-02-PLAN.md — Wave 1 Playwright agent test suites (5 routes x 3 viewports) [PF-01, PF-03, LR-04]
 - [x] 35-03-PLAN.md — OG image + metadata + launch-gate.ts advisory tool [LR-02, PF-02] — PARTIAL: Tasks 1+2+5 done; Task 3 CHECKPOINT:DECISION awaiting OPEN-2 (metadataBase URL)
 - [x] 35-04-PLAN.md — Wave 2 chrome-devtools MCP pass + Wave 3 triage + Awwwards package [LR-01]
 - [x] 35-05-PLAN.md — Wave 4 production deploy + LR-03 console sweep + close [LR-03, PF-02]
+
+**v1.6 API-Ready (Phases 36-41):**
+
+- [ ] **Phase 36: Housekeeping & Carry-Overs** — v1.5 carry-over fixes (Lighthouse BP/SEO → 100, test path fix), ESLint config, Vercel CLI upgrade
+- [ ] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions
+- [ ] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check)
+- [ ] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation)
+- [ ] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide
+- [ ] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100
+
+### Phase 36: Housekeeping & Carry-Overs
+**Goal**: Clean up v1.5 deferred items and establish code quality baseline for v1.6 work
+**Depends on**: Phase 35 (v1.5 shipped)
+**Requirements**: CO-01 (Lighthouse 100/100), CO-02 (test hygiene), CO-03 (linting), CO-04 (toolchain currency)
+**Success Criteria** (what must be TRUE):
+  1. Lighthouse Best Practices = 100 on deployed URL (3-run worst score)
+  2. Lighthouse SEO = 100 on deployed URL (3-run worst score)
+  3. T-06 font-mono test path fixed — reads `components/blocks/api-explorer.tsx` not `app/reference/page.tsx`
+  4. ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
+  5. Vercel CLI upgraded to 50.42.0+
+  6. All stale ROADMAP.md entries corrected (Phase 31, 35 checkboxes and counts)
+**Plans:** 2 plans
+Plans:
+- [ ] 36-01-PLAN.md — Lighthouse 100/100 + test fixes + REQUIREMENTS.md v1.6 + ROADMAP verify
+- [ ] 36-02-PLAN.md — ESLint 9 flat config + zero-violation cleanup
+
+
+### Phase 37: Next.js 16 Migration
+**Goal**: Upgrade to Next.js 16 with zero regressions across performance, tests, and Lighthouse
+**Depends on**: Phase 36 (clean baseline established before framework migration)
+**Requirements**: MG-01 (Next 16 upgrade), MG-02 (zero test regressions), MG-03 (zero Lighthouse regressions)
+**Success Criteria** (what must be TRUE):
+  1. `next` dependency updated to ^16.x.x, app builds and starts without errors
+  2. All 18 Playwright E2E tests pass on Next 16
+  3. Lighthouse scores >= Phase 36 post-fix baseline (100/100 all categories maintained)
+  4. Turbopack dev mode functional
+  5. No new TypeScript errors introduced
+  6. Bundle size remains under 150KB first-load JS gzip
+
+### Phase 38: Test & Quality Hardening
+**Goal**: Comprehensive automated quality gates — unit tests, accessibility, and developer workflow hooks
+**Depends on**: Phase 37 (framework stable before adding test infrastructure on top)
+**Requirements**: QA-01 (unit tests), QA-02 (a11y automation), QA-03 (dev workflow)
+**Success Criteria** (what must be TRUE):
+  1. Vitest configured with coverage reporting; SF component utility functions have unit tests
+  2. axe-core integrated into Playwright E2E suite — every route passes WCAG AA audit
+  3. prefers-reduced-motion test coverage: all animation components respect the media query
+  4. TypeScript strict-mode clean (0 errors including test files)
+  5. Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits must fail visibly
+
+### Phase 39: Library Build Pipeline
+**Goal**: SFUX components are importable as an npm package with proper ESM/CJS builds and type declarations
+**Depends on**: Phase 38 (quality gates in place before exposing public API surface)
+**Requirements**: LIB-01 (package exports), LIB-02 (build output), LIB-03 (tree-shaking)
+**Success Criteria** (what must be TRUE):
+  1. `package.json` has `"exports"` field mapping SF components, tokens CSS, and utilities
+  2. `pnpm build:lib` produces ESM + CJS output via tsup in `dist/`
+  3. `.d.ts` declaration files generated for all exported components
+  4. Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
+  5. Token CSS importable separately as `@signalframe/tokens.css`
+  6. Package passes `npm pack --dry-run` with no extraneous files
+
+### Phase 40: API Documentation & DX
+**Goal**: External developers can discover, understand, and use SFUX components from documentation alone
+**Depends on**: Phase 39 (exported API surface must exist before documenting it)
+**Requirements**: DOC-01 (JSDoc), DOC-02 (README), DOC-03 (Storybook), DOC-04 (migration guide)
+**Success Criteria** (what must be TRUE):
+  1. All exported SF components have JSDoc with description, props table, and usage example
+  2. README.md covers installation, quick start, token system, and FRAME/SIGNAL model
+  3. Storybook runs locally with stories for all SF-wrapped components
+  4. `/reference` route on the site reflects the actual exported API (not stale internal-only components)
+  5. Migration guide documents path from internal app usage to npm package consumption
+
+### Phase 41: Distribution & Launch Gate
+**Goal**: SFUX is published, verified by a consumer integration test, and ready for production API usage
+**Depends on**: Phase 40 (documentation complete before public distribution)
+**Requirements**: DIST-01 (publish), DIST-02 (consumer test), DIST-03 (versioning), DIST-04 (final audit)
+**Success Criteria** (what must be TRUE):
+  1. `npm publish --dry-run` succeeds with correct package contents (no source maps, no test files)
+  2. Fresh Next.js 16 app installs SFUX, renders 3+ SF components with token CSS — builds without errors
+  3. Distributed package bundle < 50KB minified+gzipped (excluding peer deps)
+  4. CHANGELOG.md and semver version strategy documented
+  5. Lighthouse 100/100 all categories on deployed site (post all v1.6 changes)
+  6. All 18+ E2E tests pass, all Vitest unit tests pass, axe-core clean
 
 ## Progress
 
@@ -517,8 +602,14 @@ Plans:
 | 28. Route Infrastructure | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
 | 29. Infrastructure Hardening | v1.5 | Complete    | 2026-04-08 | 2026-04-08 |
 | 30. Homepage Architecture + ENTRY Section | 2/2 | Complete   | 2026-04-08 | - |
-| 31. THESIS Section | v1.5 | 0/? | Not started | - |
+| 31. THESIS Section | v1.5 | 2/2 | Complete | 2026-04-08 |
 | 32. SIGNAL + PROOF Sections | 2/2 | Complete   | 2026-04-08 | - |
 | 33. INVENTORY + ACQUISITION Sections | 2/4 | Complete    | 2026-04-09 | - |
 | 34. Visual Language + Subpage Redesign | v1.5 | 4/4 | Complete   | 2026-04-09 |
 | 35. Performance + Launch Gate | v1.5 | 5/5 | Complete | 2026-04-10 |
+| 36. Housekeeping & Carry-Overs | v1.6 | 0/? | Not started | - |
+| 37. Next.js 16 Migration | v1.6 | 0/? | Not started | - |
+| 38. Test & Quality Hardening | v1.6 | 0/? | Not started | - |
+| 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
+| 40. API Documentation & DX | v1.6 | 0/? | Not started | - |
+| 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
