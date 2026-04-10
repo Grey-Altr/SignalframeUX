@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 37 context gathered
-last_updated: "2026-04-10T22:00:04.049Z"
+stopped_at: Completed 37-01-PLAN.md (Next.js 16.2.3, Tailwind 4.2.2, proxy.ts)
+last_updated: "2026-04-10T22:37:47.568Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 15
-  total_plans: 38
-  completed_plans: 37
+  total_plans: 40
+  completed_plans: 38
 ---
 
 # STATE — SignalframeUX
@@ -187,6 +187,7 @@ v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 - [Phase 36-01]: CSP3 spec: when nonce is present in script-src, unsafe-inline is ignored. Nonce-based CSP in middleware.ts blocked all Next.js static chunk scripts causing cascade of console CSP errors (Lighthouse Best Practices 92). Fix: remove nonce, use unsafe-inline only
 - [Phase 36-01]: tsx CJS/ESM interop breaks lighthouse@13 (type:module) — fileURLToPath(import.meta.url) inside lighthouse fails under tsx transform. Use native ESM .mjs runner with createRequire for chrome-launcher
 - [Phase 36-01]: role="row" requires role="cell"/"gridcell"/"columnheader" children per ARIA spec — <span> children inside role="row" have no implicit cell role
+- [Phase 37]: Manual upgrade instead of codemod — codemod requires interactive TTY; direct pnpm add was equivalent — Codemod launched interactive UI incompatible with automated shell; same dependency versions achieved via pnpm add next@latest
 
 ### Blockers
 
@@ -202,6 +203,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T22:00:04.044Z
-Stopped at: Phase 37 context gathered
+Last session: 2026-04-10T22:37:41.144Z
+Stopped at: Completed 37-01-PLAN.md (Next.js 16.2.3, Tailwind 4.2.2, proxy.ts)
 Resume with: Phase 36 is 2/2 plans done (36-01 + 36-02) — Phase 36 complete. Begin Phase 37 (Next.js 16 Migration) via /pde:execute-phase 37

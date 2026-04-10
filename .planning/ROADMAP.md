@@ -521,7 +521,7 @@ Plans:
   4. Turbopack dev mode functional
   5. No new TypeScript errors introduced
   6. Bundle size remains under 150KB first-load JS gzip
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 37-01-PLAN.md — Tailwind upgrade + Next.js 16 codemod + middleware-to-proxy rename
 - [ ] 37-02-PLAN.md — Full test suite verification + Lighthouse gate + use cache PoC
@@ -612,7 +612,7 @@ Plans:
 | 34. Visual Language + Subpage Redesign | v1.5 | 4/4 | Complete   | 2026-04-09 |
 | 35. Performance + Launch Gate | v1.5 | 5/5 | Complete | 2026-04-10 |
 | 36. Housekeeping & Carry-Overs | v1.6 | Complete    | 2026-04-10 |  |
-| 37. Next.js 16 Migration | v1.6 | 0/? | Not started | - |
+| 37. Next.js 16 Migration | 1/2 | In Progress|  | - |
 | 38. Test & Quality Hardening | v1.6 | 0/? | Not started | - |
 | 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
 | 40. API Documentation & DX | v1.6 | 0/? | Not started | - |
