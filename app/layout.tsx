@@ -35,7 +35,12 @@ const inter = Inter({
 const anton = localFont({
   src: "./fonts/Anton-Regular.woff2",
   variable: "--font-anton",
-  display: "swap",
+  display: "optional",
+  // CLS fix (Wave 3 T-01/T-02): "optional" prevents font-swap layout shift.
+  // Anton is a display-only font (headings/hero). "optional" means the browser
+  // renders with the fallback if Anton isn't cached; on repeat visits (Awwwards
+  // evaluator) Anton loads from cache with zero CLS. "swap" was causing 0.485
+  // CLS on /system because the clamp(80px, 12vw, 160px) heading shifts on swap.
 });
 
 export const metadata: Metadata = {

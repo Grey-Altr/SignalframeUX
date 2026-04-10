@@ -11,6 +11,12 @@ import { test, expect } from "@playwright/test";
  * API's value computation. True zero is brittle; 0.001 is effectively zero.
  *
  * Must run against `pnpm build && pnpm start` — dev-mode layout shift is noisy.
+ *
+ * Wave 3 T-01/T-02 fix: Anton localFont changed from display:"swap" to
+ * display:"optional" in app/layout.tsx. This eliminates the FOUT-driven
+ * layout shift on all routes (worst case: /system 0.485 from clamp heading).
+ * "optional" renders with the fallback on cold load; Anton loads from cache
+ * on repeat visits — zero CLS on both paths.
  */
 
 test.describe("@phase35 PF-04 CLS all routes", () => {
