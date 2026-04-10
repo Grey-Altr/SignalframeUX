@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Completed 36-02-PLAN.md (ESLint flat config, pnpm lint clean)
-last_updated: "2026-04-10T20:45:59.346Z"
+milestone: v1.6
+milestone_name: API-Ready
+status: in_progress
+stopped_at: Completed 36-01-PLAN.md (Lighthouse 100/100 BP+SEO+A11y, test fixes, v1.6 requirements)
+last_updated: "2026-04-10T21:00:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 14
   total_plans: 38
-  completed_plans: 36
-  percent: 95
+  completed_plans: 37
+  percent: 97
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 
 ## Current Position
 
-Phase: 36 — Housekeeping & Carry-Overs (NOT STARTED)
+Phase: 36 — Housekeeping & Carry-Overs (IN PROGRESS — 1/2 plans complete)
 Previous: Phase 35 Performance + Launch Gate — CLOSED 2026-04-10 (v1.5 shipped)
-Status: v1.6 milestone active — 0/6 phases complete
+Status: v1.6 milestone active — 0/6 phases complete; 36-01 done, 36-02 done (ESLint)
 Last activity: 2026-04-10
 
 ## Progress
@@ -184,6 +184,10 @@ v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 - [Phase 35]: 35-03: Do not specify openGraph.images or twitter.images — file-based convention takes precedence; double-specification triggers Next.js warning
 - [Phase 36]: @typescript-eslint packages need direct devDep install in pnpm projects — transitive deps are not hoisted and cannot be imported from project ESM code
 - [Phase 36]: JSX // text content must be wrapped in {"//"} expressions — react/jsx-no-comment-textnodes fires on any // sequence in JSX children, including DU/TDR design tokens like SF//UX and //SIGNAL
+- [Phase 36-01]: headers() in layout.tsx forces dynamic (streaming) rendering — metadata tags land in <body> via React streaming, not <head>; Lighthouse SEO fails meta-description. Fix: remove headers() entirely; layout becomes sync, all routes become static
+- [Phase 36-01]: CSP3 spec: when nonce is present in script-src, unsafe-inline is ignored. Nonce-based CSP in middleware.ts blocked all Next.js static chunk scripts causing cascade of console CSP errors (Lighthouse Best Practices 92). Fix: remove nonce, use unsafe-inline only
+- [Phase 36-01]: tsx CJS/ESM interop breaks lighthouse@13 (type:module) — fileURLToPath(import.meta.url) inside lighthouse fails under tsx transform. Use native ESM .mjs runner with createRequire for chrome-launcher
+- [Phase 36-01]: role="row" requires role="cell"/"gridcell"/"columnheader" children per ARIA spec — <span> children inside role="row" have no implicit cell role
 
 ### Blockers
 
@@ -199,6 +203,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T20:45:53.409Z
-Stopped at: Completed 36-02-PLAN.md (ESLint flat config, pnpm lint clean)
-Resume with: Grey submits to Awwwards (outside phase scope) OR begin v1.6 kickoff via /pde:discuss-milestone v1.6
+Last session: 2026-04-10T21:00:00.000Z
+Stopped at: Completed 36-01-PLAN.md (Lighthouse 100/100 BP+SEO+A11y, test fixes, v1.6 requirements)
+Resume with: Phase 36 is 2/2 plans done (36-01 + 36-02) — Phase 36 complete. Begin Phase 37 (Next.js 16 Migration) via /pde:execute-phase 37

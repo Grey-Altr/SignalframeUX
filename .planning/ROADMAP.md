@@ -486,7 +486,7 @@ Plans:
 
 **v1.6 API-Ready (Phases 36-41):**
 
-- [ ] **Phase 36: Housekeeping & Carry-Overs** — v1.5 carry-over fixes (Lighthouse BP/SEO → 100, test path fix), ESLint config, Vercel CLI upgrade
+- [x] **Phase 36: Housekeeping & Carry-Overs** — v1.5 carry-over fixes (Lighthouse BP/SEO → 100, test path fix), ESLint config, Vercel CLI upgrade (completed 2026-04-10)
 - [ ] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions
 - [ ] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check)
 - [ ] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation)
@@ -504,9 +504,9 @@ Plans:
   4. ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
   5. Vercel CLI upgraded to 50.42.0+
   6. All stale ROADMAP.md entries corrected (Phase 31, 35 checkboxes and counts)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans executed
 Plans:
-- [ ] 36-01-PLAN.md — Lighthouse 100/100 + test fixes + REQUIREMENTS.md v1.6 + ROADMAP verify
+- [x] 36-01-PLAN.md — Lighthouse 100/100 + test fixes + REQUIREMENTS.md v1.6 + ROADMAP verify
 - [x] 36-02-PLAN.md — ESLint 9 flat config + zero-violation cleanup
 
 
