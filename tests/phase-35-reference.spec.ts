@@ -62,7 +62,7 @@ test.describe("@phase35 /reference — full suite", () => {
       test("schematic register: font-mono applied to category headings", async () => {
         // Source-read check — monospaced font is a schematic register requirement
         // for the /reference API explorer. Category headings must use font-mono.
-        const src = readFileSync(join(process.cwd(), "app/reference/page.tsx"), "utf-8");
+        const src = readFileSync(join(process.cwd(), "components/blocks/api-explorer.tsx"), "utf-8");
         expect(src).toMatch(/font-mono/);
       });
 

@@ -168,6 +168,41 @@
 - Haptic layer (Vibration API) — deferred to v2+
 - Registry namespace strategy — deferred to v2+
 
+## v1.6 API-Ready
+
+### Housekeeping & Carry-Overs (Phase 36)
+- [ ] **CO-01**: Lighthouse Best Practices = 100 and SEO = 100 on signalframeux.vercel.app (3-run worst score)
+- [ ] **CO-02**: T-06 font-mono test path fixed — reads `components/blocks/api-explorer.tsx` not `app/reference/page.tsx`
+- [ ] **CO-03**: ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
+- [ ] **CO-04**: Toolchain currency verified — Vercel CLI at 50.42.0+, ROADMAP.md stale entries corrected
+
+### Next.js 16 Migration (Phase 37)
+- [ ] **MG-01**: Next.js upgraded to ^16.x.x, app builds and starts without errors
+- [ ] **MG-02**: All 18 Playwright E2E tests pass on Next 16 with zero regressions
+- [ ] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
+
+### Test & Quality Hardening (Phase 38)
+- [ ] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
+- [ ] **QA-02**: axe-core integrated into Playwright suite — every route passes WCAG AA audit
+- [ ] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
+
+### Library Build Pipeline (Phase 39)
+- [ ] **LIB-01**: `package.json` exports field mapping SF components, tokens CSS, and utilities
+- [ ] **LIB-02**: `pnpm build:lib` produces ESM + CJS output via tsup in `dist/` with `.d.ts` declarations
+- [ ] **LIB-03**: Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
+
+### API Documentation & DX (Phase 40)
+- [ ] **DOC-01**: All exported SF components have JSDoc with description, props table, and usage example
+- [ ] **DOC-02**: README.md covers installation, quick start, token system, and FRAME/SIGNAL model
+- [ ] **DOC-03**: Storybook runs locally with stories for all SF-wrapped components
+- [ ] **DOC-04**: `/reference` route reflects actual exported API (not stale internal-only components)
+
+### Distribution & Launch Gate (Phase 41)
+- [ ] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
+- [ ] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
+- [ ] **DIST-03**: CHANGELOG.md and semver version strategy documented
+- [ ] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
+
 ## Out of Scope
 
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)

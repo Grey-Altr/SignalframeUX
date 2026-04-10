@@ -114,7 +114,7 @@ test.describe("Phase 29: Infrastructure Hardening", () => {
   test("PF-06: all non-GSAP animation components with rAF loops have reduced-motion coverage", () => {
     // Components that use requestAnimationFrame but NOT GSAP — must have explicit guards
     // (GSAP-using components are covered by globalTimeline.timeScale(0) via initReducedMotion)
-    const nonGsapRafComponents = [
+    const nonGsapRafComponents: never[] = [
       // canvas-cursor: pointer-driven rAF, exempt by design (only runs on pointer move)
       // xray-reveal: pointer-driven rAF (single frame on mousemove), exempt
       // signal-mesh: uses GSAP ticker as render driver — covered by timeScale(0)
