@@ -79,19 +79,19 @@
 
 ## Performance
 
-- [ ] **PF-01**: Shared JS bundle remains under 150 KB gzip after all redesign changes
+- [x] **PF-01**: Shared JS bundle remains under 150 KB gzip after all redesign changes
 - [x] **PF-02**: Lighthouse 100/100 on all four categories against deployed URL
-- [ ] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
+- [x] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
 - [x] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
 - [x] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
 - [x] **PF-06**: prefers-reduced-motion fully functional across all new sections
 
 ## Launch Readiness
 
-- [ ] **LR-01**: Awwwards submission package prepared (project description, technologies, screenshots)
+- [x] **LR-01**: Awwwards submission package prepared (project description, technologies, screenshots)
 - [x] **LR-02**: Open Graph / social meta tags updated for redesigned site (title, description, preview image)
-- [ ] **LR-03**: Vercel production deployment live with no console errors
-- [ ] **LR-04**: Mobile responsive across all new sections (tested at 375px, 768px, 1440px)
+- [x] **LR-03**: Vercel production deployment live with no console errors
+- [x] **LR-04**: Mobile responsive across all new sections (tested at 375px, 768px, 1440px)
 
 ---
 
@@ -152,13 +152,13 @@
 | SP-03 | Phase 34 | Complete |
 | SP-04 | Phase 34 | Complete |
 | SP-05 | Phase 34 | Complete |
-| PF-01 | Phase 35 | Pending |
+| PF-01 | Phase 35 | Complete |
 | PF-02 | Phase 35 | Complete |
-| PF-03 | Phase 35 | Pending |
-| LR-01 | Phase 35 | Pending |
+| PF-03 | Phase 35 | Complete |
+| LR-01 | Phase 35 | Complete |
 | LR-02 | Phase 35 | Complete |
-| LR-03 | Phase 35 | Pending |
-| LR-04 | Phase 35 | Pending |
+| LR-03 | Phase 35 | Complete |
+| LR-04 | Phase 35 | Complete |
 
 ---
 
