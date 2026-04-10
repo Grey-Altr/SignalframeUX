@@ -15,7 +15,7 @@ export default function APIPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" data-cursor data-section="ref" data-section-label="API" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor data-section="ref" data-section-label="API" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "API" }]} />
         <SFSection label="API REFERENCE HEADER" className="py-0">
           <header

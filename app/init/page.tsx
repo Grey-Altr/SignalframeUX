@@ -170,7 +170,7 @@ export default function InitPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" data-cursor data-section="init" data-section-label="SYS" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor data-section="init" data-section-label="SYS" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INIT" }]} />
 
         {/* SP-05: nav hides until the page header scrolls out of view

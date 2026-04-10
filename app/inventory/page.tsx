@@ -30,7 +30,7 @@ export default async function ComponentsPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" data-cursor data-section="inv" data-section-label="INV" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor data-section="inv" data-section-label="INV" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
         {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
         <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />

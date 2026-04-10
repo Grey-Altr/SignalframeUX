@@ -36,9 +36,17 @@ export function InstrumentHUD() {
   const sigRef = useRef<HTMLSpanElement>(null);
 
   // Discover sections on mount (same pattern as retired SectionIndicator)
+  // Wave 3 T-04 fix: subpages have multiple [data-section] elements (SFSection wrappers +
+  // the <main> element). When [data-section][data-primary] elements exist, use only those —
+  // this gives subpages a single primary section with the correct route id/label so the HUD
+  // shows [SYS//TOK] / [INIT//SYS] / [REF//API] rather than falling into index-branch [01//TOK].
+  // Homepage has no [data-primary] elements, so falls back to all [data-section] for multi-section scroll.
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>("[data-section]");
-    const items = Array.from(els).map((el) => ({
+    const primaryEls = document.querySelectorAll<HTMLElement>("[data-section][data-primary]");
+    const queryEls = primaryEls.length > 0
+      ? primaryEls
+      : document.querySelectorAll<HTMLElement>("[data-section]");
+    const items = Array.from(queryEls).map((el) => ({
       id: el.getAttribute("data-section") || el.id || "",
       label: el.getAttribute("data-section-label") || el.getAttribute("data-section") || "",
     }));
@@ -48,7 +56,10 @@ export function InstrumentHUD() {
   // IntersectionObserver for active section (Pitfall 2: activeIndexRef, not activeIndex state in deps)
   useEffect(() => {
     if (sections.length === 0) return;
-    const els = document.querySelectorAll<HTMLElement>("[data-section]");
+    const primaryEls = document.querySelectorAll<HTMLElement>("[data-section][data-primary]");
+    const els = primaryEls.length > 0
+      ? primaryEls
+      : document.querySelectorAll<HTMLElement>("[data-section]");
     const observer = new IntersectionObserver(
       (entries) => {
         if (window.scrollY < 10) {

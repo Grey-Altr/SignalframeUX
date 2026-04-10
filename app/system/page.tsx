@@ -17,7 +17,7 @@ export default function TokensPage() {
   return (
     <>
       <Nav />
-      <main id="main-content" data-cursor data-section="sys" data-section-label="TOK" className="mt-[var(--nav-height)]">
+      <main id="main-content" data-cursor data-section="sys" data-section-label="TOK" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
         {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
         <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
