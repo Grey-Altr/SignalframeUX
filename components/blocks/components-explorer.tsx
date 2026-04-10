@@ -8,7 +8,8 @@ import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
 import { API_DOCS } from "@/lib/api-docs";
-type FlipModule = Awaited<typeof import("@/lib/gsap-flip")>;
+import type * as GsapFlipMod from "@/lib/gsap-flip";
+type FlipModule = typeof GsapFlipMod;
 
 // ComponentDetail is loaded lazily — NOT in the shared bundle (DV-12 bundle gate)
 const ComponentDetailLazy = dynamic(
@@ -539,7 +540,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
   const [focusedIndex, setFocusedIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const filterBarRef = useRef<HTMLDivElement>(null);
-  const flipStateRef = useRef<ReturnType<typeof import("gsap/Flip").Flip.getState> | null>(null);
+  const flipStateRef = useRef<ReturnType<typeof GsapFlipMod.Flip.getState> | null>(null);
   const gsapRef = useRef<FlipModule | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const triggerRefs = useRef<Record<string, HTMLDivElement | null>>({});

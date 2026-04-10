@@ -48,7 +48,7 @@ export function Hero() {
               <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span>
             </ColorCycleFrame>
             <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10">
-              <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">//</span>
+              <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">{"//"}</span>
               <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">F</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">R</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">M</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">E</span>
             </span>
           </h1>

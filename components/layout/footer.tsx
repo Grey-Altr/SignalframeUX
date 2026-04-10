@@ -14,7 +14,7 @@ export function Footer() {
               <span
                 className="sf-display text-2xl text-foreground"
               >
-                SF<span className="text-primary">//</span>UX
+                SF<span className="text-primary">{"//"}</span>UX
               </span>
               <p className="mt-1 text-muted-foreground text-[var(--text-sm)] uppercase tracking-wider">
                 Universal design system

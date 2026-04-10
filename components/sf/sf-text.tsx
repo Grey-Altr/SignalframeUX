@@ -58,7 +58,6 @@ const SFText = React.forwardRef<HTMLElement, SFTextProps>(
     const Tag = as ?? defaultElementMap[variant];
     return (
       <Tag
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={ref as React.Ref<any>}
         className={cn(variantClassMap[variant], className)}
         {...(props as React.HTMLAttributes<HTMLElement>)}

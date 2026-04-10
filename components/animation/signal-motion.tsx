@@ -15,7 +15,8 @@
  */
 
 import { useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-core";
+import type { ScrollTrigger} from "@/lib/gsap-core";
+import { gsap, useGSAP } from "@/lib/gsap-core";
 import { cn } from "@/lib/utils";
 
 interface SignalMotionProps {

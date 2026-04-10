@@ -35,7 +35,7 @@ export function DualLayer() {
         <h2
           className="sf-display text-[clamp(48px,6vw,80px)] leading-none tracking-[-0.02em] text-primary mb-6"
         >
-          //SIGNAL
+          {"//SIGNAL"}
         </h2>
         <p className="text-[var(--text-base)] leading-[1.8] max-w-[440px] uppercase tracking-[0.08em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground">
           THE GENERATIVE EXPRESSION LAYER. PARAMETRIC NOISE.

@@ -20,7 +20,6 @@
 // We use a typed require() shim with a local interface to satisfy the type checker.
 interface ChromeLaunchOptions { chromeFlags?: string[] }
 interface LaunchedChrome { port: number; kill: () => Promise<void> }
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const chromeLauncher = require("chrome-launcher") as {
   launch: (opts: ChromeLaunchOptions) => Promise<LaunchedChrome>;
 };
@@ -59,7 +58,6 @@ async function main() {
   console.log(`launch-gate: auditing ${url} (${RUNS} runs, taking worst score per category)`);
 
   const runs: Array<Record<string, number>> = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lastLhr: any[] = [];
 
   for (let i = 0; i < RUNS; i++) {

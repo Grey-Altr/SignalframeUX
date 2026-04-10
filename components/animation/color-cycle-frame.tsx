@@ -36,9 +36,10 @@
 
 import { useRef, useCallback, useEffect } from "react";
 import { triggerColorStutter } from "@/lib/color-stutter";
+import type gsap from "gsap";
 
 // Lazy-imported inside triggerLocalWipe to avoid SSR issues
-let _gsap: typeof import("gsap").default | null = null;
+let _gsap: typeof gsap | null = null;
 async function getGsap() {
   if (!_gsap) {
     const mod = await import("@/lib/gsap-core");

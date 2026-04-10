@@ -203,7 +203,7 @@ export function APIExplorer() {
               className="flex items-baseline justify-between px-6 md:px-12 pt-12 pb-4 text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
             >
               <span className="text-foreground">
-                {group.label} <span className="text-muted-foreground/60">//</span> {group.entries.length} SURFACES
+                {group.label} <span className="text-muted-foreground/60">{"//"}</span> {group.entries.length} SURFACES
               </span>
               <span aria-hidden="true" className="tabular-nums text-muted-foreground/60">
                 [{String(group.entries.length).padStart(2, "0")}]
@@ -212,7 +212,7 @@ export function APIExplorer() {
 
             {group.entries.length === 0 ? (
               <div className="px-6 md:px-12 py-6 text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/60">
-                // NO MATCH
+                {"// NO MATCH"}
               </div>
             ) : (
               <ul role="list" className="list-none m-0 p-0 divide-y divide-foreground/10">
@@ -347,7 +347,7 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
             {doc.usage.map((ex) => (
               <div key={ex.label}>
                 <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">
-                  // {ex.label}
+                  {"// "}{ex.label}
                 </div>
                 <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground bg-foreground/[0.05] border border-foreground/10 p-4 whitespace-pre">
                   {ex.code}
@@ -367,7 +367,7 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
           <ul className="list-none m-0 p-0 font-mono text-[var(--text-xs)] uppercase tracking-tight text-muted-foreground space-y-1">
             {doc.a11y.map((note, i) => (
               <li key={i} className="leading-[1.6]">
-                <span aria-hidden="true" className="text-muted-foreground/50">// </span>
+                <span aria-hidden="true" className="text-muted-foreground/50">{"// "}</span>
                 {note}
               </li>
             ))}

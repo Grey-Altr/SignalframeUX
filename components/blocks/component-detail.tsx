@@ -313,7 +313,6 @@ export function ComponentDetail({
 // ── ShikiOutput: safe wrapper around server-generated syntax HTML ───────────
 // The HTML string comes from shiki running server-side on known registry code snippets.
 // It is NOT user input and does NOT go through any user-controlled code path.
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ShikiOutput({ html }: { html: string }) {
   return (
     <div

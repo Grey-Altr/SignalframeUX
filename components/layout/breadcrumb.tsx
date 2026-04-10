@@ -43,7 +43,7 @@ export function Breadcrumb({ segments, className }: BreadcrumbProps) {
           const isLast = i === segments.length - 1;
           return (
             <li key={`${seg.label}-${i}`} className="flex items-center gap-2">
-              <span aria-hidden="true">//</span>
+              <span aria-hidden="true">{"//"}</span>
               {seg.href && !isLast ? (
                 <Link
                   href={seg.href}

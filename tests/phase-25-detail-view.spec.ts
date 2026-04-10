@@ -5,6 +5,7 @@
  * Assumes dev server is running on http://localhost:3000
  */
 import { test, expect } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -12,7 +13,7 @@ import { test, expect } from "@playwright/test";
  * Click the first component card on /inventory and wait for the detail panel
  * to appear. Returns the panel locator.
  */
-async function openFirstDetailOnComponentsPage(page: import("@playwright/test").Page) {
+async function openFirstDetailOnComponentsPage(page: Page) {
   await page.goto("/inventory");
   // Wait for the explorer grid to be visible
   await page.waitForSelector('[role="listbox"]', { timeout: 10000 });
