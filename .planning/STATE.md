@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.5
+pde_state_version: 1.0
+milestone: v1.0
 milestone_name: milestone
-status: milestone_complete
-stopped_at: Phase 35 closed (2026-04-10) — v1.5 milestone complete, ready for Awwwards submission (Grey's next action)
-last_updated: "2026-04-10T22:00:00.000Z"
+status: completed
+stopped_at: Phase 36 context gathered
+last_updated: "2026-04-10T20:19:57.458Z"
 last_activity: 2026-04-10
 progress:
-  total_phases: 26
+  total_phases: 32
   completed_phases: 14
   total_plans: 36
-  completed_plans: 36
-  percent: 100
+  completed_plans: 35
 ---
 
 # STATE — SignalframeUX
@@ -22,14 +21,14 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.5 Redesign — transform site into Awwwards SOTD-level designed artifact |
-| Milestone | v1.5 Redesign |
+| Current Focus | v1.6 API-Ready — optimization, feature completeness, library distribution |
+| Milestone | v1.6 API-Ready |
 
 ## Current Position
 
-Phase: 35 — Performance + Launch Gate (COMPLETE)
-Previous: Phase 34 Visual Language + Subpage Redesign — CLOSED 2026-04-09
-Status: v1.5 milestone complete — 20/20 plans shipped
+Phase: 36 — Housekeeping & Carry-Overs (NOT STARTED)
+Previous: Phase 35 Performance + Launch Gate — CLOSED 2026-04-10 (v1.5 shipped)
+Status: v1.6 milestone active — 0/6 phases complete
 Last activity: 2026-04-10
 
 ## Progress
@@ -41,9 +40,21 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
+v1.6: [░░░░░░░░░░]   0% (0/? plans) ACTIVE
 ```
 
-## v1.5 Phase Map
+## v1.6 Phase Map
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 36 | Housekeeping & Carry-Overs | CO-01, CO-02, CO-03, CO-04 | Not started |
+| 37 | Next.js 16 Migration | MG-01, MG-02, MG-03 | Not started |
+| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | Not started |
+| 39 | Library Build Pipeline | LIB-01, LIB-02, LIB-03 | Not started |
+| 40 | API Documentation & DX | DOC-01, DOC-02, DOC-03, DOC-04 | Not started |
+| 41 | Distribution & Launch Gate | DIST-01, DIST-02, DIST-03, DIST-04 | Not started |
+
+## v1.5 Phase Map (archived)
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
@@ -185,6 +196,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T22:00:00.000Z
-Stopped at: Phase 35 closed — v1.5 milestone complete, all 7 Phase 35 requirements shipped
+Last session: 2026-04-10T20:19:57.450Z
+Stopped at: Phase 36 context gathered
 Resume with: Grey submits to Awwwards (outside phase scope) OR begin v1.6 kickoff via /pde:discuss-milestone v1.6
