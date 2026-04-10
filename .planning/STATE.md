@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 35-01-PLAN.md
-last_updated: "2026-04-10T16:21:35.326Z"
-last_activity: 2026-04-09
+stopped_at: "35-03-PLAN.md — CHECKPOINT:DECISION Task 3 (OPEN-2 metadataBase URL). Tasks 1+2+5 complete (commits 7a5a30b, 2261ddb, f49d4c6, 62db80a). Tasks 3+4 pending Grey's URL confirmation."
+last_updated: "2026-04-10T17:00:00.000Z"
+last_activity: 2026-04-10
 progress:
   total_phases: 26
   completed_phases: 13
@@ -159,6 +159,9 @@ v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28
 - [Phase 34]: 34-04: Surface groups classified via API_DOCS[id].layer (HOOK->HOOKS, TOKEN->TOKENS, CORE/FRAME/SIGNAL->COMPONENTS) not NAV_SECTIONS.title — authoritative data field wins
 - [Phase 34]: 34-04: HudTelemetry sub-component dropped — InstrumentHUD site-wide from 34-01 carries cockpit role globally, duplicating on /reference dilutes register
 - [Phase 34]: 34-04: Rule 1/2 auto-fix horizontal scroll at 375px (Footer URL break-all, /reference header responsive grid, api-explorer filter bar min-w-0) landed accidentally in sibling 34-03 docs commit due to parallel-wave git race; code correct, attribution wrong, no rollback
+- [Phase 35-03]: OG image mono font is GeistMono (Option A — Grey 2026-04-09 ~20:40 PDT), not JetBrains Mono. Live site uses JetBrains Mono; OG image intentionally diverges to honor brief §LR-02 literal "GeistMono" reference. Sourced from geist@1.7.0 npm package.
+- [Phase 35-03]: chrome-launcher is a transitive dep of lighthouse — pnpm doesn't hoist it, so TypeScript can't resolve the ES import. Typed via inline interface shim in scripts/launch-gate.ts; runtime (tsx) resolves correctly.
+- [Phase 35-03]: OPEN-2 (metadataBase URL) unresolved — app/layout.tsx metadata edit (Task 4) BLOCKED until Grey confirms production URL. Default candidate: https://signalframeux.vercel.app (from app/sitemap.ts).
 
 ### Blockers
 
@@ -174,6 +177,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T16:21:35.322Z
-Stopped at: Completed 35-01-PLAN.md
-Resume with: Start Phase 35 Performance + Launch Gate via /pde:discuss-phase 35 or /pde:plan-phase 35
+Last session: 2026-04-10T17:00:00.000Z
+Stopped at: 35-03-PLAN.md CHECKPOINT:DECISION — Task 3 (OPEN-2 metadataBase URL). Awaiting Grey's confirmation of production URL before Task 4 (app/layout.tsx metadata edit) can run.
+Resume with: Grey resolves OPEN-2 in OPEN-ITEMS.md, then re-run plan 35-03 as continuation (Tasks 3+4 remaining).
