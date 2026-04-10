@@ -66,7 +66,9 @@ test.describe("@phase35 /system — Agent 2", () => {
 
       // ── Specimen ladder: spacing, type, color specimens present ─────────
       test("specimen ladder: spacing / type / color specimens present on /system", async () => {
-        const src = readFileSync(join(process.cwd(), "app/system/page.tsx"), "utf-8");
+        // Wave 3 T-05 fix: specimens live in components/blocks/token-tabs.tsx (the TokenTabs
+        // orchestrator), not app/system/page.tsx. app/system/page.tsx only imports <TokenTabs />.
+        const src = readFileSync(join(process.cwd(), "components/blocks/token-tabs.tsx"), "utf-8");
         // Each specimen type should exist as an import or JSX element
         expect(src).toMatch(/SpacingSpecimen|spacing.*specimen/i);
         expect(src).toMatch(/TypeSpecimen|type.*specimen/i);
