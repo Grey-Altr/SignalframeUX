@@ -1,21 +1,38 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 /**
- * Phase 35 PF-04 CLS gate — Wave 0 stub.
+ * Phase 35 PF-04 CLS gate — Wave 1 locked assertion.
  *
- * Locked assertion: parameterized over all 5 routes (/, /system, /init,
- * /reference, /inventory). For each route, subscribe PerformanceObserver
- * to "layout-shift" with buffered: true, scroll to bottom then back, sum
- * entry values (skipping hadRecentInput), expect total < 0.001.
+ * Parameterized over all 5 routes. Subscribes PerformanceObserver to
+ * "layout-shift" with buffered: true, scrolls to bottom then back with
+ * 500ms settles, sums entry values (skipping hadRecentInput).
  *
  * The < 0.001 tolerance accounts for floating-point noise in the layout-shift
- * API's value computation. True zero is brittle; 0.001 is effectively zero with headroom.
+ * API's value computation. True zero is brittle; 0.001 is effectively zero.
  *
- * Wave 1 (plan 35-02 Task owned by Agent 2) fleshes this out.
+ * Must run against `pnpm build && pnpm start` — dev-mode layout shift is noisy.
  */
 
 test.describe("@phase35 PF-04 CLS all routes", () => {
-  test.skip("PF-04: CLS ~ 0 on all 5 routes (Wave 1 fills)", async () => {
-    // Wave 0 stub — locked assertion body lands in plan 35-02
-  });
+  for (const route of ["/", "/system", "/init", "/reference", "/inventory"]) {
+    test(`PF-04: CLS ~ 0 on ${route}`, async ({ page }) => {
+      await page.goto(route);
+      const cls = await page.evaluate(() => new Promise<number>((resolve) => {
+        let total = 0;
+        new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            if (!(entry as any).hadRecentInput) {
+              total += (entry as any).value;
+            }
+          }
+        }).observe({ type: "layout-shift", buffered: true });
+        window.scrollTo(0, document.documentElement.scrollHeight);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          setTimeout(() => resolve(total), 500);
+        }, 500);
+      }));
+      expect(cls).toBeLessThan(0.001);
+    });
+  }
 });
