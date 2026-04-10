@@ -145,7 +145,11 @@ export function InstrumentHUD() {
 
   const sectionLabel =
     sections.length > 0
-      ? `[${String(activeIndex + 1).padStart(2, "0")}//${sections[activeIndex].label.toUpperCase()}]`
+      ? `[${
+          sections.length === 1 && sections[0].id
+            ? sections[0].id.toUpperCase()
+            : String(activeIndex + 1).padStart(2, "0")
+        }//${sections[activeIndex].label.toUpperCase()}]`
       : "[00//\u2014]";
 
   return (
