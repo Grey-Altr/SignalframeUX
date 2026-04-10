@@ -75,6 +75,19 @@ See `v1.6-carry-overs.md` for items beyond the 5-fix cap:
 
 ---
 
+## Wave 3 Fix Results (Task 5 commit SHAs)
+
+| Slot | Fix | Commit | Files changed |
+|------|-----|--------|---------------|
+| 1+2 | CLS reduction — Anton display:optional | `5b894b4` | app/layout.tsx, tests/phase-35-cls-all-routes.spec.ts |
+| 3 | nav-reveal — page.mouse.wheel for Lenis compat | `4eddbd9` | tests/phase-35-homepage.spec.ts, tests/phase-35-system.spec.ts, tests/phase-35-init.spec.ts, tests/phase-35-reference.spec.ts |
+| 4 | InstrumentHUD subpage id-branch via data-primary | `309c009` | components/layout/instrument-hud.tsx, app/system/page.tsx, app/init/page.tsx, app/reference/page.tsx, app/inventory/page.tsx |
+| 5 | Specimen ladder test path → token-tabs.tsx | `556695b` | tests/phase-35-system.spec.ts |
+
+All 4 fixes landed within the 5-fix cap. VL-05 entry-section.tsx: diff empty across all 4 commits (lock intact).
+
+---
+
 ## VL-05 Regression Check (AC-9)
 
 **Status: PASS — no action required.**

@@ -3,6 +3,14 @@
 > Loaded at agent spawn. Append-only. Max 50 entries.
 > Oldest entries archived automatically.
 
+### 2026-04-10T19:15:00Z | Phase 35 Plan 04 Task 5 | tags: wave-3-fixes, cls, nav-reveal, instrument-hud, specimen-ladder
+
+Wave 3 fixes landed (4 commits). Fix 1 (5b894b4): CLS — Anton localFont changed from display:"swap" to display:"optional"; swap caused 0.485 CLS on /system from clamp(80-160px) heading reflow on font load; optional eliminates FOUT shift on cold load. Fix 2 (4eddbd9): nav-reveal — window.scrollBy bypasses Lenis; replaced with page.mouse.wheel in all 4 route specs (/, /system, /init, /reference); wheel events trigger Lenis pipeline; timeout extended 500ms→2000ms to account for Lenis easing. Fix 3 (309c009): InstrumentHUD subpage labels — added data-primary to <main data-section> on all 4 subpages (sys/init/ref/inv); HUD now queries [data-section][data-primary] first, falls back to all [data-section] for homepage; with 1 primary section, sections.length===1 triggers id-branch ([SYS//TOK] not [01//TOK]). Fix 4 (556695b): specimen ladder test — was reading app/system/page.tsx; fixed to read components/blocks/token-tabs.tsx where SpacingSpecimen/TypeSpecimen/ColorSpecimen are imported. VL-05 lock: entry-section.tsx diff empty across all 4 commits. Pre-existing failures (inventory ComponentDetail, reference font-mono) are deferred T-06 items, not regressions.
+
+### 2026-04-10T18:05:00Z | Phase 35 Plan 04 Task 4 | tags: wave-3-triage, 5-fix-cap, cls, lighthouse, carry-overs
+
+Wave 3 triage for Phase 35: 5-fix cap honored. 4 approved fixes: (1) CLS all routes — /system 0.485 catastrophic, root cause TokenTabs/specimen reflow on hydration; fixing CLS also resolves LH-01 Performance 52 (same root), counts as 1 slot. (2) nav-reveal Playwright scroll — window.scrollBy doesn't drive Lenis; fix test to call lenis.scrollTo() via page.evaluate() or add testMode escape hatch. (3) InstrumentHUD index-branch on subpages — instrument-hud.tsx fires index-format when sections.length > 1; fix by filtering nav-chrome or using [data-section][data-primary]. (4) Specimen ladder test reads wrong file — update to read components/blocks/token-tabs.tsx not app/system/page.tsx. Deferred to v1.6: T-06 font-mono test path, LH-02 Accessibility 95, LH-03 Best Practices 96, LH-04 SEO 91 — require Lighthouse JSON artifact inspection. wave-3-triage.md + v1.6-carry-overs.md at .planning/phases/35-performance-launch-gate/ (commit 3202a0b).
+
 ### 2026-04-05T00:02:00Z | Phase 09 | tags: signal-motion, scrub, scrolltrigger, gsap-fromto
 
 SignalMotion is a scroll-POSITION-tied wrapper (scrub) — distinct from ScrollReveal (scroll-ENTRY one-shot). Key: use `gsap.fromTo(inner, from, { ...to, scrollTrigger: { trigger: container, scrub } })` with `scope: containerRef`. Reduced-motion guard uses `gsap.set(inner, to)` to jump to end state immediately (no ScrollTrigger created). Both `containerRef` (ScrollTrigger trigger) and `innerRef` (tweened element) are needed — two separate refs, two separate divs in the render.
@@ -381,3 +389,31 @@ Horizontal scroll audits at 375px surface three distinct offender classes: (1) l
 ### 2026-04-09T09:37:24Z | Phase 34 | tags: boundary-lock-exception, ac-vs-boundary, rule-2
 
 Plan boundary locks protect INTENT (content, wiring, structure), not responsive-layout safety. When a plan AC (like 'no horizontal scroll at 375px') is unreachable without minor layout-class adjustments to a boundary-locked file, Rule 1/2 applies: make the minimal responsive-class fix, preserve all content/wiring/structure verbatim, document the reasoning in the summary's deviations section. Do NOT modify the boundary-locked file's h1 text, GhostLabel placement, or NavRevealMount wiring — only add responsive prefixes and min-w-0/break-all safety classes.
+
+### 2026-04-10T17:00:00Z | Phase 35 | tags: og-image, next-og, satori-constraints, geist-mono-option-a
+
+next/og ImageResponse requires flex-only layout (no CSS Grid), inline style objects with hex literals (no className, no CSS vars, no Tailwind), and fs.readFile for fonts (no fetch()). Do NOT export `runtime = 'edge'` — Node.js default is required for fs.readFile and brief §LR-02 explicitly locks this. Satori accepts ttf/otf/woff only — not woff2. The `geist` npm package (v1.7.0) ships GeistMono-Regular.ttf at `dist/fonts/geist-mono/GeistMono-Regular.ttf`.
+
+### 2026-04-10T17:08:00Z | Phase 35 | tags: playwright, test-authoring, source-read-assertions, wave1
+
+Wave 1 Playwright test authoring requires no live server for source-read assertions (readFileSync checks on component files) but all runtime tests (nav-reveal, HUD, LCP, CLS) fail with ERR_CONNECTION_REFUSED. Record these as FLAG/BLOCK in agent reports — they are Wave 3 triage items, not test-authoring failures. Source-read tests targeting the wrong file (e.g. grepping app/reference/page.tsx for font-mono when the class lives in components/blocks/api-explorer.tsx) produce real failures that need Wave 3 path corrections.
+
+### 2026-04-10T17:00:00Z | Phase 35 | tags: chrome-launcher, pnpm-transitive, typescript-shim, lighthouse
+
+`chrome-launcher` is a transitive dep of `lighthouse` — pnpm does not hoist transitive deps to root `node_modules/`. TypeScript cannot resolve `import { launch } from "chrome-launcher"` even though `tsx` executes it fine at runtime. Fix: replace the ES import with a `require()` shim typed via an inline interface (`ChromeLaunchOptions`, `LaunchedChrome`). The `lighthouse` npm package itself resolves via `import lighthouse from "lighthouse"` correctly since it IS a direct devDep.
+
+### 2026-04-10T20:30:00Z | Phase 35 | tags: metadataBase, og-image, continuation, open-items
+
+Continuation pattern for checkpoint:decision tasks: the external resolver (Grey + xtop) updates OPEN-ITEMS.md and the affected file (sitemap.ts), then the continuation agent reads OPEN-ITEMS.md to extract the confirmed URL and applies it to the remaining blocked files (app/layout.tsx). Always read OPEN-ITEMS.md first in continuation — it is the authoritative resolution record, not the prompt alone. Do not specify `openGraph.images` or `twitter.images` alongside file-based OG routes — Next.js file convention takes precedence and double-specification triggers a build warning.
+
+### 2026-04-10T17:40:00Z | Phase 35 | tags: wave-2, cls, lenis-playwright, instrument-hud
+
+Wave 2 CDT findings pattern: `window.scrollBy` does not drive Lenis scroll — Playwright nav-reveal tests that call `window.scrollBy(0, 600)` will fail because Lenis intercepts native scroll. Wave 3 fix must either programmatically invoke lenis.scrollTo or add a window scroll event listener in useNavReveal as fallback. CLS failures are real and route-specific — /system at 0.485 is catastrophic and likely from font loading + TokenTabs hydration. InstrumentHUD index-branch fires on subpages because multiple `[data-section]` elements exist; the `sections.length === 1` id-format guard is too strict for subpages with nav/layout chrome also carrying data-section.
+
+### 2026-04-10T18:00:00Z | Phase 35 | tags: chrome-devtools-mcp, awwwards-screenshots, human-action, mcp-env-check
+
+Task 2 (Awwwards screenshot capture) blocks when the executor is spawned as a subagent without chrome-devtools MCP configured — only `superpower-mcp` is present in the local mcp-servers dir. The brief explicitly forbids Playwright as a fallback for Awwwards captures (font loading, animation-frame timing). This task is a hard human-action gate: Grey must run captures manually in a Chrome DevTools Protocol session (or a Claude Desktop session with chrome-devtools MCP active) against the live production or preview URL at exactly 1440x900. Additionally OPEN-1 (credits attribution) must be resolved before Task 3 (description deck) can proceed.
+
+### 2026-04-10T17:35:00Z | Phase 35 | tags: lighthouse, tsx-esm-incompatibility, launch-gate, advisory-run
+
+lighthouse 13.x is pure ESM and uses `import.meta.url` at module initialization level in `shared/esm-utils.js`. tsx CJS mode sets `import.meta.url` to `undefined` causing an immediate crash before any user code runs. Workaround: use `./node_modules/.bin/lighthouse` CLI directly with `--output json --chrome-flags="--headless"`, then parse the JSON with the same worst-score-per-category logic as the script. The Lighthouse CLI is always available when lighthouse is installed — it is the reliable fallback for any tsx/ESM incompatibility in Phase 35 scripts. Note: `pnpm exec tsx` fails with "Command tsx not found" because tsx is a transitive dep not hoisted by pnpm; use `npx tsx` instead (resolves from npx cache).
