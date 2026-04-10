@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
+milestone: v1.5
 milestone_name: milestone
-status: planning
-stopped_at: 35-05 Task 3 COMPLETE — GSAP stale targets fixed (commit 955dc6c), redeployed prod, re-sweep confirms 0 errors 0 warnings all 5 routes; AC-3 + AC-8 satisfied; ready for Task 4 (launch-gate.ts Lighthouse run)
-last_updated: "2026-04-10T21:00:00.000Z"
+status: milestone_complete
+stopped_at: Phase 35 closed (2026-04-10) — v1.5 milestone complete, ready for Awwwards submission (Grey's next action)
+last_updated: "2026-04-10T22:00:00.000Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 26
-  completed_phases: 13
+  completed_phases: 14
   total_plans: 36
-  completed_plans: 33
-  percent: 92
+  completed_plans: 36
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 35 — Performance + Launch Gate (ready to start)
-Previous: Phase 34 Visual Language + Subpage Redesign — CLOSED 2026-04-09 after human sign-off (fix commit e1e7af5 + hero moment feat commit fcc811d)
-Status: Ready to plan
-Last activity: 2026-04-09
+Phase: 35 — Performance + Launch Gate (COMPLETE)
+Previous: Phase 34 Visual Language + Subpage Redesign — CLOSED 2026-04-09
+Status: v1.5 milestone complete — 20/20 plans shipped
+Last activity: 2026-04-10
 
 ## Progress
 
@@ -40,7 +40,7 @@ v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28-34 CLOSED; Phase 35 Launch Gate pending
+v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 ```
 
 ## v1.5 Phase Map
@@ -54,7 +54,7 @@ v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
 | 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Complete (4/4 plans shipped, Nyquist-compliant 77/77, human sign-off 2026-04-09) |
-| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Ready to start |
+| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Complete (5/5 plans) |
 
 ## Accumulated Context
 
@@ -159,6 +159,8 @@ v1.5: [█████████_] 95% (19/20 plans) IN PROGRESS — Phases 28
 - [Phase 34]: 34-04: DataDrivenDoc replaced by file-private EntryDataSheet — shadcn chrome (SFTable/SFTabs/SFBadge) conflicts with schematic register; zero SF-wrapper imports in final api-explorer.tsx
 - [Phase 34]: 34-04: Surface groups classified via API_DOCS[id].layer (HOOK->HOOKS, TOKEN->TOKENS, CORE/FRAME/SIGNAL->COMPONENTS) not NAV_SECTIONS.title — authoritative data field wins
 - [Phase 34]: 34-04: HudTelemetry sub-component dropped — InstrumentHUD site-wide from 34-01 carries cockpit role globally, duplicating on /reference dilutes register
+- [Phase 35-05]: LR-03 chrome-devtools MCP console sweep on production URL (not preview, not Playwright) — warnings are launch-gate failures equal to errors; close commit contains both Lighthouse verification string and Production console verification string (both git log --grep searchable)
+- [Phase 35]: Next.js 15.5.14 FROZEN for v1.5 ship; Next 16 migration = v1.6+ scope (no proxy.ts rename, no Cache Components, no runtime edge pushes)
 - [Phase 35-02]: All runtime Playwright tests (nav-reveal, HUD, DOM, LCP, CLS) are ERR_CONNECTION_REFUSED when no server is running — Wave 1 test authoring does not require a live server; Wave 3 re-runs against pnpm build && pnpm start
 - [Phase 35-02]: schematic register font-mono source-read targets wrong file — font-mono lives in components/blocks/api-explorer.tsx (lines 166, 181, 291, 315), not app/reference/page.tsx; test path fix is Wave 3 triage item
 - [Phase 35-02]: PF-01 bundle gate is server-independent — reads .next/build-manifest.json directly; passes even without a running server; confirmed 100.0 KB gzip (50 KB under 150 KB gate)
@@ -183,6 +185,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-10T16:58:45.454Z
-Stopped at: Completed 35-03-PLAN.md — metadataBase wired, all 5 tasks done
-Resume with: Grey resolves OPEN-2 in OPEN-ITEMS.md, then re-run plan 35-03 as continuation (Tasks 3+4 remaining).
+Last session: 2026-04-10T22:00:00.000Z
+Stopped at: Phase 35 closed — v1.5 milestone complete, all 7 Phase 35 requirements shipped
+Resume with: Grey submits to Awwwards (outside phase scope) OR begin v1.6 kickoff via /pde:discuss-milestone v1.6
