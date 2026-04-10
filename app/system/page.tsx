@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   description: "Visualize and customize OKLCH color scales, spacing, typography, and motion tokens.",
 };
 
-export default function TokensPage() {
+export default async function TokensPage() {
+  'use cache';
   return (
     <>
       <Nav />

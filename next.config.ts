@@ -8,6 +8,7 @@ const analyzer = withBundleAnalyzer({
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    useCache: true,
   },
   async redirects() {
     return [
