@@ -1,0 +1,4 @@
+# Exclude source maps from published tarball (D-02)
+# Maps remain in dist/ for local development
+# Primary exclusion is via the !dist/*.map negation in package.json "files" field
+dist/*.map

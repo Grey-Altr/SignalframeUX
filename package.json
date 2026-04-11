@@ -39,7 +39,12 @@
     "./signalframeux.css": "./dist/signalframeux.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/*.map",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "MIGRATION.md"
   ],
   "sideEffects": [
     "./dist/signalframeux.css"
