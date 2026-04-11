@@ -60,6 +60,9 @@ const config = [
       "public/**",
       ".planning/**",
       "coverage/**",
+      ".storybook/**",
+      "stories/**",
+      "storybook-static/**",
     ],
   },
 ];

@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 
 @source not "../.planning";
+@source "../stories";
 
 @custom-variant dark (&:is(.dark *));
 
