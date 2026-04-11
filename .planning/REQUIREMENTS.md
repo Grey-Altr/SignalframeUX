@@ -192,10 +192,10 @@
 - [ ] **LIB-03**: Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
 
 ### API Documentation & DX (Phase 40)
-- [ ] **DOC-01**: All exported SF components have JSDoc with description, props table, and usage example
-- [ ] **DOC-02**: README.md covers installation, quick start, token system, and FRAME/SIGNAL model
-- [ ] **DOC-03**: Storybook runs locally with stories for all SF-wrapped components
-- [ ] **DOC-04**: `/reference` route reflects actual exported API (not stale internal-only components)
+- [x] **DOC-01**: All exported SF components have JSDoc with description, props table, and usage example
+- [x] **DOC-02**: README.md covers installation, quick start, token system, and FRAME/SIGNAL model
+- [x] **DOC-03**: Storybook runs locally with stories for all SF-wrapped components
+- [x] **DOC-04**: `/reference` route reflects actual exported API (not stale internal-only components)
 
 ### Distribution & Launch Gate (Phase 41)
 - [ ] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
