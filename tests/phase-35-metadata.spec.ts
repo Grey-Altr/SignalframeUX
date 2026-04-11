@@ -32,9 +32,9 @@ test.describe("@phase35 LR-02 metadata + OG image", () => {
   test("LR-02: OG image contains all locked content fields", () => {
     const src = readFileSync(join(process.cwd(), "app/opengraph-image.tsx"), "utf-8");
     expect(src).toContain("[SF//UX]");
-    expect(src).toContain("v1.5");
-    expect(src).toContain("REDESIGN");
-    expect(src).toContain("COMPONENTS:54");
+    expect(src).toContain("v1.7");
+    expect(src).toContain("TIGHTENING");
+    expect(src).toContain("COMPONENTS:48");
     expect(src).toContain("SIG:0.7");
     expect(src).toContain("CLS:0");
     expect(src).toContain("LCP:");
