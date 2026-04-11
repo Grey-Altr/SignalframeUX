@@ -868,7 +868,7 @@ Plans:
 | 41. Distribution & Launch Gate | 2/2 | Complete   | 2026-04-11 | 2026-04-11 |
 | 42. Tracking Reconciliation + peerDep Fix | 0/1 | 1/1 | Complete   | 2026-04-11 |
 | 43. Production Deploy + Lighthouse Gate | 1/1 | Complete   | 2026-04-11 | — |
-| 44. Copy Audit Fixes | v1.7 | 0/? | Not started | - |
+| 44. Copy Audit Fixes | v1.7 | Complete    | 2026-04-11 | - |
 | 45. Token Bridge | v1.7 | 0/? | Not started | - |
 | 46. Tightening Pass | v1.7 | 0/? | Not started | - |
 | 47. Viewport Polish | v1.7 | 0/? | Not started | - |
