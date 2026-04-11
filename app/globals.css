@@ -311,6 +311,11 @@
   animation: sf-hero-slow-fade-in 18s cubic-bezier(0.16, 0, 0.5, 1) both;
 }
 
+@keyframes hero-fade-in {
+  0%   { opacity: 0.01; }
+  100% { opacity: 1; }
+}
+
 @keyframes sf-hero-slow-fade-in {
   0%   { opacity: 0; }
   60%  { opacity: 0.05; }
