@@ -11,6 +11,10 @@ export {
 export { SFProgress } from "../components/sf/sf-progress";
 export { SFStatusDot, type SFStatusDotStatus } from "../components/sf/sf-status-dot";
 export { SFToaster, sfToast } from "../components/sf/sf-toast";
+// SFStepper: imports SFProgress → gsap-core → gsap (transitive)
+export { SFStepper, SFStep } from "../components/sf/sf-stepper";
+// SFEmptyState: uses ScrambleText → gsap-split → gsap (transitive)
+export { SFEmptyState } from "../components/sf/sf-empty-state";
 
 // ── GSAP Hooks ────────────────────────────────────────────────────────────────
 // use-nav-reveal depends on @/lib/gsap-core (ScrollTrigger)

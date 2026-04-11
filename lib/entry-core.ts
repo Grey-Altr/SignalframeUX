@@ -130,7 +130,8 @@ export {
   SFCollapsibleTrigger,
   SFCollapsibleContent,
 } from "../components/sf/sf-collapsible";
-export { SFEmptyState } from "../components/sf/sf-empty-state";
+// NOTE: SFEmptyState uses ScrambleText → gsap-split → gsap (transitive GSAP dep)
+// Exported from animation entry (entry-animation.ts), not core.
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 export {
@@ -166,10 +167,9 @@ export {
 } from "../components/sf/sf-navigation-menu";
 
 // ── Multi-Step & Selection ────────────────────────────────────────────────────
-// NOTE: SFStepper depends on SFProgress at runtime for connector animations but does NOT
-// import animation libraries directly — both are safe to export from the core entry point.
 export { SFToggleGroup, SFToggleGroupItem } from "../components/sf/sf-toggle-group";
-export { SFStepper, SFStep } from "../components/sf/sf-stepper";
+// NOTE: SFStepper imports SFProgress which imports gsap-core → gsap (transitive dep)
+// Exported from animation entry (entry-animation.ts), not core.
 
 // ── Forms — Extended ──────────────────────────────────────────────────────────
 export {
