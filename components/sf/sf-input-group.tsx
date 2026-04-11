@@ -41,7 +41,11 @@ function SFInputGroup({
   );
 }
 
-/** Sub-component of SFInputGroup — addon wrapper for inline or block decorators. Zero border-radius on kbd children. */
+/**
+ * Sub-component of SFInputGroup — addon wrapper for inline or block decorators. Zero border-radius on kbd children.
+ * @example
+ * <SFInputGroupAddon align="inline-start"><SFInputGroupText>@</SFInputGroupText></SFInputGroupAddon>
+ */
 function SFInputGroupAddon({
   className,
   ...props
@@ -54,7 +58,11 @@ function SFInputGroupAddon({
   );
 }
 
-/** Sub-component of SFInputGroup — action button inside input group. Overrides CVA's calc-based radius with rounded-none. */
+/**
+ * Sub-component of SFInputGroup — action button inside input group. Overrides CVA's calc-based radius with rounded-none.
+ * @example
+ * <SFInputGroupAddon align="inline-end"><SFInputGroupButton>Send</SFInputGroupButton></SFInputGroupAddon>
+ */
 function SFInputGroupButton({
   className,
   ...props
@@ -67,7 +75,11 @@ function SFInputGroupButton({
   );
 }
 
-/** Sub-component of SFInputGroup — non-interactive text label or icon inside the group. */
+/**
+ * Sub-component of SFInputGroup — non-interactive text label or icon inside the group.
+ * @example
+ * <SFInputGroupText>@</SFInputGroupText>
+ */
 function SFInputGroupText({
   className,
   ...props
@@ -77,7 +89,11 @@ function SFInputGroupText({
   );
 }
 
-/** Sub-component of SFInputGroup — the primary input field. Base already applies rounded-none; passthrough maintains the contract. */
+/**
+ * Sub-component of SFInputGroup — the primary input field. Base already applies rounded-none; passthrough maintains the contract.
+ * @example
+ * <SFInputGroupInput placeholder="username" />
+ */
 function SFInputGroupInput({
   className,
   ...props
@@ -90,7 +106,11 @@ function SFInputGroupInput({
   );
 }
 
-/** Sub-component of SFInputGroup — multiline textarea variant. Base already applies rounded-none; passthrough maintains the contract. */
+/**
+ * Sub-component of SFInputGroup — multiline textarea variant. Base already applies rounded-none; passthrough maintains the contract.
+ * @example
+ * <SFInputGroupTextarea placeholder="Enter your message..." rows={4} />
+ */
 function SFInputGroupTextarea({
   className,
   ...props

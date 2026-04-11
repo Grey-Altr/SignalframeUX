@@ -36,7 +36,11 @@ function SFAvatar({
   );
 }
 
-/** Sub-component of SFAvatar — image element with square crop. */
+/**
+ * Sub-component of SFAvatar — image element with square crop and rounded-none override.
+ * @example
+ * <SFAvatarImage src="/avatars/user.png" alt="Jane Doe" />
+ */
 function SFAvatarImage({
   className,
   ...props
@@ -46,7 +50,11 @@ function SFAvatarImage({
   );
 }
 
-/** Sub-component of SFAvatar — fallback with initials or default User icon. */
+/**
+ * Sub-component of SFAvatar — fallback with initials or default User icon when image fails.
+ * @example
+ * <SFAvatarFallback>JD</SFAvatarFallback>
+ */
 function SFAvatarFallback({
   className,
   children,

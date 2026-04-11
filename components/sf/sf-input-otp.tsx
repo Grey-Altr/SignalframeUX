@@ -38,7 +38,11 @@ function SFInputOTP({
   );
 }
 
-/** Sub-component of SFInputOTP — groups slots together visually. Zero border-radius on group container. */
+/**
+ * Sub-component of SFInputOTP — groups slots together visually. Zero border-radius on group container.
+ * @example
+ * <SFInputOTPGroup><SFInputOTPSlot index={0} /><SFInputOTPSlot index={1} /></SFInputOTPGroup>
+ */
 function SFInputOTPGroup({
   className,
   ...props
@@ -48,7 +52,11 @@ function SFInputOTPGroup({
   );
 }
 
-/** Sub-component of SFInputOTP — individual character slot. Zero radius, 2px foreground border, ring on active state. */
+/**
+ * Sub-component of SFInputOTP — individual character slot. Zero radius, 2px foreground border, ring on active state.
+ * @example
+ * <SFInputOTPSlot index={0} />
+ */
 function SFInputOTPSlot({
   className,
   ...props
@@ -64,7 +72,11 @@ function SFInputOTPSlot({
   );
 }
 
-/** Sub-component of SFInputOTP — visual separator between slot groups. */
+/**
+ * Sub-component of SFInputOTP — visual separator between slot groups (renders a dash by default).
+ * @example
+ * <SFInputOTPSeparator />
+ */
 function SFInputOTPSeparator(
   props: React.ComponentProps<typeof InputOTPSeparator>
 ) {

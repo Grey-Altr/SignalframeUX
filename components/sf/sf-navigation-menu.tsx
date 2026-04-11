@@ -52,7 +52,11 @@ import { Menu } from "lucide-react";
  * ```
  */
 
-/** SF-wrapped NavigationMenu root with industrial styling. */
+/**
+ * SF-wrapped NavigationMenu root with industrial styling — FRAME layer navigation primitive.
+ * @example
+ * <SFNavigationMenu><SFNavigationMenuList><SFNavigationMenuItem>Item</SFNavigationMenuItem></SFNavigationMenuList></SFNavigationMenu>
+ */
 function SFNavigationMenu({
   className,
   children,
@@ -70,7 +74,11 @@ function SFNavigationMenu({
   );
 }
 
-/** Sub-component of SFNavigationMenu — list container for navigation items. */
+/**
+ * Sub-component of SFNavigationMenu — list container for navigation items.
+ * @example
+ * <SFNavigationMenuList><SFNavigationMenuItem>Home</SFNavigationMenuItem></SFNavigationMenuList>
+ */
 function SFNavigationMenuList({
   className,
   ...props
@@ -78,7 +86,11 @@ function SFNavigationMenuList({
   return <NavigationMenuList className={cn(className)} {...props} />;
 }
 
-/** Sub-component of SFNavigationMenu — individual navigation item wrapper. */
+/**
+ * Sub-component of SFNavigationMenu — individual navigation item wrapper.
+ * @example
+ * <SFNavigationMenuItem><SFNavigationMenuLink href="/docs">Docs</SFNavigationMenuLink></SFNavigationMenuItem>
+ */
 function SFNavigationMenuItem({
   className,
   ...props
@@ -86,7 +98,11 @@ function SFNavigationMenuItem({
   return <NavigationMenuItem className={cn(className)} {...props} />;
 }
 
-/** Sub-component of SFNavigationMenu — trigger button with chevron, industrial styling. */
+/**
+ * Sub-component of SFNavigationMenu — trigger button with chevron, industrial styling.
+ * @example
+ * <SFNavigationMenuTrigger>Products</SFNavigationMenuTrigger>
+ */
 function SFNavigationMenuTrigger({
   className,
   ...props
@@ -103,7 +119,11 @@ function SFNavigationMenuTrigger({
   );
 }
 
-/** Sub-component of SFNavigationMenu — flyout content panel with preserved motion animations. */
+/**
+ * Sub-component of SFNavigationMenu — flyout content panel with preserved motion animations.
+ * @example
+ * <SFNavigationMenuContent><SFNavigationMenuLink href="/docs/intro">Intro</SFNavigationMenuLink></SFNavigationMenuContent>
+ */
 function SFNavigationMenuContent({
   className,
   ...props
@@ -116,7 +136,11 @@ function SFNavigationMenuContent({
   );
 }
 
-/** Sub-component of SFNavigationMenu — navigation link with inverted hover state. */
+/**
+ * Sub-component of SFNavigationMenu — navigation link with inverted hover state.
+ * @example
+ * <SFNavigationMenuLink href="/reference">Reference</SFNavigationMenuLink>
+ */
 function SFNavigationMenuLink({
   className,
   ...props
@@ -132,7 +156,11 @@ function SFNavigationMenuLink({
   );
 }
 
-/** Sub-component of SFNavigationMenu — viewport flyout container with 2px industrial border. */
+/**
+ * Sub-component of SFNavigationMenu — viewport flyout container with 2px industrial border.
+ * @example
+ * <SFNavigationMenuViewport />
+ */
 function SFNavigationMenuViewport({
   className,
   ...props
@@ -148,7 +176,11 @@ function SFNavigationMenuViewport({
   );
 }
 
-/** Mobile navigation — SFSheet slide-out with hamburger trigger, visible only below md breakpoint. */
+/**
+ * Mobile navigation — SFSheet slide-out with hamburger trigger, visible only below md breakpoint.
+ * @example
+ * <SFNavigationMenuMobile title="MENU"><a href="/docs">Docs</a><a href="/api">API</a></SFNavigationMenuMobile>
+ */
 function SFNavigationMenuMobile({
   children,
   className,

@@ -23,14 +23,22 @@ function SFHoverCard(props: React.ComponentProps<typeof HoverCard>) {
   return <HoverCard {...props} />;
 }
 
-/** Sub-component of SFHoverCard — trigger that opens on hover or keyboard focus. */
+/**
+ * Sub-component of SFHoverCard — trigger that opens on hover or keyboard focus.
+ * @example
+ * <SFHoverCardTrigger asChild><SFButton>Preview</SFButton></SFHoverCardTrigger>
+ */
 function SFHoverCardTrigger(
   props: React.ComponentProps<typeof HoverCardTrigger>
 ) {
   return <HoverCardTrigger {...props} />;
 }
 
-/** Sub-component of SFHoverCard — floating content panel with sharp corners, 2px border, no shadow. */
+/**
+ * Sub-component of SFHoverCard — floating content panel with sharp corners, 2px border, no shadow.
+ * @example
+ * <SFHoverCardContent><p className="text-xs font-mono">Component details</p></SFHoverCardContent>
+ */
 function SFHoverCardContent({
   className,
   ...props

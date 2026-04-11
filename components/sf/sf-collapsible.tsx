@@ -22,14 +22,22 @@ function SFCollapsible(props: React.ComponentProps<typeof Collapsible>) {
   return <Collapsible {...props} />;
 }
 
-/** Sub-component of SFCollapsible — trigger element that toggles content visibility. */
+/**
+ * Sub-component of SFCollapsible — trigger element that toggles content visibility.
+ * @example
+ * <SFCollapsibleTrigger asChild><SFButton>Toggle</SFButton></SFCollapsibleTrigger>
+ */
 function SFCollapsibleTrigger(
   props: React.ComponentProps<typeof CollapsibleTrigger>
 ) {
   return <CollapsibleTrigger {...props} />;
 }
 
-/** Sub-component of SFCollapsible — collapsible content region. */
+/**
+ * Sub-component of SFCollapsible — collapsible content region that shows/hides on trigger.
+ * @example
+ * <SFCollapsibleContent>Hidden content revealed on toggle</SFCollapsibleContent>
+ */
 function SFCollapsibleContent(
   props: React.ComponentProps<typeof CollapsibleContent>
 ) {

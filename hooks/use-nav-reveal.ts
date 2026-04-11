@@ -15,6 +15,13 @@ import { ScrollTrigger } from "@/lib/gsap-core";
  *
  * The Nav DOM element MUST carry `sf-nav-hidden` as its initial className. The CSS
  * rule in app/globals.css flips visibility based on `body[data-nav-visible="true"]`.
+ *
+ * @param triggerRef - Ref to the element whose scroll-out triggers nav reveal
+ *
+ * @example
+ * const headerRef = useRef<HTMLElement>(null);
+ * useNavReveal(headerRef);
+ * return <header ref={headerRef}><h1>Page Title</h1></header>;
  */
 export function useNavReveal(triggerRef: RefObject<HTMLElement | null>): void {
   useEffect(() => {

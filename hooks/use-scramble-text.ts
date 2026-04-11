@@ -74,6 +74,22 @@ function scrambleTick() {
   }
 }
 
+/**
+ * Scramble text animation hook — SIGNAL layer text effect using shared RAF loop.
+ * Displays randomized glyphs that progressively resolve to the target string.
+ * Respects prefers-reduced-motion and skips animation on mobile (<768px).
+ *
+ * @param target - The final string to reveal after scrambling
+ * @param delay - Milliseconds to wait before starting the scramble animation
+ * @param duration - Total duration of the scramble effect in milliseconds (default: 600)
+ * @returns The current display string (scrambled during animation, target when settled)
+ *
+ * @example
+ * function Hero() {
+ *   const text = useScrambleText("SIGNALFRAME", 200, 800);
+ *   return <h1 className="font-mono">{text}</h1>;
+ * }
+ */
 export function useScrambleText(target: string, delay: number, duration = 600) {
   const [text, setText] = useState(target);
   const reactId = useId();

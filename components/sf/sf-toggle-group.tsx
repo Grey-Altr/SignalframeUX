@@ -91,6 +91,11 @@ interface SFToggleGroupItemProps
   extends React.ComponentProps<typeof ToggleGroupPrimitive.Item>,
     VariantProps<typeof sfToggleGroupItemVariants> {}
 
+/**
+ * Sub-component of SFToggleGroup — individual toggle button item that inherits group intent and size.
+ * @example
+ * <SFToggleGroupItem value="grid">Grid</SFToggleGroupItem>
+ */
 function SFToggleGroupItem({
   className,
   intent,

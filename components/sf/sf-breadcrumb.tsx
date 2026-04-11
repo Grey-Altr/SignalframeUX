@@ -27,7 +27,11 @@ function SFBreadcrumb(props: React.ComponentProps<typeof Breadcrumb>) {
   return <Breadcrumb {...props} />;
 }
 
-/** Sub-component of SFBreadcrumb — ordered list container with monospace font. */
+/**
+ * Sub-component of SFBreadcrumb — ordered list container with monospace font.
+ * @example
+ * <SFBreadcrumbList><SFBreadcrumbItem><SFBreadcrumbLink href="/">Home</SFBreadcrumbLink></SFBreadcrumbItem></SFBreadcrumbList>
+ */
 function SFBreadcrumbList({
   className,
   ...props
@@ -35,28 +39,44 @@ function SFBreadcrumbList({
   return <BreadcrumbList className={cn("font-mono", className)} {...props} />;
 }
 
-/** Sub-component of SFBreadcrumb — individual breadcrumb item wrapper. */
+/**
+ * Sub-component of SFBreadcrumb — individual breadcrumb item wrapper.
+ * @example
+ * <SFBreadcrumbItem><SFBreadcrumbLink href="/docs">Docs</SFBreadcrumbLink></SFBreadcrumbItem>
+ */
 function SFBreadcrumbItem(
   props: React.ComponentProps<typeof BreadcrumbItem>
 ) {
   return <BreadcrumbItem {...props} />;
 }
 
-/** Sub-component of SFBreadcrumb — navigable breadcrumb link. */
+/**
+ * Sub-component of SFBreadcrumb — navigable breadcrumb link to a parent page.
+ * @example
+ * <SFBreadcrumbLink href="/components">Components</SFBreadcrumbLink>
+ */
 function SFBreadcrumbLink(
   props: React.ComponentProps<typeof BreadcrumbLink>
 ) {
   return <BreadcrumbLink {...props} />;
 }
 
-/** Sub-component of SFBreadcrumb — current page indicator (non-interactive). */
+/**
+ * Sub-component of SFBreadcrumb — current page indicator (non-interactive, aria-current="page").
+ * @example
+ * <SFBreadcrumbPage>Button</SFBreadcrumbPage>
+ */
 function SFBreadcrumbPage(
   props: React.ComponentProps<typeof BreadcrumbPage>
 ) {
   return <BreadcrumbPage {...props} />;
 }
 
-/** Sub-component of SFBreadcrumb — monospace `/` separator between items. */
+/**
+ * Sub-component of SFBreadcrumb — monospace `/` separator between breadcrumb items.
+ * @example
+ * <SFBreadcrumbSeparator />
+ */
 function SFBreadcrumbSeparator({
   className,
   ...props

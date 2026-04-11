@@ -36,6 +36,14 @@ type SceneBuildResult = {
  *
  * @param elementRef - Ref to the DOM element that defines the scene's viewport rectangle
  * @param buildScene - Factory function called once on mount to create scene + camera
+ *
+ * @example
+ * const containerRef = useRef<HTMLDivElement>(null);
+ * useSignalScene(containerRef, () => ({
+ *   scene: new THREE.Scene(),
+ *   camera: new THREE.PerspectiveCamera(75, 1, 0.1, 100),
+ * }));
+ * return <div ref={containerRef} className="w-full h-64" />;
  */
 export function useSignalScene(
   elementRef: React.RefObject<HTMLElement | null>,

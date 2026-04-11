@@ -38,6 +38,11 @@ import { cn } from "@/lib/utils";
 /*  SFAccordion (root)                                                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * SFAccordion root — SIGNAL layer accordion with GSAP stagger animation on expand.
+ * @example
+ * <SFAccordion type="single" collapsible><SFAccordionItem value="item-1"><SFAccordionTrigger>Section</SFAccordionTrigger><SFAccordionContent>Content</SFAccordionContent></SFAccordionItem></SFAccordion>
+ */
 function SFAccordion({
   className,
   ...props
@@ -54,6 +59,11 @@ function SFAccordion({
 /*  SFAccordionItem                                                    */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Sub-component of SFAccordion — individual accordion panel with bottom border separator.
+ * @example
+ * <SFAccordionItem value="item-1"><SFAccordionTrigger>Section One</SFAccordionTrigger><SFAccordionContent>Body</SFAccordionContent></SFAccordionItem>
+ */
 function SFAccordionItem({
   className,
   ...props
@@ -73,6 +83,11 @@ function SFAccordionItem({
 /*  SFAccordionTrigger                                                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Sub-component of SFAccordion — trigger button that expands/collapses the accordion item.
+ * @example
+ * <SFAccordionTrigger>Section One</SFAccordionTrigger>
+ */
 function SFAccordionTrigger({
   className,
   ...props
@@ -89,6 +104,11 @@ function SFAccordionTrigger({
 /*  SFAccordionContent                                                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Sub-component of SFAccordion — content region with GSAP stagger animation on child elements.
+ * @example
+ * <SFAccordionContent><p>First paragraph</p><p>Second paragraph</p></SFAccordionContent>
+ */
 function SFAccordionContent({
   className,
   children,

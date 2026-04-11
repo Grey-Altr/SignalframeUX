@@ -34,6 +34,11 @@ function SFPagination({
   return <Pagination className={cn("font-mono", className)} {...props} />;
 }
 
+/**
+ * Sub-component of SFPagination — flex container for pagination items with gap-0 edge-to-edge layout.
+ * @example
+ * <SFPaginationContent><SFPaginationItem><SFPaginationLink href="/page/1">1</SFPaginationLink></SFPaginationItem></SFPaginationContent>
+ */
 function SFPaginationContent({
   className,
   ...props
@@ -43,12 +48,22 @@ function SFPaginationContent({
   );
 }
 
+/**
+ * Sub-component of SFPagination — wrapper for a single pagination control (link, prev, or next).
+ * @example
+ * <SFPaginationItem><SFPaginationLink href="/page/2">2</SFPaginationLink></SFPaginationItem>
+ */
 function SFPaginationItem(
   props: React.ComponentProps<typeof PaginationItem>
 ) {
   return <PaginationItem {...props} />;
 }
 
+/**
+ * Sub-component of SFPagination — page number link with inverted active state and 2px border.
+ * @example
+ * <SFPaginationLink href="/page/3" isActive>3</SFPaginationLink>
+ */
 function SFPaginationLink({
   className,
   isActive,
@@ -69,6 +84,11 @@ function SFPaginationLink({
   );
 }
 
+/**
+ * Sub-component of SFPagination — previous page navigation control with 2px border and mono uppercase.
+ * @example
+ * <SFPaginationPrevious href="/page/1" />
+ */
 function SFPaginationPrevious({
   className,
   ...props
@@ -84,6 +104,11 @@ function SFPaginationPrevious({
   );
 }
 
+/**
+ * Sub-component of SFPagination — next page navigation control with 2px border and mono uppercase.
+ * @example
+ * <SFPaginationNext href="/page/4" />
+ */
 function SFPaginationNext({
   className,
   ...props

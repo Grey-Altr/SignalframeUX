@@ -96,6 +96,11 @@ function SFStepper({ activeStep: _activeStep, children, className }: SFStepperPr
   );
 }
 
+/**
+ * Sub-component of SFStepper — individual step with status indicator, label, and optional description.
+ * @example
+ * <SFStep status="complete" label="Account" description="Create your account" />
+ */
 function SFStep({
   status = "pending",
   label,

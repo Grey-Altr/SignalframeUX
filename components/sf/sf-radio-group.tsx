@@ -26,7 +26,11 @@ function SFRadioGroup({
   return <RadioGroup className={cn("grid gap-2", className)} {...props} />;
 }
 
-/** Sub-component of SFRadioGroup — individual radio button with SF sharp corners and focus indicator. */
+/**
+ * Sub-component of SFRadioGroup — individual radio button with SF sharp corners and focus indicator.
+ * @example
+ * <SFRadioGroupItem value="option-a" id="opt-a" /><SFLabel htmlFor="opt-a">Option A</SFLabel>
+ */
 function SFRadioGroupItem({
   className,
   ...props
