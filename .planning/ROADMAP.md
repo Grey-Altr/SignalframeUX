@@ -634,5 +634,5 @@ Plans:
 | 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
-| 40. API Documentation & DX | 3/5 | In Progress| 2026-04-10 | - |
+| 40. API Documentation & DX | 3/5 | In Progress|  | - |
 | 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
