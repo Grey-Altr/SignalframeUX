@@ -453,3 +453,11 @@ Phase 36-01: Three root-cause Lighthouse fixes landed. (1) `headers()` in `app/l
 ### 2026-04-10T21:05:00Z | Phase 36 Plan 01 | tags: aria-table, role-row, role-cell, wcag-aa
 
 `role="row"` elements MUST have children with `role="cell"`, `role="gridcell"`, or `role="columnheader"` per ARIA spec — `<span>` children have no implicit ARIA cell role. In inventory-section.tsx: header spans need `role="columnheader"`, data spans need `role="cell"`. This was a Lighthouse `aria-required-children` failure at score=0 contributing to Accessibility dropping from 100 to 95.
+
+### 2026-04-10T23:55:00Z | Phase 38 Plan 01 | tags: vitest, test-config, export-drift, tsconfig-isolation
+
+Vitest 4.x exits code 1 on empty suite by default — add `passWithNoTests: true` to vitest.config.ts so `pnpm test` exits 0 before any test files exist. Plan interface sections can drift from actual source exports (plan listed `MANIFESTO_STATEMENTS`, actual export is `THESIS_MANIFESTO`) — always read the source file before writing its test. `tsconfig.test.json` must scope its `include` to `lib/**` only (not `**/*.ts`) to prevent vitest/globals type conflict with @playwright/test globals in the `tests/` directory.
+
+### 2026-04-11T00:06:39Z | Phase 38 Plan 03 | tags: husky, eslint-flatconfig, lint-staged, eslintrc-circular-ref
+
+`@eslint/eslintrc@3.3.5` has a circular-reference JSON bug that crashes both `pnpm lint` (full project) and `eslint <file>` (lint-staged) when using `FlatCompat` with `eslint-config-next`. Fix: replace `FlatCompat` + `compat.extends("next/core-web-vitals")` with `import nextConfig from "eslint-config-next/core-web-vitals"` — eslint-config-next 16.x exports a native flat config array. Playwright 1.59 `TestDetails` type does not accept `timeout` — use `test.setTimeout()` inside test body instead of the 3rd-arg options object form.
