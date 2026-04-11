@@ -77,6 +77,19 @@ const TYPE_ONLY_EXPORTS = new Set([
   "ResolveColorOptions",
 ]);
 
+// Third-party GSAP re-exports — pass-through symbols, not SFUX-owned
+const THIRD_PARTY_EXPORTS = new Set([
+  "gsap",
+  "ScrollTrigger",
+  "Observer",
+  "useGSAP",
+  "SplitText",
+  "ScrambleTextPlugin",
+  "Flip",
+  "CustomEase",
+  "DrawSVGPlugin",
+]);
+
 // Core utility exports (not components or hooks)
 const CORE_UTILITIES = new Set([
   "cn",
@@ -124,12 +137,10 @@ function resolveSourcePath(
 
   if (importSpecifier.startsWith("@/")) {
     const rel = importSpecifier.slice(2); // strip "@/"
-    // Try with common extensions
-    for (const ext of [".tsx", ".ts", ".tsx"]) {
+    for (const ext of [".tsx", ".ts"]) {
       const candidate = path.resolve(ROOT, rel + ext);
       if (fs.existsSync(candidate)) return candidate;
     }
-    // Try index file
     const candidate = path.resolve(ROOT, rel, "index.ts");
     if (fs.existsSync(candidate)) return candidate;
     return null;
@@ -152,59 +163,51 @@ function resolveSourcePath(
  * Parse named exports from an entry file.
  * Returns map of: exportName → resolvedSourceFilePath
  *
- * Handles:
- *   export { Foo, Bar } from "../components/sf/sf-foo"
- *   export { Foo, type Bar } from "../lib/foo"    (skips type exports)
- *   export type { Foo } from "..."               (skipped entirely)
- *   export * from "./gsap-core"                  (expanded recursively)
+ * Handles single-line AND multiline export { ... } from "..." blocks,
+ * inline `type Foo` skipping, export type { ... } skipping,
+ * and export * from "..." star expansion.
  */
-function parseEntryExports(
-  entryFile: string
-): Map<string, string> {
+function parseEntryExports(entryFile: string): Map<string, string> {
   const result = new Map<string, string>();
-  const content = fs.readFileSync(path.resolve(ROOT, entryFile), "utf8");
-  const lines = content.split("\n");
+  const raw = fs.readFileSync(path.resolve(ROOT, entryFile), "utf8");
 
-  for (const line of lines) {
-    const trimmed = line.trim();
+  // ── Named exports (single-line or multiline) ──────────────────────────────
+  // Regex uses [\s\S]*? to cross newlines inside the braces.
+  // The ^export at the start combined with the /gm flag anchors to line start.
+  // We allow the opening brace to appear immediately or after whitespace.
+  const namedExportRe =
+    /^export\s+(?!type\s*\{)\{([\s\S]*?)\}\s*from\s*["']([^"']+)["']/gm;
+  let m: RegExpExecArray | null;
 
-    // Skip type-only export blocks: export type { ... } from "..."
-    if (/^export\s+type\s*\{/.test(trimmed)) continue;
+  while ((m = namedExportRe.exec(raw)) !== null) {
+    const nameList = m[1];
+    const specifier = m[2];
+    const resolved = resolveSourcePath(entryFile, specifier);
 
-    // Named export: export { A, B, type C } from "..."
-    const namedMatch = trimmed.match(/^export\s*\{([^}]+)\}\s*from\s*["']([^"']+)["']/);
-    if (namedMatch) {
-      const names = namedMatch[1]
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s && !s.startsWith("type ")); // skip inline type exports
+    const names = nameList
+      .split(",")
+      .map((s) => s.replace(/\n/g, " ").trim())
+      .filter((s) => s.length > 0 && !s.startsWith("type "));
 
-      const specifier = namedMatch[2];
-      const resolved = resolveSourcePath(entryFile, specifier);
-
-      for (const rawName of names) {
-        const name = rawName.replace(/^type\s+/, "").trim();
-        if (!name) continue;
-        if (TYPE_ONLY_EXPORTS.has(name)) continue;
-        if (resolved) {
-          result.set(name, resolved);
-        }
-      }
-      continue;
+    for (const rawName of names) {
+      const name = rawName.replace(/^type\s+/, "").trim();
+      if (!name) continue;
+      if (TYPE_ONLY_EXPORTS.has(name)) continue;
+      if (THIRD_PARTY_EXPORTS.has(name)) continue;
+      if (resolved) result.set(name, resolved);
     }
+  }
 
-    // Star export: export * from "./gsap-core"
-    const starMatch = trimmed.match(/^export\s*\*\s*from\s*["']([^"']+)["']/);
-    if (starMatch) {
-      const specifier = starMatch[1];
-      const resolved = resolveSourcePath(entryFile, specifier);
-      if (resolved && fs.existsSync(resolved)) {
-        // Recursively parse the star-exported file's named exports
-        const subExports = parseStarFile(resolved);
-        for (const [name, src] of subExports) {
-          if (!TYPE_ONLY_EXPORTS.has(name)) {
-            result.set(name, src);
-          }
+  // ── Star exports ──────────────────────────────────────────────────────────
+  const starRe = /^export\s*\*\s*from\s*["']([^"']+)["']/gm;
+  while ((m = starRe.exec(raw)) !== null) {
+    const specifier = m[1];
+    const resolved = resolveSourcePath(entryFile, specifier);
+    if (resolved && fs.existsSync(resolved)) {
+      const subExports = parseStarFile(resolved);
+      for (const [name, src] of subExports) {
+        if (!TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)) {
+          result.set(name, src);
         }
       }
     }
@@ -241,7 +244,9 @@ function parseStarFile(filePath: string): Map<string, string> {
     }
 
     // export function/const/class NAME
-    const declMatch = trimmed.match(/^export\s+(?:function|const|class|async\s+function)\s+(\w+)/);
+    const declMatch = trimmed.match(
+      /^export\s+(?:function|const|class|async\s+function)\s+(\w+)/
+    );
     if (declMatch) {
       result.set(declMatch[1], filePath);
     }
@@ -262,13 +267,13 @@ interface ExtractedDoc {
  * Extract JSDoc for a named export from a source file.
  * Finds the /** block immediately preceding the function/const/class/interface declaration.
  */
-function extractJSDoc(sourceFile: string, exportName: string): ExtractedDoc | null {
+function extractJSDoc(
+  sourceFile: string,
+  exportName: string
+): ExtractedDoc | null {
   if (!fs.existsSync(sourceFile)) return null;
   const content = fs.readFileSync(sourceFile, "utf8");
 
-  // Find the position of the export declaration
-  // Look for: function ExportName, const ExportName, class ExportName, interface ExportName
-  // Also: export { ExportName } at bottom (re-export pattern — JSDoc precedes the function def)
   const declarationPatterns = [
     new RegExp(`(?:export\\s+)?(?:async\\s+)?function\\s+${exportName}\\b`),
     new RegExp(`(?:export\\s+)?const\\s+${exportName}\\b`),
@@ -288,16 +293,10 @@ function extractJSDoc(sourceFile: string, exportName: string): ExtractedDoc | nu
 
   if (declIndex === -1) return null;
 
-  // Strategy: find all /** blocks in the file before the declaration.
-  // Pick the one that either:
-  //   (a) is immediately before the declaration (only whitespace/simple declarations between), OR
-  //   (b) mentions the export name in its content
-  // If multiple candidates, prefer the one closest to the declaration.
-
   const contentBefore = content.slice(0, declIndex);
 
-  // Collect all JSDoc block positions
-  const jsdocMatches: Array<{ start: number; end: number; content: string }> = [];
+  const jsdocMatches: Array<{ start: number; end: number; content: string }> =
+    [];
   let searchPos = 0;
   while (true) {
     const start = contentBefore.indexOf("/**", searchPos);
@@ -314,26 +313,23 @@ function extractJSDoc(sourceFile: string, exportName: string): ExtractedDoc | nu
 
   if (jsdocMatches.length === 0) return null;
 
-  // Find best candidate — prefer the one closest to declIndex that mentions the name
-  // or is immediately preceding the declaration
   let bestMatch: { start: number; end: number; content: string } | null = null;
 
   for (const jsdoc of jsdocMatches) {
     const between = content.slice(jsdoc.end, declIndex).trim();
     const betweenClean = between
-      .replace(/\/\*[\s\S]*?\*\//g, "") // strip nested comments
-      .replace(/\/\/[^\n]*/g, "")        // strip line comments
-      .replace(/const\s+\w+\s*=[\s\S]*?;/g, "") // strip const declarations
-      .replace(/type\s+\w+[\s\S]*?;/g, "")      // strip type aliases
-      .replace(/interface\s+\w+\s*\{[\s\S]*?\}/g, "") // strip interfaces
-      .replace(/const\s+\w+[^;]*/g, "")  // strip partial consts
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/[^\n]*/g, "")
+      .replace(/const\s+\w+\s*=[\s\S]*?;/g, "")
+      .replace(/type\s+\w+[\s\S]*?;/g, "")
+      .replace(/interface\s+\w+\s*\{[\s\S]*?\}/g, "")
+      .replace(/const\s+\w+[^;]*/g, "")
       .trim();
 
     const mentionsName = jsdoc.content.includes(exportName);
     const isClose = betweenClean.length < 200;
 
     if (mentionsName || isClose) {
-      // Prefer the closest (latest position) matching candidate
       if (!bestMatch || jsdoc.start > bestMatch.start) {
         bestMatch = jsdoc;
       }
@@ -342,15 +338,13 @@ function extractJSDoc(sourceFile: string, exportName: string): ExtractedDoc | nu
 
   if (!bestMatch) return null;
 
-  const jsdocContent = bestMatch.content;
-  return parseJSDocBlock(jsdocContent);
+  return parseJSDocBlock(bestMatch.content);
 }
 
 /**
  * Parse a /** ... *\/ block into description, params, examples.
  */
 function parseJSDocBlock(block: string): ExtractedDoc {
-  // Strip /** and */ and leading * from each line
   const lines = block
     .replace(/^\/\*\*/, "")
     .replace(/\*\/$/, "")
@@ -370,7 +364,6 @@ function parseJSDocBlock(block: string): ExtractedDoc {
     if (!currentTag) return;
 
     if (currentTag === "param" && currentTagLines.length > 0) {
-      // @param name - description or @param {type} name description
       const raw = currentTagLines.join(" ").trim();
       const withBraces = raw.match(/^\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/);
       const withoutBraces = raw.match(/^(\w+)\s*-\s*(.*)/);
@@ -449,33 +442,26 @@ function resolveLayer(
   name: string,
   entryDef: EntryDef
 ): "FRAME" | "SIGNAL" | "CORE" | "TOKEN" | "HOOK" {
-  // Hooks always get HOOK layer
   if (name.startsWith("use") && /^use[A-Z]/.test(name)) return "HOOK";
-
-  // Core utilities
   if (CORE_UTILITIES.has(name)) return "CORE";
-
-  // Provider-related utilities from entry-core
   if (
     entryDef.importPath === "signalframeux" &&
     (name === "createSignalframeUX" || name === "SESSION_KEYS")
   ) {
     return "CORE";
   }
-
   return entryDef.defaultLayer;
 }
 
 // ─── A11y hints per layer ─────────────────────────────────────────────────────
 
 function getA11yHints(layer: string, name: string): string[] {
-  if (layer === "HOOK") {
-    return ["RESPECTS PREFERS-REDUCED-MOTION WHERE APPLICABLE"];
-  }
-  if (layer === "CORE") {
-    return ["NO DIRECT RENDERING — UTILITY FUNCTION"];
-  }
-  if (name.toLowerCase().includes("dialog") || name.toLowerCase().includes("alert")) {
+  if (layer === "HOOK") return ["RESPECTS PREFERS-REDUCED-MOTION WHERE APPLICABLE"];
+  if (layer === "CORE") return ["NO DIRECT RENDERING — UTILITY FUNCTION"];
+  if (
+    name.toLowerCase().includes("dialog") ||
+    name.toLowerCase().includes("alert")
+  ) {
     return [
       "FOCUS TRAPPED WITHIN DIALOG WHEN OPEN",
       "ESC KEY CLOSES THE DIALOG",
@@ -515,7 +501,6 @@ function generateApiDocs(): void {
     for (const [name, sourceFile] of exports) {
       totalExports++;
 
-      // Extract JSDoc from source file
       const jsdoc = extractJSDoc(sourceFile, name);
 
       if (!jsdoc) {
@@ -554,17 +539,14 @@ function generateApiDocs(): void {
   }
 
   console.log(
-    `\nTotal: ${includedExports}/${totalExports} exports included (${totalExports - includedExports} skipped — no JSDoc)`
+    `\nTotal: ${includedExports}/${totalExports} exports included (${
+      totalExports - includedExports
+    } skipped — no JSDoc)`
   );
 
   // ─── Write output ────────────────────────────────────────────────────────
 
   const outputPath = path.resolve(ROOT, "lib/api-docs.ts");
-
-  const serialized = JSON.stringify(allDocs, null, 2)
-    // Convert JSON string escapes back to TS-friendly template literals
-    .replace(/"([^"]+)":/g, "  $1:")
-    .replace(/"/g, '"');
 
   const output = `/**
  * API documentation data for all SignalframeUX components and utilities.
@@ -609,7 +591,11 @@ export interface ComponentDoc {
   preview?: PreviewHud;
 }
 
-export const API_DOCS: Record<string, ComponentDoc> = ${JSON.stringify(allDocs, null, 2)};
+export const API_DOCS: Record<string, ComponentDoc> = ${JSON.stringify(
+    allDocs,
+    null,
+    2
+  )};
 `;
 
   fs.writeFileSync(outputPath, output, "utf8");

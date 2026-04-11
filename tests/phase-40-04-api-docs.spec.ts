@@ -22,6 +22,19 @@ const TYPE_ONLY_EXPORTS = new Set([
   "SFStatusDotStatus",
 ]);
 
+// Third-party GSAP re-exports — pass-through symbols, not SFUX-owned components
+const THIRD_PARTY_EXPORTS = new Set([
+  "gsap",
+  "ScrollTrigger",
+  "Observer",
+  "useGSAP",
+  "SplitText",
+  "ScrambleTextPlugin",
+  "Flip",
+  "CustomEase",
+  "DrawSVGPlugin",
+]);
+
 // Valid importPath values for signalframeux package
 const VALID_IMPORT_PATHS = [
   "signalframeux",
@@ -132,17 +145,18 @@ test("phase-40-04: all importPath values in api-docs.ts match valid entry points
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux", () => {
   const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
-  expect(content).toContain('importPath: "signalframeux"');
+  // Match both TS object literal (importPath: "...") and JSON format ("importPath": "...")
+  expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux["']/);
 });
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux/animation", () => {
   const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
-  expect(content).toContain('importPath: "signalframeux/animation"');
+  expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux\/animation["']/);
 });
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux/webgl", () => {
   const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
-  expect(content).toContain('importPath: "signalframeux/webgl"');
+  expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux\/webgl["']/);
 });
 
 // ── All entry exports appear as API_DOCS keys ─────────────────────────────────
@@ -179,7 +193,9 @@ test("phase-40-04: all entry-animation.ts exports appear as keys in API_DOCS", (
   );
   const exports = extractNamedExports(
     path.join(ROOT, "lib/entry-animation.ts")
-  ).filter((name) => !TYPE_ONLY_EXPORTS.has(name));
+  ).filter(
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
+  );
 
   const missingFromDocs: string[] = [];
   for (const name of exports) {
