@@ -8,7 +8,8 @@
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
 - [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
-- [ ] **v1.6 API-Ready** — Phases 36-43 (in progress)
+- [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
+- [ ] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (active)
 
 ## Phases
 
@@ -495,6 +496,22 @@ Plans:
 - [x] **Phase 42: Tracking Reconciliation + peerDep Fix** — Update REQUIREMENTS.md checkboxes, add requirements-completed to Phase 36/39 SUMMARYs, move next to peerDependencies (Gap closure from audit) (completed 2026-04-11)
 - [x] **Phase 43: Production Deploy + Lighthouse Gate** — Deploy current codebase, run Lighthouse 100/100 gate against production URL (Gap closure: DIST-04) (completed 2026-04-11)
 
+**v1.7 Tightening, Polish, and Aesthetic Push (Phases 44-56):**
+
+- [ ] **Phase 44: Copy Audit Fixes** — Reconcile component count, fix version strings, replace false claims, update Playwright test assertions
+- [ ] **Phase 45: Token Bridge** — CD site becomes first consumer via CSS layer override; document sfx-* tier; no SSR flash
+- [ ] **Phase 46: Tightening Pass** — Light mode contrast fix, 15 hardcoded durations to tokens, 7 hardcoded colors to tokens, sf-button hover alignment
+- [ ] **Phase 47: Viewport Polish** — Text size floor increase, inventory grid breakpoint, subpage header spacing, Storybook viewport presets
+- [ ] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed
+- [ ] **Phase 49: Grain + Idle Escalation + Visual Baseline** — Grain opacity curve, useIdleEscalation() hook with 3 phases, relative offset escalation, visual baselines captured
+- [ ] **Phase 50: VHS Enhancement** — Chromatic aberration, horizontal jitter, dropout bands, vignette, Safari backdrop-filter fix, human sign-off
+- [ ] **Phase 51: Halftone Texture** — CSS-only halftone dots, intensity gate, scoped to specimen sections, no moiré review
+- [ ] **Phase 52: Circuit Overlay** — SVG circuit pattern, mutual exclusion with high grain, intensity-governed opacity
+- [ ] **Phase 53: Mesh Gradient** — Layered radial-gradient with OKLCH, grain composited on top, slow drift animation
+- [ ] **Phase 54: Particle Field** — WebGL particles via existing singleton, device-tiered count, iOS Safari physical test, reduced-motion static frame
+- [ ] **Phase 55: Glitch Transition** — CSS clip-path glitch, wired to idle Phase 3 and page transitions, signal dropout feel
+- [ ] **Phase 56: Symbol System + Final Gate** — 20-30 SVG symbols, CDSymbol component, Storybook story gate, performance launch gate
+
 ### Phase 36: Housekeeping & Carry-Overs
 **Goal**: Clean up v1.5 deferred items and establish code quality baseline for v1.6 work
 **Depends on**: Phase 35 (v1.5 shipped)
@@ -626,7 +643,159 @@ Plans:
 Plans:
 
 
+### Phase 44: Copy Audit Fixes
+**Goal**: Every piece of public-facing copy is accurate — no false claims, no contradictions, no stale version strings
+**Depends on**: Phase 43 (v1.6 complete, clean baseline)
+**Requirements**: COP-01, COP-02, COP-03, COP-04, COP-05, COP-06
+**Success Criteria** (what must be TRUE):
+  1. Component count is a single accurate number across all 5 locations: stats-band, hero, OG image, manifesto-band, and init page
+  2. Version string on hero and OG image matches the current semver release
+  3. /init page describes the system as React/Next.js (not "FRAMEWORK-AGNOSTIC")
+  4. Marquee band contains a specific, measurable claim (not "SHIP FASTER")
+  5. "and growing" filler is absent from hero copy and homepage meta description
+  6. Playwright test file phase-35-metadata.spec.ts assertions match the new copy strings and pass clean
+**Plans**: TBD
+
+### Phase 45: Token Bridge
+**Goal**: The CD site is the first real consumer of signalframeux.css, validating the @layer cascade architecture without SSR flash
+**Depends on**: Phase 44 (copy clean; no risk of conflict during bridge work)
+**Requirements**: TBR-01, TBR-02, TBR-03, TBR-04
+**Success Criteria** (what must be TRUE):
+  1. CD site imports signalframeux/signalframeux.css and cd-tokens.css and all existing pages render identically to before
+  2. Consumer CSS overrides (via @layer consumer.overrides) visibly win over sf.tokens without specificity hacks
+  3. MIGRATION.md documents the full --sfx-* variable list with before/after examples
+  4. Dark mode class="dark" is server-rendered on the CD <html> element — no magenta primary visible during streaming on initial load
+**Plans**: TBD
+
+### Phase 46: Tightening Pass
+**Goal**: Light mode is WCAG AA compliant, all hardcoded values replaced with token references, and sf-button hover timing is aligned
+**Depends on**: Phase 45 (token bridge complete; override layer is the correct place to validate contrast)
+**Requirements**: TGH-01, TGH-02, TGH-03, TGH-04
+**Success Criteria** (what must be TRUE):
+  1. Light mode --muted-foreground on bg-muted measures >= 4.5:1 contrast ratio (WCAG AA) in browser DevTools color picker
+  2. Zero hardcoded animation duration values remain in component or page code — all 15 replaced with --duration-* tokens
+  3. Zero hardcoded color hex or rgb values remain in component or page code — all 7 replaced with CSS custom property references
+  4. sf-button hover animation uses --duration-fast, matching all other SF components
+**Plans**: TBD
+
+### Phase 47: Viewport Polish
+**Goal**: Functional text is legible on 13" MacBook displays and the inventory grid has a correct intermediate breakpoint
+**Depends on**: Phase 46 (tightening pass complete before viewport sizing changes)
+**Requirements**: VPT-01, VPT-02, VPT-03, VPT-04
+**Success Criteria** (what must be TRUE):
+  1. --text-2xs renders at 10px and --text-xs renders at 11px — functional labels are readable on a 1280x800 viewport
+  2. The inventory grid shows 3 columns at md: breakpoint (1024px) — no gap between 2-col and 4-col layouts
+  3. All 4 subpages use pt-12 (48px) for page header top padding, not pt-10 (40px)
+  4. Storybook viewport preset menu includes 1440x900 and 1280x800 options
+**Plans**: TBD
+
+### Phase 48: Intensity Bridge + Chromatic Setup
+**Goal**: All visual effects are driven by a single --signal-intensity source of truth; Chromatic is installed for visual regression tracking
+**Depends on**: Phase 47 (all token tightening complete before intensity wiring layer is introduced)
+**Requirements**: SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01
+**Success Criteria** (what must be TRUE):
+  1. updateSignalDerivedProps(intensity) exists in global-effects.tsx and computes per-effect CSS custom properties from a 0.0-1.0 input
+  2. VHS scan line and noise opacity values change visibly when --signal-intensity is adjusted — no longer fixed at 0.2 / 0.015
+  3. Grain opacity follows a logarithmic curve derived from --signal-intensity — low intensity produces subtle grain, high intensity saturates
+  4. [data-signal-intensity="low|med|high"] attribute overrides produce visually distinct results when applied to any section
+  5. With prefers-reduced-motion active, all intensity-driven effects are suppressed — zero motion, zero opacity change
+  6. @chromatic-com/storybook and chromatic CLI are installed as devDependencies and pnpm storybook builds without error
+**Plans**: TBD
+
+### Phase 49: Grain + Idle Escalation + Visual Baseline
+**Goal**: Grain is parametric (not static), idle escalation is a reusable hook with defined thresholds, and visual baselines are locked before grain changes
+**Depends on**: Phase 48 (intensity bridge MUST exist before grain can be wired to it; Chromatic installed for baseline capture)
+**Requirements**: GRN-01, GRN-02, GRN-03, GRN-04, VRG-02
+**Success Criteria** (what must be TRUE):
+  1. Grain baseline at --signal-intensity 0.0 is 0.03-0.05 opacity — subtle presence without noise fatigue
+  2. useIdleEscalation(thresholds[]) hook exists with 3 phases: 8s (grain drift), 20s (scan emphasis), 45s (glitch burst + auto-reset)
+  3. Escalation animations use relative offsets (currentValue + delta) not absolute target values — no snapping to fixed states
+  4. Chromatic visual baselines are captured and committed before any grain opacity changes land
+  5. Idle timer resets correctly on user interaction (mouse, keyboard, scroll) and does not escalate on reduced-motion
+**Plans**: TBD
+
+### Phase 50: VHS Enhancement
+**Goal**: The VHS overlay is a coherent multi-layered effect that reads as signal degradation, not decoration
+**Depends on**: Phase 49 (grain is the visual baseline; VHS layers on top of established grain)
+**Requirements**: VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06
+**Success Criteria** (what must be TRUE):
+  1. Chromatic aberration (1-2px RGB channel offset) is visible in the VHS overlay at intensity > 0.3 and scales with derived intensity property
+  2. Horizontal jitter (per-scan-line translateX noise) produces a tape-dropout feel — not smooth animation
+  3. Dropout bands (random horizontal black bars, 1-3px, under 5% coverage) appear during idle escalation Phase 2+
+  4. Frame-edge vignette via radial-gradient darkens the perimeter without affecting center content legibility
+  5. Safari renders the overlay without console warnings — backdrop-filter uses -webkit- prefix with literal values, no var() references
+  6. Human visual review at intensity 0.0, 0.5, and 1.0 passes — the effect reads as signal, not glitch art
+**Plans**: TBD
+
+### Phase 51: Halftone Texture
+**Goal**: A CSS-only halftone dot pattern appears in specimen sections at medium-to-high intensity without moiré artifacts against the grain layer
+**Depends on**: Phase 50 (VHS complete; combined VHS + halftone coherence review requires both to exist)
+**Requirements**: HLF-01, HLF-02, HLF-03, HLF-04
+**Success Criteria** (what must be TRUE):
+  1. Halftone dot pattern is implemented with radial-gradient + filter: contrast() + background-blend-mode — zero canvas or WebGL
+  2. Halftone is invisible at intensity < 0.4 and visible at intensity >= 0.4 via derived property curve
+  3. Halftone appears only within designated specimen sections — no ambient overlay on content sections
+  4. Human visual review of grain + halftone combined view confirms no moiré pattern at standard viewing distance
+**Plans**: TBD
+
+### Phase 52: Circuit Overlay
+**Goal**: SVG circuit traces appear as section backgrounds at very low opacity, mutually exclusive with high grain
+**Depends on**: Phase 48 (intensity bridge required; circuit opacity is governed by derived property)
+**Requirements**: CIR-01, CIR-02, CIR-03
+**Success Criteria** (what must be TRUE):
+  1. SVG circuit pattern appears at 0.02-0.05 opacity as a section background behind content
+  2. Circuit opacity approaches zero as --signal-intensity approaches 1.0 — circuit and grain are mutually exclusive at high intensity
+  3. Circuit opacity is driven by --signal-intensity custom property and updates in real time when intensity changes
+**Plans**: TBD
+
+### Phase 53: Mesh Gradient
+**Goal**: A layered OKLCH mesh gradient provides atmospheric depth behind content with a slow-breathing drift animation
+**Depends on**: Phase 48 (intensity bridge; mesh gradient responds to intensity for gating behavior)
+**Requirements**: MSH-01, MSH-02, MSH-03
+**Success Criteria** (what must be TRUE):
+  1. Layered radial-gradient() using OKLCH color values sits at z:-1, visible behind all content sections
+  2. Grain composites on top of the mesh gradient — the dot texture reads over the color field
+  3. Gradient positions drift on a 60-second or longer animation cycle — the site feels alive without distracting motion
+**Plans**: TBD
+
+### Phase 54: Particle Field
+**Goal**: A WebGL particle system delivers the highest-intensity SIGNAL expression using the existing singleton infrastructure, with verified iOS Safari stability
+**Depends on**: Phase 49 (grain + idle escalation complete; particle activation wired to idle escalation Phase 3)
+**Requirements**: PTL-01, PTL-02, PTL-03, PTL-04
+**Success Criteria** (what must be TRUE):
+  1. Particle field uses useSignalScene() singleton — no second WebGL context created, confirmed by DevTools WebGL context count
+  2. Particle count steps between 0, 2000, and 5000 based on device capability (hardwareConcurrency or GPU tier check)
+  3. Physical iOS Safari test on a real device passes — no context loss, no black canvas, no frame drops below 30fps
+  4. With prefers-reduced-motion active, a single static frame renders with zero animation
+**Plans**: TBD
+
+### Phase 55: Glitch Transition
+**Goal**: A CSS-only glitch effect triggers on idle escalation and optionally on page transitions, reading as signal dropout not decoration
+**Depends on**: Phase 49 (idle escalation hook must exist; Phase 3 trigger at 45s wires to this phase)
+**Requirements**: GLT-01, GLT-02, GLT-03
+**Success Criteria** (what must be TRUE):
+  1. Glitch uses CSS clip-path: inset() + @keyframes steps(1) — no JavaScript animation, total duration under 300ms
+  2. Effect fires on idle escalation Phase 3 (45s threshold) and optionally at page transition boundaries
+  3. The effect reads as a momentary signal dropout — hard cut, not a smooth animation; artifact of transmission, not UI decoration
+**Plans**: TBD
+
+### Phase 56: Symbol System + Final Gate
+**Goal**: A curated symbol library is deployed as section markers and dividers; all launch gate requirements pass; v1.7 is shippable
+**Depends on**: Phases 50-55 (all effects complete; Storybook story count gate requires new effect stories to exist)
+**Requirements**: SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04
+**Success Criteria** (what must be TRUE):
+  1. 20-30 SVG symbols from the Brando Corp collection are available as a single sprite under 5KB total
+  2. <CDSymbol name="..." size={N} /> renders any sprite symbol as section markers, list bullets, or dividers — zero runtime JS beyond the SVG use element
+  3. Symbols appear in at least 3 locations across the site as design moments, not placeholders
+  4. Storybook story count is >= 60 (gate updated from >= 40 to reflect new effect stories)
+  5. Lighthouse Accessibility, Best Practices, and SEO remain 100/100/100 after all v1.7 changes
+  6. Lighthouse Performance does not regress below 75 (baseline is 78)
+  7. Combined stacked effects at intensity 1.0 pass human visual coherence review — no illegibility, no performance stutter
+  8. Bundle budget maintained: library <= 50KB gzip, app shared chunks <= 150KB gzip
+**Plans**: TBD
+
 ## Progress
+
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -673,3 +842,16 @@ Plans:
 | 41. Distribution & Launch Gate | 2/2 | Complete   | 2026-04-11 | 2026-04-11 |
 | 42. Tracking Reconciliation + peerDep Fix | 0/1 | 1/1 | Complete   | 2026-04-11 |
 | 43. Production Deploy + Lighthouse Gate | 1/1 | Complete   | 2026-04-11 | — |
+| 44. Copy Audit Fixes | v1.7 | 0/? | Not started | - |
+| 45. Token Bridge | v1.7 | 0/? | Not started | - |
+| 46. Tightening Pass | v1.7 | 0/? | Not started | - |
+| 47. Viewport Polish | v1.7 | 0/? | Not started | - |
+| 48. Intensity Bridge + Chromatic Setup | v1.7 | 0/? | Not started | - |
+| 49. Grain + Idle Escalation + Visual Baseline | v1.7 | 0/? | Not started | - |
+| 50. VHS Enhancement | v1.7 | 0/? | Not started | - |
+| 51. Halftone Texture | v1.7 | 0/? | Not started | - |
+| 52. Circuit Overlay | v1.7 | 0/? | Not started | - |
+| 53. Mesh Gradient | v1.7 | 0/? | Not started | - |
+| 54. Particle Field | v1.7 | 0/? | Not started | - |
+| 55. Glitch Transition | v1.7 | 0/? | Not started | - |
+| 56. Symbol System + Final Gate | v1.7 | 0/? | Not started | - |

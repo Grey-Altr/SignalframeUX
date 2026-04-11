@@ -2,12 +2,12 @@
 pde_state_version: 1.0
 milestone: v1.7
 milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
-status: defining_requirements
-stopped_at: Milestone started, defining requirements
-last_updated: "2026-04-11T22:30:00.000Z"
+status: active
+stopped_at: Roadmap created — ready for Phase 44 planning
+last_updated: "2026-04-11T23:00:00.000Z"
 last_activity: 2026-04-11
 progress:
-  total_phases: 0
+  total_phases: 13
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 44 (next to execute)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-11 — Milestone v1.7 started
+Status: Roadmap created — awaiting Phase 44 planning
+Last activity: 2026-04-11 — Roadmap created for v1.7
 
 ## Progress
 
@@ -41,10 +41,28 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
-v1.7: [░░░░░░░░░░]   0% (0/? plans) ACTIVE — defining requirements
+v1.7: [░░░░░░░░░░]   0% (0/? plans) ACTIVE — Phase 44 next
 ```
 
-## v1.6 Phase Map
+## v1.7 Phase Map
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 44 | Copy Audit Fixes | COP-01, COP-02, COP-03, COP-04, COP-05, COP-06 | Not started |
+| 45 | Token Bridge | TBR-01, TBR-02, TBR-03, TBR-04 | Not started |
+| 46 | Tightening Pass | TGH-01, TGH-02, TGH-03, TGH-04 | Not started |
+| 47 | Viewport Polish | VPT-01, VPT-02, VPT-03, VPT-04 | Not started |
+| 48 | Intensity Bridge + Chromatic Setup | SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01 | Not started |
+| 49 | Grain + Idle Escalation + Visual Baseline | GRN-01, GRN-02, GRN-03, GRN-04, VRG-02 | Not started |
+| 50 | VHS Enhancement | VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06 | Not started |
+| 51 | Halftone Texture | HLF-01, HLF-02, HLF-03, HLF-04 | Not started |
+| 52 | Circuit Overlay | CIR-01, CIR-02, CIR-03 | Not started |
+| 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Not started |
+| 54 | Particle Field | PTL-01, PTL-02, PTL-03, PTL-04 | Not started |
+| 55 | Glitch Transition | GLT-01, GLT-02, GLT-03 | Not started |
+| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Not started |
+
+## v1.6 Phase Map (archived)
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
@@ -67,7 +85,7 @@ v1.7: [░░░░░░░░░░]   0% (0/? plans) ACTIVE — defining requ
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
 | 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Complete (4/4 plans shipped, Nyquist-compliant 77/77, human sign-off 2026-04-09) |
+| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Complete (4/4 plans) |
 | 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Complete (5/5 plans) |
 
 ## Accumulated Context
@@ -121,102 +139,51 @@ v1.7: [░░░░░░░░░░]   0% (0/? plans) ACTIVE — defining requ
 - **Bundle gate at v1.4 ship**: 100.0 KB gzip shared bundle (50 KB under 150 KB gate)
 - **Lighthouse at v1.4 ship**: 100/100 all categories confirmed against deployed URL
 
-### v1.5 Critical Constraints (from Research)
+### v1.5 Critical Constraints (Carried Forward)
 
-- **Infrastructure before features**: fonts-ready, overscroll-behavior, Lenis audit, and Observer registration MUST precede any new scroll or WebGL work. Phase 29 is non-negotiable before Phase 30+.
-- **MutationObserver consolidation before 3rd WebGL scene**: Phase 32 (SIGNAL section) adds a 3rd concurrent WebGL scene. Singleton Observer consolidation must be complete — confirmed at Phase 29 close.
-- **PinnedSection before THESIS**: PinnedSection component must exist and be tested in isolation (Phase 29) before Phase 31 uses it for 200-300vh manifesto scroll.
-- **LCP suppression hazard**: `SIGNALFRAME//UX` heading must NOT use `opacity: 0` as its start state. Use `opacity: 0.01` or `clip-path` reveal. Applies to Phase 30 ENTRY implementation.
-- **iOS Safari address bar**: `ignoreMobileResize: true` must be confirmed in Lenis config at Phase 29. Do not defer.
-- **WebGL context limit on mobile**: Safari iOS enforces 2-8 WebGL contexts. SignalCanvas scissor singleton already handles this — do not create additional renderers in Phase 32.
-- **Manifesto copy is a Phase 31 dependency**: The scroll manifesto engineering (TH-01 through TH-06) requires finalized text content covering SIGNAL/FRAME thesis, Enhanced Flat Design position, and cybernetic biophilia — as statements, not explanations. Resolve content before Phase 31 planning.
-- **SF//[CAT]-NNN schema**: The 6 category abbreviations for coded nomenclature must be validated against all 49 registry components before Phase 33 implementation begins.
-- **Route rename first**: RA-01 through RA-04 (Phase 28) uses `next.config.ts` redirects (308 permanent). Confirm redirect config syntax for Next.js 15.3 before writing.
+- **Infrastructure before features**: fonts-ready, overscroll-behavior, Lenis audit, and Observer registration MUST precede any new scroll or WebGL work.
+- **WebGL context limit on mobile**: Safari iOS enforces 2-8 WebGL contexts. SignalCanvas scissor singleton already handles this — do not create additional renderers.
+- **LCP suppression hazard**: Hero heading must NOT use `opacity: 0` as start state. Use `opacity: 0.01` or `clip-path` reveal.
 - **SIGNAL/FRAME ordering**: Always written as SIGNAL/FRAME (signal first), never FRAME/SIGNAL, in all code comments, docs, and UI labels.
-- **Zero new npm packages**: All animation via GSAP ScrollTrigger + Lenis (already in stack). No new runtime dependencies in v1.5.
-- **Physical iOS Safari testing**: Mandatory after Phase 32. Simulators do not replicate address bar behavior.
+- **Zero new npm packages**: All animation via GSAP ScrollTrigger + Lenis (already in stack). No new runtime dependencies in v1.7.
+
+### v1.6 Decisions (Carried Forward)
+
+- [Phase 36]: @typescript-eslint packages need direct devDep install in pnpm projects — transitive deps are not hoisted
+- [Phase 36]: JSX // text content must be wrapped in {"//"} expressions — react/jsx-no-comment-textnodes fires on any // sequence in JSX children
+- [Phase 36-01]: headers() in layout.tsx forces dynamic rendering — remove entirely; layout becomes sync, all routes static
+- [Phase 38]: passWithNoTests: true required in vitest.config.ts — vitest 4.x exits code 1 on empty suite by default
+- [Phase 38-02]: color: transition removed from global * rule — axe-core samples mid-transition interpolated hex values
+- [Phase 41-distribution-launch-gate]: GSAP SSR guard: all module-level registerPlugin() calls wrapped in typeof window check
+- [Phase 42-tracking-reconciliation-peerdep-fix]: next moved from dependencies to peerDependencies with optional:true
+
+### v1.7 Critical Constraints
+
+- **Phase 48 is the prerequisite for all effect phases**: intensity bridge (updateSignalDerivedProps) MUST exist before any effect reads derived properties. Phases 49-56 depend on Phase 48.
+- **Phase 49 (grain) MUST precede Phase 50 (VHS)**: grain establishes the visual baseline; VHS layers on top. Coherence review requires both in the correct order.
+- **Phase 50 (VHS) MUST precede Phase 51 (halftone)**: combined review of VHS + halftone is required per HLF-04 before halftone ships.
+- **VRG-01 (Chromatic) lands in Phase 48**: baselines must be capturable before Phase 49 changes grain opacity. Do not defer Chromatic install.
+- **VRG-02 (baselines) lands in Phase 49**: capture before any grain opacity values change; commit the baseline snapshot.
+- **PTL-01 WebGL singleton rule**: particle field MUST use useSignalScene() singleton. Creating a second WebGL context on iOS Safari will cause context loss.
+- **Static grain ceiling**: per research, static grain > 0.07 opacity is an anti-feature (SOTD research flag). Parametric escalation only — never set static grain above 0.07.
+- **PRF-01-04 are launch gate requirements**: they block v1.7 ship. Phase 56 cannot complete until all four pass.
+- **Safari backdrop-filter rule**: no var() references in -webkit-backdrop-filter — literal values only. Applies to VHS-05 and any future backdrop-filter usage.
+- **No new runtime dependencies**: Chromatic is a devDependency; CDSymbol is a local component. Zero new npm runtime packages in v1.7.
 
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| 8 phases (28-35) not 9 | Observer consolidation absorbed into Phase 29 Infrastructure Hardening — avoids a phase with zero explicit requirement coverage |
-| Phase 28 first (route renames) | Zero risk, zero dependencies; permanent redirects land before any structural work touches the pages |
-| Phase 29 (infrastructure) before Phase 30 (homepage) | Lenis, fonts-ready, Observer, and PinnedSection must all be proven before scroll-driven features build on them |
-| THESIS in its own phase (31) | 200-300vh manifesto is the primary SOTD signature interaction — deserves isolated delivery boundary and content dependency callout |
-| SIGNAL + PROOF together in Phase 32 | Both are full-viewport sections with WebGL involvement; shipping together respects the 3rd-scene Observer dependency |
-| INVENTORY + ACQUISITION together in Phase 33 | Both deliver the catalog experience; ACQUISITION depends on INVENTORY section slot existing |
-| Visual language + subpages together in Phase 34 | Ghost labels and HUD indicators apply across all subpages — more efficient to audit and apply globally in one phase |
-| Phase 35 is standalone verification | Launch gate is a hard gate, not implementation work — isolated phase keeps it verifiable and non-skippable |
-
-- [Phase 28]: phase-28-route-infra.spec.ts retains old route strings — intentional redirect verification tests, not stale nav links
-- [Phase 28]: sitemap.ts uses template literals (${BASE}/route) not quoted strings — grep pattern must account for this syntax
-- [Phase 29]: autoResize: false instead of ignoreMobileResize: true — Lenis 1.3.x dropped ignoreMobileResize; autoResize: false is the equivalent for iOS address bar resize suppression
-- [Phase 29]: token-viz is static single-frame render — no rAF guard needed, reduced-motion coverage comment added to satisfy PF-06 audit
-- [Phase 29]: canvas-cursor and xray-reveal classified as pointer-driven (exempt from reduced-motion guard — rAF only fires on pointer move)
-- [Phase 30-01]: page.tsx converted from async Server Component to sync — ComponentGrid removed from homepage eliminates all highlight() pre-computation
-- [Phase 30-01]: opacity: 0.01 on hero h1 (not opacity: 0) per LCP safety rule D-08 — allows LCP measurement while visually invisible until animation
-- [Phase 30-01]: Playwright font-size assertion uses 100px floor (not 120px spec minimum) to handle smaller test viewport; 120px minimum applies at full viewport width per clamp()
-- [Phase 34-01]: InstrumentHUD is a singleton mounted in app/layout.tsx with no props — selector hardcoded to `[data-section]`. Per-frame fields (scroll%, SIG intensity) use scrollRef/sigRef + requestAnimationFrame direct textContent writes; NEVER useState in the rAF loop.
-- [Phase 34-01]: Nav reveal decoupled from `nav.tsx` entirely. `useNavReveal(triggerRef)` flips `body.dataset.navVisible`; CSS `body[data-nav-visible="true"] .sf-nav-hidden` mirrors the flag. `NavRevealMount` per-page client island resolves the target selector and drives the hook. Nav itself no longer imports `ScrollTrigger`.
-- [Phase 34-01]: GhostLabel deployment locked to brief pair (app/page.tsx THESIS + app/system/page.tsx hero); playwright test greps those exact files — children block files DO NOT count toward the count.
-- [Phase 34-01]: Magenta audit is a tactical CSS-rule count proxy, not canonical visual moments. 5 target files held to ≤5 grep hits; canonical per-page moment count deferred to Phase 34 umbrella verification.
-- [Phase 34-01]: Breadcrumb auto-prepends `[SFUX]` root (coded `[SFUX]//[SEGMENT]` format) — consumer pages pass only their own segments; the root never needs to be wired up.
-- [Phase 34-03]: /init register reframe is STRUCTURAL, not copy-only. NEXT_CARDS / SETUP_CHECKLIST / COMMUNITY BAND violate the locked bringup-sequence register at the LAYOUT level (cards-with-CTAs, checklist-with-checkboxes, community-invite-band) — no copy rewrite can rescue a `<div className="grid grid-cols-3">{NEXT_CARDS.map(...)}</div>` into register. Brief's "copy rewrite first" gate is bypassable when the structure itself violates the register at the layout level.
-- [Phase 34-03]: Terminal footer LOCKED literal is `[OK] SYSTEM READY` — not `[EXIT 0]`, not `[OK] BOOT COMPLETE` (Wipeout-instruction-booklet authority). Tests grep for this exact string.
-- [Phase 34-03]: Coded indicator mapping is a RENDER-only const `CODES = ["INIT","HANDSHAKE","LINK","TRANSMIT","DEPLOY"]` inside `STEPS.map((step, i) => ...)` — STEPS data array is NEVER mutated. Step number (01-05) comes from `step.number`, code label from `CODES[i]`.
-- [Phase 34-03]: Plan JSX sketches can contradict 34-01 brief-locks — the 34-03 plan sketch included `<GhostLabel text="INIT" />` on /init, but VL-01 brief-lock (enforced by 34-01 spec test line 173-178) restricts GhostLabel to app/page.tsx + app/system/page.tsx only. Test is canonical; plan sketch was wrong. Verify brief-locks in the canonical test file before following plan sketches.
-- [Phase 34-03]: Parallel Wave 2 executors can race on shared state files (STATE.md, ROADMAP.md) — the filesystem watcher and autoformatter can silently revert unstaged `.planning/*.md` edits when sibling executors commit. Fix: `git add .planning/FILE.md` immediately after every Edit, before any subsequent Edit or Bash call. Do not rely on batching edits and staging later.
-- [Phase 34]: [Phase 34-02]: ColorSpecimen owns its own visibleScales slice; TokenTabs no longer computes visibleScales locally. Data arrays stay in token-tabs.tsx orchestrator and pass into specimens as props.
-- [Phase 34]: [Phase 34-02]: Specimen prop types match live data array shapes (px: number, size: number); plan sketch had drifted to string types. Always read source before writing props.
-- [Phase 34]: [Phase 34-02]: ColorSpecimen is 'use client' (keyboard nav + focus state); SpacingSpecimen, TypeSpecimen, MotionSpecimen are Server Components (pure render, no interactivity).
-- [Phase 34]: 34-04: DataDrivenDoc replaced by file-private EntryDataSheet — shadcn chrome (SFTable/SFTabs/SFBadge) conflicts with schematic register; zero SF-wrapper imports in final api-explorer.tsx
-- [Phase 34]: 34-04: Surface groups classified via API_DOCS[id].layer (HOOK->HOOKS, TOKEN->TOKENS, CORE/FRAME/SIGNAL->COMPONENTS) not NAV_SECTIONS.title — authoritative data field wins
-- [Phase 34]: 34-04: HudTelemetry sub-component dropped — InstrumentHUD site-wide from 34-01 carries cockpit role globally, duplicating on /reference dilutes register
-- [Phase 35-05]: LR-03 chrome-devtools MCP console sweep on production URL (not preview, not Playwright) — warnings are launch-gate failures equal to errors; close commit contains both Lighthouse verification string and Production console verification string (both git log --grep searchable)
-- [Phase 35]: Next.js 15.5.14 FROZEN for v1.5 ship; Next 16 migration = v1.6+ scope (no proxy.ts rename, no Cache Components, no runtime edge pushes)
-- [Phase 35-02]: All runtime Playwright tests (nav-reveal, HUD, DOM, LCP, CLS) are ERR_CONNECTION_REFUSED when no server is running — Wave 1 test authoring does not require a live server; Wave 3 re-runs against pnpm build && pnpm start
-- [Phase 35-02]: schematic register font-mono source-read targets wrong file — font-mono lives in components/blocks/api-explorer.tsx (lines 166, 181, 291, 315), not app/reference/page.tsx; test path fix is Wave 3 triage item
-- [Phase 35-02]: PF-01 bundle gate is server-independent — reads .next/build-manifest.json directly; passes even without a running server; confirmed 100.0 KB gzip (50 KB under 150 KB gate)
-- [Phase 34]: 34-04: Rule 1/2 auto-fix horizontal scroll at 375px (Footer URL break-all, /reference header responsive grid, api-explorer filter bar min-w-0) landed accidentally in sibling 34-03 docs commit due to parallel-wave git race; code correct, attribution wrong, no rollback
-- [Phase 35-03]: OG image mono font is GeistMono (Option A — Grey 2026-04-09 ~20:40 PDT), not JetBrains Mono. Live site uses JetBrains Mono; OG image intentionally diverges to honor brief §LR-02 literal "GeistMono" reference. Sourced from geist@1.7.0 npm package.
-- [Phase 35-03]: chrome-launcher is a transitive dep of lighthouse — pnpm doesn't hoist it, so TypeScript can't resolve the ES import. Typed via inline interface shim in scripts/launch-gate.ts; runtime (tsx) resolves correctly.
-- [Phase 35-03]: OPEN-2 (metadataBase URL) unresolved — app/layout.tsx metadata edit (Task 4) BLOCKED until Grey confirms production URL. Default candidate: https://signalframeux.vercel.app (from app/sitemap.ts).
-- [Phase 35]: OPEN-2 resolved: metadataBase is https://signalframe.culturedivision.com (Grey 2026-04-10) — SF//UX ships under Culture Division domain
-- [Phase 35]: 35-03: Do not specify openGraph.images or twitter.images — file-based convention takes precedence; double-specification triggers Next.js warning
-- [Phase 36]: @typescript-eslint packages need direct devDep install in pnpm projects — transitive deps are not hoisted and cannot be imported from project ESM code
-- [Phase 36]: JSX // text content must be wrapped in {"//"} expressions — react/jsx-no-comment-textnodes fires on any // sequence in JSX children, including DU/TDR design tokens like SF//UX and //SIGNAL
-- [Phase 36-01]: headers() in layout.tsx forces dynamic (streaming) rendering — metadata tags land in <body> via React streaming, not <head>; Lighthouse SEO fails meta-description. Fix: remove headers() entirely; layout becomes sync, all routes become static
-- [Phase 36-01]: CSP3 spec: when nonce is present in script-src, unsafe-inline is ignored. Nonce-based CSP in middleware.ts blocked all Next.js static chunk scripts causing cascade of console CSP errors (Lighthouse Best Practices 92). Fix: remove nonce, use unsafe-inline only
-- [Phase 36-01]: tsx CJS/ESM interop breaks lighthouse@13 (type:module) — fileURLToPath(import.meta.url) inside lighthouse fails under tsx transform. Use native ESM .mjs runner with createRequire for chrome-launcher
-- [Phase 36-01]: role="row" requires role="cell"/"gridcell"/"columnheader" children per ARIA spec — <span> children inside role="row" have no implicit cell role
-- [Phase 37]: Manual upgrade instead of codemod — codemod requires interactive TTY; direct pnpm add was equivalent — Codemod launched interactive UI incompatible with automated shell; same dependency versions achieved via pnpm add next@latest
-- [Phase 38]: passWithNoTests: true required in vitest.config.ts — vitest 4.x exits code 1 on empty suite by default; needed so pnpm test exits 0 before test files exist and in CI
-- [Phase 38]: tsconfig.test.json scopes vitest/globals to lib/ include only — prevents type conflict with @playwright/test globals which also declare `test`, `expect`, `describe` in the global namespace
-- [Phase 38]: THESIS_MANIFESTO is the actual export (not MANIFESTO_STATEMENTS) — plan interface section had drifted; always read source before writing tests
-- [Phase 38-02]: text-[var(--sf-muted-text-dark)] does not resolve reliably in Chromium via Tailwind v4 arbitrary value path — use hardcoded hex #999999 for dark-surface code labels and comments; inline style color resolves unambiguously where CSS custom property path fails
-- [Phase 38-02]: copy-button inline style backgroundColor: var(--color-primary) failed accessibility tree color computation — Chromium computed parent bg (#0a0a0a) instead; bg-primary Tailwind class resolves correctly through build system
-- [Phase 38-02]: waitForTimeout(N) in axe tests allows GSAP bgShift ScrollTrigger to fire (ScrollTrigger fires immediately for elements at/above scroll 50% threshold); use AXE_EXCLUDE for animation-transient elements instead of timeout waits
-- [Phase 38-02]: [data-api-entry] excluded from axe — GSAP stagger (81 entries × 0.015s ≈ 1.6s) creates transient opacity at networkidle; elements pass contrast at rest; ARIA structure verified independently
-- [Phase 38-02]: color: transition removed from global * rule — axe-core samples mid-transition interpolated hex values when color transitions are active, causing spurious contrast failures on routes without bgShift
-- [Phase 40-api-documentation-dx]: Used execFileSync not execSync for Storybook build test per project security conventions
-- [Phase 40-api-documentation-dx]: Excluded 4 type-only exports (TextVariant, SignalframeUXConfig, UseSignalframeReturn, SFStatusDotStatus) from JSDoc and API_DOCS coverage checks
-- [Phase 40-02]: MIGRATION.md maps 60+ individual internal component paths (not just 3 top-level entry points) — gives external developers a complete lookup table for common imports
-- [Phase 40-02]: Animation entry point rationale documented in MIGRATION.md NOTES — transitive GSAP deps explain why SFAccordion/SFProgress/SFStepper/SFEmptyState are not in core
-- [Phase 40-api-documentation-dx]: Import Meta/StoryObj from @storybook/react directly — must be explicit devDep for TypeScript resolution in Storybook 10
-- [Phase 40-api-documentation-dx]: Exclude stories/ from tsconfig.json — pre-commit tsc --noEmit check conflicts with Storybook's own TS compilation
-- [Phase 41-distribution-launch-gate]: Use !dist/*.map negation in package.json files field — npm-packlist 5.x (npm 10) does not apply .npmignore to files[]-listed directory contents
-- [Phase 41-distribution-launch-gate]: Wrap async tsx scripts in main() to avoid top-level await CJS incompatibility with esbuild
-- [Phase 41-distribution-launch-gate]: Pack local Club GSAP as tarball for consumer test — Club plugins not in public gsap@npm
-- [Phase 41-distribution-launch-gate]: GSAP SSR guard: all module-level registerPlugin() calls wrapped in typeof window check to prevent SSR prerender errors
-- [Phase 41-distribution-launch-gate]: Lighthouse HARD GATE: production scores 44/100 performance — phase 41 blocked pending deployment
-- [Phase 42-tracking-reconciliation-peerdep-fix]: requirements-completed frontmatter backfilled into 36-01, 36-02, 39-01, 39-02 SUMMARYs to close CO-01-04 and LIB-01-03 tracking gaps
-- [Phase 42-tracking-reconciliation-peerdep-fix]: next moved from dependencies to peerDependencies with optional:true — eliminates duplicate install for consumers
-
-### Blockers
-
-- **Manifesto copy**: ✅ RESOLVED — 6 wiki-locked statements shipped in Phase 31 (`lib/thesis-manifesto.ts`)
-- **SF//[CAT]-NNN schema**: 6 category abbreviations not yet validated against full 49-item registry. Must be resolved before Phase 33 planning begins. (Research gap noted 2026-04-07)
+| 13 phases (44-56) not fewer | Each phase delivers one coherent, verifiable capability; effects are naturally sequential due to visual coherence review dependencies |
+| Phase 44 first (copy audit) | Zero dependencies, zero risk, immediate integrity — clear the slate before any aesthetic work |
+| Phase 45 second (token bridge) | Validates @layer cascade architecture before aesthetic changes; establishing the override pattern is foundational |
+| Phases 46-47 before effects | All tightening and viewport polish must be stable before the visual effect stack is built on top |
+| Phase 48 (intensity bridge) before all effects | Architectural prerequisite — every effect in phases 49-55 reads derived properties from updateSignalDerivedProps |
+| VRG-01 in Phase 48 | Chromatic needs to be installed before baselines can be captured in Phase 49; cannot install and capture in same phase |
+| Phase 49 (grain) before Phase 50 (VHS) | Grain is the visual baseline for all other effects; VHS, halftone, and particles layer on top |
+| Phase 52 (circuit) and 53 (mesh) parallel-eligible | Both depend only on Phase 48; neither depends on the other; can be executed in any order |
+| Phase 54 (particles) late | WebGL, highest complexity, iOS Safari risk — defer until all CSS-only effects are validated |
+| Phase 56 as the launch gate | Consolidates VRG-03, PRF-01-04, and SYM as the final verification boundary; no phase can be declared complete without passing these |
 
 ## Project Reference
 
@@ -228,5 +195,5 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: v1.7 milestone started — defining requirements
-Resume with: /pde:discuss-phase 44 (first v1.7 phase, copy audit fixes)
+Stopped at: v1.7 roadmap created — Phase 44 ready for planning
+Resume with: /pde:plan-phase 44
