@@ -76,7 +76,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.5 Redesign
+## Current Milestone: v1.6 API-Ready
 
 **Goal:** Transform SignalframeUX from a design system docs site into a designed artifact — a career weapon that competes at Awwwards SOTD level.
 
