@@ -490,7 +490,7 @@ Plans:
 - [x] **Phase 37: Next.js 16 Migration** — Upgrade from 15.5.14 → 16, audit breaking changes, verify all E2E tests, confirm no Lighthouse regressions (completed 2026-04-10)
 - [x] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check) (3/3 plans complete)
 - [x] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation) (completed 2026-04-11)
-- [ ] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide
+- [x] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide (completed 2026-04-11)
 - [ ] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100
 
 ### Phase 36: Housekeeping & Carry-Overs
@@ -570,7 +570,7 @@ Plans:
   4. `/reference` route on the site reflects the actual exported API (not stale internal-only components)
   5. Migration guide documents path from internal app usage to npm package consumption
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 Plans:
 - [ ] 40-00-PLAN.md — Wave 0: Create all 4 Playwright test spec scaffolds (Nyquist compliance)
 - [ ] 40-01-PLAN.md — Auto-generate api-docs.ts from entry files + JSDoc audit on all exported sub-components
@@ -634,5 +634,5 @@ Plans:
 | 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
-| 40. API Documentation & DX | 4/5 | In Progress|  | - |
+| 40. API Documentation & DX | 5/5 | Complete   | 2026-04-11 | - |
 | 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
