@@ -654,7 +654,9 @@ Plans:
   4. Marquee band contains a specific, measurable claim (not "SHIP FASTER")
   5. "and growing" filler is absent from hero copy and homepage meta description
   6. Playwright test file phase-35-metadata.spec.ts assertions match the new copy strings and pass clean
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 45: Token Bridge
 **Goal**: The CD site is the first real consumer of signalframeux.css, validating the @layer cascade architecture without SSR flash
@@ -665,7 +667,9 @@ Plans:
   2. Consumer CSS overrides (via @layer consumer.overrides) visibly win over sf.tokens without specificity hacks
   3. MIGRATION.md documents the full --sfx-* variable list with before/after examples
   4. Dark mode class="dark" is server-rendered on the CD <html> element — no magenta primary visible during streaming on initial load
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 46: Tightening Pass
 **Goal**: Light mode is WCAG AA compliant, all hardcoded values replaced with token references, and sf-button hover timing is aligned
@@ -676,7 +680,9 @@ Plans:
   2. Zero hardcoded animation duration values remain in component or page code — all 15 replaced with --duration-* tokens
   3. Zero hardcoded color hex or rgb values remain in component or page code — all 7 replaced with CSS custom property references
   4. sf-button hover animation uses --duration-fast, matching all other SF components
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 47: Viewport Polish
 **Goal**: Functional text is legible on 13" MacBook displays and the inventory grid has a correct intermediate breakpoint
@@ -687,7 +693,9 @@ Plans:
   2. The inventory grid shows 3 columns at md: breakpoint (1024px) — no gap between 2-col and 4-col layouts
   3. All 4 subpages use pt-12 (48px) for page header top padding, not pt-10 (40px)
   4. Storybook viewport preset menu includes 1440x900 and 1280x800 options
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 48: Intensity Bridge + Chromatic Setup
 **Goal**: All visual effects are driven by a single --signal-intensity source of truth; Chromatic is installed for visual regression tracking
@@ -700,7 +708,9 @@ Plans:
   4. [data-signal-intensity="low|med|high"] attribute overrides produce visually distinct results when applied to any section
   5. With prefers-reduced-motion active, all intensity-driven effects are suppressed — zero motion, zero opacity change
   6. @chromatic-com/storybook and chromatic CLI are installed as devDependencies and pnpm storybook builds without error
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 49: Grain + Idle Escalation + Visual Baseline
 **Goal**: Grain is parametric (not static), idle escalation is a reusable hook with defined thresholds, and visual baselines are locked before grain changes
@@ -712,7 +722,9 @@ Plans:
   3. Escalation animations use relative offsets (currentValue + delta) not absolute target values — no snapping to fixed states
   4. Chromatic visual baselines are captured and committed before any grain opacity changes land
   5. Idle timer resets correctly on user interaction (mouse, keyboard, scroll) and does not escalate on reduced-motion
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 50: VHS Enhancement
 **Goal**: The VHS overlay is a coherent multi-layered effect that reads as signal degradation, not decoration
@@ -725,7 +737,9 @@ Plans:
   4. Frame-edge vignette via radial-gradient darkens the perimeter without affecting center content legibility
   5. Safari renders the overlay without console warnings — backdrop-filter uses -webkit- prefix with literal values, no var() references
   6. Human visual review at intensity 0.0, 0.5, and 1.0 passes — the effect reads as signal, not glitch art
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 51: Halftone Texture
 **Goal**: A CSS-only halftone dot pattern appears in specimen sections at medium-to-high intensity without moiré artifacts against the grain layer
@@ -736,7 +750,9 @@ Plans:
   2. Halftone is invisible at intensity < 0.4 and visible at intensity >= 0.4 via derived property curve
   3. Halftone appears only within designated specimen sections — no ambient overlay on content sections
   4. Human visual review of grain + halftone combined view confirms no moiré pattern at standard viewing distance
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 52: Circuit Overlay
 **Goal**: SVG circuit traces appear as section backgrounds at very low opacity, mutually exclusive with high grain
@@ -746,7 +762,9 @@ Plans:
   1. SVG circuit pattern appears at 0.02-0.05 opacity as a section background behind content
   2. Circuit opacity approaches zero as --signal-intensity approaches 1.0 — circuit and grain are mutually exclusive at high intensity
   3. Circuit opacity is driven by --signal-intensity custom property and updates in real time when intensity changes
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 53: Mesh Gradient
 **Goal**: A layered OKLCH mesh gradient provides atmospheric depth behind content with a slow-breathing drift animation
@@ -756,7 +774,9 @@ Plans:
   1. Layered radial-gradient() using OKLCH color values sits at z:-1, visible behind all content sections
   2. Grain composites on top of the mesh gradient — the dot texture reads over the color field
   3. Gradient positions drift on a 60-second or longer animation cycle — the site feels alive without distracting motion
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 54: Particle Field
 **Goal**: A WebGL particle system delivers the highest-intensity SIGNAL expression using the existing singleton infrastructure, with verified iOS Safari stability
@@ -767,7 +787,9 @@ Plans:
   2. Particle count steps between 0, 2000, and 5000 based on device capability (hardwareConcurrency or GPU tier check)
   3. Physical iOS Safari test on a real device passes — no context loss, no black canvas, no frame drops below 30fps
   4. With prefers-reduced-motion active, a single static frame renders with zero animation
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 55: Glitch Transition
 **Goal**: A CSS-only glitch effect triggers on idle escalation and optionally on page transitions, reading as signal dropout not decoration
@@ -777,7 +799,9 @@ Plans:
   1. Glitch uses CSS clip-path: inset() + @keyframes steps(1) — no JavaScript animation, total duration under 300ms
   2. Effect fires on idle escalation Phase 3 (45s threshold) and optionally at page transition boundaries
   3. The effect reads as a momentary signal dropout — hard cut, not a smooth animation; artifact of transmission, not UI decoration
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 56: Symbol System + Final Gate
 **Goal**: A curated symbol library is deployed as section markers and dividers; all launch gate requirements pass; v1.7 is shippable
@@ -792,7 +816,9 @@ Plans:
   6. Lighthouse Performance does not regress below 75 (baseline is 78)
   7. Combined stacked effects at intensity 1.0 pass human visual coherence review — no illegibility, no performance stutter
   8. Bundle budget maintained: library <= 50KB gzip, app shared chunks <= 150KB gzip
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ## Progress
 
