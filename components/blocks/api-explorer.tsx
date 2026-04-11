@@ -178,7 +178,7 @@ export function APIExplorer() {
             aria-label="Filter API entries"
             spellCheck={false}
             autoComplete="off"
-            className="flex-1 min-w-0 bg-transparent border-none outline-none text-foreground font-mono text-[var(--text-sm)] tracking-tight placeholder:text-muted-foreground/40 focus:placeholder:text-muted-foreground/60"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none text-foreground font-mono text-[var(--text-sm)] tracking-tight placeholder:text-muted-foreground/40 focus:placeholder:text-muted-foreground"
           />
           <span
             aria-live="polite"
@@ -203,15 +203,15 @@ export function APIExplorer() {
               className="flex items-baseline justify-between px-6 md:px-12 pt-12 pb-4 text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
             >
               <span className="text-foreground">
-                {group.label} <span className="text-muted-foreground/60">{"//"}</span> {group.entries.length} SURFACES
+                {group.label} <span className="text-muted-foreground">{"//"}</span> {group.entries.length} SURFACES
               </span>
-              <span aria-hidden="true" className="tabular-nums text-muted-foreground/60">
+              <span aria-hidden="true" className="tabular-nums text-muted-foreground">
                 [{String(group.entries.length).padStart(2, "0")}]
               </span>
             </div>
 
             {group.entries.length === 0 ? (
-              <div className="px-6 md:px-12 py-6 text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/60">
+              <div className="px-6 md:px-12 py-6 text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
                 {"// NO MATCH"}
               </div>
             ) : (
@@ -237,21 +237,21 @@ export function APIExplorer() {
                       >
                         <span
                           aria-hidden="true"
-                          className="w-4 shrink-0 text-[var(--text-xs)] tabular-nums text-muted-foreground/70"
+                          className="w-4 shrink-0 text-[var(--text-xs)] tabular-nums text-muted-foreground"
                         >
                           {isActive ? "◉" : "○"}
                         </span>
                         <span className="flex-1 text-foreground tracking-tight text-[var(--text-sm)] break-all">
                           {doc.importName}
-                          <span className="text-muted-foreground/60">{formatSignature(doc)}</span>
+                          <span className="text-muted-foreground">{formatSignature(doc)}</span>
                         </span>
-                        <span className="hidden sm:inline text-[var(--text-xs)] tabular-nums text-muted-foreground/70">
+                        <span className="hidden sm:inline text-[var(--text-xs)] tabular-nums text-muted-foreground">
                           {doc.version}
                         </span>
-                        <span className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/80">
+                        <span className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
                           [{doc.layer}]
                         </span>
-                        <span className="hidden md:inline text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/60">
+                        <span className="hidden md:inline text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
                           {doc.status}
                         </span>
                       </button>
@@ -270,7 +270,7 @@ export function APIExplorer() {
         ))}
 
         {/* Footer rule — schematic terminator */}
-        <div className="px-6 md:px-12 py-8 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground/60">
+        <div className="px-6 md:px-12 py-8 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground">
           [EOF] // SIGNALFRAME//UX · {totalAll} SURFACES REGISTERED
         </div>
       </div>
@@ -294,7 +294,7 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
 
       {/* Import line */}
       <section className="mb-8">
-        <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground/80 mb-2 border-b border-foreground/15 pb-1">
+        <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-2 border-b border-foreground/15 pb-1">
           IMPORT
         </div>
         <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground whitespace-pre-wrap break-all">
@@ -305,7 +305,7 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
       {/* Props data sheet — column-aligned grid, NOT a table, NOT cards */}
       {doc.props.length > 0 && (
         <section className="mb-8">
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground/80 mb-3 border-b border-foreground/15 pb-1">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
             {propsLabel}
           </div>
           <div
@@ -314,10 +314,10 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
             aria-label={`${doc.name} ${propsLabel.toLowerCase()}`}
             className="grid grid-cols-[minmax(120px,auto)_minmax(140px,1.4fr)_minmax(90px,auto)_minmax(200px,2fr)] gap-x-6 gap-y-2 font-mono text-[var(--text-xs)] pt-2"
           >
-            <div className="uppercase tracking-[0.15em] text-muted-foreground/60">NAME</div>
-            <div className="uppercase tracking-[0.15em] text-muted-foreground/60">TYPE</div>
-            <div className="uppercase tracking-[0.15em] text-muted-foreground/60">DEFAULT</div>
-            <div className="uppercase tracking-[0.15em] text-muted-foreground/60">DESCRIPTION</div>
+            <div className="uppercase tracking-[0.15em] text-muted-foreground">NAME</div>
+            <div className="uppercase tracking-[0.15em] text-muted-foreground">TYPE</div>
+            <div className="uppercase tracking-[0.15em] text-muted-foreground">DEFAULT</div>
+            <div className="uppercase tracking-[0.15em] text-muted-foreground">DESCRIPTION</div>
             {doc.props.map((prop) => (
               <Fragment key={prop.name}>
                 <div className="text-foreground break-all">
@@ -340,13 +340,13 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
       {/* Usage examples — inline pre blocks */}
       {doc.usage.length > 0 && (
         <section className="mb-8">
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground/80 mb-3 border-b border-foreground/15 pb-1">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
             USAGE
           </div>
           <div className="space-y-4">
             {doc.usage.map((ex) => (
               <div key={ex.label}>
-                <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">
+                <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground mb-1">
                   {"// "}{ex.label}
                 </div>
                 <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground bg-foreground/[0.05] border border-foreground/10 p-4 whitespace-pre">
@@ -361,13 +361,13 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
       {/* A11Y notes */}
       {doc.a11y.length > 0 && (
         <section>
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground/80 mb-3 border-b border-foreground/15 pb-1">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
             A11Y
           </div>
           <ul className="list-none m-0 p-0 font-mono text-[var(--text-xs)] uppercase tracking-tight text-muted-foreground space-y-1">
             {doc.a11y.map((note, i) => (
               <li key={i} className="leading-[1.6]">
-                <span aria-hidden="true" className="text-muted-foreground/50">{"// "}</span>
+                <span aria-hidden="true" className="text-muted-foreground">{"// "}</span>
                 {note}
               </li>
             ))}

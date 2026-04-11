@@ -510,11 +510,11 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   }
   * {
     @apply border-border outline-ring/50;
-    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+    transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
   }
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: background-color 0.5s ease-in-out;
   }
   #bg-shift-wrapper {
     background-color: #fff;
@@ -525,6 +525,20 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   .dark #bg-shift-wrapper {
     background-color: var(--color-background, oklch(0.145 0 0));
   }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK SECTION CONTRAST OVERRIDES
+   When bgShift="black" sets a dark background on a section, text using
+   the light-mode --color-muted-foreground (#58575d) fails WCAG AA (4.5:1)
+   against the dark surface. Override to use a lighter muted value that
+   meets 4.5:1 on near-black (#0a0a0a) backgrounds.
+   --sf-dim-text: oklch(0.65 0 0) = #999 → 6.5:1 on #0a0a0a ✓
+   ══════════════════════════════════════════════════════════════ */
+
+[data-bg-shift="black"],
+[data-bg-shift="primary"] {
+  --color-muted-foreground: oklch(0.65 0 0); /* #999 — 6.5:1 on #0a0a0a ✓ */
 }
 
 /* ══════════════════════════════════════════════════════════════

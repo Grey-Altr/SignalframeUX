@@ -52,9 +52,9 @@ export function EntrySection() {
           mixBlendMode: "screen",
         }}
       >
-        <span className="invisible">SIGNALFRAME</span>
+        <span className="invisible" aria-hidden="true">SIGNALFRAME</span>
         <span>{"//"}</span>
-        <span className="invisible">UX</span>
+        <span className="invisible" aria-hidden="true">UX</span>
       </div>
     </div>
   );

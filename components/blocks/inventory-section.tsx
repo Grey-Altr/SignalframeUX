@@ -98,30 +98,30 @@ export function InventorySection() {
     >
       {/* Section header */}
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase">
+        <span className="font-mono text-xs text-foreground/70 tracking-widest uppercase">
           — INVENTORY
         </span>
-        <span className="font-mono text-xs text-muted-foreground">
+        <span className="font-mono text-xs text-foreground/70">
           {INVENTORY_ROWS.length} COMPONENTS
         </span>
       </div>
 
       {/* Table */}
       <div role="table" aria-label="Component inventory" className="w-full">
-        {/* Header row */}
+        {/* Header row — aria-hidden, use plain spans (no role= on hidden children) */}
         <div
           role="row"
           className={cn(
             GRID_COLS,
-            "font-mono text-xs text-muted-foreground border-b border-foreground/20 pb-1 mb-1"
+            "font-mono text-xs text-foreground/70 border-b border-foreground/20 pb-1 mb-1"
           )}
           aria-hidden="true"
         >
-          <span role="columnheader">SF//</span>
-          <span role="columnheader">NAME</span>
-          <span role="columnheader">LAYER</span>
-          <span role="columnheader">TIER</span>
-          <span role="columnheader">—</span>
+          <span>SF//</span>
+          <span>NAME</span>
+          <span>LAYER</span>
+          <span>TIER</span>
+          <span>—</span>
         </div>
 
         {/* Data rows */}
@@ -160,12 +160,12 @@ export function InventorySection() {
               className={
                 row.layer === "signal"
                   ? "text-primary"
-                  : "text-muted-foreground"
+                  : "text-foreground/70"
               }
             >
               {row.layer === "signal" ? "[//SIGNAL]" : "[FRAME]"}
             </span>
-            <span role="cell" data-pattern-tier className="text-muted-foreground">
+            <span role="cell" data-pattern-tier className="text-foreground/70">
               {row.pattern}
             </span>
             <span role="cell" aria-hidden="true">→</span>
@@ -177,7 +177,7 @@ export function InventorySection() {
       <div className="mt-6">
         <Link
           href="/inventory"
-          className="font-mono text-sm text-muted-foreground hover:text-foreground transition-colors duration-[34ms]"
+          className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[34ms]"
         >
           → /inventory
         </Link>

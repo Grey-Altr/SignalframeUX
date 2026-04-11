@@ -144,7 +144,7 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
           if (line.type === "blank") return <br key={i} />;
           if (line.type === "comment")
             return (
-              <div key={i} className="text-muted-foreground">
+              <div key={i} style={{ color: "#999999" }}>
                 {line.text}
               </div>
             );

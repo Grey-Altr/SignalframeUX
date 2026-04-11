@@ -20,7 +20,7 @@ export function SharedCodeBlock({
       aria-label={label ? `Code: ${label}` : "Code example"}
     >
       {label && (
-        <span className="absolute top-1.5 right-2.5 text-[var(--text-xs)] text-muted-foreground uppercase tracking-[0.2em]" aria-hidden="true">
+        <span className="absolute top-1.5 right-2.5 text-[var(--text-xs)] uppercase tracking-[0.2em]" style={{ color: "#999999" }} aria-hidden="true">
           {label}
         </span>
       )}

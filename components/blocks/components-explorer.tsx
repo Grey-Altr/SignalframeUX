@@ -128,7 +128,12 @@ function PreviewTabs() {
 }
 
 function PreviewBadge({ color, text }: { color: string; text: string }) {
-  const needsDarkText = color === "var(--sf-green)" || color === "var(--sf-yellow)";
+  // Use dark text on light/bright backgrounds (green, yellow, primary/magenta).
+  // Magenta primary (#ff00a8) fails WCAG AA with white text (3.6:1) — dark text passes (5.8:1).
+  const needsDarkText =
+    color === "var(--sf-green)" ||
+    color === "var(--sf-yellow)" ||
+    color === "var(--color-primary)";
   return (
     <span
       className={`inline-block px-2.5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
@@ -564,7 +569,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
       captureFlipState();
       setActiveFilter(cat);
     },
-    [captureFlipState]
+    [captureFlipState, setActiveFilter]
   );
 
   const handleLayerFilter = useCallback(
@@ -837,7 +842,6 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             <div
               role="option"
               aria-selected={i === focusedIndex}
-              aria-expanded={openIndex === comp.index}
               key={comp.index}
               data-flip-id={comp.index}
               data-component-index={comp.index}
