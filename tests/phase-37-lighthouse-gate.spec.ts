@@ -26,6 +26,7 @@ test.describe("@phase37 MG-03 Lighthouse gate", () => {
   test(
     "MG-03: all Lighthouse categories score 100/100 on Next.js 16",
     async ({ request }) => {
+      test.setTimeout(TIMEOUT_MS + 10_000);
       // Guard: require production server to be reachable before burning Lighthouse time
       let serverReachable = false;
       try {
@@ -80,7 +81,6 @@ test.describe("@phase37 MG-03 Lighthouse gate", () => {
 
       // Primary assertion: runner exit code 0 means all categories passed
       expect(result.status).toBe(0);
-    },
-    { timeout: TIMEOUT_MS + 10_000 }
+    }
   );
 });
