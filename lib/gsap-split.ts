@@ -14,11 +14,7 @@ import { useGSAP } from "@gsap/react";
 
 import { registerSFEasings } from "./gsap-easings";
 
-// Guard against SSR module evaluation — GSAP plugins must only be registered
-// in a browser context.
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
-  registerSFEasings();
-}
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
+registerSFEasings();
 
 export { gsap, ScrollTrigger, SplitText, CustomEase, useGSAP };

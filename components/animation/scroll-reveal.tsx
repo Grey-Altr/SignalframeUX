@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap-split";
+import { gsap, useGSAP } from "@/lib/gsap-core";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
