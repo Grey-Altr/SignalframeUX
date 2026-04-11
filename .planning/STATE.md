@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 40-01-PLAN.md
-last_updated: "2026-04-11T03:53:49.069Z"
-last_activity: 2026-04-11
+stopped_at: Completed 40-02-PLAN.md
+last_updated: "2026-04-10T00:08:00.000Z"
+last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 18
@@ -27,10 +27,10 @@ progress:
 ## Current Position
 
 Phase: 40
-Plan: 01 complete
-Previous: 40-00 (phase setup) — CLOSED 2026-04-11
-Status: Executing Phase 40 (plan 01 of 4 complete)
-Last activity: 2026-04-11
+Plan: 02 complete
+Previous: 40-01 (JSDoc + API docs generation) — CLOSED 2026-04-11
+Status: Executing Phase 40 (plan 02 of 4 complete)
+Last activity: 2026-04-10
 
 ## Progress
 
@@ -199,6 +199,8 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 - [Phase 38-02]: color: transition removed from global * rule — axe-core samples mid-transition interpolated hex values when color transitions are active, causing spurious contrast failures on routes without bgShift
 - [Phase 40-api-documentation-dx]: Used execFileSync not execSync for Storybook build test per project security conventions
 - [Phase 40-api-documentation-dx]: Excluded 4 type-only exports (TextVariant, SignalframeUXConfig, UseSignalframeReturn, SFStatusDotStatus) from JSDoc and API_DOCS coverage checks
+- [Phase 40-02]: MIGRATION.md maps 60+ individual internal component paths (not just 3 top-level entry points) — gives external developers a complete lookup table for common imports
+- [Phase 40-02]: Animation entry point rationale documented in MIGRATION.md NOTES — transitive GSAP deps explain why SFAccordion/SFProgress/SFStepper/SFEmptyState are not in core
 
 ### Blockers
 
@@ -214,6 +216,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T03:53:49.065Z
-Stopped at: Completed 40-01-PLAN.md
-Resume with: Phase 40 plan 01 complete. Continue with Phase 40 plan 02 via /pde:execute-phase 40
+Last session: 2026-04-10T00:08:00.000Z
+Stopped at: Completed 40-02-PLAN.md
+Resume with: Phase 40 plan 02 complete. Continue with Phase 40 plan 03 via /pde:execute-phase 40
