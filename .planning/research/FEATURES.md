@@ -1,287 +1,335 @@
-# Feature Research
+# Feature Research — v1.7 Aesthetic Effects and Token Bridge
 
-**Domain:** Awwwards SOTD-level design system showcase site redesign
-**Milestone:** v1.5 Redesign — "Designed Artifact"
-**Researched:** 2026-04-07
-**Confidence:** HIGH (prior SYNTH corpus from Jan–Mar 2026 SOTD scrape + live Awwwards pattern analysis)
-
----
-
-## Context: What Already Exists (v1.4 Baseline)
-
-SignalframeUX v1.4 shipped:
-- 49 SF components, ComponentsExplorer with 6 categories + filter
-- Interactive component detail views: VARIANTS / PROPS / CODE tabs
-- GLSL procedural hero shader, SignalMesh generative scene, TokenViz canvas visualization
-- SignalMotion scroll-driven entrance animations on 4 homepage sections
-- Code highlighting via shiki RSC with OKLCH custom theme
-- Session persistence, scroll restoration, page transitions
-
-**v1.5 goal:** Transform from a design system docs site into a designed artifact — an SOTD-level statement where the site IS the system demonstration.
+**Domain:** Design system showcase site — Awwwards SOTD-level aesthetic effects and library consumer DX
+**Milestone:** v1.7 Tightening, Polish, and Aesthetic Push
+**Researched:** 2026-04-11
+**Confidence:** HIGH (existing codebase read directly; substrate effects verified against codrops/MDN; token patterns verified against shadcn/ui docs and Radix Themes source)
 
 ---
 
-## What SOTD Winners in This Corridor Actually Do
+## Context: What v1.7 Is Adding to an Already-Shipped System
 
-Evidence from Jan–Mar 2026 Awwwards SOTD corpus (60+ winners, SYNTH-awwwards-patterns.md):
+SignalframeUX v1.6 shipped as a distributed library. The existing substrate layer includes:
 
-**Above the fold — non-negotiable in every 2026 SOTD winner:**
-- Full `100vh` composition. Nothing previews below fold on load.
-- One dominant typographic element at 80–200px organizing the first screen.
-- Motion begins within 500ms of load completion — no exceptions.
-- Single-color identity commitment: accent on first screen = accent on every screen.
+- VHS overlay with 6 CSS layers (scan lines, noise, glitch, chromatic aberration) via `components/animation/vhs-overlay.tsx`
+- Grain at `--sf-grain-opacity: 0.03` via SVG feTurbulence
+- Idle state escalation: 8s timeout triggers grain drift + scan line emphasis
+- `--signal-intensity: 0.5` CSS custom property as a SIGNAL-layer runtime knob
+- `--sf-vhs-crt-opacity: 0.2` and `--sf-vhs-noise-opacity: 0.015` as substrate tuning variables
+- WebGL shaders: GLSLHero, GLSLSignal, ProofShader, SignalMesh
+- `createSignalframeUX()` provider factory with `motionPreference` and `defaultTheme` config
+- Library build pipeline: ESM + CJS, `dist/`, no bundled GSAP or Three.js
 
-**SOTD vs Honorable Mention separator (verified against jury criteria):**
-Awwwards weights: Design 40%, Usability 30%, Creativity 20%, Content 10%.
-Design system sites (Design System Yellow, Tangerina) consistently land HM. SOTD requires:
-1. One signature interaction that makes scrolling stop — not 20 effects, one unforgettable one.
-2. Interactive brutalism outperforms static brutalism — cursor interactions or click-triggered state changes.
-3. Typography-as-image: sites where type IS the visual score higher than layout-brutalism-only.
-4. 60fps through all scroll interactions — Technical score caps the total score if jank appears.
-5. Conceptual clarity visible to a 90-second jury: the site demonstrates a concept, not just components.
-
-**What design system sites specifically miss for SOTD:**
-Both HM-level design system sites (Extraset, Tangerina, Design System Yellow) use CSS-first reveal patterns, generic clamp() typography, and dropdown filter navigation. None use scroll-as-storytelling, pinned manifesto sections, or typographic specimens that fill the viewport. SFUX has zero direct competitors in the SOTD corridor with DU/TDR aesthetic applied to a design system.
+v1.7 focus areas: **substrate-intensity effects** (deepening the grain/scan/halftone vocabulary), **token bridge** (letting design system consumers override SF tokens without fighting the cascade), and **polish** (idle state escalation as a design pattern, effect compositing without visual chaos).
 
 ---
 
-## Feature Landscape
+## Research Findings by Domain
 
-### Table Stakes (Jury Evaluates These — Missing Tanks the Score)
+### 1. Substrate Effects: How Award-Winning Sites Implement Them
 
-Features an SOTD-competitive design system site must demonstrate. Missing these = Honorable Mention ceiling.
+**What Awwwards SOTD winners actually do (verified from Jan–Mar 2026 corpus and codrops case studies):**
+
+Award-winning sites in the DU/TDR/industrial corridor use substrate effects as signal of craft, not as decoration. The pattern is consistent:
+
+- **Grain is almost always SVG `feTurbulence`**, not a repeating PNG texture. Reasons: zero network cost, scales infinitely, animated by changing `baseFrequency` or `seed` attribute over time. `numOctaves` above 3-4 yields diminishing visual returns at significant CPU cost. Most SOTD sites use `numOctaves: 2-3` for performance.
+- **Scan lines are CSS-only** (`repeating-linear-gradient` or pseudo-element with `background-size`). No JavaScript involved in the base effect. GSAP drives the *traveling* bright-scanline element, not the base CRT grid. This is exactly what the existing `vhs-crt` + `vhs-scanline` split already does — the existing architecture matches the best-practice pattern.
+- **Chromatic aberration** is achieved via CSS: `text-shadow` with offset R/B channels, or `filter: url(#aberration-filter)` with an SVG displacement map. The viewport-edge-only version (existing `vhs-aberration--top/bottom`) is the correct SOTD register — full-frame aberration reads as broken, not intentional.
+- **Halftone and moiré** are CSS-only in 2025-2026: `radial-gradient` dot pattern + `background-blend-mode: multiply` + `filter: contrast(N)`. Pure CSS, no JavaScript, no WebGL. Performant because it's a single composited layer. Firefox has known rendering differences from Chromium/WebKit. The `--sf-halftone-dot` token already exists in globals.css — the system anticipated this effect.
+- **VFX-JS** (Codrops Jan 2026) provides WebGL-powered per-element effects but has documented scrolling performance issues and requires wrapping DOM elements as WebGL textures. Not a fit for SF//UX: it adds a runtime dependency and fights with the existing SignalCanvas singleton architecture.
+
+**Grain opacity calibration (verified across SOTD corpus):**
+
+| Opacity Range | Effect | SOTD Appropriateness |
+|--------------|--------|----------------------|
+| 0.01–0.03 | Barely-there texture, passes as intentional | Ideal — DU heritage |
+| 0.03–0.06 | Visible grain, reads as deliberate | Acceptable for activated states |
+| 0.07–0.12 | Reads as "texture," not "intent" | Anti-pattern in industrial corridor |
+| 0.12+ | Decorative distraction | Disqualifying |
+
+The existing `--sf-grain-opacity: 0.03` is at the correct baseline. The `--sf-vhs-noise-opacity: 0.015` burst range (0.015–0.035) is also correct. The v1.7 opportunity is not to increase opacity but to make the effect **parametric** via `--signal-intensity` — grain and scan intensity can scale with the SIGNAL state.
+
+---
+
+### 2. Token Bridge: How Design System Consumers Override Tokens
+
+**What the three major references do:**
+
+**shadcn/ui pattern (HIGH confidence — official docs read):**
+- All tokens live at `:root` and `.dark` — flat CSS custom property namespace, no `@layer tokens`.
+- Consumer override: redefine the same variable under a more specific selector. Because CSS specificity, `:root .my-app { --primary: oklch(...); }` overrides `:root { --primary: ... }`.
+- Tailwind v4 consumers use `@theme inline` to re-expose overridden variables to the Tailwind build.
+- **No prefix isolation**. `--primary` in shadcn collides with any `--primary` in the consumer's CSS. The convention is "you adopt our variable names." Consumer owns the namespace entirely since shadcn ships source code, not a library.
+
+**Radix Themes pattern (MEDIUM confidence — official docs read):**
+- Tokens are namespaced by color scale: `--red-1` through `--red-12`, `--accent-1` through `--accent-12`. Semantic mapping happens at component render via `data-accent-color` attribute.
+- Consumer override: load your CSS **after** Radix Themes CSS. Override `--accent-9` (the primary interactive color step) within a scoped selector.
+- Radix exports granular stylesheets: `tokens.css`, `components.css`, `utilities.css` — consumers who need to control cascade order import these individually and interleave their own CSS between them.
+- **Documented limitation**: "changes to the token system are treated as breaking." Token overrides that worked in 3.x may not work in 4.x. This is the cost of deeply semantic token naming.
+
+**Microsoft FAST / enterprise pattern (MEDIUM confidence — GitHub issue):**
+- FAST explicitly added a mechanism to **prefix CSS custom properties** after demand from teams worried about collision. The pattern: `--{prefix}-{token-name}`.
+- This is the most robust isolation pattern for distributed libraries where consumers have their own token systems.
+
+**What this means for SF//UX's token bridge:**
+
+SF//UX currently uses:
+- `--color-*` (Tailwind v4 `@theme` tokens — these are Tailwind's namespace)
+- `--sf-*` (SF-namespaced extension variables — grain, VHS, shadows, surfaces)
+- `--signal-*` (SIGNAL runtime variables — intensity, speed, accent)
+
+The `--sf-*` namespace is already the right pattern. The v1.7 token bridge opportunity is: expose a documented **consumer override surface** that lets an application using `@signalframe/sf` as a library dependency remap `--sf-*` tokens without editing the library's CSS. The mechanism is already there via CSS cascade — the missing piece is documentation and a defined override entry point.
+
+**The three-tier token bridge pattern (synthesized from research):**
+
+```
+Tier 1 (Library-internal, --sf-* prefix):
+  Defined in dist/tokens.css. Not intended to be overridden by consumers.
+  Example: --sf-grain-opacity, --sf-vhs-crt-opacity
+
+Tier 2 (Consumer override surface, no prefix):
+  Defined in dist/tokens.css with a fallback to --sf-* internal defaults.
+  Consumers redefine these at :root or a scoped selector.
+  Example: --sfx-grain, --sfx-scan-speed (new v1.7 tier)
+
+Tier 3 (Runtime, --signal-* prefix):
+  Set at runtime by SignalOverlay or by consumer code.
+  Already implemented: --signal-intensity, --signal-speed, --signal-accent
+```
+
+---
+
+### 3. Halftone and Moiré as Web Effects
+
+**Table stakes vs differentiator:**
+
+| Status | Determination | Evidence |
+|--------|--------------|---------|
+| Table stakes | No | Halftone is not expected by default on any design system site. It is an aesthetic choice, not a feature users demand. |
+| Differentiator | Yes, if tied to concept | Sites that win SOTD with halftone use it as a legible print-heritage reference — not as background texture. |
+| Anti-feature | If overused | Full-page halftone overlay reads as decorative. Spot use on specific elements (token swatches as Pantone-dot references, component catalog entries as printed catalog items) is conceptually justified. |
+
+**Implementation options:**
+
+| Technique | Performance | Browser Support | Notes |
+|-----------|------------|-----------------|-------|
+| CSS `radial-gradient` + `contrast()` filter | High — single composited layer | Chrome/Safari: accurate. Firefox: slight differences. | No JS. 3 declarations. The `--sf-halftone-dot` token already exists. |
+| SVG `feTurbulence` + `feColorMatrix` | High — GPU path | All modern browsers | More control over dot shape, angle rotation. Required for CMYK simulation. |
+| WebGL GLSL shader | Highest fidelity | All modern browsers with WebGL | Overkill for overlay use. Justified for full-viewport specimen sections only. |
+| Canvas 2D | Medium — CPU path | All browsers | Avoid unless SVG path not available. |
+
+**Recommendation:** CSS `radial-gradient` technique for any ambient halftone overlay. SVG filter technique if rotation/angle control is needed (e.g., rotated print-angle effect for token specimen sections). No new WebGL scenes for halftone.
+
+---
+
+### 4. Idle State Escalation as a Design Pattern
+
+**Who does it well (verified examples):**
+
+- **Linear** (productivity tool, not SOTD-targeted): cursor becomes a crosshair after 30s of no interaction. Very restrained.
+- **Cargo Collective** sites: grain opacity increases slowly from base to ~0.06 after 15-20s. Barely perceptible — "the site breathes."
+- **Detroit Underground** (the design reference): tape degradation metaphor — idle = the machine winding down, exhibiting entropy. Conceptually grounded.
+- **Game UI patterns**: idle state in games is well-studied — the "attract mode" pattern. The system demonstrates its capabilities when no one is driving it.
+
+**The pattern, extracted:**
+
+Idle escalation works when:
+1. The escalation is **perceptible but not alarming** — grain from 0.03 to 0.05, not 0.03 to 0.20.
+2. The escalation is **reversible instantly** on any user interaction — not a takeover.
+3. The escalation is **thematically motivated** — it means something within the system's conceptual frame (SIGNAL layer intensifies when there's no input; the system is generating without direction).
+4. **Reduced-motion users get zero escalation** — this is non-negotiable.
+
+**What SF//UX currently has:** Binary escalation at 8s (grain drift + scan lines). This is functional but mechanical. The v1.7 upgrade is: **graduated escalation** — multiple thresholds (8s, 20s, 45s) with different effect intensities, scaling `--signal-intensity` upward before resetting on interaction.
+
+---
+
+### 5. Effect Compositing and Stacking Without Visual Chaos
+
+**The compositing model for fixed-position overlays (verified — webperf.tips and browser compositing docs):**
+
+GPU layer promotion is triggered by: `will-change: transform`, `transform: translate(0)`, `position: fixed` with `z-index`, opacity animations, CSS filters. Multiple independently-promoted layers each consume GPU memory and compositor bandwidth.
+
+**Key finding:** The browser documentation explicitly recommends against speculative layer promotion. "Optimize for layers when they become problematic." The existing VHS overlay uses `pointer-events: none` + high `z-index` — this is correct. The risk in v1.7 is adding substrate effects that each independently trigger layer promotion.
+
+**Stacking order principle (verified from MDN stacking context docs):**
+
+```
+z-index hierarchy for SF//UX effect layers (existing + proposed v1.7):
+  --z-vhs: 99999      VHS overlay wrapper (contains all substrate layers)
+  --z-cursor: 500     Canvas cursor
+  --z-scroll-top: 200 Scroll-to-top
+  --z-overlay: 100    SignalOverlay panel
+  --z-nav: 9999       Navigation
+```
+
+All substrate layers should live **within a single parent wrapper** — one promoted compositor layer for the entire substrate system, not one per effect. The existing VHS overlay already does this correctly (all 6 div layers inside `.vhs-overlay`). v1.7 additions should extend this wrapper, not create sibling wrappers.
+
+**The "one wrapper, many layers" rule:**
+
+Adding a halftone layer as `<div class="vhs-halftone" />` inside the existing `.vhs-overlay` wrapper costs nothing in terms of additional GPU layer promotion — the parent is already promoted. Adding it as a new sibling fixed-position element creates a new stacking context and costs additional GPU memory.
+
+**mix-blend-mode on substrate layers:**
+
+`screen` mode: grain and noise disappear on white backgrounds, intensify on dark. Correct for a predominantly dark-surface design system.
+`multiply` mode: halftone dots visible on light, disappear on dark. Correct for print-heritage halftone effects on light specimen sections.
+`overlay` mode: symmetric — works on both dark and light. Best for chromatic aberration.
+
+Chromium and WebKit diverge in `mix-blend-mode` rendering when multiple blended layers stack. The existing approach (aberration as CSS pseudo-elements with radial gradients, not blended layers) avoids this cross-browser inconsistency correctly.
+
+---
+
+## Feature Landscape for v1.7
+
+### Table Stakes
+
+Features consumers of the distributed library expect. Missing these after v1.6's library launch = DX friction.
 
 | Feature | Why Expected | Complexity | Depends On |
 |---------|--------------|------------|------------|
-| Full `100vh` above-the-fold composition | Every 2026 SOTD winner — mandatory entry criterion. First screen must be compositionally complete. | LOW | Existing hero layout; needs locking to 100vh with no scroll-preview below |
-| Entry motion within 500ms | 0-10s jury evaluation gate. Static above-fold = immediate Creativity cap. | LOW | Existing GLSL hero shader already animates; ensure it fires before scroll |
-| Single-color identity across all sections | Accent color drift between sections signals design system immaturity — disqualifying signal | LOW | Token system already constrains this; audit `--color-accent` consistency across sections |
-| Staggered grid entry on every content grid | `y:30, opacity:0, stagger:0.1` is the documented minimum for every 2026 SOTD with grid content | LOW | ScrollTrigger batch already partially implemented; extend to all grid contexts |
-| Considered hover state on every interactive element | Absent hover states = "craft failure" in jury notes from SYNTH research. Every element. | MEDIUM | Asymmetric hover (100ms in / 400ms out) — already specced in SYNTH-interaction-feedback |
-| Zero CLS on scroll entry | Technical score hard cap — layout shift during scroll = score ceiling drops | LOW | GSAP animations must use transforms only; no layout-affecting properties during scroll |
-| Mobile as parallel design discipline | SOTD contenders treat mobile intentionally — touch interactions replace hover states | MEDIUM | Existing responsive layout; needs touch-specific interaction design |
+| Documented consumer token override surface | v1.6 shipped a library. Consumers need to know which tokens they can override and how. Currently undocumented. | LOW — documentation + 1 CSS file | `--sf-*` namespace already exists; needs `dist/tokens.css` override surface defined |
+| `--signal-intensity` wired to substrate layers | The custom property exists but VHS overlay does not read it. Grain and scan opacity should scale with `--signal-intensity`. Currently the overlay and the SIGNAL system are decoupled. | LOW — CSS `calc()` binding | Existing `--sf-grain-opacity`, `--sf-vhs-crt-opacity`, `--sf-vhs-noise-opacity` |
+| `prefers-reduced-motion` on idle escalation | The 8s idle escalation has no reduced-motion guard. It fires via GSAP but uses a manual `window.matchMedia` check — which is correct but only checked once at mount, not at escalation time. | LOW — add guard to escalation trigger | Existing idle timeout logic |
+| `pointer: coarse` skip on VHS overlay | Already implemented in `vhs-overlay.tsx` line 28. Confirm this is still correct and document it as the mobile behavior contract. | LOW — verify only | Existing check at useEffect entry |
 
-### Differentiators (SOTD Territory — These Push Past HM)
+### Differentiators
 
-Features that distinguish SFUX from design system HM-level competitors and earn Creativity points.
+Features that deepen the SIGNAL/FRAME concept and give SF//UX aesthetic separation from generic design systems.
 
 | Feature | Value Proposition | Complexity | Depends On |
 |---------|-------------------|------------|------------|
-| Scroll-driven typographic manifesto section (200–300vh) | No design system site on Awwwards has used scroll-as-manifesto. The FRAME+SIGNAL concept communicated through the act of scrolling, not text to be read. Locomotion-built SOTDs (Aupale Vodka, Dulcedo) proved wipe+pin+scroll-reveal wins SOTD. | HIGH | GSAP ScrollTrigger `pin:true` + SplitText; Lenis integration; needs dedicated section |
-| Interactive FRAME/SIGNAL layer separation demo | Jury can see the architectural concept — FRAME structure remains as SIGNAL is toggled off. Makes conceptual claim legible in 90 seconds. Direct SOTD creativity argument: "one singular authorship detail." | HIGH | Existing `data-anim` + SIGNAL overlay components; needs dedicated interactive section |
-| Coded nomenclature catalog (SF//BTN-001 format) | DU catalog language applied to component library. `detund™ informatics` translated to web UI. No Awwwards SOTD has used catalog/release-code visual grammar for a design system. Directly references DU R01–R10 release structure. | MEDIUM | Existing registry metadata (name, version, layer, pattern); needs new catalog surface |
-| Specimen-style token visualization (full-viewport) | Token page as type specimen. Color swatches as halftone-printed Pantone references. Spacing scale as architectural section drawing. No design system site presents tokens as designed artifacts. | MEDIUM | TokenViz canvas already exists; needs redesign as specimen sections, not dashboard widgets |
-| One signature cursor detail | Magenta crosshair on interactive elements (not blob, not trail). The Lookback (Mar 27, 2026 SOTD) earned its Creativity score with this exact pattern. Must be the single unmistakable authorship moment. | LOW | `quickTo()` cursor tracker already specced in SYNTH-interaction-feedback; implement once |
-| Hard-cut section color transitions | Background wipes black→white→black on scroll trigger. ON Energy (Mar 9) and Springs (Mar 8) both won SOTD with scroll-driven color transitions. SFUX version must be sharper than gradient blends — mechanical cut. | MEDIUM | `data-bg-shift` attribute already exists; needs page-level orchestration across v1.5 sections |
-| ScrambleText on route entry (completed) | Darknode and Shift 5 both won SOTD with this pattern in the industrial corridor. Character glitch on every route entry — the site "wakes up." Already partially implemented; needs completion. | LOW | GSAP ScrambleText plugin; route change detection |
-| FRAME-layer-only fallback demonstrably functional | SOTD jury argument: the structure layer works independently — SIGNAL is additive. Show this explicitly. Reduces-motion compliance demonstrates system maturity. | MEDIUM | `prefers-reduced-motion` CSS already specced; needs explicit demo surface |
+| Graduated idle escalation (3-tier: 8s / 20s / 45s) | Binary escalation is mechanical. Graduated thresholds (grain drift → scan emphasis → glitch burst → auto-reset at 60s) make the idle state feel like a living system, not a timer. Conceptually: SIGNAL intensifying without direction. | MEDIUM | Existing 8s idle logic; needs refactor to `useIdleEscalation(thresholds[])` hook |
+| `--signal-intensity` driving all substrate opacity | One knob controls the entire substrate stack: grain, scan lines, noise, chromatic aberration edge width. `calc(var(--sf-grain-opacity) * var(--signal-intensity) * 2)`. Exposes the SIGNAL/FRAME model through a CSS API. | LOW | Existing vars + CSS `calc()`. No JS changes. |
+| Halftone layer (CSS-only) for token specimen sections | Token swatches rendered over a halftone dot pattern = print-heritage Pantone reference. Not an ambient overlay — scoped to specimen sections via `.sf-specimen &`. Conceptually: design tokens as printed artifacts. `--sf-halftone-dot` already exists in globals.css. | LOW-MEDIUM | `--sf-halftone-dot` token; CSS radial-gradient technique; no WebGL |
+| Token bridge: `--sfx-*` consumer override tier | Consumers set `--sfx-grain: 0.02; --sfx-scan-speed: 0.5;` in their application CSS. Library reads `var(--sfx-grain, var(--sf-grain-opacity))`. Application values win. Library defaults as fallback. Zero specificity wars. Documented in MIGRATION.md. | LOW | CSS custom property fallback chain; `dist/tokens.css` needs new tier |
+| Substrate intensity as a composable CSS API | Expose `data-signal-intensity="low|medium|high"` attribute that sets `--signal-intensity` to preset values. Allows section-scoped substrate intensity without JavaScript. FRAME-layer-only sections can carry `data-signal-intensity="0"`. | LOW | `data-signal-intensity` attribute + CSS `[data-signal-intensity="low"] { --signal-intensity: 0.2; }` |
 
-### Anti-Features (Common Requests That Hurt the Score)
+### Anti-Features
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Aurora / gradient mesh backgrounds | Trending in 2025 | Zero 2026 SOTD winners in the industrial corridor use them. Signals trend-chasing; immediate Creativity score cap. Jury-verified from SYNTH corpus. | True black `oklch(0% 0 0)` dominant field — the DU R08–R10 constraint |
-| Glassmorphism on any surface | Modern aesthetic signal | Contrast failure (Usability score) + not present in any Jan–Mar 2026 SOTD winner. Disqualifying in industrial aesthetic. | Sharp-cornered bordered containers with 1px stroke — opacity on bg only if needed |
-| 20+ simultaneous SIGNAL effects | "Impressive" accumulation | "Many effects that don't cohere" loses Creativity points in every documented SOTD analysis. The Creativity dimension rewards constraint, not accumulation. | One signature detail + restrained system-wide motion vocabulary |
-| Parallax depth > 20px | Depth effect | "Spatial noise, not spatial intelligence" — SYNTH anti-patterns. Vestibular risk on mobile. Technical jank. | 0.95x scroll speed max (barely perceptible) establishes depth without disorientation |
-| Particle systems / WebGL particles | Technical showcase | WebGL without conceptual purpose loses Creativity points. Existing GLSL shader and SignalMesh are justified by FRAME+SIGNAL concept; standalone particles are not. | Existing GLSL hero shader stays; no new particle systems |
-| Rounded corners on any element | Common softening request | Contradicts core CLAUDE.md constraint + disqualifies from industrial SOTD corridor. Darknode/Shift 5/MOB LINKS: zero radius in all Jan–Mar 2026 industrial corridor winners. | Zero border-radius everywhere — zero exceptions |
-| Multiple accent colors per section | Color variety | Single-color identity across all sections is a documented SOTD requirement. Color drift reads as "design system immaturity." | One accent (magenta) for one semantic purpose: interactive state + data highlight |
-| Horizontal scroll navigation | Novel interaction | Disrupts linear narrative for a site presenting a system concept. Reduces usability score for users on keyboards/assistive tech. | Vertical scroll with pinned sections achieves equivalent pacing without accessibility cost |
-| Storybook integration for live demos | Industry standard | Introduces separate build pipeline with visual identity that fights DU/TDR aesthetic. Documented in v1.4 anti-features with full rationale. | Existing custom explorer with inline renders — maintained from v1.4 |
-| MDX prose per section | Narrative documentation | MDX authoring burden + pipeline dependency. The site should demonstrate, not document. | Section text as SIGNAL-layer overlays, read as system output not marketing copy |
-| Idle grain / noise texture | DU aesthetic reference | Noise/grain requires analog-media rationale and must be 3–5% opacity max in SOTD winners. Higher = texture that reads as texture, not intent. | Scanline at ≤3% opacity max — DU VHS heritage, not decorative noise |
+Features that would hurt the aesthetic, performance, or conceptual clarity of v1.7.
+
+| Feature | Why Requested | Why It's Wrong | What to Do Instead |
+|---------|---------------|---------------|-------------------|
+| Increasing `--sf-grain-opacity` above 0.05 for "more texture" | "The grain feels subtle, can we push it?" | At 0.06+ the grain reads as texture rather than intent. SOTD jury notes "decorative noise" as a negative signal. The existing 0.03 baseline is calibrated, not timid. | Make the effect **parametric** — let `--signal-intensity` scale it to 0.05 in high-intensity states. Baseline stays 0.03. |
+| Animated grain (changing `baseFrequency` on rAF) | Creates "film grain" feel, trendy | SVG `feTurbulence` repaints the entire filter region on every `seed` change. At 60fps, this is a consistent 16ms paint operation on the main thread — visible on mid-range devices. A 4ms budget violation. | Animate grain **opacity** (GPU-composited) not grain **pattern** (main thread paint). Existing approach is already correct. |
+| Full-page moiré overlay | "Adds depth" | Moiré artifacts from `devicePixelRatio` non-integer scaling cause unintended visible patterns on Windows with UI scaling. Looks broken on ~30% of Windows displays. | Halftone dots at large enough scale (8px+) are below the moiré threshold on all pixel densities. Use halftone, not moiré. |
+| VFX-JS for per-element WebGL effects | Library provides automatic WebGL wrapping | Documented scrolling performance issues. Requires wrapping DOM elements as WebGL textures — fights SignalCanvas singleton architecture. New runtime dependency. | Existing GSAP + CSS techniques cover every substrate effect the site needs. |
+| Multiple independent fixed-position overlay elements | "Each effect should be independently z-indexable" | Each independently-promoted compositor layer costs GPU memory. More importantly: independent wrappers allow z-ordering conflicts between effects that are supposed to be a unified substrate. | All substrate layers inside a single `.vhs-overlay` (or renamed `.sf-substrate`) wrapper. Already the existing model. |
+| Substrate effects on `pointer: coarse` devices | "Mobile should have the full experience" | VHS overlay already skips on `pointer: coarse`. Scan lines and grain overlays on mobile degrade battery and scroll performance on mid-range Android. The SIGNAL layer on mobile is the WebGL scenes — substrate is desktop-only intentionally. | Document this as a feature: SIGNAL layer adapts to device capability. Mobile gets WebGL; desktop gets substrate. |
+| Audio feedback tied to substrate escalation | "The grain should have a sound" | Existing audio layer is deferred to v2+. No consumer demand established. Web Audio API requires user gesture activation on iOS — cannot trigger on idle timeout. | If audio comes in v2+, it enters through the existing SIGNAL runtime (--signal-intensity), not as a substrate-specific hook. |
 
 ---
 
 ## Feature Dependencies
 
 ```
-Scroll-driven manifesto section (200–300vh)
-    └──requires──> Lenis + ScrollTrigger synchronization (already implemented)
-    └──requires──> GSAP SplitText with mask:chars (already available)
-    └──requires──> pin:true section scaffold (new: needs dedicated section component)
-    └──requires──> FRAME+SIGNAL conceptual content (copywriting — not engineering)
+--signal-intensity wired to substrate layers
+    └──requires──> CSS calc() bindings in vhs-overlay.css / globals.css
+    └──enables──> Graduated idle escalation (provides the knob to turn)
+    └──enables──> data-signal-intensity attribute API (section-scoped presets)
+    └──enables──> Token bridge --sfx-* tier (consumers can set --signal-intensity)
 
-Interactive FRAME/SIGNAL layer demo
-    └──requires──> Existing data-anim + SIGNAL overlay architecture
-    └──requires──> Toggle mechanism (button or scroll-driven) to disable SIGNAL layer
-    └──requires──> Visual before/after that communicates the concept without prose
-    └──enhances──> Scroll-driven manifesto (conceptual continuity between sections)
+Graduated idle escalation (3-tier)
+    └──requires──> --signal-intensity wired (otherwise escalation has no effect to escalate)
+    └──requires──> Refactor 8s binary logic to useIdleEscalation(thresholds[]) hook
+    └──requires──> prefers-reduced-motion guard at each threshold, not just at mount
+    └──conflicts──> binary 8s escalation (replace, don't supplement)
 
-Coded nomenclature catalog (SF//BTN-001)
-    └──requires──> Existing registry metadata (name, version, meta.layer, meta.pattern)
-    └──requires──> New catalog surface component (replaces or extends ComponentsExplorer)
-    └──requires──> Release code format decision: SF//[CAT]-[NNN] (new data, low effort)
+Halftone layer (CSS-only)
+    └──requires──> Existing --sf-halftone-dot token (already in globals.css)
+    └──requires──> CSS radial-gradient dot pattern implementation
+    └──requires──> mix-blend-mode: multiply for light specimen sections
+    └──optional──> Single .vhs-halftone div inside existing .vhs-overlay wrapper (add; no new wrapper)
 
-Specimen-style token visualization
-    └──requires──> Existing TokenViz canvas (needs redesign, not rebuild)
-    └──requires──> Section scaffold at full-viewport dimensions
-    └──conflicts──> Dashboard/widget-style token page (replace, don't supplement)
+Token bridge --sfx-* consumer override tier
+    └──requires──> dist/tokens.css defines --sfx-* variables with --sf-* fallbacks
+    └──requires──> MIGRATION.md documents which --sfx-* variables are the override surface
+    └──enhances──> createSignalframeUX() config (could accept a tokens config object)
+    └──conflicts──> No conflict — purely additive CSS layer
 
-Signature cursor detail (magenta crosshair)
-    └──requires──> quickTo() implementation (specced, not yet built)
-    └──enhances──> Every interactive element on the site
-    └──conflicts──> Blob cursors, trail cursors (explicitly excluded)
-
-Hard-cut section color transitions
-    └──requires──> data-bg-shift attribute (already exists in system)
-    └──requires──> Page-level section orchestration (needs new logic)
-    └──conflicts──> Gradient transitions between sections (replace existing smooth blends)
-
-ScrambleText route entry
-    └──requires──> GSAP ScrambleText plugin (registered in lib/gsap-plugins.ts)
-    └──requires──> Route change detection (Next.js router events)
-    └──partially-exists──> Needs completion from partial v1.3 implementation
-
-100vh above-fold composition
-    └──requires──> Existing GLSL hero shader (no changes needed)
-    └──requires──> Layout audit: confirm no content previews below fold
-    └──conflicts──> "Teaser" design patterns showing next-section content
+data-signal-intensity attribute API
+    └──requires──> --signal-intensity wired (otherwise attribute sets a var nothing reads)
+    └──requires──> CSS rules in globals.css: [data-signal-intensity="low"] { --signal-intensity: 0.2; }
+    └──enables──> FRAME-only sections to explicitly zero out substrate
 ```
 
-### Dependency Notes
+---
 
-- **Manifesto section requires copywriting before engineering**: The section's impact depends entirely on the conceptual clarity of FRAME+SIGNAL text content. Engineering the scroll mechanics without finalized copy is backwards — write content first, then build the scroll container around it.
-- **Catalog surface is the largest new component**: SF//BTN-001 format needs both a data decision (release code format) and a new rendering surface. ComponentsExplorer grid is not the right visual register for a catalog — it needs its own section with DU R01–R10 visual grammar.
-- **Cursor signature must ship before other SIGNAL details**: It enhances the entire site globally. Implement once as a layout-level component, not per-section.
-- **TokenViz redesign replaces, doesn't supplement**: The existing dashboard-widget approach conflicts with the specimen-style goal. Decision: replace the TokenViz section entirely in v1.5, not add to it.
+## MVP Recommendation for v1.7
+
+**Ship first (tight dependencies, high value-to-effort ratio):**
+
+1. Wire `--signal-intensity` into substrate opacity via CSS `calc()`. Zero JS changes. One CSS change. Unlocks everything else.
+2. Define `data-signal-intensity` attribute presets in globals.css. Zero JS. Five CSS rules.
+3. Define `--sfx-*` consumer override tier in `dist/tokens.css`. Pure CSS. Documents the consumer surface.
+4. Refactor idle escalation to `useIdleEscalation` with 3 thresholds. Medium complexity. Requires `--signal-intensity` wired first.
+
+**Ship after validation:**
+
+5. Halftone CSS layer scoped to specimen sections. Validate visually before adding to substrate wrapper.
+6. Document override surface in MIGRATION.md. Follows after `--sfx-*` tier is finalized.
+
+**Defer:**
+
+- Any animated grain pattern change (rAF `baseFrequency` animation) — confirmed anti-pattern.
+- VFX-JS integration — confirmed anti-pattern.
+- Audio layer — unchanged from v1.6 deferral.
 
 ---
 
-## MVP Definition
+## Compositing Architecture Decision
 
-### Launch With (v1.5 Redesign)
+The existing `.vhs-overlay` wrapper containing all substrate layers is the correct architecture. v1.7 adds to it, does not create siblings.
 
-Minimum set that achieves "designed artifact" status and enters SOTD territory.
+Proposed layer order inside the wrapper (proposed v1.7 state):
 
-- [ ] **100vh above-fold lock** — audit and enforce: no content previews below the fold. GLSL hero shader fires entry motion within 500ms. Single dominant type element at 80–200px.
-- [ ] **Scroll-driven typographic manifesto section** — 200–300vh pinned section. FRAME+SIGNAL concept communicated through scroll. SplitText char reveal, pin:true, scrub:1. This is the single most differentiating feature vs. all HM-level design system sites.
-- [ ] **Signature cursor detail** — magenta crosshair on interactive elements. `quickTo()` implementation. Deployed globally at layout level. One detail, everywhere.
-- [ ] **Hard-cut section color transitions** — bg-shift orchestrated across all v1.5 sections. Black→white→black mechanical cuts on scroll. No gradient blends.
-- [ ] **ScrambleText route entry** — complete the partial v1.3 implementation. Every route change fires character glitch before content resolves.
-- [ ] **Coded nomenclature catalog section** — SF//BTN-001 format. New section with DU release-catalog visual grammar. Registry metadata (already exists) as the data source.
-- [ ] **Staggered grid entry on all content grids** — ScrollTrigger batch on ComponentsExplorer and any v1.5 grid sections. `y:30, opacity:0, stagger:0.1, once:true`.
-- [ ] **Hover state audit** — every interactive element has asymmetric hover. 100ms in / 400ms out. No exceptions. This is the 30–60s craft gate.
+```
+.sf-substrate (renamed from .vhs-overlay, same structure)
+  ├── .sf-crt          (CRT scanlines — CSS background, no animation)
+  ├── .sf-scanline     (bright traveling line — GSAP)
+  ├── .sf-scanline--slow (secondary drift — GSAP)
+  ├── .sf-noise        (grain opacity — GSAP flicker)
+  ├── .sf-burst        (rare static burst — GSAP delayedCall)
+  ├── .sf-glitch       (horizontal slice displacement — GSAP)
+  ├── .sf-halftone     [NEW v1.7] (CSS radial-gradient, multiply blend, specimen-scoped via CSS)
+  ├── .sf-aberration--top (chromatic edge, CSS)
+  └── .sf-aberration--bottom (chromatic edge, CSS)
+```
 
-### Add After Validation (v1.5.x)
-
-Features to add once the core redesign passes visual QA.
-
-- [ ] **Interactive FRAME/SIGNAL layer demo** — dedicated section showing SIGNAL-off → SIGNAL-on toggle. Trigger: manifesto section is complete and conceptual framing is established.
-- [ ] **Specimen-style token visualization** — full-viewport redesign of TokenViz. Trigger: catalog section is built, token visual language is established.
-- [ ] **FRAME-layer-only fallback demo** — `prefers-reduced-motion` explicitly demonstrated. Trigger: all SIGNAL effects finalized.
-
-### Future Consideration (v2+)
-
-- [ ] **Audio layer (Web Audio API synthesis)** — opt-in. Click tones, nav hover synthesis. Out of scope for v1.5; no consumer demand established yet. Specced in SYNTH-interaction-feedback if needed.
-- [ ] **Haptic layer (Vibration API)** — Android Chrome only. Silent fail on all other platforms. Defer until mobile experience is validated.
-- [ ] **Registry namespace strategy** (`@signalframe/` vs unnamespaced) — relevant when cdOS becomes active consumer.
+All layers: `pointer-events: none`, `position: fixed`, `inset: 0`, `z-index: var(--z-vhs)` on the wrapper. Individual layers at `z-index: auto` within the stacking context.
 
 ---
 
-## Feature Prioritization Matrix
+## Confidence Assessment
 
-| Feature | Jury Value | Implementation Cost | Priority |
-|---------|-----------|---------------------|----------|
-| 100vh above-fold lock | HIGH — mandatory SOTD gate | LOW | P1 |
-| Scroll-driven typographic manifesto | HIGH — zero competitors, SOTD Creativity argument | HIGH | P1 |
-| Signature cursor detail (magenta crosshair) | HIGH — documented SOTD "craft moment" | LOW | P1 |
-| Hard-cut section color transitions | HIGH — industrial corridor SOTD pattern | MEDIUM | P1 |
-| ScrambleText route entry (completion) | HIGH — Darknode/Shift 5 evidence | LOW | P1 |
-| Coded nomenclature catalog (SF//BTN-001) | HIGH — unique, no Awwwards precedent | MEDIUM | P1 |
-| Staggered grid entry (all grids) | MEDIUM — documented minimum | LOW | P1 |
-| Hover state audit (all elements) | MEDIUM — craft gate, not differentiator | LOW | P1 |
-| Interactive FRAME/SIGNAL layer demo | HIGH — conceptual SOTD argument | HIGH | P2 |
-| Specimen-style token visualization | MEDIUM — differentiator if executed at full-viewport | MEDIUM | P2 |
-| FRAME-layer fallback demo | MEDIUM — system maturity signal | MEDIUM | P2 |
-| Audio layer | LOW — no current consumer demand | MEDIUM | P3 |
-| Haptic layer | LOW — Android Chrome only | LOW | P3 |
-
-**Priority key:**
-- P1: Required for v1.5 launch — SOTD submission gate
-- P2: Add in v1.5.x — deepens the SOTD argument
-- P3: Future consideration — nice-to-have with no current evidence of jury value
-
----
-
-## Competitor Feature Analysis
-
-| Feature | Design System Yellow (HM) | Tangerina (HM) | Extraset Type Foundry (SOTD) | SFUX v1.5 Approach |
-|---------|--------------------------|----------------|------------------------------|---------------------|
-| Above-fold composition | CSS clamp typography, sticky header | Floating header, opacity transition | CSS Grid auto-fill, sticky sidebar | 100vh locked, GLSL shader, dominant type at 80–200px |
-| Scroll technique | Position sticky | Sticky header on scroll direction | Position sticky | Pinned manifesto section 200–300vh, scrub:1 |
-| Color system | Semantic color variables per section | Inter Tight, clamp scaling | Auto-fill grid | Single OKLCH accent, hard-cut transitions |
-| Typography approach | Fluid clamp() headings | Fluid clamp() headings | Fluid clamp() headings | DU visual grammar: ~200px headline + 12px uppercase label, mixed scale |
-| Component catalog | Grid thumbnails | Grid thumbnails | Swiper carousel, tab system | SF//BTN-001 coded nomenclature, release-catalog visual register |
-| Interaction model | Hover transitions, dropdown filters | Opacity transitions | Figure-rollover hover states | ScrambleText on entry, asymmetric hover, magenta crosshair cursor |
-| Conceptual frame | Generic documentation | Generic documentation | Font specimen | FRAME+SIGNAL concept demonstrated through scroll behavior |
-| SOTD status | Honorable Mention | Honorable Mention | SOTD | Target: SOTD |
-
----
-
-## Implementation Notes
-
-### Manifesto Section: Structure and Content First
-
-The scroll-driven manifesto section (P1, highest complexity) requires content before engineering. The implementation pattern is established:
-- `pin:true` container at 200–300vh
-- SplitText with `mask:'chars'` for clip-wrapper reveals
-- `scrub:1` for smooth trackpad response
-- `revealDelay:0.1` on ScrambleText for tension before payoff
-
-The question is not HOW — it is WHAT. The manifesto text must communicate FRAME+SIGNAL at the word/phrase level, timed to scroll position. Content should be authored as a sequence of scroll-timed reveals, not as continuous prose.
-
-Pattern from Locomotive SOTM case studies: each pinned phrase should stand alone as a complete thought visible at a single scroll position. Not a paragraph that scrolls past — a word or phrase that "arrives" and sits while the user reads it, then advances on the next scroll impulse.
-
-### Coded Nomenclature: Data First, Render Second
-
-The SF//BTN-001 format needs a concrete schema decision before the UI can be built:
-- `SF` prefix (system identifier)
-- `//` separator (DU release code visual grammar: `DU-R01`)
-- `[CAT]` category abbreviation (BTN, CRD, INP, LAY, DSP, NAV — from existing 6 categories)
-- `-` separator
-- `[NNN]` three-digit index within category (001, 002… in registry order)
-
-Data exists in `registry.json` and `lib/component-registry.ts`. The render surface needs a new catalog section component — the ComponentsExplorer grid does not have the right visual register for this.
-
-### Cursor Signature: One Decision, Site-Wide Effect
-
-The magenta crosshair cursor is the lowest-complexity, highest-impact P1 feature. `quickTo()` creates a reusable setter with built-in smoothing. Implement as:
-1. Layout-level component (not per-section)
-2. Crosshair SVG with magenta stroke, 1px line weight, ~24px total
-3. Magnetic pull ≤8px on interactive elements
-4. Disabled on touch devices (pointer:coarse media query)
-
-Reference: The Lookback (Mar 27, 2026 SOTD) earned its craft moment with this exact pattern. SYNTH corpus confirms: one cursor detail, done correctly, locks Creativity points.
-
-### Hard-Cut Color Transitions: Replace Gradient Blends
-
-Existing `data-bg-shift` attribute fires smooth background transitions. v1.5 requires mechanical cuts:
-- Gradient transition → immediate color switch at scroll trigger threshold
-- Implementation: `onEnter`/`onLeave` callbacks, not scrubbed values
-- Timing: 0ms transition-duration on the background-color property during scroll
-- Section sequence: dark → light → dark → light (alternating for contrast rhythm)
+| Area | Confidence | Basis |
+|------|------------|-------|
+| Substrate technique correctness | HIGH | Read existing vhs-overlay.tsx directly; cross-checked with Codrops feTurbulence article and webperf.tips compositing docs |
+| Grain opacity calibration | HIGH | Cross-referenced against SOTD corpus in SYNTH-awwwards-patterns.md; consistent with existing `--sf-grain-opacity: 0.03` value |
+| Halftone CSS technique | HIGH | Frontend Masters official blog confirmed: pure CSS, 3 declarations, no JS/WebGL required |
+| Token bridge patterns | MEDIUM-HIGH | shadcn/ui official docs read; Radix Themes official docs read; FAST GitHub issue for prefix pattern |
+| Idle escalation as design pattern | MEDIUM | No single authoritative source; synthesized from game UI research, Cargo Collective observations, DU design reference; conceptually grounded in SIGNAL/FRAME model |
+| Compositing performance model | HIGH | webperf.tips and MDN stacking context docs read directly; browser recommendation: don't speculatively promote |
 
 ---
 
 ## Sources
 
-- SignalframeUX SYNTH-awwwards-patterns.md — Jan–Mar 2026 SOTD corpus, 60+ winners analyzed (HIGH confidence: prior research, direct Awwwards scrape)
-- SignalframeUX SYNTH-design-references.md — DU/TDR visual language, Aristide Benoist, Locomotive, Warp Records (HIGH confidence: direct source scrape)
-- SignalframeUX SYNTH-interaction-feedback.md — micro-interaction specs, GSAP techniques, FRAME+SIGNAL interaction model (HIGH confidence: prior research)
-- [Awwwards Evaluation System](https://www.awwwards.com/about-evaluation/) — jury criteria weights: Design 40%, Usability 30%, Creativity 20%, Content 10% (HIGH confidence: official source)
-- [Utsubo Award-Winning Design Guide](https://www.utsubo.com/blog/award-winning-website-design-guide) — SOTD vs HM separator: one signature interaction, 60fps, mobile intentionality (MEDIUM confidence: verified against SYNTH corpus)
-- [Design System Yellow — Awwwards HM](https://www.awwwards.com/sites/design-system-yellow) — design system HM reference (MEDIUM confidence: Awwwards listing)
-- [Tangerina Design System — Awwwards HM](https://www.awwwards.com/sites/tangerina-design-system-1) — design system HM reference (MEDIUM confidence: Awwwards listing)
-- [Extraset Type Foundry — Awwwards SOTD](https://www.awwwards.com/sites/extraset-type-foundry) — type foundry SOTD pattern reference (MEDIUM confidence: CSS architecture analysis)
-- [Power Type Foundry — Awwwards SOTD](https://www.awwwards.com/sites/power-type-foundry-1) — typography SOTD pattern reference (MEDIUM confidence: CSS architecture analysis)
-- [Joffrey Spitzer Portfolio — Codrops 2026](https://tympanus.net/codrops/2026/02/18/joffrey-spitzer-portfolio-a-minimalist-astro-gsap-build-with-reveals-flip-transitions-and-subtle-motion/) — SplitText reveal patterns, Flip layout transitions (HIGH confidence: direct source)
-- [GSAP ScrambleText / SplitText Documentation](https://gsap.com) — plugin capabilities and usage patterns (HIGH confidence: official docs)
-- [Adrián Gubrica WebGL Case Study — Codrops](https://tympanus.net/codrops/2025/12/05/from-illusions-to-optimization-the-creative-webgl-worlds-of-adrian-gubrica/) — procedural optimization strategy for full-viewport sections (HIGH confidence: direct source)
+- SignalframeUX `components/animation/vhs-overlay.tsx` — existing 6-layer substrate implementation (HIGH confidence: direct read)
+- SignalframeUX `app/globals.css` — existing token values including `--sf-grain-opacity: 0.03`, `--sf-halftone-dot`, `--signal-intensity` (HIGH confidence: direct read)
+- SignalframeUX `lib/signalframe-provider.tsx` — existing consumer API: `createSignalframeUX()`, `motionPreference`, `defaultTheme` config (HIGH confidence: direct read)
+- [SVG feTurbulence grain — Codrops](https://tympanus.net/codrops/2019/02/19/svg-filter-effects-creating-texture-with-feturbulence/) — numOctaves performance guidance, baseFrequency calibration (HIGH confidence: official Codrops)
+- [Pure CSS Halftone in 3 Declarations — Frontend Masters Blog](https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/) — CSS radial-gradient technique, Firefox rendering note, no WebGL required (HIGH confidence: official source)
+- [Grainy Gradients — CSS-Tricks](https://css-tricks.com/grainy-gradients/) — mix-blend-mode + SVG grain compositing (HIGH confidence: CSS-Tricks)
+- [GPU Layers and Compositing — webperf.tips](https://webperf.tips/tip/layers-and-compositing/) — layer promotion triggers, GPU memory tradeoff, "optimize when problematic" recommendation (HIGH confidence: official performance guide)
+- [Stacking Context — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Positioned_layout/Stacking_context) — stacking context triggers, isolation patterns (HIGH confidence: MDN official)
+- [shadcn/ui Theming — official docs](https://ui.shadcn.com/docs/theming) — consumer override via :root redef, @theme inline, dark selector pattern (HIGH confidence: official docs read)
+- [Radix Themes Styling — official docs](https://www.radix-ui.com/themes/docs/overview/styling) — modular CSS imports (tokens.css / components.css / utilities.css), cascade order control (HIGH confidence: official docs read)
+- [FAST CSS prefix mechanism — GitHub Issue #5397](https://github.com/microsoft/fast/issues/5397) — namespace prefix pattern for distributed design system libraries (MEDIUM confidence: GitHub issue, official FAST team)
+- [VFX-JS — Codrops Jan 2026](https://tympanus.net/codrops/2025/01/20/vfx-js-webgl-effects-made-easy/) — documented scrolling performance issues; not suitable for SF//UX architecture (HIGH confidence: direct source)
+- SignalframeUX SYNTH-awwwards-patterns.md — Jan–Mar 2026 SOTD corpus grain/scan calibration evidence (HIGH confidence: prior research corpus)
 
 ---
 
-*Feature research for: SignalframeUX v1.5 Redesign — Awwwards SOTD-level designed artifact*
-*Researched: 2026-04-07*
-*Supersedes: v1.4 FEATURES.md (that file covers component library completion; this file covers redesign features only)*
+*Feature research for: SignalframeUX v1.7 Aesthetic Effects and Token Bridge*
+*Researched: 2026-04-11*
+*Supersedes: v1.5 FEATURES.md sections on substrate effects only — SOTD features remain canonical in that file*

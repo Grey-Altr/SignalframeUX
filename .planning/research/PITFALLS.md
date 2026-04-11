@@ -1,457 +1,387 @@
-# Pitfalls Research
+# Domain Pitfalls — v1.7 Aesthetic Effects + Token Bridge
 
-**Domain:** Adding scroll-driven animations (200-300vh), multiple full-viewport WebGL scenes, route renames, interactive demos, and Awwwards-level polish to an existing Next.js 15.3 + GSAP + Three.js + Lenis site — SignalframeUX v1.5
-**Researched:** 2026-04-07
-**Confidence:** HIGH (GSAP ScrollTrigger/Lenis — verified across GSAP community forums and official docs) / HIGH (WebGL context limits — verified against Three.js forum and browser bug trackers) / MEDIUM (Route rename SEO — standard practice, well-documented) / MEDIUM (LCP + canvas — verified via Lighthouse issue tracker) / HIGH (Lenis + pin integration — extensively documented in GSAP community)
+**Domain:** Adding layered CSS visual effects (grain, VHS, halftone, glitch, particles, mesh gradient), a design token bridge, and copy audit to an existing Next.js 15.3 + GSAP + Three.js production site.
+**Researched:** 2026-04-11
+**Milestone scope:** v1.7 — CSS-first effects, `--signal-intensity` wiring, token bridge for CD site, copy audit, Storybook story additions.
+**Confidence:** HIGH (WebGL context limits, GSAP CSS conflicts — verified against official GSAP docs and browser bug trackers) / HIGH (backdrop-filter Safari issues — verified against MDN browser compat data and active bug reports) / HIGH (SSR flash / token cascade — verified against Next.js discussions and next-themes patterns) / MEDIUM (feTurbulence CPU compositing — confirmed for Chrome, Firefox recently improved but GPU path is conditional) / MEDIUM (Lighthouse sensitivity to CSS effects — derived from Chromium rendering architecture documentation) / LOW (combined-effect moiré and GPU budget — no automated benchmark exists; based on analyst brief + rendering model)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: ScrollTrigger Pin + iOS Address Bar Causes Scroll Position Jumps
+### Pitfall 1: Token Bridge Flash of Wrong Color During RSC Streaming
 
 **What goes wrong:**
-When `pin: true` is used on a 200-300vh section, GSAP inserts a `pin-spacer` div that doubles the element's height in document flow. On iOS Safari (portrait, any version) and Chrome iOS, the browser's dynamic address bar hides and shows as the user scrolls. Each visibility change resizes the viewport, which forces ScrollTrigger to recalculate start/end positions. The result is a visible "jump" — the page scroll position snaps to a wrong offset after the user pauses scrolling. This is most severe when multiple pinned sections are stacked, because each recalculation compounds the error.
+`signalframeux.css` sets `--color-primary` to magenta in `:root`. When CD imports `signalframeux/signalframeux.css` followed by `cd-tokens.css` in `app/layout.tsx`, any RSC chunk that streams before the override CSS fully resolves will receive the magenta primary color for that render frame. This produces a magenta flash on the CD homepage — a client-visible regression on the production front door.
 
-ScrollTrigger 3.12.2 changed its 100vh calculation specifically because of this issue, but the address bar physics on iOS (portrait + forced browser chrome) remain impossible to fully resolve via the library. The only partial mitigation is `ScrollTrigger.config({ ignoreMobileResize: true })`, which suppresses the recalculation at the cost of not responding to legitimate resize events.
+A separate flash window exists for dark mode: SF//UX's `:root` block is light mode (off-white background, dark text). CD is dark-only. If CD's `<html>` does not have `class="dark"` synchronously server-rendered, SF//UX components will render in light mode until the dark class is applied. Client-side ThemeProviders apply the class after hydration, creating a visible flash of white.
 
 **Why it happens:**
-`pin: true` relies on knowing the viewport height at initialization. Mobile browser chrome is outside JavaScript's control. Every address bar state change invalidates the initialized measurements. With 200-300vh of pinned scroll space, even a 60px address bar change causes a visible offset error.
+Next.js App Router streams RSC chunks as they resolve. The layout's CSS imports are not guaranteed to block all streaming boundaries. The browser processes the import chain sequentially, but streaming can deliver a component's HTML before the cascade has settled to the override values. `next-themes` and similar libraries apply the dark class via a client-side script, which runs after the initial paint.
 
-**How to avoid:**
-- Call `ScrollTrigger.normalizeScroll(true)` — the GSAP-provided normalization layer absorbs address bar changes before they propagate to ScrollTrigger calculations.
-- Add `ScrollTrigger.config({ ignoreMobileResize: true })` as a fallback.
-- Test pinned sections specifically on an iPhone 14/15 in portrait Safari before shipping. Simulator does not replicate address bar behavior.
-- If the scroll-driven section can work without `pin: true` (i.e., the pinning is aesthetic, not structural), use `scrub` without `pin` — eliminates the spacer problem entirely.
-- Verify with a real device, not Chrome DevTools mobile simulation.
+**Consequences:**
+Magenta flash on first load in production. White background flash if dark class is not server-rendered. Both are visible to real users; neither is caught by local Lighthouse testing (Lighthouse simulates a clean load but doesn't capture visual flash windows at the millisecond level).
 
-**Warning signs:**
-- Page jumps after the user finishes scrolling through a pinned section on mobile.
-- Pin-spacer height in DevTools does not match the section's intended scroll distance.
-- `ScrollTrigger.refresh()` called after font load does not fix the jump on iOS.
+**Prevention:**
+- Inline the critical CD token overrides (`--color-primary`, `--color-background`, `--color-foreground`) as a `<style>` block in the `<head>` before the SF//UX import, so they are present before any HTML streams.
+- Server-render `class="dark"` on `<html>` unconditionally — not via a client ThemeProvider. In CD's `app/layout.tsx`, hardcode `<html className="dark">` since CD is dark-only. Never delegate this to a client component.
+- Document in CD's `app/layout.tsx` import comment: "Must import from `signalframeux/signalframeux.css` (dist artifact), never from source, to avoid PostCSS reprocessing SF//UX's `@theme` blocks through CD's Tailwind instance."
+- Test by throttling network to Slow 3G in Chrome DevTools, then hard-reload CD's homepage. If there is a flash, it is visible at this speed.
 
-**Phase to address:** First scroll animation implementation phase. Establish the normalize/ignoreMobileResize config at the global GSAP setup before any pinned section is built. Retrofitting is painful.
+**Detection warning signs:**
+- Magenta visible for < 200ms on first load in production (not seen in local dev due to hot module cache).
+- White page flash before dark mode applies on first load.
+- `next-themes` in use on CD — nearly always means the dark class is applied client-side.
+
+**Phase to address:** Phase 0 (token bridge import chain). Must be resolved before any Phase 1 component swaps. Retrofit is painful because every subsequent phase tests against a broken base.
 
 ---
 
-### Pitfall 2: Font Load After ScrollTrigger Init Invalidates Pin-Spacer Dimensions
+### Pitfall 2: CSS `backdrop-filter` Requires `-webkit-` Prefix on Safari and Cannot Use CSS Variables
 
 **What goes wrong:**
-ScrollTrigger calculates all pin-spacer heights and trigger offsets at initialization (inside `useGSAP`). If custom fonts — Inter, JetBrains Mono, Electrolize, Anton — finish loading after this init call, the text blocks reflow. Any section containing text above a pinned section grows or shrinks by the font's line-height difference vs the fallback font. The pin-spacer was sized against the fallback layout, not the final layout. The visual result: animations fire too early or late by 20-80px, scroll progress bars are offset, and scrubbed animations feel desynced.
+As of Safari 18 (2025), `backdrop-filter` still requires the `-webkit-` prefix to work reliably. Additionally — and this is the less-known issue — CSS custom properties (`var(--token)`) cannot be used as values inside `backdrop-filter` on Safari. Writing `backdrop-filter: blur(var(--sf-blur-amount))` is valid CSS but silently fails in Safari; the property is ignored entirely. This affects the VHSOverlay and any glassmorphism-adjacent effects built with token-driven blur values.
 
-With `font-display: swap` (Next.js default), this reflow happens within the first 100-300ms of page load — after the React tree hydrates and GSAP initializes.
+A second rendering bug in Safari 18: when `background-color` and `backdrop-filter: blur()` are combined, the element renders completely white instead of the intended frosted effect. This affects components using semi-transparent backgrounds with blur.
 
 **Why it happens:**
-`useGSAP` runs after the React component mounts, but font loading is asynchronous and not coordinated with the component lifecycle. Developers assume fonts are ready at mount time because `next/font` preloads them — but preloading only begins the request sooner; it does not guarantee the font is decoded and applied before the first render.
+Safari's implementation of `backdrop-filter` lags the spec. The variable resolution bug is a WebKit limitation — custom properties are resolved at computed-value time, but `backdrop-filter` parsing in WebKit does not accept the resolved value from a variable reference. This is a known open MDN compatibility bug (issue #25914).
 
-**How to avoid:**
-- Call `ScrollTrigger.refresh()` inside a `document.fonts.ready` promise:
-  ```typescript
-  document.fonts.ready.then(() => {
-    ScrollTrigger.refresh();
-  });
-  ```
-- Place this call in the root layout's `useGSAP` effect, not in individual page components. It only needs to fire once per page load.
-- With Anton (the display font used in heading-1 / `SFHeadline`), the dimension change between system fallback and final font can be 30-50px on a full-width heading. This is enough to shift a 300vh scroll sequence by a full trigger point.
+**Consequences:**
+VHS effects with token-driven opacity or blur values silently degrade to no-effect on all iOS Safari and macOS Safari. This is > 20% of traffic for most design-forward audiences. The effect appears to work in Chrome DevTools mobile simulation (Chrome resolves the variable correctly) and fails only on real Safari.
 
-**Warning signs:**
-- Scroll animations that feel "correct" in dev (where fonts are cached) but are offset on first load or incognito.
-- Pinned section animations that start slightly early on first visit, then work correctly on refresh.
-- Lighthouse simulated throttling shows animation desynced from scroll progress.
+**Prevention:**
+- Always write `backdrop-filter` values as literals, not `var()` references. If a token governs the value, compute the literal at build time or use a PostCSS plugin to inline the value.
+- Always write both `-webkit-backdrop-filter` and `backdrop-filter` properties, in that order.
+- Test specifically on Safari for Mac (not Chrome) and on a real iOS device (not Simulator — iOS Simulator uses the macOS rendering engine, which may differ from device behavior).
+- For semi-transparent backgrounds with blur, test the combination of `background-color: rgba(...)` + `backdrop-filter` on Safari 18 specifically. If white rendering occurs, switch to `background-color: transparent` with the blur applied to a pseudo-element.
 
-**Phase to address:** Scroll animation architecture phase. Add `document.fonts.ready.then(ScrollTrigger.refresh)` to the global GSAP provider before building any scroll sequence.
+**Detection warning signs:**
+- Blur effect visible in Chrome, absent in Safari.
+- Component renders correctly in Chrome DevTools iOS emulation but fails on real iPhone Safari.
+- No console error — the property is silently ignored.
+
+**Phase to address:** Any phase adding or modifying `backdrop-filter` usage (VHSOverlay enhancement phases). Add a Safari-specific smoke test to the manual verification checklist before each such phase ships.
 
 ---
 
-### Pitfall 3: Multiple WebGL Contexts Crash Mobile — Hard Browser Limits Apply
+### Pitfall 3: GSAP CSS Transition Conflict on Effect-Animated Elements
 
 **What goes wrong:**
-Chrome enforces a limit of 16 active WebGL contexts per page. Safari iOS enforces a limit of 2-8 (device-dependent, documented in Mozilla bug tracker as 2 per "principal" on some configurations). Three.js creates one WebGLRenderer per canvas. With "multiple full-viewport WebGL scenes" on a single page route, a page with 3+ Three.js canvases will silently lose the oldest WebGL context on iOS Safari — the canvas goes black with no error in the console for the end user.
-
-The project already has `glsl-hero.tsx`, `signal-mesh.tsx`, and `hero-mesh.tsx` as separate Three.js instances. Adding new full-viewport WebGL sections to the same page route will trigger this limit on mobile.
+If a CSS transition is applied to an element that GSAP also animates (e.g., tweening `--sf-grain-opacity` on an element that has `transition: opacity 0.3s ease`), the browser enters a loop: every GSAP `requestAnimationFrame` tick sets a new interpolated value, the CSS transition intercepts it and starts animating toward that value, then the next tick sets another new value and the transition starts over. The result is the element never reaches its target value — it lags indefinitely. With `--sf-grain-opacity` governed by both `--signal-intensity` CSS expressions and GSAP idle escalation tweens, this conflict is likely to occur on any element that also has hover transitions.
 
 **Why it happens:**
-WebGL contexts are GPU resources managed by the browser, not JavaScript heap. Browsers impose hard limits independent of available RAM. Three.js does not warn you when a context is lost due to this limit — it fires the `webglcontextlost` event on the canvas, which most implementations don't handle. Resources (geometry, materials, textures) cannot be shared between WebGL contexts.
+The idle escalation system (Phase 2 grain tween, Phase 4 VHS glitch timing) uses GSAP to tween CSS custom properties. SF//UX components typically include CSS transitions for hover states. If both target the same property on the same element (even indirectly through `calc()` expressions), the conflict is silent but produces incorrect animation behavior.
 
-**How to avoid:**
-- One WebGLRenderer per page route maximum on mobile. Use scene switching (render different Three.js scenes through one renderer via `renderer.setRenderTarget` and scene/camera swapping) rather than multiple canvas elements.
-- For sections that need "different" visual worlds: composite them as different scenes rendered to the same canvas, switching with ScrollTrigger scroll progress as the control signal.
-- For non-hero WebGL sections that can tolerate static imagery on mobile: detect GPU tier and disable Three.js on low-tier or mobile devices. `@pmndrs/detect-gpu` provides GPU tier detection.
-- If multiple canvases are architecturally required: call `renderer.dispose()` and `renderer.forceContextLoss()` when a canvas scrolls out of view (IntersectionObserver), then reinitialize on scroll-back-in. This is complex and prone to flicker.
-- Add a `webglcontextlost` handler to every canvas to degrade gracefully (show a static fallback image) rather than a black rectangle.
+**Consequences:**
+Idle escalation effects lag or fail to reach their target intensity. Hover transitions on components conflict with GSAP-driven effect tweens. The idle system's 4-phase timing sequence breaks: Phase 2 may start before Phase 1 reaches its target, compounding into a cascade failure of the escalation sequence.
 
-**Warning signs:**
-- "WARNING: Too many active WebGL contexts. Oldest context will be lost." in the browser console.
-- One of the Three.js canvases on the page renders as black or shows only the clear color.
-- GPU memory usage climbs with each page navigation and does not return to baseline after navigating away.
+**Prevention:**
+- Establish a rule: if GSAP owns an animation for an element or custom property, remove all CSS transitions from that property on that element. This must be enforced as a code review criterion.
+- For the idle escalation system, scope GSAP tweens to CSS custom properties on `:root` (e.g., tweening `--sf-grain-opacity` at the `:root` level) rather than targeting component elements directly. `:root` custom property tweens do not conflict with component-level CSS transitions.
+- Audit all effect components (`GrainOverlay`, `VHSOverlay`) for CSS transitions on the same properties that GSAP idle escalation tweens.
 
-**Phase to address:** WebGL scene planning phase. Decide on single-renderer architecture before building any new WebGL section. Retrofitting multiple scenes into one renderer after they're built is a significant rewrite.
+**Detection warning signs:**
+- Effect intensity "wobbles" rather than reaching a clean target value during idle escalation.
+- Hover interaction on a component causes an effect overlay to stutter.
+- Animation duration feels "doubled" — property takes twice as long to settle as specified.
+
+**Phase to address:** Before any idle escalation GSAP implementation (currently Phase 3 escalation work). Audit and remove conflicting CSS transitions before writing the tween code.
 
 ---
 
-### Pitfall 4: Three.js Resources Not Disposed on Route Navigation — GPU Memory Leak
+### Pitfall 4: WebGL Context Limit on iOS Safari Breaks Particle Field
 
 **What goes wrong:**
-Next.js App Router navigates between routes without a full page reload. The Three.js renderer, geometries, materials, and textures allocated on page A remain in GPU memory after navigating to page B unless explicitly disposed. In a design system site with multiple routes each showing WebGL scenes, repeated navigation creates a GPU memory leak that grows until the browser tab crashes or forces a context loss.
+iOS Safari has a hard limit on simultaneous WebGL contexts per page (documented behavior: 2–8 contexts depending on device generation and available GPU memory). The existing SignalframeUX implementation runs 4 WebGL scenes (GLSLHero, GLSLSignal, ProofShader, SignalMesh) through a singleton `WebGLRenderer`. Adding a particle field (effect 5) that requires its own WebGL canvas — rather than sharing the singleton renderer — creates a second WebGL context. On lower-end iOS devices, this exceeds the safe limit.
 
-The specific failure: removing a Three.js component from the React tree does not garbage-collect GPU resources. `geometry.dispose()`, `material.dispose()`, `texture.dispose()`, and `renderer.dispose()` must be called explicitly. ImageBitmap textures (common in glTF loaders) additionally require `imageBitmap.close()` — a step that `texture.dispose()` does not handle in Three.js as of 2025.
+When the limit is exceeded, iOS Safari issues a "WebGL: context lost" error to one or more canvases. This is not a graceful degradation — the WebGL scene goes black and the `webglcontextlost` event fires. The user sees a blank or partially blank page section.
 
 **Why it happens:**
-Developers familiar with JavaScript GC assume removing the object reference is sufficient. GPU resources are unmanaged buffers — they live outside the JS heap and have no automatic GC. The problem is invisible in dev (short sessions, few routes), but accumulates over a 10-minute user session exploring multiple pages.
+Each `<canvas>` element with a distinct `WebGLRenderingContext` counts toward the device's context limit. The singleton renderer pattern avoids this by sharing one context across multiple scenes via render targets. A particle field built with its own canvas and context (common Three.js BufferGeometry pattern) breaks the singleton architecture.
 
-**How to avoid:**
-- In every `useGSAP` or `useEffect` that creates a Three.js renderer or scene, the cleanup function must traverse the scene and dispose all resources:
-  ```typescript
-  return () => {
-    scene.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        obj.geometry.dispose();
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(m => m.dispose());
-        } else {
-          obj.material.dispose();
-        }
-      }
-    });
-    renderer.dispose();
-    renderer.forceContextLoss();
-  };
-  ```
-- For textures loaded via `TextureLoader` or `GLTFLoader`: explicitly call `texture.dispose()` on each texture reference. For `ImageBitmap` textures, call `imageBitmap.close()` on the source.
-- The existing `signal-mesh.tsx` and `glsl-hero.tsx` cleanup must be audited for completeness before adding new WebGL scenes. The v1.4 pitfall research flagged the MutationObserver disconnect gap — confirm the dispose sequence is also complete.
+Context loss is also triggered by: backgrounding Safari (iOS 17+ bug, webkit.org/b/261331), exceeding GPU memory budget, and switching tabs when 2+ pages are using WebGL simultaneously.
 
-**Warning signs:**
-- Chrome DevTools `Memory` tab (GPU Memory) climbs with each route navigation and does not return to baseline.
-- After 5-6 route navigations, one of the WebGL canvases produces a context lost warning.
-- `renderer.info.memory` logged to console shows geometries/textures accumulating between navigations.
+**Consequences:**
+Particle field goes black on iPhone XR/11/12/13 (the most common devices in the target audience). Existing WebGL scenes may also lose context if the OS reclaims GPU resources. No console error in production builds (context loss is handled silently by many WebGL frameworks unless explicit `webglcontextlost` listeners are registered).
 
-**Phase to address:** WebGL cleanup audit phase (early, before new scenes are added). Run the Memory DevTools profiler on the existing routes before adding any new Three.js scenes.
+**Prevention:**
+- Do not create a separate WebGL canvas for the particle field. Implement it within the existing singleton `WebGLRenderer` as an additional scene or render pass, using IntersectionObserver to gate its rendering (same pattern as existing scenes).
+- If a separate canvas is unavoidable, implement `webglcontextlost` and `webglcontextrestored` event handlers on every WebGL canvas to gracefully show a fallback and attempt restoration.
+- Test on physical iOS devices, not Simulator. The Simulator does not enforce the same GPU memory limits as hardware.
+- Alternatively, implement the particle field as a CSS-only solution (radial gradients, `@keyframes`, `box-shadow` sprite sheets) to eliminate WebGL context dependency entirely — this also satisfies the "CSS-first" constraint stated in the milestone.
+
+**Detection warning signs:**
+- "WebGL: context lost" in Safari console on iOS.
+- Black canvas element visible in DOM with correct dimensions.
+- Inconsistent behavior between Chrome iOS and Safari iOS on the same device.
+
+**Phase to address:** Particle field implementation phase (effect 5). Architecture decision (singleton vs separate canvas) must be made before any WebGL particle code is written. Retrofitting context management is expensive.
 
 ---
 
-### Pitfall 5: Lenis + ScrollTrigger Pin Flicker in Safari — The Integration Is Load-Bearing
+### Pitfall 5: Idle Escalation Tweens Run in the Wrong Direction After Grain Baseline Raise
 
 **What goes wrong:**
-When Lenis is driving the scroll and ScrollTrigger is pinning sections, Safari (desktop and iOS) exhibits a flicker inside the pinned section. The content inside the pinned element renders at the wrong position for one or two frames as Lenis and ScrollTrigger negotiate scroll position. This is a known issue with no complete fix — it is a timing conflict between Lenis's rAF loop and ScrollTrigger's scroll event listener.
+The idle escalation system's Phase 2 tweens `--sf-grain-opacity` toward `0.08` (the escalation target). This assumes the resting baseline grain is `0.03`. After the aesthetic push raises the baseline to `0.08–0.12`, the Phase 2 escalation target (`0.08`) is at or below the new baseline. The tween fires, reaches `0.08`, and then the property stays at `0.08` — which is either no change or a reduction from the `0.12` baseline. The idle system runs, consumes its timing cycle, but produces no perceivable effect or produces the wrong direction of change (grain dims during idle instead of intensifying).
 
-The correct integration (verified against GSAP community discussions and darkroomengineering/lenis README) requires:
-```typescript
-lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-gsap.ticker.lagSmoothing(0);
-// Lenis must be initialized with: autoRaf: false
+**Why it happens:**
+The idle escalation thresholds (`0.03` baseline, `0.08` Phase 2 target) were specified against the pre-v1.7 grain system. The aesthetic push changes the baseline without recalibrating the escalation targets. The audit notes this risk explicitly, but it is easy to implement the grain raise in isolation without auditing the escalation code.
+
+**Consequences:**
+The idle escalation system silently fails to produce the intended atmospheric intensification. A 4-phase escalation sequence does nothing visible at Phase 2. At Phase 4, VHS glitch effects may still fire (if they are not grain-dependent), creating an inconsistency where heavy effects appear but the grain foundation does not build toward them.
+
+**Prevention:**
+- Before implementing any grain baseline change, document the new escalation target values for all 4 phases and update the constants in a single commit.
+- The escalation thresholds must be defined as offsets from the current baseline, not absolute values: `IDLE_PHASE_2_GRAIN = currentBaseline * 1.5`, not `IDLE_PHASE_2_GRAIN = 0.08`.
+- After raising the grain baseline, run the idle escalation sequence end-to-end on the homepage and verify grain visibly increases at each phase.
+
+**Detection warning signs:**
+- Idle escalation timer fires (visible in GSAP DevTools) but no visual change occurs.
+- Console logging `--sf-grain-opacity` during idle shows it tweening to a value equal to or less than the current computed value.
+- Phase 4 VHS glitch fires but grain has not built toward it.
+
+**Phase to address:** Grain baseline raise phase. The escalation recalibration must be in the same PR as the baseline change — not a follow-up.
+
+---
+
+## Moderate Pitfalls
+
+### Pitfall 6: Grain + Halftone Moiré at High `--signal-intensity`
+
+**What goes wrong:**
+Grain texture (noise at `0.12` opacity) composited with halftone (dot-grid at any coverage) produces a moiré interference pattern — a visible secondary pattern that neither effect intends. This occurs because both effects are frequency-based textures rendered at similar spatial frequencies on screen. The moiré is most visible at medium intensity values and at specific screen resolutions where the dot pitch of the halftone aligns with the pixel-level noise of the grain.
+
+**Why it happens:**
+Moiré is a physical consequence of combining two periodic or quasi-periodic patterns. feTurbulence grain is not strictly periodic, but at lower `numOctaves` values, it has characteristic frequencies. Halftone dot patterns are periodic. When their frequencies are close enough, the beat frequency (the moiré) becomes visible.
+
+**Consequences:**
+A vibrating, pulsing visual artifact that reads as a rendering error rather than intentional texture. Most visible in screenshots and screen recordings (which may alias the moiré differently than direct screen viewing). Will not be caught by per-effect Lighthouse testing. Cannot be detected by automated visual regression unless a baseline is captured at full-stack intensity.
+
+**Prevention:**
+- Test grain + halftone together at `--signal-intensity: 0.5` and `1.0` before shipping both effects. This must be a deliberate human visual review step.
+- Mitigate by ensuring the halftone dot frequency is at least 2x or 0.5x the grain's characteristic frequency (different enough that the moiré beat frequency is below perceptual threshold).
+- If moiré is unavoidable, offset by rotating the halftone pattern 45°, which shifts the moiré out of the most sensitive diagonal axis.
+- Apply the halftone at a different z-index layer with a `mix-blend-mode` that is less additive than the grain's `multiply` mode.
+
+**Detection warning signs:**
+- Zooming in on the combined effect in a browser reveals a secondary grid or wave pattern.
+- The effect looks correct in isolation but "fizzes" or "hums" when both are active.
+- Screenshots at 2x pixel density show a different moiré pattern than 1x (a hallmark of aliasing-induced moiré, not perceptual moiré).
+
+**Phase to address:** Halftone implementation phase AND grain baseline raise phase must each include a combined-effect visual review step with the other effect active.
+
+---
+
+### Pitfall 7: VHS Opacity Tokens Hardcoded — Intensity 0 Is Not a Clean State
+
+**What goes wrong:**
+`--sf-vhs-crt-opacity: 0.2` and `--sf-vhs-noise-opacity: 0.015` are hardcoded token values. They are not `calc()` expressions of `--signal-intensity`. This means VHS scan lines run at 20% opacity even when `--signal-intensity` is 0. The stated system behavior — "intensity governs the entire aesthetic register" — is violated. Turning the intensity dial to 0 suppresses all new effects (grain, halftone, glitch, particles) but leaves VHS active.
+
+**Consequences:**
+Intensity 0 is not a clean state. This is observable in any integration context where CD sets a low initial intensity for component explorer or documentation pages. The VHS "imperfection" aesthetic persists even in lowest-intensity states.
+
+**Prevention:**
+Rewrite VHS opacity tokens as CSS `calc()` expressions: `--sf-vhs-crt-opacity: calc(0.2 * var(--signal-intensity))`. This makes the token value proportional to intensity without requiring JavaScript. Apply the same to `--sf-vhs-noise-opacity`. Verify that at intensity 0, both overlays are invisible; at intensity 0.5, they are at their prior baseline; at intensity 1.0, they are at maximum.
+
+**Detection warning signs:**
+- Setting `--signal-intensity: 0` in browser DevTools on the SF//UX homepage — VHS scan lines remain visible.
+- CD component library pages (which may want minimal intensity) still show VHS texture.
+
+**Phase to address:** VHSOverlay audit/wiring phase. This is a small CSS token change that unlocks correct system-wide behavior.
+
+---
+
+### Pitfall 8: `feTurbulence` Halftone Is CPU-Composited on Many Browser/Hardware Combinations
+
+**What goes wrong:**
+The halftone effect uses an SVG `feTurbulence` + `feComponentTransfer` filter pipeline. In Chrome, the GPU filter path is only triggered for elements already in a composited layer (canvas, WebGL, video, 3D CSS transforms). SVG filters applied to regular DOM elements (`<div>`, pseudo-elements) remain on the CPU compositor. Firefox accelerated SVG filter rendering in Firefox 132 (2024), but Chrome's SVG filter path has remained CPU-bound for non-composited sources.
+
+At the `< 2ms` paint time benchmark, halftone is within budget on modern hardware. On a 2019 Intel MacBook Pro or Windows integrated GPU, feTurbulence at full-page coverage can produce 8–15ms paint times — visible scroll jank at 60fps.
+
+**Consequences:**
+Scroll jank on mid-range hardware during the halftone phase. Lighthouse Performance on simulated Moto G4 may flag this (Lighthouse simulates a throttled CPU, which stresses CPU-composited effects more than GPU ones). Production Performance score may drop 2–4 points depending on filter area.
+
+**Prevention:**
+- Constrain the halftone SVG filter `filterUnits` region to the smallest area required. A full-page `x="0" y="0" width="100%" height="100%"` filter is maximally expensive. If the halftone is used as a section texture rather than a page overlay, scope the filter region to the section height.
+- Avoid animating `feTurbulence` attributes (especially `baseFrequency` or `seed`) — each animation frame recomputes the turbulence function across the entire filter region on the CPU.
+- Test on a MacBook with integrated graphics (Intel UHD 620 or equivalent) or a mid-range Android device before committing the halftone effect at full-page scale.
+- Consider a CSS `background-image: url("data:image/svg+xml,...")` pattern with a pre-rendered static noise texture instead of a live `feTurbulence` computation, where the texture is generated once at build time.
+
+**Detection warning signs:**
+- Chrome DevTools Performance panel shows "Update Layer Tree" or "Paint" events > 8ms during scroll.
+- "Recalculate Style" events that normally take 0.1ms suddenly take 2–4ms when halftone is active.
+- Scroll performance is noticeably worse at `--signal-intensity: 1.0` vs `0.3`.
+
+**Phase to address:** Halftone implementation phase. Test on non-M1 hardware before the phase is marked complete.
+
+---
+
+### Pitfall 9: Copy Fix Breaks `phase-35-metadata.spec.ts` Assertions Silently Without CI
+
+**What goes wrong:**
+`phase-35-metadata.spec.ts` lines 35–36 assert:
 ```
-
-Deviating from this exact pattern — particularly forgetting `autoRaf: false`, or using `scrollerProxy` (the older pattern) instead of the ticker approach — causes the flicker. The `scrollerProxy` approach is deprecated for Lenis and should not be used in new work.
-
-A second Safari-specific issue: `ScrollTrigger.normalizeScroll()` conflicts with Lenis when both are active. Enable one or the other, not both.
+expect(src).toContain("v1.5");
+expect(src).toContain("REDESIGN");
+```
+The copy audit Hard Flag 2 requires fixing `opengraph-image.tsx:64` from `v1.5 -- REDESIGN` to the current version string. When this fix is applied, both assertions fail. With no CI/CD pipeline, the only enforcement is running `phase-35-metadata.spec.ts` explicitly. A developer who applies the copy fix and runs only visual or component tests (not metadata tests) will have a green local run with a broken assertion sitting silently in the test file.
 
 **Why it happens:**
-Lenis runs its own rAF loop to apply smooth scroll offsets. ScrollTrigger's scroll event fires from the native scroll event, which Lenis has overridden. If ScrollTrigger reads the scroll position before Lenis has applied its interpolated offset for the current frame, there is a one-frame discrepancy that manifests as flicker in pinned elements (which are positioned based on scroll offset).
+No CI enforces "run all 26 spec files after every commit." Developers run the tests that feel relevant to their change. Copy fixes do not feel like they would break metadata tests. The connection between `opengraph-image.tsx` (a visual template) and `phase-35-metadata.spec.ts` (a metadata validator) is non-obvious.
 
-**How to avoid:**
-- Use the GSAP ticker integration pattern (shown above) exclusively. Do not use `scrollerProxy`.
-- Initialize Lenis with `autoRaf: false`.
-- Do not enable `ScrollTrigger.normalizeScroll()` when Lenis is active.
-- Test pinned sections specifically in Safari (desktop) with Lenis active — Chrome does not exhibit the same flicker timing.
-- The SignalframeUX project already has Lenis integrated. Before adding any new pinned sections, verify the existing integration matches the ticker pattern above.
+**Consequences:**
+Broken test assertions committed to the repository. The metadata spec becomes misleading — it reports passing state for an old version string. Future developers see a passing test and assume the metadata is correct.
 
-**Warning signs:**
-- Pinned section content flickers for 1-2 frames in Safari when scrolling into the pinned zone.
-- A blank space appears below a pinned section after it unpins (symptom of `once: true` + `pin: true` + `scrub: true` with Lenis — a documented blank-space bug).
-- Scroll progress animations are slightly behind scroll position in Safari but correct in Chrome.
+**Prevention:**
+- Create a file:line mapping before Phase 1: for every file touched by the copy audit, list which spec files assert against those files' content. This mapping must exist as a checklist before Phase 1 execution begins.
+- Apply the copy fix and the spec update in the same commit. Never commit a copy change without simultaneously checking for spec assertions against that content.
+- After Phase 1, run all 26 spec files end-to-end, not a subset.
 
-**Phase to address:** Before the first new pinned section is built. Audit the existing Lenis integration against the ticker pattern. Fix any deviations before new scroll work begins.
+**Detection warning signs:**
+- Phase 1 copy changes committed without a corresponding spec file update.
+- Running `phase-35-metadata.spec.ts` in isolation after Phase 1 shows failures that weren't present before the phase.
+
+**Phase to address:** Phase 1 (copy audit). The file:line cross-reference must exist before Phase 1 begins, not after.
 
 ---
 
-### Pitfall 6: WebGL Canvas Is Invisible to LCP — Server-Rendered Text Overlay Is the LCP Element
+### Pitfall 10: Storybook Stories Visually Change Without Code Changes When Grain Baseline Is Raised
 
 **What goes wrong:**
-Lighthouse and Chrome's LCP algorithm do not track `<canvas>` elements as LCP candidates. Canvas content — including Three.js WebGL output — is opaque to the performance measurement stack. For a full-viewport WebGL hero with a text overlay, the LCP element is the text, not the canvas. This is actually the correct behavior and can be leveraged.
+All 52 existing Storybook stories import `globals.css` via `.storybook/preview.ts`. When `--sf-grain-opacity` is raised from `0.03` to `0.12`, every story renders with 4x more visible grain — a significant visual change — without any story code changing. A developer reviewing stories during the aesthetic tightening phase sees changed visuals and cannot determine whether the change is intentional (the grain raise is working correctly) or an unintentional regression (a different change caused the grain to increase).
 
-The failure mode: developers who animate the text overlay into view (opacity 0 to 1, or a GSAP fade-in) inadvertently tell Chrome that the LCP element never becomes visible. Chrome's LCP observer stops tracking when an element's opacity is animated from 0 — a known Chromium bug triggered specifically by opacity animations. The result: Lighthouse reports `NO_LCP` or shows an artificially high LCP time, destroying the Lighthouse score.
+Without Chromatic or Playwright screenshot baselines captured before the grain baseline change, there is no automated way to distinguish intentional from unintentional visual changes in stories.
 
-The second failure mode: if the overlay text is a client-rendered component (rendered after hydration), the text does not exist in the initial HTML. The LCP element is only in the DOM after JavaScript runs, which Lighthouse measures as a much later LCP time than the actual visual paint.
+**Consequences:**
+The visual regression safety net in Storybook is effectively disabled for aesthetic token changes. The `phase-40-03-storybook.spec.ts` gate only validates that stories compile and that story count `>= 40` — it does not validate visual output. A story can look completely different before and after the aesthetic push while the gate passes.
 
-**Why it happens:**
-- Server-rendering the text is necessary for LCP but often overlooked when text is part of an animated component.
-- Opacity-from-zero animations are a common aesthetic choice that Lighthouse penalizes via a Chromium bug that has persisted since at least 2021.
+**Prevention:**
+- Capture Playwright screenshots of the full story list at the current grain `0.03` baseline, stored as `.planning/visual-baselines/`, before the grain baseline change. This gives a diff anchor for Phase 1.
+- After the grain raise, review all 52 story thumbnails against the baseline images and explicitly approve each visual change.
+- Update the Storybook story count gate from `>= 40` to `>= 52` (current count) so story deletions cannot pass silently.
+- Copy audit changes to component text (e.g., `SFButton` default label changes) must cross-reference Storybook story default args — the copy audit currently only cross-references page files.
 
-**How to avoid:**
-- Server-render all text overlays above WebGL scenes. The text must be in the initial HTML response. No `'use client'` on the text component unless required for interactivity. Hydrate interactivity separately.
-- For reveal animations on LCP text: start from `opacity: 0.01` (not `0`) or use `visibility: hidden` → `visible` instead. The Chromium bug is triggered specifically by `opacity: 0`. Starting at `0.01` avoids it.
-- Alternatively: use `clip-path` or `transform: translateY` animations for the text reveal rather than opacity. These do not suppress LCP measurement.
-- Preload Anton and Electrolize (the fonts used in display headings) with `rel="preload"` or rely on `next/font`'s preload behavior. A font-blocked LCP text element tanks LCP.
+**Detection warning signs:**
+- All stories look "dirtier" or "noisier" simultaneously after a CSS token change — this is correct behavior but indistinguishable from a regression without a baseline.
+- The `>= 40` story count gate passes but story thumbnails have changed.
 
-**Warning signs:**
-- Lighthouse reports `NO_LCP` or a LCP time > 2s on a page with a WebGL hero.
-- Chrome DevTools Performance timeline shows LCP firing very late (after all animations complete) on a page with animated overlay text.
-- PageSpeed Insights flags "Largest Contentful Paint element" as a GSAP-animated text element.
-
-**Phase to address:** Hero/WebGL section implementation phase. Establish the SSR-text-over-client-canvas pattern before building any hero section. Verify Lighthouse score immediately after the first hero implementation — do not defer this check.
+**Phase to address:** Before Phase 1 (grain baseline raise). Baseline capture must precede the first grain token change.
 
 ---
 
-### Pitfall 7: Route Renames Without Redirects Break Vercel's Edge Network Cache and Social Shares
+## Minor Pitfalls
+
+### Pitfall 11: `mix-blend-mode: multiply` Makes Grain Invisible on Light Sections
 
 **What goes wrong:**
-When a route is renamed in Next.js App Router (a directory rename in `app/`), any previously shared URLs (social, bookmarks, backlinks) 404. The SEO impact of a 404 is worse than a 301 redirect — a 301 passes ~90-99% of link equity to the new URL, while a 404 signals deletion and may cause deindexing. Vercel's edge cache for the old URL also needs to be invalidated.
+Grain overlay uses `mix-blend-mode: multiply`. Multiply blending on a white or near-white surface produces no visible grain (white × any color = white). SF//UX's `data-bg-shift` scroll effect produces white or light sections as the user scrolls. At `--signal-intensity: 0.12`, grain is invisible on these sections while dark sections show grain at full opacity. The grain system fails to provide a consistent substrate texture across all sections.
 
-The secondary issue specific to this project: the `app/reference/` and `app/start/` routes may be renamed as part of the v1.5 redesign. Each rename that is not covered by a redirect in `next.config.ts` creates a silent 404 for any external link. The sitemap at `app/sitemap.ts` also needs updating — a sitemap pointing to old URLs tells Google to crawl URLs that no longer exist.
+**Prevention:**
+Switch grain overlay to `mix-blend-mode: overlay`, which works on both light and dark backgrounds. Audit bgShift sections before setting 0.12 as the grain baseline to confirm the intended effect is visible on all section backgrounds.
 
-The tertiary issue: Next.js `next.config.ts` static redirects have a 1,024 limit on Vercel. This project is unlikely to exceed this limit for route renames (single-digit count of renamed routes), so the static redirect approach is appropriate. Do not use Middleware for this — it adds latency to every request.
+**Phase to address:** Grain baseline raise phase.
 
-**Why it happens:**
-Route renames feel like a local change (rename a folder), but they are breaking changes to the URL structure. In SPAs, navigating within the app uses the router, masking the 404. The 404 only appears to external traffic and search engines.
+---
 
-**How to avoid:**
-- For every directory renamed in `app/`, add a `permanent: true` redirect in `next.config.ts` before the rename is deployed:
+### Pitfall 12: Particle Field Must Fully Stop RAF Loop Under `prefers-reduced-motion`
+
+**What goes wrong:**
+The standard `prefers-reduced-motion` mitigation for animated effects is to slow the animation to near-zero rather than stop it. For a Three.js particle field, "near-zero speed" still runs the `requestAnimationFrame` loop every frame, consuming GPU time and triggering repaints. The correct implementation is to cancel the RAF loop entirely and render a single static frame of particle positions.
+
+The existing WebGL scenes have explicit reduced-motion guards; the particle field spec does not yet document its reduced-motion behavior. This is likely to be omitted in implementation.
+
+**Prevention:**
+In the particle field implementation spec, explicitly require: "Under `prefers-reduced-motion: reduce`, cancel the rAF loop via `cancelAnimationFrame()`. Render one static frame at initialization. Register a `matchMedia` listener to restart/stop the loop if the preference changes dynamically."
+
+**Phase to address:** Particle field implementation phase. Include in the acceptance criteria for that phase.
+
+---
+
+### Pitfall 13: `will-change` Abuse Causes Compositor Layer Explosion on Mobile
+
+**What goes wrong:**
+`will-change: transform` or `will-change: opacity` applied to multiple layered effect elements simultaneously creates a compositor layer for each element. Each compositor layer consumes additional GPU memory — the texture must be uploaded and stored. On mobile devices, GPU memory is shared with system RAM (typically 1–2GB total on older iPhones). With 8 effect layers simultaneously active and each promoted to a compositor layer, GPU memory pressure can trigger browser crashes on lower-end devices.
+
+The pattern that causes this: a developer adds `will-change: transform` to GrainOverlay, VHSOverlay, HalftoneTexture, and MeshGradient to "improve performance," when those effects are already compositor-thread operations by nature of their CSS properties.
+
+**Prevention:**
+- Apply `will-change` only to elements that will actually animate (change in value over time), and remove it after animation ends.
+- Effect overlays that are static (grain doesn't animate, scan lines scroll at a fixed pace) should never have `will-change`.
+- For the idle escalation GSAP tweens, set `will-change` at tween start and clear it at tween complete:
   ```typescript
-  redirects: async () => [
-    { source: '/old-route', destination: '/new-route', permanent: true },
-    { source: '/old-route/:path*', destination: '/new-route/:path*', permanent: true },
-  ]
+  gsap.set(element, { willChange: "opacity" });
+  gsap.to(element, { opacity: 1, onComplete: () => gsap.set(element, { willChange: "auto" }) });
   ```
-- Update `app/sitemap.ts` in the same commit as the rename.
-- After deploy, use Google Search Console's URL Inspection tool to request indexing of new URLs and submit the updated sitemap.
-- `permanent: true` generates a 308 (Next.js) / 301 (traditional). Both pass link equity. Use `permanent: true` for all route renames — these are permanent, not temporary moves.
 
-**Warning signs:**
-- Any renamed `app/` directory without a corresponding redirect in `next.config.ts`.
-- `app/sitemap.ts` still references old route paths after a rename.
-- Vercel deployment log shows no redirect entries for renamed routes.
-
-**Phase to address:** Route architecture phase (before any routes are renamed). Establish the redirect-before-rename protocol. Add a pre-deploy check: `grep` for old route strings in `next.config.ts` to confirm coverage.
+**Phase to address:** Any phase adding effects with animation. Establish this rule before the first effect is implemented.
 
 ---
 
-### Pitfall 8: GSAP ScrollTrigger Accumulates Instances Across React Re-Renders Without Cleanup
+### Pitfall 14: VHS Effect Storybook Stories Clip at Canvas Boundary
 
 **What goes wrong:**
-In Next.js App Router with React Strict Mode (development), effects run twice. Without proper cleanup, each double-invocation creates two ScrollTrigger instances for the same element. In production, route navigation that re-mounts a page component creates a fresh ScrollTrigger instance without killing the previous one — because the previous component unmounted but its ScrollTrigger was not killed.
+VHSOverlay uses `position: fixed; inset: 0`, which positions the overlay relative to the browser viewport. In Storybook's canvas, fixed-position elements render relative to the canvas element's frame, not the browser viewport. Scan lines appear to clip at story canvas boundaries rather than covering a full simulated screen. The story renders misleadingly — it looks like the effect has a bug, when the effect is correct in production.
 
-With 200-300vh scroll sections and multiple `ScrollTrigger.create()` calls per page, accumulated stale instances cause animations to fire multiple times per scroll event, produce incorrect pin behavior (two pin-spacers for one element), and degrade scroll performance.
+**Prevention:**
+Add a Storybook decorator for effect overlay stories that wraps the canvas in a `position: relative; overflow: hidden; height: 600px` container. Change `VHSOverlay` from `position: fixed` to `position: absolute` within this decorator context, or create a separate story variant (`VHSOverlay.Contained`) specifically for Storybook demonstration.
 
-**Why it happens:**
-`ScrollTrigger.create()` registers globally. If the component that created it is unmounted without calling `trigger.kill()`, the trigger persists in ScrollTrigger's global registry. The next mount creates a duplicate. This is the single most common GSAP + React bug.
-
-**How to avoid:**
-- Use `useGSAP()` hook exclusively (from `@gsap/react`). It provides automatic context-based cleanup: all ScrollTriggers created within the `useGSAP` callback are automatically killed when the component unmounts.
-- Never use `useEffect` for GSAP animations in this codebase — `useGSAP` handles cleanup correctly, `useEffect` requires manual `gsap.context().revert()` or `trigger.kill()`.
-- In the GSAP provider / root layout, call `ScrollTrigger.clearScrollMemory()` on route change if any stale triggers are suspected.
-- The existing animation components in this project use `useGSAP` — maintain this pattern for all v1.5 scroll work.
-
-**Warning signs:**
-- An animation fires twice per scroll event.
-- Two `pin-spacer` elements around the same section in the DOM.
-- `ScrollTrigger.getAll().length` grows with each page navigation rather than staying constant.
-
-**Phase to address:** Scroll animation architecture phase. Audit all existing `useGSAP` usages before adding new scroll sections to confirm cleanup is present. Then apply consistently to all v1.5 scroll work.
+**Phase to address:** Effect Storybook story implementation phase. Include in the story template for each fixed-position effect.
 
 ---
 
-### Pitfall 9: Bundle Size Bloat From Importing GSAP Plugins and Three.js at Module Level
+## Phase-Specific Warnings
 
-**What goes wrong:**
-GSAP's `ScrollTrigger` plugin adds ~48KB (minified, pre-gzip). Three.js adds ~600KB (minified). If these are imported at the top of a component that is included in the root layout, they are bundled into the initial JS chunk and block TTI. On a portfolio/design-system site where some routes have no animations, this overhead is unnecessary.
-
-The existing project already has lazy-loaded variants (`glsl-hero-lazy.tsx`, `signal-mesh-lazy.tsx`, `signal-overlay-lazy.tsx`) — this pattern is correct and must be extended to all new WebGL sections in v1.5.
-
-The second vector: if multiple new scroll-animated sections each import GSAP plugins independently without a centralized registration, Next.js may bundle ScrollTrigger multiple times if tree-shaking does not deduplicate across dynamic import boundaries.
-
-**Why it happens:**
-Adding an import to a component is the path of least resistance. The bundle impact is invisible during development. Bundle analysis is typically only run at milestone end, after the damage is done.
-
-**How to avoid:**
-- All new Three.js components must use the `-lazy.tsx` pattern: `next/dynamic` with `ssr: false` and `loading` skeleton.
-- Register GSAP plugins (ScrollTrigger, ScrollSmoother) once in a centralized provider or root layout effect — not in each component:
-  ```typescript
-  gsap.registerPlugin(ScrollTrigger);
-  ```
-- Run `ANALYZE=true pnpm build` after implementing each new major scroll section, not just at milestone end.
-- Target: initial JS bundle should not grow by more than 15KB per new scroll section (excluding the lazily-loaded Three.js payloads).
-- The 200KB initial page weight limit from `CLAUDE.md` applies. Track this at each phase, not just at the end.
-
-**Warning signs:**
-- `ANALYZE=true pnpm build` shows a new chunk containing both GSAP and page component code in the initial load.
-- `next/dynamic` is not used for any new Three.js component.
-- GSAP plugin registration appears in more than one component file.
-
-**Phase to address:** Every scroll/WebGL implementation phase. Run bundle analyzer after each phase as a gate condition before moving to the next.
+| Phase Topic | Likely Pitfall | Mitigation |
+|---|---|---|
+| Phase 0: Token bridge import | SSR color flash (magenta primary, white background) | Inline critical token overrides; server-render `class="dark"` unconditionally |
+| Phase 1: Copy audit | `phase-35-metadata.spec.ts` silent breakage | File:line cross-reference checklist; atomic commit with spec update |
+| Phase 1: Copy audit | Storybook story text drift | Cross-reference copy changes against story default args |
+| Grain baseline raise | Idle escalation runs in wrong direction | Recalibrate all 4 escalation targets before changing baseline |
+| Grain baseline raise | Invisible grain on light bgShift sections | Switch blend mode to `overlay`; audit all section backgrounds |
+| Grain baseline raise | All 52 stories visually change silently | Capture Playwright screenshot baselines before the change |
+| VHSOverlay wiring | `var()` references in `backdrop-filter` fail on Safari | Use literals; `-webkit-backdrop-filter` prefix required |
+| VHSOverlay wiring | VHS runs at full opacity at intensity 0 | Rewrite tokens as `calc(value * var(--signal-intensity))` |
+| Halftone implementation | CPU compositing scroll jank on non-M1 hardware | Constrain filter region; test on Intel GPU; avoid animating feTurbulence |
+| Halftone + Grain combined | Moiré interference pattern | Combined human visual review at intensity 0.5 and 1.0; adjust frequency gap |
+| Particle field | WebGL context limit on iOS Safari | Integrate into singleton renderer; implement context loss handlers |
+| Particle field | RAF loop runs under `prefers-reduced-motion` | Cancel RAF loop; render single static frame |
+| GSAP idle escalation | CSS transition conflict with tweened properties | Remove CSS transitions from GSAP-owned properties; tween at `:root` level |
+| Any effect with animation | `will-change` applied to static overlays | Apply only at tween start; clear at tween complete |
+| Combined effects at 1.0 | No combined budget; no automated detection | Manual visual review gate: all 8 effects simultaneously at intensity 1.0 before phase sign-off |
+| Storybook effect stories | Fixed-position effects clip at story canvas | Story decorator with `position: relative; overflow: hidden` wrapper |
 
 ---
 
-### Pitfall 10: Overscroll and Rubber-Banding Break Lenis on iOS
+## Confidence Assessment
 
-**What goes wrong:**
-iOS Safari implements native rubber-banding (elastic overscroll) at the document level. Lenis intercepts scroll events to apply smooth scrolling, but when the user overscrolls past the top or bottom of the page, the native rubber-band animation fights Lenis's scroll normalization. The result: the page snaps back to the Lenis-controlled position instead of rubber-banding smoothly, which feels broken and unnatural.
-
-With 200-300vh scroll sections, users frequently reach the "bottom" of a section that is still mid-scroll, and the overscroll behavior fires unexpectedly at section boundaries.
-
-**Why it happens:**
-Lenis uses `overflow: hidden` on the `<html>` element and drives scroll via `transform` on the document body (in virtual scroll mode) or via `window.scrollTo` with `behavior: instant` (in native scroll mode). The collision between Lenis's scroll model and iOS's rubber-band implementation is documented in the lenis GitHub issues. The `prevent` option and `overscroll-behavior: none` CSS are the standard mitigations.
-
-**How to avoid:**
-- Add `overscroll-behavior: none` to `<html>` in `globals.css`. This disables the native rubber-band on iOS and Android Chrome, which is acceptable since Lenis provides its own scroll feel.
-- Configure Lenis with `overscroll: false` if the version supports it.
-- Test scroll behavior specifically at the top and bottom of each scroll section on a physical iOS device, not simulator.
-- For sections where overscroll is intentional (pull-to-refresh patterns, if any) — exempt those from the `overscroll-behavior` rule. This project has no such patterns.
-
-**Warning signs:**
-- Page feels "stuck" or "snaps back" when scrolling past the bottom of a pinned section on iOS.
-- Console shows Lenis fighting with native scroll position during the rubber-band animation frame.
-- `scrollY` reported by Lenis does not match `window.scrollY` during overscroll.
-
-**Phase to address:** Scroll infrastructure phase. Add `overscroll-behavior: none` to `globals.css` before any new scroll sections are implemented.
-
----
-
-## Technical Debt Patterns
-
-Shortcuts that seem reasonable but create long-term problems.
-
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Multiple Three.js renderers (one per canvas) | Simple component isolation | Mobile context limit crash on iOS Safari at 3+ canvases | Never for routes with 3+ WebGL sections |
-| `useEffect` instead of `useGSAP` for scroll animations | Familiar React API | ScrollTrigger instances leak across route navigations; double-fire in React Strict Mode | Never |
-| Opacity `0` for text reveal on LCP element | Common animation choice | Chromium bug reports NO_LCP to Lighthouse; Lighthouse score tanks | Never — use `0.01` or clip-path instead |
-| Importing Three.js in a non-lazy component | Simpler import structure | ~600KB in initial JS bundle, TTI/LCP destroyed | Never for above-fold components |
-| Static redirects only (no sitemap update on rename) | Faster rename workflow | Search Console crawls old URLs; deindexing risk | Never |
-| Skipping `document.fonts.ready` ScrollTrigger refresh | One less async wait | Scroll animations desynced on first load when fonts cause reflow | Never on pages with Anton/display fonts |
-| `ScrollTrigger.normalizeScroll()` + Lenis together | Seems like belt-and-suspenders | Conflicts produce double-normalization, scroll position errors in Safari | Never — pick one |
-
----
-
-## Integration Gotchas
-
-Common mistakes when wiring new features into the existing system.
-
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| Lenis + new pinned sections | Use `scrollerProxy` (old pattern) | Use GSAP ticker integration: `lenis.on('scroll', ScrollTrigger.update)` + `gsap.ticker.add((time) => lenis.raf(time * 1000))` with `autoRaf: false` |
-| Three.js + route navigation | Skip cleanup on component unmount | `renderer.dispose()` + `renderer.forceContextLoss()` + scene traverse dispose in `useGSAP`/`useEffect` cleanup |
-| Animated text overlay on WebGL | Start opacity at `0` | Start at `opacity: 0.01` or use `clip-path`/`translateY` reveal — avoid LCP suppression bug |
-| New WebGL section + mobile | One renderer per canvas | One renderer per route; switch scenes through single renderer, or use IntersectionObserver to dispose/reinit |
-| Route rename + SEO | Rename directory, deploy, add redirect later | Add redirect to `next.config.ts` first, then rename, deploy both changes together |
-| GSAP ScrollTrigger + React Strict Mode | `useEffect` with manual cleanup | `useGSAP` hook — it handles double-invocation in Strict Mode correctly |
-| Bundle size + Three.js sections | Direct import at top of component | `next/dynamic` with `ssr: false` for all Three.js components, following the existing `*-lazy.tsx` pattern |
-
----
-
-## Performance Traps
-
-Patterns that work at small scale but fail with multiple scroll sections.
-
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| 3+ WebGL contexts on one page route | Black canvas on iOS Safari; "too many active WebGL contexts" warning | One renderer per route; scene switching | 3 canvases on iPhone Safari |
-| GPU memory not disposed between routes | Tab crash after 5-10 navigation events; GPU memory climbs in Chrome DevTools | Explicit dispose in every Three.js component cleanup | After ~5 route navigations |
-| Pin-spacer dimensions wrong after font load | Scroll animations offset on first load; correct after refresh | `document.fonts.ready.then(ScrollTrigger.refresh)` in root layout | On every first page load with Anton/display fonts |
-| ScrollTrigger instances accumulating | Animations fire multiple times; two pin-spacers on one element | `useGSAP` exclusively for all GSAP work | After 2+ route navigations to pages with scroll animations |
-| GSAP + Three.js in initial bundle | LCP > 2s; TTI > 3s on mobile | `next/dynamic` with `ssr: false` for all heavy animation components | Immediately, on first mobile Lighthouse run |
-| `overscroll-behavior` not set | iOS rubber-band fights Lenis on section boundaries | `overscroll-behavior: none` in `globals.css` | On every scroll-intensive route on iOS |
-
----
-
-## UX Pitfalls
-
-Common experience mistakes when adding Awwwards-level scroll animations.
-
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| Scroll animations with no `prefers-reduced-motion` check | Users with vestibular disorders experience disorientation or nausea | Wrap all GSAP ScrollTrigger animations in a `prefers-reduced-motion` check; disable scroll-driven animations (keep layout, remove motion) |
-| 300vh pinned section with no scroll progress indicator | Users don't know how much scroll travel remains; feel lost | Use an `SFProgressBar` or subtle scroll indicator tied to scroll progress |
-| WebGL section that blocks interaction during load | Clicks on nav/links during WebGL init are lost | Show the page chrome (nav, text) before Three.js loads; use Suspense/skeleton for canvas |
-| Horizontal scroll inside a vertical scroll page | Mobile users get confused by scroll axis switching | Only use horizontal scroll on dedicated sections with clear affordance cues |
-| Transition out of pinned section feels abrupt | Jarring snap from pinned to flowing layout | Add a short unpin animation (ease-out over 200-300ms) when leaving the pinned zone |
-
----
-
-## "Looks Done But Isn't" Checklist
-
-Things that appear complete but are missing critical pieces.
-
-- [ ] **WebGL cleanup:** Every Three.js component has `renderer.dispose()` + scene traverse dispose in cleanup — verify with `renderer.info.memory` logged before/after route navigation
-- [ ] **ScrollTrigger cleanup:** `ScrollTrigger.getAll().length` stays constant across route navigations — not growing
-- [ ] **iOS pin jump:** Pinned sections tested on a physical iPhone in portrait Safari — no position jump after scrolling through pinned zone
-- [ ] **Font-ready refresh:** `document.fonts.ready.then(ScrollTrigger.refresh)` exists in root layout GSAP provider
-- [ ] **LCP text overlay:** All hero text overlays start at `opacity: 0.01` (not `0`) or use non-opacity reveal — Lighthouse does not report NO_LCP
-- [ ] **Lenis integration pattern:** `autoRaf: false` is set; no `scrollerProxy` usage; ticker integration is the active pattern
-- [ ] **Bundle:** `ANALYZE=true pnpm build` run after each new scroll/WebGL section — no Three.js in initial chunk
-- [ ] **Route redirects:** Every renamed route has a permanent redirect in `next.config.ts` AND `sitemap.ts` is updated
-- [ ] **overscroll-behavior:** `overscroll-behavior: none` present in `globals.css` or root layout styles
-- [ ] **WebGL context count:** Maximum 2 Three.js canvases active simultaneously on any page route (accounting for existing `glsl-hero` and `signal-mesh`)
-- [ ] **prefers-reduced-motion:** All new scroll animations check `window.matchMedia('(prefers-reduced-motion: reduce)')` or use CSS `@media (prefers-reduced-motion)` override
-- [ ] **Lighthouse gate:** Lighthouse 100/100 confirmed after each phase, not just at milestone end
-
----
-
-## Recovery Strategies
-
-When pitfalls occur despite prevention, how to recover.
-
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| iOS pin jump discovered in QA | MEDIUM | Add `ScrollTrigger.normalizeScroll(true)` + `ignoreMobileResize: true` config. Retest on physical device. |
-| WebGL context loss on mobile | HIGH | Refactor to single-renderer architecture with scene switching. Timeline: 1-2 days per affected section. |
-| GPU memory leak discovered | MEDIUM | Add dispose traverse to each Three.js component cleanup. Profile with Chrome Memory tab to confirm fix. |
-| LCP score tanked by animated text | LOW | Change `opacity: 0` to `opacity: 0.01` in GSAP fromTo. Immediate deploy fix. |
-| Font reflow offsetting scroll animations | LOW | Add `document.fonts.ready.then(ScrollTrigger.refresh)` to root layout. One-line fix, fast deploy. |
-| Stale ScrollTrigger instances | MEDIUM | Convert offending `useEffect` to `useGSAP`. Verify with `ScrollTrigger.getAll().length` logging. |
-| Route 404 from missing redirect | LOW | Add redirect to `next.config.ts`, deploy. Google deindexing risk if the route was live for more than 48h without redirect. |
-| Bundle bloat from non-lazy Three.js | MEDIUM | Convert to `next/dynamic` with `ssr: false`. May require component restructuring if state was shared. |
-| Lenis + pin flicker in Safari | MEDIUM | Audit integration pattern; switch from scrollerProxy to ticker integration; `autoRaf: false`. Test cycle per section. |
-
----
-
-## Pitfall-to-Phase Mapping
-
-How roadmap phases should address these pitfalls.
-
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| Lenis + pin flicker in Safari | Scroll infrastructure setup (first) | Ticker integration pattern confirmed; no scrollerProxy; autoRaf: false |
-| Font-ready ScrollTrigger refresh | Scroll infrastructure setup (first) | `document.fonts.ready.then(ScrollTrigger.refresh)` in root layout |
-| overscroll-behavior iOS | Scroll infrastructure setup (first) | `overscroll-behavior: none` in globals.css |
-| ScrollTrigger cleanup / useGSAP audit | Scroll infrastructure setup (first) | `ScrollTrigger.getAll().length` stable across navigations |
-| iOS address bar pin jump | First pinned section implementation | Physical iPhone Safari test — no jump |
-| WebGL context architecture | WebGL scene planning (before first new canvas) | Max 2 simultaneous Three.js contexts per route confirmed |
-| Three.js dispose on route change | WebGL scene planning (audit existing before adding new) | `renderer.info.memory` stable across navigations |
-| LCP text overlay opacity bug | Hero section implementation | Lighthouse does not report NO_LCP; LCP < 1.0s |
-| Bundle size per section | Each scroll/WebGL implementation phase (gate) | `ANALYZE=true pnpm build` — no Three.js in initial chunk |
-| Route redirects | Route architecture phase | Every renamed route has redirect + sitemap updated |
-| prefers-reduced-motion | Each animation implementation phase | All scroll animations wrapped in motion preference check |
-| Lighthouse 100/100 gate | End of each phase | Lighthouse run — 100/100 across all categories |
+| Finding | Confidence | Basis |
+|---|---|---|
+| Safari `backdrop-filter` + `var()` failure | HIGH | MDN browser compat data issue #25914; active bug tracker entries 2024-2025 |
+| Safari `backdrop-filter` `-webkit-` prefix required | HIGH | MDN compat data; multiple production reports 2024-2025 |
+| WebGL context loss on iOS Safari | HIGH | webkit.org/b/261331; webkit.org/b/262628; confirmed on iOS 17 and 18 |
+| GSAP + CSS transition conflict | HIGH | Official GSAP documentation "Common Mistakes" |
+| SSR flash of wrong color via RSC streaming | HIGH | Next.js discussions/53063; well-documented next-themes pattern |
+| Idle escalation direction failure after baseline raise | HIGH | Directly derived from analyst brief v2 round 3 findings; mathematical certainty |
+| Copy audit → metadata spec silent breakage | HIGH | Directly derived from analyst brief v2 round 4; specific line numbers confirmed |
+| feTurbulence CPU compositing | MEDIUM | Chrome rendering architecture docs; Firefox recently accelerated but Chrome GPU path requires composited source |
+| Grain + halftone moiré | MEDIUM | Physical rendering model; no automated benchmark; requires human visual confirmation |
+| Storybook story visual drift from token changes | MEDIUM | Derived from analyst brief; standard Storybook behavior |
+| Particle field WebGL singleton requirement | MEDIUM | Three.js/react-three-fiber community; iOS context limit documented but exact number varies by device |
+| `will-change` abuse on mobile | MEDIUM | Smashing Magazine rendering docs; GSAP motion library guidance |
 
 ---
 
 ## Sources
 
-- GSAP ScrollTrigger — iOS address bar and pin position jump: https://gsap.com/community/forums/topic/40393-gsap-scrolltrigger-pin-position-is-jumping-on-ios-due-to-its-address-bar/
-- GSAP ScrollTrigger — normalizeScroll docs: https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll()/
-- GSAP ScrollTrigger — 3.12.2 viewport height calculation change: https://gsap.com/community/forums/topic/37591-scrolltrigger-100vh-calculation-change-in-3122/
-- GSAP ScrollTrigger — mobile page jump after pinned section: https://gsap.com/community/forums/topic/37244-page-jump-on-mobile-after-scrolling-past-scrolltrigger-pinned-section/
-- Lenis + ScrollTrigger — pin flickering in Safari: https://gsap.com/community/forums/topic/37653-lenis-scrolltrigger-pin-flickering-issue-in-safari/
-- Lenis + ScrollTrigger — blank space with once/pin/scrub: https://gsap.com/community/forums/topic/44795-scrolltrigger-once-with-pin-and-scrub-lenis-creates-a-blank-space/
-- Lenis + ScrollTrigger — synchronization patterns in React/Next: https://gsap.com/community/forums/topic/40426-patterns-for-synchronizing-scrolltrigger-and-lenis-in-reactnext/
-- Lenis GitHub — iOS scroll top problem: https://github.com/darkroomengineering/lenis/issues/288
-- Three.js forum — too many active WebGL contexts: https://discourse.threejs.org/t/i-have-a-problem-in-warning-too-many-active-webgl-contexts-oldest-context-will-be-lost/41300
-- Three.js forum — dispose things correctly: https://discourse.threejs.org/t/dispose-things-correctly-in-three-js/6534
-- Three.js forum — context lost and memory: https://discourse.threejs.org/t/three-webglrenderer-context-lost-performance-ram/44213
-- react-three-fiber — Too many active WebGL contexts on Safari: https://github.com/pmndrs/react-three-fiber/discussions/2457
-- Mozilla Bugzilla — mobile WebGL 2-context limit: https://bugzilla.mozilla.org/show_bug.cgi?id=1421481
-- Three.js — ImageBitmap texture dispose bug: https://github.com/mrdoob/three.js/issues/23953
-- Lighthouse — NO_LCP error from opacity animation: https://renaissance-design.net/2024/fixing-the-no_lcp-error-in-lighthouse/
-- Lighthouse — opacity: 0 LCP suppression bug: https://dev.to/roman_guivan_17680f142e28/google-lighthouse-failing-with-nolcp-error-1mjo
-- Next.js — redirecting guide: https://nextjs.org/docs/app/guides/redirecting
-- Vercel — redirect limits and dynamic redirects: https://vercel.com/kb/guide/how-can-i-increase-the-limit-of-redirects-or-use-dynamic-redirects-on-vercel
-- Google Search Central — 301 redirects: https://developers.google.com/search/docs/crawling-indexing/301-redirects
-- Next.js bundle optimization and code splitting: https://medium.com/@sohail_saifi/code-splitting-in-next-js-how-i-reduced-initial-bundle-size-by-70-73a4c328cc6c
-- GSAP + Next.js 15 best practices: https://medium.com/@thomasaugot/optimizing-gsap-animations-in-next-js-15-best-practices-for-initialization-and-cleanup-2ebaba7d0232
-- Evil Martians — OffscreenCanvas + Three.js for Web Workers: https://evilmartians.com/chronicles/faster-webgl-three-js-3d-graphics-with-offscreencanvas-and-web-workers
-
----
-
-*Pitfalls research for: SignalframeUX v1.5 — scroll-driven animations, multiple WebGL scenes, route renames, Awwwards-level polish*
-*Researched: 2026-04-07*
+- [GSAP Common Mistakes — Official Documentation](https://gsap.com/resources/mistakes/)
+- [MDN: backdrop-filter `var()` CSS variables not supported in Safari 18 — Issue #25914](https://github.com/mdn/browser-compat-data/issues/25914)
+- [WebKit Bug 261331: WebGL context lost when backgrounding Safari iOS 17](https://bugs.webkit.org/show_bug.cgi?id=261331)
+- [WebKit Bug 262628: WebGL context lost — iOS 17 Safari](https://bugs.webkit.org/show_bug.cgi?id=262628)
+- [Next.js Discussion #53063: Implementing dark mode with App Router + RSC](https://github.com/vercel/next.js/discussions/53063)
+- [Chrome Rendering Architecture: Image Filters and GPU compositing path conditions](https://www.chromium.org/developers/design-documents/image-filters/)
+- [Mozilla dev-platform: Intent to ship WebRender accelerated SVG filter graphs (Firefox 132)](https://groups.google.com/a/mozilla.org/g/dev-platform/c/-M0HVkCWjx0)
+- [Smashing Magazine: GPU Animation Doing It Right — compositor layer memory on mobile](https://www.smashingmagazine.com/2016/12/gpu-animation-doing-it-right/)
+- [Motion.dev: Web Animation Performance Tier List — `will-change` guidance](https://motion.dev/magazine/web-animation-performance-tier-list)
+- [react-three-fiber Discussion #2457: Too many active WebGL contexts on Safari](https://github.com/pmndrs/react-three-fiber/discussions/2457)
+- [ANL-analyst-brief-v2.md: Rounds 2, 3, 4, 5, 6 — project-specific risk analysis](file://.planning/ANL-analyst-brief-v2.md)

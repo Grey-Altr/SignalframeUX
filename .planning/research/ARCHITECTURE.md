@@ -1,547 +1,564 @@
-# Architecture Research — v1.5 Redesign
+# Architecture Patterns — v1.7 Aesthetic Effects Integration
 
-**Domain:** Design system showcase site — 6-section homepage, route renames, 200-300vh scroll sections, multiple WebGL scenes, 4 redesigned subpages
-**Researched:** 2026-04-07
-**Confidence:** HIGH — all findings based on direct codebase audit of existing implementation
+**Domain:** SIGNAL layer compositing architecture for 8 visual effects
+**Researched:** 2026-04-11
+**Confidence:** HIGH — all findings based on direct codebase audit (globals.css, vhs-overlay.tsx, global-effects.tsx, signal-canvas.tsx, signal-overlay.tsx, tokens.css, aesthetic-prototypes.md, analyst-brief-v2.md)
 
 ---
 
-## System Overview
+## Existing Layer Model (Verified)
+
+Before designing the integration architecture, the actual layer stack in production must be understood. This is what currently renders in z-index order:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      ROUTE LAYER (app/)                              │
-│                                                                       │
-│  /           /inventory      /tokens     /start    /reference        │
-│  (was /)     (was /components) (same)    (same)    (same)            │
-│  Server      Server           Server     Server    Server            │
-│                                                                       │
-│  next.config.ts: redirects /components → /inventory (308 permanent) │
-└──────────────────────────┬──────────────────────────────────────────┘
-                            │
-┌──────────────────────────▼──────────────────────────────────────────┐
-│                     BLOCK LAYER (components/blocks/)                  │
-│                                                                       │
-│  HomePage sections (NEW):     Existing subpage blocks:               │
-│  EntryHero                    ComponentsExplorer (→/inventory)       │
-│  ProofSection                 ComponentDetail                        │
-│  SignalSection                APIExplorer                            │
-│  SystemSection                TokenExplorer                          │
-│  PhilosophySection            StartGuide                             │
-│  CtaSection                                                          │
-└──────────────────────────┬──────────────────────────────────────────┘
-                            │
-┌──────────────────────────▼──────────────────────────────────────────┐
-│                   WEBGL LAYER (SignalCanvas singleton)                │
-│                                                                       │
-│  SignalCanvas (fixed canvas, z:-1, full viewport)                    │
-│  ┌────────────────────────────────────────────────────────────────┐  │
-│  │  Map<id, SceneEntry>                                            │  │
-│  │                                                                  │  │
-│  │  Scene A: EntryHero GLSL field (GLSLHero pattern)               │  │
-│  │  Scene B: ProofSection demo mesh (SignalMesh pattern)           │  │
-│  │  Scene C: SignalSection generative field                        │  │
-│  │                                                                  │  │
-│  │  renderAllScenes() — scissor/viewport split per scene rect      │  │
-│  │  IntersectionObserver per scene — offscreen scenes skip loop    │  │
-│  └────────────────────────────────────────────────────────────────┘  │
-│                                                                       │
-│  GSAP ticker: single RAF loop drives all 3 scenes simultaneously     │
-└──────────────────────────┬──────────────────────────────────────────┘
-                            │
-┌──────────────────────────▼──────────────────────────────────────────┐
-│              SCROLL LAYER (Lenis + GSAP ScrollTrigger)                │
-│                                                                       │
-│  LenisProvider: instance.on("scroll", ScrollTrigger.update)          │
-│  gsap.ticker drives both Lenis.raf() AND SignalCanvas render loop    │
-│                                                                       │
-│  Per-section ScrollTriggers:                                          │
-│  - Standard sections: once: true reveal animations                   │
-│  - PinnedSection (200-300vh): pin: true, scrub: 1, anticipatePin:1   │
-│    ↳ gsap.context().revert() on unmount — critical for cleanup       │
-└─────────────────────────────────────────────────────────────────────┘
+z: -1         SignalCanvas fixed canvas (WebGL scenes via scissor/viewport)
+z: 1          #bg-shift-wrapper (section background colors)
+z: 10         Page content (blocks, typography, SF components)
+z: 100        .sf-idle-overlay (scan line drift, fixed, pointer-events: none)
+z: 200        .sf-scroll-top button
+z: 300        .sf-progress bar
+z: 500        CanvasCursor canvas (crosshair + particle trail, Canvas 2D)
+z: 9999       Nav
+z: 99999      .vhs-overlay (the entire VHS layer stack)
 ```
 
-### Component Responsibilities
+The VHS overlay occupies `--z-vhs: 99999`, sitting above everything including nav. It is the topmost element in the compositing order. This is intentional — it must read as a physical substrate applied over the entire display.
 
-| Component | Responsibility | State |
-|-----------|----------------|-------|
-| `app/page.tsx` | 6-section homepage shell, Server Component, metadata | REWRITE |
-| `components/blocks/entry-hero.tsx` | ENTRY section — hero content + GLSLHero WebGL background | NEW |
-| `components/blocks/proof-section.tsx` | PROOF section — live component demo + SignalMesh WebGL | NEW |
-| `components/blocks/signal-section.tsx` | SIGNAL section — generative surface explainer + 3rd WebGL scene | NEW |
-| `components/blocks/system-section.tsx` | SYSTEM section — token/component counts, static or mild animation | NEW |
-| `components/blocks/philosophy-section.tsx` | PHILOSOPHY section — FRAME/SIGNAL theory, DU/TDR lineage | NEW |
-| `components/blocks/cta-section.tsx` | CTA section — call to action, links to /inventory and /start | NEW |
-| `components/animation/pinned-section.tsx` | 200-300vh pin/scrub scroll container — reusable wrapper | NEW |
-| `app/inventory/page.tsx` | Renamed /components route — identical to current /components/page.tsx | NEW (copy) |
-| `app/components/` directory | Deleted after redirect is confirmed working | DELETE |
-| `next.config.ts` | Permanent 308 redirects: /components → /inventory | MODIFY |
-| `lib/signal-canvas.tsx` | No changes required — singleton handles N scenes already | UNCHANGED |
-| `hooks/use-signal-scene.ts` | No changes required — UUID-keyed, supports concurrent registrations | UNCHANGED |
-| `components/layout/page-animations.tsx` | Add data-anim selectors for new homepage sections | MODIFY |
+### VHS Overlay Internal Layer Structure (7 sub-layers)
 
----
+All inside `.vhs-overlay` (fixed, inset: 0, `filter: blur(0.8px) brightness(1.08) contrast(1.04)`):
 
-## Question 1: Can SignalCanvas Handle 3 WebGL Scenes on One Page?
+| Sub-layer | Element | Technique | Current Opacity |
+|-----------|---------|-----------|----------------|
+| CRT lines | `.vhs-crt` | `repeating-linear-gradient` 4px period | `var(--sf-vhs-crt-opacity)` = **0.2** (hardcoded token) |
+| Scanline fast | `.vhs-scanline` | `::before` 1px magenta glow line, `::after` backdrop-filter | GSAP: `y: 100vh` over 28s |
+| Scanline slow | `.vhs-scanline--slow` | Same structure, 1px, no glow | GSAP: `y: 100vh` over 84s |
+| Noise | `.vhs-noise` | Inline SVG feTurbulence, baseFrequency 0.85 | `var(--sf-vhs-noise-opacity)` = **0.015** (hardcoded token) |
+| Burst | `.vhs-burst` | Inline SVG feTurbulence, baseFrequency 1.2 | GSAP: 0 → 0.015–0.035 every 12–25s |
+| Glitch | `.vhs-glitch` | Linear gradient, `mix-blend-mode: difference` | GSAP: 0 → clip-path slices every 25–50s |
+| Aberration | `.vhs-aberration--top/bottom` | 140px gradient strips at edges | ~0.12 max at edges |
 
-**Answer: YES — the architecture already supports this. No changes to the singleton required.**
+### Grain Layer
 
-The singleton uses `Map<string, SceneEntry>` keyed by `crypto.randomUUID()`. Each `useSignalScene()` call registers one entry. The `renderAllScenes()` function iterates all entries and uses WebGL scissor/viewport splitting to isolate each scene to its container's `getBoundingClientRect()`. Three concurrent scenes means three scissor calls per GSAP ticker frame.
+`.sf-grain::after` — `position: absolute` pseudo-element, `background: url("/grain.svg") repeat`, `mix-blend-mode: multiply`, `opacity: var(--sf-grain-opacity)` = **0.03** (hardcoded token).
 
-**Key verified facts from codebase audit:**
-- `registerScene()` and `deregisterScene()` are already N-safe — no singleton assumptions about exactly 1 scene
-- `IntersectionObserver` per scene already gates offscreen scenes out of the render loop — critical when 3 scenes exist and the user is not in all of their viewports simultaneously
-- `disposeScene()` is called on unmount by the hook — GPU memory for unmounted scenes is correctly freed
-- The single WebGL renderer is reused across all scenes — this is correct; multiple WebGLRenderer instances on one page is a known GPU context limit pitfall
+Animated variant: `.sf-grain-animated::after` — same grain with `@keyframes sf-grain-drift` (0.8s steps(4) infinite), triggered by idle state.
 
-**Performance constraint:** Three scenes that are all simultaneously visible will all render every ticker frame. The existing `if (!entry.visible) return` guard in `renderAllScenes()` relies on the IntersectionObserver correctly tracking visibility. If the page is laid out such that all 3 scene containers are on-screen at the same time, all 3 will render. Design the sections to have sufficient height so only 1-2 are intersecting at any given scroll position.
+### Signal Intensity — Current State
 
-**MutationObserver duplication risk:** Each WebGL component (`GLSLHero`, `SignalMesh`) declares its own module-level `_signalObserver`. If a third component follows the same pattern with a module-level variable, all three will share-clobber the same observer slot at the module level. The fix: move MutationObserver management into the singleton (`lib/signal-canvas.tsx`) as a shared observer, called once. Each scene reads the cached values from the singleton. This prevents 3 separate observers on `document.documentElement`.
+`--signal-intensity: 0.5` is the single dial. It is read by:
+- WebGL shader uniforms (`uIntensity`) in GLSLHero, ProofShader, SignalMesh
+- `SignalOverlay` panel displays its value
+- `InstrumentHUD` shows `SIG:0.5`
+
+**Critical finding (verified, not assumed):** `--signal-intensity` does NOT govern the VHS overlay. `--sf-vhs-crt-opacity` (0.2) and `--sf-vhs-noise-opacity` (0.015) are hardcoded tokens in `lib/tokens.css:145-148` and `globals.css:164-165`. There is no CSS calc() expression linking them to `--signal-intensity`. VHS runs at full token values regardless of what the intensity dial is set to.
+
+This is the core architectural inconsistency the analyst identified. The system claims a single dial governs the aesthetic register, but VHS is exempt from that dial.
 
 ---
 
-## Question 2: Route Rename — /components → /inventory
+## The Compositing Question: Separate Z-Layers vs. Single Composite
 
-**Mechanism: `next.config.ts` `redirects` array + new `app/inventory/` directory.**
+The downstream consumer question was "separate z-layers, single composite layer, or something else?" The answer is the system already uses separate z-layers and that architecture is the correct one to extend — with one refinement.
 
-This is the lowest-risk approach. The redirects function runs at the edge, before React rendering. No middleware needed.
+**Recommendation: Stratified z-layer model with two compositing groups.**
 
-**Exact implementation pattern** (verified against Next.js App Router docs):
+Do not collapse effects into a single composite layer. CSS `filter` on a wrapper compositor-promotes all children, which prevents children from using `mix-blend-mode` relative to content below. The existing VHS overlay cannot use `mix-blend-mode: difference` on its glitch layer while also blending against page content — the outer `filter` creates an isolated compositing context. This is already an accepted constraint in the current code. Accept it; do not fight it.
+
+Instead, define two compositing groups with different compositing semantics:
+
+**Group A — Substrate effects (sit above content, multiply/overlay blend):**
+- Grain overlay (CSS pseudo-element)
+- CRT scanlines (CSS)
+- VHS enhancements (extensions of the existing `.vhs-overlay`)
+- Halftone texture (new, CSS SVG filter)
+- Circuit overlay (new, CSS)
+
+All Group A effects are composited inside the existing `.vhs-overlay` container (z: 99999) or at the `.sf-grain` level. They apply globally to all content beneath them.
+
+**Group B — Generative background (sit beneath content, render as world-space):**
+- Mesh gradient / organic color field (new, CSS or WebGL)
+- Particle field (new, WebGL — adds to SignalCanvas)
+- WebGL shaders already in place (GLSLHero, GLSLSignal, ProofShader, SignalMesh)
+
+Group B effects are composited at z: -1 (the SignalCanvas canvas) or as `position: fixed; z-index: -1` CSS elements behind the content layer.
+
+**Group C — Event-driven overlays (fire on trigger, then recede):**
+- Glitch transition (new, positioned on top of content, then opacity: 0)
+- Symbol system / CD glyphs (new, decorative, positioned)
+
+Group C effects live at the existing `--z-overlay` (100) level and are activated by the idle escalation system or specific events.
+
+---
+
+## The Intensity Problem — Why Linear Scaling Fails
+
+The analyst identified this clearly and it is borne out by the codebase. A linear 0–1 dial cannot govern 8 heterogeneous effects coherently because each effect has a different perceptual threshold:
+
+| Effect | Perceptual threshold | Linear behavior at 1.0 | Actual need |
+|--------|---------------------|------------------------|-------------|
+| CRT scan lines | Visible at ~5% opacity | 0.2 opacity at 1.0 is strong | Logarithmic: loud fast, quiet long tail |
+| Grain | "Film texture" → "noise interference" at ~0.12 | 0.12 is already at the limit | Hard ceiling, not linear |
+| Chromatic aberration | Atmospheric at 1–2px, broken at 5px+ | Unbounded linear → visual break | Clamped: max 3px regardless of intensity |
+| Glitch timing | Rare (25–50s interval) is diegetic; frequent (3s) is broken | Linear frequency → visual chaos | Threshold-gated: only fires above 0.7 |
+| Halftone | Texture at 10–15%, pattern foreground at 30% | Linear → occlude content | Hard ceiling at 15%, off below 0.4 |
+| Particle field | Subtle at 2k particles, busy at 10k | Linear particle count → mud | Stepped: 0-0.4 off, 0.4-0.7 sparse, 0.7-1.0 dense |
+| Mesh gradient | Always atmospheric; safe to scale linearly | No collision | Linear opacity OK |
+| Circuit overlay | Invisible behind grain above 0.08 | Layer occluded → wasted | Must be exclusive with high grain |
+
+### Solution: Perceptual Intensity Curves
+
+Instead of each effect reading `--signal-intensity` directly, route intensity through per-effect derived custom properties that encode the correct perceptual mapping. These are computed once (by a small JS function in `global-effects.tsx` on intensity change) and written to `:root`.
+
+This is the "intensity bridge" pattern. The SignalOverlay already writes to `:root`. Extend this pattern.
+
+**New derived custom properties (computed from `--signal-intensity`):**
+
+```css
+/* These are COMPUTED values, not authored by designers.
+   They are set by updateSignalDerivedProps() in global-effects.tsx. */
+--signal-grain-opacity:       /* 0–0.10, logarithmic, ceiling at 0.10 */
+--signal-vhs-crt-opacity:     /* 0.05–0.22, replaces hardcoded --sf-vhs-crt-opacity */
+--signal-vhs-noise-opacity:   /* 0.005–0.025, replaces hardcoded --sf-vhs-noise-opacity */
+--signal-halftone-opacity:    /* 0–0.12, off below intensity 0.4, ceiling at 0.12 */
+--signal-circuit-opacity:     /* 0–0.04, off above intensity 0.6 (grain occlusion) */
+--signal-aberration-px:       /* 0–3px, clamped, feeds CSS transforms */
+--signal-mesh-gradient:       /* 0–1, linear, safe for this effect */
+```
+
+**The mapping function lives in `global-effects.tsx`** (the file that already orchestrates GlobalEffects). It fires on every `--signal-intensity` change via a MutationObserver on `document.documentElement` style attribute (the same observer pattern the WebGL scenes use via `getSignalVars()` in the singleton).
 
 ```typescript
-// next.config.ts
-const nextConfig: NextConfig = {
-  experimental: {
-    optimizePackageImports: ["lucide-react"],
-  },
-  async redirects() {
-    return [
-      {
-        source: "/components",
-        destination: "/inventory",
-        permanent: true,  // 308 — tells search engines and browsers to update bookmarks
-      },
-      {
-        source: "/components/:path*",
-        destination: "/inventory/:path*",
-        permanent: true,  // Covers any subroutes that may exist in future
-      },
-    ];
-  },
-};
-```
+// In global-effects.tsx — new function, called from a useEffect
+function updateSignalDerivedProps(intensity: number): void {
+  const root = document.documentElement;
 
-**Build order for this rename:**
-1. Create `app/inventory/` directory with `page.tsx` (copy from `app/components/page.tsx`)
-2. Add redirects to `next.config.ts`
-3. Update all internal `href="/components"` links (Nav, any CTA buttons) to `href="/inventory"`
-4. Verify redirect works in dev before deleting `app/components/`
-5. Delete `app/components/` directory
+  // Grain: logarithmic, ceiling at 0.10
+  const grain = Math.min(0.10, 0.03 + (intensity ** 0.6) * 0.07);
+  root.style.setProperty("--signal-grain-opacity", grain.toFixed(4));
 
-**Internal link audit targets** — these must be found and updated:
-- `components/layout/nav.tsx` — nav links
-- Any `href="/components"` in block components
-- `app/sitemap.ts` — sitemap entries
+  // VHS CRT lines: replace hardcoded token
+  const crt = 0.05 + intensity * 0.17;
+  root.style.setProperty("--signal-vhs-crt-opacity", crt.toFixed(4));
 
-**Status code choice: 308 not 307.** 308 is permanent redirect (preserves POST method, same as 301 but method-preserving). `permanent: true` in Next.js config emits 308. Crawlers and browsers will update cached URLs. For a design system docs site where the URL is referenced externally, 308 is correct.
+  // VHS noise: replace hardcoded token
+  const noise = 0.005 + intensity * 0.02;
+  root.style.setProperty("--signal-vhs-noise-opacity", noise.toFixed(4));
 
----
+  // Halftone: off below 0.4, max 0.12
+  const halftone = intensity < 0.4 ? 0 : Math.min(0.12, (intensity - 0.4) * 0.20);
+  root.style.setProperty("--signal-halftone-opacity", halftone.toFixed(4));
 
-## Question 3: 200-300vh Scroll-Driven Section Architecture
+  // Circuit: off above 0.6 (grain occlusion)
+  const circuit = intensity > 0.6 ? 0 : Math.min(0.04, intensity * 0.067);
+  root.style.setProperty("--signal-circuit-opacity", circuit.toFixed(4));
 
-**Pattern: Pinned wrapper component with GSAP timeline + scrub.**
-
-The existing `HorizontalScroll` component in `components/animation/horizontal-scroll.tsx` establishes the pattern for pin/scrub sections. The v1.5 scroll section needs a vertical pin variant.
-
-**Verified integration with Lenis:** The existing `LenisProvider` already wires `instance.on("scroll", ScrollTrigger.update)` and drives Lenis via `gsap.ticker`. This is the correct integration. ScrollTrigger receives Lenis-smoothed scroll positions. Pin/scrub sections work with this setup without additional configuration.
-
-**Known Lenis + pin issue from community research:** When `pin: true` is combined with `once: false` (scrub), window resize while scrolled can cause ScrollTrigger positions to shift. The fix is `invalidateOnRefresh: true` on the ScrollTrigger config, which tells GSAP to recalculate start/end positions on refresh. The existing `HorizontalScroll` already uses this pattern.
-
-**Reusable PinnedSection component pattern:**
-
-```typescript
-// components/animation/pinned-section.tsx
-"use client";
-
-import { useRef, useEffect, type ReactNode } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap-core";
-
-interface PinnedSectionProps {
-  children: (progress: gsap.core.Tween) => ReactNode;
-  /** Total scroll distance in viewport heights. Default: 2 (200vh) */
-  scrollVh?: number;
-  /** Scrub smoothing. 1 = 1s lag. true = instant. Default: 1 */
-  scrub?: number | boolean;
-  className?: string;
-}
-
-export function PinnedSection({ children, scrollVh = 2, scrub = 1, className }: PinnedSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          pin: true,
-          scrub,
-          anticipatePin: 1,           // prevents pin flash on fast scroll
-          start: "top top",
-          end: () => `+=${scrollVh * window.innerHeight}`,
-          invalidateOnRefresh: true,  // recalculate on resize — required for Lenis compat
-        },
-      });
-      timelineRef.current = tl;
-    });
-
-    return () => ctx.revert();
-  }, [scrollVh, scrub]);
-
-  return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden ${className ?? ""}`}
-      style={{ height: "100vh" }}  // Viewport height — pin adds scroll space automatically
-    >
-      {/* children receive no timeline ref — they use data-anim selectors driven by PageAnimations */}
-      {typeof children === "function" ? children(timelineRef.current!) : children}
-    </div>
-  );
+  // Aberration: clamped at 3px
+  const aberration = Math.min(3, intensity * 3);
+  root.style.setProperty("--signal-aberration-px", `${aberration.toFixed(1)}px`);
 }
 ```
 
-**Simpler alternative for v1.5 (recommended):** Rather than a render-prop pattern, use a straightforward block component where the pinned section's internal animations are wired in `PageAnimations.initCoreAnimations()` via `data-anim` selectors. This keeps WebGL and scroll logic separated and avoids prop-drilling the timeline.
-
-**Critical measurement:** GSAP's `pin: true` creates a spacer div equal to the scroll distance (`end - start`). For a 200vh pin, the total page height increases by 200vh. This is expected and intentional — the user scrolls 200vh while the element stays fixed. The spacer ensures downstream content scrolls correctly after the pin releases.
+**Each effect's CSS reads its derived property, not `--signal-intensity` directly.** This is the critical boundary. `--signal-intensity` is a user-facing control. `--signal-grain-opacity` is an implementation detail of the grain effect. They are decoupled.
 
 ---
 
-## Question 4: 6-Section Homepage and SFSection/data-anim System
+## Component Boundaries
 
-**The 6-section structure slots directly into the existing system. No architectural changes needed to SFSection, PageAnimations, or the bg-shift system.**
+### Modified Components
 
-**Current homepage:** 7 SFSection instances (hero, manifesto, signal/frame, stats, code, components) using `data-bg-shift`, `data-section`, `data-section-label`, `data-anim` attributes. `PageAnimations` wires all animations via `document.querySelectorAll("[data-anim='...']")`.
+**`lib/tokens.css`** (MODIFY)
+- Remove hardcoded values for `--sf-vhs-crt-opacity` and `--sf-vhs-noise-opacity`
+- Replace with derived property references: `var(--signal-vhs-crt-opacity, 0.2)` and `var(--signal-vhs-noise-opacity, 0.015)`
+- The fallback values preserve existing behavior when derived props have not been initialized yet (SSR, reduced motion)
+- The grain token `--sf-grain-opacity` similarly becomes the fallback for `--signal-grain-opacity`
 
-**v1.5 homepage:** 6 named SFSection instances (ENTRY, PROOF, SIGNAL, SYSTEM, PHILOSOPHY, CTA). The existing attribute system supports this without modification.
+**`components/animation/vhs-overlay.tsx`** (MODIFY)
+- No structural changes; the layer architecture stays identical
+- CSS classes `.vhs-crt` and `.vhs-noise` already read from the tokens, so once tokens.css is updated the VHS overlay responds to intensity automatically
+- No JS changes required in the component itself
 
-**New data-anim values needed for v1.5 sections:**
+**`app/globals.css`** (MODIFY)
+- `.vhs-crt { opacity: var(--signal-vhs-crt-opacity, 0.2); }` — change token reference
+- `.vhs-noise { opacity: var(--signal-vhs-noise-opacity, 0.015); }` — change token reference
+- `.sf-grain::after { opacity: var(--signal-grain-opacity, 0.03); }` — change token reference
+- `.sf-grain-animated::after { opacity: var(--signal-grain-opacity, 0.03); }` — same
+- Add new `.sf-halftone` utility class reading `var(--signal-halftone-opacity, 0)`
+- Add new `.sf-circuit-overlay` utility class reading `var(--signal-circuit-opacity, 0)`
 
-| Section | data-anim values | Notes |
-|---------|-----------------|-------|
-| ENTRY | `hero-title`, `hero-subtitle`, `cta-btn` | Reuse existing values where semantics match |
-| PROOF | `proof-demo`, `proof-label` | New — component demo live preview |
-| SIGNAL | `signal-mesh` | WebGL scene — same as existing `hero-mesh` pattern |
-| SYSTEM | `stat-number` (reuse), `system-label` | Reuse stat count-up pattern |
-| PHILOSOPHY | `section-reveal` (reuse) | Standard stagger reveal is sufficient |
-| CTA | `cta-btn` (reuse) | Existing click-pop behavior already handles this |
+**`components/animation/signal-overlay.tsx`** (MODIFY — small)
+- The `handleIntensity()` function currently writes only `--signal-intensity`
+- Extend it to also call `updateSignalDerivedProps(value / 100)` after writing the base value
+- OR: the MutationObserver in global-effects.tsx picks up the `:root` style mutation and fires `updateSignalDerivedProps()` automatically — no changes needed in signal-overlay.tsx
+- Recommend the MutationObserver approach (zero coupling between SignalOverlay and the derived props function)
 
-**bg-shift for 6 sections:** The existing `applyBgShift()` function reads `data-bg-shift` attribute and switches between the dark/light backgrounds. For 6 sections, assign alternating values:
+**`components/layout/global-effects.tsx`** (MODIFY)
+- Add `useEffect` that registers a MutationObserver on `document.documentElement` watching the `style` attribute
+- On mutation, read `--signal-intensity` from computed style and call `updateSignalDerivedProps()`
+- Fire `updateSignalDerivedProps()` once on mount with the default value (0.5) to initialize derived props
+- This observer is the same pattern as `getSignalVars()` in signal-canvas.tsx — one more observer for the CSS layer (separate from the WebGL uniform observer)
+- The idle escalation recalibration also lives here: after the aesthetic push raises grain baseline, the Phase 2 idle escalation tween must target `--signal-grain-opacity` (not `--sf-grain-opacity`) and must tween to a value above the baseline set by the intensity curve, not below it
 
-```
-ENTRY:       data-bg-shift="black"
-PROOF:       data-bg-shift="white"
-SIGNAL:      data-bg-shift="black"
-SYSTEM:      data-bg-shift="white"
-PHILOSOPHY:  data-bg-shift="black"
-CTA:         data-bg-shift="white"
-```
+**`lib/signal-canvas.tsx`** (MODIFY — minor)
+- The existing `getSignalVars()` / `getState()` pattern is unchanged
+- Add `updateSignalDerivedProps` export so it can be called from the singleton's MutationObserver as well, ensuring WebGL scenes and CSS effects are derived from the same single source of truth
+- Alternative: keep the CSS derived props entirely in global-effects.tsx (simpler, avoids coupling signal-canvas to CSS concerns) — this is the recommended approach
 
-**SFSection spacing for scroll-pinned sections:** Any section containing a `PinnedSection` should use `className="py-0"` on the SFSection wrapper, as the pinned content manages its own internal layout. All other sections continue using the existing `spacing` prop.
+### New Components
 
-**The existing `#bg-shift-wrapper` div wraps all SFSection instances.** The new homepage structure continues this pattern — all 6 sections go inside `#bg-shift-wrapper`, and CTA/footer go outside it as now.
+**`components/animation/grain-overlay.tsx`** (NEW)
+- Wraps the grain texture as a standalone component (not just a CSS utility class)
+- Props: `opacity?: number` (overrides derived prop for local use), `animated?: boolean`
+- Reads `--signal-grain-opacity` from CSS (no JS state)
+- Used in Storybook story with controls
+- Renders a `<div className="sf-grain" aria-hidden="true" />` with the derived token
+- This is a thin wrapper for Storybook discoverability; the actual effect is CSS
 
----
+**`components/animation/halftone-texture.tsx`** (NEW)
+- CSS SVG filter technique: `feTurbulence` + `feComponentTransfer` (or `feBlend` + threshold)
+- `position: absolute; inset: 0; pointer-events: none; z-index: var(--z-above-bg)`
+- `opacity: var(--signal-halftone-opacity, 0)` — reads derived property, invisible by default
+- Groups A substrate: always present in DOM, opacity drives presence
+- Must be CSS-first: no JS animation, no WebGL
+- Performance note: SVG `feTurbulence` is CPU-composited in many browsers; do not apply at full-page coverage at high resolution — use a tiled background-image SVG pattern instead (same technique as grain)
 
-## Question 5: Build Order
+**`components/animation/mesh-gradient.tsx`** (NEW — CSS implementation)
+- `position: fixed; inset: 0; z-index: -1; pointer-events: none`
+- CSS `background: radial-gradient(...)` with slow CSS animation (`@keyframes`)
+- NOT WebGL — keeps particle field as the only new WebGL addition
+- Opacity governed by `var(--signal-mesh-gradient, 0)`
+- Sits at z: -1, same as SignalCanvas canvas — they must not conflict visually; the mesh gradient appears behind WebGL content by rendering order (WebGL canvas draws on top via alpha compositing)
+- Alternative for the WebGL-required particle field interaction: mesh gradient is CSS, particle field is WebGL — they coexist at the same z-level but the canvas is on top due to DOM order
 
-Dependencies drive the sequence. Each phase has a hard prerequisite.
+**`components/animation/particle-field.tsx`** (NEW — WebGL, extends SignalCanvas)
+- Uses `useSignalScene()` hook to register with the singleton renderer
+- Does NOT create a new WebGL context
+- `BufferGeometry` with `PointsMaterial` (not a shader from scratch)
+- Particle count stepped: `intensity < 0.4 → 0 particles, 0.4–0.7 → 2000, 0.7–1.0 → 5000`
+- Full 10,000 particles is too expensive on non-M1 hardware (analyst finding)
+- IntersectionObserver gating inherited from `useSignalScene()` — if particle container is not in viewport, zero GPU cost
+- Reduced-motion: `if (reducedMotion) { return static particle positions, no animation loop }` — must be explicit, not speed-throttled
+- Registers as a single scene entry; participates in the existing scissor/viewport render loop
+- This is the one new WebGL scene addition
 
-### Phase 1: Route Infrastructure (no prerequisites)
+**`components/animation/circuit-overlay.tsx`** (NEW — CSS)
+- Low-opacity SVG circuit diagram pattern as CSS `background-image`
+- `opacity: var(--signal-circuit-opacity, 0)` — reads derived property
+- Designed to be exclusive with high grain (the derived prop mapping ensures circuit goes to 0 above intensity 0.6)
+- `position: fixed; inset: 0; z-index: var(--z-above-bg); pointer-events: none`
 
-**1a.** Create `app/inventory/` directory and copy/adapt `app/components/page.tsx` → `app/inventory/page.tsx`. Update metadata title.
+**`components/animation/glitch-transition.tsx`** (NEW — GSAP)
+- Event-triggered overlay, not ambient
+- Extends the existing `.vhs-glitch` technique already in `vhs-overlay.tsx` (GSAP clip-path slices)
+- Exposed as an imperative trigger function: `triggerGlitch(element?: HTMLElement)` — called by idle escalation Phase 4 and potentially by other interaction points
+- Renders a fixed overlay that is normally `opacity: 0; pointer-events: none`
+- Fires a 100–300ms GSAP timeline on trigger, then returns to hidden
+- Respects `prefers-reduced-motion` (guard in the trigger function before GSAP fires)
 
-**1b.** Add `redirects()` to `next.config.ts` with two entries: `/components` and `/components/:path*`.
+**`components/animation/cd-symbol-system.tsx`** (NEW — CSS/SVG)
+- Decorative glyph system for diegetic layering
+- CSS-only: SVG sprites positioned via CSS, opacity driven by scroll position or idle state
+- Not wired to `--signal-intensity` directly — wired to idle escalation class (`.sf-idle-3`)
 
-**1c.** Audit and update all internal `href="/components"` links in Nav, blocks, sitemap.
+### Unchanged Components
 
-**1d.** Verify redirect works in `next dev`. Delete `app/components/` directory.
-
-**Why first:** Route infrastructure is pure filesystem + config work. Zero risk of breaking existing pages. Establishes the correct URL structure before new pages reference it.
-
-**Output:** Working `/inventory` route, `/components` → `/inventory` permanent redirect, clean internal links.
-
----
-
-### Phase 2: SignalCanvas MutationObserver Consolidation (depends on: nothing, but unblocks Phase 3)
-
-Move the module-level `_signalObserver` / `readSignalVars()` / `ensureSignalObserver()` pattern from individual components (`glsl-hero.tsx`, `signal-mesh.tsx`) into `lib/signal-canvas.tsx` as a shared module-level observer. Expose `getSignalVars()` function that returns cached `{ intensity, speed, accent }`. Both existing and new WebGL components call `getSignalVars()` from the ticker instead of maintaining their own observers.
-
-**Why this phase, why now:** With 3 WebGL scenes on the homepage, three separate MutationObservers watching `document.documentElement` would fire `readSignalVars()` 3x on every `:root` style change. One shared observer fires once. This is a small refactor (~30 lines) with zero visual impact.
-
-**Output:** Updated `lib/signal-canvas.tsx`, updated `glsl-hero.tsx`, updated `signal-mesh.tsx`.
-
----
-
-### Phase 3: PinnedSection Component (depends on: Phase 2 optional, but clean)
-
-Create `components/animation/pinned-section.tsx` as a reusable 200-300vh scroll container. Wire its internal `data-anim` targets into `PageAnimations.initCoreAnimations()`. Test with a placeholder content section before connecting WebGL scenes.
-
-**Critical config:**
-```
-pin: true
-scrub: 1
-anticipatePin: 1
-invalidateOnRefresh: true
-start: "top top"
-end: () => `+=${scrollVh * window.innerHeight}`
-```
-
-**Mobile fallback:** For viewport width < 768px, skip the pin and render content as a standard scroll section (same pattern as `HorizontalScroll`). Pin/scrub UX requires sufficient vertical scroll space that mobile viewports often don't provide cleanly.
-
-**Output:** `components/animation/pinned-section.tsx`.
-
----
-
-### Phase 4: New WebGL Scene Component (depends on: Phase 2 MutationObserver consolidation)
-
-Build the third WebGL scene for the SIGNAL section. Follow the `GLSLHero` pattern exactly:
-- `useSignalScene()` hook with `buildScene()` factory
-- Uniforms stored in ref for ticker/ScrollTrigger mutation
-- `IntersectionObserver` already handled by `useSignalScene()`
-- Reduced-motion → static fallback div
-- Export as `SignalField` or similar, with a `*-lazy.tsx` wrapper using `next/dynamic({ ssr: false })`
-
-**Why Phase 4 not Phase 1:** The singleton consolidation in Phase 2 should happen before adding a third scene component that would otherwise introduce a third MutationObserver.
-
-**Output:** `components/animation/signal-field.tsx` (or similar), `components/animation/signal-field-lazy.tsx`.
-
----
-
-### Phase 5: 6-Section Homepage Block Components (depends on: Phases 3-4 components exist)
-
-Build 6 block components in `components/blocks/`:
-
-- `entry-hero.tsx` — replaces existing `Hero` block. Uses existing `GLSLHeroLazy` as WebGL background. Reuses existing hero animation system (`data-anim='hero-title'` etc). This is primarily a **content and layout redesign** of the existing hero.
-- `proof-section.tsx` — uses existing `SignalMeshLazy` for WebGL. Live demo of a component (likely `SFButton` or `SFCard`) as PROOF of system quality.
-- `signal-section.tsx` — uses new `SignalFieldLazy`. Contains `PinnedSection` wrapper if the 200-300vh scroll section lives here.
-- `system-section.tsx` — stats, component counts. Reuses `data-anim='stat-number'` count-up pattern.
-- `philosophy-section.tsx` — text-driven, standard `section-reveal` animation.
-- `cta-section.tsx` — links to `/inventory` and `/start`. Reuses `data-anim='cta-btn'`.
-
-**Rewrite `app/page.tsx`** to compose these 6 blocks within `#bg-shift-wrapper` with the correct `data-bg-shift` alternation.
-
-**Output:** 6 new/rewritten block files, rewritten `app/page.tsx`.
-
----
-
-### Phase 6: PageAnimations Update + Subpage Redesigns (depends on: Phase 5 page exists in DOM)
-
-**6a.** Add `data-anim` selectors for any new values introduced in Phase 5 to `initCoreAnimations()` in `page-animations.tsx`. Existing selectors continue to work unchanged.
-
-**6b.** Redesign the 4 subpages (`/inventory`, `/tokens`, `/start`, `/reference`). These are independent of the homepage work — each can be built incrementally. The existing block components for these pages are the starting point.
-
-**Output:** Updated `page-animations.tsx`, redesigned subpage blocks.
+- `lib/signal-canvas.tsx` — singleton architecture unchanged
+- `hooks/use-signal-scene.ts` — particle field uses this hook as-is
+- `components/animation/vhs-overlay.tsx` — no structural changes; CSS token change is sufficient
+- `components/animation/signal-overlay.tsx` — unchanged if MutationObserver approach is used
 
 ---
 
 ## Data Flow
 
-### WebGL Multi-Scene Render Flow (3 scenes, one page)
+### Intensity Change → All 8 Effects
 
 ```
-GSAP ticker fires (~60fps)
+User moves SignalOverlay slider (or SignalSection sets intensity to 1.0 on scroll)
     ↓
-LenisProvider tickerCallback: lenis.raf(time * 1000)
+signal-overlay.tsx: document.documentElement.style.setProperty("--signal-intensity", value)
     ↓
-SignalCanvas tickerCallback: renderAllScenes(state)
+MutationObserver in global-effects.tsx fires (watching documentElement.style)
     ↓
-For each SceneEntry in state.scenes Map:
-    ├── entry.visible === false? → skip (IntersectionObserver gate)
-    ├── entry.element.getBoundingClientRect() → scissor rect
-    ├── renderer.setScissor(rect) + renderer.setViewport(rect)
-    └── entry.renderFn(scene, camera) → WebGL draw call
+updateSignalDerivedProps(intensity):
+    → writes --signal-grain-opacity      (logarithmic curve)
+    → writes --signal-vhs-crt-opacity    (linear, replaces hardcoded token)
+    → writes --signal-vhs-noise-opacity  (linear, replaces hardcoded token)
+    → writes --signal-halftone-opacity   (gated: off below 0.4)
+    → writes --signal-circuit-opacity    (inverted: off above 0.6)
+    → writes --signal-aberration-px      (clamped: max 3px)
+    → writes --signal-mesh-gradient      (linear, safe)
     ↓
-Each component's ScrollTrigger onUpdate:
-    └── directly mutates entry's uniformsRef.current values
-        (no setState, no re-render — pure uniform mutation)
+CSS reads derived props immediately (next paint):
+    .vhs-crt → opacity: var(--signal-vhs-crt-opacity)     [VHS CRT lines]
+    .vhs-noise → opacity: var(--signal-vhs-noise-opacity)  [VHS noise]
+    .sf-grain::after → opacity: var(--signal-grain-opacity) [grain substrate]
+    .sf-halftone → opacity: var(--signal-halftone-opacity) [halftone texture]
+    .sf-circuit-overlay → opacity: var(--signal-circuit-opacity) [circuit]
+    ↓
+MutationObserver in signal-canvas.tsx (existing) also fires:
+    → getState().signalVars = { intensity, speed, accent }
+    ↓
+WebGL ticker reads cached signal vars (next GSAP ticker frame):
+    → shader uIntensity uniforms update
+    → ParticleField steps particle count (0 / 2000 / 5000) based on thresholds
 ```
 
-### Route Rename Redirect Flow
+### Idle Escalation → Effects
 
 ```
-Browser requests /components
+IdleOverlay in global-effects.tsx (existing): setTimeout chain
     ↓
-Next.js edge: matches redirects[0].source === "/components"
-    ↓
-308 Permanent Redirect → Location: /inventory
-    ↓
-Browser requests /inventory
-    ↓
-app/inventory/page.tsx renders (Server Component)
+8s:   Phase 1 → grain drift + scan line overlay (existing, unchanged)
+30s:  Phase 2 → tween --signal-grain-opacity upward
+              (must tween to value ABOVE the baseline set by current intensity)
+              Safe formula: target = min(0.10, currentGrainOpacity + 0.04)
+60s:  Phase 3 → adds .sf-idle-3 class → CSS shows cd-symbol glyphs
+120s: Phase 4 → triggerGlitch() on the glitch-transition overlay
+              (reduced-motion guard inside triggerGlitch — JS-level, not CSS-only)
 ```
 
-### Scroll-Pinned Section Flow
+### SSR / Token Bridge Cascade Order
 
 ```
-User scrolls into PinnedSection trigger
+Server render:
+    CSS custom property defaults (tokens.css :root block) apply:
+        --signal-intensity: 0.5  (token default)
+        --sf-vhs-crt-opacity: 0.2  (still exists as fallback)
+        --sf-vhs-noise-opacity: 0.015 (still exists as fallback)
+        --signal-grain-opacity: not yet set → fallback var(--sf-grain-opacity, 0.03)
     ↓
-GSAP ScrollTrigger: pin: true → element switches to position: fixed
-                    spacer div inserted to maintain document flow
-    ↓
-As user continues scrolling (200-300vh of scroll space consumed):
-    scrub: 1 → timeline.progress() updates with 1s lag
-    onUpdate → data-anim targets animate (opacity, transform, etc.)
-    WebGL uniforms mutate directly via ScrollTrigger onUpdate
-    ↓
-User exits pin range:
-    element unpins → returns to document flow
-    spacer div removed
+Client hydration:
+    global-effects.tsx mounts → useEffect fires → updateSignalDerivedProps(0.5)
+    → derived props written to :root
+    → CSS var() references now resolve to computed values
+    → VHS opacity changes from fallback 0.2 to computed 0.14 (at intensity 0.5)
 ```
 
-### MutationObserver Signal Bridge (consolidated)
+**SSR behavior:** During SSR and the hydration window, effects fall back to their hardcoded token values (VHS at 0.2, grain at 0.03). After hydration, they jump to the intensity-derived values. At intensity 0.5, the difference is small (grain stays near 0.03, VHS changes slightly). This is acceptable — it is a perceptually minor transition, not a flash.
 
-```
-CSS: document.documentElement.style.setProperty("--signal-intensity", "0.8")
-    ↓
-MutationObserver (ONE, in signal-canvas.tsx singleton): fires readSignalVars()
-    ↓
-Updates module-level cache: { intensity: 0.8, speed: 1.0, accent: 0.0 }
-    ↓
-GSAP ticker (each frame):
-    Scene A tickerFn: reads getSignalVars().intensity → uniform update
-    Scene B tickerFn: reads getSignalVars().intensity → uniform update
-    Scene C tickerFn: reads getSignalVars().intensity → uniform update
-```
+If intensity needs to be SSR-correct (grain at the right value from first paint), move the default value into the `:root` CSS block as `--signal-grain-opacity: 0.04` (the computed value for intensity 0.5). This eliminates the post-hydration adjustment for the default case.
 
 ---
 
-## Integration Points
+## Build Order
 
-### New vs Modified Files
+Dependencies determine sequence. This is not negotiable.
+
+### Phase 1 — Intensity Bridge (prerequisite for everything)
+
+**What:** `updateSignalDerivedProps()` in `global-effects.tsx` + token.css/globals.css to reference derived props.
+
+**Why first:** Every subsequent effect must consume derived properties, not raw `--signal-intensity`. If this foundation is absent, effects added later will not be coherently governed. The analyst identified this as P0.
+
+**Deliverables:**
+- `updateSignalDerivedProps()` function in `global-effects.tsx`
+- MutationObserver registered on mount in `GlobalEffects` useEffect
+- `lib/tokens.css`: `--sf-vhs-crt-opacity` and `--sf-vhs-noise-opacity` replaced with derived var() references
+- `app/globals.css`: `.vhs-crt`, `.vhs-noise`, `.sf-grain::after` opacity references updated
+- VHS now scales with intensity at zero new component count
+
+**Acceptance:** At intensity 0.0, VHS CRT lines drop to ~0.05 opacity (not 0.2). At intensity 1.0, they reach 0.22. Grain drops to near-zero at intensity 0.0.
+
+---
+
+### Phase 2 — Grain Elevated Baseline + Idle Escalation Recalibration
+
+**Depends on:** Phase 1 (derived props exist)
+
+**What:** Raise grain baseline by adjusting the `updateSignalDerivedProps` curve. The default intensity 0.5 now yields `--signal-grain-opacity ≈ 0.06–0.08` rather than the current 0.03. Recalibrate Phase 2 idle escalation tween to target `currentValue + 0.04` instead of a hardcoded 0.08 (which would reduce grain if baseline is already 0.08).
+
+**Why this order:** Grain is the lowest-risk effect and the thematic foundation. All other overlay effects (halftone, circuit) must be evaluated against a visible grain layer to detect moiré and occlusion.
+
+**Acceptance:** Grain visibly readable as film texture at default intensity. Idle Phase 2 escalation increases grain visibly (upward direction confirmed).
+
+---
+
+### Phase 3 — VHS Enhancement (existing component, CSS-only changes)
+
+**Depends on:** Phase 1 (VHS now intensity-governed)
+
+**What:** Tune VHS layer opacities now that they respond to intensity. The hardcoded values (0.2 CRT, 0.015 noise) were tuned in isolation. Re-tune the curve endpoints in `updateSignalDerivedProps`. May also involve adjusting GSAP timing on scanline travel, burst frequency, glitch frequency — these remain GSAP-controlled, not intensity-derived (timing is aesthetic, not parametric).
+
+**Why before halftone:** VHS + grain stacking must be visually resolved before adding halftone, because VHS and halftone have independent texture frequencies that can create moiré. Evaluate VHS + grain at multiple intensities before halftone is introduced.
+
+**Acceptance:** Manual visual QA at intensity 0.0, 0.5, 1.0 with only grain and VHS active. No moiré artifacts, no "visually broken" territory at 1.0.
+
+---
+
+### Phase 4 — Halftone Texture
+
+**Depends on:** Phases 2 and 3 (visual baseline established)
+
+**What:** `components/animation/halftone-texture.tsx` (new component). SVG tiled background-image pattern (not `feTurbulence` at full-page — too expensive on non-M1 hardware). Opacity from `--signal-halftone-opacity` (zero below intensity 0.4).
+
+**Why this position:** Halftone is the highest moiré risk (grain + halftone = interference pattern if frequencies collide). Must be evaluated against the existing grain layer. The gate between phases 2/3 and phase 4 is the combined visual coherence review the analyst requires.
+
+**Acceptance:** Halftone visible as atmospheric dot texture at intensity 0.6+, invisible below 0.4. No moiré with grain (validated by visual review). No scroll jank on non-M1 hardware (test on Intel MacBook or equivalent).
+
+---
+
+### Phase 5 — Circuit Overlay
+
+**Depends on:** Phase 2 (grain level established, circuit must be exclusive with high grain)
+
+**What:** `components/animation/circuit-overlay.tsx`. Low-opacity SVG circuit pattern. Reads `--signal-circuit-opacity` which is 0 above intensity 0.6 (automatically exclusive with elevated grain).
+
+**Why here:** Circuit is a subtle background texture that only works when grain is low. The derived property mapping handles this automatically once Phase 1 is in place. The component itself is simple — the complexity is in Phase 1.
+
+**Acceptance:** Circuit visible at intensity 0.0–0.5, invisible above 0.6. Invisible behind elevated grain (confirmed by visual review at intensity 0.5).
+
+---
+
+### Phase 6 — Mesh Gradient (CSS)
+
+**Depends on:** None (purely CSS, no signal routing needed beyond `--signal-mesh-gradient`)
+
+**What:** `components/animation/mesh-gradient.tsx`. CSS `radial-gradient` background with slow animation. Fixed position, z: -1. Does not use WebGL.
+
+**Why defer:** Low risk, low dependency. Deferring until phase 6 prevents it from polluting the visual evaluation of grain/VHS/halftone stacking decisions.
+
+**Acceptance:** Atmospheric color field visible at default intensity. Does not compete visually with WebGL shader scenes above it.
+
+---
+
+### Phase 7 — Particle Field (WebGL)
+
+**Depends on:** Phase 1 (intensity mapping), confirmed WebGL context availability
+
+**What:** `components/animation/particle-field.tsx`. Uses `useSignalScene()`. `PointsMaterial` with `BufferGeometry`. Stepped particle count (0 / 2000 / 5000). Gated by `IntersectionObserver` from the hook.
+
+**Why last among ambient effects:** WebGL addition has the highest risk (GPU memory, context limits, mobile compatibility). Build confidence that all CSS effects are stable before adding WebGL complexity.
+
+**Acceptance:** Particles visible at intensity 0.5+ (2000 points). No second WebGL context created. No frame drops on Intel MacBook at 2000 particles. Reduced-motion: static particle positions, animation loop stopped.
+
+---
+
+### Phase 8 — Glitch Transition + CD Symbol System
+
+**Depends on:** Phases 1 (intensity bridge) and idle escalation recalibration (Phase 2)
+
+**What:** `glitch-transition.tsx` as imperative trigger component, `cd-symbol-system.tsx` as CSS/SVG decorative layer. Wire both into idle escalation phases 3 and 4.
+
+**Acceptance:** Glitch fires on idle Phase 4 (120s). Symbols visible on idle Phase 3 (60s). Both suppressed by `prefers-reduced-motion` at JS level.
+
+---
+
+### Phase 9 — SignalOverlay Panel Extension
+
+**Depends on:** All ambient effects in place
+
+**What:** Extend the `SignalOverlay` (Shift+S) panel to expose per-effect toggles or show the derived property values as read-only readouts. This is a UX convenience — operators can inspect what the intensity dial is producing.
+
+**Acceptance:** Panel shows derived property values. Optional: per-effect toggle checkboxes to disable individual effects for debugging.
+
+---
+
+## Integration Points Table
 
 | File | Change Type | What Changes | Integrates With |
-|------|------------|--------------|-----------------|
-| `app/inventory/page.tsx` | NEW (copy) | Renamed route | `components/blocks/components-explorer.tsx`, `component-registry.ts` |
-| `app/inventory/` dir | NEW | Directory for renamed route | Next.js App Router |
-| `app/components/` dir | DELETE | Removed after redirect verified | n/a |
-| `next.config.ts` | MODIFY | Add `redirects()` async function | Next.js edge layer |
-| `app/page.tsx` | REWRITE | 6-section structure, 3 WebGL scenes | 6 new block components, `SignalCanvasLazy` |
-| `components/blocks/entry-hero.tsx` | NEW | ENTRY section with GLSLHero WebGL | `GLSLHeroLazy`, existing hero animation data-anim selectors |
-| `components/blocks/proof-section.tsx` | NEW | PROOF section with SignalMesh | `SignalMeshLazy` |
-| `components/blocks/signal-section.tsx` | NEW | SIGNAL section + optional pinned scroll | `signal-field-lazy.tsx`, `pinned-section.tsx` |
-| `components/blocks/system-section.tsx` | NEW | System stats section | `data-anim='stat-number'` count-up, existing pattern |
-| `components/blocks/philosophy-section.tsx` | NEW | Philosophy text section | `data-anim='section-reveal'`, existing pattern |
-| `components/blocks/cta-section.tsx` | NEW | CTA section | `href="/inventory"`, `href="/start"` |
-| `components/animation/pinned-section.tsx` | NEW | 200-300vh pin/scrub wrapper | `lib/gsap-core.ts`, `ScrollTrigger` |
-| `components/animation/signal-field.tsx` | NEW | 3rd WebGL scene component | `lib/signal-canvas.tsx`, `useSignalScene`, `gsap-core` |
-| `components/animation/signal-field-lazy.tsx` | NEW | SSR-safe dynamic import wrapper | `signal-field.tsx` |
-| `lib/signal-canvas.tsx` | MODIFY | Add shared MutationObserver + `getSignalVars()` | All WebGL scene components |
-| `components/animation/glsl-hero.tsx` | MODIFY | Remove local MutationObserver, use `getSignalVars()` | `lib/signal-canvas.tsx` |
-| `components/animation/signal-mesh.tsx` | MODIFY | Remove local MutationObserver, use `getSignalVars()` | `lib/signal-canvas.tsx` |
-| `components/layout/page-animations.tsx` | MODIFY | Add data-anim selectors for new sections | New block components |
-| `components/layout/nav.tsx` | MODIFY | Update `/components` → `/inventory` in nav links | Router |
-| `app/sitemap.ts` | MODIFY | Update `/components` → `/inventory` | Crawler |
-
-### Internal Boundaries
-
-| Boundary | Communication | Constraint |
-|----------|---------------|------------|
-| WebGL scenes ↔ SignalCanvas singleton | `useSignalScene()` hook → `registerScene()` / `deregisterScene()` | One-way registration; singleton does not call back into components |
-| WebGL scenes ↔ CSS signal vars | `getSignalVars()` from singleton (module-level cache) | Never read CSS in GSAP ticker — always read cached values |
-| ScrollTrigger ↔ WebGL uniforms | Direct `uniformsRef.current.uFoo.value = x` mutation | No React state, no re-render — uniform mutation only |
-| PinnedSection ↔ Lenis | `ScrollTrigger.update` called on every Lenis scroll event | Already wired in `LenisProvider`; pin sections inherit this automatically |
-| New routes ↔ /components redirect | 308 redirect in `next.config.ts` | Processed at edge before React; no component code needed |
-| SF block components ↔ SFSection | `data-bg-shift`, `data-section`, `data-anim` attributes | Attribute-driven — no prop APIs needed between section and PageAnimations |
+|------|-------------|--------------|-----------------|
+| `lib/tokens.css` | MODIFY | `--sf-vhs-crt-opacity` → `var(--signal-vhs-crt-opacity, 0.2)` fallback | `globals.css`, `vhs-overlay.tsx` (via CSS) |
+| `lib/tokens.css` | MODIFY | `--sf-vhs-noise-opacity` → `var(--signal-vhs-noise-opacity, 0.015)` fallback | Same |
+| `app/globals.css` | MODIFY | `.vhs-crt`, `.vhs-noise` opacity token references | `lib/tokens.css` |
+| `app/globals.css` | MODIFY | `.sf-grain::after` opacity → `var(--signal-grain-opacity, 0.03)` | `lib/tokens.css` |
+| `app/globals.css` | ADD | `.sf-halftone` utility class | `HalftoneTexture` component |
+| `app/globals.css` | ADD | `.sf-circuit-overlay` utility class | `CircuitOverlay` component |
+| `components/layout/global-effects.tsx` | MODIFY | Add `updateSignalDerivedProps()` + MutationObserver | All CSS-driven effects |
+| `components/layout/global-effects.tsx` | MODIFY | Idle escalation Phase 2 tween target recalibration | `--signal-grain-opacity` |
+| `components/layout/global-effects.tsx` | MODIFY | Idle Phase 3 → trigger CD symbol visibility | `cd-symbol-system.tsx` |
+| `components/layout/global-effects.tsx` | MODIFY | Idle Phase 4 → call `triggerGlitch()` | `glitch-transition.tsx` |
+| `components/animation/vhs-overlay.tsx` | UNCHANGED | CSS token change is sufficient | — |
+| `components/animation/signal-overlay.tsx` | UNCHANGED | MutationObserver in global-effects catches the write | — |
+| `components/animation/grain-overlay.tsx` | NEW | Storybook wrapper for grain utility | `app/globals.css` |
+| `components/animation/halftone-texture.tsx` | NEW | CSS SVG pattern overlay | `app/globals.css`, `--signal-halftone-opacity` |
+| `components/animation/mesh-gradient.tsx` | NEW | CSS radial-gradient background | `--signal-mesh-gradient` |
+| `components/animation/particle-field.tsx` | NEW | WebGL points scene via useSignalScene | `lib/signal-canvas.tsx`, `hooks/use-signal-scene.ts` |
+| `components/animation/circuit-overlay.tsx` | NEW | CSS SVG background texture | `--signal-circuit-opacity` |
+| `components/animation/glitch-transition.tsx` | NEW | GSAP clip-path imperative trigger | `global-effects.tsx` idle Phase 4 |
+| `components/animation/cd-symbol-system.tsx` | NEW | CSS/SVG decorative glyphs | `global-effects.tsx` idle Phase 3 |
 
 ---
 
-## Anti-Patterns
+## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Multiple WebGLRenderer Instances
+### Anti-Pattern 1: Each New Effect Reading `--signal-intensity` Directly
 
-**What people do:** Create a `new THREE.WebGLRenderer()` inside each WebGL component, one per scene.
+**What goes wrong:** Grain at 0.12, halftone at 30%, and chromatic aberration at 5px all activate simultaneously at intensity 1.0. The moiré between grain and halftone appears. Aberration enters "visually broken" territory. The compound effect exceeds the engineered-imperfection register.
 
-**Why it's wrong:** Browsers enforce a limit on concurrent WebGL contexts (typically 8-16, but can be lower on mobile and lower-powered hardware). Three scenes on one page with three renderers consumes 3 contexts. More critically, each renderer maintains its own GPU resources and runs its own render loop, producing CPU/GPU contention and jank.
-
-**Do this instead:** The existing SignalCanvas singleton pattern is the correct answer — one renderer, multiple scenes rendered via scissor/viewport split per GSAP ticker frame. Never create a renderer outside the singleton.
+**Instead:** Each effect reads its own derived custom property (`--signal-grain-opacity`, `--signal-halftone-opacity`, etc.) computed by `updateSignalDerivedProps()`. The mapping function encodes perceptual curves and inter-effect exclusions.
 
 ---
 
-### Anti-Pattern 2: Creating a MutationObserver per WebGL Component
+### Anti-Pattern 2: Adding a Second WebGL Renderer for the Particle Field
 
-**What people do:** Each component file declares its own module-level `_signalObserver` watching `document.documentElement`.
+**What goes wrong:** iOS Safari enforces a WebGL context limit. Two concurrent WebGLRenderer instances on one page is a known GPU context pressure point. The singleton was designed specifically to prevent this.
 
-**Why it's wrong:** With 3 WebGL components, 3 observers fire `readSignalVars()` on every `:root` style change. With the current pattern (module-level variable), the third component's observer clobbers the previous two's state — they share the same module-level variable name but each component's module has its own isolated copy. The result is 3x observer callbacks on every CSS variable change.
-
-**Do this instead:** Move `readSignalVars()`, the cached variables, and the observer lifecycle into `lib/signal-canvas.tsx`. Expose a `getSignalVars()` function. One observer fires once; all 3 ticker functions read the same cache.
+**Instead:** `particle-field.tsx` uses `useSignalScene()` exactly as GLSLHero and SignalMesh do. It registers as a scene entry in the existing singleton. One renderer, N scenes via scissor/viewport split.
 
 ---
 
-### Anti-Pattern 3: Routing the Rename via `middleware.ts`
+### Anti-Pattern 3: Idle Escalation Phase 2 Tweening to a Hardcoded Grain Value
 
-**What people do:** Use Next.js middleware to match `/components` and call `NextResponse.redirect()`.
+**What goes wrong:** The current idle Phase 2 tween targets `--sf-grain-opacity: 0.08`. After the aesthetic push raises the baseline to 0.08 (at default intensity 0.5), this tween reduces grain rather than intensifying it. The idle escalation runs in the wrong direction.
 
-**Why it's wrong:** Middleware runs on every request, including static assets. It adds latency to all routes, not just the renamed one. It's overkill for a permanent URL rename that is known at build time.
-
-**Do this instead:** `next.config.ts` `redirects()` array. Processed at the routing/edge layer before middleware, zero runtime cost after the initial 308 response is cached by browsers and crawlers.
+**Instead:** The Phase 2 tween target is `currentValue + 0.04`, where `currentValue` is `parseFloat(getComputedStyle(root).getPropertyValue("--signal-grain-opacity"))`. The escalation always produces an increase regardless of the current baseline.
 
 ---
 
-### Anti-Pattern 4: Putting PinnedSection Inside a SFSection with Overflow Hidden
+### Anti-Pattern 4: CSS `filter` Wrapper on Individual New Effects
 
-**What people do:** Wrap a GSAP-pinned element inside a parent with `overflow: hidden` thinking it will contain the pinned content.
+**What goes wrong:** Wrapping a new overlay in `filter: blur() brightness()` creates an isolated compositing context. Children of that element cannot `mix-blend-mode` against content below the wrapper — blend modes are isolated within the compositing group.
 
-**Why it's wrong:** `overflow: hidden` on a parent clips `position: fixed` children in some browsers. GSAP's pin mechanism switches the element to `position: fixed` during the pin phase. A clipping parent will cause the pinned element to disappear or be incorrectly clipped during the scroll.
-
-**Do this instead:** The SFSection wrapping a PinnedSection must NOT have `overflow: hidden`. Use `className="py-0"` (no `overflow-hidden`) on the SFSection. The PinnedSection itself may have `overflow: hidden` on its internal content area, but not on the element that GSAP pins.
+**Instead:** New effects that need `mix-blend-mode` (grain uses `multiply`, glitch uses `difference`) must not be inside a parent with `filter`. The VHS overlay's outer `filter: blur(0.8px) brightness(1.08) contrast(1.04)` already creates one such isolated group — this is intentional and accepted. New effects that must blend against page content belong outside the VHS overlay container. New effects that only need to blend within the VHS stack belong inside it.
 
 ---
 
-### Anti-Pattern 5: Animating in useEffect Without gsap.context
+### Anti-Pattern 5: Halftone via Full-Page `feTurbulence` Filter
 
-**What people do:** Write `useEffect(() => { gsap.to(...); ScrollTrigger.create(...) }, [])` without wrapping in `gsap.context()`.
+**What goes wrong:** An SVG filter with `feTurbulence` applied as a CSS `filter` property at full-page dimensions is CPU-composited in most browsers. At viewport resolution, this produces visible scroll jank on non-M1 hardware. The analyst correctly flagged this.
 
-**Why it's wrong:** Without `gsap.context()`, ScrollTrigger instances and tweens are not automatically collected. They must be manually killed on cleanup. Missed cleanup causes memory leaks, duplicate animations, and "ghost" ScrollTriggers that fire after the component unmounts — especially visible in React StrictMode with double-invoke of effects.
-
-**Do this instead:** All new scroll animation code follows the existing `HorizontalScroll` pattern: `const ctx = gsap.context(() => { ... }); return () => ctx.revert();`. The `PinnedSection` component codifies this pattern.
+**Instead:** Implement halftone as a CSS `background-image: url("data:image/svg+xml,...")` with a small repeating tile (same pattern as grain). The SVG tile is rasterized once and tiled at compositor level — GPU-accelerated. The tile size (6–10px dot period) is small enough that the SVG is trivially small.
 
 ---
 
-## Scaling Considerations
+### Anti-Pattern 6: Particle Field Active at Full Viewport with No Intersection Gate
 
-| Scale | Architecture Note |
-|-------|-------------------|
-| 3 WebGL scenes (v1.5) | Scissor/viewport split works. IntersectionObserver gates keep non-visible scenes out of the render loop. Performance risk only if all 3 are simultaneously in viewport. |
-| 5+ WebGL scenes | Still manageable with scissor pattern, but consider page-scoped scene management: scenes on the homepage are not relevant on /inventory. The singleton already handles this via `deregisterScene()` on unmount. |
-| Pinned sections on multiple pages | Each `PinnedSection` instance creates its own ScrollTrigger context. `ctx.revert()` on unmount cleans up. No global state issues. |
-| Redirect table growth | `next.config.ts` redirects are evaluated in order, linearly. For 10+ redirects, order by specificity (most specific first). Current 2-entry table has zero performance concerns. |
+**What goes wrong:** If the particle field container element is full-screen and always in the viewport, `IntersectionObserver` never sets it invisible. The WebGL scene renders every GSAP ticker frame indefinitely, adding constant GPU load.
+
+**Instead:** Place the particle field container on a specific page section, not as a fixed full-screen overlay. When that section scrolls out of view, IntersectionObserver gates the render loop off. If a full-screen ambient effect is truly needed, implement it as the CSS mesh gradient instead.
+
+---
+
+## Stacking Coherence at Intensity 1.0 — Expected Output
+
+With the perceptual curve architecture in place, intensity 1.0 should produce:
+
+| Effect | Value at 1.0 | Visual result |
+|--------|-------------|---------------|
+| Grain | 0.10 (capped) | Heavy film texture, sub-threshold for noise interference |
+| VHS CRT lines | 0.22 | Strong horizontal lines, clearly legible |
+| VHS noise | 0.025 | Visible analog texture |
+| Halftone | 0.12 (max) | Atmospheric dot pattern, not foreground |
+| Circuit | 0 (off above 0.6) | Invisible — grain has precedence |
+| Aberration | 3px (clamped) | Atmospheric, at the aesthetic limit |
+| Mesh gradient | 1.0 (linear) | Full color field behind content |
+| Particles | 5000 (stepped) | Dense, atmospheric — not mud |
+
+At 1.0, grain and halftone do not produce moiré because halftone's tile size (6px dots) and grain's baseFrequency (0.65) are at different spatial frequencies. The circuit is explicitly off. The glitch aberration is clamped at 3px. The compound effect reads as "maximum signal" rather than "broken display."
 
 ---
 
 ## Sources
 
-- Direct codebase audit (all findings verified against current implementation):
-  - `lib/signal-canvas.tsx` — `Map<string, SceneEntry>`, `registerScene()`, `renderAllScenes()` scissor pattern, `getState()` singleton
-  - `hooks/use-signal-scene.ts` — `IntersectionObserver` visibility gate, `crypto.randomUUID()` keying, `disposeScene()` on unmount
-  - `components/animation/glsl-hero.tsx` — module-level `_signalObserver`, `ensureSignalObserver()`, `readSignalVars()` pattern
-  - `components/animation/signal-mesh.tsx` — identical MutationObserver pattern (confirms duplication risk)
-  - `components/animation/horizontal-scroll.tsx` — existing pin/scrub implementation, `invalidateOnRefresh: true`, mobile breakpoint fallback
-  - `components/layout/lenis-provider.tsx` — `instance.on("scroll", ScrollTrigger.update)`, GSAP ticker integration
-  - `components/layout/page-animations.tsx` — `data-anim` selector system, `applyBgShift()`, `#bg-shift-wrapper`
-  - `components/sf/sf-section.tsx` — SFSection prop API, data attribute system
-  - `app/page.tsx` — current homepage structure, 7 SFSection instances
-  - `app/layout.tsx` — `SignalCanvasLazy`, `LenisProvider`, `PageAnimations` mounting order
-  - `next.config.ts` — current config (no redirects — confirmed gap)
-- Next.js App Router docs: `redirects()` function, `permanent: true` → 308 status code
-- GSAP ScrollTrigger docs: `pin`, `pinSpacing`, `scrub`, `anticipatePin`, `invalidateOnRefresh`
-
----
-
-*Architecture research for: SignalframeUX v1.5 Redesign*
-*Researched: 2026-04-07*
+- Direct codebase audit (all findings verified):
+  - `app/globals.css:163-165` — hardcoded VHS opacity tokens
+  - `lib/tokens.css:145-153` — `--sf-vhs-crt-opacity: 0.2`, `--sf-vhs-noise-opacity: 0.015`
+  - `components/animation/vhs-overlay.tsx` — full 7-layer structure, GSAP timing
+  - `components/layout/global-effects.tsx` — idle system, `IDLE_TIMEOUT = 8000`
+  - `components/animation/signal-overlay.tsx` — `handleIntensity()` writes only base var
+  - `lib/signal-canvas.tsx` — singleton architecture, `getState()`, scissor/viewport pattern
+  - `hooks/use-signal-scene.ts` — `IntersectionObserver` gating, scene registration API
+  - `lib/color-resolve.ts` — `resolveColorToken()` — 1x1 canvas probe pattern
+  - `.planning/v1.7-prep/aesthetic-prototypes.md` — per-effect feasibility, existing VHS layer audit
+  - `.planning/ANL-analyst-brief-v2.md` — critical findings on intensity boundary behavior, stacking coherence, idle escalation direction, performance headroom

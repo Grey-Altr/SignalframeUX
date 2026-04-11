@@ -1,310 +1,339 @@
-# Stack Research
+# Technology Stack
 
-**Domain:** Design system showcase + creative portfolio (Next.js 15 / React 19)
-**Researched:** 2026-04-07
-**Scope:** NEW capabilities only — v1.5 Redesign (scroll-driven typographic animation, full-viewport GLSL heroes, FRAME/SIGNAL demo, coded nomenclature catalog, specimen-style subpages, Awwwards SOTD-level scroll experiences)
-**Confidence:** HIGH (claims verified against official GSAP docs, npm registry, official Three.js docs, and direct codebase inspection)
+**Project:** SignalframeUX v1.7 — Substrate Effects + Token Bridge
+**Researched:** 2026-04-11
+**Scope:** NEW capabilities only — substrate-intensity effects (grain enhancement, halftone, mesh gradient, VHS/scanline, glitch), token bridge for CD consumer site, viewport polish, visual regression testing
+**Confidence:** HIGH for CSS techniques (cross-verified against MDN, Frontend Masters, CSS-Tricks). MEDIUM for Chromatic (current version from npm registry). HIGH for Houdini Paint API exclusion (verified against Can I Use data).
 
 ---
 
 ## Context: What This Covers
 
-This is an additive stack document for the v1.5 milestone. The validated v1.4 baseline is:
+Additive stack document for the v1.7 milestone. Validated v1.6 baseline (DO NOT re-research):
+- Next.js 16, TypeScript 5.8, Tailwind CSS v4, GSAP 3.12, Lenis, Three.js
+- 54 SF components, OKLCH color space, WebGL singleton renderer
+- VHS overlay (CSS pseudo-elements), grain (SVG feTurbulence), idle animation
+- tsup library build, Storybook 10, Playwright tests
 
-- Next.js 15.3, TypeScript 5.8, Tailwind CSS v4, CVA, Radix UI via shadcn
-- GSAP 3.14.2 + @gsap/react 2.1.2 (ScrollTrigger, SplitText, ScrambleText, Flip, CustomEase, DrawSVGPlugin already registered)
-- Lenis 1.1.20 (smooth scroll, GSAP ticker-driven via `autoRaf: false`)
-- Three.js 0.183.2 + SignalCanvas singleton (scissor/viewport rendering, single WebGL context)
-- shiki 4.0.2, OKLCH color space, 49-item component registry, 100-107 KB shared bundle
-
-**GSAP licensing:** As of May 2025, GSAP 3.13+ is 100% free for commercial use including all previously Club-only plugins (ScrollSmoother, SplitText, MorphSVG, etc.). Current installed version is 3.14.2. All plugins listed in `node_modules/gsap/` are already available — no new GSAP purchase or subscription needed.
+This document covers only what needs to change or be added.
 
 ---
 
-## Recommended Stack
+## Recommended Stack Additions
 
-### No New Runtime Dependencies Required
+### One New Dev Dependency: Chromatic
 
-The v1.5 feature set is achievable entirely within the existing dependency graph. Every required capability is already present in the installed packages — this milestone is a configuration and implementation exercise, not a dependency addition exercise.
+| Package | Version | Purpose | Why |
+|---------|---------|---------|-----|
+| `@chromatic-com/storybook` | `^5.1.1` | Visual regression testing via Storybook 10 addon | First-party Storybook addon, zero-config setup, integrates directly into the existing Storybook 10 instance. Captures per-story screenshots and flags visual diffs on every CI run. Critical for substrate effects — grain, halftone, mesh gradient are pixel-level outputs where diffing catches regressions invisible to unit tests. |
+| `chromatic` CLI | `^16.2.0` | CI upload + baseline management | Companion CLI to the addon. Needed for `npx chromatic --project-token=<token>` in CI. Peer to the addon — install both. |
 
-| Feature | Implementation Path | Required Package | Status |
-|---------|--------------------|--------------------|--------|
-| Scroll-driven typographic animation (200-300vh) | GSAP ScrollTrigger `pin + scrub + end: "+=300vh"` + SplitText `mask: "chars"` | `gsap` (3.14.2) | Already installed |
-| Full-viewport GLSL hero variants | Extend `GLSLHero` — new fragment shader variants via `useSignalScene` + SignalCanvas singleton | `three` (0.183.2) | Already installed |
-| Multiple WebGL scenes one page | SignalCanvas scissor/viewport architecture already handles this — IntersectionObserver gates rendering per scene | `three` (0.183.2) | Architecture already handles it |
-| Interactive FRAME/SIGNAL separation demo | CSS `isolation: isolate` + GSAP `gsap.to()` on opacity/transform + `data-layer` attributes — no new dep | `gsap` (3.14.2) | Already installed |
-| Coded nomenclature catalog | Static data structure + `SFText`, `SFGrid`, `SFContainer` from SF layer — no new dep | None | CSS + components only |
-| Specimen-style token visualization | Extend `TokenViz` component + `token-viz.tsx` — already renders CSS custom property values | None | Extend existing component |
-| Awwwards-level scroll pinning | ScrollTrigger `pin: true`, `pinSpacing`, `snap`, `invalidateOnRefresh` — already in installed GSAP | `gsap` (3.14.2) | Already installed |
-| GSAP Observer (gesture/velocity) | Bundled inside ScrollTrigger — `ScrollTrigger.observe()` is identical to `Observer.create()` | `gsap` (3.14.2) | Already installed, not registered |
-
-### GSAP Plugin Activation (Zero New Packages)
-
-The only stack action needed is registering `Observer` in the appropriate `gsap-*` entry point. Observer is already in `node_modules/gsap/Observer.js` — it just needs to be imported and registered.
-
-**Add to `lib/gsap-plugins.ts`** (the full plugin bundle used by complex components):
-
-```typescript
-import { Observer } from "gsap/Observer";
-gsap.registerPlugin(Observer);
-export { Observer };
+**Install:**
+```bash
+npm install -D @chromatic-com/storybook chromatic
 ```
 
-Observer is already bundled inside ScrollTrigger, so this is zero additional bundle cost when ScrollTrigger is already registered. The explicit import is cleaner for TypeScript types.
+**Configuration:** Zero-config. Run `npx storybook@latest add @chromaui/addon-visual-tests` to wire the addon into `.storybook/main.ts` automatically. A `chromatic.config.json` file is optional — only needed for viewport overrides or multi-browser configuration.
 
-### ScrollSmoother Decision: Keep Lenis
-
-ScrollSmoother (previously Club-only, now free in 3.13+) is available but should NOT replace Lenis for this project. Lenis is already integrated with the GSAP ticker (`autoRaf: false`, Lenis RAF → `gsap.ticker.add()`) and is validated at Lighthouse 100/100. Introducing ScrollSmoother would require:
-
-1. Removing Lenis entirely (it conflicts with ScrollSmoother — two smooth scroll systems)
-2. Rebuilding all ScrollTrigger proxy configuration
-3. Re-testing Lighthouse
-
-**Decision: keep Lenis.** The ScrollTrigger + Lenis integration pattern in this codebase is already correct and battle-tested.
+**No other new runtime or dev dependencies are required for this milestone.** All eight aesthetic effects are achievable with existing CSS primitives, SVG filters, and the installed GSAP/Three.js stack.
 
 ---
 
-## ScrollTrigger Patterns for v1.5 Features
+## Substrate Effects: CSS Technique Decisions
 
-### Pattern 1: Extended Pin + Scrub (200-300vh typographic animation)
+### The Central Question: CSS Houdini Paint Worklets vs SVG feTurbulence
 
-The core architecture for scroll-driven type sequences. Pin the section, scrub a GSAP timeline through the scroll distance.
+**Verdict: SVG feTurbulence wins. Houdini Paint API is excluded.**
 
-```typescript
-// lib/gsap-core.ts — already registered
-// Use in a new component: components/animation/signal-type-sequence.tsx
+CSS Paint API (Houdini) browser support as of April 2026 (verified against Can I Use):
+- Chrome/Edge/Opera: Yes (v65+)
+- Safari: Disabled by default in all versions. Can be enabled in Develop > Experimental Features — not available for general users.
+- Firefox: No support across all versions (v2–v152).
+- Global usage: ~76% (Chromium-only)
 
-const tl = gsap.timeline();
+At the quality bar this project targets (Lighthouse 100/100, WCAG AA, production-grade), a technique absent in Firefox and requiring an opt-in flag in Safari is not viable as a primary implementation path. The polyfill (GoogleChromeLabs/css-paint-polyfill) ships JS to every browser, violating the CSS-first constraint. **Houdini is excluded for all eight effects.**
 
-// Build the timeline: proportional durations determine scroll pacing
-// A tween that takes 2 units plays for 2x longer in the scroll window than a 1-unit tween
-tl.from(chars, { y: "120%", stagger: 0.02, duration: 1 })
-  .to(words, { opacity: 0.15, stagger: 0.05, duration: 0.5 }, "+=0.2")
-  .from(nextChars, { x: "-40%", opacity: 0, stagger: 0.03, duration: 1 }, "-=0.2");
-
-ScrollTrigger.create({
-  trigger: sectionRef.current,
-  pin: true,              // Pin section while scrolling through it
-  start: "top top",       // Lock when section top hits viewport top
-  end: "+=2400",          // 300vh at 8px/px — extend the pin window
-  scrub: 1.5,             // 1.5s smoothing lag (avoid jerky type)
-  animation: tl,          // Link timeline directly
-  invalidateOnRefresh: true, // Recalculate on resize (required with SplitText)
-});
-```
-
-**Key constraint:** When using `pin: true`, never animate the pinned element itself — animate its children. GSAP's pinning wraps the element; animating it breaks measurements. Always animate the inner content container.
-
-**SplitText with mask (3.13+ API — already installed):**
-
-```typescript
-SplitText.create(headingRef.current, {
-  type: "chars,words,lines",
-  mask: "chars",          // Auto-wraps each char in overflow:hidden container
-  autoSplit: true,        // Re-splits on container resize (required for scrub + pin combos)
-  onSplit(self) {
-    // Build tween against self.chars, self.words, self.lines
-    // These arrays are available immediately for timeline construction
-  }
-});
-```
-
-The `mask: "chars"` option was added in SplitText 3.13.0 (confirmed in GSAP community docs). This project already has 3.14.2 installed — this is a zero-upgrade capability.
-
-### Pattern 2: Nested Pinning with pinnedContainer
-
-When a scroll-driven type sequence sits inside an outer pinned section (e.g., a hero that is itself pinned), use `pinnedContainer`:
-
-```typescript
-ScrollTrigger.create({
-  trigger: innerRef.current,
-  pinnedContainer: outerPinnedRef.current, // Essential — without this, offsets are wrong
-  start: "top center",
-  end: "top 20%",
-  scrub: 1,
-});
-```
-
-Missing `pinnedContainer` is the #1 cause of misaligned scrub animations in nested pin scenarios.
-
-### Pattern 3: Observer for FRAME/SIGNAL Interactive Demo
-
-The FRAME/SIGNAL separation demo needs gesture-based interaction (drag to reveal, swipe to toggle layers). Observer is the right tool — not ScrollTrigger, which is position-based.
-
-```typescript
-import { Observer } from "gsap/Observer";
-
-// Already bundled in ScrollTrigger — just import the class for types
-const obs = Observer.create({
-  target: demoRef.current,
-  type: "pointer,touch",
-  onDrag: (self) => {
-    // self.deltaX gives drag distance — drive layer opacity/translate
-    const progress = Math.max(0, Math.min(1, self.x / containerWidth));
-    gsap.set(signalLayerRef.current, { opacity: progress });
-    gsap.set(frameLayerRef.current, { opacity: 1 - progress * 0.5 });
-  },
-  onDragEnd: () => {
-    // Snap to nearest clean state
-    gsap.to(signalLayerRef.current, { opacity: progress > 0.5 ? 1 : 0, duration: 0.3, ease: "power2.out" });
-  },
-});
-```
-
-### Pattern 4: Snap Scroll Between Sections
-
-For Awwwards-level section transitions — snapping to labeled positions in a pinned timeline:
-
-```typescript
-ScrollTrigger.create({
-  trigger: containerRef.current,
-  pin: true,
-  end: "+=4000",
-  scrub: true,
-  animation: masterTimeline,
-  snap: {
-    snapTo: "labels",           // Snap to gsap timeline label positions
-    duration: { min: 0.2, max: 0.8 },
-    ease: "power1.inOut",
-    delay: 0.05,
-  },
-});
-```
+SVG feTurbulence is implemented in all browsers, requires no JavaScript, and is already used in the codebase for grain. The approach for this milestone is: extend the existing SVG filter pattern, not introduce a new rendering API.
 
 ---
 
-## Multiple WebGL Scenes: Architecture + Constraints
+### Effect-by-Effect Implementation Decisions
 
-### What Already Works
+#### Effect 1: Grain (Enhancement of Existing)
 
-The SignalCanvas singleton architecture (`lib/signal-canvas.tsx`) already implements the correct pattern for multiple WebGL scenes:
+The existing `feTurbulence` grain is correct. Enhancement means exposing `--signal-intensity` as a typed `@property` to drive `baseFrequency` and `opacity` in a composited overlay, rather than hardcoding values.
 
-1. Single `WebGLRenderer` instance (one GPU context — avoids the browser ~8 context limit)
-2. Scissor/viewport split per scene (`renderer.setScissor` + `renderer.setViewport`)
-3. IntersectionObserver per scene — offscreen scenes skip the render loop entirely
-4. Single GSAP ticker drives all rendering (no separate `requestAnimationFrame` loops)
-
-This is exactly the pattern endorsed by WebGL Fundamentals and used in production by pmndrs/react-three-scissor. No architecture change is needed.
-
-### Performance Budget for Multiple GLSL Hero Scenes
-
-Running 2-4 full-viewport GLSL scenes on a single page is viable with these constraints:
-
-| Constraint | Budget | Current GLSLHero Status |
-|------------|--------|-------------------------|
-| Total draw calls per frame | Under 100 | Each GLSL scene = 1 draw call (full-screen quad). 4 scenes = 4 draw calls. Well within budget. |
-| GPU memory per shader | Minimal — FBM shaders use no textures | GLSLHero: 0 texture allocations, 1 geometry, 1 material |
-| Shader compilation | Happens once at scene register | Each unique GLSL variant compiles once on mount, not per frame |
-| Pixel ratio | `Math.min(devicePixelRatio, 2)` | Already capped in `initSignalCanvas` — prevents GPU overload on 3x displays |
-
-**Key risk: shader permutation proliferation.** If each hero variant has unique GLSL source, each compiles a new shader program. 4 scenes × 1 unique shader each = 4 GPU programs (fine). Avoid dynamic GLSL string interpolation — it generates new programs per render.
-
-**Correct pattern for hero variants:**
-
-```typescript
-// Use uniforms to differentiate behavior — ONE shader, many configurations
-// The existing GLSLHero already does this correctly via uIntensity, uGridDensity, uAccent
-
-// DO: vary behavior via uniforms
-uniforms.uMode.value = 1; // "mode 1" vs "mode 2" behavior branched in GLSL
-
-// DO NOT: generate new shader source strings per variant
-const shader = `... ${condition ? "line A" : "line B"} ...`; // Creates new GPU program each time
+**Technique:**
+```css
+@property --grain-intensity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.4;
+}
 ```
 
-**Dispose discipline:** The existing `disposeScene()` in `signal-canvas.tsx` already handles `geometry.dispose()`, `material.dispose()`, and texture traversal. When a hero component unmounts, `useSignalScene`'s cleanup calls this correctly. No change needed.
+SVG filter stays as-is (`feTurbulence type="fractalNoise"`). The `--grain-intensity` property drives the `opacity` of the `::after` pseudo-element carrying the filter. Keep `numOctaves` at 3–4 max — above that the performance cost exceeds the visual gain (verified: Frontend Masters).
 
-### When Multiple Scenes Becomes a Problem
+**Why `@property` not raw custom property:** A typed `@property` with `syntax: '<number>'` enables CSS `transition` on the value directly, giving GSAP a single numeric handle to tween via `gsap.to(el, { "--grain-intensity": 0.8 })`. Without `@property`, the browser cannot interpolate custom properties — GSAP's CSS plugin handles it via inline style mutation, but transitions won't fire from CSS alone.
 
-The scissor architecture handles 2-4 scenes comfortably. If the v1.5 page puts 6+ concurrent visible GLSL scenes in the viewport simultaneously, re-evaluate. The IntersectionObserver visibility gate already prevents offscreen scenes from running, so the real constraint is how many scenes are visible at the same time.
+Browser support for `@property`: Chrome 85+, Firefox 128+, Safari 16.4+. All modern browsers. Safe to use without fallback.
 
-At 100vh sections with smooth scroll: maximum 2 scenes visible simultaneously (current section + next peeking in). This is safe.
+#### Effect 2: Halftone
 
----
+**Technique: Pure CSS — radial-gradient + filter: contrast() + background-blend-mode**
 
-## FRAME/SIGNAL Layer Separation Demo
-
-### CSS Architecture (No New Deps)
-
-The interactive layer separation demo can be built entirely with CSS isolation properties and GSAP tweens:
+No SVG filters required. Three declarations per element:
 
 ```css
-/* Container creates a new stacking context */
-.signal-frame-demo {
-  isolation: isolate; /* New stacking context — prevents blend bleed-through */
-}
-
-/* FRAME layer: structural, always legible */
-[data-layer="frame"] {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: normal;
-  /* Grid lines, type, structural elements */
-}
-
-/* SIGNAL layer: generative, parametric */
-[data-layer="signal"] {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: screen; /* Or multiply — depends on desired effect */
-  /* WebGL canvas, noise field, color field */
+.sf-halftone {
+  /* Layer 1: repeating dot grid */
+  background:
+    radial-gradient(circle, black 40%, transparent 40%) 0 0 / 6px 6px,
+    /* Layer 2: size-variation map (linear or radial gradient) */
+    linear-gradient(to bottom, white, black);
+  background-blend-mode: multiply;
+  filter: contrast(16);
 }
 ```
 
-GSAP drives the reveal on drag (Observer pattern above) or on scroll (ScrollTrigger scrub). The `isolation: isolate` on the container confines the `mix-blend-mode` to the demo's stacking context and prevents it from bleeding into page elements.
+The `filter: contrast()` at high values (12–20) pushes all pixels to binary black/white, posterizing the blended gradient into discrete dots that vary in apparent size. A contrast value of 2–3× the blur value in pixels works well for smooth edges if chaining `contrast(80) blur(2px) contrast(5)`.
 
-### No React State for Animation Values
+This technique is pure CSS, no SVG, no JS, and is a single GPU compositing pass. Performance is acceptable — the `filter` does trigger an offscreen render, but it is not animated at runtime so it fires once per paint.
 
-Drive the layer separation via GSAP directly mutating CSS properties or `data-` attributes — not React `useState`. Setting state in an `onDrag` callback at 60fps causes excessive re-renders. GSAP's direct DOM mutation avoids this.
+**Moiré control:** Use consistent `background-size` across layers and avoid rotating the dot grid unless intentional. Staggered rows (offset by `50% 50%`) reduce moiré risk.
+
+#### Effect 3: Mesh Gradient
+
+**Technique: Multiple `radial-gradient()` layers via CSS `background` shorthand + `mix-blend-mode`**
+
+True CSS mesh gradients (as in Figma's mesh tool) do not exist natively. The closest pure-CSS approximation is layering 4–6 radial gradients at different positions, sizes, and OKLCH colors:
+
+```css
+.sf-mesh-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, oklch(0.6 0.2 270 / 0.6), transparent),
+    radial-gradient(ellipse 60% 80% at 80% 70%, oklch(0.5 0.25 190 / 0.5), transparent),
+    radial-gradient(ellipse 100% 100% at 50% 50%, oklch(0.15 0.05 240), transparent);
+  background-blend-mode: screen;
+}
+```
+
+Each gradient is GPU-rendered by the compositor — no pixel-by-pixel JS computation. This is significantly faster than canvas-based mesh gradient libraries. The alpha channel handles blending.
+
+**OKLCH advantage:** This project already uses OKLCH. Mesh gradient colors defined in OKLCH interpolate perceptually in the `color-interpolation-method: oklch` space (supported in all major browsers as of 2025, ~91% global coverage). Use `in oklch` in the gradient syntax for correct perceptual blending:
+
+```css
+background: radial-gradient(in oklch, oklch(0.6 0.2 270), transparent);
+```
+
+#### Effect 4: VHS/Scanline (Enhancement of Existing)
+
+The existing VHS overlay uses CSS pseudo-elements. Enhancement means adding a moving phosphor scanline on top of the static line pattern.
+
+**Technique: `::before` for animated scanline + `::after` for static scanline grid (both already in use pattern)**
+
+```css
+.sf-vhs::before {
+  /* Moving scanline */
+  background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.08) 51%);
+  background-size: 100% 4px;
+  animation: scanline-sweep 8s linear infinite;
+  opacity: var(--vhs-intensity, 0.4);
+}
+
+@keyframes scanline-sweep {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+```
+
+The animation uses `transform: translateY` — composited on the GPU, does not trigger layout or paint. Keep opacity under 0.15 for the static grid (above this the stripes become distracting at the DU aesthetic level).
+
+**`--signal-intensity` tie-in:** Drive `--vhs-intensity` from the parent `--signal-intensity` token using `calc()`:
+
+```css
+--vhs-intensity: calc(var(--signal-intensity, 0.4) * 0.7);
+```
+
+#### Effect 5: Glitch
+
+**Technique: Pure CSS — `clip-path: inset()` + `@keyframes` + pseudo-elements for chromatic aberration**
+
+No JS, no canvas, no SVG:
+
+```css
+.sf-glitch::before,
+.sf-glitch::after {
+  content: attr(data-text); /* duplicate text via data attribute */
+  position: absolute;
+  inset: 0;
+}
+
+.sf-glitch::before {
+  clip-path: inset(20% 0 60% 0);
+  animation: glitch-top 3s steps(1) infinite;
+  color: oklch(0.7 0.3 200); /* cyan shift */
+  mix-blend-mode: screen;
+}
+
+.sf-glitch::after {
+  clip-path: inset(60% 0 20% 0);
+  animation: glitch-bottom 2.7s steps(1) infinite;
+  color: oklch(0.7 0.3 350); /* magenta shift */
+  mix-blend-mode: screen;
+}
+
+@keyframes glitch-top {
+  0%, 90%, 100% { clip-path: inset(20% 0 60% 0); transform: translate(0); }
+  92% { clip-path: inset(15% 0 65% 0); transform: translate(-3px, 0); }
+  95% { clip-path: inset(25% 0 55% 0); transform: translate(3px, 0); }
+}
+```
+
+`steps(1)` timing function is the correct choice — it creates the discrete, robotic glitch jumps rather than smooth interpolation. `clip-path` is GPU-composited. The `mix-blend-mode: screen` on the color-shifted pseudo-elements produces chromatic aberration without double-rendering the full element.
+
+**Performance note:** `clip-path` on pseudo-elements with `mix-blend-mode` creates new compositing layers. Fine at idle/hover trigger. Do not animate continuously on large full-viewport elements — gate with `animation-play-state` and only activate on `[data-glitch-active]` attribute.
+
+#### Effect 6: Moiré (Bonus/Related to Halftone)
+
+Moiré is a natural consequence of two overlapping repeating patterns at slightly different frequencies. Intentional moiré as an aesthetic effect:
+
+```css
+.sf-moire {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, oklch(0.3 0 0 / 0.3) 3px, oklch(0.3 0 0 / 0.3) 4px),
+    repeating-linear-gradient(1.5deg, transparent, transparent 3px, oklch(0.3 0 0 / 0.3) 3px, oklch(0.3 0 0 / 0.3) 4px);
+}
+```
+
+The slight angle difference (0deg vs 1.5deg) between the two `repeating-linear-gradient` layers generates the interference pattern. Adjusting the degree difference controls moiré density. This is pure CSS, one paint pass, no animation overhead.
 
 ---
 
-## Coded Nomenclature Catalog
+### Stacking Multiple Effects
 
-### Implementation (Zero New Deps)
+**Compositing strategy:** Each effect is implemented as a separate pseudo-element layer or wrapper element, not as combined filters on a single element. This avoids the exponential GPU cost of stacked `backdrop-filter` and `filter` properties on the same element.
 
-This is a structured data problem, not a new package problem. The existing `component-registry.ts` pattern scales directly to a nomenclature catalog.
+Structure per component:
+```
+[data-substrate] container          ← isolation: isolate
+  ├── .sf-content                   ← actual content
+  ├── .sf-grain-overlay ::after     ← SVG feTurbulence grain
+  ├── .sf-scanline-overlay ::before ← VHS scanline animation
+  └── .sf-halftone-overlay          ← contrast() + radial-gradient
+```
 
-**Data shape:**
+Using `isolation: isolate` on the container confines `mix-blend-mode` blending to within the component's stacking context, preventing bleed-through to parent page elements. This is the same pattern already used in the FRAME/SIGNAL layer separation demo.
+
+**What NOT to stack:** Do not apply `backdrop-filter` to multiple nested elements simultaneously. Each `backdrop-filter` requires a separate offscreen render pass — nesting them doubles memory per level. Instead, apply a single `backdrop-filter` at the topmost overlay layer if blur is needed.
+
+---
+
+## Token Bridge: CSS @layer Cascade Pattern
+
+### Purpose
+
+Consumer sites (cdOS, CD-Operator, CD consumer site) import the SF design system tokens and need to override or extend them without specificity conflicts. The `@layer` cascade provides the mechanism.
+
+### Architecture
+
+The SF system ships tokens in a named layer. Consumer sites declare their override layer after:
+
+```css
+/* In SF system CSS (shipped in the library) */
+@layer sf.tokens {
+  :root {
+    --color-background: oklch(0.1 0.02 250);
+    --color-foreground: oklch(0.97 0.005 250);
+    --color-primary: oklch(0.65 0.22 200);
+    --signal-intensity: 0.4;
+    /* ... all SF tokens */
+  }
+}
+
+@layer sf.components {
+  /* SF component styles reference @layer sf.tokens values */
+}
+```
+
+```css
+/* In consumer site CSS */
+@layer sf.tokens, sf.components, consumer.overrides;
+
+@layer consumer.overrides {
+  :root {
+    --color-primary: oklch(0.7 0.25 150); /* consumer brand override */
+    --signal-intensity: 0.6;              /* higher intensity for this context */
+  }
+}
+```
+
+Layer order in the cascade: later layers win. By declaring `consumer.overrides` after `sf.components`, the consumer layer's specificity is always higher regardless of selector complexity. This eliminates the `!important` arms race.
+
+**Why this pattern:** @layer is fully supported in all modern browsers since 2022 (Chrome 99+, Firefox 97+, Safari 15.4+). It is the browser-native mechanism for design system layering without the runtime overhead of CSS-in-JS theming systems.
+
+### @property for Typed Token Animation
+
+Tokens that need to animate (e.g., `--signal-intensity` driving grain opacity, VHS strength) MUST be registered as typed `@property` declarations:
+
+```css
+@property --signal-intensity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --color-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: oklch(0.65 0.22 200);
+}
+```
+
+Typed `@property` enables:
+1. CSS `transition` and `animation` on custom properties (browser-native, no GSAP required for simple fades)
+2. GSAP tween targets (GSAP reads typed properties via `getComputedStyle` and mutates via `style.setProperty`)
+3. Type safety — invalid values fall back to `initial-value` rather than silently breaking
+
+Register all animatable tokens this way. Non-animatable tokens (breakpoints, font family names) do not need `@property`.
+
+### No Style Dictionary Needed
+
+For this milestone, the token bridge does not require Style Dictionary or any additional tooling. The `@layer` cascade pattern is sufficient for CSS-to-CSS bridging. Style Dictionary becomes relevant only if tokens need to be output to non-CSS targets (iOS, Android, JSON). This project's consumer sites are web-only. Decision: no new tooling.
+
+---
+
+## Visual Regression Testing: Chromatic Integration
+
+### How It Integrates with Storybook 10
+
+The existing Storybook 10 instance already has stories for SF components. Chromatic reads those stories, captures screenshots, and establishes baselines. No story modifications are needed for the initial setup.
+
+**Setup sequence:**
+1. `npm install -D @chromatic-com/storybook chromatic`
+2. `npx storybook@latest add @chromaui/addon-visual-tests` — auto-wires the addon into `.storybook/main.ts`
+3. Create a Chromatic project at chromatic.com, get project token
+4. Add to CI: `npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN`
+5. First run establishes baselines; subsequent runs flag regressions
+
+**Stories needed for substrate effects:** Each effect variant needs a dedicated story at controlled `--signal-intensity` values (0, 0.5, 1.0) to give Chromatic a stable baseline. Animated effects (glitch, VHS scanline sweep) need `chromatic: { pauseAnimationAtEnd: true }` in story parameters to freeze the frame before screenshotting.
 
 ```typescript
-// lib/nomenclature-catalog.ts
-export type NomenclatureEntry = {
-  code: string;         // "SF-01", "SIG-A", "FRM-3"
-  term: string;         // Human-readable name
-  layer: "FRAME" | "SIGNAL" | "SYSTEM";
-  definition: string;   // 1-2 sentence description
-  related: string[];    // Other entry codes
-  examples?: string[];  // Usage examples
+// Example story parameter for animated effects
+export const GlitchActive: Story = {
+  parameters: {
+    chromatic: { pauseAnimationAtEnd: true },
+  },
 };
-
-export const NOMENCLATURE: NomenclatureEntry[] = [ /* ... */ ];
 ```
 
-**Rendering:** Use `SFGrid`, `SFText`, `SFContainer` from the SF layer. Index alphabetically by `code`. Filter by `layer`. The existing `SFBadge` or a simple `data-badge` pattern handles the layer tag.
+### Performance Measurement for Stacked CSS Effects
 
-**No virtualization needed.** The catalog is a bounded, known dataset (not user-generated infinite data). Standard DOM rendering is fine.
+Chromatic captures rendering correctness, not performance. For performance measurement of stacked CSS effects, use the existing Lighthouse CI pipeline. The key metric is whether stacked substrate effects push the Composite + Paint timeline over budget.
 
----
+**Measurement approach:** Chrome DevTools Performance panel → record a frame in the substrate-heavy section → inspect the "Rendering" swimlane. Target: Composite + Paint under 4ms per frame at 60fps on a mid-range device (simulated via 4x CPU throttle in DevTools).
 
-## Specimen-Style Token Visualization
-
-### Extend `token-viz.tsx` (Existing Component)
-
-The existing `TokenViz` component (`components/animation/token-viz.tsx`, 259 lines) already renders CSS custom property values. Specimen-style visualization means extending the visual treatment — not adding packages.
-
-**Specimen patterns to implement:**
-
-| Specimen Type | Implementation | New Dep? |
-|--------------|---------------|----------|
-| Type scale specimen | Render each `--text-*` token as live text at that scale | No |
-| Color specimen | Render swatches using `background: var(--color-*)` | No |
-| Spacing specimen | Render boxes with `height: var(--spacing-*)`, label with pixel value | No |
-| Easing specimen | GSAP `gsap.to()` on a test element using each `--ease-*` var | No — GSAP already installed |
-| Duration specimen | GSAP tween with each `--duration-*` value, visual timing comparison | No — GSAP already installed |
-| Animation specimen | Replay `ScrollReveal` / `SignalMotion` with live controls | No |
-
-For easing/duration specimens: GSAP's `CustomEase` can parse the CSS `cubic-bezier()` value from `getComputedStyle()` and run a tween. This creates an interactive visual proof that the token equals the animation.
+If a substrate effect exceeds budget: reduce `numOctaves` on feTurbulence (3 is the safe limit), reduce the number of simultaneously visible layered effects, or gate effect activation with `IntersectionObserver` (same pattern as the existing WebGL scene visibility gate).
 
 ---
 
@@ -312,63 +341,62 @@ For easing/duration specimens: GSAP's `CustomEase` can parse the CSS `cubic-bezi
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `ScrollSmoother` | Conflicts with Lenis — can't run two smooth scroll systems. Lenis is validated at Lighthouse 100/100. Migration risk with no gain. | Lenis (existing) |
-| `framer-motion` / `motion` | Second animation system conflicts with `gsap.globalTimeline.timeScale(0)` reduced-motion kill switch. All animation runs through GSAP. | GSAP (existing) |
-| `@react-three/fiber` | R3F abstracts Three.js in a way that conflicts with the manual SignalCanvas singleton architecture. Adding R3F would require replacing the entire WebGL layer — a rewrite, not an addition. | Three.js direct (existing) |
-| `@react-three/drei` | Same reason as R3F. Additionally, Drei pulls in heavy optional dependencies. | Three.js direct (existing) |
-| `react-spring` | Third animation system. No. | GSAP (existing) |
-| `lottie-react` | Pre-baked animations contradict the DU/TDR real-time generative aesthetic. | GSAP + Three.js (existing) |
-| CSS native scroll-driven animations (`animation-timeline: scroll()`) | Firefox support as of April 2026 is still absent for the full spec. Cannot be used as primary mechanism — only as progressive enhancement. Lighthouse performance advantage is real but insufficient to justify cross-browser breakage at this audience target. | GSAP ScrollTrigger (existing) |
-| `WebGPU` / `THREE.WebGPURenderer` | Three.js WebGPU renderer is not production-stable as of 0.183. Safari WebGPU support is partial. The existing WebGL + Bayer dither aesthetic would need to be re-validated. | THREE.WebGLRenderer (existing) |
-| Any additional npm package for the nomenclature catalog | Structured data in a TypeScript file needs no package. Adding a CMS or headless data layer for a bounded design system catalog is over-engineering. | `lib/nomenclature-catalog.ts` (new file, zero deps) |
+| CSS Houdini Paint API (worklets) | Safari disabled by default, Firefox no support (verified Can I Use). ~24% of users cannot see Houdini effects without polyfill JS. The polyfill violates CSS-first constraint. | SVG feTurbulence + CSS filter (existing + extensions) |
+| CSS `animation-timeline: scroll()` | Already excluded in v1.5 STACK.md — Firefox support absent as of April 2026 | GSAP ScrollTrigger |
+| Canvas-based mesh gradient libraries (e.g., `meshgradient.js`) | Adds a JS runtime dependency for an effect achievable with 5 CSS declarations. Violates CSS-first constraint. Blocks SSR. | Layered `radial-gradient()` in CSS |
+| Style Dictionary | Token bridge for this milestone is CSS-to-CSS only. Style Dictionary is needed only for multi-platform token output (iOS, Android). Over-engineering for web-only consumers. | `@layer` cascade + `@property` |
+| `playwright-visual-comparisons` | Playwright already installed for E2E tests — adding visual regression to it creates a duplicate testing concern (functional test vs visual diff are different jobs). Chromatic via Storybook is the purpose-built tool for component-level visual regression. | Chromatic + Storybook |
+| `motion` / `framer-motion` for substrate animation | Second animation system. All animation already runs through GSAP. `--signal-intensity` animation is handled by GSAP tweening a typed `@property`. | GSAP (existing) + `@property` |
+| `backdrop-filter: blur()` on substrate overlays | Each `backdrop-filter` triggers an independent offscreen render pass. Stacking multiple `backdrop-filter` elements causes exponential GPU cost. Substrate effects are overlay-based, not blur-based. | `mix-blend-mode` + `opacity` compositing |
+| CSS `filter()` function | Not cross-browser — only Safari shipped it in 2015, no other browser followed. | Apply `filter` to the element, not to individual gradient images |
 
 ---
 
-## Bundle Impact Assessment
+## Bundle Impact
 
-**Baseline:** 107-110 KB shared JS (estimated v1.4 end state). Target: stay under 150 KB gate. Lighthouse 100/100 target maintained.
+**Zero new runtime JS.** All eight substrate effects are pure CSS (+ SVG filter markup). The `@property` declarations and `@layer` structures are CSS, not JS. GSAP already in the bundle handles any `--signal-intensity` tweening.
 
-| Change | Initial Bundle Impact | Strategy |
-|--------|----------------------|----------|
-| Observer registration in `gsap-plugins.ts` | 0 KB (Observer is already inside ScrollTrigger's bundle) | Just import the type — no new code shipped |
-| New GLSL hero variants | 0 KB JS (shader source is a string literal, not a separate file) | GLSL stays inline as template literals in the component |
-| FRAME/SIGNAL demo component | ~2-4 KB (new component, no deps) | Standard RSC → client boundary pattern |
-| Nomenclature catalog data | ~3-8 KB (TypeScript object, tree-shaken to only used entries) | Static data file, imported server-side |
-| Extended TokenViz specimen views | ~1-2 KB (extending existing 259-line component) | Same component, new render branches |
-| `lib/gsap-split.ts` additions (mask API) | 0 KB (capability is already in installed SplitText) | API call change, no new code shipped |
+| Change | Bundle Impact | Strategy |
+|--------|--------------|----------|
+| `@chromatic-com/storybook` | Dev-only — zero production bundle impact | `devDependencies` only |
+| `chromatic` CLI | Dev-only — CI usage only | `devDependencies` only |
+| SVG filter definitions for grain | ~200–400 bytes inline SVG per effect | Inline in component template, not an image request |
+| `@property` declarations | Bytes in CSS only — negligible | Add to `globals.css` token block |
+| `@layer` cascade structure | Bytes in CSS only — negligible | Restructure existing token block in `globals.css` |
 
-**Projected bundle after v1.5:** ~115-125 KB — comfortably under 150 KB gate. Lighthouse 100/100 maintained given no new client JS packages are added.
+**Projected bundle after v1.7:** No change from v1.6 baseline. Lighthouse 100/100 maintained.
 
 ---
 
 ## Alternatives Considered
 
-| Recommended | Alternative | Why Not |
-|-------------|-------------|---------|
-| GSAP ScrollTrigger `pin + scrub` | CSS `animation-timeline: scroll()` native | No Firefox support as of April 2026. Cannot be used as primary scroll driver for an audience that includes Firefox users. |
-| Extend GLSLHero with uniform variants | Multiple separate Three.js renderers | Browser limits WebGL contexts to ~8. Multiple renderers = GPU memory duplication per shader, per geometry. The scissor architecture avoids this entirely. |
-| GSAP Observer for FRAME/SIGNAL drag demo | Custom `pointerdown`/`pointermove` handlers | Observer normalizes touch/mouse/pointer events, handles velocity, and provides `deltaX`/`deltaY` already calibrated. Reimplementing this is 100+ lines of boilerplate for the same result. |
-| Lenis (keep existing) | Replace with ScrollSmoother | ScrollSmoother uses CSS `translate` to fake smooth scroll — it does not use native scrolling. This can cause ScrollTrigger position calculation discrepancies. Lenis drives native scroll position. The existing Lenis + ScrollTrigger integration is verified at Lighthouse 100. Migration risk is unjustified. |
-| Static TypeScript data for nomenclature | Contentful / Sanity CMS | A design system's internal nomenclature is not user-editable content. A CMS adds API latency, auth, and runtime dependency for data that changes during development only. |
-| Three.js direct | @react-three/fiber | R3F's reconciler conflicts with the manual scene registration pattern in `lib/signal-canvas.tsx`. R3F assumes it owns the renderer. This project's SignalCanvas singleton architecture is more efficient for the scissor-multi-scene use case. |
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| Grain texture | SVG `feTurbulence` (extend existing) | CSS Houdini Paint API | Safari/Firefox support missing — affects ~24% of users. Polyfill requires JS. |
+| Halftone | Pure CSS `radial-gradient` + `filter: contrast()` | SVG halftone filter or canvas | CSS achieves identical effect in 3 declarations. No new rendering context required. |
+| Mesh gradient | Layered `radial-gradient()` in CSS | `meshgradient.js`, canvas-based | Library adds JS runtime for what CSS achieves natively. Blocks RSC server render. |
+| Glitch animation | `clip-path: inset()` + `@keyframes` | GSAP timeline driving clip-path | Pure CSS is zero JS, fires from CSS class toggle. GSAP adds overhead for an effect that doesn't need JS orchestration. Use GSAP only if glitch needs to be scroll-synced. |
+| Token bridge | `@layer` cascade + `@property` | Style Dictionary | Style Dictionary is for multi-platform token output. Web-only consumers need CSS-to-CSS layering only. |
+| Visual regression | Chromatic (`@chromatic-com/storybook` 5.1.1) | Playwright visual comparisons | Chromatic is purpose-built for Storybook story-level visual diff. Playwright visual testing at page level has higher false-positive rate for animated components. |
 
 ---
 
 ## Sources
 
-- `node_modules/gsap/package.json` — version 3.14.2, all plugins present (HIGH confidence — direct codebase inspection)
-- `node_modules/gsap/Observer.js`, `node_modules/gsap/ScrollSmoother.js` — confirmed present (HIGH confidence — direct inspection)
-- [GSAP now 100% free — CSS-Tricks](https://css-tricks.com/gsap-is-now-completely-free-even-for-commercial-use/) — confirms all plugins free as of May 2025 / v3.13 (HIGH confidence)
-- [GSAP ScrollTrigger docs](https://gsap.com/docs/v3/Plugins/ScrollTrigger/) — `pin`, `pinnedContainer`, `scrub`, `end`, `snap`, `invalidateOnRefresh` API (HIGH confidence — official docs)
-- [GSAP Observer docs](https://gsap.com/docs/v3/Plugins/Observer/) — `type`, `onDrag`, `deltaX`, velocity API. Confirmed: Observer is bundled inside ScrollTrigger (HIGH confidence — official docs)
-- [GSAP SplitText docs](https://gsap.com/docs/v3/Plugins/SplitText/) — `mask: "chars"` added in 3.13.0, `autoSplit: true` (HIGH confidence — official docs, version confirmed in installed package)
-- [Codrops: Building Efficient Three.js Scenes (Feb 2025)](https://tympanus.net/codrops/2025/02/11/building-efficient-three-js-scenes-optimize-performance-while-maintaining-quality/) — draw call budget <100, dispose discipline, shared renderer pattern (MEDIUM confidence — editorial source, consistent with Three.js docs)
-- [WebGL Fundamentals: Multiple Views](https://webglfundamentals.org/webgl/lessons/webgl-multiple-views.html) — scissor/viewport pattern for multiple scenes, one canvas (HIGH confidence — authoritative WebGL reference)
-- [Lenis compatibility with ScrollTrigger — GSAP forum](https://gsap.com/community/forums/topic/43737-lenis-scroll-and-gsap-compatibility/) — confirmed coexistence pattern with `autoRaf: false` (MEDIUM confidence — community forum, consistent with installed codebase implementation)
-- `lib/signal-canvas.tsx`, `hooks/use-signal-scene.ts`, `components/animation/glsl-hero.tsx` — existing SignalCanvas architecture (HIGH confidence — direct codebase inspection)
-- `lib/gsap-plugins.ts`, `lib/gsap-core.ts`, `lib/gsap-split.ts`, `lib/gsap-flip.ts`, `lib/gsap-draw.ts` — current plugin registration state (HIGH confidence — direct codebase inspection)
+- Can I Use — CSS Painting API: https://caniuse.com/css-paint-api — Firefox 0%, Safari disabled by default. (HIGH confidence — verified directly)
+- MDN — @property: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@property — browser support, syntax (HIGH confidence — official docs)
+- MDN — CSS Cascade Layers: https://developer.mozilla.org/en-US/docs/Web/CSS/@layer (HIGH confidence — official docs)
+- Frontend Masters — "Pure CSS Halftone Effect in 3 Declarations": https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/ — `radial-gradient` + `filter: contrast()` technique (HIGH confidence — verified technique)
+- Frontend Masters — "Grainy Gradients": https://frontendmasters.com/blog/grainy-gradients/ — feTurbulence + feDisplacementMap, numOctaves 3–4 performance limit (HIGH confidence — verified technique)
+- CSS { in Real Life } — "CSS Halftone Patterns": https://css-irl.info/css-halftone-patterns/ — `mask-image` variation technique (MEDIUM confidence — editorial, consistent with MDN gradient spec)
+- Josh W. Comeau — "Color Shifting": https://www.joshwcomeau.com/animation/color-shifting/ — OKLCH + @property animation technique (HIGH confidence — author is well-known, consistent with MDN spec)
+- Codrops — CSS Glitch Effect: https://tympanus.net/codrops/2017/12/21/css-glitch-effect/ — clip-path + pseudo-element glitch pattern (MEDIUM confidence — older article, technique is stable CSS)
+- utilitybend — "Revisiting SVG filters": https://utilitybend.com/blog/revisiting-svg-filters-my-forgotten-powerhouse-for-duotones-noise-and-other-effects/ — feTurbulence remains valid vs CSS alternatives (MEDIUM confidence — editorial)
+- npm registry — `@chromatic-com/storybook` version 5.1.1, `chromatic` version 16.2.0 (HIGH confidence — live registry query)
+- Chromatic docs: https://www.chromatic.com/docs/quickstart/ — setup, `pauseAnimationAtEnd` story parameter (MEDIUM confidence — official docs)
+- Go Make Things — "Public and private CSS cascade layers in a design system": https://gomakethings.com/public-and-private-css-cascade-layers-in-a-design-system/ — @layer design system pattern (MEDIUM confidence — editorial, consistent with spec)
 
 ---
 
-*Stack research for: SignalframeUX v1.5 Redesign milestone*
-*Researched: 2026-04-07*
+*Stack research for: SignalframeUX v1.7 Substrate Effects + Token Bridge milestone*
+*Researched: 2026-04-11*
