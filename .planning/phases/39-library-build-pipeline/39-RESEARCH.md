@@ -516,22 +516,19 @@ npm pack --dry-run
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **signalframe-provider.tsx and GSAP conflict (CRITICAL)**
+1. **signalframe-provider.tsx and GSAP conflict (CRITICAL)** — RESOLVED: Plan 39-01 Task 1 refactors to lazy-load GSAP via dynamic `import('gsap')` in useEffect. Provider stays in core entry.
    - What we know: The file imports `gsap` at module level; core entry must be GSAP-free (D-07)
-   - What's unclear: Which resolution strategy the planner chooses (exclude from core, refactor to lazy-load, or move to animation entry)
-   - Recommendation: Refactor to lazy-load GSAP in provider's useEffect (Option 2 from Critical Issue section) — this preserves the core API while satisfying D-07
+   - Resolution: Option 2 (lazy-load) chosen — preserves core API while satisfying D-07
 
-2. **use-scroll-restoration: exclude vs. refactor (D-05)**
+2. **use-scroll-restoration: exclude vs. refactor (D-05)** — RESOLVED: Plan 39-01 Task 1 excludes from library.
    - What we know: Hook imports `next/navigation` and `useLenisInstance` from app-internal `lenis-provider`
-   - What's unclear: D-05 leaves the decision to the planner
-   - Recommendation: Exclude from library v1. The `useLenisInstance` dependency points to `@/components/layout/lenis-provider` which is app-internal, not an exportable library component. Refactoring requires extracting Lenis into a separate library context — out of scope for Phase 39.
+   - Resolution: Excluded from library v1. The `useLenisInstance` dependency is app-internal, not exportable.
 
-3. **Package name: `signalframeux` vs `@signalframe/sf`**
-   - What we know: CONTEXT.md uses both names; D-07 says `signalframeux/animation` etc.; success criteria says `@signalframe/sf`; `package.json` has `"name": "signalframeux"`
-   - What's unclear: Which name is canonical for the published package
-   - Recommendation: Keep `signalframeux` (matches current package.json); the `@signalframe/sf` in success criteria appears to be consumer-facing shorthand, not the npm package name. Planner should confirm.
+3. **Package name: `signalframeux` vs `@signalframe/sf`** — RESOLVED: Plans use `signalframeux` (matches current package.json).
+   - What we know: CONTEXT.md uses both names; success criteria says `@signalframe/sf`; `package.json` has `"name": "signalframeux"`
+   - Resolution: Keep `signalframeux`. The `@signalframe/sf` in success criteria is consumer-facing shorthand, not the npm package name.
 
 ---
 
