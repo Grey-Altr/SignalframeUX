@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 40 context gathered
-last_updated: "2026-04-11T02:45:09.516Z"
+stopped_at: Completed 40-00-PLAN.md
+last_updated: "2026-04-11T03:29:37.745Z"
 last_activity: 2026-04-11
 progress:
   total_phases: 32
   completed_phases: 18
-  total_plans: 45
-  completed_plans: 44
-  percent: 98
+  total_plans: 50
+  completed_plans: 45
 ---
 
 # STATE — SignalframeUX
@@ -198,6 +197,8 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 - [Phase 38-02]: waitForTimeout(N) in axe tests allows GSAP bgShift ScrollTrigger to fire (ScrollTrigger fires immediately for elements at/above scroll 50% threshold); use AXE_EXCLUDE for animation-transient elements instead of timeout waits
 - [Phase 38-02]: [data-api-entry] excluded from axe — GSAP stagger (81 entries × 0.015s ≈ 1.6s) creates transient opacity at networkidle; elements pass contrast at rest; ARIA structure verified independently
 - [Phase 38-02]: color: transition removed from global * rule — axe-core samples mid-transition interpolated hex values when color transitions are active, causing spurious contrast failures on routes without bgShift
+- [Phase 40-api-documentation-dx]: Used execFileSync not execSync for Storybook build test per project security conventions
+- [Phase 40-api-documentation-dx]: Excluded 4 type-only exports (TextVariant, SignalframeUXConfig, UseSignalframeReturn, SFStatusDotStatus) from JSDoc and API_DOCS coverage checks
 
 ### Blockers
 
@@ -213,6 +214,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T02:45:09.512Z
-Stopped at: Phase 40 context gathered
+Last session: 2026-04-11T03:29:32.697Z
+Stopped at: Completed 40-00-PLAN.md
 Resume with: Phase 38 complete. Continue with Phase 39 (Library Build Pipeline) via /pde:execute-phase 39
