@@ -8,7 +8,7 @@
 - [x] **v1.3 Component Expansion** — Phases 16-20 (shipped 2026-04-06)
 - [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
-- [ ] **v1.6 API-Ready** — Phases 36-41 (in progress)
+- [ ] **v1.6 API-Ready** — Phases 36-43 (in progress)
 
 ## Phases
 
@@ -492,6 +492,8 @@ Plans:
 - [x] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation) (completed 2026-04-11)
 - [x] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide (completed 2026-04-11)
 - [x] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100 (completed 2026-04-11)
+- [ ] **Phase 42: Tracking Reconciliation + peerDep Fix** — Update REQUIREMENTS.md checkboxes, add requirements-completed to Phase 36/39 SUMMARYs, move next to peerDependencies (Gap closure from audit)
+- [ ] **Phase 43: Production Deploy + Lighthouse Gate** — Deploy current codebase, run Lighthouse 100/100 gate against production URL (Gap closure: DIST-04)
 
 ### Phase 36: Housekeeping & Carry-Overs
 **Goal**: Clean up v1.5 deferred items and establish code quality baseline for v1.6 work
@@ -597,6 +599,33 @@ Plans:
 - [x] 41-02-PLAN.md — Consumer integration test and final quality gate
 
 
+### Phase 42: Tracking Reconciliation + peerDep Fix
+**Goal**: All v1.6 requirements properly tracked in REQUIREMENTS.md and SUMMARY frontmatter; `next` moved to peerDependencies
+**Depends on**: Phase 41 (audit completed)
+**Requirements**: CO-01, CO-02, CO-03, CO-04, LIB-01, LIB-02, LIB-03
+**Gap Closure**: Closes artifact tracking gaps from v1.6 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. REQUIREMENTS.md checkboxes updated for CO-01-04, MG-01, LIB-01-03 (all `[x]`)
+  2. Phase 36 SUMMARYs include `requirements-completed` frontmatter
+  3. Phase 39 SUMMARYs include `requirements-completed` frontmatter
+  4. `next` is in `peerDependencies` (not `dependencies`) with `peerDependenciesMeta: { next: { optional: true } }`
+  5. `npm publish --dry-run` still succeeds after package.json change
+**Plans:** 0/1 plans
+Plans:
+
+### Phase 43: Production Deploy + Lighthouse Gate
+**Goal**: DIST-04 satisfied — Lighthouse 100/100 all categories on production URL with v1.6 codebase
+**Depends on**: Phase 42 (tracking clean before final gate)
+**Requirements**: DIST-04
+**Gap Closure**: Closes DIST-04 hard blocker from v1.6 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. Current codebase deployed to https://signalframe.culturedivision.com
+  2. `node scripts/launch-gate-runner.mjs` exits 0 with Performance 100, Accessibility 100, Best Practices 100, SEO 100
+  3. Console sweep on production URL shows zero errors and zero warnings
+**Plans:** 0/1 plans
+Plans:
+
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -641,4 +670,6 @@ Plans:
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
 | 40. API Documentation & DX | 5/5 | Complete   | 2026-04-11 | - |
-| 41. Distribution & Launch Gate | v1.6 | 2/2 | Complete   | 2026-04-11 |
+| 41. Distribution & Launch Gate | 2/2 | Complete   | 2026-04-11 | 2026-04-11 |
+| 42. Tracking Reconciliation + peerDep Fix | 0/1 | Not started | — | — |
+| 43. Production Deploy + Lighthouse Gate | 0/1 | Not started | — | — |

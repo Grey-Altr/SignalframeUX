@@ -160,6 +160,32 @@
 | LR-03 | Phase 35 | Complete |
 | LR-04 | Phase 35 | Complete |
 
+### v1.6 API-Ready Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| CO-01 | Phase 36 → Phase 42 | Pending (tracking gap) |
+| CO-02 | Phase 36 → Phase 42 | Pending (tracking gap) |
+| CO-03 | Phase 36 → Phase 42 | Pending (tracking gap) |
+| CO-04 | Phase 36 → Phase 42 | Pending (tracking gap) |
+| MG-01 | Phase 37 | Complete |
+| MG-02 | Phase 37 | Complete |
+| MG-03 | Phase 37 | Complete |
+| QA-01 | Phase 38 | Complete |
+| QA-02 | Phase 38 | Complete |
+| QA-03 | Phase 38 | Complete |
+| LIB-01 | Phase 39 → Phase 42 | Pending (tracking gap) |
+| LIB-02 | Phase 39 → Phase 42 | Pending (tracking gap) |
+| LIB-03 | Phase 39 → Phase 42 | Pending (tracking gap) |
+| DOC-01 | Phase 40 | Complete |
+| DOC-02 | Phase 40 | Complete |
+| DOC-03 | Phase 40 | Complete |
+| DOC-04 | Phase 40 | Complete |
+| DIST-01 | Phase 41 | Complete |
+| DIST-02 | Phase 41 | Complete |
+| DIST-03 | Phase 41 | Complete |
+| DIST-04 | Phase 41 → Phase 43 | Pending (Lighthouse blocked) |
+
 ---
 
 ## Future Requirements (Deferred)
@@ -171,13 +197,13 @@
 ## v1.6 API-Ready
 
 ### Housekeeping & Carry-Overs (Phase 36)
-- [ ] **CO-01**: Lighthouse Best Practices = 100 and SEO = 100 on signalframeux.vercel.app (3-run worst score)
-- [ ] **CO-02**: T-06 font-mono test path fixed — reads `components/blocks/api-explorer.tsx` not `app/reference/page.tsx`
-- [ ] **CO-03**: ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
-- [ ] **CO-04**: Toolchain currency verified — Vercel CLI at 50.42.0+, ROADMAP.md stale entries corrected
+- [x] **CO-01**: Lighthouse Best Practices = 100 and SEO = 100 on signalframeux.vercel.app (3-run worst score)
+- [x] **CO-02**: T-06 font-mono test path fixed — reads `components/blocks/api-explorer.tsx` not `app/reference/page.tsx`
+- [x] **CO-03**: ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
+- [x] **CO-04**: Toolchain currency verified — Vercel CLI at 50.42.0+, ROADMAP.md stale entries corrected
 
 ### Next.js 16 Migration (Phase 37)
-- [ ] **MG-01**: Next.js upgraded to ^16.x.x, app builds and starts without errors
+- [x] **MG-01**: Next.js upgraded to ^16.x.x, app builds and starts without errors
 - [x] **MG-02**: All 18 Playwright E2E tests pass on Next 16 with zero regressions
 - [x] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
 
@@ -187,9 +213,9 @@
 - [x] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
 
 ### Library Build Pipeline (Phase 39)
-- [ ] **LIB-01**: `package.json` exports field mapping SF components, tokens CSS, and utilities
-- [ ] **LIB-02**: `pnpm build:lib` produces ESM + CJS output via tsup in `dist/` with `.d.ts` declarations
-- [ ] **LIB-03**: Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
+- [x] **LIB-01**: `package.json` exports field mapping SF components, tokens CSS, and utilities
+- [x] **LIB-02**: `pnpm build:lib` produces ESM + CJS output via tsup in `dist/` with `.d.ts` declarations
+- [x] **LIB-03**: Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
 
 ### API Documentation & DX (Phase 40)
 - [x] **DOC-01**: All exported SF components have JSDoc with description, props table, and usage example
@@ -201,7 +227,7 @@
 - [x] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
 - [x] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
 - [x] **DIST-03**: CHANGELOG.md and semver version strategy documented
-- [ ] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
+- [x] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
 
 ## Out of Scope
 
