@@ -554,9 +554,9 @@ Plans:
   5. Token CSS importable separately as `@signalframe/tokens.css`
   6. Package passes `npm pack --dry-run` with no extraneous files
 
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 39-01-PLAN.md — Build infrastructure (entry files, tsup config, tokens CSS, provider refactor)
+- [x] 39-01-PLAN.md — Build infrastructure (entry files, tsup config, tokens CSS, provider refactor)
 - [ ] 39-02-PLAN.md — Package exports, peerDependencies, tree-shaking verification
 
 ### Phase 40: API Documentation & DX
@@ -624,6 +624,6 @@ Plans:
 | 36. Housekeeping & Carry-Overs | v1.6 | Complete    | 2026-04-10 |  |
 | 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
-| 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
+| 39. Library Build Pipeline | v1.6 | 1/2 | In Progress|  |
 | 40. API Documentation & DX | v1.6 | 0/? | Not started | - |
 | 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
