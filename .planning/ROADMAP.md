@@ -492,7 +492,7 @@ Plans:
 - [x] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation) (completed 2026-04-11)
 - [x] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide (completed 2026-04-11)
 - [x] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100 (completed 2026-04-11)
-- [ ] **Phase 42: Tracking Reconciliation + peerDep Fix** — Update REQUIREMENTS.md checkboxes, add requirements-completed to Phase 36/39 SUMMARYs, move next to peerDependencies (Gap closure from audit)
+- [x] **Phase 42: Tracking Reconciliation + peerDep Fix** — Update REQUIREMENTS.md checkboxes, add requirements-completed to Phase 36/39 SUMMARYs, move next to peerDependencies (Gap closure from audit) (completed 2026-04-11)
 - [ ] **Phase 43: Production Deploy + Lighthouse Gate** — Deploy current codebase, run Lighthouse 100/100 gate against production URL (Gap closure: DIST-04)
 
 ### Phase 36: Housekeeping & Carry-Overs
@@ -610,7 +610,7 @@ Plans:
   3. Phase 39 SUMMARYs include `requirements-completed` frontmatter
   4. `next` is in `peerDependencies` (not `dependencies`) with `peerDependenciesMeta: { next: { optional: true } }`
   5. `npm publish --dry-run` still succeeds after package.json change
-**Plans:** 0/1 plans
+**Plans:** 1/1 plans complete
 Plans:
 
 ### Phase 43: Production Deploy + Lighthouse Gate
@@ -671,5 +671,5 @@ Plans:
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
 | 40. API Documentation & DX | 5/5 | Complete   | 2026-04-11 | - |
 | 41. Distribution & Launch Gate | 2/2 | Complete   | 2026-04-11 | 2026-04-11 |
-| 42. Tracking Reconciliation + peerDep Fix | 0/1 | Not started | — | — |
+| 42. Tracking Reconciliation + peerDep Fix | 0/1 | 1/1 | Complete   | 2026-04-11 |
 | 43. Production Deploy + Lighthouse Gate | 0/1 | Not started | — | — |

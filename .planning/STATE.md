@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 41-02 BLOCKED: Lighthouse gate requires deployment to https://signalframe.culturedivision.com"
-last_updated: "2026-04-11T19:06:22.447Z"
+stopped_at: Completed 42-tracking-reconciliation-peerdep-fix-42-01-PLAN.md
+last_updated: "2026-04-11T19:35:34.189Z"
 last_activity: 2026-04-10
 progress:
-  total_phases: 32
-  completed_phases: 20
-  total_plans: 52
-  completed_plans: 51
+  total_phases: 34
+  completed_phases: 21
+  total_plans: 53
+  completed_plans: 52
   percent: 98
 ---
 
@@ -209,6 +209,8 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 - [Phase 41-distribution-launch-gate]: Pack local Club GSAP as tarball for consumer test — Club plugins not in public gsap@npm
 - [Phase 41-distribution-launch-gate]: GSAP SSR guard: all module-level registerPlugin() calls wrapped in typeof window check to prevent SSR prerender errors
 - [Phase 41-distribution-launch-gate]: Lighthouse HARD GATE: production scores 44/100 performance — phase 41 blocked pending deployment
+- [Phase 42-tracking-reconciliation-peerdep-fix]: requirements-completed frontmatter backfilled into 36-01, 36-02, 39-01, 39-02 SUMMARYs to close CO-01-04 and LIB-01-03 tracking gaps
+- [Phase 42-tracking-reconciliation-peerdep-fix]: next moved from dependencies to peerDependencies with optional:true — eliminates duplicate install for consumers
 
 ### Blockers
 
@@ -224,6 +226,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T19:06:22.442Z
-Stopped at: Phase 41-02 BLOCKED: Lighthouse gate requires deployment to https://signalframe.culturedivision.com
+Last session: 2026-04-11T19:35:34.185Z
+Stopped at: Completed 42-tracking-reconciliation-peerdep-fix-42-01-PLAN.md
 Resume with: Phase 40 plan 02 complete. Continue with Phase 40 plan 03 via /pde:execute-phase 40
