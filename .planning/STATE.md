@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 42-tracking-reconciliation-peerdep-fix-42-01-PLAN.md
-last_updated: "2026-04-11T19:35:34.189Z"
+last_updated: "2026-04-11T21:22:03.236Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 34
-  completed_phases: 21
-  total_plans: 53
-  completed_plans: 52
-  percent: 98
+  completed_phases: 22
+  total_plans: 54
+  completed_plans: 53
 ---
 
 # STATE — SignalframeUX
