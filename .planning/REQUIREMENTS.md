@@ -229,11 +229,173 @@
 - [x] **DIST-03**: CHANGELOG.md and semver version strategy documented
 - [x] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
 
+## v1.7 Tightening, Polish, and Aesthetic Push
+
+### Copy & Content Integrity
+- [ ] **COP-01**: Component count reconciled to single accurate number across all pages (stats-band, hero, OG image, manifesto-band, init page)
+- [ ] **COP-02**: Version string consistent across hero and OG image — matches current release
+- [ ] **COP-03**: "FRAMEWORK-AGNOSTIC" replaced with accurate React/Next.js claim on /init
+- [ ] **COP-04**: "SHIP FASTER" replaced with specific claim in marquee-band
+- [ ] **COP-05**: "and growing" filler removed from hero and homepage meta
+- [ ] **COP-06**: Playwright test assertions updated to match new copy strings (phase-35-metadata.spec.ts)
+
+### Token Bridge
+- [ ] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
+- [ ] **TBR-02**: `@layer` cascade: `sf.tokens` → `consumer.overrides` — consumer CSS wins without specificity war
+- [ ] **TBR-03**: `--sfx-*` consumer override tier documented in MIGRATION.md with full variable list
+- [ ] **TBR-04**: No SSR flash — dark mode `class="dark"` server-rendered on CD `<html>`, no magenta primary visible during streaming
+
+### Tightening
+- [ ] **TGH-01**: Light mode `--muted-foreground` on `bg-muted` passes WCAG AA (>= 4.5:1 contrast ratio)
+- [ ] **TGH-02**: All 15 hardcoded animation durations replaced with `--duration-*` token references
+- [ ] **TGH-03**: All 7 hardcoded color values in component/page code replaced with CSS custom property references
+- [ ] **TGH-04**: `sf-button` hover duration aligned with other SF components (`--duration-fast` not `--duration-normal`)
+
+### Viewport Polish
+- [ ] **VPT-01**: `--text-2xs` raised from 9px to 10px; `--text-xs` raised from 10px to 11px — functional text readable on 13" MacBook
+- [ ] **VPT-02**: Inventory grid adds `md:grid-cols-3` intermediate breakpoint between 2-col and 4-col
+- [ ] **VPT-03**: Page header `pt-10` (40px) replaced with `pt-12` (48px) on all 4 subpages — blessed spacing stop
+- [ ] **VPT-04**: Storybook viewport presets added for 1440x900 and 1280x800
+
+### Intensity Bridge
+- [ ] **SIG-01**: `updateSignalDerivedProps(intensity)` function in global-effects.tsx computes per-effect CSS custom properties from `--signal-intensity`
+- [ ] **SIG-02**: VHS scan lines and noise opacity scale with `--signal-intensity` (no longer hardcoded at 0.2 / 0.015)
+- [ ] **SIG-03**: Grain opacity governed by derived property with logarithmic perceptual curve
+- [ ] **SIG-04**: `data-signal-intensity` attribute presets available for per-section intensity overrides
+- [ ] **SIG-05**: `prefers-reduced-motion` suppresses all intensity-driven effects
+
+### Grain + Idle Escalation
+- [ ] **GRN-01**: Grain baseline stays at 0.03-0.05; intensity dial escalates dynamically via SIG-03 curve
+- [ ] **GRN-02**: Idle escalation refactored to `useIdleEscalation(thresholds[])` with 3 phases (8s grain drift, 20s scan emphasis, 45s glitch burst + auto-reset)
+- [ ] **GRN-03**: Escalation targets use relative offsets (currentValue + delta), not absolute values
+- [ ] **GRN-04**: Chromatic visual baselines captured before grain changes
+
+### VHS Enhancement
+- [ ] **VHS-01**: Chromatic aberration (1-2px RGB channel offset) added to VHS overlay, scaled by derived intensity property
+- [ ] **VHS-02**: Horizontal jitter (translateX noise per scan line) added
+- [ ] **VHS-03**: Dropout bands (random horizontal black bars, 1-3px, <5% coverage) added
+- [ ] **VHS-04**: Frame-edge vignette via radial-gradient added
+- [ ] **VHS-05**: Safari `backdrop-filter` uses literal values with `-webkit-` prefix (no `var()` references)
+- [ ] **VHS-06**: Combined visual review at intensity 0.0 / 0.5 / 1.0 passes human sign-off
+
+### Halftone Texture
+- [ ] **HLF-01**: CSS-only halftone dot pattern (`radial-gradient` + `filter: contrast()` + `background-blend-mode`)
+- [ ] **HLF-02**: Gated at intensity >= 0.4 via derived property curve
+- [ ] **HLF-03**: Scoped to specimen sections, not ambient overlay
+- [ ] **HLF-04**: No moiré with grain at combined view — human visual review required
+
+### Circuit Overlay
+- [ ] **CIR-01**: SVG circuit pattern at 0.02-0.05 opacity as section background
+- [ ] **CIR-02**: Exclusive with high grain via derived property curve (circuit fades as grain intensifies)
+- [ ] **CIR-03**: `--signal-intensity` governs opacity
+
+### Mesh Gradient
+- [ ] **MSH-01**: Layered `radial-gradient()` with OKLCH colors at z:-1 behind content
+- [ ] **MSH-02**: Grain composited on top of mesh gradient
+- [ ] **MSH-03**: Slow position drift animation (60s+ cycle) for liveness
+
+### Particle Field
+- [ ] **PTL-01**: WebGL particle system using existing `useSignalScene()` singleton — no second WebGL context
+- [ ] **PTL-02**: Stepped particle count (0 / 2000 / 5000) based on device capability
+- [ ] **PTL-03**: Physical iOS Safari device test passes (no context loss, no black canvas)
+- [ ] **PTL-04**: `prefers-reduced-motion`: static single-frame render
+
+### Glitch Transition
+- [ ] **GLT-01**: CSS `clip-path: inset()` + `@keyframes steps(1)` glitch effect, <300ms duration
+- [ ] **GLT-02**: Triggered by idle escalation Phase 3 (45s) and optionally on page transitions
+- [ ] **GLT-03**: Feels like signal dropout, not decoration
+
+### Symbol System
+- [ ] **SYM-01**: 20-30 curated modernist SVG symbols from Brando Corp collection
+- [ ] **SYM-02**: `<CDSymbol name="..." size={N} />` React component, <5KB total sprite
+- [ ] **SYM-03**: Used as section markers, list bullets, decorative dividers
+
+### Visual Regression
+- [ ] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies
+- [ ] **VRG-02**: Visual baselines captured before Phase 49 (grain changes)
+- [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
+
+### Performance Gates
+- [ ] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes
+- [ ] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline)
+- [ ] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review
+- [ ] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks
+
+### v1.7 Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| COP-01 | Phase 44 | Pending |
+| COP-02 | Phase 44 | Pending |
+| COP-03 | Phase 44 | Pending |
+| COP-04 | Phase 44 | Pending |
+| COP-05 | Phase 44 | Pending |
+| COP-06 | Phase 44 | Pending |
+| TBR-01 | Phase 45 | Pending |
+| TBR-02 | Phase 45 | Pending |
+| TBR-03 | Phase 45 | Pending |
+| TBR-04 | Phase 45 | Pending |
+| TGH-01 | Phase 46 | Pending |
+| TGH-02 | Phase 46 | Pending |
+| TGH-03 | Phase 46 | Pending |
+| TGH-04 | Phase 46 | Pending |
+| VPT-01 | Phase 47 | Pending |
+| VPT-02 | Phase 47 | Pending |
+| VPT-03 | Phase 47 | Pending |
+| VPT-04 | Phase 47 | Pending |
+| SIG-01 | Phase 48 | Pending |
+| SIG-02 | Phase 48 | Pending |
+| SIG-03 | Phase 48 | Pending |
+| SIG-04 | Phase 48 | Pending |
+| SIG-05 | Phase 48 | Pending |
+| GRN-01 | Phase 49 | Pending |
+| GRN-02 | Phase 49 | Pending |
+| GRN-03 | Phase 49 | Pending |
+| GRN-04 | Phase 49 | Pending |
+| VHS-01 | Phase 50 | Pending |
+| VHS-02 | Phase 50 | Pending |
+| VHS-03 | Phase 50 | Pending |
+| VHS-04 | Phase 50 | Pending |
+| VHS-05 | Phase 50 | Pending |
+| VHS-06 | Phase 50 | Pending |
+| HLF-01 | Phase 51 | Pending |
+| HLF-02 | Phase 51 | Pending |
+| HLF-03 | Phase 51 | Pending |
+| HLF-04 | Phase 51 | Pending |
+| CIR-01 | Phase 52 | Pending |
+| CIR-02 | Phase 52 | Pending |
+| CIR-03 | Phase 52 | Pending |
+| MSH-01 | Phase 53 | Pending |
+| MSH-02 | Phase 53 | Pending |
+| MSH-03 | Phase 53 | Pending |
+| PTL-01 | Phase 54 | Pending |
+| PTL-02 | Phase 54 | Pending |
+| PTL-03 | Phase 54 | Pending |
+| PTL-04 | Phase 54 | Pending |
+| GLT-01 | Phase 55 | Pending |
+| GLT-02 | Phase 55 | Pending |
+| GLT-03 | Phase 55 | Pending |
+| SYM-01 | Phase 56 | Pending |
+| SYM-02 | Phase 56 | Pending |
+| SYM-03 | Phase 56 | Pending |
+| VRG-01 | Phase 48 | Pending |
+| VRG-02 | Phase 49 | Pending |
+| VRG-03 | Phase 56 | Pending |
+| PRF-01 | Phase 56 | Pending |
+| PRF-02 | Phase 56 | Pending |
+| PRF-03 | Phase 56 | Pending |
+| PRF-04 | Phase 56 | Pending |
+
 ## Out of Scope
 
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - ScrollSmoother — excluded; Lenis integration validated at Lighthouse 100/100, migration risk unjustified
 - New animation libraries — GSAP + Lenis handle everything
-- Aurora/gradient backgrounds — anti-feature per Awwwards SOTD research
 - Glassmorphism — anti-feature per DU/TDR aesthetic
 - Rounded corners — zero border-radius everywhere (existing constraint)
+- CSS Houdini Paint API — excluded; Safari disabled, Firefox zero support (~24% users affected)
+- VFX-JS — excluded; scrolling lag conflicts with SignalCanvas singleton
+- Static grain above 0.07 — anti-feature per SOTD research; parametric escalation instead
+- Diegetic design rewrite (Tier 2) — deferred to v1.8
+- Environmental depth (Tier 3) — deferred to v1.8+
+- CI/CD pipeline — deferred; manual quality gates continue for v1.7
