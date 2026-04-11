@@ -1,0 +1,45 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "incremental": false,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "hooks/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    ".planning",
+    "app/**",
+    "tests/**",
+    "playwright.config.ts",
+    "next.config.ts",
+    "vitest.config.ts",
+    "scripts/**",
+    "components/sf/sf-calendar-lazy.tsx",
+    "components/sf/sf-drawer-lazy.tsx",
+    "components/sf/sf-menubar-lazy.tsx",
+    "hooks/use-scroll-restoration.ts",
+    "lib/component-registry.ts",
+    "lib/thesis-manifesto.ts",
+    "lib/proof-components.ts",
+    "lib/api-docs.ts",
+    "lib/system-stats.ts",
+    "lib/nomenclature.ts",
+    "lib/code-highlight.ts",
+    "lib/audio-feedback.ts",
+    "lib/haptic-feedback.ts"
+  ]
+}

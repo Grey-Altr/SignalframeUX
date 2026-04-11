@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import gsap from 'gsap';
 import { toggleTheme } from '@/lib/theme';
 
 /** Configuration for the SignalframeUX provider factory. All values are serializable. */
@@ -38,6 +37,20 @@ export interface UseSignalframeReturn {
 const SignalframeContext = createContext<UseSignalframeReturn | null>(null);
 
 /**
+ * Lazy GSAP loader — dynamically imports gsap so core entry has zero static GSAP dependency.
+ * Returns null (no-ops silently) when gsap is not installed in the consumer's project.
+ * Per D-07: GSAP is an optional peer dependency of the animation entry point only.
+ */
+async function getGsap() {
+  try {
+    const mod = await import('gsap');
+    return mod.default ?? mod;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Factory that creates a typed, SSR-safe SignalframeProvider + useSignalframe hook pair.
  *
  * @example
@@ -63,19 +76,28 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
     useEffect(() => {
       const pref = config.motionPreference ?? 'system';
       if (pref === 'reduced') {
-        gsap.globalTimeline.timeScale(0);
+        getGsap().then(gsap => {
+          if (!gsap) return;
+          gsap.globalTimeline.timeScale(0);
+        });
         setPrefersReduced(true);
         return;
       }
       if (pref === 'full') {
-        gsap.globalTimeline.timeScale(1);
+        getGsap().then(gsap => {
+          if (!gsap) return;
+          gsap.globalTimeline.timeScale(1);
+        });
         setPrefersReduced(false);
         return;
       }
       // 'system' — follow OS preference and respond to changes.
       const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
       const apply = (matches: boolean) => {
-        gsap.globalTimeline.timeScale(matches ? 0 : 1);
+        getGsap().then(gsap => {
+          if (!gsap) return;
+          gsap.globalTimeline.timeScale(matches ? 0 : 1);
+        });
         setPrefersReduced(matches);
       };
       apply(mql.matches);
@@ -94,10 +116,12 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
     };
 
     const motion: SignalframeMotionController = {
-      pause: () => gsap.globalTimeline.pause(),
+      pause: () => {
+        getGsap().then(gsap => gsap?.globalTimeline.pause());
+      },
       /** resume() is guarded — no-op when prefers-reduced-motion is active. */
       resume: () => {
-        if (!prefersReduced) gsap.globalTimeline.resume();
+        if (!prefersReduced) getGsap().then(gsap => gsap?.globalTimeline.resume());
       },
       prefersReduced,
     };
