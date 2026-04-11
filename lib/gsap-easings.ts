@@ -3,9 +3,14 @@
 /**
  * SignalframeUX custom GSAP easings — single canonical source.
  * Import from any gsap-* entry point that has CustomEase registered.
+ * Registers `sf-snap` (stepped bounce) and `sf-punch` (overshoot) easings.
+ *
+ * @example
+ * // Called automatically by gsap-plugins.ts, gsap-flip.ts, gsap-split.ts.
+ * // Manual use: import and call once at app init.
+ * registerSFEasings();
+ * gsap.to(el, { x: 100, ease: "sf-snap", duration: 0.4 });
  */
-import { CustomEase } from "gsap/CustomEase";
-
 export function registerSFEasings() {
   CustomEase.create(
     "sf-snap",

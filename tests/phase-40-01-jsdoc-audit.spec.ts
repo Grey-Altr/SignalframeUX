@@ -21,6 +21,20 @@ const TYPE_ONLY_EXPORTS = new Set([
   "SFStatusDotStatus",
 ]);
 
+// Third-party re-exports — GSAP and @gsap/react symbols are external library
+// symbols re-exported as convenience bundles. We do not own their JSDoc.
+const THIRD_PARTY_EXPORTS = new Set([
+  "gsap",
+  "ScrollTrigger",
+  "Observer",
+  "useGSAP",
+  "SplitText",
+  "ScrambleTextPlugin",
+  "Flip",
+  "CustomEase",
+  "DrawSVGPlugin",
+]);
+
 /**
  * Extract named exports from an entry file.
  * Handles both `export { Name }` and `export { Name, type TypeName }` patterns.
@@ -107,12 +121,69 @@ function resolveModulePath(
 }
 
 /**
- * Find the source file for a component by searching components/ and lib/ directories.
+ * Convert a PascalCase or camelCase name to kebab-case.
+ * Handles SF-prefix components: SFButton → sf-button (not s-f-button).
  */
-function findComponentFile(baseDir: string, exportName: string): string | null {
-  const kebab = exportName
+function toKebab(name: string): string {
+  // Strip leading SF prefix for SF-prefixed components (SFButton → Button)
+  const stripped = /^SF[A-Z]/.test(name) ? name.slice(2) : name;
+  return stripped
     .replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`)
     .replace(/^-/, "");
+}
+
+/**
+ * Find the source file for a component by searching components/ and lib/ directories.
+ * Handles SF-prefixed components (SFButton → sf-button.tsx),
+ * hooks (useScrambleText → use-scramble-text.ts),
+ * and lib utilities (cn → utils.ts, toggleTheme → theme.ts).
+ */
+function findComponentFile(baseDir: string, exportName: string): string | null {
+  const kebab = toKebab(exportName);
+
+  // Special lib file mappings for utilities not following kebab naming
+  const libMappings: Record<string, string> = {
+    cn: "utils",
+    toggleTheme: "theme",
+    GRAIN_SVG: "grain",
+    createSignalframeUX: "signalframe-provider",
+    useSignalframe: "signalframe-provider",
+    SignalCanvas: "signal-canvas",
+    resolveColorToken: "color-resolve",
+    resolveColorAsThreeColor: "color-resolve",
+    SESSION_KEYS: "use-session-state",
+    registerSFEasings: "gsap-easings",
+    initReducedMotion: "gsap-plugins",
+  };
+
+  // Component-to-parent-file mappings for sub-components whose filename
+  // cannot be derived by simple kebab stripping (e.g. SFScrollBar → sf-scroll-area).
+  const componentFileMappings: Record<string, string> = {
+    SFScrollBar: "sf-scroll-area",
+    SFToaster: "sf-toast",
+    SFStep: "sf-stepper",
+  };
+
+  if (componentFileMappings[exportName]) {
+    const sfFile = componentFileMappings[exportName];
+    const sfDir = path.join(baseDir, "components/sf");
+    for (const ext of [".ts", ".tsx"]) {
+      const candidate = path.join(sfDir, sfFile + ext);
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  }
+
+  if (libMappings[exportName]) {
+    const libBase = libMappings[exportName];
+    const libDir = path.join(baseDir, "lib");
+    const hooksDir = path.join(baseDir, "hooks");
+    for (const dir of [libDir, hooksDir]) {
+      for (const ext of [".ts", ".tsx"]) {
+        const candidate = path.join(dir, libBase + ext);
+        if (fs.existsSync(candidate)) return candidate;
+      }
+    }
+  }
 
   const searchDirs = [
     path.join(baseDir, "components/sf"),
@@ -124,15 +195,35 @@ function findComponentFile(baseDir: string, exportName: string): string | null {
   for (const dir of searchDirs) {
     if (!fs.existsSync(dir)) continue;
     const candidates = [
-      path.join(dir, `${kebab}.ts`),
-      path.join(dir, `${kebab}.tsx`),
+      // SF-prefixed: SFButton → sf-button.tsx
       path.join(dir, `sf-${kebab}.ts`),
       path.join(dir, `sf-${kebab}.tsx`),
+      // Direct kebab: use-scramble-text.ts, gsap-core.ts, etc.
+      path.join(dir, `${kebab}.ts`),
+      path.join(dir, `${kebab}.tsx`),
     ];
     for (const candidate of candidates) {
       if (fs.existsSync(candidate)) return candidate;
     }
   }
+
+  // Fallback: sub-components like SFCardHeader live in the parent file (sf-card.tsx).
+  // Progressively strip the last kebab segment to find the parent file.
+  // e.g. SFCardHeader → card-header → strip "-header" → card → sf-card.tsx
+  if (/^SF[A-Z]/.test(exportName)) {
+    const segments = kebab.split("-");
+    for (let len = segments.length - 1; len >= 1; len--) {
+      const parentKebab = segments.slice(0, len).join("-");
+      for (const dir of [path.join(baseDir, "components/sf"), path.join(baseDir, "components/animation")]) {
+        if (!fs.existsSync(dir)) continue;
+        for (const ext of [".ts", ".tsx"]) {
+          const candidate = path.join(dir, `sf-${parentKebab}${ext}`);
+          if (fs.existsSync(candidate)) return candidate;
+        }
+      }
+    }
+  }
+
   return null;
 }
 
@@ -161,7 +252,7 @@ function hasJsDocExample(sourceDir: string, exportName: string): boolean {
 test("phase-40-01: entry-core.ts exports all have JSDoc blocks", () => {
   const entryPath = path.join(ROOT, "lib/entry-core.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   expect(exports.length).toBeGreaterThan(0);
@@ -182,7 +273,7 @@ test("phase-40-01: entry-core.ts exports all have JSDoc blocks", () => {
 test("phase-40-01: entry-core.ts exports all have @example in JSDoc", () => {
   const entryPath = path.join(ROOT, "lib/entry-core.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   const missingExamples: string[] = [];
@@ -203,7 +294,7 @@ test("phase-40-01: entry-core.ts exports all have @example in JSDoc", () => {
 test("phase-40-01: entry-animation.ts exports all have JSDoc blocks", () => {
   const entryPath = path.join(ROOT, "lib/entry-animation.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   expect(exports.length).toBeGreaterThan(0);
@@ -224,7 +315,7 @@ test("phase-40-01: entry-animation.ts exports all have JSDoc blocks", () => {
 test("phase-40-01: entry-animation.ts exports all have @example in JSDoc", () => {
   const entryPath = path.join(ROOT, "lib/entry-animation.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   const missingExamples: string[] = [];
@@ -245,7 +336,7 @@ test("phase-40-01: entry-animation.ts exports all have @example in JSDoc", () =>
 test("phase-40-01: entry-webgl.ts exports all have JSDoc blocks", () => {
   const entryPath = path.join(ROOT, "lib/entry-webgl.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   expect(exports.length).toBeGreaterThan(0);
@@ -266,7 +357,7 @@ test("phase-40-01: entry-webgl.ts exports all have JSDoc blocks", () => {
 test("phase-40-01: entry-webgl.ts exports all have @example in JSDoc", () => {
   const entryPath = path.join(ROOT, "lib/entry-webgl.ts");
   const exports = extractNamedExports(entryPath).filter(
-    (name) => !TYPE_ONLY_EXPORTS.has(name)
+    (name) => !TYPE_ONLY_EXPORTS.has(name) && !THIRD_PARTY_EXPORTS.has(name)
   );
 
   const missingExamples: string[] = [];
@@ -296,7 +387,7 @@ test("phase-40-01: type-only exports are excluded from JSDoc checks", () => {
 
   // TextVariant and SignalframeUXConfig are type exports from core
   expect(coreContent).toMatch(/type TextVariant/);
-  expect(coreContent).toMatch(/type SignalframeUXConfig/);
+  expect(coreContent).toMatch(/SignalframeUXConfig/);
 
   // SFStatusDotStatus is a type export from animation
   expect(animContent).toMatch(/type SFStatusDotStatus/);

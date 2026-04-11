@@ -1,5 +1,14 @@
-/** Shared theme toggle — used by DarkModeToggle and CommandPalette.
- *  Hard-cut switch (DU-style) — instant color inversion, no smooth blend. */
+/**
+ * Shared theme toggle — used by DarkModeToggle and CommandPalette.
+ * Hard-cut switch (DU-style) — instant color inversion, no smooth blend.
+ *
+ * @param currentDark - Whether dark mode is currently active
+ * @returns The new dark mode state
+ *
+ * @example
+ * const [isDark, setIsDark] = useState(false);
+ * <button onClick={() => setIsDark(toggleTheme(isDark))}>Toggle theme</button>
+ */
 export function toggleTheme(currentDark: boolean): boolean {
   const next = !currentDark;
   try {

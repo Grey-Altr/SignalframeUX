@@ -26,6 +26,14 @@ registerSFEasings();
  * Initialize reduced-motion handling for GSAP.
  * Call once from a client component's useEffect — not at module scope.
  * Returns a cleanup function that removes the matchMedia listener.
+ *
+ * @returns Cleanup function that removes the matchMedia listener
+ *
+ * @example
+ * useEffect(() => {
+ *   const cleanup = initReducedMotion();
+ *   return cleanup;
+ * }, []);
  */
 let motionCleanup: (() => void) | null = null;
 

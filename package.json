@@ -55,7 +55,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "prepare": "husky",
-    "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts"
+    "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts",
+    "docs:generate": "tsx scripts/generate-api-docs.ts"
   },
   "peerDependencies": {
     "react": ">=19.0.0",

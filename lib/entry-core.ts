@@ -196,10 +196,7 @@ export {
 
 // ── Config Provider (refactored — dynamic animation import only) ──────────────
 export { createSignalframeUX, useSignalframe } from "./signalframe-provider";
-export type {
-  SignalframeUXConfig,
-  UseSignalframeReturn,
-} from "./signalframe-provider";
+export type { SignalframeUXConfig, UseSignalframeReturn } from "./signalframe-provider";
 
 // ── Core Utilities ────────────────────────────────────────────────────────────
 export { cn } from "./utils";

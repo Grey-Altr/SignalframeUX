@@ -230,6 +230,17 @@ export function disposeScene(scene: THREE.Scene): void {
 // Consumed exclusively via signal-canvas-lazy.tsx (next/dynamic, ssr: false)
 // ---------------------------------------------------------------------------
 
+/**
+ * Full-viewport WebGL canvas singleton — SIGNAL layer rendering surface.
+ * Mounts a single shared Three.js WebGLRenderer canvas that all useSignalScene instances draw into.
+ * Must be mounted once at app root (layout.tsx). Lazy-loaded via signal-canvas-lazy.tsx.
+ *
+ * @example
+ * // In app/layout.tsx:
+ * import dynamic from 'next/dynamic';
+ * const SignalCanvas = dynamic(() => import('signalframeux/webgl').then(m => ({ default: m.SignalCanvas })), { ssr: false });
+ * <SignalCanvas />
+ */
 export function SignalCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
