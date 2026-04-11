@@ -76,19 +76,20 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.6 API-Ready
+## Current Milestone: v1.7 Tightening, Polish, and Aesthetic Push
 
-**Goal:** Transform SignalframeUX from a design system docs site into a designed artifact — a career weapon that competes at Awwwards SOTD level.
+**Goal:** Close the gap between SF//UX's architectural completeness and the wiki's full aesthetic vision — make the SIGNAL layer speak, not whisper.
 
 **Target features:**
-- Homepage restructured into 6-section cinematic architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
-- Route renames: /components→/inventory, /tokens→/system, /start→/init
-- Full-viewport GLSL hero shader with 120px+ typography, scroll-driven typographic manifesto
-- Interactive FRAME/SIGNAL layer separation demo (PROOF section)
-- Coded nomenclature for component catalog (SF//BTN-001 format)
-- All 4 subpages redesigned with specimen-style layouts
-- Visual language overhaul: ghost labels, hard-cut transitions, HUD section indicators
-- Performance gates maintained: 150 KB bundle, Lighthouse 100/100, LCP < 1.0s
+- Copy audit fixes: reconcile component count contradiction, fix stale version, correct false claims
+- SF//UX token bridge: CD site becomes first consumer (~30 lines CSS override)
+- Tightening pass: light mode contrast fix, 15 hardcoded durations → tokens, 7 hardcoded colors → tokens
+- Viewport polish: 9px functional text → 10px floor, 1280-1440px breakpoint gaps
+- Grain overlay: raise --sf-grain-opacity from 0.03 to 0.08-0.12, wire to --signal-intensity
+- VHS enhancement: chromatic aberration, jitter, dropout bands, vignette
+- Remaining effects: halftone, mesh gradient, particle field, glitch, circuit, symbol system
+- Idle state escalation: phased timer (8s→30s→60s→120s)
+- All effects wired to --signal-intensity CSS custom property
 
 ## Context
 

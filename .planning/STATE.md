@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.6
-milestone_name: v1.6 API-Ready
-status: complete
-stopped_at: All v1.6 phases (36-43) complete
-last_updated: "2026-04-11T22:00:00.000Z"
+milestone: v1.7
+milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
+status: defining_requirements
+stopped_at: Milestone started, defining requirements
+last_updated: "2026-04-11T22:30:00.000Z"
 last_activity: 2026-04-11
 progress:
-  total_phases: 43
-  completed_phases: 43
-  total_plans: 56
-  completed_plans: 56
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # STATE — SignalframeUX
@@ -21,14 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.6 complete — preparing v1.7 |
-| Milestone | v1.6 API-Ready (COMPLETE) |
+| Current Focus | v1.7 Tightening, Polish, and Aesthetic Push |
+| Milestone | v1.7 |
 
 ## Current Position
 
-Phase: 43 (final)
-Status: v1.6 milestone complete — all 43 phases shipped
-Last activity: 2026-04-11
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-11 — Milestone v1.7 started
 
 ## Progress
 
@@ -40,6 +41,7 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
+v1.7: [░░░░░░░░░░]   0% (0/? plans) ACTIVE — defining requirements
 ```
 
 ## v1.6 Phase Map
@@ -221,10 +223,10 @@ v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** v1.6 complete — v1.7 prep underway
+**Current focus:** v1.7 Tightening, Polish, and Aesthetic Push
 
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: v1.6 milestone complete — all gaps closed, traceability updated
-Resume with: Push 26 commits to origin, then /pde:new-milestone for v1.7 (5 audit docs in .planning/v1.7-prep/)
+Stopped at: v1.7 milestone started — defining requirements
+Resume with: /pde:discuss-phase 44 (first v1.7 phase, copy audit fixes)
