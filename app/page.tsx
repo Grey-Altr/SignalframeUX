@@ -14,7 +14,7 @@ import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
   description:
-    "A dual-layer design system with 28 SF components and growing. Signal layer for generative expression, Frame layer for deterministic structure.",
+    "A dual-layer design system with 48 SF components. Signal layer for generative expression, Frame layer for deterministic structure.",
 };
 
 export default function HomePage() {

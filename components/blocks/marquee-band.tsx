@@ -1,5 +1,5 @@
 const MARQUEE_TEXT =
-  "SIGNAL//FRAME™ // DESIGN SYSTEM // BUILT FOR ENGINEERS // SHIP FASTER // ACCEPT THE INTERFACE // ";
+  "SIGNAL//FRAME™ // DESIGN SYSTEM // BUILT FOR ENGINEERS // COMPOSABLE BY DESIGN // ACCEPT THE INTERFACE // ";
 
 export function MarqueeBand() {
   return (
@@ -8,7 +8,7 @@ export function MarqueeBand() {
       aria-label="Scrolling marquee"
     >
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-7 bg-yellow-400 border-y border-yellow-600" aria-hidden="true" />
-      <span className="sr-only">SIGNAL//FRAME™ — Design system built for engineers. Ship faster. Accept the interface.</span>
+      <span className="sr-only">SIGNAL//FRAME™ — Design system built for engineers. Composable by design. Accept the interface.</span>
       <div
         className="sf-display flex whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused] relative z-10"
         aria-hidden="true"

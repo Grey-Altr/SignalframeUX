@@ -90,7 +90,7 @@ export function Hero() {
 
         {/* Component count — honest claim, DU/TDR typographic voice */}
         <p className="mt-4 text-[clamp(9px,0.8vw,12px)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
-          28 SF COMPONENTS AND GROWING
+          48 SF COMPONENTS
         </p>
 
         {/* CTAs with border-draw animation */}
@@ -118,7 +118,7 @@ export function Hero() {
 
         {/* Version tag */}
         <div className="absolute bottom-[clamp(8px,1.5vh,24px)] right-[clamp(8px,1.5vw,24px)] text-[clamp(7px,0.7vw,10px)] uppercase tracking-[0.2em] text-muted-foreground">
-          SF//UX v2.0.0 · 2026
+          SF//UX v1.7 · 2026
         </div>
       </div>
 

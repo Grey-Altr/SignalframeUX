@@ -61,13 +61,13 @@ export default async function OpengraphImage() {
               letterSpacing: "0.08em",
             }}
           >
-            v1.5 — REDESIGN
+            v1.7 — TIGHTENING
           </div>
         </div>
 
         {/* Readout block — monospace stack, SIG line uses magenta accent */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ display: "flex" }}>COMPONENTS:54</div>
+          <div style={{ display: "flex" }}>COMPONENTS:48</div>
           <div style={{ display: "flex", color: "#e91e90" }}>SIG:0.7</div>
           <div style={{ display: "flex" }}>CLS:0</div>
           <div style={{ display: "flex" }}>LCP:&lt;1.0S</div>

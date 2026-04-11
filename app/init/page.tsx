@@ -106,7 +106,7 @@ const STEPS: Array<{ number: string; title: string; description: string; code: C
     number: "05",
     title: "DEPLOY",
     description:
-      "SIGNALFRAMEUX\u2122 IS FRAMEWORK-AGNOSTIC BUT OPTIMIZED FOR NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. SIGNAL LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
+      "SIGNALFRAMEUX\u2122 IS BUILT FOR REACT + NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. SIGNAL LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
     code: [
       { type: "comment", text: "# BUILD FOR PRODUCTION" },
       { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " build" }] },
