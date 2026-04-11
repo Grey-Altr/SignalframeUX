@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 40-02-PLAN.md
-last_updated: "2026-04-11T03:57:39.132Z"
+stopped_at: Completed 40-03-PLAN.md
+last_updated: "2026-04-11T04:10:26.639Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 32
   completed_phases: 18
   total_plans: 50
-  completed_plans: 47
+  completed_plans: 48
 ---
 
 # STATE — SignalframeUX
@@ -201,6 +201,8 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 - [Phase 40-api-documentation-dx]: Excluded 4 type-only exports (TextVariant, SignalframeUXConfig, UseSignalframeReturn, SFStatusDotStatus) from JSDoc and API_DOCS coverage checks
 - [Phase 40-02]: MIGRATION.md maps 60+ individual internal component paths (not just 3 top-level entry points) — gives external developers a complete lookup table for common imports
 - [Phase 40-02]: Animation entry point rationale documented in MIGRATION.md NOTES — transitive GSAP deps explain why SFAccordion/SFProgress/SFStepper/SFEmptyState are not in core
+- [Phase 40-api-documentation-dx]: Import Meta/StoryObj from @storybook/react directly — must be explicit devDep for TypeScript resolution in Storybook 10
+- [Phase 40-api-documentation-dx]: Exclude stories/ from tsconfig.json — pre-commit tsc --noEmit check conflicts with Storybook's own TS compilation
 
 ### Blockers
 
@@ -216,6 +218,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T03:57:39.128Z
-Stopped at: Completed 40-02-PLAN.md
+Last session: 2026-04-11T04:10:26.635Z
+Stopped at: Completed 40-03-PLAN.md
 Resume with: Phase 40 plan 02 complete. Continue with Phase 40 plan 03 via /pde:execute-phase 40
