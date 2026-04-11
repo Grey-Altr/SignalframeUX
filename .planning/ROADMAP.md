@@ -570,6 +570,12 @@ Plans:
   4. `/reference` route on the site reflects the actual exported API (not stale internal-only components)
   5. Migration guide documents path from internal app usage to npm package consumption
 
+**Plans:** 3 plans
+Plans:
+- [ ] 40-01-PLAN.md — Auto-generate api-docs.ts from entry files + JSDoc audit on all exported sub-components
+- [ ] 40-02-PLAN.md — README.md + MIGRATION.md with technical specimen tone
+- [ ] 40-03-PLAN.md — Storybook 10 setup with branded theme + stories for all SF components
+
 ### Phase 41: Distribution & Launch Gate
 **Goal**: SFUX is published, verified by a consumer integration test, and ready for production API usage
 **Depends on**: Phase 40 (documentation complete before public distribution)
