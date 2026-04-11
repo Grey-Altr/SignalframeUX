@@ -232,12 +232,12 @@
 ## v1.7 Tightening, Polish, and Aesthetic Push
 
 ### Copy & Content Integrity
-- [ ] **COP-01**: Component count reconciled to single accurate number across all pages (stats-band, hero, OG image, manifesto-band, init page)
-- [ ] **COP-02**: Version string consistent across hero and OG image — matches current release
-- [ ] **COP-03**: "FRAMEWORK-AGNOSTIC" replaced with accurate React/Next.js claim on /init
-- [ ] **COP-04**: "SHIP FASTER" replaced with specific claim in marquee-band
-- [ ] **COP-05**: "and growing" filler removed from hero and homepage meta
-- [ ] **COP-06**: Playwright test assertions updated to match new copy strings (phase-35-metadata.spec.ts)
+- [x] **COP-01**: Component count reconciled to single accurate number across all pages (stats-band, hero, OG image, manifesto-band, init page)
+- [x] **COP-02**: Version string consistent across hero and OG image — matches current release
+- [x] **COP-03**: "FRAMEWORK-AGNOSTIC" replaced with accurate React/Next.js claim on /init
+- [x] **COP-04**: "SHIP FASTER" replaced with specific claim in marquee-band
+- [x] **COP-05**: "and growing" filler removed from hero and homepage meta
+- [x] **COP-06**: Playwright test assertions updated to match new copy strings (phase-35-metadata.spec.ts)
 
 ### Token Bridge
 - [ ] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
@@ -325,12 +325,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| COP-01 | Phase 44 | Pending |
-| COP-02 | Phase 44 | Pending |
-| COP-03 | Phase 44 | Pending |
-| COP-04 | Phase 44 | Pending |
-| COP-05 | Phase 44 | Pending |
-| COP-06 | Phase 44 | Pending |
+| COP-01 | Phase 44 | Complete |
+| COP-02 | Phase 44 | Complete |
+| COP-03 | Phase 44 | Complete |
+| COP-04 | Phase 44 | Complete |
+| COP-05 | Phase 44 | Complete |
+| COP-06 | Phase 44 | Complete |
 | TBR-01 | Phase 45 | Pending |
 | TBR-02 | Phase 45 | Pending |
 | TBR-03 | Phase 45 | Pending |

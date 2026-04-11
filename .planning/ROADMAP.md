@@ -498,7 +498,7 @@ Plans:
 
 **v1.7 Tightening, Polish, and Aesthetic Push (Phases 44-56):**
 
-- [ ] **Phase 44: Copy Audit Fixes** — Reconcile component count, fix version strings, replace false claims, update Playwright test assertions
+- [x] **Phase 44: Copy Audit Fixes** — Reconcile component count, fix version strings, replace false claims, update Playwright test assertions (completed 2026-04-11)
 - [ ] **Phase 45: Token Bridge** — CD site becomes first consumer via CSS layer override; document sfx-* tier; no SSR flash
 - [ ] **Phase 46: Tightening Pass** — Light mode contrast fix, 15 hardcoded durations to tokens, 7 hardcoded colors to tokens, sf-button hover alignment
 - [ ] **Phase 47: Viewport Polish** — Text size floor increase, inventory grid breakpoint, subpage header spacing, Storybook viewport presets
@@ -654,9 +654,9 @@ Plans:
   4. Marquee band contains a specific, measurable claim (not "SHIP FASTER")
   5. "and growing" filler is absent from hero copy and homepage meta description
   6. Playwright test file phase-35-metadata.spec.ts assertions match the new copy strings and pass clean
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
 ### Phase 45: Token Bridge
 **Goal**: The CD site is the first real consumer of signalframeux.css, validating the @layer cascade architecture without SSR flash
