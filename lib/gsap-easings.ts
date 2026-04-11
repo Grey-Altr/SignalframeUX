@@ -1,5 +1,7 @@
 "use client";
 
+import { CustomEase } from "gsap/CustomEase";
+
 /**
  * SignalframeUX custom GSAP easings — single canonical source.
  * Import from any gsap-* entry point that has CustomEase registered.
