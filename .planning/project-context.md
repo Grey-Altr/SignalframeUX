@@ -4,56 +4,51 @@
 > Regenerate with /pde:new-milestone or /pde:new-project.
 
 ## Tech Stack
-Next.js 15.3 (App Router, Turbopack), TypeScript 5.8, Tailwind CSS v4, CVA for variants, Radix UI via shadcn, GSAP 3.12 + ScrollTrigger, Lenis smooth scroll, Three.js (async chunk), OKLCH color space, Vercel
+Next.js 16, TypeScript 5.8, Tailwind CSS v4, CVA for variants, Radix UI via shadcn, GSAP 3.12 + ScrollTrigger, Lenis smooth scroll, Three.js (WebGL singleton), OKLCH color space, Vercel deployment
 
 ## Conventions
-- CommonJS (.cjs) modules in bin/lib/
+- pnpm package manager
 - Markdown-based state in .planning/
-- Zero npm dependencies at plugin root
-- Server Components default; 'use client' only when needed
+- SF-wrapped components in components/sf/ with barrel export
 - CVA `intent` as standard variant prop
+- Server Components default; 'use client' only when needed
 - Zero border-radius everywhere
-- SIGNAL/FRAME ordering (signal first, never FRAME/SIGNAL)
+- SIGNAL/FRAME ordering (signal first) in all docs/code/UI
 
 ## Constraints
-- Lighthouse 100/100 all categories
-- Dark mode primary, light mode available
+- Lighthouse 100/100 A11y/BP/SEO (Performance 78 baseline accepted due to WebGL)
 - WCAG AA minimum, keyboard-navigable
-- Page weight < 200KB initial (excluding images)
-- LCP < 1.0s, CLS = 0, TTI < 1.5s
-- Zero border-radius — DU/TDR industrial edges
-- No generic dark-mode aesthetic — borrow directly from DU/TDR visual language
+- Bundle: 50KB gzip library, 150KB gzip app shared chunks
+- LCP < 1.0s, CLS = 0
+- Zero new npm runtime dependencies in v1.7
+- Static grain ceiling: never > 0.07 opacity (parametric escalation only)
+- Safari backdrop-filter: literal values only, no var() references
 
 ## Current Milestone
-v1.5 Redesign — 8 phases (28–35)
-Status: Roadmap created, Phase 28 next
+v1.7 Tightening, Polish, and Aesthetic Push — 13 phases (44-56)
+Status: Roadmap created, Phase 44 next
 
 ## Key Decisions
-| Decision | Milestone | Outcome |
-|----------|-----------|---------|
-| Raw Three.js over React Three Fiber | v1.1 | ✓ Good — R3F's independent rAF conflicts with GSAP timeScale(0) |
-| GSAP ticker as WebGL render driver | v1.1 | ✓ Good — single animation loop, reduced-motion kills everything |
-| Module-level MutationObserver cache for signal uniforms | v1.2 | ✓ Good — zero getComputedStyle in GSAP ticker |
-| Hole-in-the-donut SSR pattern for SignalframeProvider | v1.2 | ✓ Good — layout primitives stay Server Components |
-| Pattern B for lazy P3 components (next/dynamic + ssr:false) | v1.3 | ✓ Good — Calendar/Menubar zero bundle cost |
-| Sonner with unstyled:true for SFToast | v1.3 | ✓ Good — full DU/TDR aesthetic control |
-| CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix built-in data-motion |
-| 8 phases (28-35) not 9 for v1.5 | v1.5 | Observer consolidation absorbed into Infrastructure Hardening |
-| Lenis kept over ScrollSmoother | v1.5 | Validated at Lighthouse 100/100; ScrollSmoother migration risk unjustified |
-| Zero new npm packages for v1.5 | v1.5 | GSAP 3.14.2 has SplitText mask, Observer, ScrambleText all free |
+| Decision | Rationale |
+|----------|-----------|
+| Phase 48 (intensity bridge) before all effects | Architectural prerequisite — every effect reads derived properties |
+| Parametric grain (not static raise) | SOTD research: static > 0.07 is anti-feature; escalate via intensity dial |
+| @layer cascade for token bridge | Browser-native, no Style Dictionary needed for web-only consumers |
+| Derived-property bridge for intensity | Per-effect perceptual curves solve the linear 0-1 dial problem |
+| Particle field via singleton useSignalScene() | iOS Safari WebGL context limit (2-8); no second renderer |
 
 ## Active Requirements
-- [ ] **RA-01**: /components renamed to /inventory with redirect
-- [ ] **RA-05**: Homepage 6-section architecture (ENTRY→THESIS→PROOF→INVENTORY→SIGNAL→ACQUISITION)
-- [ ] **EN-01**: GLSL hero fills 100vh — IS the viewport
-- [ ] **EN-02**: SIGNALFRAME//UX at 120px+ centered on shader
-- [ ] **TH-01**: Scroll-driven layout 200–300vh
-- [ ] **TH-02**: Manifesto phrases via GSAP pin/scrub
-- [ ] **PR-01**: Full-viewport interactive SIGNAL/FRAME demo
-- [ ] **IV-01**: Coded nomenclature SF//BTN-001
-- [ ] **SG-01**: Full-viewport WebGL at max SIGNAL intensity
-- [ ] **VL-01**: Ghost labels 200px+
-- [ ] **SP-01**: /system specimen-style diagrams
-- [ ] **PF-01**: Bundle under 150 KB gzip
-- [ ] **PF-02**: Lighthouse 100/100 all categories
-- [ ] **LR-01**: Awwwards submission package
+- [ ] COP-01: Component count reconciled across all pages
+- [ ] TBR-01: CD site imports signalframeux.css + cd-tokens.css override
+- [ ] TBR-02: @layer cascade: sf.tokens → consumer.overrides
+- [ ] TGH-01: Light mode muted-foreground passes WCAG AA
+- [ ] TGH-02: 15 hardcoded durations → token references
+- [ ] SIG-01: updateSignalDerivedProps(intensity) in global-effects.tsx
+- [ ] SIG-02: VHS scales with --signal-intensity
+- [ ] GRN-01: Grain baseline 0.03-0.05; parametric escalation
+- [ ] GRN-02: useIdleEscalation(thresholds[]) with 3 phases
+- [ ] VHS-01: Chromatic aberration scaled by derived intensity
+- [ ] HLF-01: CSS-only halftone dot pattern
+- [ ] PTL-01: WebGL particles via useSignalScene() singleton
+- [ ] VRG-01: Chromatic installed as devDependency
+- [ ] PRF-01: Lighthouse A11y/BP/SEO remain 100/100/100
