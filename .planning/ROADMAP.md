@@ -554,6 +554,11 @@ Plans:
   5. Token CSS importable separately as `@signalframe/tokens.css`
   6. Package passes `npm pack --dry-run` with no extraneous files
 
+**Plans:** 2 plans
+Plans:
+- [ ] 39-01-PLAN.md — Build infrastructure (entry files, tsup config, tokens CSS, provider refactor)
+- [ ] 39-02-PLAN.md — Package exports, peerDependencies, tree-shaking verification
+
 ### Phase 40: API Documentation & DX
 **Goal**: External developers can discover, understand, and use SFUX components from documentation alone
 **Depends on**: Phase 39 (exported API surface must exist before documenting it)
