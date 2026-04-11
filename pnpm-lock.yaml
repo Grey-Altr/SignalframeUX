@@ -124,7 +124,7 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0(next@15.5.14(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       gsap:
-        specifier: ^3.12.7
+        specifier: ^3.14.2
         version: 3.14.2
       husky:
         specifier: ^9.1.7
