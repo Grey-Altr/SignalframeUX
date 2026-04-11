@@ -36,7 +36,11 @@ function SFTable({
   );
 }
 
-/** Sub-component of SFTable — inverted header row (foreground background, background text). */
+/**
+ * Sub-component of SFTable — inverted header row (foreground background, background text).
+ * @example
+ * <SFTableHeader><SFTableRow><SFTableHead>Name</SFTableHead></SFTableRow></SFTableHeader>
+ */
 function SFTableHeader({
   className,
   ...props
@@ -49,7 +53,11 @@ function SFTableHeader({
   );
 }
 
-/** Sub-component of SFTable — column heading cell in uppercase tracking-wider at text-xs. */
+/**
+ * Sub-component of SFTable — column heading cell in uppercase tracking-wider at text-xs.
+ * @example
+ * <SFTableHead>Status</SFTableHead>
+ */
 function SFTableHead({
   className,
   ...props
@@ -65,7 +73,11 @@ function SFTableHead({
   );
 }
 
-/** Sub-component of SFTable — table row with muted border and subtle hover background. */
+/**
+ * Sub-component of SFTable — table row with muted border and subtle hover background.
+ * @example
+ * <SFTableRow><SFTableCell>Alice</SFTableCell></SFTableRow>
+ */
 function SFTableRow({
   className,
   ...props
@@ -81,7 +93,11 @@ function SFTableRow({
   );
 }
 
-/** Sub-component of SFTable — data cell with consistent px-3 py-2 padding. */
+/**
+ * Sub-component of SFTable — data cell with consistent px-3 py-2 padding.
+ * @example
+ * <SFTableCell>alice@example.com</SFTableCell>
+ */
 function SFTableCell({
   className,
   ...props
@@ -91,7 +107,11 @@ function SFTableCell({
   );
 }
 
-/** Sub-component of SFTable — table body container wrapping all data rows. */
+/**
+ * Sub-component of SFTable — table body container wrapping all data rows.
+ * @example
+ * <SFTableBody><SFTableRow><SFTableCell>Data</SFTableCell></SFTableRow></SFTableBody>
+ */
 function SFTableBody({ className, ...props }: React.ComponentProps<typeof TableBody>) {
   return <TableBody className={cn(className)} {...props} />;
 }

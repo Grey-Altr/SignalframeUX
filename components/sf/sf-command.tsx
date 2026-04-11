@@ -47,7 +47,11 @@ function SFCommand({
   );
 }
 
-/** Sub-component of SFCommand — modal dialog wrapper for command palette overlay usage. */
+/**
+ * Sub-component of SFCommand — modal dialog wrapper for command palette overlay usage.
+ * @example
+ * <SFCommandDialog open={open} onOpenChange={setOpen}><SFCommandInput placeholder="Search..." /></SFCommandDialog>
+ */
 function SFCommandDialog({
   className,
   ...props
@@ -55,7 +59,11 @@ function SFCommandDialog({
   return <CommandDialog className={cn("rounded-none", className)} {...props} />;
 }
 
-/** Sub-component of SFCommand — search input rendered in font-mono uppercase. */
+/**
+ * Sub-component of SFCommand — search input rendered in font-mono uppercase.
+ * @example
+ * <SFCommandInput placeholder="Search commands..." />
+ */
 function SFCommandInput({
   className,
   ...props
@@ -68,7 +76,11 @@ function SFCommandInput({
   );
 }
 
-/** Sub-component of SFCommand — scrollable results list container in font-mono. */
+/**
+ * Sub-component of SFCommand — scrollable results list container in font-mono.
+ * @example
+ * <SFCommandList><SFCommandGroup heading="Actions"><SFCommandItem>Open</SFCommandItem></SFCommandGroup></SFCommandList>
+ */
 function SFCommandList({
   className,
   ...props
@@ -81,7 +93,11 @@ function SFCommandList({
   );
 }
 
-/** Sub-component of SFCommand — empty state message shown when no results match the query. */
+/**
+ * Sub-component of SFCommand — empty state message shown when no results match the query.
+ * @example
+ * <SFCommandEmpty>No results found.</SFCommandEmpty>
+ */
 function SFCommandEmpty({
   className,
   ...props
@@ -94,7 +110,11 @@ function SFCommandEmpty({
   );
 }
 
-/** Sub-component of SFCommand — labeled group of related command items with mono uppercase heading. */
+/**
+ * Sub-component of SFCommand — labeled group of related command items with mono uppercase heading.
+ * @example
+ * <SFCommandGroup heading="Navigation"><SFCommandItem>Go to dashboard</SFCommandItem></SFCommandGroup>
+ */
 function SFCommandGroup({
   className,
   ...props
@@ -110,7 +130,11 @@ function SFCommandGroup({
   );
 }
 
-/** Sub-component of SFCommand — selectable command item; highlights with inverted colors on selection. */
+/**
+ * Sub-component of SFCommand — selectable command item; highlights with inverted colors on selection.
+ * @example
+ * <SFCommandItem onSelect={() => router.push('/dashboard')}>Dashboard</SFCommandItem>
+ */
 function SFCommandItem({
   className,
   ...props
@@ -126,7 +150,11 @@ function SFCommandItem({
   );
 }
 
-/** Sub-component of SFCommand — keyboard shortcut label rendered in mono uppercase, right-aligned. */
+/**
+ * Sub-component of SFCommand — keyboard shortcut label rendered in mono uppercase, right-aligned.
+ * @example
+ * <SFCommandItem>New File<SFCommandShortcut>⌘N</SFCommandShortcut></SFCommandItem>
+ */
 function SFCommandShortcut({
   className,
   ...props
@@ -139,7 +167,11 @@ function SFCommandShortcut({
   );
 }
 
-/** Sub-component of SFCommand — full-width foreground-colored rule dividing command groups. */
+/**
+ * Sub-component of SFCommand — full-width foreground-colored rule dividing command groups.
+ * @example
+ * <SFCommandSeparator />
+ */
 function SFCommandSeparator({
   className,
   ...props

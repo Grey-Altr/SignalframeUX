@@ -32,17 +32,29 @@ function SFSheet(props: React.ComponentProps<typeof Sheet>) {
   return <Sheet {...props} />;
 }
 
-/** Sub-component of SFSheet — trigger element that opens the slide-out panel on interaction. */
+/**
+ * Sub-component of SFSheet — trigger element that opens the slide-out panel on interaction.
+ * @example
+ * <SFSheetTrigger asChild><SFButton>Open Panel</SFButton></SFSheetTrigger>
+ */
 function SFSheetTrigger(props: React.ComponentProps<typeof SheetTrigger>) {
   return <SheetTrigger {...props} />;
 }
 
-/** Sub-component of SFSheet — close control that dismisses the panel when activated. */
+/**
+ * Sub-component of SFSheet — close control that dismisses the panel when activated.
+ * @example
+ * <SFSheetClose asChild><SFButton intent="ghost">Close</SFButton></SFSheetClose>
+ */
 function SFSheetClose(props: React.ComponentProps<typeof SheetClose>) {
   return <SheetClose {...props} />;
 }
 
-/** Sub-component of SFSheet — slide-out content panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFSheet — slide-out content panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFSheetContent side="right"><SFSheetHeader><SFSheetTitle>Settings</SFSheetTitle></SFSheetHeader></SFSheetContent>
+ */
 function SFSheetContent({
   className,
   ...props
@@ -58,7 +70,11 @@ function SFSheetContent({
   );
 }
 
-/** Sub-component of SFSheet — header region with 2px bottom border separating it from body content. */
+/**
+ * Sub-component of SFSheet — header region with 2px bottom border separating it from body content.
+ * @example
+ * <SFSheetHeader><SFSheetTitle>Settings</SFSheetTitle></SFSheetHeader>
+ */
 function SFSheetHeader({
   className,
   ...props
@@ -71,7 +87,11 @@ function SFSheetHeader({
   );
 }
 
-/** Sub-component of SFSheet — footer region with 2px top border and muted background for action buttons. */
+/**
+ * Sub-component of SFSheet — footer region with 2px top border and muted background for action buttons.
+ * @example
+ * <SFSheetFooter><SFButton>Apply</SFButton></SFSheetFooter>
+ */
 function SFSheetFooter({
   className,
   ...props
@@ -84,7 +104,11 @@ function SFSheetFooter({
   );
 }
 
-/** Sub-component of SFSheet — sheet title in font-mono uppercase with letter-spacing. */
+/**
+ * Sub-component of SFSheet — sheet title in font-mono uppercase with letter-spacing.
+ * @example
+ * <SFSheetTitle>Preferences</SFSheetTitle>
+ */
 function SFSheetTitle({
   className,
   ...props
@@ -97,7 +121,11 @@ function SFSheetTitle({
   );
 }
 
-/** Sub-component of SFSheet — supporting description text in muted foreground, uppercase, xs size. */
+/**
+ * Sub-component of SFSheet — supporting description text in muted foreground, uppercase, xs size.
+ * @example
+ * <SFSheetDescription>Adjust your display preferences.</SFSheetDescription>
+ */
 function SFSheetDescription({
   className,
   ...props

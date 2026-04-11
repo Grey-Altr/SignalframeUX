@@ -32,17 +32,29 @@ function SFDialog(props: React.ComponentProps<typeof Dialog>) {
   return <Dialog {...props} />;
 }
 
-/** Sub-component of SFDialog — trigger element that opens the dialog on interaction. */
+/**
+ * Sub-component of SFDialog — trigger element that opens the dialog on interaction.
+ * @example
+ * <SFDialogTrigger asChild><SFButton>Open</SFButton></SFDialogTrigger>
+ */
 function SFDialogTrigger(props: React.ComponentProps<typeof DialogTrigger>) {
   return <DialogTrigger {...props} />;
 }
 
-/** Sub-component of SFDialog — close button that dismisses the dialog when activated. */
+/**
+ * Sub-component of SFDialog — close button that dismisses the dialog when activated.
+ * @example
+ * <SFDialogClose asChild><SFButton intent="ghost">Cancel</SFButton></SFDialogClose>
+ */
 function SFDialogClose(props: React.ComponentProps<typeof DialogClose>) {
   return <DialogClose {...props} />;
 }
 
-/** Sub-component of SFDialog — modal content panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFDialog — modal content panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFDialogContent><SFDialogHeader><SFDialogTitle>Title</SFDialogTitle></SFDialogHeader></SFDialogContent>
+ */
 function SFDialogContent({
   className,
   ...props
@@ -58,7 +70,11 @@ function SFDialogContent({
   );
 }
 
-/** Sub-component of SFDialog — header region with 2px bottom border separating it from content. */
+/**
+ * Sub-component of SFDialog — header region with 2px bottom border separating it from content.
+ * @example
+ * <SFDialogHeader><SFDialogTitle>Confirm Action</SFDialogTitle></SFDialogHeader>
+ */
 function SFDialogHeader({
   className,
   ...props
@@ -71,7 +87,11 @@ function SFDialogHeader({
   );
 }
 
-/** Sub-component of SFDialog — footer region with 2px top border and muted background for action buttons. */
+/**
+ * Sub-component of SFDialog — footer region with 2px top border and muted background for action buttons.
+ * @example
+ * <SFDialogFooter><SFButton>Save</SFButton></SFDialogFooter>
+ */
 function SFDialogFooter({
   className,
   ...props
@@ -87,7 +107,11 @@ function SFDialogFooter({
   );
 }
 
-/** Sub-component of SFDialog — dialog title in font-mono uppercase with letter-spacing. */
+/**
+ * Sub-component of SFDialog — dialog title in font-mono uppercase with letter-spacing.
+ * @example
+ * <SFDialogTitle>Confirm Deletion</SFDialogTitle>
+ */
 function SFDialogTitle({
   className,
   ...props
@@ -100,7 +124,11 @@ function SFDialogTitle({
   );
 }
 
-/** Sub-component of SFDialog — supporting description text in muted foreground, uppercase, xs size. */
+/**
+ * Sub-component of SFDialog — supporting description text in muted foreground, uppercase, xs size.
+ * @example
+ * <SFDialogDescription>This action cannot be undone.</SFDialogDescription>
+ */
 function SFDialogDescription({
   className,
   ...props

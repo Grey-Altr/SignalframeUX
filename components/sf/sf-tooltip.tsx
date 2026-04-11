@@ -23,7 +23,11 @@ function SFTooltip(props: React.ComponentProps<typeof Tooltip>) {
   return <Tooltip {...props} />;
 }
 
-/** Sub-component of SFTooltip — floating label in inverted mono uppercase with no border or radius. */
+/**
+ * Sub-component of SFTooltip — floating label in inverted mono uppercase with no border or radius.
+ * @example
+ * <SFTooltipContent>Keyboard shortcut: ⌘K</SFTooltipContent>
+ */
 function SFTooltipContent({
   className,
   ...props
@@ -40,7 +44,11 @@ function SFTooltipContent({
   );
 }
 
-/** Sub-component of SFTooltip — trigger element that shows the tooltip on hover/focus. */
+/**
+ * Sub-component of SFTooltip — trigger element that shows the tooltip on hover/focus.
+ * @example
+ * <SFTooltipTrigger asChild><SFButton size="sm">?</SFButton></SFTooltipTrigger>
+ */
 function SFTooltipTrigger(props: React.ComponentProps<typeof TooltipTrigger>) {
   return <TooltipTrigger {...props} />;
 }

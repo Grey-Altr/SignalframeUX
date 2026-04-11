@@ -33,7 +33,11 @@ function SFScrollArea({
   );
 }
 
-/** Sub-component of SFScrollArea — scrollbar track with sharp corners, composable with SFScrollArea. */
+/**
+ * Sub-component of SFScrollArea — scrollbar track with sharp corners, composable with SFScrollArea.
+ * @example
+ * <SFScrollArea className="h-64"><SFScrollBar orientation="vertical" />{content}</SFScrollArea>
+ */
 function SFScrollBar({
   className,
   ...props

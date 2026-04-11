@@ -40,14 +40,22 @@ function SFAlertDialog(props: React.ComponentProps<typeof AlertDialog>) {
   return <AlertDialog {...props} />;
 }
 
-/** Sub-component of SFAlertDialog -- trigger element that opens the dialog on interaction. */
+/**
+ * Sub-component of SFAlertDialog -- trigger element that opens the dialog on interaction.
+ * @example
+ * <SFAlertDialogTrigger asChild><SFButton>Delete</SFButton></SFAlertDialogTrigger>
+ */
 function SFAlertDialogTrigger(
   props: React.ComponentProps<typeof AlertDialogTrigger>
 ) {
   return <AlertDialogTrigger {...props} />;
 }
 
-/** Sub-component of SFAlertDialog -- modal content panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFAlertDialog -- modal content panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFAlertDialogContent><SFAlertDialogHeader><SFAlertDialogTitle>Confirm</SFAlertDialogTitle></SFAlertDialogHeader></SFAlertDialogContent>
+ */
 function SFAlertDialogContent({
   className,
   ...props
@@ -60,7 +68,11 @@ function SFAlertDialogContent({
   );
 }
 
-/** Sub-component of SFAlertDialog -- header region. */
+/**
+ * Sub-component of SFAlertDialog -- header region containing title and description.
+ * @example
+ * <SFAlertDialogHeader><SFAlertDialogTitle>Are you sure?</SFAlertDialogTitle></SFAlertDialogHeader>
+ */
 function SFAlertDialogHeader({
   className,
   ...props
@@ -68,7 +80,11 @@ function SFAlertDialogHeader({
   return <AlertDialogHeader className={cn(className)} {...props} />;
 }
 
-/** Sub-component of SFAlertDialog -- footer region with sharp corners overriding base rounded-b-xl. */
+/**
+ * Sub-component of SFAlertDialog -- footer region with sharp corners overriding base rounded-b-xl.
+ * @example
+ * <SFAlertDialogFooter><SFAlertDialogCancel>Cancel</SFAlertDialogCancel><SFAlertDialogAction>Confirm</SFAlertDialogAction></SFAlertDialogFooter>
+ */
 function SFAlertDialogFooter({
   className,
   ...props
@@ -78,7 +94,11 @@ function SFAlertDialogFooter({
   );
 }
 
-/** Sub-component of SFAlertDialog -- title in monospace uppercase with wider tracking. */
+/**
+ * Sub-component of SFAlertDialog -- title in monospace uppercase with wider tracking.
+ * @example
+ * <SFAlertDialogTitle>Delete Project?</SFAlertDialogTitle>
+ */
 function SFAlertDialogTitle({
   className,
   ...props
@@ -91,14 +111,22 @@ function SFAlertDialogTitle({
   );
 }
 
-/** Sub-component of SFAlertDialog -- supporting description text. */
+/**
+ * Sub-component of SFAlertDialog -- supporting description text below the title.
+ * @example
+ * <SFAlertDialogDescription>This action cannot be undone and will permanently delete all data.</SFAlertDialogDescription>
+ */
 function SFAlertDialogDescription(
   props: React.ComponentProps<typeof AlertDialogDescription>
 ) {
   return <AlertDialogDescription {...props} />;
 }
 
-/** Sub-component of SFAlertDialog -- confirm action button with optional loading state. */
+/**
+ * Sub-component of SFAlertDialog -- confirm action button with optional loading state.
+ * @example
+ * <SFAlertDialogAction loading={isDeleting} onClick={handleDelete}>Delete</SFAlertDialogAction>
+ */
 interface SFAlertDialogActionProps
   extends React.ComponentProps<typeof AlertDialogAction> {
   loading?: boolean;
@@ -123,7 +151,11 @@ function SFAlertDialogAction({
   );
 }
 
-/** Sub-component of SFAlertDialog -- cancel button with sharp corners. */
+/**
+ * Sub-component of SFAlertDialog -- cancel button with sharp corners that dismisses the dialog.
+ * @example
+ * <SFAlertDialogCancel>Cancel</SFAlertDialogCancel>
+ */
 function SFAlertDialogCancel({
   className,
   ...props

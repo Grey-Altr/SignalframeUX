@@ -30,12 +30,20 @@ function SFPopover(props: React.ComponentProps<typeof Popover>) {
   return <Popover {...props} />;
 }
 
-/** Sub-component of SFPopover — trigger element that opens the floating panel on interaction. */
+/**
+ * Sub-component of SFPopover — trigger element that opens the floating panel on interaction.
+ * @example
+ * <SFPopoverTrigger asChild><SFButton size="sm">Info</SFButton></SFPopoverTrigger>
+ */
 function SFPopoverTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
   return <PopoverTrigger {...props} />;
 }
 
-/** Sub-component of SFPopover — floating content panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFPopover — floating content panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFPopoverContent><SFPopoverHeader><SFPopoverTitle>Details</SFPopoverTitle></SFPopoverHeader></SFPopoverContent>
+ */
 function SFPopoverContent({
   className,
   ...props
@@ -51,7 +59,11 @@ function SFPopoverContent({
   );
 }
 
-/** Sub-component of SFPopover — header region with 2px bottom border separating it from content. */
+/**
+ * Sub-component of SFPopover — header region with 2px bottom border separating it from content.
+ * @example
+ * <SFPopoverHeader><SFPopoverTitle>Filter Options</SFPopoverTitle></SFPopoverHeader>
+ */
 function SFPopoverHeader({
   className,
   ...props
@@ -64,7 +76,11 @@ function SFPopoverHeader({
   );
 }
 
-/** Sub-component of SFPopover — title rendered in font-mono uppercase with letter-spacing. */
+/**
+ * Sub-component of SFPopover — title rendered in font-mono uppercase with letter-spacing.
+ * @example
+ * <SFPopoverTitle>Filter Options</SFPopoverTitle>
+ */
 function SFPopoverTitle({
   className,
   ...props
@@ -77,7 +93,11 @@ function SFPopoverTitle({
   );
 }
 
-/** Sub-component of SFPopover — supporting description text in muted foreground at text-xs. */
+/**
+ * Sub-component of SFPopover — supporting description text in muted foreground at text-xs.
+ * @example
+ * <SFPopoverDescription>Select a date range to filter results.</SFPopoverDescription>
+ */
 function SFPopoverDescription({
   className,
   ...props

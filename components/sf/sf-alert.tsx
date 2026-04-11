@@ -52,7 +52,11 @@ function SFAlert({ intent, className, ...props }: SFAlertProps) {
   );
 }
 
-/** Sub-component of SFAlert — title in monospace uppercase with wider tracking. */
+/**
+ * Sub-component of SFAlert — title in monospace uppercase with wider tracking.
+ * @example
+ * <SFAlertTitle>Warning</SFAlertTitle>
+ */
 function SFAlertTitle({
   className,
   ...props
@@ -65,7 +69,11 @@ function SFAlertTitle({
   );
 }
 
-/** Sub-component of SFAlert — description text. */
+/**
+ * Sub-component of SFAlert — description text rendered below the alert title.
+ * @example
+ * <SFAlertDescription>Your session will expire in 5 minutes.</SFAlertDescription>
+ */
 function SFAlertDescription(
   props: React.ComponentProps<typeof AlertDescription>
 ) {

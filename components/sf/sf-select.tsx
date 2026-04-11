@@ -31,7 +31,11 @@ function SFSelect(props: React.ComponentProps<typeof Select>) {
   return <Select {...props} />;
 }
 
-/** Sub-component of SFSelect — trigger button with sf-border-draw-focus, mono uppercase, and no ring. */
+/**
+ * Sub-component of SFSelect — trigger button with sf-border-draw-focus, mono uppercase, and no ring.
+ * @example
+ * <SFSelectTrigger><SFSelectValue placeholder="Choose..." /></SFSelectTrigger>
+ */
 function SFSelectTrigger({
   className,
   ...props
@@ -48,7 +52,11 @@ function SFSelectTrigger({
   );
 }
 
-/** Sub-component of SFSelect — dropdown panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFSelect — dropdown panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFSelectContent><SFSelectItem value="a">Option A</SFSelectItem></SFSelectContent>
+ */
 function SFSelectContent({
   className,
   ...props
@@ -64,7 +72,11 @@ function SFSelectContent({
   );
 }
 
-/** Sub-component of SFSelect — option item in mono uppercase; inverts colors on focus. */
+/**
+ * Sub-component of SFSelect — option item in mono uppercase; inverts colors on focus.
+ * @example
+ * <SFSelectItem value="dark">Dark</SFSelectItem>
+ */
 function SFSelectItem({
   className,
   ...props
@@ -81,17 +93,29 @@ function SFSelectItem({
   );
 }
 
-/** Sub-component of SFSelect — renders the currently selected value or placeholder inside SFSelectTrigger. */
+/**
+ * Sub-component of SFSelect — renders the currently selected value or placeholder inside SFSelectTrigger.
+ * @example
+ * <SFSelectValue placeholder="Select theme..." />
+ */
 function SFSelectValue(props: React.ComponentProps<typeof SelectValue>) {
   return <SelectValue {...props} />;
 }
 
-/** Sub-component of SFSelect — groups related select items under a common label. */
+/**
+ * Sub-component of SFSelect — groups related select items under a common label.
+ * @example
+ * <SFSelectGroup><SFSelectLabel>Themes</SFSelectLabel><SFSelectItem value="dark">Dark</SFSelectItem></SFSelectGroup>
+ */
 function SFSelectGroup(props: React.ComponentProps<typeof SelectGroup>) {
   return <SelectGroup {...props} />;
 }
 
-/** Sub-component of SFSelect — non-interactive group label in muted mono uppercase at 2xs size. */
+/**
+ * Sub-component of SFSelect — non-interactive group label in muted mono uppercase at 2xs size.
+ * @example
+ * <SFSelectLabel>Color Themes</SFSelectLabel>
+ */
 function SFSelectLabel({
   className,
   ...props

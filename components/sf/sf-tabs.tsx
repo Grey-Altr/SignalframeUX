@@ -24,7 +24,11 @@ function SFTabs(props: React.ComponentProps<typeof Tabs>) {
   return <Tabs {...props} />;
 }
 
-/** Sub-component of SFTabs — tab navigation bar with 2px bottom border and no padding. */
+/**
+ * Sub-component of SFTabs — tab navigation bar with 2px bottom border and no padding.
+ * @example
+ * <SFTabsList><SFTabsTrigger value="a">Tab A</SFTabsTrigger></SFTabsList>
+ */
 function SFTabsList({
   className,
   ...props
@@ -40,7 +44,11 @@ function SFTabsList({
   );
 }
 
-/** Sub-component of SFTabs — tab button with underline active indicator and mono uppercase type. */
+/**
+ * Sub-component of SFTabs — tab button with underline active indicator and mono uppercase type.
+ * @example
+ * <SFTabsTrigger value="overview">Overview</SFTabsTrigger>
+ */
 function SFTabsTrigger({
   className,
   ...props
@@ -60,7 +68,11 @@ function SFTabsTrigger({
   );
 }
 
-/** Sub-component of SFTabs — content panel shown when its matching tab trigger is active. */
+/**
+ * Sub-component of SFTabs — content panel shown when its matching tab trigger is active.
+ * @example
+ * <SFTabsContent value="overview">Overview content here</SFTabsContent>
+ */
 function SFTabsContent(props: React.ComponentProps<typeof TabsContent>) {
   return <TabsContent {...props} />;
 }

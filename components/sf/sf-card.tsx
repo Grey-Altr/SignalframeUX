@@ -52,7 +52,11 @@ function SFCard({ className, hoverable = false, borderDraw = false, ...props }: 
   return card;
 }
 
-/** Sub-component of SFCard — renders the card header region with reduced bottom padding. */
+/**
+ * Sub-component of SFCard — renders the card header region with reduced bottom padding.
+ * @example
+ * <SFCardHeader><SFCardTitle>Project Alpha</SFCardTitle></SFCardHeader>
+ */
 function SFCardHeader({
   className,
   ...props
@@ -60,7 +64,11 @@ function SFCardHeader({
   return <CardHeader className={cn("pb-3", className)} {...props} />;
 }
 
-/** Sub-component of SFCard — renders the card title in font-mono uppercase. */
+/**
+ * Sub-component of SFCard — renders the card title in font-mono uppercase.
+ * @example
+ * <SFCardTitle>Project Alpha</SFCardTitle>
+ */
 function SFCardTitle({
   className,
   ...props
@@ -73,7 +81,11 @@ function SFCardTitle({
   );
 }
 
-/** Sub-component of SFCard — renders the card description in muted foreground at text-xs. */
+/**
+ * Sub-component of SFCard — renders the card description in muted foreground at text-xs.
+ * @example
+ * <SFCardDescription>Updated 2 days ago</SFCardDescription>
+ */
 function SFCardDescription({
   className,
   ...props
@@ -86,7 +98,11 @@ function SFCardDescription({
   );
 }
 
-/** Sub-component of SFCard — renders the main card body content region with p-4 padding. */
+/**
+ * Sub-component of SFCard — renders the main card body content region with p-4 padding.
+ * @example
+ * <SFCardContent>Body text or nested components go here.</SFCardContent>
+ */
 function SFCardContent({
   className,
   ...props
@@ -94,7 +110,11 @@ function SFCardContent({
   return <CardContent className={cn("p-4", className)} {...props} />;
 }
 
-/** Sub-component of SFCard — renders the card footer region, flush bottom with no top gap. */
+/**
+ * Sub-component of SFCard — renders the card footer region, flush bottom with no top gap.
+ * @example
+ * <SFCardFooter><SFButton size="sm">View Details</SFButton></SFCardFooter>
+ */
 function SFCardFooter({
   className,
   ...props

@@ -34,14 +34,22 @@ function SFDropdownMenu(props: React.ComponentProps<typeof DropdownMenu>) {
   return <DropdownMenu {...props} />;
 }
 
-/** Sub-component of SFDropdownMenu — trigger element that opens the dropdown on click. */
+/**
+ * Sub-component of SFDropdownMenu — trigger element that opens the dropdown on click.
+ * @example
+ * <SFDropdownMenuTrigger asChild><SFButton>Options</SFButton></SFDropdownMenuTrigger>
+ */
 function SFDropdownMenuTrigger(
   props: React.ComponentProps<typeof DropdownMenuTrigger>
 ) {
   return <DropdownMenuTrigger {...props} />;
 }
 
-/** Sub-component of SFDropdownMenu — floating content panel with sharp corners, 2px border, and no shadow. */
+/**
+ * Sub-component of SFDropdownMenu — floating content panel with sharp corners, 2px border, and no shadow.
+ * @example
+ * <SFDropdownMenuContent><SFDropdownMenuItem>Edit</SFDropdownMenuItem></SFDropdownMenuContent>
+ */
 function SFDropdownMenuContent({
   className,
   ...props
@@ -57,7 +65,11 @@ function SFDropdownMenuContent({
   );
 }
 
-/** Sub-component of SFDropdownMenu — groups related items with a mono uppercase label heading. */
+/**
+ * Sub-component of SFDropdownMenu — groups related items with a mono uppercase label heading.
+ * @example
+ * <SFDropdownMenuGroup><SFDropdownMenuLabel>File</SFDropdownMenuLabel><SFDropdownMenuItem>New</SFDropdownMenuItem></SFDropdownMenuGroup>
+ */
 function SFDropdownMenuGroup({
   className,
   ...props
@@ -73,7 +85,11 @@ function SFDropdownMenuGroup({
   );
 }
 
-/** Sub-component of SFDropdownMenu — selectable menu item; inverts colors on focus/hover. */
+/**
+ * Sub-component of SFDropdownMenu — selectable menu item; inverts colors on focus/hover.
+ * @example
+ * <SFDropdownMenuItem onSelect={() => handleEdit()}>Edit</SFDropdownMenuItem>
+ */
 function SFDropdownMenuItem({
   className,
   ...props
@@ -89,7 +105,11 @@ function SFDropdownMenuItem({
   );
 }
 
-/** Sub-component of SFDropdownMenu — non-interactive section label in muted foreground at xs size. */
+/**
+ * Sub-component of SFDropdownMenu — non-interactive section label in muted foreground at xs size.
+ * @example
+ * <SFDropdownMenuLabel>File Actions</SFDropdownMenuLabel>
+ */
 function SFDropdownMenuLabel({
   className,
   ...props
@@ -105,7 +125,11 @@ function SFDropdownMenuLabel({
   );
 }
 
-/** Sub-component of SFDropdownMenu — keyboard shortcut hint in mono uppercase, right-aligned in item. */
+/**
+ * Sub-component of SFDropdownMenu — keyboard shortcut hint in mono uppercase, right-aligned in item.
+ * @example
+ * <SFDropdownMenuItem>Save<SFDropdownMenuShortcut>⌘S</SFDropdownMenuShortcut></SFDropdownMenuItem>
+ */
 function SFDropdownMenuShortcut({
   className,
   ...props
@@ -118,7 +142,11 @@ function SFDropdownMenuShortcut({
   );
 }
 
-/** Sub-component of SFDropdownMenu — full-width foreground rule separating menu sections. */
+/**
+ * Sub-component of SFDropdownMenu — full-width foreground rule separating menu sections.
+ * @example
+ * <SFDropdownMenuSeparator />
+ */
 function SFDropdownMenuSeparator({
   className,
   ...props
