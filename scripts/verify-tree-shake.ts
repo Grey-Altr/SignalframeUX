@@ -11,11 +11,14 @@
  * Or:  pnpm build:lib && npx tsx scripts/verify-tree-shake.ts
  */
 import { readFileSync, existsSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const CORE_ESM = "dist/index.mjs";
-const CORE_CJS = "dist/index.cjs";
-const ANIM_ESM = "dist/animation.mjs";
-const WEBGL_ESM = "dist/webgl.mjs";
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const CORE_ESM = resolve(ROOT, "dist/index.mjs");
+const CORE_CJS = resolve(ROOT, "dist/index.cjs");
+const ANIM_ESM = resolve(ROOT, "dist/animation.mjs");
+const WEBGL_ESM = resolve(ROOT, "dist/webgl.mjs");
 
 let failed = false;
 

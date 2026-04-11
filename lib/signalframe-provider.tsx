@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useMemo } from 'react';
 import { toggleTheme } from '@/lib/theme';
 
 /** Configuration for the SignalframeUX provider factory. All values are serializable. */
@@ -52,6 +52,9 @@ async function getGsap() {
 
 /**
  * Factory that creates a typed, SSR-safe SignalframeProvider + useSignalframe hook pair.
+ * Note: The returned useSignalframe is identical to the standalone export — both read
+ * from the shared SignalframeContext singleton. Multiple createSignalframeUX() calls
+ * share the same context. The factory return is for destructured convenience only.
  *
  * @example
  * // In app/layout.tsx (module scope — not inside the component):
@@ -72,6 +75,12 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
       setIsDark(document.documentElement.classList.contains('dark'));
     }, []);
 
+    // Ref tracks latest prefersReduced for async callbacks (CR-02 fix).
+    const prefersReducedRef = useRef(prefersReduced);
+    useEffect(() => {
+      prefersReducedRef.current = prefersReduced;
+    }, [prefersReduced]);
+
     // Wire motion preference based on config.
     useEffect(() => {
       const pref = config.motionPreference ?? 'system';
@@ -79,7 +88,7 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
         getGsap().then(gsap => {
           if (!gsap) return;
           gsap.globalTimeline.timeScale(0);
-        });
+        }).catch(() => {});
         setPrefersReduced(true);
         return;
       }
@@ -87,7 +96,7 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
         getGsap().then(gsap => {
           if (!gsap) return;
           gsap.globalTimeline.timeScale(1);
-        });
+        }).catch(() => {});
         setPrefersReduced(false);
         return;
       }
@@ -97,7 +106,7 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
         getGsap().then(gsap => {
           if (!gsap) return;
           gsap.globalTimeline.timeScale(matches ? 0 : 1);
-        });
+        }).catch(() => {});
         setPrefersReduced(matches);
       };
       apply(mql.matches);
@@ -107,24 +116,24 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
     }, []);
 
     const setTheme = (theme: 'light' | 'dark') => {
-      const currentDark = document.documentElement.classList.contains('dark');
       const wantDark = theme === 'dark';
-      if (currentDark !== wantDark) {
-        const nextDark = toggleTheme(currentDark);
+      if (isDark !== wantDark) {
+        const nextDark = toggleTheme(isDark);
         setIsDark(nextDark);
       }
     };
 
-    const motion: SignalframeMotionController = {
+    const motion: SignalframeMotionController = useMemo(() => ({
       pause: () => {
-        getGsap().then(gsap => gsap?.globalTimeline.pause());
+        getGsap().then(gsap => gsap?.globalTimeline.pause()).catch(() => {});
       },
-      /** resume() is guarded — no-op when prefers-reduced-motion is active. */
       resume: () => {
-        if (!prefersReduced) getGsap().then(gsap => gsap?.globalTimeline.resume());
+        getGsap().then(gsap => {
+          if (!prefersReducedRef.current) gsap?.globalTimeline.resume();
+        }).catch(() => {});
       },
       prefersReduced,
-    };
+    }), [prefersReduced]);
 
     return (
       <SignalframeContext.Provider value={{ theme: isDark ? 'dark' : 'light', setTheme, motion }}>
