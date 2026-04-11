@@ -618,7 +618,7 @@ Plans:
 | 35. Performance + Launch Gate | v1.5 | 5/5 | Complete | 2026-04-10 |
 | 36. Housekeeping & Carry-Overs | v1.6 | Complete    | 2026-04-10 |  |
 | 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
-| 38. Test & Quality Hardening | v1.6 | 3/3 | Complete | 2026-04-11 |
+| 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 0/? | Not started | - |
 | 40. API Documentation & DX | v1.6 | 0/? | Not started | - |
 | 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
