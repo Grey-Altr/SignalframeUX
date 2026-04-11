@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 42-tracking-reconciliation-peerdep-fix-42-01-PLAN.md
-last_updated: "2026-04-11T21:22:03.236Z"
-last_activity: 2026-04-10
+milestone: v1.6
+milestone_name: v1.6 API-Ready
+status: complete
+stopped_at: All v1.6 phases (36-43) complete
+last_updated: "2026-04-11T22:00:00.000Z"
+last_activity: 2026-04-11
 progress:
-  total_phases: 34
-  completed_phases: 22
-  total_plans: 54
-  completed_plans: 53
+  total_phases: 43
+  completed_phases: 43
+  total_plans: 56
+  completed_plans: 56
 ---
 
 # STATE — SignalframeUX
@@ -21,16 +21,14 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.6 API-Ready — optimization, feature completeness, library distribution |
-| Milestone | v1.6 API-Ready |
+| Current Focus | v1.6 complete — preparing v1.7 |
+| Milestone | v1.6 API-Ready (COMPLETE) |
 
 ## Current Position
 
-Phase: 40
-Plan: 02 complete
-Previous: 40-01 (JSDoc + API docs generation) — CLOSED 2026-04-11
-Status: Executing Phase 40 (plan 02 of 4 complete)
-Last activity: 2026-04-10
+Phase: 43 (final)
+Status: v1.6 milestone complete — all 43 phases shipped
+Last activity: 2026-04-11
 
 ## Progress
 
@@ -41,19 +39,21 @@ v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — s
 v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
-v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
+v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 ```
 
 ## v1.6 Phase Map
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 36 | Housekeeping & Carry-Overs | CO-01, CO-02, CO-03, CO-04 | Not started |
-| 37 | Next.js 16 Migration | MG-01, MG-02, MG-03 | Not started |
-| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | In progress (1/3 plans) |
-| 39 | Library Build Pipeline | LIB-01, LIB-02, LIB-03 | Not started |
-| 40 | API Documentation & DX | DOC-01, DOC-02, DOC-03, DOC-04 | In progress (1/4 plans) |
-| 41 | Distribution & Launch Gate | DIST-01, DIST-02, DIST-03, DIST-04 | Not started |
+| 36 | Housekeeping & Carry-Overs | CO-01, CO-02, CO-03, CO-04 | Complete |
+| 37 | Next.js 16 Migration | MG-01, MG-02, MG-03 | Complete |
+| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | Complete |
+| 39 | Library Build Pipeline | LIB-01, LIB-02, LIB-03 | Complete |
+| 40 | API Documentation & DX | DOC-01, DOC-02, DOC-03, DOC-04 | Complete |
+| 41 | Distribution & Launch Gate | DIST-01, DIST-02, DIST-03, DIST-04 | Complete |
+| 42 | Tracking Reconciliation + peerDep Fix | CO-01-04, LIB-01-03 (gap closure) | Complete |
+| 43 | Production Deploy + Lighthouse Gate | DIST-04 (gap closure) | Complete |
 
 ## v1.5 Phase Map (archived)
 
@@ -221,10 +221,10 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 39 — Library Build Pipeline
+**Current focus:** v1.6 complete — v1.7 prep underway
 
 ## Session Continuity
 
-Last session: 2026-04-11T19:35:34.185Z
-Stopped at: Completed 42-tracking-reconciliation-peerdep-fix-42-01-PLAN.md
-Resume with: Phase 40 plan 02 complete. Continue with Phase 40 plan 03 via /pde:execute-phase 40
+Last session: 2026-04-11
+Stopped at: v1.6 milestone complete — all gaps closed, traceability updated
+Resume with: Push 26 commits to origin, then /pde:new-milestone for v1.7 (5 audit docs in .planning/v1.7-prep/)
