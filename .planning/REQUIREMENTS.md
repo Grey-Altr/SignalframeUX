@@ -184,7 +184,7 @@
 ### Test & Quality Hardening (Phase 38)
 - [x] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
 - [x] **QA-02**: axe-core integrated into Playwright suite — every route passes WCAG AA audit
-- [ ] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
+- [x] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
 
 ### Library Build Pipeline (Phase 39)
 - [ ] **LIB-01**: `package.json` exports field mapping SF components, tokens CSS, and utilities

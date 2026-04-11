@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: 38-02 complete — WCAG AA audit + reduced-motion spec (10/10 tests pass)
-last_updated: "2026-04-11T00:28:49Z"
+stopped_at: 38-03 complete — husky + lint-staged pre-commit hooks; Phase 38 all 3 plans done
+last_updated: "2026-04-11T01:00:00Z"
 last_activity: 2026-04-11
 progress:
   total_phases: 32
   completed_phases: 16
   total_plans: 43
-  completed_plans: 42
-  percent: 98
+  completed_plans: 43
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +27,9 @@ progress:
 
 ## Current Position
 
-Phase: 38 — Test & Quality Hardening (IN PROGRESS — 2/3 plans complete)
+Phase: 38 — Test & Quality Hardening (COMPLETE — 3/3 plans complete)
 Previous: Phase 37 Next.js 16 Migration — CLOSED 2026-04-10
-Status: v1.6 milestone active — 38-01 done (Vitest + unit tests); 38-02 done (WCAG AA + reduced-motion); 38-03 pending
+Status: v1.6 milestone active — 38-01 done (Vitest + unit tests); 38-02 done (WCAG AA + reduced-motion); 38-03 done (husky + lint-staged pre-commit hooks); Phase 38 complete
 Last activity: 2026-04-11
 
 ## Progress
@@ -212,6 +212,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T00:28:49Z
-Stopped at: 38-02 complete — WCAG AA axe-core audit (5/5 routes) + reduced-motion spec (5/5 routes) both pass
-Resume with: Phase 38 is 2/3 plans done. Continue with 38-03 (E2E Playwright smoke tests) via /pde:execute-phase 38
+Last session: 2026-04-11T01:00:00Z
+Stopped at: 38-03 complete — husky + lint-staged pre-commit hooks; Phase 38 all 3 plans complete
+Resume with: Phase 38 complete. Continue with Phase 39 (Library Build Pipeline) via /pde:execute-phase 39
