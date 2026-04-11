@@ -310,6 +310,12 @@
 - [ ] **SYM-02**: `<CDSymbol name="..." size={N} />` React component, <5KB total sprite
 - [ ] **SYM-03**: Used as section markers, list bullets, decorative dividers
 
+### Datamosh Overlay
+- [ ] **DTM-01**: DatamoshOverlay component renders fullscreen fragment shader via useSignalScene — no separate WebGL context, registered with SignalCanvas singleton
+- [ ] **DTM-02**: uIntensity default 0.003 produces 1-2px noise-driven displacement with chromatic aberration (R/G/B at different offsets), visible at 100% zoom on close inspection, invisible in casual scroll
+- [ ] **DTM-03**: Effect wires to --signal-intensity CSS custom property via MutationObserver cache pattern, GPU time <0.5ms at 1920x1080
+- [ ] **DTM-04**: prefers-reduced-motion renders single static frame or disables entirely; GSAP breathing oscillates intensity between 0.001-0.004 over 8-12s cycles
+
 ### Visual Regression
 - [ ] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies
 - [ ] **VRG-02**: Visual baselines captured before Phase 49 (grain changes)
@@ -358,6 +364,10 @@
 | VHS-04 | Phase 50 | Pending |
 | VHS-05 | Phase 50 | Pending |
 | VHS-06 | Phase 50 | Pending |
+| DTM-01 | Phase 50.1 | Pending |
+| DTM-02 | Phase 50.1 | Pending |
+| DTM-03 | Phase 50.1 | Pending |
+| DTM-04 | Phase 50.1 | Pending |
 | HLF-01 | Phase 51 | Pending |
 | HLF-02 | Phase 51 | Pending |
 | HLF-03 | Phase 51 | Pending |

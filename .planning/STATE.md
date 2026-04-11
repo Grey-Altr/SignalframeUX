@@ -55,6 +55,7 @@ v1.7: [█░░░░░░░░░]   8% (1/? plans) ACTIVE — Phase 45 next
 | 48 | Intensity Bridge + Chromatic Setup | SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01 | Not started |
 | 49 | Grain + Idle Escalation + Visual Baseline | GRN-01, GRN-02, GRN-03, GRN-04, VRG-02 | Not started |
 | 50 | VHS Enhancement | VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06 | Not started |
+| 50.1 | Datamosh Overlay | DTM-01, DTM-02, DTM-03, DTM-04 | Not started |
 | 51 | Halftone Texture | HLF-01, HLF-02, HLF-03, HLF-04 | Not started |
 | 52 | Circuit Overlay | CIR-01, CIR-02, CIR-03 | Not started |
 | 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Not started |

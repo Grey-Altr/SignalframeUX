@@ -505,6 +505,7 @@ Plans:
 - [ ] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed
 - [ ] **Phase 49: Grain + Idle Escalation + Visual Baseline** — Grain opacity curve, useIdleEscalation() hook with 3 phases, relative offset escalation, visual baselines captured
 - [ ] **Phase 50: VHS Enhancement** — Chromatic aberration, horizontal jitter, dropout bands, vignette, Safari backdrop-filter fix, human sign-off
+- [ ] **Phase 50.1: Datamosh Overlay** — Single-pass WebGL shader: noise-driven micro-displacement + channel separation, wired to --signal-intensity, <0.5ms GPU (INSERTED)
 - [ ] **Phase 51: Halftone Texture** — CSS-only halftone dots, intensity gate, scoped to specimen sections, no moiré review
 - [ ] **Phase 52: Circuit Overlay** — SVG circuit pattern, mutual exclusion with high grain, intensity-governed opacity
 - [ ] **Phase 53: Mesh Gradient** — Layered radial-gradient with OKLCH, grain composited on top, slow drift animation
@@ -741,9 +742,23 @@ Plans:
 Plans:
 - [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
 
+### Phase 50.1: Datamosh Overlay (INSERTED)
+
+**Goal:** Ambient datamosh overlay — single-pass WebGL fragment shader with noise-driven micro-displacement + channel separation + optional block quantization, registered via SignalCanvas singleton, wired to --signal-intensity, <0.5ms GPU budget
+**Depends on:** Phase 50 (VHS Enhancement)
+**Requirements**: DTM-01, DTM-02, DTM-03, DTM-04
+**Success Criteria** (what must be TRUE):
+  1. DatamoshOverlay component renders a fullscreen fragment shader via useSignalScene (no separate WebGL context)
+  2. uIntensity default 0.003 produces 1-2px displacement visible at 100% zoom on close inspection, invisible in casual scroll
+  3. Channel separation (R/G/B at different offsets) produces subtle chromatic aberration
+  4. Effect wires to --signal-intensity CSS custom property via MutationObserver cache
+  5. GPU time <0.5ms at 1920x1080 (single-pass, 3 texture samples + noise)
+  6. prefers-reduced-motion renders static frame or disables entirely
+**Plans:** TBD
+
 ### Phase 51: Halftone Texture
 **Goal**: A CSS-only halftone dot pattern appears in specimen sections at medium-to-high intensity without moiré artifacts against the grain layer
-**Depends on**: Phase 50 (VHS complete; combined VHS + halftone coherence review requires both to exist)
+**Depends on**: Phase 50.1 (VHS + Datamosh complete; combined coherence review requires all overlays to exist)
 **Requirements**: HLF-01, HLF-02, HLF-03, HLF-04
 **Success Criteria** (what must be TRUE):
   1. Halftone dot pattern is implemented with radial-gradient + filter: contrast() + background-blend-mode — zero canvas or WebGL
