@@ -3,6 +3,7 @@ phase: 39-library-build-pipeline
 plan: 02
 subsystem: library-build
 tags: [package-json, exports, peerDependencies, tree-shaking, npm-distribution]
+requirements-completed: [LIB-01, LIB-03]
 dependency_graph:
   requires: [lib/entry-core.ts, lib/entry-animation.ts, lib/entry-webgl.ts, tsup.config.ts]
   provides: [package.json exports field, scripts/verify-tree-shake.ts]

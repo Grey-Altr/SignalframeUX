@@ -3,6 +3,7 @@ phase: 39-library-build-pipeline
 plan: 01
 subsystem: library-build
 tags: [tsup, library, entry-points, tokens, build-infrastructure]
+requirements-completed: [LIB-02]
 dependency_graph:
   requires: []
   provides: [lib/entry-core.ts, lib/entry-animation.ts, lib/entry-webgl.ts, lib/tokens.css, tsup.config.ts, tsconfig.build.json]

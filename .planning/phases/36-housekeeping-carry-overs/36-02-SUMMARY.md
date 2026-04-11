@@ -3,6 +3,7 @@ phase: 36-housekeeping-carry-overs
 plan: "02"
 subsystem: toolchain
 tags: [eslint, typescript, code-quality, flat-config]
+requirements-completed: [CO-03, CO-04]
 dependency_graph:
   requires: []
   provides: [eslint-flat-config, zero-lint-violations]

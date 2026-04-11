@@ -3,6 +3,7 @@ phase: 36-housekeeping-carry-overs
 plan: 01
 subsystem: lighthouse-seo-accessibility-typescript-requirements
 tags: [lighthouse, csp, aria, typescript, requirements, seo, best-practices]
+requirements-completed: [CO-01, CO-02]
 dependency_graph:
   requires: [phase-35-complete, deployed-production-url]
   provides: [lighthouse-100-all-4, clean-tsc, v1.6-requirements-baseline]
