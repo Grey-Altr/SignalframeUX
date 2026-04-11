@@ -9,6 +9,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Observer } from "gsap/Observer";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
+// Guard against SSR module evaluation — GSAP plugins must only be registered
+// in a browser context.
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
+}
 
 export { gsap, ScrollTrigger, Observer, useGSAP };

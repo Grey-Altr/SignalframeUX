@@ -11,16 +11,22 @@ import { useGSAP } from "@gsap/react";
 
 import { registerSFEasings } from "./gsap-easings";
 
-gsap.registerPlugin(
-  ScrollTrigger,
-  SplitText,
-  ScrambleTextPlugin,
-  Flip,
-  CustomEase,
-  Observer,
-  useGSAP
-);
-registerSFEasings();
+// Guard against SSR module evaluation — GSAP plugins must only be registered
+// in a browser context. Without this guard, consumers using Next.js / any SSR
+// framework will hit "CustomEase/SplitText is not defined" during prerender
+// because Club plugins are not present in the public npm gsap package.
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(
+    ScrollTrigger,
+    SplitText,
+    ScrambleTextPlugin,
+    Flip,
+    CustomEase,
+    Observer,
+    useGSAP
+  );
+  registerSFEasings();
+}
 
 /**
  * Initialize reduced-motion handling for GSAP.

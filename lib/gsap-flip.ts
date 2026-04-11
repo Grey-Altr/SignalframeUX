@@ -12,7 +12,11 @@ import { CustomEase } from "gsap/CustomEase";
 
 import { registerSFEasings } from "./gsap-easings";
 
-gsap.registerPlugin(ScrollTrigger, Flip, CustomEase);
-registerSFEasings();
+// Guard against SSR module evaluation — GSAP plugins must only be registered
+// in a browser context.
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, Flip, CustomEase);
+  registerSFEasings();
+}
 
 export { gsap, ScrollTrigger, Flip, CustomEase };

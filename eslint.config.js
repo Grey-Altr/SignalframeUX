@@ -63,6 +63,7 @@ const config = [
       ".storybook/**",
       "stories/**",
       "storybook-static/**",
+      "dist/**",
     ],
   },
 ];

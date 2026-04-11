@@ -68,4 +68,11 @@ export default defineConfig({
   ],
   tsconfig: "tsconfig.build.json",
   outDir: "dist",
+  // Use the automatic JSX runtime so compiled output imports from
+  // 'react/jsx-runtime' instead of referencing the classic React global.
+  // This prevents "React is not defined" errors in consumers using
+  // Next.js / the automatic JSX transform (React 17+).
+  esbuildOptions(options) {
+    options.jsx = "automatic";
+  },
 });
