@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "registry:build": "shadcn build"
+    "registry:build": "shadcn build",
+    "build:lib": "tsup && cp lib/tokens.css dist/signalframeux.css"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -46,6 +47,7 @@
     "lighthouse": "^13.1.0",
     "shadcn": "^4.1.2",
     "tailwindcss": "^4.1.4",
+    "tsup": "^8.5.1",
     "typescript": "^5.8.3"
   }
 }
