@@ -591,6 +591,12 @@ Plans:
   5. Lighthouse 100/100 all categories on deployed site (post all v1.6 changes)
   6. All 18+ E2E tests pass, all Vitest unit tests pass, axe-core clean
 
+**Plans:** 2 plans
+Plans:
+- [ ] 41-01-PLAN.md — Publish packaging (npmignore, LICENSE, CHANGELOG, bundle size gate)
+- [ ] 41-02-PLAN.md — Consumer integration test and final quality gate
+
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
