@@ -182,8 +182,8 @@
 - [x] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
 
 ### Test & Quality Hardening (Phase 38)
-- [ ] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
-- [ ] **QA-02**: axe-core integrated into Playwright suite — every route passes WCAG AA audit
+- [x] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
+- [x] **QA-02**: axe-core integrated into Playwright suite — every route passes WCAG AA audit
 - [ ] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
 
 ### Library Build Pipeline (Phase 39)

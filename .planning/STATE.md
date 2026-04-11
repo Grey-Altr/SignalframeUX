@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: 38-03 Task 1 complete — awaiting human verification checkpoint (Task 2)
-last_updated: "2026-04-11T00:07:27.174Z"
-last_activity: 2026-04-10
+status: in_progress
+stopped_at: 38-02 complete — WCAG AA audit + reduced-motion spec (10/10 tests pass)
+last_updated: "2026-04-11T00:28:49Z"
+last_activity: 2026-04-11
 progress:
   total_phases: 32
   completed_phases: 16
   total_plans: 43
-  completed_plans: 41
-  percent: 95
+  completed_plans: 42
+  percent: 98
 ---
 
 # STATE — SignalframeUX
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 38 — Test & Quality Hardening (IN PROGRESS — 1/3 plans complete)
+Phase: 38 — Test & Quality Hardening (IN PROGRESS — 2/3 plans complete)
 Previous: Phase 37 Next.js 16 Migration — CLOSED 2026-04-10
-Status: v1.6 milestone active — 38-01 done (Vitest + unit tests); 38-02 and 38-03 pending
-Last activity: 2026-04-10
+Status: v1.6 milestone active — 38-01 done (Vitest + unit tests); 38-02 done (WCAG AA + reduced-motion); 38-03 pending
+Last activity: 2026-04-11
 
 ## Progress
 
@@ -192,6 +192,11 @@ v1.6: [█░░░░░░░░░]  ~6% (1/? plans) ACTIVE
 - [Phase 38]: passWithNoTests: true required in vitest.config.ts — vitest 4.x exits code 1 on empty suite by default; needed so pnpm test exits 0 before test files exist and in CI
 - [Phase 38]: tsconfig.test.json scopes vitest/globals to lib/ include only — prevents type conflict with @playwright/test globals which also declare `test`, `expect`, `describe` in the global namespace
 - [Phase 38]: THESIS_MANIFESTO is the actual export (not MANIFESTO_STATEMENTS) — plan interface section had drifted; always read source before writing tests
+- [Phase 38-02]: text-[var(--sf-muted-text-dark)] does not resolve reliably in Chromium via Tailwind v4 arbitrary value path — use hardcoded hex #999999 for dark-surface code labels and comments; inline style color resolves unambiguously where CSS custom property path fails
+- [Phase 38-02]: copy-button inline style backgroundColor: var(--color-primary) failed accessibility tree color computation — Chromium computed parent bg (#0a0a0a) instead; bg-primary Tailwind class resolves correctly through build system
+- [Phase 38-02]: waitForTimeout(N) in axe tests allows GSAP bgShift ScrollTrigger to fire (ScrollTrigger fires immediately for elements at/above scroll 50% threshold); use AXE_EXCLUDE for animation-transient elements instead of timeout waits
+- [Phase 38-02]: [data-api-entry] excluded from axe — GSAP stagger (81 entries × 0.015s ≈ 1.6s) creates transient opacity at networkidle; elements pass contrast at rest; ARIA structure verified independently
+- [Phase 38-02]: color: transition removed from global * rule — axe-core samples mid-transition interpolated hex values when color transitions are active, causing spurious contrast failures on routes without bgShift
 
 ### Blockers
 
@@ -207,6 +212,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-11T00:07:27.169Z
-Stopped at: 38-03 Task 1 complete — awaiting human verification checkpoint (Task 2)
-Resume with: Phase 38 is 1/3 plans done (38-01 Vitest + unit tests complete). Continue with 38-02 (axe-core a11y + reduced-motion) via /pde:execute-phase 38
+Last session: 2026-04-11T00:28:49Z
+Stopped at: 38-02 complete — WCAG AA axe-core audit (5/5 routes) + reduced-motion spec (5/5 routes) both pass
+Resume with: Phase 38 is 2/3 plans done. Continue with 38-03 (E2E Playwright smoke tests) via /pde:execute-phase 38
