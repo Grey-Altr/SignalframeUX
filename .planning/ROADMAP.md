@@ -570,7 +570,7 @@ Plans:
   4. `/reference` route on the site reflects the actual exported API (not stale internal-only components)
   5. Migration guide documents path from internal app usage to npm package consumption
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 Plans:
 - [ ] 40-00-PLAN.md — Wave 0: Create all 4 Playwright test spec scaffolds (Nyquist compliance)
 - [ ] 40-01-PLAN.md — Auto-generate api-docs.ts from entry files + JSDoc audit on all exported sub-components
@@ -634,5 +634,5 @@ Plans:
 | 37. Next.js 16 Migration | 2/2 | Complete   | 2026-04-10 | - |
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
-| 40. API Documentation & DX | 1/5 | In Progress|  | - |
+| 40. API Documentation & DX | 2/5 | In Progress|  | - |
 | 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
