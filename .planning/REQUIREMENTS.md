@@ -198,9 +198,9 @@
 - [x] **DOC-04**: `/reference` route reflects actual exported API (not stale internal-only components)
 
 ### Distribution & Launch Gate (Phase 41)
-- [ ] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
+- [x] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
 - [ ] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
-- [ ] **DIST-03**: CHANGELOG.md and semver version strategy documented
+- [x] **DIST-03**: CHANGELOG.md and semver version strategy documented
 - [ ] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
 
 ## Out of Scope

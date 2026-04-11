@@ -591,9 +591,9 @@ Plans:
   5. Lighthouse 100/100 all categories on deployed site (post all v1.6 changes)
   6. All 18+ E2E tests pass, all Vitest unit tests pass, axe-core clean
 
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 41-01-PLAN.md — Publish packaging (npmignore, LICENSE, CHANGELOG, bundle size gate)
+- [x] 41-01-PLAN.md — Publish packaging (npmignore, LICENSE, CHANGELOG, bundle size gate)
 - [ ] 41-02-PLAN.md — Consumer integration test and final quality gate
 
 
@@ -641,4 +641,4 @@ Plans:
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
 | 40. API Documentation & DX | 5/5 | Complete   | 2026-04-11 | - |
-| 41. Distribution & Launch Gate | v1.6 | 0/? | Not started | - |
+| 41. Distribution & Launch Gate | v1.6 | 1/2 | In Progress|  |
