@@ -60,7 +60,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "prepare": "husky",
-    "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts",
+    "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts && npx tsx scripts/verify-bundle-size.ts",
     "docs:generate": "tsx scripts/generate-api-docs.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
