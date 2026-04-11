@@ -754,7 +754,9 @@ Plans:
   4. Effect wires to --signal-intensity CSS custom property via MutationObserver cache
   5. GPU time <0.5ms at 1920x1080 (single-pass, 3 texture samples + noise)
   6. prefers-reduced-motion renders static frame or disables entirely
-**Plans:** TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 50.1-01-PLAN.md — DatamoshOverlay component + GlobalEffects mount + visual verification
 
 ### Phase 51: Halftone Texture
 **Goal**: A CSS-only halftone dot pattern appears in specimen sections at medium-to-high intensity without moiré artifacts against the grain layer
