@@ -199,7 +199,7 @@
 
 ### Distribution & Launch Gate (Phase 41)
 - [x] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
-- [ ] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
+- [x] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
 - [x] **DIST-03**: CHANGELOG.md and semver version strategy documented
 - [ ] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
 

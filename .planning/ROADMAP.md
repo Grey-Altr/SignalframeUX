@@ -491,7 +491,7 @@ Plans:
 - [x] **Phase 38: Test & Quality Hardening** — Vitest unit tests, axe-core a11y automation, prefers-reduced-motion coverage, pre-commit hooks (lint + type-check) (3/3 plans complete)
 - [x] **Phase 39: Library Build Pipeline** — Remove private flag, add exports field, tsup ESM+CJS build, .d.ts generation, tree-shaking validation (GSAP/Three.js isolation) (completed 2026-04-11)
 - [x] **Phase 40: API Documentation & DX** — JSDoc all SF component props, README.md, Storybook setup, /reference route alignment with exported API, consumer migration guide (completed 2026-04-11)
-- [ ] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100
+- [x] **Phase 41: Distribution & Launch Gate** — npm publish dry-run, distributed bundle audit, consumer integration test (fresh Next.js app imports SFUX), versioning strategy, final Lighthouse 100/100 (completed 2026-04-11)
 
 ### Phase 36: Housekeeping & Carry-Overs
 **Goal**: Clean up v1.5 deferred items and establish code quality baseline for v1.6 work
@@ -591,10 +591,10 @@ Plans:
   5. Lighthouse 100/100 all categories on deployed site (post all v1.6 changes)
   6. All 18+ E2E tests pass, all Vitest unit tests pass, axe-core clean
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 41-01-PLAN.md — Publish packaging (npmignore, LICENSE, CHANGELOG, bundle size gate)
-- [ ] 41-02-PLAN.md — Consumer integration test and final quality gate
+- [x] 41-02-PLAN.md — Consumer integration test and final quality gate
 
 
 ## Progress
@@ -641,4 +641,4 @@ Plans:
 | 38. Test & Quality Hardening | v1.6 | Complete    | 2026-04-11 | 2026-04-11 |
 | 39. Library Build Pipeline | v1.6 | 2/2 | Complete    | 2026-04-11 |
 | 40. API Documentation & DX | 5/5 | Complete   | 2026-04-11 | - |
-| 41. Distribution & Launch Gate | v1.6 | 1/2 | In Progress|  |
+| 41. Distribution & Launch Gate | v1.6 | 2/2 | Complete   | 2026-04-11 |
