@@ -499,7 +499,7 @@ Plans:
 **v1.7 Tightening, Polish, and Aesthetic Push (Phases 44-56):**
 
 - [x] **Phase 44: Copy Audit Fixes** — Reconcile component count, fix version strings, replace false claims, update Playwright test assertions (completed 2026-04-11)
-- [ ] **Phase 45: Token Bridge** — CD site becomes first consumer via CSS layer override; document sfx-* tier; no SSR flash
+- [x] **Phase 45: Token Bridge** — CD site becomes first consumer via CSS layer override; document sfx-* tier; no SSR flash (completed 2026-04-12, 2/2 plans)
 - [ ] **Phase 46: Tightening Pass** — Light mode contrast fix, 15 hardcoded durations to tokens, 7 hardcoded colors to tokens, sf-button hover alignment
 - [ ] **Phase 47: Viewport Polish** — Text size floor increase, inventory grid breakpoint, subpage header spacing, Storybook viewport presets
 - [ ] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed
