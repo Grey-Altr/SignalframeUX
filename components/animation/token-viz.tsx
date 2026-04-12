@@ -27,11 +27,11 @@ const LEFT_LABEL_WIDTH = 40; // px reserved for spacing labels
 
 /** Core 5 color tokens — CSS custom property names */
 const COLOR_TOKENS = [
-  "--color-background",
-  "--color-foreground",
-  "--color-primary",
-  "--color-secondary",
-  "--color-accent",
+  "--sfx-background",
+  "--sfx-foreground",
+  "--sfx-primary",
+  "--sfx-secondary",
+  "--sfx-accent",
 ] as const;
 
 /** Blessed spacing stops from CLAUDE.md (px values) */
@@ -131,8 +131,8 @@ export function TokenViz() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // ── Resolve colors once per draw ──────────────────────────────────────────
-    const fg = resolveColorToken("--color-foreground");
-    const bg = resolveColorToken("--color-background");
+    const fg = resolveColorToken("--sfx-foreground");
+    const bg = resolveColorToken("--sfx-background");
 
     // Clear to background
     ctx.fillStyle = toRgbString(bg.r, bg.g, bg.b);
@@ -148,7 +148,7 @@ export function TokenViz() {
     for (const cssVar of COLOR_TOKENS) {
       const rgb = resolveColorToken(cssVar);
       const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-      const label = cssVar.replace("--color-", "");
+      const label = cssVar.replace("--sfx-", "");
 
       // Swatch fill (zero border-radius — fillRect not roundRect)
       ctx.fillStyle = toRgbString(rgb.r, rgb.g, rgb.b);

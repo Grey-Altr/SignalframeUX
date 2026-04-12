@@ -65,7 +65,7 @@ function startLerpLoop(
       (_targetIntensity - _currentIntensity) * LERP_FACTOR;
     // AC-7: write to section element inline style — never to :root
     sectionEl.style.setProperty(
-      "--signal-intensity",
+      "--sfx-signal-intensity",
       _currentIntensity.toFixed(4),
     );
     // AC-9: skeleton opacity driven directly in same rAF tick — no GSAP tween
@@ -127,7 +127,7 @@ export function ProofSection() {
       // AC-6: Reduced-motion early return — render static split, no animation
       // prefers-reduced-motion guard: no rAF loop, no pointermove, no ScrollTrigger
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        section.style.setProperty("--signal-intensity", "0.5");
+        section.style.setProperty("--sfx-signal-intensity", "0.5");
         if (skeletonRef.current) {
           skeletonRef.current.style.opacity = "0.5";
         }
@@ -137,7 +137,7 @@ export function ProofSection() {
       // Default state — high intensity (SIGNAL dominant)
       _targetIntensity = 0.8;
       _currentIntensity = 0.8;
-      section.style.setProperty("--signal-intensity", "0.8");
+      section.style.setProperty("--sfx-signal-intensity", "0.8");
 
       // ── Pointer handler — desktop + touch via Pointer Events API ──────────
       // PR-05: pointermove fires for both mouse and touch-drag (Pointer Events API)
@@ -216,7 +216,7 @@ export function ProofSection() {
           deactivatePointerListener();
           stopLerpLoop();
           // Restore default SIGNAL state on leave
-          section.style.setProperty("--signal-intensity", "1.0");
+          section.style.setProperty("--sfx-signal-intensity", "1.0");
           if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
         },
         onEnterBack: () => {
@@ -226,7 +226,7 @@ export function ProofSection() {
         onLeaveBack: () => {
           deactivatePointerListener();
           stopLerpLoop();
-          section.style.setProperty("--signal-intensity", "1.0");
+          section.style.setProperty("--sfx-signal-intensity", "1.0");
           if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
         },
       });
@@ -254,7 +254,7 @@ export function ProofSection() {
           } else {
             deactivatePointerListener();
             stopLerpLoop();
-            section.style.setProperty("--signal-intensity", "1.0");
+            section.style.setProperty("--sfx-signal-intensity", "1.0");
             if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
           }
         },

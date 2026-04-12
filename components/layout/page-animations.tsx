@@ -195,10 +195,10 @@ async function initHeroAnimations(
   accentColors.forEach((color, i) => {
     const isLast = i === accentColors.length - 1;
     colorTl
-      .call(() => root.style.setProperty("--color-primary", "transparent"))
+      .call(() => root.style.setProperty("--sfx-primary", "transparent"))
       .to({}, { duration: 0.015 })
       .call(() => {
-        root.style.setProperty("--color-primary", color);
+        root.style.setProperty("--sfx-primary", color);
         if (isLast) triggerColorStutter();
       })
       .to({}, { duration: isLast ? 0 : 0.12 });

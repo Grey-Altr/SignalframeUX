@@ -37,7 +37,7 @@ export function SignalSection() {
         onEnter: () => {
           // Set global --signal-intensity to 1.0 when SIGNAL enters viewport.
           // PROOF's section-scoped value still wins inside PROOF's subtree (CSS cascade).
-          document.documentElement.style.setProperty("--signal-intensity", "1.0");
+          document.documentElement.style.setProperty("--sfx-signal-intensity", "1.0");
         },
         // No onLeave — intensity persists at 1.0 as handoff to ACQUISITION.
       });

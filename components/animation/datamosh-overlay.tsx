@@ -64,7 +64,7 @@ let _signalObserver: MutationObserver | null = null;
 
 function readSignalVars(): void {
   const v = parseFloat(
-    getComputedStyle(document.documentElement).getPropertyValue("--signal-intensity")
+    getComputedStyle(document.documentElement).getPropertyValue("--sfx-signal-intensity")
   );
   _signalIntensity = isNaN(v) ? 0.5 : v;
 }

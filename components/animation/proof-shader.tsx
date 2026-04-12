@@ -68,7 +68,7 @@ let _proofObserver: MutationObserver | null = null;
 
 function readProofIntensity(sectionEl: HTMLElement): void {
   const v = parseFloat(
-    getComputedStyle(sectionEl).getPropertyValue("--signal-intensity"),
+    getComputedStyle(sectionEl).getPropertyValue("--sfx-signal-intensity"),
   );
   _proofIntensity = isNaN(v) ? 0.5 : v;
 }
@@ -267,7 +267,7 @@ export function ProofShader({ sectionRef }: ProofShaderProps) {
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const scene = new THREE.Scene();
 
-    const primaryColor = resolveColorAsThreeColor("--color-primary", {
+    const primaryColor = resolveColorAsThreeColor("--sfx-primary", {
       ttl: 2000,
     });
 

@@ -38,7 +38,7 @@ export function CanvasCursor() {
     (function resolvePrimaryColor() {
       try {
         const raw = getComputedStyle(document.documentElement)
-          .getPropertyValue("--color-primary")
+          .getPropertyValue("--sfx-primary")
           .trim();
         if (!raw) return;
 

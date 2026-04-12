@@ -218,7 +218,7 @@ function IdleOverlay() {
     }
     // Restore captured --color-primary (instant, no transition)
     if (basePrimaryRef.current) {
-      document.documentElement.style.setProperty("--color-primary", basePrimaryRef.current);
+      document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
       basePrimaryRef.current = "";
     }
     // Remove grain drift
@@ -236,7 +236,7 @@ function IdleOverlay() {
 
       // Capture current --color-primary before pulse starts
       basePrimaryRef.current = getComputedStyle(document.documentElement)
-        .getPropertyValue("--color-primary")
+        .getPropertyValue("--sfx-primary")
         .trim();
 
       // CRITICAL null-check: skip pulse if value is not in OKLCH format
@@ -263,7 +263,7 @@ function IdleOverlay() {
         elapsed += deltaTime / 1000;
         const l = baseLightness + 0.05 * Math.sin((2 * Math.PI * elapsed) / PERIOD);
         const next = basePrimaryRef.current.replace(/oklch\([\d.]+/, `oklch(${l.toFixed(3)}`);
-        document.documentElement.style.setProperty("--color-primary", next);
+        document.documentElement.style.setProperty("--sfx-primary", next);
       };
 
       gsap.ticker.add(pulseFn);
@@ -288,7 +288,7 @@ function IdleOverlay() {
       // Cleanup: remove ticker and restore color on unmount
       if (tickerRef.current) { gsap.ticker.remove(tickerRef.current); }
       if (basePrimaryRef.current) {
-        document.documentElement.style.setProperty("--color-primary", basePrimaryRef.current);
+        document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
       }
     };
   }, [resetIdle]);

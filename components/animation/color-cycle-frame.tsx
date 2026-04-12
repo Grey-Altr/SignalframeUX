@@ -6,7 +6,7 @@
  * AUDIT FINDINGS (2026-04-06, Phase 5 Plan 01):
  *
  * Conflict surfaces in components/animation/:
- *   - color-cycle-frame.tsx: calls document.documentElement.style.setProperty("--color-primary", ...)
+ *   - color-cycle-frame.tsx: calls document.documentElement.style.setProperty("--sfx-primary", ...)
  *     on mount (random init) and on scroll-triggered color cycle (inside wipe onMid callback).
  *   - hero-mesh.tsx: uses hardcoded rgba(255,255,255,...) on canvas context — theme-neutral.
  *     Canvas paint calls do not respond to CSS variable changes. No guard needed.
@@ -28,7 +28,7 @@
  *
  * Guarded conflict:
  *   If a theme toggle occurs during an active color cycle wipe (~150ms window), the onMid
- *   callback fires after the wipe covers and calls setProperty("--color-primary", cycleColor).
+ *   callback fires after the wipe covers and calls setProperty("--sfx-primary", cycleColor).
  *   This overwrites the theme's intended --color-primary with the cycling accent color.
  *   Guard: skip setProperty if "sf-no-transition" class is present on documentElement.
  *   The init setProperty (mount) is not guarded — it fires once at load, before any toggle.
@@ -77,7 +77,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
   if (oldWipe) oldWipe.remove();
 
   const s = container.style;
-  const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() || "oklch(0.65 0.3 350)";
+  const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-primary").trim() || "oklch(0.65 0.3 350)";
   const coverColor = "oklch(0.145 0 0)";
   const gradDir = direction > 0 ? "to bottom" : "to top";
 
@@ -121,7 +121,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
       // Text fully covered — swap color
       onMid();
       midFired = true;
-      activeColor = getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() || currentColor;
+      activeColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-primary").trim() || currentColor;
 
       // Phase 2: reveal (1 → 2)
       gsap.to(proxy, {
@@ -152,7 +152,7 @@ export function ColorCycleFrame({ children, className }: { children: React.React
   useEffect(() => {
     const random = Math.floor(Math.random() * ACCENT_COLORS.length);
     indexRef.current = random;
-    document.documentElement.style.setProperty("--color-primary", ACCENT_COLORS[random]);
+    document.documentElement.style.setProperty("--sfx-primary", ACCENT_COLORS[random]);
   }, []);
 
   const apply = useCallback((next: number, direction: number) => {
@@ -165,7 +165,7 @@ export function ColorCycleFrame({ children, className }: { children: React.React
       const root = document.documentElement;
       // STP-02 guard: skip if theme toggle is in progress (sf-no-transition window ~2 rAF ticks)
       if (root.classList.contains("sf-no-transition")) return;
-      root.style.setProperty("--color-primary", ACCENT_COLORS[next]);
+      root.style.setProperty("--sfx-primary", ACCENT_COLORS[next]);
       triggerColorStutter();
     });
   }, []);

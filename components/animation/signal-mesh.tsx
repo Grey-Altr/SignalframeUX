@@ -69,9 +69,9 @@ function readSignalVars(): void {
     const v = parseFloat(style.getPropertyValue(name));
     return isNaN(v) ? fallback : v;
   };
-  _signalIntensity = raw("--signal-intensity", 0.5);
-  _signalSpeed     = raw("--signal-speed", 1);
-  _signalAccent    = raw("--signal-accent", 0);
+  _signalIntensity = raw("--sfx-signal-intensity", 0.5);
+  _signalSpeed     = raw("--sfx-signal-speed", 1);
+  _signalAccent    = raw("--sfx-signal-accent", 0);
 }
 
 function ensureSignalObserver(): void {
@@ -237,7 +237,7 @@ export function SignalMesh() {
     cameraRef.current = camera;
 
     // Resolve color at build time — not in the render loop
-    const primaryColor = resolveColorAsThreeColor("--color-primary");
+    const primaryColor = resolveColorAsThreeColor("--sfx-primary");
 
     // Uniforms — stored in ref for external mutation
     const uniforms = {

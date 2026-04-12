@@ -3923,7 +3923,7 @@ export const API_DOCS: Record<string, ComponentDoc> = {
         "name": "cssVar",
         "type": "any",
         "default": "",
-        "desc": "CSS custom property name including `--` prefix, e.g. `\"--color-primary\"`"
+        "desc": "CSS custom property name including `--` prefix, e.g. `\"--sfx-primary\"`"
       },
       {
         "name": "options",
@@ -3935,7 +3935,7 @@ export const API_DOCS: Record<string, ComponentDoc> = {
     "usage": [
       {
         "label": "EXAMPLE 1",
-        "code": "const { r, g, b } = resolveColorToken(\"--color-primary\");\nctx.fillStyle = `rgb(${r}, ${g}, ${b})`;"
+        "code": "const { r, g, b } = resolveColorToken(\"--sfx-primary\");\nctx.fillStyle = `rgb(${r}, ${g}, ${b})`;"
       }
     ],
     "a11y": [

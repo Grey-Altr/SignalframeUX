@@ -57,12 +57,12 @@ function ensureCacheObserver(): void {
  * Resolve a CSS custom property (OKLCH or any format) to sRGB values.
  * Uses 1x1 canvas probe — zero bundle cost, uses browser's own color engine.
  *
- * @param cssVar - CSS custom property name including `--` prefix, e.g. `"--color-primary"`
+ * @param cssVar - CSS custom property name including `--` prefix, e.g. `"--sfx-primary"`
  * @param options - Optional cache configuration. Omit to bypass cache (default).
  * @returns RGB object with r, g, b in 0-255 range
  *
  * @example
- * const { r, g, b } = resolveColorToken("--color-primary");
+ * const { r, g, b } = resolveColorToken("--sfx-primary");
  * ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
  */
 export function resolveColorToken(cssVar: string, options?: ResolveColorOptions): RGB {
@@ -91,12 +91,12 @@ export function resolveColorToken(cssVar: string, options?: ResolveColorOptions)
  * Resolve a CSS custom property to a Three.js Color object.
  * Values are normalized from 0-255 to 0-1 range for Three.js.
  *
- * @param cssVar - CSS custom property name, e.g. `"--color-primary"`
+ * @param cssVar - CSS custom property name, e.g. `"--sfx-primary"`
  * @param options - Optional cache configuration. Omit to bypass cache (default).
  * @returns THREE.Color with components in 0-1 range
  *
  * @example
- * const color = resolveColorAsThreeColor("--color-accent", { ttl: 1000 });
+ * const color = resolveColorAsThreeColor("--sfx-accent", { ttl: 1000 });
  * material.color = color;
  */
 export function resolveColorAsThreeColor(cssVar: string, options?: ResolveColorOptions): THREE.Color {

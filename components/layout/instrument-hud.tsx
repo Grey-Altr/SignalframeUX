@@ -144,7 +144,7 @@ export function InstrumentHUD() {
         scrollRef.current.textContent = `${pct}%`;
       }
       if (sigRef.current) {
-        const raw = getComputedStyle(document.documentElement).getPropertyValue("--signal-intensity").trim();
+        const raw = getComputedStyle(document.documentElement).getPropertyValue("--sfx-signal-intensity").trim();
         const n = parseFloat(raw);
         sigRef.current.textContent = Number.isFinite(n) ? `SIG:${n.toFixed(1)}` : "SIG:0.0";
       }

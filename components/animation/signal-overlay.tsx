@@ -134,18 +134,18 @@ export function SignalOverlay() {
   // Write CSS custom property handlers
   function handleIntensity(value: number) {
     setIntensity(value);
-    document.documentElement.style.setProperty("--signal-intensity", String(value / 100));
+    document.documentElement.style.setProperty("--sfx-signal-intensity", String(value / 100));
   }
 
   function handleSpeed(value: number) {
     setSpeed(value);
     // 50 = 1.0x speed; 0 = 0.0x; 100 = 2.0x
-    document.documentElement.style.setProperty("--signal-speed", String(value / 50));
+    document.documentElement.style.setProperty("--sfx-signal-speed", String(value / 50));
   }
 
   function handleAccent(value: number) {
     setAccent(value);
-    document.documentElement.style.setProperty("--signal-accent", String(value));
+    document.documentElement.style.setProperty("--sfx-signal-accent", String(value));
   }
 
   // Reset to defaults
@@ -153,9 +153,9 @@ export function SignalOverlay() {
     setIntensity(DEFAULTS.intensity);
     setSpeed(DEFAULTS.speed);
     setAccent(DEFAULTS.accent);
-    document.documentElement.style.setProperty("--signal-intensity", "0.5");
-    document.documentElement.style.setProperty("--signal-speed", "1");
-    document.documentElement.style.setProperty("--signal-accent", "0");
+    document.documentElement.style.setProperty("--sfx-signal-intensity", "0.5");
+    document.documentElement.style.setProperty("--sfx-signal-speed", "1");
+    document.documentElement.style.setProperty("--sfx-signal-accent", "0");
   }
 
   return (
@@ -213,7 +213,7 @@ export function SignalOverlay() {
           <div className="flex flex-col gap-5 p-4">
             <SliderControl
               label="Signal Intensity"
-              cssVar="--signal-intensity"
+              cssVar="--sfx-signal-intensity"
               value={intensity}
               min={0}
               max={100}
@@ -234,7 +234,7 @@ export function SignalOverlay() {
             ) : (
               <SliderControl
                 label="Animation Speed"
-                cssVar="--signal-speed"
+                cssVar="--sfx-signal-speed"
                 value={speed}
                 min={0}
                 max={100}
@@ -246,7 +246,7 @@ export function SignalOverlay() {
 
             <SliderControl
               label="Accent Shift"
-              cssVar="--signal-accent"
+              cssVar="--sfx-signal-accent"
               value={accent}
               min={0}
               max={360}

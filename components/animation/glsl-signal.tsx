@@ -220,13 +220,13 @@ const GLSLSignalWebGL = forwardRef<HTMLDivElement>(
           value: new THREE.Vector2(container.clientWidth, container.clientHeight),
         },
         uForeground: {
-          value: resolveColorAsThreeColor("--color-foreground", { ttl: 2000 }),
+          value: resolveColorAsThreeColor("--sfx-foreground", { ttl: 2000 }),
         },
         uPrimary: {
-          value: resolveColorAsThreeColor("--color-primary", { ttl: 2000 }),
+          value: resolveColorAsThreeColor("--sfx-primary", { ttl: 2000 }),
         },
         uWarning: {
-          value: resolveColorAsThreeColor("--color-warning", { ttl: 2000 }),
+          value: resolveColorAsThreeColor("--sfx-warning", { ttl: 2000 }),
         },
       };
       uniformsRef.current = uniforms;
