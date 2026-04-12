@@ -668,9 +668,10 @@ Plans:
   2. Consumer CSS overrides (via @layer consumer.overrides) visibly win over sf.tokens without specificity hacks
   3. MIGRATION.md documents the full --sfx-* variable list with before/after examples
   4. Dark mode class="dark" is server-rendered on the CD <html> element — no magenta primary visible during streaming on initial load
-**Plans:** 1 plan
+**Plans:** 2 plans
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [ ] 45-01-PLAN.md — Rename all tokens to --sfx-* namespace in lib/tokens.css + app/globals.css + create @layer build pipeline
+- [ ] 45-02-PLAN.md — Update JS/TS string refs + create cd-tokens.css + expand MIGRATION.md + visual verification
 
 ### Phase 46: Tightening Pass
 **Goal**: Light mode is WCAG AA compliant, all hardcoded values replaced with token references, and sf-button hover timing is aligned
