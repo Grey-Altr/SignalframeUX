@@ -24,7 +24,7 @@ export default function APIPage() {
           >
             <h1
               aria-label="API Reference"
-              className="sf-display px-6 md:px-12 pt-10 pb-6 leading-[0.9] uppercase tracking-[-0.02em] min-w-0 break-all"
+              className="sf-display px-6 md:px-12 pt-12 pb-6 leading-[0.9] uppercase tracking-[-0.02em] min-w-0 break-all"
               style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
             >
               <span data-anim="page-heading" suppressHydrationWarning>API</span>

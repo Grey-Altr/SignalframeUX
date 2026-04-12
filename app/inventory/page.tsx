@@ -42,7 +42,7 @@ export default async function ComponentsPage() {
           >
             <h1
               aria-label="Inventory"
-              className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-10 pb-6 sf-display"
+              className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-12 pb-6 sf-display"
               style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
             >
               <span data-anim="page-heading" suppressHydrationWarning>INVE</span>

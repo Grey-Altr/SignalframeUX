@@ -183,7 +183,7 @@ export default function InitPage() {
             data-nav-reveal-trigger
             className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end relative z-10"
           >
-            <div className="px-6 md:px-12 pt-10 pb-6">
+            <div className="px-6 md:px-12 pt-12 pb-6">
               <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-4">
                 [00//BOOT]
               </div>

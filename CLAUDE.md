@@ -50,7 +50,7 @@ Blessed stops from Tailwind's 4px base: **4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 
 DO NOT use arbitrary spacing values. Audit existing components for consistency.
 
 ### Typography
-Scale: `--text-2xs` (9px) to `--text-4xl` (80px), minor third 1.2. Fonts: Inter, JetBrains Mono, Electrolize, Anton.
+Scale: `--text-2xs` (10px) to `--text-4xl` (80px), minor third 1.2. Fonts: Inter, JetBrains Mono, Electrolize, Anton.
 Semantic aliases (preferred for new work): heading-1 → 3xl+Anton · heading-2 → 2xl+Inter bold · heading-3 → xl+Inter semi · body → base+Inter · small → sm+Inter
 
 ### Layout

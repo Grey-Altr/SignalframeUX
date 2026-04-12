@@ -35,7 +35,7 @@ export default async function TokensPage() {
             >
               <h1
                 aria-label="Token Explorer"
-                className="sf-display px-6 md:px-12 pt-10 pb-6 relative z-10"
+                className="sf-display px-6 md:px-12 pt-12 pb-6 relative z-10"
                 style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
               >
                 <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>

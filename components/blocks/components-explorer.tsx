@@ -805,7 +805,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
         role="listbox"
         aria-label="Component library"
         onKeyDown={handleGridKeyDown}
-        className="grid grid-cols-2 lg:grid-cols-4 list-none m-0 p-0"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 list-none m-0 p-0"
       >
         {filtered.length === 0 ? (
           <div className="col-span-full flex items-center justify-center py-24 px-6 border-b-2 border-foreground">
