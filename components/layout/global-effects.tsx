@@ -9,6 +9,7 @@ import { VHSOverlay } from "@/components/animation/vhs-overlay";
 import { DatamoshOverlayLazy } from "@/components/animation/datamosh-overlay-lazy";
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
+import { ParticleFieldLazy } from "@/components/animation/particle-field-lazy";
 import { useIdleEscalation } from "@/hooks/use-idle-escalation";
 
 /**
@@ -253,6 +254,7 @@ function IdleOverlay() {
   const basePrimaryRef = useRef<string>("");
   const baseScanlineRef = useRef<number | null>(null);
   const glitchTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const dropoutRef = useRef<HTMLDivElement>(null);
 
   // --- Phase 0: Grain drift ---
   const enterPhase0 = useCallback(() => {
@@ -293,8 +295,19 @@ function IdleOverlay() {
     }
   }, []);
 
-  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) + dropout bands ---
+  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) + dropout bands + signal dropout ---
   const enterPhase2 = useCallback(() => {
+    // Signal dropout glitch — CSS-only clip-path burst
+    const el = dropoutRef.current;
+    if (el) {
+      el.classList.add("sf-signal-dropout--active");
+      const onEnd = () => {
+        el.classList.remove("sf-signal-dropout--active");
+        el.removeEventListener("animationend", onEnd);
+      };
+      el.addEventListener("animationend", onEnd);
+    }
+
     // Capture current --sfx-primary
     basePrimaryRef.current = getComputedStyle(document.documentElement)
       .getPropertyValue("--sfx-primary")
@@ -409,6 +422,7 @@ function IdleOverlay() {
         className="sf-idle-grain fixed inset-0 pointer-events-none z-[var(--z-vhs)] sf-grain"
         aria-hidden="true"
       />
+      <div ref={dropoutRef} className="sf-signal-dropout" aria-hidden="true" />
     </>
   );
 }
@@ -538,6 +552,7 @@ export function GlobalEffects() {
       <IdleOverlay />
       <InteractionFeedback />
       <SignalOverlayLazy />
+      <ParticleFieldLazy />
       <SignalIntensityBridge />
     </>
   );
