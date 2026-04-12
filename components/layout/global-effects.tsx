@@ -9,6 +9,7 @@ import { VHSOverlay } from "@/components/animation/vhs-overlay";
 import { DatamoshOverlayLazy } from "@/components/animation/datamosh-overlay-lazy";
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
+import { useIdleEscalation } from "@/hooks/use-idle-escalation";
 
 /**
  * Compute and write derived CSS custom properties from --sfx-signal-intensity.
@@ -32,7 +33,8 @@ export function updateSignalDerivedProps(intensity: number) {
   root.setProperty("--sfx-vhs-noise-opacity", String(0.01 + i * 0.03));
 
   // Grain: logarithmic curve — subtle at low, saturates at high
-  const grainOpacity = 0.02 + 0.06 * Math.log10(1 + i * 9);
+  // Baseline at intensity 0 = 0.03 (within spec 0.03–0.05 range)
+  const grainOpacity = 0.03 + 0.05 * Math.log10(1 + i * 9);
   root.setProperty("--sfx-grain-opacity", String(Math.round(grainOpacity * 1000) / 1000));
 }
 
@@ -225,64 +227,80 @@ function VHSBadge() {
  *
  * Reduced-motion: entire system is suppressed — silent and static.
  */
+/**
+ * Idle standby overlay — 3-phase escalation via useIdleEscalation hook.
+ *
+ * Phase 0 (8s):  Grain drift — activates sf-grain-animated class
+ * Phase 1 (20s): Scan emphasis — relative +0.03 boost to --sfx-vhs-scanline-opacity
+ * Phase 2 (45s): Glitch burst — OKLCH color pulse for 500ms, then auto-reset
+ *
+ * All escalation respects prefers-reduced-motion (suppressed in hook).
+ * Scanline boost uses RELATIVE offset from current computed value.
+ */
 function IdleOverlay() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const grainRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const tickerRef = useRef<((t: number, dt: number) => void) | null>(null);
   const basePrimaryRef = useRef<string>("");
-  const IDLE_TIMEOUT = 8_000;
+  const baseScanlineRef = useRef<number | null>(null);
+  const glitchTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const resetIdle = useCallback(() => {
-    const el = overlayRef.current;
-    if (!el) return;
+  // --- Phase 0: Grain drift ---
+  const enterPhase0 = useCallback(() => {
+    grainRef.current?.classList.add("sf-grain-animated");
+    overlayRef.current?.classList.add("sf-idle-overlay--active");
+  }, []);
 
-    // Remove GSAP ticker first — instant snap-back of color
-    if (tickerRef.current) {
-      gsap.ticker.remove(tickerRef.current);
-      tickerRef.current = null;
-    }
-    // Restore captured --color-primary (instant, no transition)
-    if (basePrimaryRef.current) {
-      document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
-      basePrimaryRef.current = "";
-    }
-    // Remove grain drift
+  const exitPhase0 = useCallback(() => {
     grainRef.current?.classList.remove("sf-grain-animated");
+    const el = overlayRef.current;
+    if (el) {
+      el.style.transition = "none";
+      el.classList.remove("sf-idle-overlay--active");
+      requestAnimationFrame(() => { el.style.transition = ""; });
+    }
+  }, []);
 
-    // Instant overlay snap-back: bypass the glacial opacity transition
-    el.style.transition = "none";
-    el.classList.remove("sf-idle-overlay--active");
-    requestAnimationFrame(() => { el.style.transition = ""; });
+  // --- Phase 1: Scanline emphasis (relative +0.03) ---
+  const enterPhase1 = useCallback(() => {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--sfx-vhs-scanline-opacity")
+      .trim();
+    const current = parseFloat(raw) || 0;
+    baseScanlineRef.current = current;
+    document.documentElement.style.setProperty(
+      "--sfx-vhs-scanline-opacity",
+      String(current + 0.03),
+    );
+  }, []);
 
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      const overlay = overlayRef.current;
-      if (!overlay) return;
+  const exitPhase1 = useCallback(() => {
+    if (baseScanlineRef.current !== null) {
+      document.documentElement.style.setProperty(
+        "--sfx-vhs-scanline-opacity",
+        String(baseScanlineRef.current),
+      );
+      baseScanlineRef.current = null;
+    }
+  }, []);
 
-      // Capture current --color-primary before pulse starts
-      basePrimaryRef.current = getComputedStyle(document.documentElement)
-        .getPropertyValue("--sfx-primary")
-        .trim();
+  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) ---
+  const enterPhase2 = useCallback(() => {
+    // Capture current --sfx-primary
+    basePrimaryRef.current = getComputedStyle(document.documentElement)
+      .getPropertyValue("--sfx-primary")
+      .trim();
 
-      // CRITICAL null-check: skip pulse if value is not in OKLCH format
-      const match = basePrimaryRef.current.match(/oklch\(([\d.]+)/);
-      if (!match) {
-        // Not OKLCH — still activate grain + overlay, but skip color pulse
-        grainRef.current?.classList.add("sf-grain-animated");
-        overlay.classList.add("sf-idle-overlay--active");
-        return;
-      }
-
+    const match = basePrimaryRef.current.match(/oklch\(([\d.]+)/);
+    if (match) {
       const baseLightness = parseFloat(match[1]);
 
-      // CRITICAL ticker guard: remove any existing ticker before registering a new one
+      // Guard: remove any existing ticker
       if (tickerRef.current) {
         gsap.ticker.remove(tickerRef.current);
         tickerRef.current = null;
       }
 
-      // Oscillate lightness +/-5% over a 4-second cycle
       let elapsed = 0;
       const PERIOD = 4; // seconds
       const pulseFn = (_time: number, deltaTime: number) => {
@@ -294,30 +312,59 @@ function IdleOverlay() {
 
       gsap.ticker.add(pulseFn);
       tickerRef.current = pulseFn;
+    }
 
-      grainRef.current?.classList.add("sf-grain-animated");
-      overlay.classList.add("sf-idle-overlay--active");
-    }, IDLE_TIMEOUT);
+    // Auto-reset after 500ms glitch burst
+    glitchTimerRef.current = setTimeout(() => {
+      // Clean up ticker
+      if (tickerRef.current) {
+        gsap.ticker.remove(tickerRef.current);
+        tickerRef.current = null;
+      }
+      if (basePrimaryRef.current) {
+        document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
+        basePrimaryRef.current = "";
+      }
+    }, 500);
   }, []);
 
+  const exitPhase2 = useCallback(() => {
+    clearTimeout(glitchTimerRef.current);
+    if (tickerRef.current) {
+      gsap.ticker.remove(tickerRef.current);
+      tickerRef.current = null;
+    }
+    if (basePrimaryRef.current) {
+      document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
+      basePrimaryRef.current = "";
+    }
+  }, []);
+
+  // Wire the 3 phases through useIdleEscalation
+  const thresholds = useRef([
+    { delay: 8_000, onEnter: enterPhase0, onExit: exitPhase0 },
+    { delay: 20_000, onEnter: enterPhase1, onExit: exitPhase1 },
+    { delay: 45_000, onEnter: enterPhase2, onExit: exitPhase2 },
+  ]).current;
+
+  useIdleEscalation(thresholds);
+
+  // Cleanup on unmount
   useEffect(() => {
-    // Respect reduced motion — entire idle system is suppressed
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const events = ["mousemove", "mousedown", "keydown", "scroll", "touchstart"] as const;
-    events.forEach((e) => document.addEventListener(e, resetIdle, { passive: true }));
-    resetIdle(); // start the timer
-
     return () => {
-      events.forEach((e) => document.removeEventListener(e, resetIdle));
-      clearTimeout(timerRef.current);
-      // Cleanup: remove ticker and restore color on unmount
+      clearTimeout(glitchTimerRef.current);
       if (tickerRef.current) { gsap.ticker.remove(tickerRef.current); }
       if (basePrimaryRef.current) {
         document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
       }
+      if (baseScanlineRef.current !== null) {
+        document.documentElement.style.setProperty(
+          "--sfx-vhs-scanline-opacity",
+          String(baseScanlineRef.current),
+        );
+      }
     };
-  }, [resetIdle]);
+  }, []);
 
   return (
     <>
