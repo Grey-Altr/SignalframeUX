@@ -19,239 +19,316 @@
      Adding a color = a deliberate, documented system change.
    ─────────────────────────────────────────────────────────── */
 
-@theme {
+/* @theme inline: Tailwind utility classes (bg-primary, text-foreground, etc.)
+   reference --sfx-* via these --color-* aliases.
+   --color-* keys are compile-time utility names — do not rename them.
+   Actual values live in :root under --sfx-* for consumer override. */
+@theme inline {
   /* ── Color Tokens ── */
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.145 0 0);
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.145 0 0);
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.65 0.3 350);
-  --color-primary-foreground: oklch(0.985 0 0);
-  --color-secondary: oklch(0.970 0.005 298);
-  --color-secondary-foreground: oklch(0.205 0 0);
-  --color-muted: oklch(0.930 0.005 298);
-  --color-muted-foreground: oklch(0.460 0.010 298);
-  --color-accent: oklch(0.930 0.005 298);
-  --color-accent-foreground: oklch(0.205 0 0);
-  --color-destructive: oklch(0.550 0.180 25);
+  --color-background: var(--sfx-background);
+  --color-foreground: var(--sfx-foreground);
+  --color-card: var(--sfx-card);
+  --color-card-foreground: var(--sfx-card-foreground);
+  --color-popover: var(--sfx-popover);
+  --color-popover-foreground: var(--sfx-popover-foreground);
+  --color-primary: var(--sfx-primary);
+  --color-primary-foreground: var(--sfx-primary-foreground);
+  --color-secondary: var(--sfx-secondary);
+  --color-secondary-foreground: var(--sfx-secondary-foreground);
+  --color-muted: var(--sfx-muted);
+  --color-muted-foreground: var(--sfx-muted-foreground);
+  --color-accent: var(--sfx-accent);
+  --color-accent-foreground: var(--sfx-accent-foreground);
+  --color-destructive: var(--sfx-destructive);
   /* ── Extended Palette — status/feedback colors ── */
-  --color-success: oklch(0.85 0.25 145);
-  --color-warning: oklch(0.91 0.18 98);
-  --color-border: oklch(0.205 0 0);
-  --color-input: oklch(0.205 0 0);
-  --color-ring: oklch(0.65 0.3 350);
+  --color-success: var(--sfx-success);
+  --color-warning: var(--sfx-warning);
+  --color-border: var(--sfx-border);
+  --color-input: var(--sfx-input);
+  --color-ring: var(--sfx-ring);
 
   /* ── Sidebar Colors (shadcn compat) ── */
-  --color-sidebar: oklch(0.985 0 0);
-  --color-sidebar-foreground: oklch(0.145 0 0);
-  --color-sidebar-primary: oklch(0.65 0.3 350);
-  --color-sidebar-primary-foreground: oklch(0.985 0 0);
-  --color-sidebar-accent: oklch(0.930 0.005 298);
-  --color-sidebar-accent-foreground: oklch(0.205 0 0);
-  --color-sidebar-border: oklch(0.205 0 0);
-  --color-sidebar-ring: oklch(0.65 0.3 350);
+  --color-sidebar: var(--sfx-sidebar);
+  --color-sidebar-foreground: var(--sfx-sidebar-foreground);
+  --color-sidebar-primary: var(--sfx-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sfx-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sfx-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sfx-sidebar-accent-foreground);
+  --color-sidebar-border: var(--sfx-sidebar-border);
+  --color-sidebar-ring: var(--sfx-sidebar-ring);
 
   /* ── Chart Colors ── */
-  --color-chart-1: oklch(0.65 0.3 350);
-  --color-chart-2: oklch(0.91 0.18 98);
-  --color-chart-3: oklch(0.85 0.25 145);
-  --color-chart-4: oklch(0.550 0.010 298);
-  --color-chart-5: oklch(0.205 0 0);
+  --color-chart-1: var(--sfx-chart-1);
+  --color-chart-2: var(--sfx-chart-2);
+  --color-chart-3: var(--sfx-chart-3);
+  --color-chart-4: var(--sfx-chart-4);
+  --color-chart-5: var(--sfx-chart-5);
 
   /* ── Radius: 0px everywhere (industrial edges) ── */
-  --radius: 0px;
-  --radius-xs: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-4xl: 0px;
+  --radius: var(--sfx-radius);
+  --radius-xs: var(--sfx-radius-xs);
+  --radius-sm: var(--sfx-radius-sm);
+  --radius-md: var(--sfx-radius-md);
+  --radius-lg: var(--sfx-radius-lg);
+  --radius-xl: var(--sfx-radius-xl);
+  --radius-2xl: var(--sfx-radius-2xl);
+  --radius-3xl: var(--sfx-radius-3xl);
+  --radius-4xl: var(--sfx-radius-4xl);
 
-  /* ── Typography (literal font names — NOT var() refs) ── */
-  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", "Courier New", "SF Mono", ui-monospace, monospace;
-  --font-heading: var(--font-inter), "Inter", system-ui, sans-serif;
-  --font-electrolize: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
-  --font-display: "Anton", "Impact", sans-serif;
+  /* ── Typography ── */
+  --font-sans: var(--sfx-font-sans);
+  --font-mono: var(--sfx-font-mono);
+  --font-heading: var(--sfx-font-heading);
+  --font-electrolize: var(--sfx-font-electrolize);
+  --font-display: var(--sfx-font-display);
 
   /* ── Type Scale: Industrial Minor Third (1.2) ──
      Tighter ratio than augmented-fourth to match the DU/TDR dense label aesthetic.
      Use these tokens for new components; existing clamp() values for display type are intentional. */
-  --text-2xs: 0.563rem;  /* 9px — micro labels, copy buttons */
-  --text-xs: 0.625rem;   /* 10px — tag pills, stat labels */
-  --text-sm: 0.688rem;   /* 11px — nav, footer, grid metadata */
-  --text-base: 0.813rem; /* 13px — body copy, descriptions */
-  --text-md: 1.000rem;   /* 16px — hero body, prominent copy */
-  --text-lg: 1.125rem;   /* 18px — section intros */
-  --text-xl: 1.500rem;   /* 24px — subheadings */
-  --text-2xl: 2.000rem;  /* 32px — section titles */
-  --text-3xl: 3.000rem;  /* 48px — page headers */
-  --text-4xl: 5.000rem;  /* 80px — display type */
+  --text-2xs: var(--sfx-text-2xs);
+  --text-xs: var(--sfx-text-xs);
+  --text-sm: var(--sfx-text-sm);
+  --text-base: var(--sfx-text-base);
+  --text-md: var(--sfx-text-md);
+  --text-lg: var(--sfx-text-lg);
+  --text-xl: var(--sfx-text-xl);
+  --text-2xl: var(--sfx-text-2xl);
+  --text-3xl: var(--sfx-text-3xl);
+  --text-4xl: var(--sfx-text-4xl);
 }
 
-/* ── Runtime font override (next/font uses hashed names) ── */
-:root {
-  --font-display: var(--font-anton), "Impact", sans-serif;
-}
-
-/* ── SignalframeUX Extension Variables ── */
-:root {
-  --sf-yellow: oklch(0.91 0.18 98);
-  --sf-green: oklch(0.85 0.25 145);
-  --sf-clock: oklch(0.145 0 0);
-  --sf-tracking-label: 0.15em;
-  --sf-grain-opacity: 0.03;
-  --sf-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
-  --sf-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
-  --sf-deboss-shadow: 0 -1px 0 oklch(0 0 0 / 0.15);
-
-  /* ── Semantic Surface Tokens ── */
-  --sf-code-bg: oklch(0.12 0 0);
-  --sf-code-text: oklch(0.6 0.28 145);
-  --sf-code-keyword: oklch(0.7 0.15 25);
-  --sf-code-const: oklch(0.7 0.18 350);
-  --sf-dark-surface: oklch(0.2 0 0);
-  --sf-darker-surface: oklch(0.1 0 0);
-  --sf-darkest-surface: oklch(0.08 0 0);
-  --sf-subtle-border: oklch(0.3 0 0);
-  --sf-dim-text: oklch(0.52 0 0);
-  --sf-muted-text-dark: oklch(0.65 0 0);
-  --sf-primary-on-dark: oklch(0.78 0.28 350); /* AA-safe magenta for dark surfaces */
-
-  /* ── Decorative Preview Tokens ── */
-  --sf-waveform-bg: oklch(0.25 0.05 350);
-  --sf-waveform-harmonic: oklch(0.45 0.15 350);
-  --sf-preview-light-bg: oklch(0.97 0 0);
-  --sf-text-shadow-light: oklch(1 0 0 / 0.05);
-  --sf-text-shadow-dark: oklch(0 0 0 / 0.3);
-  --sf-halftone-dot: oklch(1 0 0 / 0.3);
-  --sf-inset-shadow-color: oklch(0 0 0 / 0.2);
-  --sf-cell-light-bg: oklch(0.97 0 0);
-
-  /* ── Motion Tokens ── */
-  --duration-instant: 34ms;
-  --duration-fast: 100ms;
-  --duration-normal: 200ms;
-  --duration-slow: 400ms;
-  --duration-glacial: 600ms;
-  --ease-default: cubic-bezier(0.2, 0, 0, 1);
-  --ease-hover: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.085 32.8%, 1.009 36.5%, 0.982 38.5%, 0.961, 0.946 42.4%, 0.938, 0.934 46.4%, 0.936 49.3%, 0.954 53.5%, 1 62.8%, 1.012 68.8%, 1.006 81.5%, 1);
-
-  /* ── VHS Overlay Tokens (sf-namespaced) ── */
-  --sf-vhs-crt-opacity: 0.2;
-  --sf-vhs-noise-opacity: 0.015;
-
-  /* ── SIGNAL Runtime Defaults ── */
-  /* Read by color-resolve.ts and WebGL uniforms. SignalOverlay overrides at runtime. */
-  --signal-intensity: 0.5;
-  --signal-speed: 1;
-  --signal-accent: 0;
-
-  /* ── Spacing Tokens (blessed stops only) ──
-     Based on 4px base. These are the ONLY valid content spacing values.
-     Tailwind equivalents: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 12=48px, 16=64px, 24=96px */
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-8: 2rem;      /* 32px */
-  --space-12: 3rem;     /* 48px */
-  --space-16: 4rem;     /* 64px */
-  --space-24: 6rem;     /* 96px */
-
-  /* ── Layout Tokens ── */
-  --max-w-content: 42rem;   /* 672px — prose/readable width */
-  --max-w-wide: 80rem;      /* 1280px — section width */
-  --max-w-full: 100%;       /* full-bleed */
-  --gutter: 1.5rem;         /* 24px — standard horizontal padding */
-  --gutter-sm: 1rem;        /* 16px — mobile horizontal padding */
-  --nav-height: 83px;
-
-  /* ── Z-Index Scale ── */
-  --z-above-bg: 1;
-  --z-content: 10;
-  --z-nav: 9999;
-  --z-overlay: 100;
-  --z-scroll-top: 200;
-  --z-progress: 300;
-  --z-cursor: 500;
-  --z-vhs: 99999;
-  --z-skip: 900;
-
-  /* ── Border Width Scale ── */
-  --border-element: 2px;
-  --border-divider: 3px;
-  --border-section: 4px;
-
-  /* ── Press Feedback Tokens ── */
-  --press-scale: 0.97;
-  --press-y: 1px;
-  --hover-y: -2px;
-  --focus-ring-width: 2px;
-  --focus-ring-offset: 2px;
-
-  /* ── Semantic Typography Custom Properties ── */
-  --text-heading-1-family: var(--font-display);
-  --text-heading-1-size: var(--text-3xl);
-  --text-heading-1-weight: 700;
-  --text-heading-1-leading: 0.9;
-  --text-heading-2-family: var(--font-sans);
-  --text-heading-2-size: var(--text-2xl);
-  --text-heading-2-weight: 700;
-  --text-heading-2-leading: 1.1;
-  --text-heading-3-family: var(--font-sans);
-  --text-heading-3-size: var(--text-xl);
-  --text-heading-3-weight: 600;
-  --text-heading-3-leading: 1.2;
-  --text-body-family: var(--font-sans);
-  --text-body-size: var(--text-base);
-  --text-body-weight: 400;
-  --text-body-leading: 1.5;
-  --text-small-family: var(--font-sans);
-  --text-small-size: var(--text-sm);
-  --text-small-weight: 400;
-  --text-small-leading: 1.4;
-}
+/* ── SignalframeUX Token Values (:root) ── */
+/* These are the authoritative values under --sfx-* namespace.
+   Consumers override by declaring --sfx-* in unlayered CSS (beats @layer). */
 
 /* ── Dark Mode ── */
-.dark {
-  --color-background: oklch(0.145 0 0);
-  --color-foreground: oklch(0.985 0 0);
-  --color-card: oklch(0.205 0 0);
-  --color-card-foreground: oklch(0.985 0 0);
-  --color-popover: oklch(0.205 0 0);
-  --color-popover-foreground: oklch(0.985 0 0);
-  --color-secondary: oklch(0.269 0 0);
-  --color-secondary-foreground: oklch(0.985 0 0);
-  --color-muted: oklch(0.269 0 0);
-  --color-muted-foreground: oklch(0.730 0 0);
-  --color-accent: oklch(0.269 0 0);
-  --color-accent-foreground: oklch(0.985 0 0);
-  --color-border: oklch(0.400 0 0);
-  --color-input: oklch(0.400 0 0);
-  --color-sidebar: oklch(0.205 0 0);
-  --color-sidebar-foreground: oklch(0.985 0 0);
-  --color-sidebar-primary: oklch(0.65 0.3 350);
-  --color-sidebar-primary-foreground: oklch(0.985 0 0);
-  --color-sidebar-accent: oklch(0.269 0 0);
-  --color-sidebar-accent-foreground: oklch(0.985 0 0);
-  --color-sidebar-border: oklch(0.400 0 0);
-  --color-sidebar-ring: oklch(0.65 0.3 350);
-  --sf-cell-light-bg: oklch(0.145 0 0);
 
-  /* ── SF Extension Dark Overrides ── */
-  --sf-clock: oklch(0.985 0 0);
-  --sf-subtle-border: oklch(0.4 0 0);
-  --sf-dim-text: oklch(0.65 0 0);
-  --sf-halftone-dot: oklch(1 0 0 / 0.15);
-  --sf-text-shadow-light: oklch(1 0 0 / 0.02);
-  --sf-text-shadow-dark: oklch(0 0 0 / 0.5);
-  --sf-preview-light-bg: oklch(0.2 0 0);
-  --sf-inset-shadow-color: oklch(0 0 0 / 0.4);
+
+@layer signalframeux {
+  :root {
+    /* ── Color Values ── */
+    --sfx-background: oklch(1 0 0);
+    --sfx-foreground: oklch(0.145 0 0);
+    --sfx-card: oklch(1 0 0);
+    --sfx-card-foreground: oklch(0.145 0 0);
+    --sfx-popover: oklch(1 0 0);
+    --sfx-popover-foreground: oklch(0.145 0 0);
+    --sfx-primary: oklch(0.65 0.3 350);
+    --sfx-primary-foreground: oklch(0.985 0 0);
+    --sfx-secondary: oklch(0.970 0.005 298);
+    --sfx-secondary-foreground: oklch(0.205 0 0);
+    --sfx-muted: oklch(0.930 0.005 298);
+    --sfx-muted-foreground: oklch(0.460 0.010 298);
+    --sfx-accent: oklch(0.930 0.005 298);
+    --sfx-accent-foreground: oklch(0.205 0 0);
+    --sfx-destructive: oklch(0.550 0.180 25);
+    /* ── Extended Palette — status/feedback colors ── */
+    --sfx-success: oklch(0.85 0.25 145);
+    --sfx-warning: oklch(0.91 0.18 98);
+    --sfx-border: oklch(0.205 0 0);
+    --sfx-input: oklch(0.205 0 0);
+    --sfx-ring: oklch(0.65 0.3 350);
+
+    /* ── Sidebar Colors (shadcn compat) ── */
+    --sfx-sidebar: oklch(0.985 0 0);
+    --sfx-sidebar-foreground: oklch(0.145 0 0);
+    --sfx-sidebar-primary: oklch(0.65 0.3 350);
+    --sfx-sidebar-primary-foreground: oklch(0.985 0 0);
+    --sfx-sidebar-accent: oklch(0.930 0.005 298);
+    --sfx-sidebar-accent-foreground: oklch(0.205 0 0);
+    --sfx-sidebar-border: oklch(0.205 0 0);
+    --sfx-sidebar-ring: oklch(0.65 0.3 350);
+
+    /* ── Chart Colors ── */
+    --sfx-chart-1: oklch(0.65 0.3 350);
+    --sfx-chart-2: oklch(0.91 0.18 98);
+    --sfx-chart-3: oklch(0.85 0.25 145);
+    --sfx-chart-4: oklch(0.550 0.010 298);
+    --sfx-chart-5: oklch(0.205 0 0);
+
+    /* ── Radius: 0px everywhere (industrial edges) ── */
+    --sfx-radius: 0px;
+    --sfx-radius-xs: 0px;
+    --sfx-radius-sm: 0px;
+    --sfx-radius-md: 0px;
+    --sfx-radius-lg: 0px;
+    --sfx-radius-xl: 0px;
+    --sfx-radius-2xl: 0px;
+    --sfx-radius-3xl: 0px;
+    --sfx-radius-4xl: 0px;
+
+    /* ── Typography (literal font names — NOT var() refs) ── */
+    --sfx-font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+    --sfx-font-mono: var(--font-jetbrains), "JetBrains Mono", "Courier New", "SF Mono", ui-monospace, monospace;
+    --sfx-font-heading: var(--font-inter), "Inter", system-ui, sans-serif;
+    --sfx-font-electrolize: "Electrolize", "Courier New", "SF Mono", ui-monospace, monospace;
+    /* NOTE: --font-anton is a next/font generated variable — it does NOT get --sfx-* prefix */
+    --sfx-font-display: var(--font-anton), "Impact", sans-serif;
+
+    /* ── Type Scale: Industrial Minor Third (1.2) ── */
+    --sfx-text-2xs: 0.563rem;  /* 9px — micro labels, copy buttons */
+    --sfx-text-xs: 0.625rem;   /* 10px — tag pills, stat labels */
+    --sfx-text-sm: 0.688rem;   /* 11px — nav, footer, grid metadata */
+    --sfx-text-base: 0.813rem; /* 13px — body copy, descriptions */
+    --sfx-text-md: 1.000rem;   /* 16px — hero body, prominent copy */
+    --sfx-text-lg: 1.125rem;   /* 18px — section intros */
+    --sfx-text-xl: 1.500rem;   /* 24px — subheadings */
+    --sfx-text-2xl: 2.000rem;  /* 32px — section titles */
+    --sfx-text-3xl: 3.000rem;  /* 48px — page headers */
+    --sfx-text-4xl: 5.000rem;  /* 80px — display type */
+
+    /* ── SignalframeUX Extension Variables ── */
+    --sfx-yellow: oklch(0.91 0.18 98);
+    --sfx-green: oklch(0.85 0.25 145);
+    --sfx-clock: oklch(0.145 0 0);
+    --sfx-tracking-label: 0.15em;
+    --sfx-grain-opacity: 0.03;
+    --sfx-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
+    --sfx-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
+    --sfx-deboss-shadow: 0 -1px 0 oklch(0 0 0 / 0.15);
+
+    /* ── Semantic Surface Tokens ── */
+    --sfx-code-bg: oklch(0.12 0 0);
+    --sfx-code-text: oklch(0.6 0.28 145);
+    --sfx-code-keyword: oklch(0.7 0.15 25);
+    --sfx-code-const: oklch(0.7 0.18 350);
+    --sfx-dark-surface: oklch(0.2 0 0);
+    --sfx-darker-surface: oklch(0.1 0 0);
+    --sfx-darkest-surface: oklch(0.08 0 0);
+    --sfx-subtle-border: oklch(0.3 0 0);
+    --sfx-dim-text: oklch(0.52 0 0);
+    --sfx-muted-text-dark: oklch(0.65 0 0);
+    --sfx-primary-on-dark: oklch(0.78 0.28 350); /* AA-safe magenta for dark surfaces */
+
+    /* ── Decorative Preview Tokens ── */
+    --sfx-waveform-bg: oklch(0.25 0.05 350);
+    --sfx-waveform-harmonic: oklch(0.45 0.15 350);
+    --sfx-preview-light-bg: oklch(0.97 0 0);
+    --sfx-text-shadow-light: oklch(1 0 0 / 0.05);
+    --sfx-text-shadow-dark: oklch(0 0 0 / 0.3);
+    --sfx-halftone-dot: oklch(1 0 0 / 0.3);
+    --sfx-inset-shadow-color: oklch(0 0 0 / 0.2);
+    --sfx-cell-light-bg: oklch(0.97 0 0);
+
+    /* ── Motion Tokens ── */
+    --sfx-duration-instant: 34ms;
+    --sfx-duration-fast: 100ms;
+    --sfx-duration-normal: 200ms;
+    --sfx-duration-slow: 400ms;
+    --sfx-duration-glacial: 600ms;
+    --sfx-ease-default: cubic-bezier(0.2, 0, 0, 1);
+    --sfx-ease-hover: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --sfx-ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.085 32.8%, 1.009 36.5%, 0.982 38.5%, 0.961, 0.946 42.4%, 0.938, 0.934 46.4%, 0.936 49.3%, 0.954 53.5%, 1 62.8%, 1.012 68.8%, 1.006 81.5%, 1);
+
+    /* ── VHS Overlay Tokens ── */
+    --sfx-vhs-crt-opacity: 0.2;
+    --sfx-vhs-noise-opacity: 0.015;
+
+    /* ── SIGNAL Runtime Defaults ── */
+    /* Read by color-resolve.ts and WebGL uniforms. SignalOverlay overrides at runtime. */
+    --sfx-signal-intensity: 0.5;
+    --sfx-signal-speed: 1;
+    --sfx-signal-accent: 0;
+
+    /* ── Spacing Tokens (blessed stops only) ──
+       Based on 4px base. These are the ONLY valid content spacing values.
+       Tailwind equivalents: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 12=48px, 16=64px, 24=96px */
+    --sfx-space-1: 0.25rem;   /* 4px */
+    --sfx-space-2: 0.5rem;    /* 8px */
+    --sfx-space-3: 0.75rem;   /* 12px */
+    --sfx-space-4: 1rem;      /* 16px */
+    --sfx-space-6: 1.5rem;    /* 24px */
+    --sfx-space-8: 2rem;      /* 32px */
+    --sfx-space-12: 3rem;     /* 48px */
+    --sfx-space-16: 4rem;     /* 64px */
+    --sfx-space-24: 6rem;     /* 96px */
+
+    /* ── Layout Tokens ── */
+    --sfx-max-w-content: 42rem;   /* 672px — prose/readable width */
+    --sfx-max-w-wide: 80rem;      /* 1280px — section width */
+    --sfx-max-w-full: 100%;       /* full-bleed */
+    --sfx-gutter: 1.5rem;         /* 24px — standard horizontal padding */
+    --sfx-gutter-sm: 1rem;        /* 16px — mobile horizontal padding */
+    --sfx-nav-height: 83px;
+
+    /* ── Z-Index Scale ── */
+    --sfx-z-above-bg: 1;
+    --sfx-z-content: 10;
+    --sfx-z-nav: 9999;
+    --sfx-z-overlay: 100;
+    --sfx-z-scroll-top: 200;
+    --sfx-z-progress: 300;
+    --sfx-z-cursor: 500;
+    --sfx-z-vhs: 99999;
+    --sfx-z-skip: 900;
+
+    /* ── Border Width Scale ── */
+    --sfx-border-element: 2px;
+    --sfx-border-divider: 3px;
+    --sfx-border-section: 4px;
+
+    /* ── Press Feedback Tokens ── */
+    --sfx-press-scale: 0.97;
+    --sfx-press-y: 1px;
+    --sfx-hover-y: -2px;
+    --sfx-focus-ring-width: 2px;
+    --sfx-focus-ring-offset: 2px;
+
+    /* ── Semantic Typography Custom Properties ── */
+    --sfx-text-heading-1-family: var(--sfx-font-display);
+    --sfx-text-heading-1-size: var(--sfx-text-3xl);
+    --sfx-text-heading-1-weight: 700;
+    --sfx-text-heading-1-leading: 0.9;
+    --sfx-text-heading-2-family: var(--sfx-font-sans);
+    --sfx-text-heading-2-size: var(--sfx-text-2xl);
+    --sfx-text-heading-2-weight: 700;
+    --sfx-text-heading-2-leading: 1.1;
+    --sfx-text-heading-3-family: var(--sfx-font-sans);
+    --sfx-text-heading-3-size: var(--sfx-text-xl);
+    --sfx-text-heading-3-weight: 600;
+    --sfx-text-heading-3-leading: 1.2;
+    --sfx-text-body-family: var(--sfx-font-sans);
+    --sfx-text-body-size: var(--sfx-text-base);
+    --sfx-text-body-weight: 400;
+    --sfx-text-body-leading: 1.5;
+    --sfx-text-small-family: var(--sfx-font-sans);
+    --sfx-text-small-size: var(--sfx-text-sm);
+    --sfx-text-small-weight: 400;
+    --sfx-text-small-leading: 1.4;
+  }
+  .dark {
+    --sfx-background: oklch(0.145 0 0);
+    --sfx-foreground: oklch(0.985 0 0);
+    --sfx-card: oklch(0.205 0 0);
+    --sfx-card-foreground: oklch(0.985 0 0);
+    --sfx-popover: oklch(0.205 0 0);
+    --sfx-popover-foreground: oklch(0.985 0 0);
+    --sfx-secondary: oklch(0.269 0 0);
+    --sfx-secondary-foreground: oklch(0.985 0 0);
+    --sfx-muted: oklch(0.269 0 0);
+    --sfx-muted-foreground: oklch(0.730 0 0);
+    --sfx-accent: oklch(0.269 0 0);
+    --sfx-accent-foreground: oklch(0.985 0 0);
+    --sfx-border: oklch(0.400 0 0);
+    --sfx-input: oklch(0.400 0 0);
+    --sfx-sidebar: oklch(0.205 0 0);
+    --sfx-sidebar-foreground: oklch(0.985 0 0);
+    --sfx-sidebar-primary: oklch(0.65 0.3 350);
+    --sfx-sidebar-primary-foreground: oklch(0.985 0 0);
+    --sfx-sidebar-accent: oklch(0.269 0 0);
+    --sfx-sidebar-accent-foreground: oklch(0.985 0 0);
+    --sfx-sidebar-border: oklch(0.400 0 0);
+    --sfx-sidebar-ring: oklch(0.65 0.3 350);
+    --sfx-cell-light-bg: oklch(0.145 0 0);
+
+    /* ── SF Extension Dark Overrides ── */
+    --sfx-clock: oklch(0.985 0 0);
+    --sfx-subtle-border: oklch(0.4 0 0);
+    --sfx-dim-text: oklch(0.65 0 0);
+    --sfx-halftone-dot: oklch(1 0 0 / 0.15);
+    --sfx-text-shadow-light: oklch(1 0 0 / 0.02);
+    --sfx-text-shadow-dark: oklch(0 0 0 / 0.5);
+    --sfx-preview-light-bg: oklch(0.2 0 0);
+    --sfx-inset-shadow-color: oklch(0 0 0 / 0.4);
+  }
 }

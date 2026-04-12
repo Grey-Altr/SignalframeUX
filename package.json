@@ -53,7 +53,7 @@
     "start": "next start",
     "lint": "eslint .",
     "registry:build": "shadcn build",
-    "build:lib": "tsup && cp lib/tokens.css dist/signalframeux.css",
+    "build:lib": "tsup && tsx scripts/wrap-tokens-layer.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
