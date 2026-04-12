@@ -46,7 +46,7 @@ function parseCubicBezier(
  */
 export function MotionSpecimen({ tokens }: MotionSpecimenProps) {
   return (
-    <div className="border-b-4 border-foreground">
+    <div className="border-b-4 border-foreground sf-halftone" data-halftone>
       <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
         MOTION_TOKENS
       </div>

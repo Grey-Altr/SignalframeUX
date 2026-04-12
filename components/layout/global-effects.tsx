@@ -36,6 +36,10 @@ export function updateSignalDerivedProps(intensity: number) {
   // Baseline at intensity 0 = 0.03 (within spec 0.03–0.05 range)
   const grainOpacity = 0.03 + 0.05 * Math.log10(1 + i * 9);
   root.setProperty("--sfx-grain-opacity", String(Math.round(grainOpacity * 1000) / 1000));
+
+  // Halftone: invisible below 0.4, ramps 0→0.15 from 0.4→1.0
+  const halftoneOpacity = i < 0.4 ? 0 : (i - 0.4) / 0.6 * 0.15;
+  root.setProperty("--sfx-halftone-opacity", String(Math.round(halftoneOpacity * 1000) / 1000));
 }
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */

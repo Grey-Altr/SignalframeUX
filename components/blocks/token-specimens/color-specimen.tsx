@@ -109,7 +109,7 @@ export function ColorSpecimen({
   };
 
   return (
-    <div className="border-b-4 border-foreground">
+    <div className="border-b-4 border-foreground sf-halftone" data-halftone>
       {/* ── HEADER / AXIS LEGEND / TOGGLE ── */}
       <div className="border-b-2 border-foreground px-6 md:px-12 py-8 space-y-4">
         <div className="sf-display" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
