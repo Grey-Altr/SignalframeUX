@@ -682,9 +682,10 @@ Plans:
   2. Zero hardcoded animation duration values remain in component or page code — all 15 replaced with --duration-* tokens
   3. Zero hardcoded color hex or rgb values remain in component or page code — all 7 replaced with CSS custom property references
   4. sf-button hover animation uses --duration-fast, matching all other SF components
-**Plans:** 1 plan
+**Plans:** 2 plans
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [ ] 46-01-PLAN.md — Duration token normalization + prefix fixes + sf-button alignment
+- [ ] 46-02-PLAN.md — Color token normalization + WCAG AA contrast verification
 
 ### Phase 47: Viewport Polish
 **Goal**: Functional text is legible on 13" MacBook displays and the inventory grid has a correct intermediate breakpoint
