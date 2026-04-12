@@ -182,5 +182,8 @@ export {
   SFInputOTPSeparator,
 } from "./sf-input-otp";
 
+// Symbols
+export { CDSymbol } from "./cd-symbol";
+
 // Overlays
 export { SFHoverCard, SFHoverCardTrigger, SFHoverCardContent } from "./sf-hover-card";

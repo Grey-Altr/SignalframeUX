@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SFSeparator } from "@/components/sf";
+import { SFSeparator, CDSymbol } from "@/components/sf";
 import { CopyButton } from "@/components/layout/copy-button";
 import { BackToTop } from "@/components/layout/back-to-top";
 
@@ -65,8 +65,15 @@ export function Footer() {
           <SFSeparator weight="thin" className="my-8" />
 
           <div className="flex items-center justify-between text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
-            <span>&copy; 2026 SIGNALFRAMEUX</span>
-            <span>SIGNAL // FRAME</span>
+            <span className="flex items-center gap-2">
+              <CDSymbol name="hex" size={12} className="text-primary" />
+              &copy; 2026 SIGNALFRAMEUX
+            </span>
+            <span className="flex items-center gap-2">
+              SIGNAL
+              <CDSymbol name="signal-wave" size={14} className="text-primary" />
+              FRAME
+            </span>
           </div>
 
           <BackToTop />

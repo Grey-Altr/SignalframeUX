@@ -10,6 +10,7 @@ import { InventorySection } from "@/components/blocks/inventory-section";
 import { AcquisitionSection } from "@/components/blocks/acquisition-section";
 import { GhostLabel } from "@/components/animation/ghost-label";
 import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
+import { CDSymbol } from "@/components/sf/cd-symbol";
 
 export const metadata: Metadata = {
   title: "SIGNALFRAME//UX — Deterministic Interface. Generative Expression.",
@@ -50,6 +51,13 @@ export default function HomePage() {
             <ThesisSection />
           </SFSection>
 
+          {/* ── Symbol divider: THESIS → PROOF ── */}
+          <div className="flex items-center justify-center gap-3 py-4 bg-background border-y border-foreground/10">
+            <CDSymbol name="dash" size={16} className="text-foreground/30" />
+            <CDSymbol name="diamond" size={10} className="text-primary" />
+            <CDSymbol name="dash" size={16} className="text-foreground/30" />
+          </div>
+
           {/* PROOF — interactive SIGNAL/FRAME layer demo (Phase 32) */}
           <SFSection
             label="PROOF"
@@ -71,6 +79,13 @@ export default function HomePage() {
           >
             <InventorySection />
           </SFSection>
+
+          {/* ── Symbol divider: INVENTORY → SIGNAL ── */}
+          <div className="flex items-center justify-center gap-3 py-4 bg-background border-y border-foreground/10">
+            <CDSymbol name="dash" size={16} className="text-foreground/30" />
+            <CDSymbol name="crosshair" size={12} className="text-primary" />
+            <CDSymbol name="dash" size={16} className="text-foreground/30" />
+          </div>
 
           {/* SIGNAL — 150vh atmospheric parallax (Phase 32) */}
           <SFSection

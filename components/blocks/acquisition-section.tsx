@@ -21,6 +21,7 @@
 import Link from "next/link";
 import { SYSTEM_STATS } from "@/lib/system-stats";
 import { AcquisitionCopyButton } from "./acquisition-copy-button";
+import { CDSymbol } from "@/components/sf/cd-symbol";
 
 export function AcquisitionSection() {
   return (
@@ -31,8 +32,9 @@ export function AcquisitionSection() {
     >
       <div className="px-8 md:px-12 py-8 md:py-10 flex flex-col gap-6 md:gap-8">
         {/* Section header — subdued, data-sheet register */}
-        <span className="text-muted-foreground text-xs tracking-widest uppercase">
-          — ACQUIRE
+        <span className="text-muted-foreground text-xs tracking-widest uppercase flex items-center gap-2">
+          <CDSymbol name="circuit-node" size={10} className="text-primary" />
+          ACQUIRE
         </span>
 
         {/* CLI hero + copy trigger */}
