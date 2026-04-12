@@ -299,7 +299,7 @@ export function ComponentDetail({
                 </span>
                 <CopyButton text={cliCommand} />
               </div>
-              <pre className="bg-[oklch(0.12_0_0)] p-6 font-mono text-[var(--text-sm)] text-foreground overflow-x-auto border-2 border-foreground/20">
+              <pre className="bg-card p-6 font-mono text-[var(--text-sm)] text-foreground overflow-x-auto border-2 border-foreground/20">
                 {cliCommand}
               </pre>
             </div>

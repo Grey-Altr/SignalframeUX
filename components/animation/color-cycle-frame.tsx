@@ -78,7 +78,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
 
   const s = container.style;
   const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-primary").trim() || "oklch(0.65 0.3 350)";
-  const coverColor = "oklch(0.145 0 0)";
+  const coverColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-foreground").trim() || "oklch(0.145 0 0)";
   const gradDir = direction > 0 ? "to bottom" : "to top";
 
   // Enable text-clip mode

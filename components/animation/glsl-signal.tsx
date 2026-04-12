@@ -168,7 +168,7 @@ function GLSLSignalFallback() {
       aria-hidden="true"
       style={{
         background:
-          "repeating-linear-gradient(0deg, transparent, transparent 7px, oklch(0.145 0 0 / 0.06) 8px)",
+          "repeating-linear-gradient(0deg, transparent, transparent 7px, oklch(from var(--sfx-background) l c h / 0.06) 8px)",
       }}
     />
   );

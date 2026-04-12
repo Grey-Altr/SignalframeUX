@@ -131,6 +131,7 @@
   --sfx-secondary: oklch(0.970 0.005 298);
   --sfx-secondary-foreground: oklch(0.205 0 0);
   --sfx-muted: oklch(0.930 0.005 298);
+  /* TGH-01 verified: light --sfx-muted-foreground oklch(0.460 0.010 298) on --sfx-muted oklch(0.930 0.005 298) = 5.81:1 contrast ratio (PASSES WCAG AA >= 4.5:1) */
   --sfx-muted-foreground: oklch(0.460 0.010 298);
   --sfx-accent: oklch(0.930 0.005 298);
   --sfx-accent-foreground: oklch(0.205 0 0);

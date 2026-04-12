@@ -452,10 +452,14 @@ function applyBgShift(target: string | null) {
   const wrapper = document.getElementById("bg-shift-wrapper");
   if (!wrapper) return;
 
+  const fg = getComputedStyle(document.documentElement).getPropertyValue('--sfx-foreground').trim() || 'oklch(0.985 0 0)';
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--sfx-background').trim() || 'oklch(0.145 0 0)';
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--sfx-primary').trim() || 'oklch(0.65 0.3 350)';
+
   const isDark = document.documentElement.classList.contains("dark");
   const palette: Record<string, string> = isDark
-    ? { white: "var(--color-background)", black: "oklch(0.08 0 0)", primary: "oklch(0.65 0.3 350)" }
-    : { white: "#fff", black: "oklch(0.145 0 0)", primary: "oklch(0.65 0.3 350)" };
+    ? { white: "var(--color-background)", black: "oklch(0.08 0 0)", primary }
+    : { white: fg, black: bg, primary };
 
   const color = palette[target] || palette.white;
   // "white" is the CSS default — clear inline style instead of setting it
