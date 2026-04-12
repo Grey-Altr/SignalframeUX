@@ -1814,6 +1814,72 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   );
 }
 
+/* ── VHS-01: Chromatic aberration — RGB channel offset ──
+   Two overlapping pseudo-element-style layers with red/cyan tint
+   and opposing translateX offsets. Opacity scales with scanline
+   opacity (proxy for intensity). Only visible when intensity > 0.3
+   (scanline-opacity > ~0.038). */
+.vhs-chromatic {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.vhs-chromatic--red {
+  background: oklch(0.6 0.15 25 / 0.06);
+  transform: translateX(1.5px);
+  opacity: var(--sfx-vhs-chromatic-opacity, 0);
+}
+.vhs-chromatic--cyan {
+  background: oklch(0.65 0.12 220 / 0.06);
+  transform: translateX(-1.5px);
+  opacity: var(--sfx-vhs-chromatic-opacity, 0);
+}
+
+/* ── VHS-02: Horizontal jitter — stepped per-scanline noise ── */
+.vhs-jitter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: sf-vhs-jitter 0.15s steps(4, end) infinite;
+}
+@keyframes sf-vhs-jitter {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-1.2px); }
+  50%  { transform: translateX(0.8px); }
+  75%  { transform: translateX(-0.5px); }
+  100% { transform: translateX(1px); }
+}
+
+/* ── VHS-03: Dropout bands — random horizontal black bars ──
+   Shown only during idle phase 2+. Uses repeating-linear-gradient
+   with thin black bands. Coverage < 5% of viewport. */
+.vhs-dropout {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.vhs-dropout--active {
+  opacity: 1;
+}
+.vhs-dropout__band {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: oklch(0 0 0 / 0.85);
+  pointer-events: none;
+}
+
+/* ── VHS-04: Frame-edge vignette — radial-gradient perimeter darkening ── */
+.vhs-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 60%, oklch(0 0 0 / 0.3) 100%);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vhs-overlay { display: none; }
 }

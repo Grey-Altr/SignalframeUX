@@ -284,7 +284,7 @@ function IdleOverlay() {
     }
   }, []);
 
-  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) ---
+  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) + dropout bands ---
   const enterPhase2 = useCallback(() => {
     // Capture current --sfx-primary
     basePrimaryRef.current = getComputedStyle(document.documentElement)
@@ -326,6 +326,27 @@ function IdleOverlay() {
         basePrimaryRef.current = "";
       }
     }, 500);
+
+    // VHS-03: Activate dropout bands during idle phase 2+
+    const dropoutEl = document.querySelector("[data-vhs-dropout]");
+    if (dropoutEl) {
+      // Clear existing bands safely
+      while (dropoutEl.firstChild) {
+        dropoutEl.removeChild(dropoutEl.firstChild);
+      }
+      // Generate 3-6 random dropout bands (1-3px height, < 5% viewport coverage)
+      const bandCount = Math.floor(Math.random() * 4) + 3;
+      for (let i = 0; i < bandCount; i++) {
+        const band = document.createElement("div");
+        band.className = "vhs-dropout__band";
+        const top = Math.random() * 95;
+        const height = 1 + Math.random() * 2; // 1-3px
+        band.style.top = `${top}%`;
+        band.style.height = `${height}px`;
+        dropoutEl.appendChild(band);
+      }
+      dropoutEl.classList.add("vhs-dropout--active");
+    }
   }, []);
 
   const exitPhase2 = useCallback(() => {
@@ -337,6 +358,11 @@ function IdleOverlay() {
     if (basePrimaryRef.current) {
       document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
       basePrimaryRef.current = "";
+    }
+    // VHS-03: Deactivate dropout bands
+    const dropoutEl = document.querySelector("[data-vhs-dropout]");
+    if (dropoutEl) {
+      dropoutEl.classList.remove("vhs-dropout--active");
     }
   }, []);
 

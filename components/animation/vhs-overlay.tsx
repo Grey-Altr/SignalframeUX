@@ -12,6 +12,10 @@ import { gsap } from "@/lib/gsap-core";
  * 3. Noise flicker — grain opacity pulses (GSAP)
  * 4. Color bleed — subtle chromatic aberration at viewport edges (CSS)
  * 5. Static burst — brief random noise intensification (GSAP, rare)
+ * 6. Chromatic aberration — RGB channel offset (1-2px, intensity > 0.3)
+ * 7. Horizontal jitter — stepped translateX noise (tape-dropout feel)
+ * 8. Dropout bands — random horizontal black bars (idle phase 2+)
+ * 9. Frame-edge vignette — radial-gradient perimeter darkening
  *
  * All layers respect prefers-reduced-motion via GSAP global freeze.
  * Controlled by CSS custom properties for runtime tuning.
@@ -22,6 +26,7 @@ export function VHSOverlay() {
   const scanSlowRef = useRef<HTMLDivElement>(null);
   const burstRef = useRef<HTMLDivElement>(null);
   const glitchRef = useRef<HTMLDivElement>(null);
+  const dropoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -138,7 +143,39 @@ export function VHSOverlay() {
         }
         scheduleGlitch();
       }
+
     });
+
+    // VHS-01: Chromatic aberration — update opacity from intensity
+    // Scanline opacity = 0.02 + intensity * 0.06
+    // At intensity 0.3 → scanline opacity ~0.038
+    // Chromatic only visible above 0.3 intensity
+    function updateChromaticOpacity() {
+      const scanlineOp = parseFloat(
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--sfx-vhs-scanline-opacity")
+      ) || 0.02;
+      // Derive intensity from scanline opacity: i = (scanlineOp - 0.02) / 0.06
+      const intensity = Math.max(0, (scanlineOp - 0.02) / 0.06);
+      // Only visible above 0.3 intensity, then scale 0→1 over 0.3→1.0 range
+      const chromaticOpacity = intensity > 0.3
+        ? ((intensity - 0.3) / 0.7)
+        : 0;
+      document.documentElement.style.setProperty(
+        "--sfx-vhs-chromatic-opacity",
+        String(Math.round(chromaticOpacity * 1000) / 1000),
+      );
+    }
+
+    // Observe style attribute mutations on <html> to track intensity changes
+    const chromaticObserver = new MutationObserver(() => {
+      updateChromaticOpacity();
+    });
+    chromaticObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+    updateChromaticOpacity();
 
     // Pause only VHS animations when tab is hidden to save CPU/GPU
     const onVisibilityChange = () => {
@@ -153,6 +190,7 @@ export function VHSOverlay() {
     return () => {
       killed = true;
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      chromaticObserver.disconnect();
       vhsTl.kill();
       ctx.revert();
     };
@@ -184,6 +222,21 @@ export function VHSOverlay() {
       {/* Layer 6: Chromatic aberration edges */}
       <div className="vhs-aberration vhs-aberration--top" />
       <div className="vhs-aberration vhs-aberration--bottom" />
+
+      {/* Layer 7: Chromatic aberration — RGB channel offset (VHS-01) */}
+      <div className="vhs-chromatic vhs-chromatic--red" />
+      <div className="vhs-chromatic vhs-chromatic--cyan" />
+
+      {/* Layer 8: Horizontal jitter — stepped noise (VHS-02) */}
+      <div className="vhs-jitter">
+        <div className="vhs-crt" />
+      </div>
+
+      {/* Layer 9: Dropout bands — idle phase 2+ (VHS-03) */}
+      <div ref={dropoutRef} className="vhs-dropout" data-vhs-dropout />
+
+      {/* Layer 10: Frame-edge vignette (VHS-04) */}
+      <div className="vhs-vignette" />
 
     </div>
   );
