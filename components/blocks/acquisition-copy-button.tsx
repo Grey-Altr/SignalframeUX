@@ -42,7 +42,7 @@ export function AcquisitionCopyButton({ command }: AcquisitionCopyButtonProps) {
           handleCopy();
         }
       }}
-      className="font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors duration-[34ms] select-none"
+      className="font-mono text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors duration-[var(--sfx-duration-instant)] select-none"
     >
       {copied ? "[COPIED]" : "[COPY]"}
     </span>

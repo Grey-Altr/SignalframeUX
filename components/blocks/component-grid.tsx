@@ -305,7 +305,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               aria-expanded={openIndex === comp.id}
               data-anim="comp-cell"
               aria-roledescription="component card"
-              className="relative border-r-2 border-b-2 border-foreground group cursor-pointer hover:border-primary transition-colors duration-150"
+              className="relative border-r-2 border-b-2 border-foreground group cursor-pointer hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
               style={{
                 aspectRatio: "1",
                 backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--sf-cell-light-bg)",
@@ -313,7 +313,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               }}
             >
               {/* Index — magenta numeral */}
-              <span className="absolute top-2 right-3 sf-display text-primary text-[clamp(24px,3vw,36px)] leading-none opacity-40 group-hover:opacity-80 transition-opacity duration-200">
+              <span className="absolute top-2 right-3 sf-display text-primary text-[clamp(24px,3vw,36px)] leading-none opacity-40 group-hover:opacity-80 transition-opacity duration-[var(--sfx-duration-normal)]">
                 {comp.id}
               </span>
 

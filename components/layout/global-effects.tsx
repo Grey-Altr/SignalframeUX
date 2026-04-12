@@ -152,13 +152,13 @@ function ScrollToTop() {
           window.scrollTo({ top: 0, behavior: "auto" });
         }
       }}
-      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-200"
+      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-[var(--sfx-duration-normal)]"
       style={{
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
         transform: visible ? "translateY(0)" : "translateY(12px)",
         transition:
-          "opacity var(--duration-normal) var(--ease-default), transform var(--duration-normal) var(--ease-default), background-color var(--duration-fast) var(--ease-default), color var(--duration-fast) var(--ease-default)",
+          "opacity var(--sfx-duration-normal) var(--sfx-ease-default), transform var(--sfx-duration-normal) var(--sfx-ease-default), background-color var(--sfx-duration-fast) var(--sfx-ease-default), color var(--sfx-duration-fast) var(--sfx-ease-default)",
       }}
       aria-label="Scroll to top"
     >

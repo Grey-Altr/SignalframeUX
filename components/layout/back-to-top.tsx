@@ -38,7 +38,7 @@ export function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className="w-full mt-6 py-3 border-2 border-foreground/20 hover:border-primary text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary font-bold font-mono transition-colors duration-200"
+      className="w-full mt-6 py-3 border-2 border-foreground/20 hover:border-primary text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary font-bold font-mono transition-colors duration-[var(--sfx-duration-normal)]"
     >
       ▲ BACK TO TOP
     </button>

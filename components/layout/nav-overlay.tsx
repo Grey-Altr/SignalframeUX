@@ -87,7 +87,7 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
       className="fixed inset-0 z-[var(--z-overlay)] bg-foreground dark:bg-[var(--sf-darkest-surface)]"
       style={{
         clipPath: open ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
-        transition: "clip-path 0.4s var(--ease-default)",
+        transition: "clip-path 0.4s var(--sfx-ease-default)",
         pointerEvents: open ? "auto" : "none",
       }}
     >

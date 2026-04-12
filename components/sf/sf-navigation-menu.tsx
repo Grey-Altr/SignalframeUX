@@ -110,7 +110,7 @@ function SFNavigationMenuTrigger({
   return (
     <NavigationMenuTrigger
       className={cn(
-        "sf-focusable rounded-none font-mono uppercase tracking-wider text-xs border-2 border-transparent hover:border-foreground data-popup-open:border-foreground transition-colors duration-[var(--duration-fast)]",
+        "sf-focusable rounded-none font-mono uppercase tracking-wider text-xs border-2 border-transparent hover:border-foreground data-popup-open:border-foreground transition-colors duration-[var(--sfx-duration-fast)]",
         "focus-visible:ring-0 focus-visible:outline-none",
         className
       )}

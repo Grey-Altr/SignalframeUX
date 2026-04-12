@@ -41,7 +41,7 @@ export function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: "0ms",
-          transitionTimingFunction: "var(--ease-default)",
+          transitionTimingFunction: "var(--sfx-ease-default)",
         }}
       />
 
@@ -54,7 +54,7 @@ export function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step}ms`,
-          transitionTimingFunction: "var(--ease-default)",
+          transitionTimingFunction: "var(--sfx-ease-default)",
         }}
       />
 
@@ -67,7 +67,7 @@ export function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step * 2}ms`,
-          transitionTimingFunction: "var(--ease-default)",
+          transitionTimingFunction: "var(--sfx-ease-default)",
         }}
       />
 
@@ -80,7 +80,7 @@ export function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step * 3}ms`,
-          transitionTimingFunction: "var(--ease-default)",
+          transitionTimingFunction: "var(--sfx-ease-default)",
         }}
       />
     </div>

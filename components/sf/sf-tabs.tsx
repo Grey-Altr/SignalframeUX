@@ -60,7 +60,7 @@ function SFTabsTrigger({
         "border-b-2 border-transparent -mb-[var(--border-element)]",
         "data-[state=active]:border-foreground data-[state=active]:bg-transparent",
         "data-[state=active]:shadow-none data-[state=active]:text-foreground",
-        "text-muted-foreground hover:text-foreground transition-colors duration-[var(--duration-fast)]",
+        "text-muted-foreground hover:text-foreground transition-colors duration-[var(--sfx-duration-fast)]",
         className
       )}
       {...props}

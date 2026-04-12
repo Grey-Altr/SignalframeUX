@@ -54,13 +54,13 @@ export function AcquisitionSection() {
         <div className="flex gap-8 text-sm">
           <Link
             href="/init"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-[34ms]"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
           >
             → /init
           </Link>
           <Link
             href="/inventory"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-[34ms]"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
           >
             → /inventory
           </Link>

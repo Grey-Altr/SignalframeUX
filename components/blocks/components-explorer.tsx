@@ -529,7 +529,7 @@ function FilterIndicator({
   return (
     <div
       ref={indicatorRef}
-      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-[width,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
+      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-[width,transform] duration-[var(--sfx-duration-normal)] ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
     />
   );
 }
@@ -767,7 +767,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               onClick={() => handleLayerFilter(layer)}
               className={cn(
                 "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
-                "transition-colors duration-[34ms]",
+                "transition-colors duration-[var(--sfx-duration-instant)]",
                 activeLayer === layer
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
@@ -787,7 +787,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               onClick={() => handlePatternFilter(pattern)}
               className={cn(
                 "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
-                "transition-colors duration-[34ms]",
+                "transition-colors duration-[var(--sfx-duration-instant)]",
                 activePattern === pattern
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground hover:bg-foreground/10"
@@ -849,7 +849,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
               ref={(el) => { triggerRefs.current[comp.index] = el; }}
               onClick={() => handleCardClick(comp.index)}
-              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-100 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] cursor-pointer ${styles.cell} ${styles.hoverCell}`}
+              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-[var(--sfx-duration-fast)] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] cursor-pointer ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow
@@ -872,13 +872,13 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               </div>
 
               <div
-                className={`text-[var(--text-md)] uppercase leading-none transition-colors duration-150 sf-display ${styles.titleHover}`}
+                className={`text-[var(--text-md)] uppercase leading-none transition-colors duration-[var(--sfx-duration-fast)] sf-display ${styles.titleHover}`}
               >
                 {comp.name}
               </div>
 
               <div
-                className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-150 mt-2 mb-2 ${
+                className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-[var(--sfx-duration-fast)] mt-2 mb-2 ${
                   comp.variant === "black"
                     ? "border-[var(--sf-subtle-border)] group-hover:border-foreground"
                     : comp.variant === "yellow"

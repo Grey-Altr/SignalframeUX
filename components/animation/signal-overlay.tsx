@@ -174,7 +174,7 @@ export function SignalOverlay() {
           "text-[9px] font-bold uppercase tracking-widest",
           "flex items-center justify-center",
           "hover:bg-foreground hover:text-background",
-          "transition-colors duration-[var(--duration-fast,67ms)]",
+          "transition-colors duration-[var(--sfx-duration-fast)]",
           isOpen && "bg-foreground text-background"
         )}
       >
@@ -203,7 +203,7 @@ export function SignalOverlay() {
             <button
               onClick={() => setIsOpen(false)}
               aria-label="Close SIGNAL overlay"
-              className="text-[11px] font-bold text-foreground/60 hover:text-foreground transition-colors duration-[var(--duration-fast,67ms)] leading-none"
+              className="text-[11px] font-bold text-foreground/60 hover:text-foreground transition-colors duration-[var(--sfx-duration-fast)] leading-none"
             >
               ×
             </button>
@@ -260,7 +260,7 @@ export function SignalOverlay() {
           <div className="px-4 pb-4">
             <button
               onClick={handleReset}
-              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-1.5 transition-colors duration-[var(--duration-fast,67ms)]"
+              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-1.5 transition-colors duration-[var(--sfx-duration-fast)]"
             >
               Reset defaults
             </button>

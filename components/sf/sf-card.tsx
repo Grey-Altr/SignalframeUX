@@ -38,7 +38,7 @@ function SFCard({ className, hoverable = false, borderDraw = false, ...props }: 
       className={cn(
         "border-2 border-foreground bg-background shadow-none",
         hoverable && !borderDraw &&
-          "sf-hoverable transition-colors duration-[var(--duration-fast)] hover:border-primary",
+          "sf-hoverable transition-colors duration-[var(--sfx-duration-fast)] hover:border-primary",
         className
       )}
       {...props}

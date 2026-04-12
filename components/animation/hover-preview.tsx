@@ -72,7 +72,7 @@ export function HoverPreview({ items, className }: HoverPreviewProps) {
         style={{
           top: `${mouseY - 90}px`,
           clipPath: activeIndex !== null ? "inset(0 0 0 0)" : "inset(0 100% 0 0)",
-          transition: "clip-path 0.3s var(--ease-default), top 0.05s linear",
+          transition: "clip-path 0.3s var(--sfx-ease-default), top 0.05s linear",
         }}
       >
         {activeIndex !== null && items[activeIndex] && (

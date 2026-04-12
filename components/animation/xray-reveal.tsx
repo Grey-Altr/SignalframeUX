@@ -69,7 +69,7 @@ export function XrayReveal({
           clipPath: `circle(${currentRadius}px at ${pos.x}px ${pos.y}px)`,
           transition: hovering
             ? "clip-path 0.05s linear"
-            : "clip-path 0.3s var(--ease-default)",
+            : "clip-path 0.3s var(--sfx-ease-default)",
         }}
       >
         {bottomLayer}

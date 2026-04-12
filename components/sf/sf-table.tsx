@@ -85,7 +85,7 @@ function SFTableRow({
   return (
     <TableRow
       className={cn(
-        "border-b border-foreground/20 hover:bg-muted/50 transition-colors duration-[var(--duration-fast)]",
+        "border-b border-foreground/20 hover:bg-muted/50 transition-colors duration-[var(--sfx-duration-fast)]",
         className
       )}
       {...props}

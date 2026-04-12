@@ -135,7 +135,7 @@ export function InventorySection() {
               GRID_COLS,
               "font-mono text-sm",
               "border-b border-foreground/10 py-1.5 px-0",
-              "cursor-pointer transition-colors duration-[34ms]",
+              "cursor-pointer transition-colors duration-[var(--sfx-duration-instant)]",
               "hover:bg-foreground hover:text-background",
               "focus:bg-foreground focus:text-background focus:outline-none"
             )}
@@ -177,7 +177,7 @@ export function InventorySection() {
       <div className="mt-6">
         <Link
           href="/inventory"
-          className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[34ms]"
+          className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
         >
           → /inventory
         </Link>
