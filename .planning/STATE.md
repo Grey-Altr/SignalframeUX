@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 45 context gathered
-last_updated: "2026-04-12T00:47:11.955Z"
+stopped_at: Phase 45 Plan 01 complete (token bridge namespace + @layer pipeline)
+last_updated: "2026-04-12T01:22:11.187Z"
 last_activity: 2026-04-11 — Phase 44 Plan 01 complete (copy audit fixes)
 progress:
   total_phases: 48
   completed_phases: 24
-  total_plans: 56
-  completed_plans: 55
+  total_plans: 58
+  completed_plans: 56
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 44 (complete — 1/1 plans)
+Phase: 45 (in progress — 1/2 plans)
 Plan: 01 (complete)
-Status: Phase 44 done — Phase 45 next
-Last activity: 2026-04-11 — Phase 44 Plan 01 complete (copy audit fixes)
+Status: Phase 45 Plan 01 done — Phase 45 Plan 02 next
+Last activity: 2026-04-12 — Phase 45 Plan 01 complete (--sfx-* token namespace + @layer build pipeline)
 
 ## Progress
 
@@ -185,6 +185,8 @@ v1.7: [█░░░░░░░░░]   8% (1/? plans) ACTIVE — Phase 45 next
 | Phase 52 (circuit) and 53 (mesh) parallel-eligible | Both depend only on Phase 48; neither depends on the other; can be executed in any order |
 | Phase 54 (particles) late | WebGL, highest complexity, iOS Safari risk — defer until all CSS-only effects are validated |
 | Phase 56 as the launch gate | Consolidates VRG-03, PRF-01-04, and SYM as the final verification boundary; no phase can be declared complete without passing these |
+- [Phase 45-token-bridge]: @theme inline aliasing: --color-* utility aliases point to --sfx-* vars so Tailwind classes work without renaming utility class names
+- [Phase 45-token-bridge]: @layer signalframeux wraps :root/.dark in dist only — app globals stay unlayered; consumer CSS wins by loading after the layered dist
 
 ## Project Reference
 
@@ -195,6 +197,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-12T00:47:11.950Z
-Stopped at: Phase 45 context gathered
+Last session: 2026-04-12T01:22:07.355Z
+Stopped at: Phase 45 Plan 01 complete (token bridge namespace + @layer pipeline)
 Resume with: /pde:execute-phase 45

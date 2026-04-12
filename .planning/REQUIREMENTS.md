@@ -240,8 +240,8 @@
 - [x] **COP-06**: Playwright test assertions updated to match new copy strings (phase-35-metadata.spec.ts)
 
 ### Token Bridge
-- [ ] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
-- [ ] **TBR-02**: `@layer` cascade: `sf.tokens` → `consumer.overrides` — consumer CSS wins without specificity war
+- [x] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
+- [x] **TBR-02**: `@layer` cascade: `sf.tokens` → `consumer.overrides` — consumer CSS wins without specificity war
 - [ ] **TBR-03**: `--sfx-*` consumer override tier documented in MIGRATION.md with full variable list
 - [ ] **TBR-04**: No SSR flash — dark mode `class="dark"` server-rendered on CD `<html>`, no magenta primary visible during streaming
 
@@ -337,8 +337,8 @@
 | COP-04 | Phase 44 | Complete |
 | COP-05 | Phase 44 | Complete |
 | COP-06 | Phase 44 | Complete |
-| TBR-01 | Phase 45 | Pending |
-| TBR-02 | Phase 45 | Pending |
+| TBR-01 | Phase 45 | Complete |
+| TBR-02 | Phase 45 | Complete |
 | TBR-03 | Phase 45 | Pending |
 | TBR-04 | Phase 45 | Pending |
 | TGH-01 | Phase 46 | Pending |

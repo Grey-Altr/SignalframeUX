@@ -668,7 +668,7 @@ Plans:
   2. Consumer CSS overrides (via @layer consumer.overrides) visibly win over sf.tokens without specificity hacks
   3. MIGRATION.md documents the full --sfx-* variable list with before/after examples
   4. Dark mode class="dark" is server-rendered on the CD <html> element — no magenta primary visible during streaming on initial load
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 45-01-PLAN.md — Rename all tokens to --sfx-* namespace in lib/tokens.css + app/globals.css + create @layer build pipeline
 - [ ] 45-02-PLAN.md — Update JS/TS string refs + create cd-tokens.css + expand MIGRATION.md + visual verification
@@ -887,7 +887,7 @@ Plans:
 | 42. Tracking Reconciliation + peerDep Fix | 0/1 | 1/1 | Complete   | 2026-04-11 |
 | 43. Production Deploy + Lighthouse Gate | 1/1 | Complete   | 2026-04-11 | — |
 | 44. Copy Audit Fixes | v1.7 | Complete    | 2026-04-11 | - |
-| 45. Token Bridge | v1.7 | 0/? | Not started | - |
+| 45. Token Bridge | 1/2 | In Progress|  | - |
 | 46. Tightening Pass | v1.7 | 0/? | Not started | - |
 | 47. Viewport Polish | v1.7 | 0/? | Not started | - |
 | 48. Intensity Bridge + Chromatic Setup | v1.7 | 0/? | Not started | - |
