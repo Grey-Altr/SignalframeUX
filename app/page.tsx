@@ -56,7 +56,7 @@ export default function HomePage() {
             bgShift="black"
             id="proof"
             data-section="proof"
-            className="py-0"
+            className="py-0 sf-circuit"
           >
             <ProofSection />
           </SFSection>
@@ -67,7 +67,7 @@ export default function HomePage() {
             bgShift="white"
             id="inventory"
             data-section="inventory"
-            className="py-0"
+            className="py-0 sf-circuit"
           >
             <InventorySection />
           </SFSection>
@@ -89,7 +89,7 @@ export default function HomePage() {
             bgShift="black"
             id="acquisition"
             data-section="acquisition"
-            className="py-0"
+            className="py-0 sf-circuit"
           >
             <AcquisitionSection />
           </SFSection>
