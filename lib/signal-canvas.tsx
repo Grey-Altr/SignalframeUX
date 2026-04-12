@@ -168,6 +168,19 @@ export function registerScene(
       }),
   };
   state.scenes.set(id, resolvedEntry);
+
+  // Force-compile materials against the active renderer.
+  // Scenes registered after initSignalCanvas (e.g. lazy-loaded components)
+  // have materials created outside the renderer's GL context — Three.js
+  // skips the draw call unless needsUpdate is set.
+  if (state.renderer) {
+    entry.scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh;
+      if (mesh.isMesh && mesh.material) {
+        (mesh.material as THREE.Material).needsUpdate = true;
+      }
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
