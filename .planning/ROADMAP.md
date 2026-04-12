@@ -505,7 +505,7 @@ Plans:
 - [ ] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed
 - [ ] **Phase 49: Grain + Idle Escalation + Visual Baseline** — Grain opacity curve, useIdleEscalation() hook with 3 phases, relative offset escalation, visual baselines captured
 - [ ] **Phase 50: VHS Enhancement** — Chromatic aberration, horizontal jitter, dropout bands, vignette, Safari backdrop-filter fix, human sign-off
-- [ ] **Phase 50.1: Datamosh Overlay** — Single-pass WebGL shader: noise-driven micro-displacement + channel separation, wired to --signal-intensity, <0.5ms GPU (INSERTED)
+- [x] **Phase 50.1: Datamosh Overlay** — Single-pass WebGL shader: noise-driven micro-displacement + channel separation, wired to --signal-intensity, <0.5ms GPU (INSERTED) (completed 2026-04-12)
 - [ ] **Phase 51: Halftone Texture** — CSS-only halftone dots, intensity gate, scoped to specimen sections, no moiré review
 - [ ] **Phase 52: Circuit Overlay** — SVG circuit pattern, mutual exclusion with high grain, intensity-governed opacity
 - [ ] **Phase 53: Mesh Gradient** — Layered radial-gradient with OKLCH, grain composited on top, slow drift animation
@@ -754,7 +754,7 @@ Plans:
   4. Effect wires to --signal-intensity CSS custom property via MutationObserver cache
   5. GPU time <0.5ms at 1920x1080 (single-pass, 3 texture samples + noise)
   6. prefers-reduced-motion renders static frame or disables entirely
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
 - [ ] 50.1-01-PLAN.md — DatamoshOverlay component + GlobalEffects mount + visual verification
 
