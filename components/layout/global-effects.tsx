@@ -6,7 +6,7 @@ import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
-import { DatamoshOverlay } from "@/components/animation/datamosh-overlay";
+import { DatamoshOverlayLazy } from "@/components/animation/datamosh-overlay-lazy";
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
 
@@ -379,7 +379,7 @@ export function GlobalEffects() {
   return (
     <>
       <VHSOverlay />
-      <DatamoshOverlay />
+      <DatamoshOverlayLazy />
       <CanvasCursor />
       <ScrollProgress />
       <ScrollToTop />
