@@ -745,7 +745,7 @@ Plans:
 ### Phase 50.1: Datamosh Overlay (INSERTED)
 
 **Goal:** Ambient datamosh overlay — single-pass WebGL fragment shader with noise-driven micro-displacement + channel separation + optional block quantization, registered via SignalCanvas singleton, wired to --signal-intensity, <0.5ms GPU budget
-**Depends on:** Phase 50 (VHS Enhancement)
+**Depends on:** None (VHSOverlay already exists in codebase; visual coherence review with enhanced VHS deferred to Phase 50 completion)
 **Requirements**: DTM-01, DTM-02, DTM-03, DTM-04
 **Success Criteria** (what must be TRUE):
   1. DatamoshOverlay component renders a fullscreen fragment shader via useSignalScene (no separate WebGL context)
