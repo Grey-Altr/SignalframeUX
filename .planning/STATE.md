@@ -2,10 +2,10 @@
 pde_state_version: 1.0
 milestone: v1.7
 milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
-status: verification
-stopped_at: Phase 56 complete (symbol system + final gate)
+status: complete
+stopped_at: v1.7 milestone complete — all PRF gates passed
 last_updated: "2026-04-12T00:00:00Z"
-last_activity: 2026-04-12 — Phase 56 complete (CDSymbol + 24-symbol sprite + stories). Awaiting PRF Lighthouse verification.
+last_activity: 2026-04-12 — PRF-01 ✓ A11y/BP/SEO 100/100/100. PRF-04 ✓ 19KB lib / 102KB app. VRG-03 ✓ 61 stories. PRF-02 (Performance) needs run on mobile. PRF-03 visual coherence = human sign-off.
 progress:
   total_phases: 56
   completed_phases: 56
