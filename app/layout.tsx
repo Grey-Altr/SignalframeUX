@@ -95,7 +95,8 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden">
-<a
+        <div className="sf-mesh-gradient" aria-hidden="true" />
+        <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[var(--z-skip)] focus:bg-primary focus:text-primary-foreground focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:uppercase focus:tracking-wider"
         >

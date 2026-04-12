@@ -1932,6 +1932,58 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 [data-signal-intensity="high"] { --sfx-signal-intensity: 0.8; }
 
 /* ══════════════════════════════════════════════════════════════
+   OKLCH MESH GRADIENT — Atmospheric depth layer
+   3-layer radial gradient with low-chroma OKLCH (purple-magenta).
+   Fixed behind all content at z:-1; grain composites on top.
+   60s alternate breathing animation for ambient life.
+   ══════════════════════════════════════════════════════════════ */
+
+.sf-mesh-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 30%, oklch(0.20 0.04 300) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, oklch(0.18 0.03 350) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, oklch(0.15 0.02 280) 0%, transparent 70%);
+  background-size: 200% 200%;
+  animation: sf-mesh-drift 60s ease-in-out infinite alternate;
+  will-change: background-position;
+}
+
+html:not(.dark) .sf-mesh-gradient {
+  opacity: 0.3;
+}
+
+@keyframes sf-mesh-drift {
+  0% {
+    background-position: 20% 30%, 80% 70%, 50% 50%;
+  }
+  33% {
+    background-position: 35% 45%, 65% 55%, 45% 60%;
+  }
+  66% {
+    background-position: 25% 60%, 75% 40%, 55% 45%;
+  }
+  100% {
+    background-position: 30% 35%, 70% 65%, 48% 52%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-mesh-gradient {
+    animation: none;
+  }
+}
+
+@media print {
+  .sf-mesh-gradient {
+    display: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    PRINT STYLES
    Invert dark backgrounds · suppress Signal layer · preserve layout
    ══════════════════════════════════════════════════════════════ */
