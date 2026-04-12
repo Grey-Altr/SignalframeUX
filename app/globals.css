@@ -1723,11 +1723,11 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   width: 100%;
   height: 2px;
   transform: translateY(-50%);
-  background: oklch(0.7 0.05 350 / 0.04);
+  background: oklch(0.7 0.05 350 / var(--sfx-vhs-scanline-opacity, 0.04));
   box-shadow:
-    0 0 8px oklch(0.6 0.03 350 / 0.04),
-    0 0 20px oklch(0.6 0.03 350 / 0.025),
-    0 0 40px oklch(0.6 0.03 350 / 0.015);
+    0 0 8px oklch(0.6 0.03 350 / var(--sfx-vhs-scanline-opacity, 0.04)),
+    0 0 20px oklch(0.6 0.03 350 / calc(var(--sfx-vhs-scanline-opacity, 0.04) * 0.625)),
+    0 0 40px oklch(0.6 0.03 350 / calc(var(--sfx-vhs-scanline-opacity, 0.04) * 0.375));
 }
 .vhs-scanline::after {
   content: '';
@@ -1746,7 +1746,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 }
 .vhs-scanline--slow::before {
   height: 1px;
-  background: oklch(0.6 0.03 0 / 0.05);
+  background: oklch(0.6 0.03 0 / var(--sfx-vhs-scanline-opacity, 0.04));
   box-shadow: none;
 }
 .vhs-scanline--slow::after {
@@ -1820,6 +1820,16 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 @media (pointer: coarse) {
   .vhs-overlay { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION-LEVEL SIGNAL INTENSITY OVERRIDES
+   Apply data-signal-intensity="low|med|high" to any section to
+   scope visual effect intensity without JavaScript.
+   ══════════════════════════════════════════════════════════════ */
+
+[data-signal-intensity="low"]  { --sfx-signal-intensity: 0.2; }
+[data-signal-intensity="med"]  { --sfx-signal-intensity: 0.5; }
+[data-signal-intensity="high"] { --sfx-signal-intensity: 0.8; }
 
 /* ══════════════════════════════════════════════════════════════
    PRINT STYLES

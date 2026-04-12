@@ -54,10 +54,18 @@ export function VHSOverlay() {
         }, 0);
       }
 
-      // Noise flicker — subtle opacity variation
+      // Noise flicker — opacity pulses around the intensity-derived base
       if (noiseRef.current) {
+        // Read the derived noise opacity (set by SignalIntensityBridge)
+        const baseNoise = parseFloat(
+          getComputedStyle(document.documentElement)
+            .getPropertyValue("--sfx-vhs-noise-opacity")
+        ) || 0.025;
+        const lo = Math.max(0, baseNoise - 0.01);
+        const hi = baseNoise + 0.02;
+
         vhsTl.to(noiseRef.current, {
-          opacity: "random(0.03, 0.07)",
+          opacity: `random(${lo}, ${hi})`,
           duration: 0.5,
           repeat: -1,
           yoyo: true,

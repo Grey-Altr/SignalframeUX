@@ -10,6 +10,32 @@ import { DatamoshOverlayLazy } from "@/components/animation/datamosh-overlay-laz
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
 
+/**
+ * Compute and write derived CSS custom properties from --sfx-signal-intensity.
+ *
+ * Maps the 0.0–1.0 intensity scalar to per-effect opacity tokens:
+ *   - VHS scanline: linear 0.02 → 0.08
+ *   - VHS noise:    linear 0.01 → 0.04
+ *   - Grain:        logarithmic — subtle at low, saturates at high
+ *
+ * prefers-reduced-motion: all derived values collapse to 0.
+ */
+export function updateSignalDerivedProps(intensity: number) {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const i = prefersReduced ? 0 : intensity;
+  const root = document.documentElement.style;
+
+  // VHS scanline: 0.02 at low → 0.08 at high (linear)
+  root.setProperty("--sfx-vhs-scanline-opacity", String(0.02 + i * 0.06));
+
+  // VHS noise: 0.01 at low → 0.04 at high (linear)
+  root.setProperty("--sfx-vhs-noise-opacity", String(0.01 + i * 0.03));
+
+  // Grain: logarithmic curve — subtle at low, saturates at high
+  const grainOpacity = 0.02 + 0.06 * Math.log10(1 + i * 9);
+  root.setProperty("--sfx-grain-opacity", String(Math.round(grainOpacity * 1000) / 1000));
+}
+
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
 function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -375,6 +401,49 @@ function InteractionFeedback() {
   return null;
 }
 
+/**
+ * Signal Intensity Bridge — reads --sfx-signal-intensity on mount and
+ * whenever the slider changes, then propagates derived effect tokens.
+ *
+ * Uses a MutationObserver on <html> style attribute to detect changes
+ * from signal-overlay.tsx without coupling the two modules.
+ */
+function SignalIntensityBridge() {
+  useEffect(() => {
+    function syncDerivedProps() {
+      const raw = getComputedStyle(document.documentElement)
+        .getPropertyValue("--sfx-signal-intensity")
+        .trim();
+      const intensity = parseFloat(raw) || 0.5;
+      updateSignalDerivedProps(intensity);
+    }
+
+    // Initial sync
+    syncDerivedProps();
+
+    // Observe style attribute mutations on <html> (set by signal-overlay slider)
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === "attributes" && m.attributeName === "style") {
+          syncDerivedProps();
+          break;
+        }
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return null;
+}
+
 export function GlobalEffects() {
   return (
     <>
@@ -387,6 +456,7 @@ export function GlobalEffects() {
       <IdleOverlay />
       <InteractionFeedback />
       <SignalOverlayLazy />
+      <SignalIntensityBridge />
     </>
   );
 }
