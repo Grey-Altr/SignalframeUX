@@ -127,7 +127,8 @@
   --sfx-popover: oklch(1 0 0);
   --sfx-popover-foreground: oklch(0.145 0 0);
   --sfx-primary: oklch(0.65 0.3 350);
-  --sfx-primary-foreground: oklch(0.985 0 0);
+  /* PRF-01: near-black on magenta L=0.65 passes WCAG AA 4.5:1 (near-white fails at 3.45:1) */
+  --sfx-primary-foreground: oklch(0.145 0 0);
   --sfx-secondary: oklch(0.970 0.005 298);
   --sfx-secondary-foreground: oklch(0.205 0 0);
   --sfx-muted: oklch(0.930 0.005 298);
