@@ -13,7 +13,7 @@ var react = require('@gsap/react');
 var sonner = require('sonner');
 var SplitText = require('gsap/SplitText');
 var ScrambleTextPlugin = require('gsap/ScrambleTextPlugin');
-var CustomEase$1 = require('gsap/CustomEase');
+var CustomEase = require('gsap/CustomEase');
 var Flip = require('gsap/Flip');
 var DrawSVGPlugin = require('gsap/DrawSVGPlugin');
 
@@ -116,9 +116,7 @@ function AccordionContent({
     }
   );
 }
-if (typeof window !== "undefined") {
-  gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Observer.Observer, react.useGSAP);
-}
+gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Observer.Observer, react.useGSAP);
 function SFAccordion({
   className,
   ...props
@@ -466,21 +464,17 @@ function SFStep({
     }
   );
 }
-
-// lib/gsap-easings.ts
 function registerSFEasings() {
-  CustomEase.create(
+  CustomEase.CustomEase.create(
     "sf-snap",
     "M0,0 C0.14,0 0.27,0.5 0.5,0.5 0.73,0.5 0.86,1 1,1"
   );
-  CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
+  CustomEase.CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
 }
 
 // lib/gsap-split.ts
-if (typeof window !== "undefined") {
-  gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, SplitText.SplitText, ScrambleTextPlugin.ScrambleTextPlugin, CustomEase$1.CustomEase, react.useGSAP);
-  registerSFEasings();
-}
+gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, SplitText.SplitText, ScrambleTextPlugin.ScrambleTextPlugin, CustomEase.CustomEase, react.useGSAP);
+registerSFEasings();
 var SF_CHARS = "!<>-_\\/[]{}\u2014=+*^?#01\u30B7\u30B0\u30CA\u30EB";
 function ScrambleText({
   text,
@@ -611,18 +605,16 @@ function useNavReveal(triggerRef) {
     };
   }, [triggerRef]);
 }
-if (typeof window !== "undefined") {
-  gsap__default.default.registerPlugin(
-    ScrollTrigger.ScrollTrigger,
-    SplitText.SplitText,
-    ScrambleTextPlugin.ScrambleTextPlugin,
-    Flip.Flip,
-    CustomEase$1.CustomEase,
-    Observer.Observer,
-    react.useGSAP
-  );
-  registerSFEasings();
-}
+gsap__default.default.registerPlugin(
+  ScrollTrigger.ScrollTrigger,
+  SplitText.SplitText,
+  ScrambleTextPlugin.ScrambleTextPlugin,
+  Flip.Flip,
+  CustomEase.CustomEase,
+  Observer.Observer,
+  react.useGSAP
+);
+registerSFEasings();
 var motionCleanup = null;
 function initReducedMotion() {
   if (typeof window === "undefined") return () => {
@@ -644,9 +636,9 @@ function initReducedMotion() {
   };
   return motionCleanup;
 }
-if (typeof window !== "undefined") {
-  gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, DrawSVGPlugin.DrawSVGPlugin);
-}
+gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, DrawSVGPlugin.DrawSVGPlugin);
+gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Flip.Flip, CustomEase.CustomEase);
+registerSFEasings();
 
 Object.defineProperty(exports, "ScrambleTextPlugin", {
   enumerable: true,

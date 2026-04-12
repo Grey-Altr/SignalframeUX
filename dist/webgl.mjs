@@ -7,9 +7,7 @@ import { useGSAP } from '@gsap/react';
 import { jsx } from 'react/jsx-runtime';
 
 // lib/signal-canvas.tsx
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
-}
+gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
 var SIGNAL_KEY = "__sf_signal_canvas";
 function getState() {
   const g = globalThis;
@@ -95,6 +93,14 @@ function registerScene(id, entry) {
     })
   };
   state.scenes.set(id, resolvedEntry);
+  if (state.renderer) {
+    entry.scene.traverse((obj) => {
+      const mesh = obj;
+      if (mesh.isMesh && mesh.material) {
+        mesh.material.needsUpdate = true;
+      }
+    });
+  }
 }
 function deregisterScene(id) {
   const state = getState();

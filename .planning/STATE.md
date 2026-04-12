@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Phase 45 complete (token bridge — namespace + consumer docs + visual verification)
-last_updated: "2026-04-12T03:16:08Z"
-last_activity: 2026-04-12 — Phase 45 Plan 02 complete (JS/TS token rename + consumer docs + datamosh fixes)
+milestone: v1.7
+milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
+status: verification
+stopped_at: Phase 56 complete (symbol system + final gate)
+last_updated: "2026-04-12T00:00:00Z"
+last_activity: 2026-04-12 — Phase 56 complete (CDSymbol + 24-symbol sprite + stories). Awaiting PRF Lighthouse verification.
 progress:
-  total_phases: 48
-  completed_phases: 25
-  total_plans: 58
-  completed_plans: 57
+  total_phases: 56
+  completed_phases: 56
+  total_plans: 74
+  completed_plans: 74
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,9 @@ progress:
 
 ## Current Position
 
-Phase: 45 (complete — 2/2 plans)
-Plan: 02 (complete)
-Status: Phase 45 complete — ready for Phase 46
-Last activity: 2026-04-12 — Phase 45 Plan 02 complete (JS/TS token rename + consumer docs + datamosh fixes)
+Phase: 56 (complete — all plans)
+Status: All v1.7 phases complete — awaiting PRF Lighthouse verification (PRF-01, PRF-02)
+Last activity: 2026-04-12 — Phase 56 complete (CDSymbol + 24-symbol sprite + 61 stories). PRF-04 bundle gate ✓ (19KB lib / 102KB app). VRG-03 story count ✓ (61 ≥ 60). Lighthouse runs needed for PRF-01/02.
 
 ## Progress
 
@@ -41,7 +40,7 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
-v1.7: [██░░░░░░░░]  15% (3/? plans) ACTIVE — Phase 46 next
+v1.7: [█████████░]  95% VERIFICATION — Lighthouse PRF-01/PRF-02 pending
 ```
 
 ## v1.7 Phase Map
@@ -50,18 +49,18 @@ v1.7: [██░░░░░░░░]  15% (3/? plans) ACTIVE — Phase 46 next
 |-------|------|--------------|--------|
 | 44 | Copy Audit Fixes | COP-01, COP-02, COP-03, COP-04, COP-05, COP-06 | Complete |
 | 45 | Token Bridge | TBR-01, TBR-02, TBR-03, TBR-04 | Complete |
-| 46 | Tightening Pass | TGH-01, TGH-02, TGH-03, TGH-04 | Not started |
-| 47 | Viewport Polish | VPT-01, VPT-02, VPT-03, VPT-04 | Not started |
-| 48 | Intensity Bridge + Chromatic Setup | SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01 | Not started |
-| 49 | Grain + Idle Escalation + Visual Baseline | GRN-01, GRN-02, GRN-03, GRN-04, VRG-02 | Not started |
-| 50 | VHS Enhancement | VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06 | Not started |
-| 50.1 | Datamosh Overlay | DTM-01, DTM-02, DTM-03, DTM-04 | Not started |
-| 51 | Halftone Texture | HLF-01, HLF-02, HLF-03, HLF-04 | Not started |
-| 52 | Circuit Overlay | CIR-01, CIR-02, CIR-03 | Not started |
-| 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Not started |
-| 54 | Particle Field | PTL-01, PTL-02, PTL-03, PTL-04 | Not started |
-| 55 | Glitch Transition | GLT-01, GLT-02, GLT-03 | Not started |
-| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Not started |
+| 46 | Tightening Pass | TGH-01, TGH-02, TGH-03, TGH-04 | Complete |
+| 47 | Viewport Polish | VPT-01, VPT-02, VPT-03, VPT-04 | Complete |
+| 48 | Intensity Bridge + Chromatic Setup | SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01 | Complete |
+| 49 | Grain + Idle Escalation + Visual Baseline | GRN-01, GRN-02, GRN-03, GRN-04, VRG-02 | Complete |
+| 50 | VHS Enhancement | VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06 | Complete |
+| 50.1 | Datamosh Overlay | DTM-01, DTM-02, DTM-03, DTM-04 | Complete |
+| 51 | Halftone Texture | HLF-01, HLF-02, HLF-03, HLF-04 | Complete |
+| 52 | Circuit Overlay | CIR-01, CIR-02, CIR-03 | Complete |
+| 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Complete |
+| 54 | Particle Field | PTL-01, PTL-02, PTL-03, PTL-04 | Complete |
+| 55 | Glitch Transition | GLT-01, GLT-02, GLT-03 | Complete |
+| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Verification pending |
 
 ## v1.6 Phase Map (archived)
 
@@ -197,6 +196,6 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Session Continuity
 
-Last session: 2026-04-12T03:16:08Z
-Stopped at: Phase 45 complete (token bridge — 2/2 plans done)
-Resume with: /pde:plan-phase 46
+Last session: 2026-04-12
+Stopped at: Phase 56 complete (symbol system + final gate). All v1.7 implementation done.
+Resume with: Run Lighthouse against deployed URL — verify PRF-01 (A11y/BP/SEO = 100) and PRF-02 (Performance ≥ 75). Then /gsd-complete-milestone to close v1.7.

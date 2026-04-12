@@ -32,9 +32,7 @@ var THREE__namespace = /*#__PURE__*/_interopNamespace(THREE);
 var gsap__default = /*#__PURE__*/_interopDefault(gsap);
 
 // lib/signal-canvas.tsx
-if (typeof window !== "undefined") {
-  gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Observer.Observer, react.useGSAP);
-}
+gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Observer.Observer, react.useGSAP);
 var SIGNAL_KEY = "__sf_signal_canvas";
 function getState() {
   const g = globalThis;
@@ -120,6 +118,14 @@ function registerScene(id, entry) {
     })
   };
   state.scenes.set(id, resolvedEntry);
+  if (state.renderer) {
+    entry.scene.traverse((obj) => {
+      const mesh = obj;
+      if (mesh.isMesh && mesh.material) {
+        mesh.material.needsUpdate = true;
+      }
+    });
+  }
 }
 function deregisterScene(id) {
   const state = getState();

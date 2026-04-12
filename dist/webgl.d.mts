@@ -67,12 +67,12 @@ type ResolveColorOptions = {
  * Resolve a CSS custom property (OKLCH or any format) to sRGB values.
  * Uses 1x1 canvas probe — zero bundle cost, uses browser's own color engine.
  *
- * @param cssVar - CSS custom property name including `--` prefix, e.g. `"--color-primary"`
+ * @param cssVar - CSS custom property name including `--` prefix, e.g. `"--sfx-primary"`
  * @param options - Optional cache configuration. Omit to bypass cache (default).
  * @returns RGB object with r, g, b in 0-255 range
  *
  * @example
- * const { r, g, b } = resolveColorToken("--color-primary");
+ * const { r, g, b } = resolveColorToken("--sfx-primary");
  * ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
  */
 declare function resolveColorToken(cssVar: string, options?: ResolveColorOptions): RGB;

@@ -13,7 +13,7 @@ import { Toaster, toast } from 'sonner';
 import { SplitText } from 'gsap/SplitText';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 export { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
-import { CustomEase as CustomEase$1 } from 'gsap/CustomEase';
+import { CustomEase } from 'gsap/CustomEase';
 import { Flip } from 'gsap/Flip';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 export { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
@@ -94,9 +94,7 @@ function AccordionContent({
     }
   );
 }
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
-}
+gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
 function SFAccordion({
   className,
   ...props
@@ -444,8 +442,6 @@ function SFStep({
     }
   );
 }
-
-// lib/gsap-easings.ts
 function registerSFEasings() {
   CustomEase.create(
     "sf-snap",
@@ -455,10 +451,8 @@ function registerSFEasings() {
 }
 
 // lib/gsap-split.ts
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase$1, useGSAP);
-  registerSFEasings();
-}
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, CustomEase, useGSAP);
+registerSFEasings();
 var SF_CHARS = "!<>-_\\/[]{}\u2014=+*^?#01\u30B7\u30B0\u30CA\u30EB";
 function ScrambleText({
   text,
@@ -589,18 +583,16 @@ function useNavReveal(triggerRef) {
     };
   }, [triggerRef]);
 }
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(
-    ScrollTrigger,
-    SplitText,
-    ScrambleTextPlugin,
-    Flip,
-    CustomEase$1,
-    Observer,
-    useGSAP
-  );
-  registerSFEasings();
-}
+gsap.registerPlugin(
+  ScrollTrigger,
+  SplitText,
+  ScrambleTextPlugin,
+  Flip,
+  CustomEase,
+  Observer,
+  useGSAP
+);
+registerSFEasings();
 var motionCleanup = null;
 function initReducedMotion() {
   if (typeof window === "undefined") return () => {
@@ -622,9 +614,9 @@ function initReducedMotion() {
   };
   return motionCleanup;
 }
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
-}
+gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin);
+gsap.registerPlugin(ScrollTrigger, Flip, CustomEase);
+registerSFEasings();
 
 export { SFAccordion, SFAccordionContent, SFAccordionItem, SFAccordionTrigger, SFEmptyState, SFProgress, SFStatusDot, SFStep, SFStepper, SFToaster, initReducedMotion, registerSFEasings, sfToast, useNavReveal };
 //# sourceMappingURL=animation.mjs.map

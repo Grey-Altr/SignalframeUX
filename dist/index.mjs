@@ -211,7 +211,7 @@ function Button({
   );
 }
 var sfButtonVariants = cva(
-  "sf-pressable sf-focusable font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-[var(--duration-normal)] ease-[var(--ease-default)] cursor-pointer",
+  "sf-pressable sf-focusable font-mono uppercase tracking-wider border-2 border-foreground transition-colors duration-[var(--sfx-duration-fast)] ease-[var(--sfx-ease-default)] cursor-pointer",
   {
     variants: {
       intent: {
@@ -346,7 +346,7 @@ function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: "0ms",
-          transitionTimingFunction: "var(--ease-default)"
+          transitionTimingFunction: "var(--sfx-ease-default)"
         }
       }
     ),
@@ -360,7 +360,7 @@ function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step}ms`,
-          transitionTimingFunction: "var(--ease-default)"
+          transitionTimingFunction: "var(--sfx-ease-default)"
         }
       }
     ),
@@ -374,7 +374,7 @@ function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step * 2}ms`,
-          transitionTimingFunction: "var(--ease-default)"
+          transitionTimingFunction: "var(--sfx-ease-default)"
         }
       }
     ),
@@ -388,7 +388,7 @@ function BorderDraw({
           backgroundColor: bg,
           transitionDuration: `${step}ms`,
           transitionDelay: `${step * 3}ms`,
-          transitionTimingFunction: "var(--ease-default)"
+          transitionTimingFunction: "var(--sfx-ease-default)"
         }
       }
     )
@@ -400,7 +400,7 @@ function SFCard({ className, hoverable = false, borderDraw = false, ...props }) 
     {
       className: cn(
         "border-2 border-foreground bg-background shadow-none",
-        hoverable && !borderDraw && "sf-hoverable transition-colors duration-[var(--duration-fast)] hover:border-primary",
+        hoverable && !borderDraw && "sf-hoverable transition-colors duration-[var(--sfx-duration-fast)] hover:border-primary",
         className
       ),
       ...props
@@ -653,7 +653,7 @@ function SFTabsTrigger({
         "border-b-2 border-transparent -mb-[var(--border-element)]",
         "data-[state=active]:border-foreground data-[state=active]:bg-transparent",
         "data-[state=active]:shadow-none data-[state=active]:text-foreground",
-        "text-muted-foreground hover:text-foreground transition-colors duration-[var(--duration-fast)]",
+        "text-muted-foreground hover:text-foreground transition-colors duration-[var(--sfx-duration-fast)]",
         className
       ),
       ...props
@@ -829,7 +829,7 @@ function SFTableRow({
     TableRow,
     {
       className: cn(
-        "border-b border-foreground/20 hover:bg-muted/50 transition-colors duration-[var(--duration-fast)]",
+        "border-b border-foreground/20 hover:bg-muted/50 transition-colors duration-[var(--sfx-duration-fast)]",
         className
       ),
       ...props
@@ -1541,7 +1541,7 @@ function Toggle({
   );
 }
 var sfToggleVariants = cva(
-  "sf-pressable sf-focusable rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-[var(--duration-fast)]",
+  "sf-pressable sf-focusable rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-[var(--sfx-duration-fast)]",
   {
     variants: {
       intent: {
@@ -3495,7 +3495,7 @@ function SFNavigationMenuTrigger({
     NavigationMenuTrigger,
     {
       className: cn(
-        "sf-focusable rounded-none font-mono uppercase tracking-wider text-xs border-2 border-transparent hover:border-foreground data-popup-open:border-foreground transition-colors duration-[var(--duration-fast)]",
+        "sf-focusable rounded-none font-mono uppercase tracking-wider text-xs border-2 border-transparent hover:border-foreground data-popup-open:border-foreground transition-colors duration-[var(--sfx-duration-fast)]",
         "focus-visible:ring-0 focus-visible:outline-none",
         className
       ),
@@ -3566,7 +3566,7 @@ function SFNavigationMenuMobile({
   ] }) });
 }
 var sfToggleGroupItemVariants = cva(
-  "sf-pressable sf-focusable rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-[var(--duration-fast)]",
+  "sf-pressable sf-focusable rounded-none border-2 border-foreground font-mono uppercase tracking-wider text-xs transition-colors duration-[var(--sfx-duration-fast)]",
   {
     variants: {
       intent: {
