@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap-core";
 import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
-import { DatamoshOverlayLazy } from "@/components/animation/datamosh-overlay-lazy";
+
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
-import { ParticleFieldLazy } from "@/components/animation/particle-field-lazy";
-import { useIdleEscalation } from "@/hooks/use-idle-escalation";
 
 /**
  * Compute and write derived CSS custom properties from --sfx-signal-intensity.
@@ -238,196 +236,6 @@ function VHSBadge() {
  * Reduced-motion: entire system is suppressed — silent and static.
  */
 /**
- * Idle standby overlay — 3-phase escalation via useIdleEscalation hook.
- *
- * Phase 0 (8s):  Grain drift — activates sf-grain-animated class
- * Phase 1 (20s): Scan emphasis — relative +0.03 boost to --sfx-vhs-scanline-opacity
- * Phase 2 (45s): Glitch burst — OKLCH color pulse for 500ms, then auto-reset
- *
- * All escalation respects prefers-reduced-motion (suppressed in hook).
- * Scanline boost uses RELATIVE offset from current computed value.
- */
-function IdleOverlay() {
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const grainRef = useRef<HTMLDivElement>(null);
-  const tickerRef = useRef<((t: number, dt: number) => void) | null>(null);
-  const basePrimaryRef = useRef<string>("");
-  const baseScanlineRef = useRef<number | null>(null);
-  const glitchTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const dropoutRef = useRef<HTMLDivElement>(null);
-
-  // --- Phase 0: Grain drift ---
-  const enterPhase0 = useCallback(() => {
-    grainRef.current?.classList.add("sf-grain-animated");
-    overlayRef.current?.classList.add("sf-idle-overlay--active");
-  }, []);
-
-  const exitPhase0 = useCallback(() => {
-    grainRef.current?.classList.remove("sf-grain-animated");
-    const el = overlayRef.current;
-    if (el) {
-      el.style.transition = "none";
-      el.classList.remove("sf-idle-overlay--active");
-      requestAnimationFrame(() => { el.style.transition = ""; });
-    }
-  }, []);
-
-  // --- Phase 1: Scanline emphasis (relative +0.03) ---
-  const enterPhase1 = useCallback(() => {
-    const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue("--sfx-vhs-scanline-opacity")
-      .trim();
-    const current = parseFloat(raw) || 0;
-    baseScanlineRef.current = current;
-    document.documentElement.style.setProperty(
-      "--sfx-vhs-scanline-opacity",
-      String(current + 0.03),
-    );
-  }, []);
-
-  const exitPhase1 = useCallback(() => {
-    if (baseScanlineRef.current !== null) {
-      document.documentElement.style.setProperty(
-        "--sfx-vhs-scanline-opacity",
-        String(baseScanlineRef.current),
-      );
-      baseScanlineRef.current = null;
-    }
-  }, []);
-
-  // --- Phase 2: Glitch burst (500ms color pulse, then auto-reset) + dropout bands + signal dropout ---
-  const enterPhase2 = useCallback(() => {
-    // Signal dropout glitch — CSS-only clip-path burst
-    const el = dropoutRef.current;
-    if (el) {
-      el.classList.add("sf-signal-dropout--active");
-      const onEnd = () => {
-        el.classList.remove("sf-signal-dropout--active");
-        el.removeEventListener("animationend", onEnd);
-      };
-      el.addEventListener("animationend", onEnd);
-    }
-
-    // Capture current --sfx-primary
-    basePrimaryRef.current = getComputedStyle(document.documentElement)
-      .getPropertyValue("--sfx-primary")
-      .trim();
-
-    const match = basePrimaryRef.current.match(/oklch\(([\d.]+)/);
-    if (match) {
-      const baseLightness = parseFloat(match[1]);
-
-      // Guard: remove any existing ticker
-      if (tickerRef.current) {
-        gsap.ticker.remove(tickerRef.current);
-        tickerRef.current = null;
-      }
-
-      let elapsed = 0;
-      const PERIOD = 4; // seconds
-      const pulseFn = (_time: number, deltaTime: number) => {
-        elapsed += deltaTime / 1000;
-        const l = baseLightness + 0.05 * Math.sin((2 * Math.PI * elapsed) / PERIOD);
-        const next = basePrimaryRef.current.replace(/oklch\([\d.]+/, `oklch(${l.toFixed(3)}`);
-        document.documentElement.style.setProperty("--sfx-primary", next);
-      };
-
-      gsap.ticker.add(pulseFn);
-      tickerRef.current = pulseFn;
-    }
-
-    // Auto-reset after 500ms glitch burst
-    glitchTimerRef.current = setTimeout(() => {
-      // Clean up ticker
-      if (tickerRef.current) {
-        gsap.ticker.remove(tickerRef.current);
-        tickerRef.current = null;
-      }
-      if (basePrimaryRef.current) {
-        document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
-        basePrimaryRef.current = "";
-      }
-    }, 500);
-
-    // VHS-03: Activate dropout bands during idle phase 2+
-    const dropoutEl = document.querySelector("[data-vhs-dropout]");
-    if (dropoutEl) {
-      // Clear existing bands safely
-      while (dropoutEl.firstChild) {
-        dropoutEl.removeChild(dropoutEl.firstChild);
-      }
-      // Generate 3-6 random dropout bands (1-3px height, < 5% viewport coverage)
-      const bandCount = Math.floor(Math.random() * 4) + 3;
-      for (let i = 0; i < bandCount; i++) {
-        const band = document.createElement("div");
-        band.className = "vhs-dropout__band";
-        const top = Math.random() * 95;
-        const height = 1 + Math.random() * 2; // 1-3px
-        band.style.top = `${top}%`;
-        band.style.height = `${height}px`;
-        dropoutEl.appendChild(band);
-      }
-      dropoutEl.classList.add("vhs-dropout--active");
-    }
-  }, []);
-
-  const exitPhase2 = useCallback(() => {
-    clearTimeout(glitchTimerRef.current);
-    if (tickerRef.current) {
-      gsap.ticker.remove(tickerRef.current);
-      tickerRef.current = null;
-    }
-    if (basePrimaryRef.current) {
-      document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
-      basePrimaryRef.current = "";
-    }
-    // VHS-03: Deactivate dropout bands
-    const dropoutEl = document.querySelector("[data-vhs-dropout]");
-    if (dropoutEl) {
-      dropoutEl.classList.remove("vhs-dropout--active");
-    }
-  }, []);
-
-  // Wire the 3 phases through useIdleEscalation
-  const thresholds = useRef([
-    { delay: 8_000, onEnter: enterPhase0, onExit: exitPhase0 },
-    { delay: 20_000, onEnter: enterPhase1, onExit: exitPhase1 },
-    { delay: 45_000, onEnter: enterPhase2, onExit: exitPhase2 },
-  ]).current;
-
-  useIdleEscalation(thresholds);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      clearTimeout(glitchTimerRef.current);
-      if (tickerRef.current) { gsap.ticker.remove(tickerRef.current); }
-      if (basePrimaryRef.current) {
-        document.documentElement.style.setProperty("--sfx-primary", basePrimaryRef.current);
-      }
-      if (baseScanlineRef.current !== null) {
-        document.documentElement.style.setProperty(
-          "--sfx-vhs-scanline-opacity",
-          String(baseScanlineRef.current),
-        );
-      }
-    };
-  }, []);
-
-  return (
-    <>
-      <div ref={overlayRef} className="sf-idle-overlay" aria-hidden="true" />
-      <div
-        ref={grainRef}
-        className="sf-idle-grain fixed inset-0 pointer-events-none z-[var(--z-vhs)] sf-grain"
-        aria-hidden="true"
-      />
-      <div ref={dropoutRef} className="sf-signal-dropout" aria-hidden="true" />
-    </>
-  );
-}
-
-/**
  * Document-level interaction feedback — audio tones + haptic micro-vibration.
  *
  * Uses a single pointerover/pointerout/pointerdown listener on document with
@@ -544,15 +352,12 @@ export function GlobalEffects() {
   return (
     <>
       <VHSOverlay />
-      <DatamoshOverlayLazy />
       <CanvasCursor />
       <ScrollProgress />
       <ScrollToTop />
       <VHSBadge />
-      <IdleOverlay />
       <InteractionFeedback />
       <SignalOverlayLazy />
-      <ParticleFieldLazy />
       <SignalIntensityBridge />
     </>
   );

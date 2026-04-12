@@ -108,10 +108,10 @@ export function ParticleField() {
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 1.5,
+      size: 0.8,
       color: 0xffffff,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.12,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -170,7 +170,7 @@ export function ParticleField() {
 
       // Modulate opacity by intensity
       if (materialRef.current) {
-        materialRef.current.opacity = 0.15 + _intensity * 0.25;
+        materialRef.current.opacity = 0.05 + _intensity * 0.1;
       }
     };
 

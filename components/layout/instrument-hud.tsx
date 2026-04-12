@@ -168,7 +168,7 @@ export function InstrumentHUD() {
       data-instrument-hud
       role="complementary"
       aria-label="System readout"
-      className="fixed top-[24px] right-[24px] z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
+      className="fixed top-[80px] right-[24px] z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
     >
       <span data-hud-field="section" className="text-foreground">
         {sectionLabel}
