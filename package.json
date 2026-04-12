@@ -61,7 +61,8 @@
     "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts && npx tsx scripts/verify-bundle-size.ts",
     "docs:generate": "tsx scripts/generate-api-docs.ts",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "peerDependencies": {
     "next": ">=15.3.0",
