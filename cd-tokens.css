@@ -1,0 +1,39 @@
+/* cd-tokens.css — Culture Division token overrides
+   Load AFTER signalframeux/signalframeux.css in your CSS.
+   Unlayered CSS always wins over @layer signalframeux — no !important needed.
+
+   Palette: Achromatic editorial. Deep blacks, near-whites, no chromatic primary.
+   Based on CD site globals.css (2026-04-11).
+   Future: yellow accent may map to --sfx-warning or --sfx-accent. */
+
+:root {
+  /* ── Core Palette ── */
+  --sfx-background: oklch(0.08 0 0);
+  --sfx-foreground: oklch(0.96 0 0);
+  --sfx-primary: oklch(0.96 0 0);           /* white-on-dark; no magenta */
+  --sfx-primary-foreground: oklch(0.08 0 0);
+  --sfx-secondary: oklch(0.18 0 0);
+  --sfx-secondary-foreground: oklch(0.96 0 0);
+  --sfx-accent: oklch(0.18 0 0);
+  --sfx-accent-foreground: oklch(0.96 0 0);
+
+  /* ── Extended Palette ── */
+  --sfx-muted: oklch(0.18 0 0);
+  --sfx-muted-foreground: oklch(0.60 0 0);
+  --sfx-card: oklch(0.12 0 0);
+  --sfx-card-foreground: oklch(0.96 0 0);
+  --sfx-popover: oklch(0.12 0 0);
+  --sfx-popover-foreground: oklch(0.96 0 0);
+  --sfx-border: oklch(0.22 0 0);
+  --sfx-input: oklch(0.22 0 0);
+  --sfx-ring: oklch(0.96 0 0);
+  --sfx-destructive: oklch(0.55 0.2 25);
+
+  /* ── Fonts: Geist Sans + Mono (pending custom typeface pipeline)
+     Structure: --sfx-font-sans, --sfx-font-mono, --sfx-font-heading, --sfx-font-display
+     Future typeface swap: replace values here when NCL Graxebeosa / Segapunk / DEN HVNTER ships */
+  --sfx-font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --sfx-font-mono: "Geist Mono", ui-monospace, monospace;
+  --sfx-font-heading: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --sfx-font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
