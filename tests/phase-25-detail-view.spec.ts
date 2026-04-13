@@ -214,10 +214,10 @@ test("SI-01: Detail panel open state persists via sessionStorage across navigati
 test("SI-02: Homepage grid cards expand ComponentDetail panel with 3 tabs", async ({ page }) => {
   await page.goto("/");
   // Wait for the component grid section to render
-  await page.waitForSelector('[data-section="grid"]', { timeout: 10000 });
+  await page.waitForSelector('[data-section="inventory"]', { timeout: 10000 });
 
   // Click the first homepage component card (role="button" with aria-label)
-  const firstCard = page.locator('[data-section="grid"] [role="button"]').first();
+  const firstCard = page.locator('[data-section="inventory"] [role="row"][tabindex="0"]').first();
   await expect(firstCard).toBeVisible({ timeout: 8000 });
   await firstCard.click();
 

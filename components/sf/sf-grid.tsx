@@ -12,9 +12,9 @@ const sfGridVariants = cva("grid", {
       auto: "grid-cols-[repeat(auto-fill,minmax(280px,1fr))]",
     },
     gap: {
-      "4": "gap-4",
-      "6": "gap-6",
-      "8": "gap-8",
+      "4": "gap-[var(--sfx-space-4)]",
+      "6": "gap-[var(--sfx-space-6)]",
+      "8": "gap-[var(--sfx-space-8)]",
     },
   },
   defaultVariants: {

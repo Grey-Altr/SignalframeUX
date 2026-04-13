@@ -87,7 +87,7 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     const box = await page.locator("[data-instrument-hud]").boundingBox();
     expect(box).not.toBeNull();
     if (box) {
-      expect(box.y).toBeLessThanOrEqual(40);
+      expect(box.y).toBeLessThanOrEqual(90);
       expect(1440 - (box.x + box.width)).toBeLessThanOrEqual(40);
     }
   });
@@ -95,7 +95,7 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
   test("VL-06: DOM — section field matches [NN//LABEL] format", async ({ page }) => {
     await page.goto("/");
     const sectionText = await page.locator('[data-hud-field="section"]').textContent();
-    expect(sectionText).toMatch(/^\[\d{2}\/\/[A-Z]+\]$/);
+    expect(sectionText).toMatch(/^\[\d{2}\/\/[A-Z—]+\]$/);
   });
 
   test("VL-06: DOM — scroll field matches NN% format", async ({ page }) => {
@@ -628,7 +628,7 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
   test("SP-04: source — lib/api-docs.ts untouched structure preserved", () => {
     const src = fs.readFileSync(path.resolve(ROOT, "lib/api-docs.ts"), "utf-8");
     expect(src).toContain("export const API_DOCS");
-    expect(src).toContain("export interface ComponentDoc");
+    expect(src).toContain("export type { ComponentDoc");
   });
 
   test("SP-04: source — api-explorer has no rounded-* classes", () => {

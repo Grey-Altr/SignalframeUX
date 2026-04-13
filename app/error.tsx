@@ -34,7 +34,7 @@ export default function Error({
   return (
     <main
       id="main-content"
-      className="min-h-screen flex items-center justify-center bg-background px-6"
+      className="min-h-screen flex items-center justify-center bg-background px-[var(--sfx-space-6)]"
     >
       <SFContainer>
         <div role="alert" className="text-center">
@@ -42,14 +42,14 @@ export default function Error({
           <div
             data-anim="error-code"
             aria-hidden="true"
-            className="sf-display sf-glitch text-[clamp(48px,8vw,80px)] text-destructive mb-4"
+            className="sf-display sf-glitch text-[clamp(48px,8vw,80px)] text-destructive mb-[var(--sfx-space-4)]"
           >
             ERROR
           </div>
           <SFText
             variant="body"
             as="p"
-            className="uppercase tracking-[0.1em] text-muted-foreground mb-6"
+            className="uppercase tracking-[0.1em] text-muted-foreground mb-[var(--sfx-space-6)]"
           >
             AN UNEXPECTED ERROR OCCURRED
           </SFText>
@@ -57,7 +57,7 @@ export default function Error({
             <SFText
               variant="small"
               as="span"
-              className="block font-mono uppercase tracking-wider text-muted-foreground mb-8"
+              className="block font-mono uppercase tracking-wider text-muted-foreground mb-[var(--sfx-space-8)]"
             >
               DIGEST: {error.digest}
             </SFText>

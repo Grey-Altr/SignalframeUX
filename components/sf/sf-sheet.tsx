@@ -81,7 +81,7 @@ function SFSheetHeader({
 }: React.ComponentProps<typeof SheetHeader>) {
   return (
     <SheetHeader
-      className={cn("border-b-2 border-foreground pb-4", className)}
+      className={cn("border-b-2 border-foreground pb-[var(--sfx-space-4)]", className)}
       {...props}
     />
   );
@@ -98,7 +98,7 @@ function SFSheetFooter({
 }: React.ComponentProps<typeof SheetFooter>) {
   return (
     <SheetFooter
-      className={cn("border-t-2 border-foreground bg-muted/30 pt-4", className)}
+      className={cn("border-t-2 border-foreground bg-muted/30 pt-[var(--sfx-space-4)]", className)}
       {...props}
     />
   );

@@ -19,7 +19,7 @@ export const FEEDBACK: Record<string, ComponentRegistryEntry> = {
 <SFBadge intent="primary">NEW</SFBadge>
 <SFBadge intent="outline">STABLE</SFBadge>
 <SFBadge intent="signal">LIVE</SFBadge>`,
-    docId: "sfBadge",
+    docId: "SFBadge",
     layer: "frame",
     pattern: "A",
     category: "FEEDBACK",
@@ -42,7 +42,7 @@ export const FEEDBACK: Record<string, ComponentRegistryEntry> = {
 // Trigger:
 sfToast.success('OPERATION COMPLETE')
 sfToast.error('SYSTEM FAILURE')`,
-    docId: "sfToastFrame",
+    docId: "SFToaster",
     layer: "frame",
     pattern: "A",
     category: "FEEDBACK",
@@ -65,7 +65,7 @@ sfToast.error('SYSTEM FAILURE')`,
   <SFAlertTitle>SYSTEM WARNING</SFAlertTitle>
   <SFAlertDescription>DEGRADED PERFORMANCE DETECTED</SFAlertDescription>
 </SFAlert>`,
-    docId: "sfAlert",
+    docId: "SFAlert",
     layer: "frame",
     pattern: "A",
     category: "FEEDBACK",
@@ -96,7 +96,7 @@ sfToast.error('SYSTEM FAILURE')`,
     </SFAlertDialogFooter>
   </SFAlertDialogContent>
 </SFAlertDialog>`,
-    docId: "sfAlertDialog",
+    docId: "SFAlertDialog",
     layer: "frame",
     pattern: "A",
     category: "FEEDBACK",
@@ -121,7 +121,7 @@ sfToast.error('SYSTEM FAILURE')`,
     HIDDEN CONTENT REVEALED ON TOGGLE
   </SFCollapsibleContent>
 </SFCollapsible>`,
-    docId: "sfCollapsible",
+    docId: "SFCollapsible",
     layer: "frame",
     pattern: "A",
     category: "FEEDBACK",
@@ -141,7 +141,7 @@ sfToast.error('SYSTEM FAILURE')`,
   title="NO RESULTS"
   description="ADJUST YOUR FILTERS OR CREATE NEW CONTENT."
 />`,
-    docId: "sfEmptyState",
+    docId: "SFEmptyState",
     layer: "frame",
     pattern: "C",
     category: "FEEDBACK",
@@ -164,7 +164,7 @@ sfToast.error('SYSTEM FAILURE')`,
     <SFAccordionContent>EXPANDED CONTENT</SFAccordionContent>
   </SFAccordionItem>
 </SFAccordion>`,
-    docId: "sfAccordion",
+    docId: "SFAccordion",
     layer: "signal",
     pattern: "A",
     category: "FEEDBACK",
@@ -183,7 +183,7 @@ sfToast.error('SYSTEM FAILURE')`,
     code: `import { SFProgress } from '@/components/sf'
 
 <SFProgress value={60} />`,
-    docId: "sfProgress",
+    docId: "SFProgress",
     layer: "signal",
     pattern: "A",
     category: "FEEDBACK",
@@ -204,7 +204,7 @@ sfToast.error('SYSTEM FAILURE')`,
 
 // SIGNAL variant — with GSAP slide entrance:
 sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
-    docId: "sfToastSignal",
+    docId: "sfToast",
     layer: "signal",
     pattern: "A",
     category: "FEEDBACK",
@@ -225,7 +225,7 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
   <SFStep label="CONFIG" status="active" />
   <SFStep label="DEPLOY" status="pending" />
 </SFStepper>`,
-    docId: "sfStepper",
+    docId: "SFStepper",
     layer: "signal",
     pattern: "C",
     category: "FEEDBACK",

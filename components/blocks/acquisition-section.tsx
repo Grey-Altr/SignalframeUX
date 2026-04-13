@@ -30,15 +30,15 @@ export function AcquisitionSection() {
       className="font-mono w-full border-t-4 border-foreground overflow-hidden"
       style={{ maxHeight: "50vh" }}
     >
-      <div className="px-8 md:px-12 py-8 md:py-10 flex flex-col gap-6 md:gap-8">
+      <div className="px-[var(--sfx-space-8)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-8)] md:py-10 flex flex-col gap-[var(--sfx-space-6)] md:gap-[var(--sfx-space-8)]">
         {/* Section header — subdued, data-sheet register */}
-        <span className="text-muted-foreground text-xs tracking-widest uppercase flex items-center gap-2">
+        <span className="text-muted-foreground text-xs tracking-widest uppercase flex items-center gap-[var(--sfx-space-2)]">
           <CDSymbol name="circuit-node" size={10} className="text-primary" />
           ACQUIRE
         </span>
 
         {/* CLI hero + copy trigger */}
-        <div className="flex items-baseline gap-4 flex-wrap">
+        <div className="flex items-baseline gap-[var(--sfx-space-4)] flex-wrap">
           <span className="text-xl md:text-2xl lg:text-3xl tracking-tight text-foreground">
             npx signalframeux init
           </span>
@@ -53,7 +53,7 @@ export function AcquisitionSection() {
         </div>
 
         {/* Text anchors — monospaced, not buttons */}
-        <div className="flex gap-8 text-sm">
+        <div className="flex gap-[var(--sfx-space-8)] text-sm">
           <Link
             href="/init"
             className="text-muted-foreground hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"

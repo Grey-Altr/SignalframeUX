@@ -21,7 +21,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
   <SFTabsContent value="overview">OVERVIEW CONTENT</SFTabsContent>
   <SFTabsContent value="specs">SPECS CONTENT</SFTabsContent>
 </SFTabs>`,
-    docId: "sfTabs",
+    docId: "SFTabs",
     layer: "frame",
     pattern: "A",
     category: "NAVIGATION",
@@ -45,7 +45,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
     <SFPaginationItem><SFPaginationNext href="#" /></SFPaginationItem>
   </SFPaginationContent>
 </SFPagination>`,
-    docId: "sfPagination",
+    docId: "SFPagination",
     layer: "frame",
     pattern: "A",
     category: "NAVIGATION",
@@ -66,7 +66,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
   <SFAvatarImage src="/avatar.png" alt="USER" />
   <SFAvatarFallback>CD</SFAvatarFallback>
 </SFAvatar>`,
-    docId: "sfAvatar",
+    docId: "SFAvatar",
     layer: "frame",
     pattern: "A",
     category: "NAVIGATION",
@@ -89,7 +89,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
     <SFBreadcrumbItem><SFBreadcrumbPage>COMPONENTS</SFBreadcrumbPage></SFBreadcrumbItem>
   </SFBreadcrumbList>
 </SFBreadcrumb>`,
-    docId: "sfBreadcrumb",
+    docId: "SFBreadcrumb",
     layer: "frame",
     pattern: "A",
     category: "NAVIGATION",
@@ -115,7 +115,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
     </SFNavigationMenuItem>
   </SFNavigationMenuList>
 </SFNavigationMenu>`,
-    docId: "sfNavigationMenu",
+    docId: "SFNavigationMenu",
     layer: "frame",
     pattern: "A",
     category: "NAVIGATION",
@@ -134,7 +134,7 @@ export const NAVIGATION: Record<string, ComponentRegistryEntry> = {
 import SFMenubarLazy from '@/components/sf/sf-menubar-lazy'
 
 <SFMenubarLazy />`,
-    docId: "sfMenubar",
+    docId: "SFMenubar",
     layer: "frame",
     pattern: "B",
     category: "NAVIGATION",

@@ -95,13 +95,13 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
       <button
         onClick={onClose}
         aria-label="Close navigation menu"
-        className="absolute top-[clamp(12px,3vw,24px)] right-[clamp(16px,4vw,32px)] text-background dark:text-foreground font-mono text-2xl leading-none p-2 hover:text-primary transition-colors"
+        className="absolute top-[clamp(12px,3vw,24px)] right-[clamp(16px,4vw,32px)] text-background dark:text-foreground font-mono text-2xl leading-none p-[var(--sfx-space-2)] hover:text-primary transition-colors"
       >
         ✕
       </button>
 
       {/* Nav items */}
-      <div className="flex flex-col justify-center h-full px-[clamp(24px,6vw,64px)] gap-2">
+      <div className="flex flex-col justify-center h-full px-[clamp(24px,6vw,64px)] gap-[var(--sfx-space-2)]">
         {links.map((link, i) => (
           <Link
             key={link.href}

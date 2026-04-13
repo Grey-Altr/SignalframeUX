@@ -53,7 +53,7 @@ function SFToastContent({
     <div
       ref={ref}
       className={cn(
-        "flex flex-row items-start border-2 bg-background text-foreground font-mono rounded-none p-4 shadow-none",
+        "flex flex-row items-start border-2 bg-background text-foreground font-mono rounded-none p-[var(--sfx-space-4)] shadow-none",
         intentBorder[intent] ?? intentBorder.default
       )}
     >
@@ -63,7 +63,7 @@ function SFToastContent({
           {title}
         </div>
         {description && (
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-muted-foreground mt-[var(--sfx-space-1)]">
             {description}
           </div>
         )}

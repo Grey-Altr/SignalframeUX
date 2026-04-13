@@ -111,12 +111,12 @@ export function ColorSpecimen({
   return (
     <div className="border-b-4 border-foreground sf-halftone" data-halftone>
       {/* ── HEADER / AXIS LEGEND / TOGGLE ── */}
-      <div className="border-b-2 border-foreground px-6 md:px-12 py-8 space-y-4">
+      <div className="border-b-2 border-foreground px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-8)] space-y-4">
         <div className="sf-display" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           OKLCH_MATRIX ( {scales.length} )
         </div>
-        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4">
-          <div className="flex flex-wrap gap-6 font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-[var(--sfx-space-4)]">
+          <div className="flex flex-wrap gap-[var(--sfx-space-6)] font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground">
             <span>
               <span className="text-foreground font-bold">L</span> = LIGHTNESS
             </span>
@@ -132,7 +132,7 @@ export function ColorSpecimen({
             onClick={onToggleShowAll}
             aria-expanded={showAll}
             aria-controls="color-oklch-matrix"
-            className="font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] border border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-colors duration-100 sf-pressable"
+            className="font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] border border-foreground px-[var(--sfx-space-4)] py-[var(--sfx-space-2)] hover:bg-foreground hover:text-background transition-colors duration-100 sf-pressable"
           >
             {showAll ? `SHOW CORE ${coreCount}` : `SHOW ALL ${scales.length}`}
           </button>
@@ -147,7 +147,7 @@ export function ColorSpecimen({
         data-anim="stagger"
         className="overflow-x-auto relative"
       >
-        <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-4 py-1.5 border-b border-foreground/20">
+        <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-[var(--sfx-space-4)] py-[var(--sfx-space-1)].5 border-b border-foreground/20">
           &larr; SCROLL &rarr;
         </div>
         {visibleScales.map((scale, scaleIdx) => (
@@ -159,7 +159,7 @@ export function ColorSpecimen({
           >
             <div
               role="rowheader"
-              className="px-4 flex flex-col justify-center font-mono text-[var(--text-2xs)] uppercase tracking-[0.15em] border-r border-foreground/15 bg-background"
+              className="px-[var(--sfx-space-4)] flex flex-col justify-center font-mono text-[var(--text-2xs)] uppercase tracking-[0.15em] border-r border-foreground/15 bg-background"
             >
               <span className="text-foreground font-bold">{scale.name}</span>
               <span className="text-muted-foreground">H:{scale.hue}</span>
@@ -193,7 +193,7 @@ export function ColorSpecimen({
 
       {/* ── FOCUS READOUT ── */}
       {focusedScale && focusedStepSwatch && (
-        <div className="px-6 md:px-12 py-6 border-t-2 border-foreground font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground flex flex-wrap gap-6">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-t-2 border-foreground font-mono text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground flex flex-wrap gap-[var(--sfx-space-6)]">
           <span className="text-foreground font-bold">FOCUS //</span>
           <span>
             {focusedScale.name}.{focusedStepSwatch.step}
@@ -205,7 +205,7 @@ export function ColorSpecimen({
       )}
 
       {!showAll && (
-        <div className="border-t border-foreground/20 py-10 px-6 md:px-12 text-center">
+        <div className="border-t border-foreground/20 py-10 px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] text-center">
           <p className="text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground">
             {scales.length - coreCount} EXTENDED SCALES AVAILABLE &middot; FULL SPECTRUM COVERAGE AT 8-DEGREE HUE INTERVALS
           </p>

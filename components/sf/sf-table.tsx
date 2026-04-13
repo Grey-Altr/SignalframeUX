@@ -65,7 +65,7 @@ function SFTableHead({
   return (
     <TableHead
       className={cn(
-        "uppercase tracking-wider text-xs text-background font-normal h-9 px-3",
+        "uppercase tracking-wider text-xs text-background font-normal h-9 px-[var(--sfx-space-3)]",
         className
       )}
       {...props}
@@ -94,7 +94,7 @@ function SFTableRow({
 }
 
 /**
- * Sub-component of SFTable — data cell with consistent px-3 py-2 padding.
+ * Sub-component of SFTable — data cell with consistent px-[var(--sfx-space-3)] py-[var(--sfx-space-2)] padding.
  * @example
  * <SFTableCell>alice@example.com</SFTableCell>
  */
@@ -103,7 +103,7 @@ function SFTableCell({
   ...props
 }: React.ComponentProps<typeof TableCell>) {
   return (
-    <TableCell className={cn("px-3 py-2", className)} {...props} />
+    <TableCell className={cn("px-[var(--sfx-space-3)] py-[var(--sfx-space-2)]", className)} {...props} />
   );
 }
 

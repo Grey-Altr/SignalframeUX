@@ -248,8 +248,8 @@ export function TokenViz() {
   }, [draw]);
 
   return (
-    <div className="px-6 md:px-12 py-12">
-      <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold mb-6">
+    <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-12)]">
+      <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold mb-[var(--sfx-space-6)]">
         TOKEN DIAGNOSTIC
       </h2>
       <canvas

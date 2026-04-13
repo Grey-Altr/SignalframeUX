@@ -167,7 +167,7 @@ export function APIExplorer() {
     >
       {/* ── FILTER BAR ─────────────────────────────────────────── */}
       <div className="sticky top-[var(--nav-height)] z-[var(--z-content)] border-b border-foreground/25 bg-background">
-        <label className="flex items-center gap-4 px-6 md:px-12 py-4 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground min-w-0">
+        <label className="flex items-center gap-[var(--sfx-space-4)] px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-4)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground min-w-0">
           <span aria-hidden="true" className="shrink-0">FILTER //</span>
           <input
             data-api-search
@@ -200,7 +200,7 @@ export function APIExplorer() {
           <div key={group.key} data-api-surface-group={group.key}>
             <div
               data-api-surface-group-head
-              className="flex items-baseline justify-between px-6 md:px-12 pt-12 pb-4 text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
+              className="flex items-baseline justify-between px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-4)] text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
             >
               <span className="text-foreground">
                 {group.label} <span className="text-muted-foreground">{"//"}</span> {group.entries.length} SURFACES
@@ -211,7 +211,7 @@ export function APIExplorer() {
             </div>
 
             {group.entries.length === 0 ? (
-              <div className="px-6 md:px-12 py-6 text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+              <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
                 {"// NO MATCH"}
               </div>
             ) : (
@@ -229,7 +229,7 @@ export function APIExplorer() {
                         aria-expanded={isActive}
                         onClick={() => handleEntryClick(entry.id)}
                         onKeyDown={(e) => handleEntryKeyDown(e, entry.id)}
-                        className={`group w-full text-left px-6 md:px-12 py-3 flex items-baseline gap-6 border-l-[3px] transition-colors outline-none ${
+                        className={`group w-full text-left px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-3)] flex items-baseline gap-[var(--sfx-space-6)] border-l-[3px] transition-colors outline-none ${
                           isActive
                             ? "border-l-primary bg-foreground/[0.06]"
                             : "border-l-transparent hover:bg-foreground/[0.04] focus-visible:bg-foreground/[0.08] focus-visible:border-l-foreground/40"
@@ -257,7 +257,7 @@ export function APIExplorer() {
                       </button>
 
                       {isActive && (
-                        <div className="px-6 md:px-12 pt-6 pb-12 bg-foreground/[0.03] border-t border-foreground/15">
+                        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-6)] pb-[var(--sfx-space-12)] bg-foreground/[0.03] border-t border-foreground/15">
                           <EntryDataSheet doc={doc} />
                         </div>
                       )}
@@ -270,7 +270,7 @@ export function APIExplorer() {
         ))}
 
         {/* Footer rule — schematic terminator */}
-        <div className="px-6 md:px-12 py-8 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-8)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground">
           [EOF] // SIGNALFRAME//UX · {totalAll} SURFACES REGISTERED
         </div>
       </div>
@@ -288,13 +288,13 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
   return (
     <div className="max-w-[var(--max-w-wide)]">
       {/* Description */}
-      <p className="font-mono text-[var(--text-sm)] uppercase tracking-tight text-muted-foreground leading-[1.6] max-w-[72ch] mb-8">
+      <p className="font-mono text-[var(--text-sm)] uppercase tracking-tight text-muted-foreground leading-[1.6] max-w-[72ch] mb-[var(--sfx-space-8)]">
         {doc.description}
       </p>
 
       {/* Import line */}
-      <section className="mb-8">
-        <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-2 border-b border-foreground/15 pb-1">
+      <section className="mb-[var(--sfx-space-8)]">
+        <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-2)] border-b border-foreground/15 pb-[var(--sfx-space-1)]">
           IMPORT
         </div>
         <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground whitespace-pre-wrap break-all">
@@ -304,15 +304,15 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
 
       {/* Props data sheet — column-aligned grid, NOT a table, NOT cards */}
       {doc.props.length > 0 && (
-        <section className="mb-8">
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
+        <section className="mb-[var(--sfx-space-8)]">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-3)] border-b border-foreground/15 pb-[var(--sfx-space-1)]">
             {propsLabel}
           </div>
           <div
             data-api-props-table
             role="list"
             aria-label={`${doc.name} ${propsLabel.toLowerCase()}`}
-            className="grid grid-cols-[minmax(120px,auto)_minmax(140px,1.4fr)_minmax(90px,auto)_minmax(200px,2fr)] gap-x-6 gap-y-2 font-mono text-[var(--text-xs)] pt-2"
+            className="grid grid-cols-[minmax(120px,auto)_minmax(140px,1.4fr)_minmax(90px,auto)_minmax(200px,2fr)] gap-x-6 gap-y-2 font-mono text-[var(--text-xs)] pt-[var(--sfx-space-2)]"
           >
             <div className="uppercase tracking-[0.15em] text-muted-foreground">NAME</div>
             <div className="uppercase tracking-[0.15em] text-muted-foreground">TYPE</div>
@@ -339,17 +339,17 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
 
       {/* Usage examples — inline pre blocks */}
       {doc.usage.length > 0 && (
-        <section className="mb-8">
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
+        <section className="mb-[var(--sfx-space-8)]">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-3)] border-b border-foreground/15 pb-[var(--sfx-space-1)]">
             USAGE
           </div>
           <div className="space-y-4">
             {doc.usage.map((ex) => (
               <div key={ex.label}>
-                <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground mb-1">
+                <div className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground mb-[var(--sfx-space-1)]">
                   {"// "}{ex.label}
                 </div>
-                <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground bg-foreground/[0.05] border border-foreground/10 p-4 whitespace-pre">
+                <pre className="overflow-x-auto font-mono text-[var(--text-sm)] text-foreground bg-foreground/[0.05] border border-foreground/10 p-[var(--sfx-space-4)] whitespace-pre">
                   {ex.code}
                 </pre>
               </div>
@@ -361,7 +361,7 @@ function EntryDataSheet({ doc }: { doc: ComponentDoc }) {
       {/* A11Y notes */}
       {doc.a11y.length > 0 && (
         <section>
-          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3 border-b border-foreground/15 pb-1">
+          <div className="text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-3)] border-b border-foreground/15 pb-[var(--sfx-space-1)]">
             A11Y
           </div>
           <ul className="list-none m-0 p-0 font-mono text-[var(--text-xs)] uppercase tracking-tight text-muted-foreground space-y-1">

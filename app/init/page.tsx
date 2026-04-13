@@ -4,8 +4,6 @@ import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
-
 
 export const metadata: Metadata = {
   title: "[00//BOOT] — SIGNALFRAME//UX",
@@ -173,18 +171,14 @@ export default function InitPage() {
       <main id="main-content" data-cursor data-section="init" data-section-label="SYS" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INIT" }]} />
 
-        {/* SP-05: nav hides until the page header scrolls out of view
-            (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
-        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
-
         {/* ═══ PAGE HEADER ═══ */}
-        <SFSection label="INIT" className="py-0 relative overflow-hidden">
+        <SFSection label="INIT" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end relative z-10"
           >
-            <div className="px-6 md:px-12 pt-12 pb-6">
-              <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)]">
+              <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-4)]">
                 [00//BOOT]
               </div>
               <h1
@@ -197,7 +191,7 @@ export default function InitPage() {
                 <span data-anim="page-heading" suppressHydrationWarning>LIZE</span>
               </h1>
             </div>
-            <div className="px-6 md:px-12 pb-6 text-right font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+            <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
               5 STEP SEQUENCE
             </div>
           </header>
@@ -213,7 +207,7 @@ export default function InitPage() {
                 <article
                   key={step.number}
                   data-init-step={step.number}
-                  className="grid grid-cols-[auto_1fr] gap-8 md:gap-12 py-12 md:py-16 px-6 md:px-12"
+                  className="grid grid-cols-[auto_1fr] gap-[var(--sfx-space-8)] md:gap-[var(--sfx-space-12)] py-[var(--sfx-space-12)] md:py-16 px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)]"
                 >
                   {/* Step number at display size */}
                   <div
@@ -225,7 +219,7 @@ export default function InitPage() {
 
                   <div className="min-w-0">
                     {/* Coded indicator */}
-                    <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                    <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-3)]">
                       {code}
                     </div>
 
@@ -238,7 +232,7 @@ export default function InitPage() {
                     </h2>
 
                     {/* Description — all caps monospace, tracking tight */}
-                    <p className="font-mono uppercase text-[var(--text-sm)] leading-relaxed tracking-tight text-muted-foreground max-w-prose mb-6">
+                    <p className="font-mono uppercase text-[var(--text-sm)] leading-relaxed tracking-tight text-muted-foreground max-w-prose mb-[var(--sfx-space-6)]">
                       {step.description}
                     </p>
 
@@ -247,7 +241,7 @@ export default function InitPage() {
 
                     {/* Optional note — terminal comment register */}
                     {step.note && (
-                      <div className="mt-4 font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+                      <div className="mt-[var(--sfx-space-4)] font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
                         {"// " + step.note}
                       </div>
                     )}
@@ -259,7 +253,7 @@ export default function InitPage() {
         </SFSection>
 
         {/* ═══ TERMINAL FOOTER ═══ */}
-        <SFSection label="TERMINAL" className="border-t-4 border-foreground py-16 px-6 md:px-12">
+        <SFSection label="TERMINAL" className="border-t-4 border-foreground py-16 px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)]">
           <div className="font-mono uppercase tracking-[0.15em] text-muted-foreground">
             [OK] SYSTEM READY
           </div>

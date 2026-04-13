@@ -304,14 +304,14 @@ export function ProofSection() {
         data-proof-layer="frame-pole"
         className={cn(
           "absolute left-0 top-0 bottom-0 z-20",
-          "p-8 flex flex-col gap-6",
+          "p-[var(--sfx-space-8)] flex flex-col gap-[var(--sfx-space-6)]",
           "font-mono text-sm text-foreground rounded-none",
           "bg-background/0",
         )}
         style={{ width: "320px" }}
       >
         {/* System stats — sourced from SYSTEM_STATS (single source of truth, Phase 33) */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-[var(--sfx-space-2)]">
           <span className="text-[9px] uppercase tracking-widest opacity-60">
             SYSTEM READOUT
           </span>
@@ -321,7 +321,7 @@ export function ProofSection() {
         </div>
 
         {/* INVENTORY PREVIEW — first 6 SF//[CAT]-NNN identifiers */}
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-[var(--sfx-space-1)]">
           <span className="text-[9px] uppercase tracking-widest opacity-60">
             INVENTORY PREVIEW
           </span>

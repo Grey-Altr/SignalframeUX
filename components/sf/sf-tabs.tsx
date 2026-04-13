@@ -56,7 +56,7 @@ function SFTabsTrigger({
   return (
     <TabsTrigger
       className={cn(
-        "font-mono uppercase tracking-wider text-xs rounded-none px-4 py-2",
+        "font-mono uppercase tracking-wider text-xs rounded-none px-[var(--sfx-space-4)] py-[var(--sfx-space-2)]",
         "border-b-2 border-transparent -mb-[var(--border-element)]",
         "data-[state=active]:border-foreground data-[state=active]:bg-transparent",
         "data-[state=active]:shadow-none data-[state=active]:text-foreground",

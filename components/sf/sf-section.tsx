@@ -36,7 +36,7 @@ const SFSection = React.forwardRef<HTMLElement, SFSectionProps>(
         data-section
         data-section-label={label}
         data-bg-shift={bgShift}
-        className={cn(`py-${spacing}`, className)}
+        className={cn(`py-${spacing} min-h-screen flex flex-col`, className)}
         {...props}
       >
         {children}

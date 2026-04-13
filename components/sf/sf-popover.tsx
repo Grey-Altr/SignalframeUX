@@ -70,7 +70,7 @@ function SFPopoverHeader({
 }: React.ComponentProps<typeof PopoverHeader>) {
   return (
     <PopoverHeader
-      className={cn("border-b-2 border-foreground pb-2", className)}
+      className={cn("border-b-2 border-foreground pb-[var(--sfx-space-2)]", className)}
       {...props}
     />
   );

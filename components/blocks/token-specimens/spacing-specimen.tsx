@@ -16,12 +16,12 @@ export function SpacingSpecimen({ tokens }: SpacingSpecimenProps) {
 
   return (
     <div className="border-b-4 border-foreground sf-halftone" data-halftone>
-      <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+      <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
         SPACING_SCALE
       </div>
 
-      <div className="px-6 md:px-12 py-12 font-mono">
-        <div className="grid grid-cols-[120px_1fr_80px] gap-6 text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground pb-4 border-b border-foreground/20">
+      <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-12)] font-mono">
+        <div className="grid grid-cols-[120px_1fr_80px] gap-[var(--sfx-space-6)] text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground pb-[var(--sfx-space-4)] border-b border-foreground/20">
           <span>TOKEN</span>
           <span>RULER</span>
           <span className="text-right">PX</span>
@@ -35,7 +35,7 @@ export function SpacingSpecimen({ tokens }: SpacingSpecimenProps) {
               <div
                 key={t.name}
                 data-spacing-token={t.name}
-                className="grid grid-cols-[120px_1fr_80px] gap-6 items-center py-6"
+                className="grid grid-cols-[120px_1fr_80px] gap-[var(--sfx-space-6)] items-center py-[var(--sfx-space-6)]"
               >
                 <div className="flex flex-col">
                   <span className="text-[var(--text-sm)] font-bold text-foreground uppercase tracking-[0.1em]">

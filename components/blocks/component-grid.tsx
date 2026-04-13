@@ -36,7 +36,7 @@ const ComponentDetailLazy = dynamic(
 
 function PreviewButton() {
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col gap-[var(--sfx-space-2)] items-center">
       <SFButton intent="primary" size="sm">PRIMARY</SFButton>
       <SFButton intent="ghost" size="sm">GHOST</SFButton>
     </div>
@@ -66,12 +66,12 @@ function PreviewCard() {
 
 function PreviewModal() {
   return (
-    <div className="w-[75%] max-w-[180px] border-2 border-foreground bg-background text-foreground p-3">
-      <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider mb-2">CONFIRM ACTION</p>
-      <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-wider mb-3">Are you sure?</p>
-      <div className="flex gap-1">
-        <SFButton intent="primary" size="sm" className="text-[var(--text-xs)] px-2 py-1">YES</SFButton>
-        <SFButton intent="ghost" size="sm" className="text-[var(--text-xs)] px-2 py-1">NO</SFButton>
+    <div className="w-[75%] max-w-[180px] border-2 border-foreground bg-background text-foreground p-[var(--sfx-space-3)]">
+      <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider mb-[var(--sfx-space-2)]">CONFIRM ACTION</p>
+      <p className="text-[var(--text-xs)] text-muted-foreground uppercase tracking-wider mb-[var(--sfx-space-3)]">Are you sure?</p>
+      <div className="flex gap-[var(--sfx-space-1)]">
+        <SFButton intent="primary" size="sm" className="text-[var(--text-xs)] px-[var(--sfx-space-2)] py-[var(--sfx-space-1)]">YES</SFButton>
+        <SFButton intent="ghost" size="sm" className="text-[var(--text-xs)] px-[var(--sfx-space-2)] py-[var(--sfx-space-1)]">NO</SFButton>
       </div>
     </div>
   );
@@ -82,18 +82,18 @@ function PreviewTable() {
     <SFTable className="w-[80%] max-w-[200px] text-[var(--text-sm)] uppercase tracking-wider">
       <SFTableHeader>
         <SFTableRow>
-          <SFTableHead className="px-2 py-1.5">TOKEN</SFTableHead>
-          <SFTableHead className="px-2 py-1.5 text-right">VALUE</SFTableHead>
+          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5">TOKEN</SFTableHead>
+          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right">VALUE</SFTableHead>
         </SFTableRow>
       </SFTableHeader>
       <SFTableBody>
         <SFTableRow>
-          <SFTableCell className="px-2 py-1.5 opacity-60">primary</SFTableCell>
-          <SFTableCell className="px-2 py-1.5 text-right text-primary">oklch(.65 .3 350)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 opacity-60">primary</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right text-primary">oklch(.65 .3 350)</SFTableCell>
         </SFTableRow>
         <SFTableRow>
-          <SFTableCell className="px-2 py-1.5 opacity-60">yellow</SFTableCell>
-          <SFTableCell className="px-2 py-1.5 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 opacity-60">yellow</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
         </SFTableRow>
       </SFTableBody>
     </SFTable>
@@ -102,7 +102,7 @@ function PreviewTable() {
 
 function PreviewToast() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground p-3 flex items-start gap-2">
+    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground p-[var(--sfx-space-3)] flex items-start gap-[var(--sfx-space-2)]">
       <span className="text-primary text-sm">◉</span>
       <div>
         <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider">DEPLOYED</p>
@@ -180,7 +180,7 @@ function PreviewGlitchText() {
 
 function PreviewBadge() {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-[var(--sfx-space-2)]">
       <SFBadge intent="default">DEFAULT</SFBadge>
       <SFBadge intent="outline">OUTLINE</SFBadge>
     </div>
@@ -275,7 +275,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
   return (
     <section className="border-b-4 border-foreground h-screen h-[100dvh] flex flex-col overflow-hidden">
       {/* Section header */}
-      <div className="px-6 md:px-12 pt-[clamp(8px,2vh,16px)] pb-[clamp(4px,1vh,6px)] border-b-2 border-foreground shrink-0">
+      <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[clamp(8px,2vh,16px)] pb-[clamp(4px,1vh,6px)] border-b-2 border-foreground shrink-0">
         <h2
           className="sf-display text-[clamp(20px,3vw,48px)] leading-none text-foreground"
         >
@@ -318,7 +318,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               </span>
 
               {/* Live preview */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4">
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-[var(--sfx-space-4)]">
                 {Preview && <Preview />}
               </div>
 

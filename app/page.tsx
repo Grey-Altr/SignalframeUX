@@ -9,7 +9,6 @@ import { SignalSection } from "@/components/blocks/signal-section";
 import { InventorySection } from "@/components/blocks/inventory-section";
 import { AcquisitionSection } from "@/components/blocks/acquisition-section";
 import { GhostLabel } from "@/components/animation/ghost-label";
-import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 import { CDSymbol } from "@/components/sf/cd-symbol";
 
 export const metadata: Metadata = {
@@ -23,7 +22,6 @@ export default function HomePage() {
     <>
       <Nav />
       <main id="main-content">
-        <NavRevealMount targetSelector="[data-entry-section]" />
         <div id="bg-shift-wrapper">
           {/* ENTRY — full-viewport GLSL hero with title overlay */}
           <SFSection
@@ -31,7 +29,7 @@ export default function HomePage() {
             bgShift="black"
             id="entry"
             data-section="entry"
-            className="py-0 relative"
+            className="py-0 relative h-screen overflow-hidden"
           >
             <EntrySection />
           </SFSection>
@@ -42,21 +40,20 @@ export default function HomePage() {
             bgShift="white"
             id="thesis"
             data-section="thesis"
-            className="py-0 relative overflow-hidden"
+            className="py-0 relative block"
           >
             <GhostLabel
               text="THESIS"
               className="-left-[3vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
             />
             <ThesisSection />
+            {/* ── Symbol divider: THESIS → PROOF ── */}
+            <div className="absolute bottom-0 left-0 w-full flex items-center justify-center gap-[var(--sfx-space-3)] py-[var(--sfx-space-4)] bg-background border-t border-foreground/10 z-10">
+              <CDSymbol name="dash" size={16} className="text-foreground/30" />
+              <CDSymbol name="diamond" size={10} className="text-primary" />
+              <CDSymbol name="dash" size={16} className="text-foreground/30" />
+            </div>
           </SFSection>
-
-          {/* ── Symbol divider: THESIS → PROOF ── */}
-          <div className="flex items-center justify-center gap-3 py-4 bg-background border-y border-foreground/10">
-            <CDSymbol name="dash" size={16} className="text-foreground/30" />
-            <CDSymbol name="diamond" size={10} className="text-primary" />
-            <CDSymbol name="dash" size={16} className="text-foreground/30" />
-          </div>
 
           {/* PROOF — interactive SIGNAL/FRAME layer demo (Phase 32) */}
           <SFSection
@@ -64,7 +61,7 @@ export default function HomePage() {
             bgShift="black"
             id="proof"
             data-section="proof"
-            className="py-0 sf-circuit"
+            className="py-0 sf-circuit relative h-screen overflow-hidden"
           >
             <ProofSection />
           </SFSection>
@@ -75,17 +72,16 @@ export default function HomePage() {
             bgShift="white"
             id="inventory"
             data-section="inventory"
-            className="py-0 sf-circuit"
+            className="py-0 sf-circuit relative h-screen overflow-hidden"
           >
             <InventorySection />
+            {/* ── Symbol divider: INVENTORY → SIGNAL ── */}
+            <div className="absolute bottom-0 left-0 w-full flex items-center justify-center gap-[var(--sfx-space-3)] py-[var(--sfx-space-4)] bg-background border-t border-foreground/10 z-10">
+              <CDSymbol name="dash" size={16} className="text-foreground/30" />
+              <CDSymbol name="crosshair" size={12} className="text-primary" />
+              <CDSymbol name="dash" size={16} className="text-foreground/30" />
+            </div>
           </SFSection>
-
-          {/* ── Symbol divider: INVENTORY → SIGNAL ── */}
-          <div className="flex items-center justify-center gap-3 py-4 bg-background border-y border-foreground/10">
-            <CDSymbol name="dash" size={16} className="text-foreground/30" />
-            <CDSymbol name="crosshair" size={12} className="text-primary" />
-            <CDSymbol name="dash" size={16} className="text-foreground/30" />
-          </div>
 
           {/* SIGNAL — 150vh atmospheric parallax (Phase 32) */}
           <SFSection
@@ -93,7 +89,7 @@ export default function HomePage() {
             bgShift="black"
             id="signal"
             data-section="signal"
-            className="py-0"
+            className="py-0 relative h-screen overflow-hidden"
           >
             <SignalSection />
           </SFSection>
@@ -104,7 +100,7 @@ export default function HomePage() {
             bgShift="black"
             id="acquisition"
             data-section="acquisition"
-            className="py-0 sf-circuit"
+            className="py-0 sf-circuit relative h-screen overflow-hidden justify-center"
           >
             <AcquisitionSection />
           </SFSection>

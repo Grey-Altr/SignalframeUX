@@ -45,11 +45,10 @@ export function Hero() {
             }}
           >
             <ColorCycleFrame className="inline-block text-primary">
-              <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">S</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">I</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">G</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">N</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">L</span>
+              <span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">S</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">I</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">G</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">N</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">L</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">F</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">R</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">M</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">E</span></span>
             </ColorCycleFrame>
             <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10">
-              <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">{"//"}</span>
-              <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">F</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">R</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">A</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">M</span><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char">E</span>
+              <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">{"//"}</span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">U</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">X</span></span>
             </span>
           </h1>
         </div>
@@ -75,21 +74,21 @@ export function Hero() {
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[0.35em] ml-[calc(1.5em+4px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,1vw,13px)] max-w-[420px] relative z-[var(--z-content)]">
+        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[0.35em] ml-[calc(1.5em+4px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,1vw,13px)] max-w-[clamp(260px,29.167vw,420px)] relative z-[var(--z-content)]">
           <span className="whitespace-nowrap">DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.</span><br />
-          <span className="whitespace-nowrap">THE PROGRAMMABLE DESIGN SYSTEM FOR DIGITAL SURFACES.</span>
+          <span className="whitespace-nowrap">UNIVERSAL DESIGN SYSTEM BY CULTURE DIVISION</span>
         </p>
       </div>
 
       {/* Right — White panel */}
       <div className="bg-background px-[clamp(16px,4vw,48px)] py-[clamp(16px,3vh,60px)] flex flex-col justify-center relative" style={{ paddingBottom: "calc(clamp(16px,3vh,60px) + 4.5em)" }}>
         {/* Manifesto */}
-        <p className="text-[clamp(16px,2.8vw,36.4px)] leading-[1.4] font-bold text-foreground max-w-[520px]">
+        <p className="text-[clamp(16px,2.8vw,36.4px)] leading-[1.4] font-bold text-foreground max-w-[clamp(320px,36.111vw,520px)]">
           <span data-anim="hero-copy" style={{ opacity: 0 }}>a system you can </span><span data-anim="hero-feel" className="text-primary relative z-[5000]" style={{ opacity: 0, filter: "blur(20px)" }}>feel</span><span data-anim="hero-copy-dot" style={{ opacity: 0 }}>.</span>
         </p>
 
         {/* Component count — honest claim, DU/TDR typographic voice */}
-        <p className="mt-4 text-[clamp(9px,0.8vw,12px)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+        <p className="mt-[var(--sfx-space-4)] text-[clamp(9px,0.8vw,12px)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
           48 SF COMPONENTS
         </p>
 

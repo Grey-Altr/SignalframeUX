@@ -25,7 +25,7 @@ interface TypeSpecimenProps {
 export function TypeSpecimen({ tokens }: TypeSpecimenProps) {
   return (
     <div className="border-b-4 border-foreground sf-halftone" data-halftone>
-      <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+      <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
         TYPE_SCALE ( MINOR THIRD &middot; 1.2 )
       </div>
 
@@ -34,7 +34,7 @@ export function TypeSpecimen({ tokens }: TypeSpecimenProps) {
           <div
             key={t.name}
             data-type-sample={t.name}
-            className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-8 px-6 md:px-12 py-10 items-baseline"
+            className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-[var(--sfx-space-4)] md:gap-[var(--sfx-space-8)] px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-10 items-baseline"
           >
             <div
               className={cn(

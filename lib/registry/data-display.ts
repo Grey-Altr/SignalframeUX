@@ -27,7 +27,7 @@ export const DATA_DISPLAY: Record<string, ComponentRegistryEntry> = {
     </SFTableRow>
   </SFTableBody>
 </SFTable>`,
-    docId: "sfTable",
+    docId: "SFTable",
     layer: "frame",
     pattern: "A",
     category: "DATA_DISPLAY",
@@ -49,7 +49,7 @@ export const DATA_DISPLAY: Record<string, ComponentRegistryEntry> = {
 <SFStatusDot status="active" />
 <SFStatusDot status="idle" />
 <SFStatusDot status="offline" />`,
-    docId: "sfStatusDot",
+    docId: "SFStatusDot",
     layer: "frame",
     pattern: "C",
     category: "DATA_DISPLAY",

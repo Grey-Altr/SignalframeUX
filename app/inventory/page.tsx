@@ -3,7 +3,6 @@ import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 // Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
 import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
 import { SFSection } from "@/components/sf";
@@ -32,42 +31,38 @@ export default async function ComponentsPage() {
       <Nav />
       <main id="main-content" data-cursor data-section="inv" data-section-label="INV" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
-        {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
-        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
-        {/* ── Page Header: INVE\nNTORY + 54 stat ── */}
-        <SFSection label="INVENTORY" className="py-0">
+        {/* ── Page Header & WebGL Showcase (100vh combined) ── */}
+        <SFSection label="INVENTORY" className="py-0 relative h-screen flex flex-col justify-between overflow-hidden">
           <header
             data-nav-reveal-trigger
-            className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground"
+            className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground shrink-0"
           >
             <h1
               aria-label="Inventory"
-              className="leading-[0.9] uppercase tracking-[-0.02em] px-6 md:px-12 pt-12 pb-6 sf-display"
+              className="leading-[0.9] uppercase tracking-[-0.02em] px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] sf-display"
               style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
             >
               <span data-anim="page-heading" suppressHydrationWarning>INVE</span>
               <br />
               <span data-anim="page-heading" suppressHydrationWarning>NTORY</span>
             </h1>
-            <div className="px-6 md:px-12 pb-6 text-right">
+            <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right">
               <strong
                 className="block text-foreground sf-display"
                 style={{ fontSize: "clamp(28px, 4vw, 48px)", lineHeight: 1 }}
               >
                 54
               </strong>
-              <span className="text-muted-foreground text-[11px] uppercase tracking-[0.15em] leading-snug block mt-1">
+              <span className="text-muted-foreground text-[11px] uppercase tracking-[0.15em] leading-snug block mt-[var(--sfx-space-1)]">
                 FRAME + SIGNAL PRIMITIVES
                 <br />
                 FOR EVERY SURFACE
               </span>
             </div>
           </header>
-        </SFSection>
 
-        {/* WebGL showcase — SignalMesh icosahedron relocated from homepage hero */}
-        <SFSection label="SIGNAL MESH" className="py-0">
-          <div className="relative h-[300px] border-b-4 border-foreground overflow-hidden" data-cursor>
+          {/* WebGL showcase — SignalMesh icosahedron relocated from homepage hero */}
+          <div className="relative flex-1 border-b-4 border-foreground overflow-hidden" data-cursor>
             <SignalMeshLazy />
           </div>
         </SFSection>

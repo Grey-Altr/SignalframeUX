@@ -47,7 +47,7 @@ function parseCubicBezier(
 export function MotionSpecimen({ tokens }: MotionSpecimenProps) {
   return (
     <div className="border-b-4 border-foreground sf-halftone" data-halftone>
-      <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+      <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
         MOTION_TOKENS
       </div>
 
@@ -64,7 +64,7 @@ export function MotionSpecimen({ tokens }: MotionSpecimenProps) {
             <div
               key={t.name}
               data-motion-token={t.name}
-              className="p-8 bg-background font-mono space-y-4"
+              className="p-[var(--sfx-space-8)] bg-background font-mono space-y-4"
             >
               <svg
                 viewBox="-10 -10 120 120"

@@ -79,7 +79,7 @@ function SFStepper({ activeStep: _activeStep, children, className }: SFStepperPr
           <React.Fragment key={index}>
             {step}
             {!isLast && (
-              <div className="flex justify-center py-1 pl-4">
+              <div className="flex justify-center py-[var(--sfx-space-1)] pl-4">
                 <SFProgress
                   value={getConnectorValue(status)}
                   className={cn(
@@ -112,7 +112,7 @@ function SFStep({
     <div
       role="listitem"
       data-status={status}
-      className={cn("flex items-start gap-3", className)}
+      className={cn("flex items-start gap-[var(--sfx-space-3)]", className)}
     >
       {/* Step indicator -- square, not circle */}
       <div

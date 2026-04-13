@@ -11,7 +11,7 @@ export function StatsBand() {
       {STATS.map((stat, i) => (
         <div
           key={stat.label}
-          className={`px-8 py-12 text-center ${
+          className={`px-[var(--sfx-space-8)] py-[var(--sfx-space-12)] text-center ${
             i < 2 ? "border-b-4 md:border-b-0" : ""
           } border-foreground ${
             i % 2 === 0 ? "border-r-4" : i < STATS.length - 1 ? "md:border-r-4" : ""
@@ -29,7 +29,7 @@ export function StatsBand() {
           <span className="sr-only">
             {stat.value === "∞" ? "Infinite" : stat.value} {stat.label.toLowerCase()}
           </span>
-          <div aria-hidden="true" className={`mt-3 text-[var(--text-xs)] uppercase tracking-[0.25em] font-bold ${
+          <div aria-hidden="true" className={`mt-[var(--sfx-space-3)] text-[var(--text-xs)] uppercase tracking-[0.25em] font-bold ${
             stat.accent ? "text-background dark:text-muted-foreground" : "text-muted-foreground"
           }`}>
             {stat.label}

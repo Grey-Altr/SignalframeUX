@@ -18,7 +18,7 @@ export const FORMS: Record<string, ComponentRegistryEntry> = {
 <SFButton intent="primary" size="md">LAUNCH</SFButton>
 <SFButton intent="ghost" size="md">CANCEL</SFButton>
 <SFButton intent="signal" size="md">DEPLOY</SFButton>`,
-    docId: "sfButton",
+    docId: "SFButton",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -36,7 +36,7 @@ export const FORMS: Record<string, ComponentRegistryEntry> = {
     code: `import { SFInput } from '@/components/sf'
 
 <SFInput placeholder="IDENTIFIER" type="text" />`,
-    docId: "sfInput",
+    docId: "SFInput",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -54,7 +54,7 @@ export const FORMS: Record<string, ComponentRegistryEntry> = {
     code: `import { SFToggle } from '@/components/sf'
 
 <SFToggle aria-label="Toggle mode">ENABLE</SFToggle>`,
-    docId: "sfToggle",
+    docId: "SFToggle",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -72,7 +72,7 @@ export const FORMS: Record<string, ComponentRegistryEntry> = {
     code: `import { SFSlider } from '@/components/sf'
 
 <SFSlider defaultValue={[50]} min={0} max={100} step={1} />`,
-    docId: "sfSlider",
+    docId: "SFSlider",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -93,7 +93,7 @@ export const FORMS: Record<string, ComponentRegistryEntry> = {
   <SFToggleGroupItem value="a">ALPHA</SFToggleGroupItem>
   <SFToggleGroupItem value="b">BETA</SFToggleGroupItem>
 </SFToggleGroup>`,
-    docId: "sfToggleGroup",
+    docId: "SFToggleGroup",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -138,7 +138,7 @@ import SFCalendarLazy from '@/components/sf/sf-calendar-lazy'
     <SFInputOTPSlot index={5} />
   </SFInputOTPGroup>
 </SFInputOTP>`,
-    docId: "sfInputOTP",
+    docId: "SFInputOTP",
     layer: "frame",
     pattern: "A",
     category: "FORMS",
@@ -159,7 +159,7 @@ import SFCalendarLazy from '@/components/sf/sf-calendar-lazy'
   <SFInputGroupAddon>HTTPS://</SFInputGroupAddon>
   <SFInputGroupInput placeholder="DOMAIN" />
 </SFInputGroup>`,
-    docId: "sfInputGroup",
+    docId: "SFInputGroup",
     layer: "frame",
     pattern: "A",
     category: "FORMS",

@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <main
       id="main-content"
-      className="min-h-screen flex items-center justify-center bg-background px-6"
+      className="min-h-screen flex items-center justify-center bg-background px-[var(--sfx-space-6)]"
     >
       <SFContainer>
         <div className="text-center">
@@ -15,7 +15,7 @@ export default function NotFound() {
           <div
             data-anim="page-heading"
             aria-hidden="true"
-            className="sf-display text-[clamp(64px,12vw,120px)] text-foreground leading-none mb-4"
+            className="sf-display text-[clamp(64px,12vw,120px)] text-foreground leading-none mb-[var(--sfx-space-4)]"
             suppressHydrationWarning
           >
             4<span className="text-primary">0</span>4
@@ -23,7 +23,7 @@ export default function NotFound() {
           <SFText
             variant="body"
             as="p"
-            className="uppercase tracking-[0.1em] text-muted-foreground mb-8"
+            className="uppercase tracking-[0.1em] text-muted-foreground mb-[var(--sfx-space-8)]"
           >
             SIGNAL NOT FOUND. THE REQUESTED ROUTE DOES NOT EXIST.
           </SFText>

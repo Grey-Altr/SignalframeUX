@@ -14,7 +14,7 @@
  * - All borders use rounded-none explicitly (STATE.md v1.3 rule)
  * - No CSS animation on any element — parent rAF loop drives all visual change
  * - All spacing maps to blessed stops: {4,8,12,16,24,32,48,64,96}px
- *   Tailwind map: p-1=4 p-2=8 p-3=12 p-4=16 p-6=24 p-8=32 p-12=48 p-16=64 p-24=96
+ *   Tailwind map: p-[var(--sfx-space-1)]=4 p-[var(--sfx-space-2)]=8 p-[var(--sfx-space-3)]=12 p-[var(--sfx-space-4)]=16 p-[var(--sfx-space-6)]=24 p-[var(--sfx-space-8)]=32 p-[var(--sfx-space-12)]=48 p-16=64 p-24=96
  *
  * SIGNAL/FRAME ordering: signal runs through the frame.
  *
@@ -45,7 +45,7 @@ export function ComponentSkeleton({ id, className }: ComponentSkeletonProps) {
   return (
     <div
       data-skeleton-id={id}
-      className={cn("flex flex-col gap-2 rounded-none", className)}
+      className={cn("flex flex-col gap-[var(--sfx-space-2)] rounded-none", className)}
     >
       <span className="font-mono text-[9px] uppercase tracking-widest rounded-none opacity-60">
         {id}
@@ -119,7 +119,7 @@ function renderShape(id: ProofComponentId) {
           aria-hidden="true"
         >
           <div className="h-4 border-b border-foreground rounded-none" />
-          <div className="flex-1 p-1">
+          <div className="flex-1 p-[var(--sfx-space-1)]">
             <div className="h-2 w-12 border border-foreground rounded-none" />
           </div>
         </div>
@@ -196,13 +196,13 @@ export const SkeletonGrid = forwardRef<HTMLDivElement, SkeletonGridProps>(
         ref={ref}
         data-proof-layer="skeleton"
         className={cn(
-          "absolute inset-0 z-10 flex items-center justify-center p-8 rounded-none",
+          "absolute inset-0 z-10 flex items-center justify-center p-[var(--sfx-space-8)] rounded-none",
           className,
         )}
         aria-hidden="true"
       >
-        {/* 4-column grid of 12 skeleton shapes — gap-4 = 16px (blessed) */}
-        <div className="grid grid-cols-4 gap-4 rounded-none">
+        {/* 4-column grid of 12 skeleton shapes — gap-[var(--sfx-space-4)] = 16px (blessed) */}
+        <div className="grid grid-cols-4 gap-[var(--sfx-space-4)] rounded-none">
           {PROOF_COMPONENT_SKELETONS.map((id) => (
             <ComponentSkeleton key={id} id={id} />
           ))}

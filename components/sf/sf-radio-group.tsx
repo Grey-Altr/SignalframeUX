@@ -23,7 +23,7 @@ function SFRadioGroup({
   className,
   ...props
 }: React.ComponentProps<typeof RadioGroup>) {
-  return <RadioGroup className={cn("grid gap-2", className)} {...props} />;
+  return <RadioGroup className={cn("grid gap-[var(--sfx-space-2)]", className)} {...props} />;
 }
 
 /**

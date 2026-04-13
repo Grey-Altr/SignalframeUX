@@ -55,7 +55,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
 
   return (
     <div
-      className="flex items-center gap-2.5"
+      className="flex items-center gap-[var(--sfx-space-2)].5"
       style={{
         opacity: renderOpacity,
         filter: renderFilter,

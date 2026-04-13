@@ -26,11 +26,11 @@ export function Breadcrumb({ segments, className }: BreadcrumbProps) {
     <nav
       aria-label="Breadcrumb"
       className={cn(
-        "px-6 md:px-12 py-4 font-mono text-[var(--text-2xs)] uppercase tracking-[0.15em] text-muted-foreground border-b-2 border-foreground/20",
+        "px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-4)] font-mono text-[var(--text-2xs)] uppercase tracking-[0.15em] text-muted-foreground border-b-2 border-foreground/20",
         className,
       )}
     >
-      <ol className="flex items-center gap-2 list-none m-0 p-0">
+      <ol className="flex items-center gap-[var(--sfx-space-2)] list-none m-0 p-0">
         <li>
           <Link
             href="/"
@@ -42,7 +42,7 @@ export function Breadcrumb({ segments, className }: BreadcrumbProps) {
         {segments.map((seg, i) => {
           const isLast = i === segments.length - 1;
           return (
-            <li key={`${seg.label}-${i}`} className="flex items-center gap-2">
+            <li key={`${seg.label}-${i}`} className="flex items-center gap-[var(--sfx-space-2)]">
               <span aria-hidden="true">{"//"}</span>
               {seg.href && !isLast ? (
                 <Link

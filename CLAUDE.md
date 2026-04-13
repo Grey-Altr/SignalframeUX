@@ -85,7 +85,7 @@ DO NOT: redesign the system, rename arbitrarily, introduce large abstractions, o
 ## cdSB — Design Intelligence Layer
 
 SignalframeUX's intellectual lineage, aesthetic rationale, and design theory live in the second-brain wiki:
-`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain/wiki/`
+`~/greyaltaer/vaults/wiki/`
 
 **Start here:** `wiki/analyses/culture-division-operating-principles.md`
 

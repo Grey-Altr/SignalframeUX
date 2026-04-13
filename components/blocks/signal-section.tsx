@@ -54,7 +54,7 @@ export function SignalSection() {
       ref={sectionRef}
       data-signal-root
       data-anim
-      style={{ height: "150vh", position: "relative" }}
+      style={{ height: "100dvh", position: "relative" }}
       className="rounded-none"
     >
       {/* SignalCanvas scissor tracks this div's getBoundingClientRect().

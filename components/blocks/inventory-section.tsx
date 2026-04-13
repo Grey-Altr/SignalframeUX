@@ -93,11 +93,11 @@ export function InventorySection() {
   return (
     <section
       id="inventory-section"
-      data-section="inventory"
-      className="w-full px-8 md:px-12 py-16 md:py-24"
+      
+      className="w-full px-[var(--sfx-space-8)] md:px-[var(--sfx-space-12)] py-16 md:py-24"
     >
       {/* Section header */}
-      <div className="mb-8 flex items-baseline justify-between">
+      <div className="mb-[var(--sfx-space-8)] flex items-baseline justify-between">
         <span className="font-mono text-xs text-foreground/70 tracking-widest uppercase">
           — INVENTORY
         </span>
@@ -113,7 +113,7 @@ export function InventorySection() {
           role="row"
           className={cn(
             GRID_COLS,
-            "font-mono text-xs text-foreground/70 border-b border-foreground/20 pb-1 mb-1"
+            "font-mono text-xs text-foreground/70 border-b border-foreground/20 pb-[var(--sfx-space-1)] mb-[var(--sfx-space-1)]"
           )}
           aria-hidden="true"
         >
@@ -134,7 +134,7 @@ export function InventorySection() {
             className={cn(
               GRID_COLS,
               "font-mono text-sm",
-              "border-b border-foreground/10 py-1.5 px-0",
+              "border-b border-foreground/10 py-[var(--sfx-space-1)].5 px-0",
               "cursor-pointer transition-colors duration-[var(--sfx-duration-instant)]",
               "hover:bg-foreground hover:text-background",
               "focus:bg-foreground focus:text-background focus:outline-none"
@@ -168,20 +168,20 @@ export function InventorySection() {
             <span role="cell" data-pattern-tier className="text-foreground/70">
               {row.pattern}
             </span>
-            <span role="cell" aria-hidden="true">→</span>
-          </div>
-        ))}
-      </div>
+              <span role="cell" aria-hidden="true">→</span>
+            </div>
+          ))}
+        </div>
 
-      {/* Footer link */}
-      <div className="mt-6">
-        <Link
-          href="/inventory"
-          className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
-        >
-          → /inventory
-        </Link>
-      </div>
+        {/* Footer link */}
+        <div className="mt-[var(--sfx-space-6)]">
+          <Link
+            href="/inventory"
+            className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
+          >
+            → /inventory
+          </Link>
+        </div>
 
       {/* Fixed portal for ComponentDetail */}
       {mounted &&

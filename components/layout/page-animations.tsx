@@ -100,26 +100,49 @@ async function initHeroAnimations(
     gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 0.3 });
   }
 
-  // ── 2. Hero headline — SplitText char reveal (fires at 0.4s — visible within 1s) ──
-  // Guard: hero-char was retired at Phase 30 (commit 86237fd); SplitText on a missing
-  // element produces empty split.chars arrays that generate GSAP "target not found"
-  // warnings. Only run this block if the element exists.
-  const heroCharEl = document.querySelector("[data-anim='hero-char']");
-  if (heroCharEl) {
-    const split = SplitText.create(heroCharEl, {
-      type: "chars",
-    });
-
-    gsap.set(split.chars, { y: "100%", opacity: 0 });
-    gsap.to(split.chars, {
-      y: 0,
-      opacity: 1,
-      duration: 0.35,
-      ease: "power3.out",
-      stagger: 0.02,
-      delay: 1.5,
+  // ── 2. Hero headline — char reveal (fires on load) ──
+  const heroChars = document.querySelectorAll("[data-anim='hero-char']");
+  if (heroChars.length > 0) {
+    gsap.set(heroChars, { y: "100%", opacity: 0, display: "inline-block" });
+    
+    // Create a timeline for the roll up and flicker effect
+    const charTl = gsap.timeline({
       onComplete: () => revealMultilingual(),
     });
+    
+    // Roll up
+    charTl.to(heroChars, {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: "power3.in",
+      stagger: 0,
+      delay: 0,
+    });
+    
+    // Flicker effect
+    charTl.to(heroChars, {
+      opacity: 0.3,
+      duration: 0.05,
+      stagger: { amount: 0.2, from: "random" },
+    })
+    .to(heroChars, {
+      opacity: 1,
+      duration: 0.05,
+      stagger: { amount: 0.2, from: "random" },
+    })
+    .to(heroChars, {
+      opacity: 0.7,
+      duration: 0.05,
+      stagger: { amount: 0.1, from: "random" },
+    })
+    .to(heroChars, {
+      opacity: 1,
+      duration: 0.05,
+      stagger: { amount: 0.1, from: "random" },
+    });
+  } else {
+    revealMultilingual();
   }
 
   // ── 3. Multilingual scramble sequence (fires ~1.3s after load) ──

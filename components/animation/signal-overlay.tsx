@@ -63,7 +63,7 @@ function SliderControl({
   onChange,
 }: SliderControlProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-[var(--sfx-space-2)]">
       <div className="flex items-center justify-between">
         <label
           htmlFor={cssVar}
@@ -196,7 +196,7 @@ export function SignalOverlay() {
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b-2 border-foreground">
+          <div className="flex items-center justify-between px-[var(--sfx-space-4)] py-[var(--sfx-space-3)] border-b-2 border-foreground">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] sf-display">
               SIGNAL//
             </span>
@@ -210,7 +210,7 @@ export function SignalOverlay() {
           </div>
 
           {/* Controls */}
-          <div className="flex flex-col gap-5 p-4">
+          <div className="flex flex-col gap-5 p-[var(--sfx-space-4)]">
             <SliderControl
               label="Signal Intensity"
               cssVar="--sfx-signal-intensity"
@@ -223,7 +223,7 @@ export function SignalOverlay() {
             />
 
             {reducedMotion ? (
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-[var(--sfx-space-1)]">
                 <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40">
                   Animation Speed
                 </span>
@@ -257,10 +257,10 @@ export function SignalOverlay() {
           </div>
 
           {/* Footer: reset */}
-          <div className="px-4 pb-4">
+          <div className="px-[var(--sfx-space-4)] pb-[var(--sfx-space-4)]">
             <button
               onClick={handleReset}
-              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-1.5 transition-colors duration-[var(--sfx-duration-fast)]"
+              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-[var(--sfx-space-1)].5 transition-colors duration-[var(--sfx-duration-fast)]"
             >
               Reset defaults
             </button>

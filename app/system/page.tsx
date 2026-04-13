@@ -6,7 +6,6 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { TokenVizLoader } from "@/components/animation/token-viz-loader";
 import { SFSection } from "@/components/sf";
 import { GhostLabel } from "@/components/animation/ghost-label";
-import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 
 export const metadata: Metadata = {
   title: "Token Explorer — SIGNALFRAME//UX",
@@ -20,11 +19,9 @@ export default async function TokensPage() {
       <Nav />
       <main id="main-content" data-cursor data-section="sys" data-section-label="TOK" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
-        {/* SP-05: nav hides until the page header scrolls out of view (CONTEXT.md §VL — Nav reveal pattern, LOCKED) */}
-        <NavRevealMount targetSelector="[data-nav-reveal-trigger]" />
         {/* ═══ PAGE HEADER ═══ */}
-        <SFSection label="TOKENS" className="py-0">
-          <div className="relative overflow-hidden">
+        <SFSection label="TOKENS" className="py-0 relative h-screen flex flex-col justify-center overflow-hidden">
+          <div className="relative overflow-hidden flex-1 flex flex-col justify-end">
             <GhostLabel
               text="SYSTEM"
               className="-left-[2vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
@@ -35,14 +32,14 @@ export default async function TokensPage() {
             >
               <h1
                 aria-label="Token Explorer"
-                className="sf-display px-6 md:px-12 pt-12 pb-6 relative z-10"
+                className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] relative z-10"
                 style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
               >
                 <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>
                 <br />
                 <span data-anim="page-heading" suppressHydrationWarning>EXPLORER</span>
               </h1>
-              <div className="px-6 md:px-12 pb-6 text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground relative z-10">
+              <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground relative z-10">
                 OKLCH COLOR SPACE · 49 SCALES
               </div>
             </header>

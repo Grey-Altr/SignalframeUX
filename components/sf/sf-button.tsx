@@ -17,10 +17,10 @@ const sfButtonVariants = cva(
           "bg-foreground text-background border-primary hover:bg-primary hover:text-primary-foreground",
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-6 text-sm",
-        lg: "h-12 px-8 text-base",
-        xl: "h-14 px-12 text-lg",
+        sm: "h-8 px-[var(--sfx-space-3)] text-xs",
+        md: "h-10 px-[var(--sfx-space-6)] text-sm",
+        lg: "h-12 px-[var(--sfx-space-8)] text-base",
+        xl: "h-14 px-[var(--sfx-space-12)] text-lg",
       },
     },
     defaultVariants: {

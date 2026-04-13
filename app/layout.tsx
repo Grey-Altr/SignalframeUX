@@ -10,6 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SignalframeProvider } from "@/components/layout/signalframe-config";
 import { SFToaster } from "@/components/sf";
 import { InstrumentHUD } from "@/components/layout/instrument-hud";
+import { BorderlessProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -79,7 +80,7 @@ export default function RootLayout({
   // Removing headers() here is critical: calling headers() forces dynamic rendering which
   // defers Next.js metadata injection into the body via streaming, breaking SEO (Lighthouse
   // fails meta-description because the tag lands after </head>).
-  const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='light'){return}d.classList.add('dark')}catch(e){d.classList.add('dark')}})()`;
+  const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t!=='light')d.classList.add('dark');var b=localStorage.getItem('sf-borderless');if(b==='true')d.setAttribute('data-borderless','true')}catch(e){d.classList.add('dark')}})()`;
 
   return (
     <html
@@ -98,31 +99,20 @@ export default function RootLayout({
         <div className="sf-mesh-gradient" aria-hidden="true" />
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[var(--z-skip)] focus:bg-primary focus:text-primary-foreground focus:px-6 focus:py-3 focus:text-sm focus:font-bold focus:uppercase focus:tracking-wider"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[var(--z-skip)] focus:bg-primary focus:text-primary-foreground focus:px-[var(--sfx-space-6)] focus:py-[var(--sfx-space-3)] focus:text-sm focus:font-bold focus:uppercase focus:tracking-wider"
         >
           Skip to content
         </a>
         <TooltipProvider>
           <LenisProvider>
             <SignalframeProvider>
+              <BorderlessProvider>
               {children}
+            </BorderlessProvider>
             </SignalframeProvider>
           </LenisProvider>
         </TooltipProvider>
         <SFToaster />
-        {/* White wipe-up reveal on page load */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 800,
-            background: "var(--color-background)",
-            transformOrigin: "top",
-            animation: "sf-load-wipe-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) 2s both",
-            pointerEvents: "none",
-          }}
-        />
         <GlobalEffectsLazy />
         <SignalCanvasLazy />
         <PageAnimations />

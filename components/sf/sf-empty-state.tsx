@@ -41,7 +41,7 @@ function SFEmptyState({
   return (
     <div
       className={cn(
-        "relative flex flex-col items-center justify-center py-16 px-8 text-center font-mono uppercase tracking-wider",
+        "relative flex flex-col items-center justify-center py-16 px-[var(--sfx-space-8)] text-center font-mono uppercase tracking-wider",
         className
       )}
     >
@@ -61,15 +61,15 @@ function SFEmptyState({
         {scramble ? (
           <ScrambleText
             text={title}
-            className="text-lg mb-4 block"
+            className="text-lg mb-[var(--sfx-space-4)] block"
             trigger="load"
           />
         ) : (
-          <h3 className="text-lg mb-4 text-foreground">{title}</h3>
+          <h3 className="text-lg mb-[var(--sfx-space-4)] text-foreground">{title}</h3>
         )}
 
         {children && (
-          <div className="text-sm text-muted-foreground mb-6">{children}</div>
+          <div className="text-sm text-muted-foreground mb-[var(--sfx-space-6)]">{children}</div>
         )}
 
         {action}

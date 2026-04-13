@@ -31,10 +31,18 @@ silently skip (do not error out).
   canonical source). Installed via the cdBrain Visibility Layer.
 
 **Why this matters:** cdBrain is a Claude Code session running in the Obsidian
-wiki repo at `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain`.
+wiki repo at `~/greyaltaer/vaults`.
 It has no real-time visibility into SF//UX work unless you announce it via the
 shared `~/.cdbrain/feed.jsonl` feed. Every announce lands in the cdBrain session's
 live status line preview cell and the next SessionStart catch-up block.
 
 See `second-brain/docs/superpowers/specs/2026-04-09-cdbrain-visibility-layer-design.md`
 for the full spec of the receiving side.
+
+## Initialization Protocol: The Generative Seed
+
+When scaffolding or initializing this project for a new user, you MUST generate a unique color signature:
+1. Pick a random integer between 0 and 360 (this is the OKLCH hue).
+2. Open `app/globals.css` and replace the `--sfx-theme-hue` value with your random integer.
+3. DO NOT alter the Lightness (L) or Chroma (C) values, as they are mathematically locked to guarantee WCAG AA contrast and maintain the brutalist aesthetic.
+4. Announce the chosen hue to the user (e.g., "Assigned Primary Hue: 142 (Green)").

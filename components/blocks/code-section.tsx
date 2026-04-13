@@ -52,23 +52,23 @@ export function CodeSection() {
       {/* Left — Description */}
       <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground">
         <h2
-          className="sf-display text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-6"
+          className="sf-display text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-[var(--sfx-space-6)]"
         >
           API_INIT
         </h2>
-        <p className="text-base leading-[1.8] text-muted-foreground max-w-[440px]">
+        <p className="text-base leading-[1.8] text-muted-foreground max-w-[clamp(280px,30.556vw,440px)]">
           SIGNALFRAMEUX OPERATES AS A PROGRAMMABLE API.
           INITIALIZE WITH A CONFIG OBJECT. EVERY TOKEN,
           COMPONENT, AND FRAME EFFECT IS ADDRESSABLE
           THROUGH A UNIFIED INTERFACE.
         </p>
-        <p className="mt-4 text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground font-bold hidden md:block">
+        <p className="mt-[var(--sfx-space-4)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground font-bold hidden md:block">
           ◎ HOVER CODE TO REVEAL ANNOTATIONS
         </p>
       </div>
 
       {/* Right — Code block with typewriter + X-ray annotations */}
-      <div className="bg-[var(--sf-code-bg)] px-8 py-12 relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
+      <div className="bg-[var(--sf-code-bg)] px-[var(--sfx-space-8)] py-[var(--sfx-space-12)] relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
         {/* Terminal label */}
         <div className="absolute top-4 right-6 text-sm uppercase tracking-[0.2em] text-[var(--sf-dim-text)] font-bold z-[3]">
           TERMINAL™
@@ -76,7 +76,7 @@ export function CodeSection() {
 
         <XrayReveal
           radius={100}
-          className="mt-4"
+          className="mt-[var(--sfx-space-4)]"
           topLayer={
             <CodeTypewriter
               lines={CODE_LINES}

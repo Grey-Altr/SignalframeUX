@@ -29,7 +29,7 @@ function VariantCard({
 
   if (!Comp) {
     return (
-      <div className="border-2 border-destructive p-4 text-[var(--text-xs)] font-mono uppercase text-destructive">
+      <div className="border-2 border-destructive p-[var(--sfx-space-4)] text-[var(--text-xs)] font-mono uppercase text-destructive">
         {componentName} — NOT IN BARREL (PATTERN B/C)
       </div>
     );
@@ -55,7 +55,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="uppercase text-[var(--text-xs)] tracking-[0.15em] font-bold px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
+      className="uppercase text-[var(--text-xs)] tracking-[0.15em] font-bold px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
     >
       {copied ? "COPIED" : "COPY"}
     </button>
@@ -65,7 +65,7 @@ function CopyButton({ text }: { text: string }) {
 // ── Tab trigger shared classes ─────────────────────────────────────────────
 
 const TAB_TRIGGER_CLASSES =
-  "rounded-none uppercase tracking-[0.15em] text-[var(--text-sm)] font-bold px-6 py-3 border-0 border-r-2 border-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none";
+  "rounded-none uppercase tracking-[0.15em] text-[var(--text-sm)] font-bold px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] border-0 border-r-2 border-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none";
 
 // ── Main Export ────────────────────────────────────────────────────────────
 
@@ -170,13 +170,14 @@ export function ComponentDetail({
   return (
     <div
       ref={panelRef}
-      className="border-t-4 border-primary bg-background overflow-hidden"
+      className="relative border-t-4 border-primary bg-background overflow-hidden"
       style={{ height: 0 }}
       role="region"
       aria-label={`${entry.name} component details`}
     >
+      
       {/* Detail Header (DV-08, DV-09) */}
-      <div className="flex items-center gap-4 px-6 py-4 border-b-2 border-foreground flex-wrap">
+      <div className="relative z-10 flex items-center gap-[var(--sfx-space-4)] px-[var(--sfx-space-6)] py-[var(--sfx-space-4)] border-b-2 border-foreground flex-wrap">
         <h3 className="sf-display text-[var(--text-xl)] uppercase tracking-[-0.02em]">
           {entry.name}
         </h3>
@@ -204,7 +205,7 @@ export function ComponentDetail({
           aria-label="Close component detail"
           className={cn(
             "text-[var(--text-xs)] font-mono uppercase tracking-[0.15em]",
-            "px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors",
+            "px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] border-2 border-foreground hover:bg-foreground hover:text-background transition-colors",
             entry.layer === "signal" ? "ml-0" : "ml-auto"
           )}
         >
@@ -213,7 +214,7 @@ export function ComponentDetail({
       </div>
 
       {/* Tabs (DV-04, DV-05, DV-06, DV-07, SI-03) */}
-      <SFTabs defaultValue="variants">
+      <SFTabs defaultValue="variants" className="relative z-10">
         <SFTabsList
           className="bg-transparent border-b-2 border-foreground rounded-none h-auto p-0 w-full flex justify-start"
         >
@@ -230,11 +231,11 @@ export function ComponentDetail({
 
         {/* VARIANTS tab (DV-05) */}
         <SFTabsContent value="variants">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[var(--sfx-space-6)] p-[var(--sfx-space-6)]">
             {entry.variants.map((v) => (
               <div
                 key={v.label}
-                className="flex flex-col items-center gap-2 p-4 border-2 border-foreground/20"
+                className="flex flex-col items-center gap-[var(--sfx-space-2)] p-[var(--sfx-space-4)] border-2 border-foreground/20"
               >
                 <VariantCard componentName={entry.component} props={v.props} />
                 <span className="text-[var(--text-xs)] font-mono uppercase tracking-[0.15em] text-muted-foreground">
@@ -247,32 +248,32 @@ export function ComponentDetail({
 
         {/* PROPS tab (DV-06) */}
         <SFTabsContent value="props">
-          <div className="overflow-x-auto p-6">
+          <div className="overflow-x-auto p-[var(--sfx-space-6)]">
             {doc && doc.props.length > 0 ? (
               <table className="w-full text-left text-[var(--text-sm)]">
                 <thead>
                   <tr className="border-b-2 border-foreground">
-                    <th className="py-2 pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">NAME</th>
-                    <th className="py-2 pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">TYPE</th>
-                    <th className="py-2 pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">DEFAULT</th>
-                    <th className="py-2 pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">REQ</th>
-                    <th className="py-2 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">DESCRIPTION</th>
+                    <th className="py-[var(--sfx-space-2)] pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">NAME</th>
+                    <th className="py-[var(--sfx-space-2)] pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">TYPE</th>
+                    <th className="py-[var(--sfx-space-2)] pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">DEFAULT</th>
+                    <th className="py-[var(--sfx-space-2)] pr-4 font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">REQ</th>
+                    <th className="py-[var(--sfx-space-2)] font-mono uppercase tracking-[0.15em] text-[var(--text-xs)]">DESCRIPTION</th>
                   </tr>
                 </thead>
                 <tbody>
                   {doc.props.map((p) => (
                     <tr key={p.name} className="border-b border-foreground/10">
-                      <td className="py-2 pr-4 font-mono text-primary">{p.name}</td>
-                      <td className="py-2 pr-4 font-mono text-muted-foreground">{p.type}</td>
-                      <td className="py-2 pr-4 font-mono">{p.default || "---"}</td>
-                      <td className="py-2 pr-4 font-mono">{p.required ? "YES" : "---"}</td>
-                      <td className="py-2 text-muted-foreground">{p.desc}</td>
+                      <td className="py-[var(--sfx-space-2)] pr-4 font-mono text-primary">{p.name}</td>
+                      <td className="py-[var(--sfx-space-2)] pr-4 font-mono text-muted-foreground">{p.type}</td>
+                      <td className="py-[var(--sfx-space-2)] pr-4 font-mono">{p.default || "---"}</td>
+                      <td className="py-[var(--sfx-space-2)] pr-4 font-mono">{p.required ? "YES" : "---"}</td>
+                      <td className="py-[var(--sfx-space-2)] text-muted-foreground">{p.desc}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : (
-              <p className="text-muted-foreground text-[var(--text-sm)] uppercase tracking-[0.15em] py-4">
+              <p className="text-muted-foreground text-[var(--text-sm)] uppercase tracking-[0.15em] py-[var(--sfx-space-4)]">
                 NO PROP DOCUMENTATION AVAILABLE
               </p>
             )}
@@ -281,10 +282,10 @@ export function ComponentDetail({
 
         {/* CODE tab (DV-07) */}
         <SFTabsContent value="code">
-          <div className="p-6 flex flex-col gap-6">
+          <div className="p-[var(--sfx-space-6)] flex flex-col gap-[var(--sfx-space-6)]">
             {/* Usage snippet */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-[var(--sfx-space-2)]">
                 <span className="text-[var(--text-xs)] font-mono uppercase tracking-[0.15em] text-muted-foreground">
                   USAGE
                 </span>
@@ -296,13 +297,13 @@ export function ComponentDetail({
 
             {/* CLI install */}
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-[var(--sfx-space-2)]">
                 <span className="text-[var(--text-xs)] font-mono uppercase tracking-[0.15em] text-muted-foreground">
                   INSTALL
                 </span>
                 <CopyButton text={cliCommand} />
               </div>
-              <pre className="bg-card p-6 font-mono text-[var(--text-sm)] text-foreground overflow-x-auto border-2 border-foreground/20">
+              <pre className="bg-card p-[var(--sfx-space-6)] font-mono text-[var(--text-sm)] text-foreground overflow-x-auto border-2 border-foreground/20">
                 {cliCommand}
               </pre>
             </div>
@@ -319,7 +320,7 @@ export function ComponentDetail({
 function ShikiOutput({ html }: { html: string }) {
   return (
     <div
-      className="border-2 border-foreground/20 overflow-hidden [&_pre]:p-6 [&_pre]:overflow-x-auto [&_pre]:m-0 [&_pre]:font-mono [&_pre]:text-[var(--text-sm)]"
+      className="border-2 border-foreground/20 overflow-hidden [&_pre]:p-[var(--sfx-space-6)] [&_pre]:overflow-x-auto [&_pre]:m-0 [&_pre]:font-mono [&_pre]:text-[var(--text-sm)]"
       // nosec: trusted server-generated HTML from shiki on registry code snippets
       // skipcq: JS-0440
       dangerouslySetInnerHTML={{ __html: html }}

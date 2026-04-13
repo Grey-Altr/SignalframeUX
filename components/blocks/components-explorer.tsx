@@ -55,11 +55,11 @@ type PatternFilter = (typeof PATTERNS)[number];
 
 function PreviewButton() {
   return (
-    <div className="flex gap-1.5">
-      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-2.5 py-0.5 uppercase">
+    <div className="flex gap-[var(--sfx-space-1)].5">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)].5 py-0.5 uppercase">
         PRIMARY
       </span>
-      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-2.5 py-0.5 uppercase">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)].5 py-0.5 uppercase">
         GHOST
       </span>
     </div>
@@ -136,7 +136,7 @@ function PreviewBadge({ color, text }: { color: string; text: string }) {
     color === "var(--color-primary)";
   return (
     <span
-      className={`inline-block px-2.5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
+      className={`inline-block px-[var(--sfx-space-2)].5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
       style={{ background: color }}
     >
       {text}
@@ -154,7 +154,7 @@ function PreviewTable() {
 
 function PreviewDots() {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-[var(--sfx-space-1)]">
       <span className="w-2 h-2 border bg-foreground border-foreground" />
       <span className="w-2 h-2 border border-current" />
       <span className="w-2 h-2 border border-current" />
@@ -234,7 +234,7 @@ function PreviewBreadcrumb() {
 
 function PreviewAlert() {
   return (
-    <div className="w-[80%] h-6 border-2 border-foreground bg-foreground/10 flex items-center px-1.5 text-[7px] uppercase font-mono">
+    <div className="w-[80%] h-6 border-2 border-foreground bg-foreground/10 flex items-center px-[var(--sfx-space-1)].5 text-[7px] uppercase font-mono">
       INFO
     </div>
   );
@@ -243,9 +243,9 @@ function PreviewAlert() {
 function PreviewAlertDialog() {
   return (
     <div className="relative w-[60%] h-9 border-2 border-current">
-      <div className="absolute bottom-1 right-1 flex gap-1">
-        <span className="text-[6px] border border-current px-1">CANCEL</span>
-        <span className="text-[6px] border border-current px-1 bg-destructive/20">
+      <div className="absolute bottom-1 right-1 flex gap-[var(--sfx-space-1)]">
+        <span className="text-[6px] border border-current px-[var(--sfx-space-1)]">CANCEL</span>
+        <span className="text-[6px] border border-current px-[var(--sfx-space-1)] bg-destructive/20">
           CONFIRM
         </span>
       </div>
@@ -256,7 +256,7 @@ function PreviewAlertDialog() {
 function PreviewCollapsible() {
   return (
     <div className="w-[80%]">
-      <div className="h-4 border border-current flex items-center px-1 text-[7px] font-mono uppercase">
+      <div className="h-4 border border-current flex items-center px-[var(--sfx-space-1)] text-[7px] font-mono uppercase">
         TOGGLE
       </div>
       <div className="h-3 border border-current border-t-0 bg-current/5" />
@@ -274,7 +274,7 @@ function PreviewEmptyState() {
 
 function PreviewStatusDot() {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-[var(--sfx-space-2)] items-center">
       <span className="size-2 bg-success" />
       <span className="size-2 bg-accent" />
       <span className="size-2 bg-muted-foreground" />
@@ -285,14 +285,14 @@ function PreviewStatusDot() {
 function PreviewAccordion() {
   return (
     <div className="w-[80%]">
-      <div className="h-4 border border-current flex items-center justify-between px-1 text-[7px] font-mono uppercase">
+      <div className="h-4 border border-current flex items-center justify-between px-[var(--sfx-space-1)] text-[7px] font-mono uppercase">
         <span>SECTION A</span>
         <span className="rotate-180">&#x25B4;</span>
       </div>
-      <div className="h-3 border border-current border-t-0 bg-current/5 px-1 text-[6px] font-mono opacity-60">
+      <div className="h-3 border border-current border-t-0 bg-current/5 px-[var(--sfx-space-1)] text-[6px] font-mono opacity-60">
         CONTENT
       </div>
-      <div className="h-4 border border-current border-t-0 flex items-center justify-between px-1 text-[7px] font-mono uppercase">
+      <div className="h-4 border border-current border-t-0 flex items-center justify-between px-[var(--sfx-space-1)] text-[7px] font-mono uppercase">
         <span>SECTION B</span>
         <span>&#x25BE;</span>
       </div>
@@ -310,7 +310,7 @@ function PreviewProgress() {
 
 function PreviewToast() {
   return (
-    <div className="border-2 border-foreground bg-background font-mono text-[var(--text-2xs)] uppercase p-2 tracking-wider">
+    <div className="border-2 border-foreground bg-background font-mono text-[var(--text-2xs)] uppercase p-[var(--sfx-space-2)] tracking-wider">
       SYSTEM OK
     </div>
   );
@@ -328,7 +328,7 @@ function PreviewToggleGroup() {
 
 function PreviewPagination() {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-[var(--sfx-space-1)]">
       <span className="text-[7px]">&lt;</span>
       <span className="w-5 h-5 border border-current text-[7px] flex items-center justify-center bg-current text-background">1</span>
       <span className="w-5 h-5 border border-current text-[7px] flex items-center justify-center">2</span>
@@ -350,7 +350,7 @@ function PreviewStepper() {
 
 function PreviewNavMenu() {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-[var(--sfx-space-2)]">
       <span className="text-[7px] uppercase border-b border-current pb-0.5">NAV</span>
       <span className="text-[7px] uppercase border-b border-current pb-0.5">DOCS</span>
       <span className="text-[7px] uppercase border-b border-current pb-0.5">API</span>
@@ -380,9 +380,9 @@ function PreviewCalendar() {
 function PreviewMenubar() {
   return (
     <div className="flex gap-0 border border-current">
-      <span className="text-[6px] uppercase px-1.5 py-0.5 border-r border-current font-mono">FILE</span>
-      <span className="text-[6px] uppercase px-1.5 py-0.5 border-r border-current font-mono">EDIT</span>
-      <span className="text-[6px] uppercase px-1.5 py-0.5 font-mono">VIEW</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 border-r border-current font-mono">FILE</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 border-r border-current font-mono">EDIT</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 font-mono">VIEW</span>
     </div>
   );
 }
@@ -398,7 +398,7 @@ function PreviewHoverCard() {
 
 function PreviewInputOTP() {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-[var(--sfx-space-1)]">
       {[...Array(4)].map((_, i) => (
         <span key={i} className="w-5 h-6 border-2 border-current flex items-center justify-center text-xs font-mono">
           {i === 0 ? "\u00B7" : ""}
@@ -411,7 +411,7 @@ function PreviewInputOTP() {
 function PreviewInputGroup() {
   return (
     <div className="flex border border-current h-6 w-[80%]">
-      <span className="px-1.5 text-[8px] font-mono border-r border-current flex items-center">@</span>
+      <span className="px-[var(--sfx-space-1)].5 text-[8px] font-mono border-r border-current flex items-center">@</span>
       <span className="flex-1" />
     </div>
   );
@@ -727,7 +727,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             onClick={() => handleFilter(cat)}
             aria-pressed={activeFilter === cat}
             data-filter={cat}
-            className={`border-0 border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
+            className={`border-0 border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
               activeFilter === cat ? "text-[var(--sf-primary-on-dark)]" : ""
             }`}
           >
@@ -740,13 +740,13 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
           aria-label="Search components"
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 border-0 rounded-none px-6 py-3.5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
+          className="flex-1 border-0 rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
         <div
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="border-0 border-l-2 border-foreground px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
+          className="border-0 border-l-2 border-foreground px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
         >
           {resultCount} RESULTS
         </div>
@@ -756,7 +756,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
 
       {/* ── Layer + Pattern Filter Bar ── */}
       <div className="flex flex-wrap border-b-2 border-foreground/40 bg-background">
-        <div className="flex items-center border-r-2 border-foreground/40 px-6 py-2 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+        <div className="flex items-center border-r-2 border-foreground/40 px-[var(--sfx-space-6)] py-[var(--sfx-space-2)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
           LAYER
         </div>
         <div className="flex" role="group" aria-label="Filter by layer">
@@ -766,7 +766,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               data-layer-filter={layer}
               onClick={() => handleLayerFilter(layer)}
               className={cn(
-                "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
+                "font-mono text-[var(--text-xs)] px-[var(--sfx-space-4)] py-[var(--sfx-space-2)] border-r border-foreground/20 uppercase tracking-[0.15em]",
                 "transition-colors duration-[var(--sfx-duration-instant)]",
                 activeLayer === layer
                   ? "bg-foreground text-background"
@@ -777,7 +777,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             </button>
           ))}
         </div>
-        <div className="flex items-center border-r-2 border-l-2 border-foreground/40 px-6 py-2 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
+        <div className="flex items-center border-r-2 border-l-2 border-foreground/40 px-[var(--sfx-space-6)] py-[var(--sfx-space-2)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground font-bold">
           TIER
         </div>
         <div className="flex" role="group" aria-label="Filter by pattern">
@@ -786,7 +786,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               key={pattern}
               onClick={() => handlePatternFilter(pattern)}
               className={cn(
-                "font-mono text-[var(--text-xs)] px-4 py-2 border-r border-foreground/20 uppercase tracking-[0.15em]",
+                "font-mono text-[var(--text-xs)] px-[var(--sfx-space-4)] py-[var(--sfx-space-2)] border-r border-foreground/20 uppercase tracking-[0.15em]",
                 "transition-colors duration-[var(--sfx-duration-instant)]",
                 activePattern === pattern
                   ? "bg-foreground text-background"
@@ -808,15 +808,15 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 list-none m-0 p-0"
       >
         {filtered.length === 0 ? (
-          <div className="col-span-full flex items-center justify-center py-24 px-6 border-b-2 border-foreground">
+          <div className="col-span-full flex items-center justify-center py-24 px-[var(--sfx-space-6)] border-b-2 border-foreground">
             <div className="text-center max-w-md">
               <div
                 aria-hidden="true"
-                className="sf-display text-[clamp(32px,4vw,48px)] text-muted-foreground mb-4 tracking-[-0.02em]"
+                className="sf-display text-[clamp(32px,4vw,48px)] text-muted-foreground mb-[var(--sfx-space-4)] tracking-[-0.02em]"
               >
                 0 MATCHES
               </div>
-              <p className="text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground mb-6">
+              <p className="text-[var(--text-sm)] uppercase tracking-[0.15em] text-muted-foreground mb-[var(--sfx-space-6)]">
                 NO COMPONENTS MATCH THE CURRENT FILTER.
                 <br />
                 ADJUST YOUR SEARCH OR RESET FILTERS.
@@ -828,7 +828,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
                   setSearchQuery("");
                   setActiveFilter("ALL");
                 }}
-                className="sf-pressable sf-invert-hover inline-block text-[var(--text-xs)] uppercase tracking-[0.2em] font-bold px-6 py-3 border-2 border-foreground text-foreground hover:bg-foreground hover:text-background"
+                className="sf-pressable sf-invert-hover inline-block text-[var(--text-xs)] uppercase tracking-[0.2em] font-bold px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] border-2 border-foreground text-foreground hover:bg-foreground hover:text-background"
               >
                 RESET FILTERS
               </button>
@@ -849,7 +849,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               aria-label={`${comp.name}, ${comp.category}, ${comp.subcategory}, ${comp.version}`}
               ref={(el) => { triggerRefs.current[comp.index] = el; }}
               onClick={() => handleCardClick(comp.index)}
-              className={`flip-card group relative overflow-hidden p-6 flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-[var(--sfx-duration-fast)] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] cursor-pointer ${styles.cell} ${styles.hoverCell}`}
+              className={`flip-card group relative overflow-hidden p-[var(--sfx-space-6)] flex flex-col justify-between border-r-2 border-b-2 border-foreground [&:nth-child(4n)]:border-r-0 transition-colors duration-[var(--sfx-duration-fast)] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px] cursor-pointer ${styles.cell} ${styles.hoverCell}`}
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow
@@ -878,7 +878,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               </div>
 
               <div
-                className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-[var(--sfx-duration-fast)] mt-2 mb-2 ${
+                className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-[var(--sfx-duration-fast)] mt-[var(--sfx-space-2)] mb-[var(--sfx-space-2)] ${
                   comp.variant === "black"
                     ? "border-[var(--sf-subtle-border)] group-hover:border-foreground"
                     : comp.variant === "yellow"
@@ -911,7 +911,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
       )}
 
       {/* ── Detail Hint Bar ── */}
-      <div className="flex justify-between items-center px-6 md:px-12 py-3.5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">
+      <div className="flex justify-between items-center px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-3)].5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">
         <span>
           BROWSE COMPONENTS ABOVE · VIEW FULL API REFERENCE →
         </span>

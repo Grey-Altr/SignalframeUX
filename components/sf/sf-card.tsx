@@ -61,7 +61,7 @@ function SFCardHeader({
   className,
   ...props
 }: React.ComponentProps<typeof CardHeader>) {
-  return <CardHeader className={cn("pb-3", className)} {...props} />;
+  return <CardHeader className={cn("pb-[var(--sfx-space-3)]", className)} {...props} />;
 }
 
 /**
@@ -99,7 +99,7 @@ function SFCardDescription({
 }
 
 /**
- * Sub-component of SFCard — renders the main card body content region with p-4 padding.
+ * Sub-component of SFCard — renders the main card body content region with p-[var(--sfx-space-4)] padding.
  * @example
  * <SFCardContent>Body text or nested components go here.</SFCardContent>
  */
@@ -107,7 +107,7 @@ function SFCardContent({
   className,
   ...props
 }: React.ComponentProps<typeof CardContent>) {
-  return <CardContent className={cn("p-4", className)} {...props} />;
+  return <CardContent className={cn("p-[var(--sfx-space-4)]", className)} {...props} />;
 }
 
 /**
@@ -119,7 +119,7 @@ function SFCardFooter({
   className,
   ...props
 }: React.ComponentProps<typeof CardFooter>) {
-  return <CardFooter className={cn("p-4 pt-0", className)} {...props} />;
+  return <CardFooter className={cn("p-[var(--sfx-space-4)] pt-0", className)} {...props} />;
 }
 
 export {

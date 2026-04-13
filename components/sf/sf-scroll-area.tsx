@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
  *
  * @example
  * <SFScrollArea className="h-64">
- *   <div className="p-4">{longContent}</div>
+ *   <div className="p-[var(--sfx-space-4)]">{longContent}</div>
  * </SFScrollArea>
  */
 function SFScrollArea({

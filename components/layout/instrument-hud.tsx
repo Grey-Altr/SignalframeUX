@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface SectionInfo {
   id: string;
@@ -31,6 +32,7 @@ export function InstrumentHUD() {
   const [viewport, setViewport] = useState<string>("");
   const [time, setTime] = useState<string>("");
   const activeIndexRef = useRef(0); // Pitfall 2 guard -- avoids dep loop
+  const pathname = usePathname();
 
   const scrollRef = useRef<HTMLSpanElement>(null);
   const sigRef = useRef<HTMLSpanElement>(null);
@@ -154,6 +156,30 @@ export function InstrumentHUD() {
     return () => cancelAnimationFrame(rafId);
   }, [reducedMotion]);
 
+  const [pos, setPos] = useState({ top: 80, right: 24 });
+
+  // Align HUD with the end of the "X" in SIGNALFRAME//UX and make it equidistant from the top
+  useEffect(() => {
+    const updatePos = () => {
+      const heroTitle = document.querySelector('[data-entry-section] h1[data-anim="hero-title"]');
+      if (heroTitle) {
+        const rect = heroTitle.getBoundingClientRect();
+        const rightDist = window.innerWidth - rect.right;
+        setPos({ top: rightDist, right: rightDist });
+      } else {
+        // Fallback for other pages
+        setPos({ top: 80, right: 24 });
+      }
+    };
+    
+    updatePos();
+    window.addEventListener('resize', updatePos);
+    if (document.fonts) {
+      document.fonts.ready.then(updatePos);
+    }
+    return () => window.removeEventListener('resize', updatePos);
+  }, [pathname]); // Re-run when route changes
+
   const sectionLabel =
     sections.length > 0
       ? `[${
@@ -168,7 +194,8 @@ export function InstrumentHUD() {
       data-instrument-hud
       role="complementary"
       aria-label="System readout"
-      className="fixed top-[80px] right-[24px] z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
+      className="fixed z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
+      style={{ top: `${pos.top}px`, right: `${pos.right}px` }}
     >
       <span data-hud-field="section" className="text-foreground">
         {sectionLabel}

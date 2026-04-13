@@ -36,7 +36,7 @@ function SFTooltipContent({
     <TooltipContent
       className={cn(
         "bg-foreground text-background font-mono text-xs uppercase tracking-wider",
-        "border-0 rounded-none px-3 py-1.5",
+        "border-0 rounded-none px-[var(--sfx-space-3)] py-[var(--sfx-space-1)].5",
         className
       )}
       {...props}

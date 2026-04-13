@@ -12,18 +12,17 @@ export function EntrySection() {
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
         <h1
           data-anim="hero-title"
-          className="font-display text-center text-primary-foreground uppercase tracking-[0.02em] leading-[0.9] animate-[hero-fade-in_0.4s_ease-out_forwards]"
+          className="font-display text-center text-primary-foreground uppercase tracking-[0.02em] leading-[0.9]"
           style={{
             fontSize: "clamp(7.5rem, 12vw, 10rem)",
             fontWeight: 700,
-            opacity: 0.01,
           }}
         >
-          SIGNALFRAME<span className="text-primary">{"//"}</span>UX
+          <span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">S</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">I</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">G</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">N</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">L</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">F</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">R</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">M</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">E</span></span><span className="inline-block overflow-hidden"><span className="text-primary sf-hero-deferred inline-block" data-anim="hero-char">{"//"}</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">U</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">X</span></span>
         </h1>
         <p
           data-anim="hero-subtitle"
-          className="mt-4 text-muted-foreground text-center font-sans text-base tracking-[var(--sf-tracking-label)] animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards]"
+          className="mt-[var(--sfx-space-4)] text-muted-foreground text-center font-sans text-base tracking-[var(--sf-tracking-label)] animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards]"
           style={{ opacity: 0 }}
         >
           A dual-layer design system for generative expression.

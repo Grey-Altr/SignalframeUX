@@ -19,7 +19,7 @@ export const LAYOUT: Record<string, ComponentRegistryEntry> = {
   </SFCardHeader>
   <SFCardContent>NOMINAL</SFCardContent>
 </SFCard>`,
-    docId: "sfCard",
+    docId: "SFCard",
     layer: "frame",
     pattern: "A",
     category: "LAYOUT",
@@ -45,7 +45,7 @@ export const LAYOUT: Record<string, ComponentRegistryEntry> = {
     </SFDialogHeader>
   </SFDialogContent>
 </SFDialog>`,
-    docId: "sfDialog",
+    docId: "SFDialog",
     layer: "frame",
     pattern: "A",
     category: "LAYOUT",
@@ -69,7 +69,7 @@ import SFDrawerLazy from '@/components/sf/sf-drawer-lazy'
 >
   DRAWER CONTENT
 </SFDrawerLazy>`,
-    docId: "sfDrawer",
+    docId: "SFDrawer",
     layer: "frame",
     pattern: "B",
     category: "LAYOUT",
@@ -93,7 +93,7 @@ import SFDrawerLazy from '@/components/sf/sf-drawer-lazy'
     PROFILE PREVIEW CONTENT
   </SFHoverCardContent>
 </SFHoverCard>`,
-    docId: "sfHoverCard",
+    docId: "SFHoverCard",
     layer: "frame",
     pattern: "A",
     category: "LAYOUT",

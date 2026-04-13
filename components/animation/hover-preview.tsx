@@ -49,7 +49,7 @@ export function HoverPreview({ items, className }: HoverPreviewProps) {
           <Link
             key={item.href}
             href={item.href}
-            className="group flex items-center justify-between py-4 px-2 border-b border-foreground/20 no-underline transition-colors hover:text-primary"
+            className="group flex items-center justify-between py-[var(--sfx-space-4)] px-[var(--sfx-space-2)] border-b border-foreground/20 no-underline transition-colors hover:text-primary"
             onMouseMove={(e) => handleMouseMove(e, i)}
           >
             <span className="font-mono uppercase tracking-wider text-sm font-bold">

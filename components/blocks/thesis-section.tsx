@@ -54,13 +54,13 @@ export function ThesisSection() {
 
   // Detected once at mount — ScrollTrigger.refresh handles post-mount layout
   // changes, and we do not listen for resize past the initial detection.
-  const [scrollDistance, setScrollDistance] = useState<number>(2.5);
+  const [scrollDistance, setScrollDistance] = useState<number>(3.0);
   const [reducedMotion, setReducedMotion] = useState<boolean>(false);
 
   useEffect(() => {
     const mobileMQ = window.matchMedia("(max-width: 667px)");
     const rmMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setScrollDistance(mobileMQ.matches ? 2 : 2.5);
+    setScrollDistance(mobileMQ.matches ? 2.0 : 3.0);
     setReducedMotion(rmMQ.matches);
   }, []);
 
@@ -129,7 +129,7 @@ export function ThesisSection() {
     return (
       <div
         data-thesis-reduced-motion
-        className="flex flex-col gap-24 py-24 px-6 md:px-16"
+        className="flex flex-col gap-24 py-24 px-[var(--sfx-space-6)] md:px-16"
       >
         {THESIS_MANIFESTO.map((s, i) => (
           <div

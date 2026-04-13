@@ -24,10 +24,34 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 2,
-      autoResize: false,
+      autoResize: true,
     });
     lenisRef.current = instance;
     setLenis(instance);
+    (window as any).lenis = instance;
+
+    // Keyboard-driven viewport detent scrolling
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      // Don't intercept if user is typing in an input or activating a button/link
+      if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) return;
+      if (target.getAttribute('role') === 'button') return;
+      
+      const vh = window.innerHeight;
+      const currentScroll = window.scrollY;
+      
+      if (e.code === 'Space' || e.code === 'ArrowDown' || e.code === 'PageDown') {
+        e.preventDefault();
+        const nextTarget = Math.ceil((currentScroll + 10) / vh) * vh;
+        console.log('Scrolling to:', nextTarget);
+        instance.scrollTo(nextTarget, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      } else if (e.code === 'ArrowUp' || e.code === 'PageUp') {
+        e.preventDefault();
+        const prevTarget = Math.floor((currentScroll - 10) / vh) * vh;
+        instance.scrollTo(Math.max(0, prevTarget), { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown, { passive: false });
 
     // Sync Lenis scroll position with GSAP ScrollTrigger
     instance.on("scroll", ScrollTrigger.update);
@@ -49,6 +73,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     mql.addEventListener("change", motionHandler);
 
     return () => {
+      window.removeEventListener('keydown', handleKeyDown);
       mql.removeEventListener("change", motionHandler);
       gsap.ticker.remove(tickerCallback);
       instance.destroy();

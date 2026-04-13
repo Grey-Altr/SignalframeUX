@@ -173,7 +173,7 @@ export function ManifestoBand() {
       ref={sectionRef}
       data-anim="yellow-band"
 
-      className="sf-yellow-band sf-grain border-b-4 border-foreground py-6 px-[clamp(20px,4vw,48px)] relative overflow-hidden"
+      className="sf-yellow-band sf-grain border-b-4 border-foreground py-[var(--sfx-space-6)] px-[clamp(20px,4vw,48px)] relative overflow-hidden"
     >
       <p className="text-[clamp(14px,2vw,22px)] leading-[1.5] font-bold text-foreground relative z-[var(--z-content)]">
         {SEGMENTS.map((seg, i) => {

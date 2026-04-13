@@ -185,7 +185,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
+            className="border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>
@@ -194,7 +194,7 @@ export function TokenTabs() {
           <SFTabsTrigger
             key={tab}
             value={tab}
-            className="border-r-2 border-foreground rounded-none px-6 py-3.5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
+            className="border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] data-[state=active]:bg-foreground data-[state=active]:text-[var(--sf-primary-on-dark)]"
           >
             {tab}
           </SFTabsTrigger>
@@ -230,10 +230,10 @@ export function TokenTabs() {
 
       {/* ═══ ELEVATION TAB ═══ */}
       <SFTabsContent value="ELEVATION" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           ELEVATION_SYSTEM
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
           SignalframeUX&trade; uses a debossed surface model — elements are pressed <em>into</em> the surface, not floated above it. Shadows create tactile depth without z-axis lift. This is a deliberate rejection of material elevation.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -247,11 +247,11 @@ export function TokenTabs() {
           <SFTableBody>
             {ELEVATION_TOKENS.map((e) => (
               <SFTableRow key={e.name}>
-                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-foreground w-[200px]">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)] font-bold text-[var(--text-sm)] text-foreground w-[200px]">
                   {e.name}
                 </SFTableCell>
-                <SFTableCell className="p-6 px-6">
-                  <div className="flex items-center gap-6">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)]">
+                  <div className="flex items-center gap-[var(--sfx-space-6)]">
                     <div
                       className="w-24 h-14 border-2 border-foreground bg-background"
                       style={{ boxShadow: e.value }}
@@ -266,7 +266,7 @@ export function TokenTabs() {
                     />
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-6 px-6 text-[var(--text-xs)] text-muted-foreground font-mono text-right w-[280px]">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)] text-[var(--text-xs)] text-muted-foreground font-mono text-right w-[280px]">
                   {e.css}
                 </SFTableCell>
               </SFTableRow>
@@ -277,29 +277,29 @@ export function TokenTabs() {
 
       {/* ═══ RADIUS TAB ═══ */}
       <SFTabsContent value="RADIUS" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           RADIUS_PHILOSOPHY
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
           Zero radius. Everywhere. Industrial edges communicate precision and intentionality. Rounded corners soften — SignalframeUX&trade; sharpens. Every element meets at 90°.
         </div>
         <SFTable className="border-b-4 border-foreground">
           <SFTableHeader>
             <SFTableRow>
-              <SFTableHead className="px-6 w-[200px]">TOKEN</SFTableHead>
-              <SFTableHead className="px-6">COMPARISON</SFTableHead>
-              <SFTableHead className="px-6 w-[200px]">VALUE</SFTableHead>
+              <SFTableHead className="px-[var(--sfx-space-6)] w-[200px]">TOKEN</SFTableHead>
+              <SFTableHead className="px-[var(--sfx-space-6)]">COMPARISON</SFTableHead>
+              <SFTableHead className="px-[var(--sfx-space-6)] w-[200px]">VALUE</SFTableHead>
             </SFTableRow>
           </SFTableHeader>
           <SFTableBody>
             {RADIUS_TOKENS.map((r) => (
               <SFTableRow key={r.name}>
-                <SFTableCell className="p-6 px-6 font-bold text-[var(--text-sm)] text-foreground">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)] font-bold text-[var(--text-sm)] text-foreground">
                   {r.name}
                 </SFTableCell>
-                <SFTableCell className="p-6 px-6">
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col items-center gap-1">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)]">
+                  <div className="flex items-center gap-[var(--sfx-space-4)]">
+                    <div className="flex flex-col items-center gap-[var(--sfx-space-1)]">
                       <div
                         className="w-14 h-10 border-2 border-foreground bg-foreground/20"
                         style={{ borderRadius: "0px" }}
@@ -308,7 +308,7 @@ export function TokenTabs() {
                       />
                       <span className="text-[var(--text-2xs)] text-foreground font-bold uppercase">SF//UX</span>
                     </div>
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col items-center gap-[var(--sfx-space-1)]">
                       <div
                         className="w-14 h-10 border border-border bg-muted"
                         style={{ borderRadius: r.typical }}
@@ -319,7 +319,7 @@ export function TokenTabs() {
                     </div>
                   </div>
                 </SFTableCell>
-                <SFTableCell className="p-6 px-6 text-[var(--text-xs)] text-muted-foreground font-mono">
+                <SFTableCell className="p-[var(--sfx-space-6)] px-[var(--sfx-space-6)] text-[var(--text-xs)] text-muted-foreground font-mono">
                   <span className="text-primary font-bold">0px</span>
                   <span className="ml-2 opacity-50">vs {r.typical}</span>
                 </SFTableCell>
@@ -331,10 +331,10 @@ export function TokenTabs() {
 
       {/* ═══ BREAKPOINTS TAB ═══ */}
       <SFTabsContent value="BREAKPOINTS" className="mt-0">
-        <div className="sf-display px-6 md:px-12 pt-8 pb-4 border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
           BREAKPOINT_SCALE
         </div>
-        <div className="px-6 md:px-12 py-6 border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[700px]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
           Mobile-first responsive tokens aligned with Tailwind CSS defaults. SignalframeUX&trade; layouts shift at these thresholds — grid columns collapse, type scales compress, and spacing tightens.
         </div>
         <SFTable className="border-b-4 border-foreground">

@@ -81,7 +81,7 @@ function SFDialogHeader({
 }: React.ComponentProps<typeof DialogHeader>) {
   return (
     <DialogHeader
-      className={cn("border-b-2 border-foreground pb-4", className)}
+      className={cn("border-b-2 border-foreground pb-[var(--sfx-space-4)]", className)}
       {...props}
     />
   );

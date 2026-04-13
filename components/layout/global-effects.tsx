@@ -203,16 +203,6 @@ function ScrollToTop() {
   );
 }
 
-/** VHS-style fixed badge in bottom-right corner */
-function VHSBadge() {
-  return (
-    <div aria-hidden="true" className="fixed bottom-6 left-6 bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-2 py-1 text-[9px] font-bold uppercase tracking-[0.1em] z-[var(--z-scroll-top)] hidden sm:flex items-center gap-1.5">
-      <span className="text-primary text-[10px]">◉◉</span>
-      SF//UX
-    </div>
-  );
-}
-
 /**
  * Idle standby overlay — grain drift + OKLCH color pulse after 8s of no interaction.
  *
@@ -355,7 +345,6 @@ export function GlobalEffects() {
       <CanvasCursor />
       <ScrollProgress />
       <ScrollToTop />
-      <VHSBadge />
       <InteractionFeedback />
       <SignalOverlayLazy />
       <SignalIntensityBridge />

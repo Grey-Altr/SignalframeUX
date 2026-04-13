@@ -42,9 +42,9 @@ const sfToggleGroupItemVariants = cva(
           "bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground",
       },
       size: {
-        sm: "h-8 min-w-8 px-3",
-        md: "h-10 min-w-10 px-4",
-        lg: "h-12 min-w-12 px-6",
+        sm: "h-8 min-w-8 px-[var(--sfx-space-3)]",
+        md: "h-10 min-w-10 px-[var(--sfx-space-4)]",
+        lg: "h-12 min-w-12 px-[var(--sfx-space-6)]",
       },
     },
     defaultVariants: {

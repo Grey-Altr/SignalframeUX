@@ -203,7 +203,7 @@ function SFNavigationMenuMobile({
           <SFSheetHeader>
             <SFSheetTitle>{title}</SFSheetTitle>
           </SFSheetHeader>
-          <nav className="flex flex-col gap-1 mt-4">
+          <nav className="flex flex-col gap-[var(--sfx-space-1)] mt-[var(--sfx-space-4)]">
             {children}
           </nav>
         </SFSheetContent>

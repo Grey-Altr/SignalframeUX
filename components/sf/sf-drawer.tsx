@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
  *       <SFDrawerTitle>Panel</SFDrawerTitle>
  *       <SFDrawerDescription>Supporting info</SFDrawerDescription>
  *     </SFDrawerHeader>
- *     <div className="p-4">Body content</div>
+ *     <div className="p-[var(--sfx-space-4)]">Body content</div>
  *     <SFDrawerFooter>
  *       <SFDrawerClose>Close</SFDrawerClose>
  *     </SFDrawerFooter>
