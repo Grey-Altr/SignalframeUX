@@ -546,19 +546,7 @@ function generateApiDocs(): void {
 
   // ─── Write output ────────────────────────────────────────────────────────
 
-  const outputPath = path.resolve(ROOT, "lib/api-docs.ts");
-
-  const output = `/**
- * API documentation data for all SignalframeUX components and utilities.
- * Each entry maps to a nav item in the API Explorer sidebar.
- *
- * AUTO-GENERATED — do not edit by hand.
- * Run: pnpm docs:generate
- * Source: scripts/generate-api-docs.ts
- * Generated: ${new Date().toISOString()}
- */
-
-export interface PropDef {
+  const typesOutput = `export interface PropDef {
   name: string;
   type: string;
   default: string;
@@ -590,12 +578,53 @@ export interface ComponentDoc {
   a11y: string[];
   preview?: PreviewHud;
 }
+`;
+  fs.writeFileSync(path.resolve(ROOT, "lib/api-docs/types.ts"), typesOutput, "utf8");
 
-export const API_DOCS: Record<string, ComponentDoc> = ${JSON.stringify(
-    allDocs,
-    null,
-    2
-  )};
+  // Group by layer
+  const byLayer: Record<string, Record<string, ComponentDoc>> = {
+    FRAME: {},
+    SIGNAL: {},
+    CORE: {},
+    HOOK: {},
+    TOKEN: {}
+  };
+
+  for (const [key, doc] of Object.entries(allDocs)) {
+    if (!byLayer[doc.layer]) byLayer[doc.layer] = {};
+    byLayer[doc.layer][key] = doc;
+  }
+
+  const activeLayers = Object.keys(byLayer).filter(l => Object.keys(byLayer[l]).length > 0);
+
+  for (const layer of activeLayers) {
+    const docs = byLayer[layer];
+    const layerFile = `import type { ComponentDoc } from "./types";\n\nexport const ${layer}_DOCS: Record<string, ComponentDoc> = ${JSON.stringify(docs, null, 2)};\n`;
+    fs.writeFileSync(path.resolve(ROOT, `lib/api-docs/${layer.toLowerCase()}.ts`), layerFile, "utf8");
+  }
+
+  const imports = activeLayers.map(l => `import { ${l}_DOCS } from "./api-docs/${l.toLowerCase()}";`).join("\n");
+  const spreads = activeLayers.map(l => `  ...${l}_DOCS,`).join("\n");
+
+  const outputPath = path.resolve(ROOT, "lib/api-docs.ts");
+
+  const output = `/**
+ * API documentation data for all SignalframeUX components and utilities.
+ * Each entry maps to a nav item in the API Explorer sidebar.
+ *
+ * AUTO-GENERATED — do not edit by hand.
+ * Run: pnpm docs:generate
+ * Source: scripts/generate-api-docs.ts
+ * Generated: ${new Date().toISOString()}
+ */
+
+import type { ComponentDoc, PropDef, UsageExample, PreviewHud } from "./api-docs/types";
+export type { ComponentDoc, PropDef, UsageExample, PreviewHud };
+${imports}
+
+export const API_DOCS: Record<string, ComponentDoc> = {
+${spreads}
+};
 `;
 
   fs.writeFileSync(outputPath, output, "utf8");
