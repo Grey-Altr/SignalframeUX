@@ -56,11 +56,14 @@ export function useSignalScene(
       : `${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`
   );
 
+  const buildSceneRef = useRef(buildScene);
+  buildSceneRef.current = buildScene;
+
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
-    const { scene, camera, renderFn } = buildScene();
+    const { scene, camera, renderFn } = buildSceneRef.current();
     const id = idRef.current;
 
     // IntersectionObserver gates rendering — offscreen scenes skip render loop
@@ -86,6 +89,5 @@ export function useSignalScene(
       deregisterScene(id);
       disposeScene(scene); // GPU cleanup: geometry, material, texture disposal
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  // intentionally empty deps — runs once per mount, buildScene is stable
+  }, [elementRef]);
 }

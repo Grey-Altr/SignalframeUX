@@ -149,17 +149,20 @@ export function ComponentDetail({
   };
 
   // ── Escape key handler (DV-10) ───────────────────────────────────────────
+  const handleCloseRef = useRef(handleClose);
+  handleCloseRef.current = handleClose;
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        handleClose();
+        handleCloseRef.current();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   // ── CLI install command text ─────────────────────────────────────────────
   const cliCommand = `pnpm dlx shadcn add sf-${entry.name.toLowerCase().replace(/_/g, "-")}`;
