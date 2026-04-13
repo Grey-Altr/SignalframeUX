@@ -147,16 +147,16 @@ export function VHSOverlay() {
     });
 
     // VHS-01: Chromatic aberration — update opacity from intensity
-    // Scanline opacity = 0.01 + intensity * 0.03
-    // At intensity 0.3 → scanline opacity ~0.019
+    // Scanline opacity = 0.005 + intensity * 0.015
+    // At intensity 0.3 → scanline opacity ~0.0095
     // Chromatic only visible above 0.3 intensity
     function updateChromaticOpacity() {
       const scanlineOp = parseFloat(
         getComputedStyle(document.documentElement)
           .getPropertyValue("--sfx-vhs-scanline-opacity")
-      ) || 0.01;
-      // Derive intensity from scanline opacity: i = (scanlineOp - 0.01) / 0.03
-      const intensity = Math.max(0, (scanlineOp - 0.01) / 0.03);
+      ) || 0.005;
+      // Derive intensity from scanline opacity: i = (scanlineOp - 0.005) / 0.015
+      const intensity = Math.max(0, (scanlineOp - 0.005) / 0.015);
       // Only visible above 0.3 intensity, then scale 0→1 over 0.3→1.0 range
       const chromaticOpacity = intensity > 0.3
         ? ((intensity - 0.3) / 0.7)
