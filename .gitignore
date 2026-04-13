@@ -47,3 +47,9 @@ next-env.d.ts
 # vitest coverage output
 /coverage
 storybook-static
+
+# Ephemeral Reports & Test State
+report*.json
+report*.html
+test-results/
+
