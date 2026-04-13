@@ -115,7 +115,7 @@ async function initHeroAnimations(
       y: 0,
       opacity: 1,
       duration: 0.5,
-      ease: "power3.in",
+      ease: "power3.out",
       stagger: 0,
       delay: 0,
     });
@@ -186,7 +186,7 @@ async function initHeroAnimations(
   // ── 5. Hero copy — "a system you can" slow fade ──
   const heroCopy = document.querySelector("[data-anim='hero-copy']");
   if (heroCopy) {
-    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.inOut", delay: 1.0 });
+    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.out", delay: 1.0 });
   }
 
   // ── 6. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
@@ -230,7 +230,7 @@ async function initHeroAnimations(
   // ── 8. Hero copy dot — period punctuation, lands last ──
   const heroDot = document.querySelector("[data-anim='hero-copy-dot']");
   if (heroDot) {
-    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.inOut", delay: 3.0 });
+    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.out", delay: 3.0 });
   }
 
   // ── 9. Hero slash moment — canonical magenta signal-intensity scrub (VL-05) ──
@@ -276,8 +276,8 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
           y: 0,
           opacity: 1,
           visibility: "visible",
-          duration: 0.034, // --duration-instant (34ms) — DU-style hard cut
-          ease: "none",    // No easing on hard cut
+          duration: 0.034, // --duration-instant (34ms)
+          ease: "power2.out",
         });
       },
     });
@@ -294,7 +294,7 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
           opacity: 0.03,
           visibility: "visible",
           duration: 0.034,
-          ease: "none",
+          ease: "power2.out",
         });
       },
     });

@@ -20,6 +20,7 @@ gsap.registerPlugin(
   Observer,
   useGSAP
 );
+gsap.defaults({ ease: "power2.out" });
 registerSFEasings();
 
 /**

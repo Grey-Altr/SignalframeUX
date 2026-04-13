@@ -36,7 +36,7 @@ export function HorizontalScroll({ children, sectionLabel, className }: Horizont
     const ctx = gsap.context(() => {
       gsap.to(inner, {
         x: () => -(inner.scrollWidth - container.offsetWidth),
-        ease: "none",
+        ease: "power2.out",
         scrollTrigger: {
           trigger: container,
           pin: true,

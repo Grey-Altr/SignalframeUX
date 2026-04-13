@@ -57,7 +57,7 @@ export function CircuitDivider({
       scrubTl.to(mainPaths, {
         drawSVG: "100%",
         duration: 1,
-        ease: "none",
+        ease: "power2.out",
         stagger: 0.1,
       });
 
@@ -67,7 +67,7 @@ export function CircuitDivider({
           {
             drawSVG: "100%",
             duration: 0.6,
-            ease: "none",
+            ease: "power2.out",
             stagger: 0.1,
           },
           "-=0.5"

@@ -1,0 +1,85 @@
+--- scripts/generate-api-docs.ts
++++ scripts/generate-api-docs.ts
+@@ -546,6 +546,31 @@
+ 
+   // ─── Write output ────────────────────────────────────────────────────────
+ 
++  const typesOutput = `export interface PropDef {
++  name: string;
++  type: string;
++  default: string;
++  desc: string;
++  required?: boolean;
++}
++
++export interface UsageExample {
++  label: string;
++  code: string;
++}
++
++export interface PreviewHud {
++  lines: string[];
++  code: string;
++}
++
++export interface ComponentDoc {
++  id: string;
++  name: string;
++  layer: "FRAME" | "SIGNAL" | "CORE" | "TOKEN" | "HOOK";
++  version: string;
++  status: "STABLE" | "BETA" | "EXPERIMENTAL";
++  description: string;
++  importPath: string;
++  importName: string;
++  props: PropDef[];
++  usage: UsageExample[];
++  a11y: string[];
++  preview?: PreviewHud;
++}
++`;
++  fs.writeFileSync(path.resolve(ROOT, "lib/api-docs/types.ts"), typesOutput, "utf8");
++
+   const outputPath = path.resolve(ROOT, "lib/api-docs.ts");
+ 
+   const output = `/**
+@@ -558,39 +583,8 @@
+  * Generated: \${new Date().toISOString()}
+  */
+ 
+-export interface PropDef {
+-  name: string;
+-  type: string;
+-  default: string;
+-  desc: string;
+-  required?: boolean;
+-}
+-
+-export interface UsageExample {
+-  label: string;
+-  code: string;
+-}
+-
+-export interface PreviewHud {
+-  lines: string[];
+-  code: string;
+-}
+-
+-export interface ComponentDoc {
+-  id: string;
+-  name: string;
+-  layer: "FRAME" | "SIGNAL" | "CORE" | "TOKEN" | "HOOK";
+-  version: string;
+-  status: "STABLE" | "BETA" | "EXPERIMENTAL";
+-  description: string;
+-  importPath: string;
+-  importName: string;
+-  props: PropDef[];
+-  usage: UsageExample[];
+-  a11y: string[];
+-  preview?: PreviewHud;
+-}
++import type { ComponentDoc, PropDef, UsageExample, PreviewHud } from "./api-docs/types";
++export type { ComponentDoc, PropDef, UsageExample, PreviewHud };
+ 
+ export const API_DOCS: Record<string, ComponentDoc> = \${JSON.stringify(
+     allDocs,

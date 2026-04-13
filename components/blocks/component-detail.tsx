@@ -140,7 +140,7 @@ export function ComponentDetail({
       height: 0,
       overflow: "hidden",
       duration: 0.2,
-      ease: "power2.in",
+      ease: "power2.out",
       onComplete: () => {
         onClose();
         triggerRef.current?.focus();

@@ -32,20 +32,26 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
 
     // Keyboard-driven viewport detent scrolling
     const handleKeyDown = (e: KeyboardEvent) => {
+      // If another accessibility shortcut already claimed this key, do nothing.
+      if (e.defaultPrevented) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
       const target = e.target as HTMLElement;
       // Don't intercept if user is typing in an input or activating a button/link
       if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) return;
       if (target.getAttribute('role') === 'button') return;
-      
+      if (target.isContentEditable) return;
+
       const vh = window.innerHeight;
       const currentScroll = window.scrollY;
-      
-      if (e.code === 'Space' || e.code === 'ArrowDown' || e.code === 'PageDown') {
+      const scrollDown = e.code === 'ArrowDown' || e.code === 'PageDown' || (e.code === 'Space' && !e.shiftKey);
+      const scrollUp = e.code === 'ArrowUp' || e.code === 'PageUp' || (e.code === 'Space' && e.shiftKey);
+
+      if (scrollDown) {
         e.preventDefault();
         const nextTarget = Math.ceil((currentScroll + 10) / vh) * vh;
-        console.log('Scrolling to:', nextTarget);
         instance.scrollTo(nextTarget, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-      } else if (e.code === 'ArrowUp' || e.code === 'PageUp') {
+      } else if (scrollUp) {
         e.preventDefault();
         const prevTarget = Math.floor((currentScroll - 10) / vh) * vh;
         instance.scrollTo(Math.max(0, prevTarget), { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });

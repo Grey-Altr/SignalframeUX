@@ -101,7 +101,7 @@ export function ThesisSection() {
             opacity: 0,
             yPercent: -20,
             duration: EXIT_DURATION,
-            ease: "power1.in",
+            ease: "power1.out",
           },
           exitStart,
         );

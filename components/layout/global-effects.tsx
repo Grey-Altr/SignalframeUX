@@ -87,7 +87,7 @@ function CustomCursor() {
         {
           "--cursor-scale": 0.4,
           duration: 0.1,
-          ease: "power2.in",
+          ease: "power2.out",
           yoyo: true,
           repeat: 1,
           repeatDelay: 0,

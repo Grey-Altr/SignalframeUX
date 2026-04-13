@@ -33,6 +33,7 @@ export function Footer() {
                 <li><Link href="/init" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Getting Started</Link></li>
                 <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Components</Link></li>
                 <li><Link href="/system" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Tokens</Link></li>
+                <li><Link href="/builds" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Builds</Link></li>
                 <li><Link href="/reference" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">API Reference</Link></li>
               </ul>
             </div>

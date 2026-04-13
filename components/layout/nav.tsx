@@ -23,6 +23,12 @@ const IconSystem = (props: any) => (
   </svg>
 );
 
+const IconBuilds = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M3 5h18v4H3zM3 11h10v8H3zM15 11h6v8h-6z" />
+  </svg>
+);
+
 const IconInit = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
     <path d="M4 4h6v16H4zm8 4h4v8h-4zm6 2h2v4h-2z" />
@@ -158,6 +164,7 @@ const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string; extern
   { href: "/inventory", label: "INVENTORY", icon: IconInventory },
   { href: "/reference", label: "API", icon: IconApi },
   { href: "/system", label: "SYSTEM", icon: IconSystem },
+  { href: "/builds", label: "BUILDS", icon: IconBuilds },
   { href: "/init", label: "GET STARTED", icon: IconInit },
   { href: "https://github.com/signalframeux", label: "GITHUB", icon: IconGithub, external: true },
 ];

@@ -529,7 +529,7 @@ function FilterIndicator({
   return (
     <div
       ref={indicatorRef}
-      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-[width,transform] duration-[var(--sfx-duration-normal)] ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
+      className="absolute bottom-0 left-0 h-[3px] bg-primary transition-[width,transform] duration-[var(--sfx-duration-normal)] ease-[cubic-bezier(0,0,0.2,1)] pointer-events-none"
     />
   );
 }
@@ -710,7 +710,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
           opacity: 0,
           scale: 0.8,
           duration: 0.3,
-          ease: "power2.in",
+          ease: "power2.out",
         }),
     });
   }, [activeFilter, searchQuery, activeLayer, activePattern]);

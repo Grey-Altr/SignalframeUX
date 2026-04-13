@@ -1,0 +1,7 @@
+r=xtpr
+n=Tick all ~52 Cat 1 checkboxes in REQUIREMENTS.md, then address Cat 3 work items
+ws=Categorized 67 unchecked requirements into 3 groups — no ticks applied yet
+b=PRF-02 mobile Lighthouse pending;PTL-03 iOS Safari pending;VRG-02 Chromatic baselines not captured;TBR-04 dark mode server-render vs inline script ambiguous;PRF-03/VHS-06/HLF-04/GLT-03 human sign-off pending
+msg=
+kb=
+kh=

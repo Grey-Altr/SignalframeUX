@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; padding: 0; background: #fff; font-family: sans-serif; }
+  .hero { height: 100vh; display: flex; align-items: center; justify-content: center; }
+  h1 { font-size: 10vw; margin: 0; }
+  .hud { position: fixed; text-align: right; font-family: monospace; font-size: 12px; line-height: 1.5; color: #333; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1 id="hero-title">SIGNALFRAME//UX</h1>
+  </div>
+  <div id="hud" class="hud">
+    [01//ENTRY]<br>0%<br>SIG:0.5<br>879x549<br>22:28
+  </div>
+  <script>
+    function alignHUD() {
+      const title = document.getElementById('hero-title');
+      const hud = document.getElementById('hud');
+      if (title && hud) {
+        const rect = title.getBoundingClientRect();
+        const rightDist = window.innerWidth - rect.right;
+        hud.style.right = rightDist + 'px';
+        hud.style.top = rightDist + 'px';
+      }
+    }
+    window.addEventListener('resize', alignHUD);
+    alignHUD();
+  </script>
+</body>
+</html>

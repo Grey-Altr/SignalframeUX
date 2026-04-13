@@ -10,5 +10,6 @@ import { Observer } from "gsap/Observer";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
+gsap.defaults({ ease: "power2.out" });
 
 export { gsap, ScrollTrigger, Observer, useGSAP };

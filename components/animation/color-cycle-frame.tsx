@@ -115,7 +115,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
   gsap.to(proxy, {
     v: 1,
     duration: WIPE_DURATION / 1000,
-    ease: "power2.inOut",
+    ease: "power2.out",
     onUpdate: updateGradient,
     onComplete: () => {
       // Text fully covered — swap color
@@ -127,7 +127,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
       gsap.to(proxy, {
         v: 2,
         duration: WIPE_DURATION / 1000,
-        ease: "power2.inOut",
+        ease: "power2.out",
         onUpdate: updateGradient,
         onComplete: () => {
           // Cleanup — restore normal text rendering

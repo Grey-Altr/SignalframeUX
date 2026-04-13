@@ -245,7 +245,7 @@ function DatamoshWebGL() {
       const breathingTween = gsap.to(breathingObj, {
         value:    0.001,
         duration: gsap.utils.random(8, 12),
-        ease:     "sine.inOut",
+        ease:     "sine.out",
         yoyo:     true,
         repeat:   -1,
       });

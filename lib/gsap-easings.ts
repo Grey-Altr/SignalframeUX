@@ -9,7 +9,7 @@ import { CustomEase } from "gsap/CustomEase";
 export function registerSFEasings() {
   CustomEase.create(
     "sf-snap",
-    "M0,0 C0.14,0 0.27,0.5 0.5,0.5 0.73,0.5 0.86,1 1,1"
+    "M0,0 C0.12,0.65 0.28,1 1,1"
   );
-  CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
+  CustomEase.create("sf-punch", "M0,0 C0.16,0.75 0.3,1 1,1");
 }

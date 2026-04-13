@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { label: "INVENTORY", href: "/inventory", shortcut: "C" },
   { label: "API REFERENCE", href: "/reference", shortcut: "A" },
   { label: "SYSTEM", href: "/system", shortcut: "T" },
+  { label: "BUILDS", href: "/builds", shortcut: "B" },
   { label: "GET STARTED", href: "/init", shortcut: "S" },
 ];
 

@@ -42,7 +42,7 @@ export function VHSOverlay() {
         vhsTl.to(scanRef.current, {
           y: "100vh",
           duration: 28,
-          ease: "none",
+          ease: "power2.out",
           repeat: -1,
           delay: 10,
         }, 0);
@@ -53,7 +53,7 @@ export function VHSOverlay() {
         vhsTl.to(scanSlowRef.current, {
           y: "100vh",
           duration: 84,
-          ease: "none",
+          ease: "power2.out",
           repeat: -1,
           delay: 10,
         }, 0);
@@ -75,7 +75,7 @@ export function VHSOverlay() {
           repeat: -1,
           yoyo: true,
           repeatDelay: 0.3,
-          ease: "none",
+          ease: "power2.out",
         }, 0);
       }
 
@@ -91,7 +91,7 @@ export function VHSOverlay() {
               duration: 0.2,
               yoyo: true,
               repeat: gsap.utils.random(1, 2, 1),
-              ease: "none",
+              ease: "power2.out",
               onComplete: () => {
                 if (burstRef.current) burstRef.current.style.opacity = "0";
                 scheduleBurst();
@@ -136,7 +136,7 @@ export function VHSOverlay() {
                   x: 0,
                   skewX: 0,
                   duration: gsap.utils.random(0.04, 0.1),
-                  ease: "none",
+                  ease: "power2.out",
                 });
             }
           });

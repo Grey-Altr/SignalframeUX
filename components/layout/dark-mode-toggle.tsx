@@ -59,7 +59,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
       style={{
         opacity: renderOpacity,
         filter: renderFilter,
-        transition: "opacity 0.6s ease-in-out, filter 0.6s ease-in-out",
+        transition: "opacity 0.6s ease-out, filter 0.6s ease-out",
       }}
     >
       <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
@@ -91,7 +91,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
           style={{
             left: dark ? "2px" : "24px",
             backgroundColor: dark ? "var(--color-primary)" : undefined,
-            transitionTimingFunction: "cubic-bezier(0.68, -0.2, 0.27, 1.2)",
+            transitionTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
           }}
         />
       </button>

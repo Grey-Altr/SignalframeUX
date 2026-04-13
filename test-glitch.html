@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .nav {
+    width: 600px; height: 60px; border: 2px solid black; background: white;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+    font-family: sans-serif; font-weight: bold;
+    animation: glitch 3s infinite;
+  }
+  @keyframes glitch {
+    0%, 95% { filter: none; transform: none; }
+    96% { filter: url(#datamosh); transform: translateX(2px); }
+    98% { filter: url(#datamosh2); transform: translateX(-2px); }
+    100% { filter: none; transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="nav">
+    <span>LOGO</span>
+    <span>LINKS</span>
+    <span>TOOLS</span>
+  </div>
+
+  <svg width="0" height="0">
+    <filter id="datamosh">
+      <!-- Generate horizontal bands of noise -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 1.5" numOctaves="1" result="noise" />
+      <!-- Threshold the noise to create sharp bands -->
+      <feComponentTransfer in="noise" result="banded">
+        <feFuncG type="step" amplitude="1" offset="0.5" />
+      </feComponentTransfer>
+      <!-- Displace Y based on the banded noise -->
+      <feDisplacementMap in="SourceGraphic" in2="banded" scale="15" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <filter id="datamosh2">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 2.0" numOctaves="1" result="noise" />
+      <feComponentTransfer in="noise" result="banded">
+        <feFuncG type="step" amplitude="1" offset="0.8" />
+      </feComponentTransfer>
+      <feDisplacementMap in="SourceGraphic" in2="banded" scale="-10" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+</body>
+</html>
