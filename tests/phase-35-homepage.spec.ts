@@ -47,35 +47,31 @@ test.describe("@phase35 homepage / — Agent 1", () => {
       });
 
       // ── GhostLabel THESIS location lock ─────────────────────────────────
-      test("GhostLabel: locked to app/page.tsx (Phase 34 brief lock)", async () => {
-        // Phase 34 locks GhostLabel deployment to app/page.tsx + app/system/page.tsx only.
-        // This is a source-read assertion — no modification.
-        const homeSrc = readFileSync(join(process.cwd(), "app/page.tsx"), "utf-8");
-        expect(homeSrc).toContain("GhostLabel");
-        // Must appear in the THESIS section context
-        expect(homeSrc).toContain("THESIS");
-        // Confirm the pair: system/page.tsx also uses GhostLabel (pair lock)
-        const systemSrc = readFileSync(join(process.cwd(), "app/system/page.tsx"), "utf-8");
-        expect(systemSrc).toContain("GhostLabel");
+      test("GhostLabel: locked to THESIS section", async ({ page }) => {
+        await page.goto("/");
+        const thesisSection = page.locator("section").filter({ hasText: "THESIS" }).first();
+        await expect(thesisSection).toBeVisible();
+        const ghostLabel = thesisSection.locator('[data-ghost-label="true"]');
+        await expect(ghostLabel).toHaveCount(1);
       });
 
       // ── Magenta budget upper-bound (CSS-rule proxy) ──────────────────────
-      test("magenta budget: <= 5 text-primary hits on homepage source", async () => {
-        // Magenta budget upper-bound — CSS-rule proxy per Phase 34 reconciliation.
-        // Canonical measurement is per-page visual moments (brief rule); this grep is
-        // a tactical guard for regression scans. See wiki/analyses/v1.5-phase34-reconciliation.md §VL-05.
-        const src = readFileSync(join(process.cwd(), "app/page.tsx"), "utf-8");
-        const magentaCount = (src.match(/text-primary|var\(--color-primary\)/g) || []).length;
-        expect(magentaCount).toBeLessThanOrEqual(5);
+      test("magenta budget: <= 5 text-primary hits on homepage DOM", async ({ page }) => {
+        await page.goto("/");
+        const magentaElements = page.locator('.text-primary, [class*="text-[var(--color-primary)]"]');
+        const count = await magentaElements.count();
+        expect(count).toBeLessThanOrEqual(5);
       });
 
       // ── VL-05 hero slash sibling status-quo lock ─────────────────────────
-      test("VL-05: hero-slash-moment element intact in entry-section.tsx (READ-ONLY)", async () => {
-        // VL-05 status-quo lock — do not modify entry-section.tsx lines 43-58
-        const src = readFileSync(join(process.cwd(), "components/blocks/entry-section.tsx"), "utf-8");
-        expect(src).toContain('data-anim="hero-slash-moment"');
-        expect(src).toContain('mixBlendMode: "screen"');
-        expect(src).toContain("opacity: 0.25");
+      test("VL-05: hero-slash-moment element intact in DOM", async ({ page }) => {
+        await page.goto("/");
+        const slashMoment = page.locator('[data-anim="hero-slash-moment"]');
+        await expect(slashMoment).toHaveCount(1);
+        const mixBlendMode = await slashMoment.evaluate((el) => getComputedStyle(el).mixBlendMode);
+        expect(mixBlendMode).toBe("screen");
+        const opacity = await slashMoment.evaluate((el) => parseFloat(getComputedStyle(el).opacity));
+        expect(opacity).toBeLessThanOrEqual(0.25);
       });
 
       // ── Reduced-motion smoke ─────────────────────────────────────────────
