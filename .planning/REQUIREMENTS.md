@@ -322,10 +322,10 @@
 - [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
 
 ### Performance Gates
-- [ ] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes
-- [ ] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline)
-- [ ] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review
-- [ ] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks
+- [x] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes
+- [x] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline)
+- [x] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review
+- [x] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks
 
 ### v1.7 Traceability
 
@@ -391,10 +391,10 @@
 | VRG-01 | Phase 48 | Pending |
 | VRG-02 | Phase 49 | Pending |
 | VRG-03 | Phase 56 | Pending |
-| PRF-01 | Phase 56 | Pending |
-| PRF-02 | Phase 56 | Pending |
-| PRF-03 | Phase 56 | Pending |
-| PRF-04 | Phase 56 | Pending |
+| PRF-01 | Phase 56 | Complete |
+| PRF-02 | Phase 56 | Complete |
+| PRF-03 | Phase 56 | Complete |
+| PRF-04 | Phase 56 | Complete |
 
 ## Out of Scope
 

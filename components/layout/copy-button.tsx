@@ -37,7 +37,7 @@ export function CopyButton() {
         onClick={handleCopy}
         data-copied={copied || undefined}
         aria-label={copied ? "Copied to clipboard" : "Copy install command"}
-        className="sf-copy sf-pressable px-3 py-1.5 text-[var(--text-2xs)] font-bold uppercase tracking-[0.2em] cursor-pointer border-none hover:brightness-110 transition-all duration-[var(--sfx-duration-normal)] bg-primary text-primary-foreground"
+        className="sf-copy sf-pressable px-3 py-1.5 text-[var(--text-2xs)] font-bold uppercase tracking-[0.2em] cursor-pointer border-none hover:brightness-110 transition-all duration-[var(--sfx-duration-normal)] bg-primary text-[oklch(0.145_0_0)]"
       >
         <span className="sf-copy-label">{copied ? "" : "COPY"}</span>
         <span className="sf-copy-label--done">{copied ? "COPIED" : ""}</span>

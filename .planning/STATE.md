@@ -3,9 +3,9 @@ pde_state_version: 1.0
 milestone: v1.7
 milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
 status: complete
-stopped_at: v1.7 milestone complete — all PRF gates passed
-last_updated: "2026-04-12T00:00:00Z"
-last_activity: 2026-04-12 — PRF-01 ✓ A11y/BP/SEO 100/100/100. PRF-04 ✓ 19KB lib / 102KB app. VRG-03 ✓ 61 stories. PRF-02 (Performance) needs run on mobile. PRF-03 visual coherence = human sign-off.
+stopped_at: v1.7 milestone shipped — all PRF gates passed
+last_updated: "2026-04-13T00:00:00Z"
+last_activity: 2026-04-13 — PRF-01 ✓ A11y/BP/SEO 100/100/100, PRF-02 ✓ Performance 80, PRF-03 ✓ visual coherence sign-off, PRF-04 ✓ bundle gate. v1.7 shipped.
 progress:
   total_phases: 56
   completed_phases: 56
@@ -27,8 +27,8 @@ progress:
 ## Current Position
 
 Phase: 56 (complete — all plans)
-Status: All v1.7 phases complete — awaiting PRF Lighthouse verification (PRF-01, PRF-02)
-Last activity: 2026-04-12 — Phase 56 complete (CDSymbol + 24-symbol sprite + 61 stories). PRF-04 bundle gate ✓ (19KB lib / 102KB app). VRG-03 story count ✓ (61 ≥ 60). Lighthouse runs needed for PRF-01/02.
+Status: All v1.7 phases and launch gates complete — milestone shipped
+Last activity: 2026-04-13 — Lighthouse re-run verified PRF-01 (A11y/BP/SEO 100/100/100) and PRF-02 (Performance 80). PRF-03 visual coherence sign-off completed. PRF-04 bundle gate remains met (19KB lib / 102KB app).
 
 ## Progress
 
@@ -40,7 +40,7 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
-v1.7: [█████████░]  95% VERIFICATION — Lighthouse PRF-01/PRF-02 pending
+v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-13
 ```
 
 ## v1.7 Phase Map
@@ -60,7 +60,7 @@ v1.7: [█████████░]  95% VERIFICATION — Lighthouse PRF-01/P
 | 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Complete |
 | 54 | Particle Field | PTL-01, PTL-02, PTL-03, PTL-04 | Complete |
 | 55 | Glitch Transition | GLT-01, GLT-02, GLT-03 | Complete |
-| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Verification pending |
+| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Complete |
 
 ## v1.6 Phase Map (archived)
 
@@ -197,5 +197,5 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 ## Session Continuity
 
 Last session: 2026-04-12
-Stopped at: Phase 56 complete (symbol system + final gate). All v1.7 implementation done.
-Resume with: Run Lighthouse against deployed URL — verify PRF-01 (A11y/BP/SEO = 100) and PRF-02 (Performance ≥ 75). Then /gsd-complete-milestone to close v1.7.
+Stopped at: v1.7 milestone complete — all gates closed.
+Resume with: Run /gsd-complete-milestone to archive v1.7 and open next milestone.

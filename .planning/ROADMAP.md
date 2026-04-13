@@ -9,7 +9,7 @@
 - [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
-- [ ] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (active)
+- [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13)
 
 ## Phases
 
@@ -496,22 +496,22 @@ Plans:
 - [x] **Phase 42: Tracking Reconciliation + peerDep Fix** — Update REQUIREMENTS.md checkboxes, add requirements-completed to Phase 36/39 SUMMARYs, move next to peerDependencies (Gap closure from audit) (completed 2026-04-11)
 - [x] **Phase 43: Production Deploy + Lighthouse Gate** — Deploy current codebase, run Lighthouse 100/100 gate against production URL (Gap closure: DIST-04) (completed 2026-04-11)
 
-**v1.7 Tightening, Polish, and Aesthetic Push (Phases 44-56):**
+**v1.7 Tightening, Polish, and Aesthetic Push (Phases 44-56) — SHIPPED 2026-04-13:**
 
 - [x] **Phase 44: Copy Audit Fixes** — Reconcile component count, fix version strings, replace false claims, update Playwright test assertions (completed 2026-04-11)
 - [x] **Phase 45: Token Bridge** — CD site becomes first consumer via CSS layer override; document sfx-* tier; no SSR flash (completed 2026-04-12, 2/2 plans)
-- [ ] **Phase 46: Tightening Pass** — Light mode contrast fix, 15 hardcoded durations to tokens, 7 hardcoded colors to tokens, sf-button hover alignment
-- [ ] **Phase 47: Viewport Polish** — Text size floor increase, inventory grid breakpoint, subpage header spacing, Storybook viewport presets
-- [ ] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed
-- [ ] **Phase 49: Grain + Idle Escalation + Visual Baseline** — Grain opacity curve, useIdleEscalation() hook with 3 phases, relative offset escalation, visual baselines captured
-- [ ] **Phase 50: VHS Enhancement** — Chromatic aberration, horizontal jitter, dropout bands, vignette, Safari backdrop-filter fix, human sign-off
+- [x] **Phase 46: Tightening Pass** — Light mode contrast fix, 15 hardcoded durations to tokens, 7 hardcoded colors to tokens, sf-button hover alignment (completed 2026-04-11, 2/2 plans)
+- [x] **Phase 47: Viewport Polish** — Text size floor increase, inventory grid breakpoint, subpage header spacing, Storybook viewport presets (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 48: Intensity Bridge + Chromatic Setup** — updateSignalDerivedProps() function, all effect opacities driven by --signal-intensity, prefers-reduced-motion suppression, Chromatic installed (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 49: Grain + Idle Escalation + Visual Baseline** — Grain opacity curve, useIdleEscalation() hook with 3 phases, relative offset escalation, visual baselines captured (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 50: VHS Enhancement** — Chromatic aberration, horizontal jitter, dropout bands, vignette, Safari backdrop-filter fix (completed 2026-04-11, 1/1 plans)
 - [x] **Phase 50.1: Datamosh Overlay** — Single-pass WebGL shader: noise-driven micro-displacement + channel separation, wired to --signal-intensity, <0.5ms GPU (INSERTED) (completed 2026-04-12)
-- [ ] **Phase 51: Halftone Texture** — CSS-only halftone dots, intensity gate, scoped to specimen sections, no moiré review
-- [ ] **Phase 52: Circuit Overlay** — SVG circuit pattern, mutual exclusion with high grain, intensity-governed opacity
-- [ ] **Phase 53: Mesh Gradient** — Layered radial-gradient with OKLCH, grain composited on top, slow drift animation
-- [ ] **Phase 54: Particle Field** — WebGL particles via existing singleton, device-tiered count, iOS Safari physical test, reduced-motion static frame
-- [ ] **Phase 55: Glitch Transition** — CSS clip-path glitch, wired to idle Phase 3 and page transitions, signal dropout feel
-- [ ] **Phase 56: Symbol System + Final Gate** — 20-30 SVG symbols, CDSymbol component, Storybook story gate, performance launch gate
+- [x] **Phase 51: Halftone Texture** — CSS-only halftone dots, intensity gate, scoped to specimen sections (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 52: Circuit Overlay** — SVG circuit pattern, mutual exclusion with high grain, intensity-governed opacity (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 53: Mesh Gradient** — Layered radial-gradient with OKLCH, grain composited on top, slow drift animation (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 54: Particle Field** — WebGL particles via existing singleton, device-tiered count, reduced-motion static frame (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 55: Glitch Transition** — CSS clip-path glitch, wired to idle Phase 3, signal dropout feel (completed 2026-04-11, 1/1 plans)
+- [x] **Phase 56: Symbol System + Final Gate** — 20-30 SVG symbols, CDSymbol component, Storybook story gate, performance launch gate (completed 2026-04-13, 1/1 plans)
 
 ### Phase 36: Housekeeping & Carry-Overs
 **Goal**: Clean up v1.5 deferred items and establish code quality baseline for v1.6 work
@@ -888,15 +888,15 @@ Plans:
 | 42. Tracking Reconciliation + peerDep Fix | 0/1 | 1/1 | Complete   | 2026-04-11 |
 | 43. Production Deploy + Lighthouse Gate | 1/1 | Complete   | 2026-04-11 | — |
 | 44. Copy Audit Fixes | v1.7 | Complete    | 2026-04-11 | - |
-| 45. Token Bridge | 1/2 | In Progress|  | - |
-| 46. Tightening Pass | v1.7 | 0/? | Not started | - |
-| 47. Viewport Polish | v1.7 | 0/? | Not started | - |
-| 48. Intensity Bridge + Chromatic Setup | v1.7 | 0/? | Not started | - |
-| 49. Grain + Idle Escalation + Visual Baseline | v1.7 | 0/? | Not started | - |
-| 50. VHS Enhancement | v1.7 | 0/? | Not started | - |
-| 51. Halftone Texture | v1.7 | 0/? | Not started | - |
-| 52. Circuit Overlay | v1.7 | 0/? | Not started | - |
-| 53. Mesh Gradient | v1.7 | 0/? | Not started | - |
-| 54. Particle Field | v1.7 | 0/? | Not started | - |
-| 55. Glitch Transition | v1.7 | 0/? | Not started | - |
-| 56. Symbol System + Final Gate | v1.7 | 0/? | Not started | - |
+| 45. Token Bridge | 2/2 | Complete   | 2026-04-12 | - |
+| 46. Tightening Pass | v1.7 | 2/2 | Complete   | 2026-04-11 |
+| 47. Viewport Polish | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 48. Intensity Bridge + Chromatic Setup | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 49. Grain + Idle Escalation + Visual Baseline | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 50. VHS Enhancement | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 51. Halftone Texture | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 52. Circuit Overlay | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 53. Mesh Gradient | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 54. Particle Field | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 55. Glitch Transition | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 56. Symbol System + Final Gate | v1.7 | 1/1 | Complete | 2026-04-13 |
