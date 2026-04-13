@@ -28,5 +28,10 @@ export default defineConfig({
     },
   ],
   // Dev server already running — do not start a new one
-  webServer: undefined,
+  webServer: process.env.CI ? {
+    command: "pnpm build && pnpm start",
+    port: 3000,
+    reuseExistingServer: false,
+    timeout: 120 * 1000,
+  } : undefined,
 });

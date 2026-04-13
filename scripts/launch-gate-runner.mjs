@@ -14,12 +14,9 @@ const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, "..");
 
 const require = createRequire(import.meta.url);
-// chrome-launcher is a transitive dep — resolve from lighthouse's location
-const chromeLauncherPath = new URL(
-  "../node_modules/.pnpm/chrome-launcher@1.2.1/node_modules/chrome-launcher/dist/index.js",
-  import.meta.url
-).pathname;
-const chromeLauncher = require(chromeLauncherPath);
+// chrome-launcher is a transitive dep — resolve from lighthouse's location dynamically
+const lighthouseDir = dirname(require.resolve("lighthouse/package.json"));
+const chromeLauncher = require(require.resolve("chrome-launcher", { paths: [lighthouseDir] }));
 
 const CATEGORIES = ["performance", "accessibility", "best-practices", "seo"];
 const RUNS = 3;
