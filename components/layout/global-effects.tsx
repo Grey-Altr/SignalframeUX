@@ -25,11 +25,11 @@ export function updateSignalDerivedProps(intensity: number) {
   const i = prefersReduced ? 0 : intensity;
   const root = document.documentElement.style;
 
-  // VHS scanline: 0.02 at low → 0.08 at high (linear)
-  root.setProperty("--sfx-vhs-scanline-opacity", String(0.02 + i * 0.06));
+  // VHS scanline: 0.01 at low → 0.04 at high (linear)
+  root.setProperty("--sfx-vhs-scanline-opacity", String(0.01 + i * 0.03));
 
-  // VHS noise: 0.01 at low → 0.04 at high (linear)
-  root.setProperty("--sfx-vhs-noise-opacity", String(0.01 + i * 0.03));
+  // VHS noise: 0.005 at low → 0.02 at high (linear)
+  root.setProperty("--sfx-vhs-noise-opacity", String(0.005 + i * 0.015));
 
   // Grain: logarithmic curve — subtle at low, saturates at high
   // Baseline at intensity 0 = 0.03 (within spec 0.03–0.05 range)
