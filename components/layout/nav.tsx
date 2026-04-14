@@ -315,7 +315,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
     >
       <span className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
         <span
-          className="relative transition-[width,height,color] duration-[var(--sfx-duration-slow)] ease-in-out"
+          className="relative"
           style={{ width: vb, height: vb }}
         >
           <svg
@@ -335,7 +335,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
             {rowTops.map((rowTop, index) => (
               <span
                 key={index}
-                className="absolute left-0 flex items-center transition-[top,height,width,gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                className="absolute left-0 flex items-center transition-[width,gap] duration-[var(--sfx-duration-slow)] ease-in-out"
                 style={{
                   left: capW,
                   top: rowTop,
