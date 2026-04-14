@@ -338,6 +338,11 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
   const segW2 = pinNarrow ? SEG_PIN_W2_PX : SEG_W2_PX;
   const segW3 = expandT * SEG_W3_PX;
 
+  /** Left caps anchor at inner column (x=capW) and grow left on expand — reads as transforming in, not out from the outer corner. */
+  const capS = isActive ? Math.max(expandT, 0.02) : 1;
+  const capDrawW = capW * capS;
+  const capX = capW - capDrawW;
+
   useEffect(() => {
     if (!isFlashing) return;
     const timer = window.setTimeout(() => setIsFlashing(false), 240);
@@ -374,8 +379,8 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
             fill="currentColor"
             aria-hidden="true"
           >
-            <rect x="0" y="0" width={capW} height={capH} />
-            <rect x="0" y={vb - capH} width={capW} height={capH} />
+            <rect x={capX} y="0" width={capDrawW} height={capH} />
+            <rect x={capX} y={vb - capH} width={capDrawW} height={capH} />
             {vSegs.map((seg, i) => (
               <rect key={i} x="0" y={seg.y} width={barW} height={seg.h} />
             ))}
