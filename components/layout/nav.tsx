@@ -189,7 +189,7 @@ const NavCubeLink = memo(function NavCubeLink({
 /** Base design in 14×14 space; expanded state scales vb up so border + spacing grow together. */
 const GLYPH_VB_BASE = 14;
 const GLYPH_VB_IDLE = 14;
-/** Taller box so more rows + scaled modules fit without overlap. */
+/** Taller box so extra row + scaled modules fit without overlap (max 4 horizontal bands on hover). */
 const GLYPH_VB_ACTIVE = 22;
 const GLYPH_INSET_BASE = 2;
 const ROW_MODULE_H_BASE = 2;
@@ -327,7 +327,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
 
   const vbSpan = GLYPH_VB_ACTIVE - GLYPH_VB_IDLE;
   const expandT = Math.max(0, Math.min(1, (vb - GLYPH_VB_IDLE) / vbSpan));
-  const rowCount = Math.min(5, Math.max(3, Math.round(3 + (2 * (vb - GLYPH_VB_IDLE)) / vbSpan)));
+  const rowCount = Math.min(4, Math.max(3, Math.round(3 + (vb - GLYPH_VB_IDLE) / vbSpan)));
   const { rowTops, rowH: rowBandH } = computeRolloutRows(rowCount, vb);
   const vSegs = bracketVerticalSegments(rowTops, vb, rowBandH);
   const { capH, capW, barW } = bracketCaps(vb);
