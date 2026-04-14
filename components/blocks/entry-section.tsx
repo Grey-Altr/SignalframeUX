@@ -5,20 +5,19 @@ import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
 export function EntrySection() {
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
-      {/* WebGL background — absolute inset-0, z-0 */}
       <GLSLHeroLazy />
 
       {/* HTML overlay — LCP target */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-[1em]">
         <h1
           data-anim="hero-title"
-          className="font-display text-center text-primary-foreground uppercase tracking-[0.02em] leading-[0.9]"
+          className="font-display text-center text-primary-foreground uppercase tracking-[0.02em] leading-[0.9] w-full"
           style={{
-            fontSize: "clamp(7.5rem, 12vw, 10rem)",
+            fontSize: "clamp(7.5rem, 13.4vw, 14rem)",
             fontWeight: 700,
           }}
         >
-          <span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">S</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">I</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">G</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">N</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">L</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">F</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">R</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">M</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">E</span></span><span className="inline-block overflow-hidden"><span className="text-primary sf-hero-deferred inline-block" data-anim="hero-char">{"//"}</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">U</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">X</span></span>
+          <span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">S</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">I</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">G</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">N</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">L</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">F</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">R</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">M</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">E</span></span><span className="inline-block overflow-hidden"><span className="text-primary sf-hero-deferred inline-block tracking-[-0.12em]" data-anim="hero-char">{"//"}</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">U</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">X</span></span>
         </h1>
         <p
           data-anim="hero-subtitle"
@@ -42,9 +41,9 @@ export function EntrySection() {
       <div
         data-anim="hero-slash-moment"
         aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none font-display uppercase tracking-[0.02em] text-primary"
+        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none font-display uppercase tracking-[0.02em] text-primary px-[1em]"
         style={{
-          fontSize: "clamp(7.5rem, 12vw, 10rem)",
+          fontSize: "clamp(7.5rem, 13.4vw, 14rem)",
           lineHeight: 0.9,
           fontWeight: 700,
           opacity: 0.25,
@@ -52,7 +51,7 @@ export function EntrySection() {
         }}
       >
         <span className="invisible" aria-hidden="true">SIGNALFRAME</span>
-        <span>{"//"}</span>
+        <span className="tracking-[-0.12em]">{"//"}</span>
         <span className="invisible" aria-hidden="true">UX</span>
       </div>
     </div>
