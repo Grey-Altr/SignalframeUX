@@ -510,7 +510,7 @@ export function Nav() {
               >
                 <span className="text-primary text-[10px]">◉◉</span>
                 <span className="inline-flex items-baseline gap-0">
-                  SF<span className="text-primary leading-none">{"//"}</span>UX
+                  SF<span className="text-primary text-[11px] leading-none">{"//"}</span>UX
                 </span>
               </Link>
             </ColorCycleFrame>

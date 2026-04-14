@@ -49,7 +49,11 @@ export function Hero() {
             </ColorCycleFrame>
             <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10 leading-[0.92]">
               <span className="inline-block overflow-visible border-l-[3px] border-solid border-background dark:border-foreground box-border pl-[0.06em]">
-                <span aria-hidden="true" data-anim="hero-slashes" className="inline-block align-baseline text-[var(--sf-dim-text)] leading-none">
+                <span
+                  aria-hidden="true"
+                  data-anim="hero-slashes"
+                  className="inline-block align-baseline text-[1.14em] text-[var(--sf-dim-text)] leading-none"
+                >
                   {"//"}
                 </span>
                 <span className="inline-block overflow-hidden align-baseline">
