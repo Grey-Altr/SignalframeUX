@@ -204,8 +204,8 @@ const SEG_W2_PX = 3;
 const SEG_W3_PX = 2;
 const SEG_PIN_W1_PX = 11;
 const SEG_PIN_W2_PX = 8;
-const SEG_GAP_IDLE_PX = 2;
-const SEG_GAP_ACTIVE_PX = 6;
+const SEG_GAP_IDLE_PX = 1;
+const SEG_GAP_ACTIVE_PX = 3;
 
 function scaleFromVb(vb: number): number {
   return vb / GLYPH_VB_BASE;
