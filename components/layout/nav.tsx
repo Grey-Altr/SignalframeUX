@@ -4,6 +4,7 @@ import { useState, memo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CommandPalette } from "@/components/layout/command-palette";
+import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 
 const IconInventory = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -40,6 +41,15 @@ const IconGithub = (props: any) => (
     <path d="M13 3h8v8h-4V8.828l-5.172 5.172-2.828-2.828L14.172 6H13V3zM3 13h4v8H3v-8z" />
   </svg>
 );
+const IconCommandGrid = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path fillRule="evenodd" clipRule="evenodd" d="M1 2h14v20H1V2zM6 7h9v10H6V7z" />
+    <path d="M8 9h7v6H8z" />
+    <path d="M17 2h7v6h-7z" />
+    <path d="M17 9h7v6h-7z" />
+    <path d="M17 16h7v6h-7z" />
+  </svg>
+);
 import { NavOverlay } from "@/components/layout/nav-overlay";
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
@@ -62,6 +72,7 @@ const NavCubeLink = memo(function NavCubeLink({
   label,
   icon: Icon,
   isActive,
+  rolloutActive,
   ariaLabel,
   external,
 }: {
@@ -69,6 +80,7 @@ const NavCubeLink = memo(function NavCubeLink({
   label: string;
   icon: React.ElementType;
   isActive: boolean;
+  rolloutActive: boolean;
   ariaLabel?: string;
   external?: boolean;
 }) {
@@ -119,23 +131,37 @@ const NavCubeLink = memo(function NavCubeLink({
   }, [runScramble]);
 
   const handleCollapse = useCallback(() => {
+    if (rolloutActive) return;
     setExpanded(false);
     stopScramble();
     setDisplayText("");
-  }, [stopScramble]);
+  }, [rolloutActive, stopScramble]);
 
   useEffect(() => () => stopScramble(), [stopScramble]);
 
+  useEffect(() => {
+    if (rolloutActive) {
+      stopScramble();
+      setDisplayText(label);
+      return;
+    }
+    if (!expanded) {
+      setDisplayText("");
+    }
+  }, [rolloutActive, expanded, label, stopScramble]);
+
+  const isRolledOut = rolloutActive || expanded;
+
   const cubeBaseClass =
-    "group relative flex h-6 min-w-6 items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-[var(--sfx-ease-default)] pointer-events-auto";
+    "group relative flex h-6 min-w-6 items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-in-out pointer-events-auto";
   const cubePaletteClass = isActive
-    ? "bg-primary text-primary-foreground"
-    : "bg-foreground text-background hover:bg-primary hover:text-primary-foreground";
+    ? "bg-[var(--sfx-yellow)] text-black ring-1 ring-black"
+    : "bg-[var(--sfx-yellow)] text-black hover:bg-[var(--sfx-yellow)]";
 
   return (
     <div
       className={`${cubeBaseClass} ${cubePaletteClass}`}
-      style={{ width: expanded ? "140px" : "24px", cursor: "pointer" }}
+      style={{ width: isRolledOut ? "140px" : "24px", cursor: "pointer" }}
       onMouseEnter={handleExpand}
       onMouseLeave={handleCollapse}
       onFocus={handleExpand}
@@ -152,11 +178,220 @@ const NavCubeLink = memo(function NavCubeLink({
         <span className="flex w-6 shrink-0 items-center justify-center text-[var(--text-2xs)]">
           <Icon className="w-[14px] h-[14px] transition-transform duration-[var(--sfx-duration-fast)] group-hover:scale-110 group-hover:rotate-90" />
         </span>
-        <span className={`pr-[var(--sfx-space-2)] whitespace-nowrap transition-opacity duration-[var(--sfx-duration-fast)] ${expanded ? "opacity-100" : "opacity-0"}`}>
+        <span className={`pr-[var(--sfx-space-2)] whitespace-nowrap transition-opacity duration-[var(--sfx-duration-fast)] ${isRolledOut ? "opacity-100" : "opacity-0"}`}>
           {displayText}
         </span>
       </Link>
     </div>
+  );
+});
+
+/** Base design in 14×14 space; expanded state scales vb up so border + spacing grow together. */
+const GLYPH_VB_BASE = 14;
+const GLYPH_VB_IDLE = 14;
+/** Taller box so more rows + scaled modules fit without overlap. */
+const GLYPH_VB_ACTIVE = 22;
+const GLYPH_INSET_BASE = 2;
+const ROW_MODULE_H_BASE = 2;
+const CAP_H_BASE = 2;
+const CAP_W_BASE = 6;
+const BAR_W_BASE = 2;
+
+/** Inner rollout bars: fixed px — only spacing/gaps animate with state. */
+const SEG_H_PX = 2;
+const SEG_W1_PX = 4;
+const SEG_W2_PX = 3;
+const SEG_W3_PX = 2;
+const SEG_PIN_W1_PX = 11;
+const SEG_PIN_W2_PX = 8;
+const SEG_GAP_IDLE_PX = 2;
+const SEG_GAP_ACTIVE_PX = 6;
+
+function scaleFromVb(vb: number): number {
+  return vb / GLYPH_VB_BASE;
+}
+
+function computeRolloutRows(rowCount: number, vb: number): { rowTops: number[]; rowH: number } {
+  const s = scaleFromVb(vb);
+  const inset = GLYPH_INSET_BASE * s;
+  const innerTop = inset;
+  const innerBottom = vb - inset;
+  const innerH = innerBottom - innerTop;
+  if (rowCount <= 0) return { rowTops: [], rowH: ROW_MODULE_H_BASE * s };
+  const idealRowH = ROW_MODULE_H_BASE * s;
+  let rowH = idealRowH;
+  let gap = rowCount > 1 ? (innerH - rowCount * rowH) / (rowCount - 1) : 0;
+  if (gap < 0.15 * s && rowCount > 1) {
+    rowH = innerH / rowCount;
+    gap = 0;
+  }
+  if (rowCount === 1) {
+    return { rowTops: [innerTop + (innerH - rowH) / 2], rowH };
+  }
+  const rowTops = Array.from({ length: rowCount }, (_, i) => innerTop + i * (rowH + gap));
+  return { rowTops, rowH };
+}
+
+/** Vertical bar segments only in gaps between row bands (cutouts frame each module row). */
+function bracketVerticalSegments(
+  rowTops: number[],
+  vb: number,
+  rowH: number,
+): Array<{ y: number; h: number }> {
+  const inset = GLYPH_INSET_BASE * scaleFromVb(vb);
+  const innerBottom = vb - inset;
+  const capBottom = inset;
+  const segs: Array<{ y: number; h: number }> = [];
+  const n = rowTops.length;
+  if (n === 0) return segs;
+
+  if (rowTops[0] > capBottom + 0.01) {
+    segs.push({ y: capBottom, h: rowTops[0] - capBottom });
+  }
+  for (let i = 0; i < n - 1; i++) {
+    const afterRow = rowTops[i] + rowH;
+    const beforeNext = rowTops[i + 1];
+    if (beforeNext > afterRow + 0.01) {
+      segs.push({ y: afterRow, h: beforeNext - afterRow });
+    }
+  }
+  const afterLast = rowTops[n - 1] + rowH;
+  if (innerBottom > afterLast + 0.01) {
+    segs.push({ y: afterLast, h: innerBottom - afterLast });
+  }
+  return segs;
+}
+
+function bracketCaps(vb: number): { capH: number; capW: number; barW: number } {
+  const s = scaleFromVb(vb);
+  return {
+    capH: CAP_H_BASE * s,
+    capW: CAP_W_BASE * s,
+    barW: BAR_W_BASE * s,
+  };
+}
+
+const NavSignalGlyph = memo(function NavSignalGlyph({
+  pinned,
+  onPinnedChange,
+}: {
+  pinned: boolean;
+  onPinnedChange: (next: boolean) => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false);
+  const isActive = isHovered || pinned;
+  const vb = isActive ? GLYPH_VB_ACTIVE : GLYPH_VB_IDLE;
+  const rowCount = isActive ? 5 : 3;
+  const { rowTops, rowH: rowBandH } = computeRolloutRows(rowCount, vb);
+  const vSegs = bracketVerticalSegments(rowTops, vb, rowBandH);
+  const { capH, capW, barW } = bracketCaps(vb);
+  const segmentGap = isActive ? SEG_GAP_ACTIVE_PX : SEG_GAP_IDLE_PX;
+
+  useEffect(() => {
+    if (!isFlashing) return;
+    const timer = window.setTimeout(() => setIsFlashing(false), 240);
+    return () => window.clearTimeout(timer);
+  }, [isFlashing]);
+
+  const handleClick = () => {
+    onPinnedChange(!pinned);
+    setIsFlashing(true);
+  };
+
+  return (
+    <button
+      type="button"
+      aria-label="Toggle signal glyph orientation"
+      aria-pressed={pinned}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
+      onClick={handleClick}
+      className={`group relative flex h-6 w-6 items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-slow)] ease-in-out ${
+        pinned || isFlashing ? "text-[var(--sfx-yellow)]" : "text-black"
+      }`}
+    >
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
+        <span
+          className="relative transition-[width,height,color] duration-[var(--sfx-duration-slow)] ease-in-out"
+          style={{ width: vb, height: vb }}
+        >
+          <svg
+            className="absolute left-0 top-0 h-full w-full"
+            viewBox={`0 0 ${vb} ${vb}`}
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <rect x="0" y="0" width={capW} height={capH} />
+            <rect x="0" y={vb - capH} width={capW} height={capH} />
+            {vSegs.map((seg, i) => (
+              <rect key={i} x="0" y={seg.y} width={barW} height={seg.h} />
+            ))}
+          </svg>
+
+          <span className="absolute inset-0">
+            {rowTops.map((rowTop, index) => (
+              <span
+                key={index}
+                className="absolute left-0 flex items-center transition-[top,height,width,gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                style={{
+                  left: capW,
+                  top: rowTop,
+                  width: vb - capW,
+                  height: rowBandH,
+                  gap: segmentGap,
+                }}
+              >
+                {isActive ? (
+                  <>
+                    <span
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      style={{
+                        width: SEG_W1_PX,
+                        height: SEG_H_PX,
+                      }}
+                    />
+                    <span
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      style={{
+                        width: SEG_W2_PX,
+                        height: SEG_H_PX,
+                      }}
+                    />
+                    <span
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      style={{
+                        width: SEG_W3_PX,
+                        height: SEG_H_PX,
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <span
+                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      style={{
+                        width: pinned ? SEG_PIN_W1_PX : SEG_W1_PX,
+                        height: SEG_H_PX,
+                      }}
+                    />
+                    <span
+                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      style={{
+                        width: pinned ? SEG_PIN_W2_PX : SEG_W2_PX,
+                        height: SEG_H_PX,
+                      }}
+                    />
+                  </>
+                )}
+              </span>
+            ))}
+          </span>
+        </span>
+      </span>
+    </button>
   );
 });
 
@@ -178,6 +413,7 @@ export function Nav() {
   const pathname = usePathname();
   const [commandOpen, setCommandOpen] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
+  const [rolloutPinned, setRolloutPinned] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
   // Nav reveal is owned by per-page <NavRevealMount /> islands (Phase 34 SP-05).
@@ -195,6 +431,7 @@ export function Nav() {
         <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">
           {/* Floating cube stack (desktop): I / A / S / G / G */}
           <div className="hidden md:flex flex-col items-start gap-[var(--sfx-space-1)]">
+            <NavSignalGlyph pinned={rolloutPinned} onPinnedChange={setRolloutPinned} />
             {NAV_LINKS.map((link) => (
               <NavCubeLink
                 key={link.href}
@@ -204,6 +441,7 @@ export function Nav() {
                 ariaLabel={link.ariaLabel}
                 external={link.external}
                 isActive={isActivePath(link.href, pathname)}
+                rolloutActive={rolloutPinned}
               />
             ))}
           </div>
@@ -212,7 +450,7 @@ export function Nav() {
           <div className="md:hidden">
             <button
               onClick={() => setOverlayOpen(true)}
-              className="flex h-[var(--sfx-space-12)] w-[var(--sfx-space-12)] items-center justify-center bg-foreground text-background text-[var(--text-sm)] font-bold uppercase tracking-[0.12em] transition-colors duration-[var(--sfx-duration-fast)] hover:bg-primary hover:text-primary-foreground"
+              className="flex h-[var(--sfx-space-12)] w-[var(--sfx-space-12)] items-center justify-center bg-muted-foreground text-background text-[var(--text-sm)] font-bold uppercase tracking-[0.12em] transition-colors duration-[var(--sfx-duration-fast)] hover:bg-primary hover:text-primary-foreground"
               aria-label="Open navigation menu"
               aria-expanded={overlayOpen}
             >
@@ -228,27 +466,26 @@ export function Nav() {
 
           {/* Corner badge + utility controls cluster */}
           <div className="mt-[var(--sfx-space-1)] flex items-center gap-[var(--sfx-space-1)]">
-            <Link
-              href="/"
-              aria-label="SF//UX homepage"
-              className="hidden sm:flex h-6 items-center gap-[var(--sfx-space-1)] bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-[var(--sfx-space-2)] text-[9px] font-bold uppercase tracking-[0.1em] no-underline"
-            >
-              <span className="text-primary text-[10px]">◉◉</span>
-              SF//UX
-            </Link>
+            <ColorCycleFrame style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
+              <Link
+                href="/"
+                aria-label="SF//UX homepage"
+                className="hidden sm:flex h-6 items-center gap-[var(--sfx-space-1)] bg-muted-foreground text-background px-[var(--sfx-space-2)] text-[9px] font-bold uppercase tracking-[0.1em] no-underline"
+              >
+                <span className="text-primary text-[10px]">◉◉</span>
+                SF<span className="text-primary">{"//"}</span>UX
+              </Link>
+            </ColorCycleFrame>
             <button
               onClick={() => setCommandOpen(true)}
-              className="hidden sm:flex h-6 w-6 items-center justify-center bg-foreground text-background font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-colors duration-[var(--sfx-duration-fast)] hover:bg-primary hover:text-primary-foreground"
+              className="hidden sm:flex items-center justify-center border-2 border-muted-foreground bg-transparent text-muted-foreground transition-colors duration-[var(--sfx-duration-fast)] hover:text-primary hover:border-primary"
+              style={{ width: 32, height: 24 }}
               aria-label="Open command palette (Cmd+K)"
             >
-              K
+              <IconCommandGrid aria-hidden="true" className="w-[14px] h-[14px]" />
             </button>
-            <div className="origin-left scale-[0.7]">
-              <BorderlessToggle />
-            </div>
-            <div className="origin-left scale-[0.6] -ml-[var(--sfx-space-2)]">
-              <DarkModeToggle />
-            </div>
+            <BorderlessToggle />
+            <DarkModeToggle />
           </div>
         </div>
 
