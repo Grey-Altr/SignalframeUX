@@ -234,6 +234,8 @@
   --sfx-duration-normal: 200ms;
   --sfx-duration-slow: 400ms;
   --sfx-duration-glacial: 600ms;
+  --sfx-theme-toggle-duration: 1100ms;
+  --sfx-theme-toggle-ease: ease-in-out;
   --sfx-ease-default: cubic-bezier(0, 0, 0.2, 1);
   --sfx-ease-hover: cubic-bezier(0, 0, 0.2, 1);
   --sfx-ease-spring: cubic-bezier(0, 0, 0.2, 1);
@@ -250,6 +252,21 @@
   --sfx-signal-intensity: 0.5;
   --sfx-signal-speed: 1;
   --sfx-signal-accent: 0;
+
+  /* ── Effects Subsystem Tokens ──
+     Written at runtime by updateSignalDerivedProps() in global-effects.tsx.
+     CSS consumers can read these without JS. Primitives in components/animation/
+     use the JS API (lib/effects/) directly for numeric precision. */
+  --sfx-fx-tier: fallback;
+  --sfx-fx-multiplier: 0;
+  --sfx-fx-feedback-decay: 0.88;
+  --sfx-fx-displace-gain: 0;
+  --sfx-fx-bloom-intensity: 0;
+  --sfx-fx-glitch-rate: 0;
+  --sfx-fx-particle-opacity: 0;
+  --sfx-audio-bass: 0;
+  --sfx-audio-mid: 0;
+  --sfx-audio-high: 0;
 
   /* ── Spacing Tokens (blessed stops only) ──
      Based on 4px base. These are the ONLY valid content spacing values.
@@ -368,9 +385,9 @@
   --sfx-inset-shadow-color: oklch(0 0 0 / 0.4);
 }
 
-/* ── Theme Switch: hard-cut (DU-style instant inversion) ──
-   The .sf-no-transition class is applied during toggle and removed
-   after two rAF ticks so the browser paints the new palette atomically.
+/* ── Theme Switch: sequenced transition ──
+   Dark/light color transitions follow --sfx-theme-toggle-duration
+   and --sfx-theme-toggle-ease so palette and knob motion stay in sync.
    See lib/theme.ts for the toggle implementation. */
 
 /* ══════════════════════════════════════════════════════════════
@@ -954,13 +971,30 @@ body[data-nav-visible="true"] .sf-nav-hidden {
     user-select: none;
   }
 
-  /* ── Theme hard-cut (disable all transitions during mode switch) ── */
-  .sf-no-transition,
-  .sf-no-transition *,
-  .sf-no-transition *::before,
-  .sf-no-transition *::after {
-    transition: none !important;
-    animation-duration: 0.01ms !important;
+  /* ── Theme Switch: sequenced transition (toggle-time only) ── */
+  .sf-theme-animating,
+  .sf-theme-animating *,
+  .sf-theme-animating *::before,
+  .sf-theme-animating *::after {
+    transition:
+      background-color var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      border-color var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      color var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      fill var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      stroke var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease) !important;
+  }
+
+  .sf-theme-toggle-knob {
+    transition:
+      transform var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      background-color 350ms var(--sfx-theme-toggle-ease);
+  }
+
+  /* Keep knob motion synced during the same toggle sequence. */
+  .sf-theme-animating .sf-theme-toggle-knob {
+    transition:
+      transform var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
+      background-color 350ms var(--sfx-theme-toggle-ease) !important;
   }
 
   /* ── Halftone dot pattern overlay (specimen sections) ── */
@@ -2109,6 +2143,10 @@ html:not(.dark) .sf-mesh-gradient {
   border-width: 0 !important;
 }
 
+[data-borderless="true"] :where([class*="border"], [class*="ring"], .sf-border) {
+  background-color: var(--color-muted) !important;
+}
+
 [data-borderless="true"] .hero-cta-btn.secondary:hover,
 [data-borderless="true"] .sf-button-outline:hover,
 [data-borderless="true"] .sf-button-ghost:hover {
@@ -2125,4 +2163,367 @@ html:not(.dark) .sf-mesh-gradient {
 [data-borderless="true"] .sf-card,
 [data-borderless="true"] .sf-dialog-content {
   box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Shared nav glyph motion (non-inventory) */
+.sf-nav-icon-stack {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+}
+
+.sf-nav-icon-stack .sf-nav-icon {
+  position: absolute;
+  inset: 0;
+}
+
+.sf-nav-icon--main,
+.sf-nav-icon--trail {
+  transform-origin: center;
+  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 300ms ease;
+}
+
+.sf-nav-icon--main {
+  z-index: 3;
+}
+
+.sf-nav-icon--trail {
+  opacity: 0;
+  z-index: 2;
+}
+
+.sf-nav-icon--trail-2 {
+  z-index: 1;
+}
+
+.group:hover .sf-nav-icon--main,
+.group:focus-visible .sf-nav-icon--main {
+  transform: translate(3.6px, -1.15px) rotate(1.2deg);
+  transition-delay: 110ms;
+}
+
+.group:hover .sf-nav-icon--trail-1,
+.group:focus-visible .sf-nav-icon--trail-1 {
+  opacity: 0.52;
+  transform: translate(2.1px, 0.95px) rotate(0.6deg);
+  transition-delay: 52ms;
+}
+
+.group:hover .sf-nav-icon--trail-2,
+.group:focus-visible .sf-nav-icon--trail-2 {
+  opacity: 0.3;
+  transform: translate(0.9px, -0.75px) rotate(0.2deg);
+  transition-delay: 0ms;
+}
+
+.group:hover .sf-nav-icon-stack,
+.group:focus-visible .sf-nav-icon-stack {
+  animation: sf-nav-icon-hover-hold 1.35s ease-in-out 120ms infinite;
+}
+
+@keyframes sf-nav-icon-hover-hold {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: translate(0.55px, -0.45px) rotate(0.6deg);
+    filter: brightness(1.08);
+  }
+  100% {
+    transform: translate(-0.4px, 0.35px) rotate(-0.5deg);
+    filter: brightness(1);
+  }
+}
+
+.sf-nav-icon--inventory {
+  transform-origin: center;
+  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .sf-nav-icon--inventory,
+.group:focus-visible .sf-nav-icon--inventory {
+  transform: rotate(90deg);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sf-nav-icon--api {
+  transform-origin: center;
+}
+
+.sf-nav-icon--system {
+  transform-origin: center;
+}
+
+.sf-system-outer {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .sf-system-outer,
+.group:focus-visible .sf-system-outer {
+  transform: rotate(45deg);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sf-builds-segment {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 430ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .sf-builds-segment,
+.group:focus-visible .sf-builds-segment {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .sf-builds-segment--1,
+.group:focus-visible .sf-builds-segment--1 {
+  transform: translateY(-2.1px) scaleX(1.18);
+  transition-delay: 0ms;
+}
+
+.group:hover .sf-builds-segment--2,
+.group:focus-visible .sf-builds-segment--2 {
+  transform: translate(-1.9px, 1.4px);
+  transition-delay: 34ms;
+}
+
+.group:hover .sf-builds-segment--3,
+.group:focus-visible .sf-builds-segment--3 {
+  transform: translate(2.2px, 1.3px);
+  transition-delay: 68ms;
+}
+
+.sf-init-segment {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .sf-init-segment,
+.group:focus-visible .sf-init-segment {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .sf-init-segment--1,
+.group:focus-visible .sf-init-segment--1 {
+  transform: translateX(1px);
+  transition-delay: 0ms;
+}
+
+.group:hover .sf-init-segment--2,
+.group:focus-visible .sf-init-segment--2 {
+  transform: translateX(2.2px);
+  transition-delay: 36ms;
+}
+
+.group:hover .sf-init-segment--3,
+.group:focus-visible .sf-init-segment--3 {
+  transform: translateX(3.4px);
+  transition-delay: 72ms;
+}
+
+.sf-api-segment {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 430ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sf-api-segment-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: none;
+}
+
+/* Hover only: spread apart with fixed geometry (no scaling). */
+.group:hover .sf-api-segment,
+.group:focus-visible .sf-api-segment {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .sf-api-segment--1,
+.group:focus-visible .sf-api-segment--1 {
+  transform: translate(2.4px, -3.2px);
+  transition-delay: 0ms;
+}
+
+.group:hover .sf-api-segment--2,
+.group:focus-visible .sf-api-segment--2 {
+  transform: translate(3.2px, -2.2px);
+  transition-delay: 52ms;
+}
+
+.group:hover .sf-api-segment--3,
+.group:focus-visible .sf-api-segment--3 {
+  transform: translate(1.6px, 1.3px);
+  transition-delay: 24ms;
+}
+
+.group:hover .sf-api-segment-float--1,
+.group:focus-visible .sf-api-segment-float--1 {
+  animation: sf-api-segment-orbit 1.45s ease-in-out 160ms infinite;
+}
+
+.group:hover .sf-api-segment-float--2,
+.group:focus-visible .sf-api-segment-float--2 {
+  animation: sf-api-segment-orbit 1.6s ease-in-out 240ms infinite;
+}
+
+.group:hover .sf-api-segment-float--3,
+.group:focus-visible .sf-api-segment-float--3 {
+  animation: sf-api-segment-orbit 1.5s ease-in-out 320ms infinite;
+}
+
+@keyframes sf-api-segment-orbit {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  35% {
+    transform: translate(0.65px, -0.55px) rotate(1deg);
+  }
+  70% {
+    transform: translate(-0.5px, 0.6px) rotate(-1.1deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* Inventory glyph hover choreography (variant B) */
+.sf-inventory-cell {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition-property: transform;
+  transition-duration: 460ms;
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sf-inventory-cell-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: none;
+}
+
+.group:hover .sf-inventory-cell,
+.group:focus-visible .sf-inventory-cell {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .sf-inventory-cell--1,
+.group:focus-visible .sf-inventory-cell--1 {
+  transform: translate(0px, 0px) rotate(0deg);
+  transition-delay: 0ms;
+}
+
+.group:hover .sf-inventory-cell--2,
+.group:focus-visible .sf-inventory-cell--2 {
+  transform: translate(1.4px, -1.25px) rotate(0.55deg);
+  transition-delay: 44ms;
+}
+
+.group:hover .sf-inventory-cell--3,
+.group:focus-visible .sf-inventory-cell--3 {
+  transform: translate(2.8px, 1.15px) rotate(0.95deg);
+  transition-delay: 88ms;
+}
+
+.group:hover .sf-inventory-cell--4,
+.group:focus-visible .sf-inventory-cell--4 {
+  transform: translate(4px, -0.65px) rotate(1.25deg);
+  transition-delay: 132ms;
+}
+
+.group:hover .sf-inventory-cell-float--1,
+.group:focus-visible .sf-inventory-cell-float--1 {
+  animation: sf-inventory-cell-orbit 1.4s ease-in-out 120ms infinite;
+}
+
+.group:hover .sf-inventory-cell-float--2,
+.group:focus-visible .sf-inventory-cell-float--2 {
+  animation: sf-inventory-cell-orbit 1.55s ease-in-out 200ms infinite;
+}
+
+.group:hover .sf-inventory-cell-float--3,
+.group:focus-visible .sf-inventory-cell-float--3 {
+  animation: sf-inventory-cell-orbit 1.45s ease-in-out 280ms infinite;
+}
+
+.group:hover .sf-inventory-cell-float--4,
+.group:focus-visible .sf-inventory-cell-float--4 {
+  animation: sf-inventory-cell-orbit 1.6s ease-in-out 360ms infinite;
+}
+
+@keyframes sf-inventory-cell-orbit {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  35% {
+    transform: translate(0.75px, -0.65px) rotate(1.2deg);
+  }
+  70% {
+    transform: translate(-0.6px, 0.7px) rotate(-1.3deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-nav-icon-stack {
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .sf-nav-icon--main,
+  .sf-nav-icon--trail {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .sf-nav-icon--trail {
+    opacity: 0 !important;
+  }
+
+  .sf-nav-icon--inventory {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-api-segment {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-system-outer {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-builds-segment {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-init-segment {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-api-segment-float {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .sf-inventory-cell,
+  .sf-inventory-cell-float {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }

@@ -200,9 +200,9 @@ export function InstrumentHUD() {
       <span data-hud-field="section" className="text-foreground">
         {sectionLabel}
       </span>
-      {!isMobile && <span ref={scrollRef} data-hud-field="scroll">0%</span>}
-      <span ref={sigRef} data-hud-field="sig">SIG:0.0</span>
       {!isMobile && <span data-hud-field="viewport">{viewport || "0\u00d70"}</span>}
+      <span ref={sigRef} data-hud-field="sig">SIG:0.0</span>
+      {!isMobile && <span ref={scrollRef} data-hud-field="scroll">0%</span>}
       <span data-hud-field="time">{time || "00:00"}</span>
     </aside>
   );

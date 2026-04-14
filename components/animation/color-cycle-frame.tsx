@@ -141,7 +141,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
   });
 }
 
-export function ColorCycleFrame({ children, className }: { children: React.ReactNode; className?: string }) {
+export function ColorCycleFrame({ children, className, style: styleProp }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
   const ref = useRef<HTMLSpanElement>(null);
   const indexRef = useRef(-1);
   const hoveredRef = useRef(false);
@@ -207,7 +207,7 @@ export function ColorCycleFrame({ children, className }: { children: React.React
       className={className}
       onMouseEnter={() => { hoveredRef.current = true; accumulatedRef.current = 0; }}
       onMouseLeave={() => { hoveredRef.current = false; accumulatedRef.current = 0; }}
-      style={{ cursor: "ns-resize", position: "relative", overflow: "clip", verticalAlign: "bottom", lineHeight: "inherit", marginTop: "-58px" }}
+      style={{ cursor: "ns-resize", position: "relative", overflow: "clip", verticalAlign: "bottom", lineHeight: "inherit", marginTop: "-58px", ...styleProp }}
     >
       {children}
     </span>

@@ -10,14 +10,20 @@ interface BorderlessContextType {
 const BorderlessContext = createContext<BorderlessContextType | undefined>(undefined);
 
 export function BorderlessProvider({ children }: { children: React.ReactNode }) {
-  const [isBorderless, setIsBorderless] = useState(false);
+  const [isBorderless, setIsBorderless] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Initialize from localStorage
+    // Borderless is the default unless explicitly disabled in localStorage.
     const stored = localStorage.getItem('sf-borderless');
-    if (stored === 'true') {
+    if (stored === 'false') {
+      setIsBorderless(false);
+      document.documentElement.removeAttribute('data-borderless');
+    } else {
+      if (stored === null) {
+        localStorage.setItem('sf-borderless', 'true');
+      }
       setIsBorderless(true);
       document.documentElement.setAttribute('data-borderless', 'true');
     }
@@ -40,7 +46,7 @@ export function BorderlessProvider({ children }: { children: React.ReactNode }) 
   // Prevent hydration mismatch by not rendering anything that depends on state until mounted,
   // or just render children normally (since we handle DOM mutation in effects).
   return (
-    <BorderlessContext.Provider value={{ isBorderless: mounted ? isBorderless : false, toggleBorderless }}>
+    <BorderlessContext.Provider value={{ isBorderless: mounted ? isBorderless : true, toggleBorderless }}>
       {children}
     </BorderlessContext.Provider>
   );

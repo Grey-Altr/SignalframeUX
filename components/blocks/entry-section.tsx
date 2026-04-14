@@ -8,20 +8,21 @@ export function EntrySection() {
       <GLSLHeroLazy />
 
       {/* HTML overlay — LCP target */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-[1em]">
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-[1em]">
         <h1
           data-anim="hero-title"
-          className="font-display text-center text-primary-foreground uppercase tracking-[0.02em] leading-[0.9] w-full"
+          className="w-full whitespace-nowrap font-display text-center uppercase leading-[0.9] tracking-[0.02em] text-primary-foreground"
           style={{
-            fontSize: "clamp(7.5rem, 13.4vw, 14rem)",
+            // Keep the lockup stable on short viewports by constraining with vh.
+            fontSize: "clamp(4.5rem, min(12vw, 32vh), 12rem)",
             fontWeight: 700,
           }}
         >
-          <span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">S</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">I</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">G</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">N</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">L</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">F</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">R</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">M</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">E</span></span><span className="inline-block overflow-hidden py-[0.22em] align-baseline"><span className="text-primary sf-hero-deferred inline-block align-baseline text-[1.12em] tracking-[-0.12em] leading-none" data-anim="hero-char">{"//"}</span></span><span className="inline-block overflow-hidden ml-[0.08em] align-baseline"><span data-anim="hero-char" className="sf-hero-deferred inline-block">U</span></span><span className="inline-block overflow-hidden align-baseline"><span data-anim="hero-char" className="sf-hero-deferred inline-block">X</span></span>
+          <span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">S</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">I</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">G</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">N</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">L</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">F</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">R</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">A</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">M</span></span><span className="inline-block overflow-hidden"><span data-anim="hero-char" className="sf-hero-deferred inline-block">E</span></span><span className="inline-block overflow-hidden align-baseline pr-[0.28em]"><span className="relative top-[0.08em] text-primary sf-hero-deferred inline-block align-baseline text-[1.12em] tracking-[-0.12em] leading-none" data-anim="hero-char">{"//"}</span></span><span className="inline-block overflow-hidden -ml-[0.15em] align-baseline"><span data-anim="hero-char" className="sf-hero-deferred inline-block">U</span></span><span className="inline-block overflow-hidden align-baseline"><span data-anim="hero-char" className="sf-hero-deferred inline-block">X</span></span>
         </h1>
         <p
           data-anim="hero-subtitle"
-          className="mt-[var(--sfx-space-4)] text-muted-foreground text-center font-sans text-base tracking-[var(--sf-tracking-label)] animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards]"
+          className="mt-(--sfx-space-8) max-w-(--max-w-content) text-center font-sans text-xs font-medium text-foreground/56 tracking-[0.02em] md:text-sm animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards]"
           style={{ opacity: 0 }}
         >
           A dual-layer design system for generative expression.
@@ -41,9 +42,9 @@ export function EntrySection() {
       <div
         data-anim="hero-slash-moment"
         aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none font-display uppercase tracking-[0.02em] text-primary px-[1em]"
+        className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center whitespace-nowrap px-[1em] font-display uppercase tracking-[0.02em] text-primary"
         style={{
-          fontSize: "clamp(7.5rem, 13.4vw, 14rem)",
+          fontSize: "clamp(4.5rem, min(12vw, 32vh), 12rem)",
           lineHeight: 0.9,
           fontWeight: 700,
           opacity: 0.25,
@@ -51,8 +52,8 @@ export function EntrySection() {
         }}
       >
         <span className="invisible" aria-hidden="true">SIGNALFRAME</span>
-        <span className="tracking-[-0.12em]">{"//"}</span>
-        <span className="invisible ml-[0.08em]" aria-hidden="true">UX</span>
+        <span className="relative top-[0.08em] pr-[0.28em] tracking-[-0.12em]">{"//"}</span>
+        <span className="invisible -ml-[0.15em]" aria-hidden="true">UX</span>
       </div>
     </div>
   );

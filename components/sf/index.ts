@@ -187,3 +187,6 @@ export { CDSymbol } from "./cd-symbol";
 
 // Overlays
 export { SFHoverCard, SFHoverCardTrigger, SFHoverCardContent } from "./sf-hover-card";
+
+// Effects Subsystem
+export { SFSignalComposer, type EffectPassName, type SFSignalComposerProps } from "@/components/animation/sf-signal-composer";

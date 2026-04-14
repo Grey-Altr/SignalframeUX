@@ -78,6 +78,16 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
     [pathname]
   );
 
+  const renderNavLabel = useCallback((label: string) => {
+    if (!label.startsWith("//")) return label;
+    return (
+      <>
+        <span className="mr-[0.22em] inline-block tracking-[-0.28em]">{"//"}</span>
+        {label.slice(2)}
+      </>
+    );
+  }, []);
+
   return (
     <div
       ref={overlayRef}
@@ -122,7 +132,7 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
               transition: `opacity 0.4s ease ${0.15 + i * 0.06}s, transform 0.4s ease ${0.15 + i * 0.06}s, color 0.2s ease`,
             }}
           >
-            {link.label}
+            {renderNavLabel(link.label)}
           </Link>
         ))}
       </div>

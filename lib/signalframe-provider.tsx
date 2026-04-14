@@ -70,9 +70,15 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
     // SSR default: false. Client reads the actual OS preference.
     const [prefersReduced, setPrefersReduced] = useState(false);
 
-    // Sync isDark with the DOM classList set by layout.tsx's inline blocking script.
+    // Sync isDark with the DOM classList set by layout.tsx's inline blocking script,
+    // and keep it in sync when theme changes outside provider APIs.
     useEffect(() => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+      const root = document.documentElement;
+      const sync = () => setIsDark(root.classList.contains('dark'));
+      sync();
+      const observer = new MutationObserver(sync);
+      observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+      return () => observer.disconnect();
     }, []);
 
     // Ref tracks latest prefersReduced for async callbacks (CR-02 fix).
@@ -117,8 +123,9 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
 
     const setTheme = (theme: 'light' | 'dark') => {
       const wantDark = theme === 'dark';
-      if (isDark !== wantDark) {
-        const nextDark = toggleTheme(isDark);
+      const currentDark = document.documentElement.classList.contains('dark');
+      if (currentDark !== wantDark) {
+        const nextDark = toggleTheme(currentDark);
         setIsDark(nextDark);
       }
     };

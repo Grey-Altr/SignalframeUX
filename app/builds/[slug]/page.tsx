@@ -7,6 +7,8 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { SFSection, CDSymbol } from "@/components/sf";
 import { BUILDS, getBuildBySlug } from "@/app/builds/builds-data";
 import { BuildSigilDiagram } from "@/components/animation/build-sigil-diagram";
+import { SFSignalComposerLazy as SFSignalComposer } from "@/components/animation/sf-signal-composer-lazy";
+import type { EffectPassName } from "@/components/animation/sf-signal-composer";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -79,6 +81,15 @@ const BUILD_VISUALS: Record<string, BuildVisual> = {
   },
 };
 
+const BUILD_EFFECTS: Record<string, { passes: EffectPassName[]; intensity: number }> = {
+  "sonic-pressure-map": { passes: ["feedback", "bloom", "glitch"], intensity: 0.7 },
+  "ritual-poster-engine": { passes: ["displace", "bloom"], intensity: 0.6 },
+  "operator-wardrobe-skin": { passes: ["particle", "feedback"], intensity: 0.5 },
+  "caption-interceptor": { passes: ["glitch", "displace"], intensity: 0.65 },
+  "archive-heatwave": { passes: ["feedback", "displace", "bloom"], intensity: 0.55 },
+  "night-shift-wayfinder": { passes: ["particle", "bloom", "glitch"], intensity: 0.6 },
+};
+
 export async function generateStaticParams() {
   return BUILDS.map((build) => ({ slug: build.slug }));
 }
@@ -102,6 +113,7 @@ export default async function BuildDetailPage({ params }: PageProps) {
   const build = getBuildBySlug(slug);
   if (!build) notFound();
   const visual = BUILD_VISUALS[build.slug];
+  const effects = BUILD_EFFECTS[build.slug] ?? { passes: ["displace"] as EffectPassName[], intensity: 0.4 };
   const buildIndex = BUILDS.findIndex((item) => item.slug === build.slug);
   const signalFirst = buildIndex % 2 === 1;
   const diagramWords = [
@@ -132,6 +144,11 @@ export default async function BuildDetailPage({ params }: PageProps) {
         />
 
         <SFSection label={build.code} className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+          <SFSignalComposer
+            passes={effects.passes}
+            intensity={effects.intensity}
+            preserveLegibility
+          />
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-1 md:grid-cols-[1fr_auto] border-b-4 border-foreground items-end"

@@ -9,8 +9,13 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
 
 
   useEffect(() => {
-    // Sync state with what the blocking script set
-    setDark(document.documentElement.classList.contains("dark"));
+    // Sync state with what the blocking script set and keep it in sync
+    // if theme is changed by other controls (e.g. command palette).
+    const root = document.documentElement;
+    const sync = () => setDark(root.classList.contains("dark"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
     // Graphic render effect: progressively draw the toggle like scan lines
     const phases = [500, 580, 640, 700, 740, 780, 850];
     const timeouts = phases.map((delay, i) =>
@@ -18,12 +23,17 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
     );
     // Fallback: ensure toggle is accessible even if animation doesn't complete
     const fallback = setTimeout(() => setRenderPhase(7), 2000);
-    return () => { timeouts.forEach(clearTimeout); clearTimeout(fallback); };
+    return () => {
+      observer.disconnect();
+      timeouts.forEach(clearTimeout);
+      clearTimeout(fallback);
+    };
   }, []);
 
   function toggle() {
-    const wasDark = dark;
-    setDark((prev) => sharedToggleTheme(prev));
+    const wasDark = document.documentElement.classList.contains("dark");
+    const nextDark = sharedToggleTheme(wasDark);
+    setDark(nextDark);
     // Bloom flash when switching dark → light
     if (wasDark) {
       const bloom = document.createElement("div");
@@ -55,58 +65,57 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
 
   return (
     <div
-      className="flex items-center gap-[var(--sfx-space-2)].5"
+      className="flex items-center"
       style={{
         opacity: renderOpacity,
         filter: renderFilter,
         transition: "opacity 0.6s ease-out, filter 0.6s ease-out",
       }}
     >
-      <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
-        <rect x="2" y="0" width="3" height="1" fill="currentColor" />
-        <rect x="1" y="1" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="1" width="1" height="1" fill="currentColor" />
-        <rect x="1" y="2" width="1" height="1" fill="currentColor" />
-        <rect x="3" y="2" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="2" width="1" height="1" fill="currentColor" />
-        <rect x="1" y="3" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="3" width="1" height="1" fill="currentColor" />
-        <rect x="2" y="4" width="3" height="1" fill="currentColor" />
-        <rect x="2" y="5" width="3" height="1" fill="currentColor" />
-        <rect x="3" y="6" width="1" height="1" fill="currentColor" />
-      </svg>
       <button
         onClick={toggle}
         tabIndex={renderPhase > 0 ? 0 : -1}
         aria-hidden={renderPhase === 0 ? true : undefined}
-        className="relative w-[42px] h-[28px] border-2 border-foreground bg-transparent shrink-0 cursor-pointer"
+        className="relative w-[4.5rem] h-8 border-2 border-muted-foreground bg-transparent shrink-0 cursor-pointer overflow-hidden"
         aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={dark}
         style={{
           clipPath: renderPhase < 4 ? `inset(0 0 ${100 - renderPhase * 30}% 0)` : "none",
         }}
       >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 10 10"
+          className={`absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-muted-foreground" : "text-primary"}`}
+        >
+          <rect x="3" y="1" width="4" height="1" fill="currentColor" />
+          <rect x="2" y="2" width="6" height="3" fill="currentColor" />
+          <rect x="3" y="5" width="4" height="2" fill="currentColor" />
+          <rect x="4" y="7" width="2" height="2" fill="currentColor" />
+        </svg>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 10 10"
+          className={`absolute right-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-primary" : "text-muted-foreground"}`}
+        >
+          <rect x="3" y="1" width="4" height="1" fill="currentColor" />
+          <rect x="2" y="2" width="1" height="1" fill="currentColor" />
+          <rect x="7" y="2" width="1" height="1" fill="currentColor" />
+          <rect x="2" y="3" width="1" height="2" fill="currentColor" />
+          <rect x="7" y="3" width="1" height="2" fill="currentColor" />
+          <rect x="3" y="5" width="4" height="2" fill="currentColor" />
+          <rect x="4" y="7" width="2" height="2" fill="currentColor" />
+        </svg>
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-foreground transition-all duration-300"
+          className="sf-theme-toggle-knob absolute top-1/2 h-[22px] w-[8px] bg-muted-foreground"
           style={{
-            left: dark ? "2px" : "24px",
+            left: "22px",
+            transform: `translate3d(${dark ? 20 : 0}px, -50%, 0)`,
             backgroundColor: dark ? "var(--color-primary)" : undefined,
-            transitionTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
+            willChange: "transform",
           }}
         />
       </button>
-      <svg aria-hidden="true" width="20" height="26" viewBox="0 0 7 9" className="text-primary" style={{ imageRendering: "pixelated" }}>
-        <rect x="2" y="0" width="3" height="1" fill="currentColor" />
-        <rect x="1" y="1" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="1" width="1" height="1" fill="currentColor" />
-        <rect x="1" y="2" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="2" width="1" height="1" fill="currentColor" />
-        <rect x="1" y="3" width="1" height="1" fill="currentColor" />
-        <rect x="5" y="3" width="1" height="1" fill="currentColor" />
-        <rect x="2" y="4" width="3" height="1" fill="currentColor" />
-        <rect x="2" y="5" width="3" height="1" fill="currentColor" />
-        <rect x="3" y="6" width="1" height="1" fill="currentColor" />
-      </svg>
     </div>
   );
 });

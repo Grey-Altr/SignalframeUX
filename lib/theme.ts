@@ -1,6 +1,6 @@
 /**
  * Shared theme toggle — used by DarkModeToggle and CommandPalette.
- * Hard-cut switch (DU-style) — instant color inversion, no smooth blend.
+ * Sequenced switch — color transitions follow the toggle motion timing.
  *
  * @param currentDark - Whether dark mode is currently active
  * @returns The new dark mode state
@@ -15,12 +15,10 @@ export function toggleTheme(currentDark: boolean): boolean {
     localStorage.setItem("sf-theme", next ? "dark" : "light");
   } catch {}
   const root = document.documentElement;
-  root.classList.add("sf-no-transition");
+  root.classList.add("sf-theme-animating");
   root.classList.toggle("dark", next);
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      root.classList.remove("sf-no-transition");
-    });
-  });
+  window.setTimeout(() => {
+    root.classList.remove("sf-theme-animating");
+  }, 1200);
   return next;
 }

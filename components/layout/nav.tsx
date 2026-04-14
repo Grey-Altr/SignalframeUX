@@ -8,31 +8,83 @@ import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 
 const IconInventory = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M3 3h8v8H3zM13 3h8v4h-8zM13 9h8v12h-8zM3 13h8v8H3z" />
+    <g className="sf-inventory-cell sf-inventory-cell--1">
+      <g className="sf-inventory-cell-float sf-inventory-cell-float--1">
+        <rect x="3" y="3" width="8" height="8" />
+      </g>
+    </g>
+    <g className="sf-inventory-cell sf-inventory-cell--2">
+      <g className="sf-inventory-cell-float sf-inventory-cell-float--2">
+        <rect x="13" y="3" width="8" height="4" />
+      </g>
+    </g>
+    <g className="sf-inventory-cell sf-inventory-cell--3">
+      <g className="sf-inventory-cell-float sf-inventory-cell-float--3">
+        <rect x="13" y="9" width="8" height="12" />
+      </g>
+    </g>
+    <g className="sf-inventory-cell sf-inventory-cell--4">
+      <g className="sf-inventory-cell-float sf-inventory-cell-float--4">
+        <rect x="3" y="13" width="8" height="8" />
+      </g>
+    </g>
   </svg>
 );
 
 const IconApi = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path fillRule="evenodd" clipRule="evenodd" d="M3 11h12v2H3zM15 7h6v10h-6zM7 5h4v14H7z" />
+    <g className="sf-api-segment sf-api-segment--1">
+      <g className="sf-api-segment-float sf-api-segment-float--1">
+        <rect x="3" y="10" width="12" height="4" />
+      </g>
+    </g>
+    <g className="sf-api-segment sf-api-segment--2">
+      <g className="sf-api-segment-float sf-api-segment-float--2">
+        <rect x="15" y="7" width="6" height="10" />
+      </g>
+    </g>
+    <g className="sf-api-segment sf-api-segment--3">
+      <g className="sf-api-segment-float sf-api-segment-float--3">
+        <rect x="7" y="5" width="4" height="14" />
+      </g>
+    </g>
   </svg>
 );
 
 const IconSystem = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path fillRule="evenodd" clipRule="evenodd" d="M3 3h18v18H3V3zm4 4v10h10V7H7zm2 2h6v6H9V9z" />
+    <g className="sf-system-outer">
+      <path fillRule="evenodd" clipRule="evenodd" d="M3 3h18v18H3V3zm4 4v10h10V7H7z" />
+    </g>
+    <rect className="sf-system-inner" x="9" y="9" width="6" height="6" />
   </svg>
 );
 
 const IconBuilds = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M3 5h18v4H3zM3 11h10v8H3zM15 11h6v8h-6z" />
+    <g className="sf-builds-segment sf-builds-segment--1">
+      <rect x="3" y="5" width="18" height="4" />
+    </g>
+    <g className="sf-builds-segment sf-builds-segment--2">
+      <rect x="3" y="11" width="10" height="8" />
+    </g>
+    <g className="sf-builds-segment sf-builds-segment--3">
+      <rect x="15" y="11" width="6" height="8" />
+    </g>
   </svg>
 );
 
 const IconInit = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M4 4h6v16H4zm8 4h4v8h-4zm6 2h2v4h-2z" />
+    <g className="sf-init-segment sf-init-segment--1">
+      <rect x="4" y="4" width="6" height="16" />
+    </g>
+    <g className="sf-init-segment sf-init-segment--2">
+      <rect x="12" y="8" width="4" height="8" />
+    </g>
+    <g className="sf-init-segment sf-init-segment--3">
+      <rect x="18" y="10" width="2" height="4" />
+    </g>
   </svg>
 );
 
@@ -55,6 +107,9 @@ import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
 
 const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_/[]{}";
+const NAV_UNIT_PX = 32;
+const NAV_NOTCH_PX = 8;
+const NAV_GLYPH_PX = 16;
 
 function scrambleLabel(target: string, revealCount: number) {
   return target
@@ -73,6 +128,12 @@ const NavCubeLink = memo(function NavCubeLink({
   icon: Icon,
   isActive,
   rolloutActive,
+  rolloutWidth,
+  isInventory,
+  isApi,
+  isSystem,
+  isBuilds,
+  isInit,
   ariaLabel,
   external,
 }: {
@@ -81,6 +142,12 @@ const NavCubeLink = memo(function NavCubeLink({
   icon: React.ElementType;
   isActive: boolean;
   rolloutActive: boolean;
+  rolloutWidth: string;
+  isInventory: boolean;
+  isApi: boolean;
+  isSystem: boolean;
+  isBuilds: boolean;
+  isInit: boolean;
   ariaLabel?: string;
   external?: boolean;
 }) {
@@ -151,17 +218,28 @@ const NavCubeLink = memo(function NavCubeLink({
   }, [rolloutActive, expanded, label, stopScramble]);
 
   const isRolledOut = rolloutActive || expanded;
+  const rolloutHoverWidth = `calc(${rolloutWidth} + 0.75ch)`;
+  const hasPrefix = displayText.startsWith("//");
+  const labelPrefix = hasPrefix ? "//" : "";
+  const labelBody = hasPrefix ? displayText.slice(2) : displayText;
 
   const cubeBaseClass =
-    "group relative flex h-6 min-w-6 items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-in-out pointer-events-auto";
-  const cubePaletteClass = isActive
-    ? "bg-[var(--sfx-yellow)] text-black ring-1 ring-black"
-    : "bg-[var(--sfx-yellow)] text-black hover:bg-[var(--sfx-yellow)]";
+    "group relative flex items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-in-out pointer-events-auto";
+  const cubePaletteClass = isActive ? "ring-1 ring-black" : "";
 
   return (
     <div
       className={`${cubeBaseClass} ${cubePaletteClass}`}
-      style={{ width: isRolledOut ? "140px" : "24px", cursor: "pointer" }}
+      style={{
+        backgroundColor: "oklch(0.7423 0.1526 77.58)",
+        color: "var(--sfx-primary-foreground)",
+        width: expanded ? rolloutHoverWidth : isRolledOut ? rolloutWidth : `${NAV_UNIT_PX}px`,
+        minWidth: `${NAV_UNIT_PX}px`,
+        height: `${NAV_UNIT_PX}px`,
+        cursor: "pointer",
+        clipPath: `polygon(0 0, calc(100% - ${NAV_NOTCH_PX}px) 0, 100% ${NAV_NOTCH_PX}px, 100% 100%, 0 100%)`,
+        transitionTimingFunction: expanded ? "var(--sfx-ease-default)" : "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      }}
       onMouseEnter={handleExpand}
       onMouseLeave={handleCollapse}
       onFocus={handleExpand}
@@ -175,11 +253,64 @@ const NavCubeLink = memo(function NavCubeLink({
         className="flex items-center w-full h-full no-underline text-inherit"
         {...linkProps}
       >
-        <span className="flex w-6 shrink-0 items-center justify-center text-[var(--text-2xs)]">
-          <Icon className="w-[14px] h-[14px] transition-transform duration-[var(--sfx-duration-fast)] group-hover:scale-110 group-hover:rotate-90" />
+        <span
+          className="flex shrink-0 items-center justify-center text-[var(--text-2xs)]"
+          style={{ width: `${NAV_UNIT_PX}px`, height: `${NAV_UNIT_PX}px` }}
+        >
+          {isInventory ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--inventory"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : isApi ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--api"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : isSystem ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--system"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : isBuilds ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--builds"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : isInit ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--init"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : (
+            <span className="sf-nav-icon-stack">
+              <Icon
+                className="sf-nav-icon sf-nav-icon--trail sf-nav-icon--trail-1"
+                style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+              />
+              <Icon
+                className="sf-nav-icon sf-nav-icon--trail sf-nav-icon--trail-2"
+                style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+              />
+              <Icon
+                className="sf-nav-icon sf-nav-icon--main"
+                style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+              />
+            </span>
+          )}
         </span>
-        <span className={`pr-[var(--sfx-space-2)] whitespace-nowrap transition-opacity duration-[var(--sfx-duration-fast)] ${isRolledOut ? "opacity-100" : "opacity-0"}`}>
-          {displayText}
+        <span
+          className={`inline-flex h-full items-center whitespace-nowrap leading-none transition-opacity duration-[var(--sfx-duration-fast)] ${isRolledOut ? "opacity-100" : "opacity-0"}`}
+          style={{
+            paddingRight: `${NAV_UNIT_PX}px`,
+            transform: isInventory && expanded ? "translateX(2px)" : "translateX(0)",
+            transition: isInventory
+              ? `transform 420ms ${expanded ? "cubic-bezier(0.22, 1, 0.36, 1)" : "cubic-bezier(0.34, 1.56, 0.64, 1)"}`
+              : undefined,
+          }}
+        >
+          {labelPrefix ? <span className="mr-[0.22em] inline-block tracking-[-0.28em]">{labelPrefix}</span> : null}
+          {labelBody}
         </span>
       </Link>
     </div>
@@ -364,9 +495,10 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
       onClick={handleClick}
-      className={`group relative flex h-6 w-6 items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
-        pinned || isFlashing ? "text-[var(--sfx-yellow)]" : "text-black"
+      className={`group relative flex items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
+        pinned || isFlashing ? "text-warning" : "text-black"
       }`}
+      style={{ width: `${NAV_UNIT_PX}px`, height: `${NAV_UNIT_PX}px` }}
     >
       <span className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
         <span
@@ -432,13 +564,24 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
 });
 
 const NAV_LINKS: Array<{ href: string; label: string; ariaLabel?: string; external?: boolean; icon: React.ElementType }> = [
-  { href: "/inventory", label: "INVENTORY", icon: IconInventory },
-  { href: "/reference", label: "API", icon: IconApi },
-  { href: "/system", label: "SYSTEM", icon: IconSystem },
-  { href: "/builds", label: "BUILDS", icon: IconBuilds },
-  { href: "/init", label: "GET STARTED", icon: IconInit },
-  { href: "https://github.com/signalframeux", label: "GITHUB", icon: IconGithub, external: true },
+  { href: "/inventory", label: "//INVENTORY", icon: IconInventory },
+  { href: "/reference", label: "//API", icon: IconApi },
+  { href: "/system", label: "//SYSTEM", icon: IconSystem },
+  { href: "/builds", label: "//BUILDS", icon: IconBuilds },
+  { href: "/init", label: "//GET STARTED", icon: IconInit },
+  { href: "https://github.com/signalframeux", label: "//GITHUB", icon: IconGithub, external: true },
 ];
+
+const NAV_LONGEST_WORD_CH = NAV_LINKS.reduce((max, link) => {
+  const longestWordInLabel = link.label
+    .split(/\s+/)
+    .reduce((wordMax, word) => Math.max(wordMax, word.length), 0);
+  return Math.max(max, longestWordInLabel);
+}, 0);
+
+const NAV_ROLLOUT_EXTRA_CH = 3.25;
+const NAV_LABEL_RIGHT_INSET_PX = NAV_UNIT_PX;
+const NAV_ROLLOUT_WIDTH = `calc(${NAV_UNIT_PX}px + ${NAV_LABEL_RIGHT_INSET_PX}px + ${NAV_LONGEST_WORD_CH + NAV_ROLLOUT_EXTRA_CH}ch)`;
 
 
 function isActivePath(href: string, pathname: string) {
@@ -478,6 +621,12 @@ export function Nav() {
                 external={link.external}
                 isActive={isActivePath(link.href, pathname)}
                 rolloutActive={rolloutPinned}
+                rolloutWidth={NAV_ROLLOUT_WIDTH}
+                isInventory={link.href === "/inventory"}
+                isApi={link.href === "/reference"}
+                isSystem={link.href === "/system"}
+                isBuilds={link.href === "/builds"}
+                isInit={link.href === "/init"}
               />
             ))}
           </div>
@@ -506,21 +655,21 @@ export function Nav() {
               <Link
                 href="/"
                 aria-label="SF//UX homepage"
-                className="hidden sm:flex h-6 items-center gap-[var(--sfx-space-1)] bg-muted-foreground text-background pl-[var(--sfx-space-2)] pr-[var(--sfx-space-1)] text-[9px] font-bold uppercase tracking-[0.1em] no-underline"
+                className="hidden sm:flex h-8 items-center gap-[var(--sfx-space-1)] overflow-hidden bg-muted-foreground text-background pl-[var(--sfx-space-2)] pr-[var(--sfx-space-2)] text-[10px] font-bold uppercase tracking-[0.1em] no-underline"
               >
-                <span className="text-primary text-[10px]">◉◉</span>
+                <span className="inline-flex h-full items-center self-center leading-none text-primary text-[10px]">◉◉</span>
                 <span className="inline-flex items-baseline gap-0">
-                  SF<span className="text-primary text-[11px] leading-none">{"//"}</span>UX
+                  SF<span className="text-primary text-[12px] leading-none">{"//"}</span>UX
                 </span>
               </Link>
             </ColorCycleFrame>
             <button
               onClick={() => setCommandOpen(true)}
               className="hidden sm:flex items-center justify-center border-2 border-muted-foreground bg-transparent text-muted-foreground transition-colors duration-[var(--sfx-duration-fast)] hover:text-primary hover:border-primary"
-              style={{ width: 32, height: 24 }}
+              style={{ width: 32, height: 32 }}
               aria-label="Open command palette (Cmd+K)"
             >
-              <IconCommandGrid aria-hidden="true" className="w-[14px] h-[14px]" />
+              <IconCommandGrid aria-hidden="true" className="w-4 h-4" />
             </button>
             <BorderlessToggle />
             <DarkModeToggle />

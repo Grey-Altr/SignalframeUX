@@ -86,6 +86,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${electrolize.variable} ${inter.variable} ${anton.variable} ${jetbrainsMono.variable}`}
+      data-borderless="true"
       suppressHydrationWarning
     >
       <head>

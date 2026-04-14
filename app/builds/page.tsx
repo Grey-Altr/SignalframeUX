@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { SFSection, CDSymbol } from "@/components/sf";
 import { BUILDS } from "@/app/builds/builds-data";
 import { BuildSigilDiagram } from "@/components/animation/build-sigil-diagram";
+import { SFSignalComposerLazy as SFSignalComposer } from "@/components/animation/sf-signal-composer-lazy";
 
 export const metadata: Metadata = {
   title: "Builds — SIGNALFRAME//UX",
@@ -28,6 +29,11 @@ export default function BuildsPage() {
         <Breadcrumb segments={[{ label: "BUILDS" }]} />
 
         <SFSection label="BUILDS" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+          <SFSignalComposer
+            passes={["displace", "particle"]}
+            intensity={0.4}
+            preserveLegibility
+          />
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-1 md:grid-cols-[1fr_auto] border-b-4 border-foreground items-end"

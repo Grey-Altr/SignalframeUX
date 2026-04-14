@@ -6,6 +6,7 @@ import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
+import { getQualityTier, tierMultiplier } from "@/lib/effects/quality-tier";
 
 import { CanvasCursor } from "@/components/animation/canvas-cursor";
 import { SignalOverlayLazy } from "@/components/animation/signal-overlay-lazy";
@@ -44,6 +45,17 @@ export function updateSignalDerivedProps(intensity: number) {
   // Range: 0.05 at intensity 0 → 0 at intensity 1.0
   const circuitOpacity = 0.05 * (1 - i);
   root.setProperty("--sfx-circuit-opacity", String(Math.round(circuitOpacity * 1000) / 1000));
+
+  // Effects subsystem: tier-scaled intensity derivatives for CSS consumers
+  const tier = getQualityTier();
+  const tm = tierMultiplier(tier);
+  root.setProperty("--sfx-fx-tier", tier);
+  root.setProperty("--sfx-fx-multiplier", String(tm));
+  root.setProperty("--sfx-fx-feedback-decay", String(Math.round((0.88 + i * 0.08 * tm) * 1000) / 1000));
+  root.setProperty("--sfx-fx-displace-gain", String(Math.round(i * 0.08 * tm * 1000) / 1000));
+  root.setProperty("--sfx-fx-bloom-intensity", String(Math.round(i * 0.6 * tm * 1000) / 1000));
+  root.setProperty("--sfx-fx-glitch-rate", String(Math.round(i * 0.15 * tm * 1000) / 1000));
+  root.setProperty("--sfx-fx-particle-opacity", String(Math.round(i * 0.6 * tm * 1000) / 1000));
 }
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */

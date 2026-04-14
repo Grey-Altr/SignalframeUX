@@ -265,6 +265,9 @@ async function initHeroAnimations(
 
 /** Core ScrollTrigger animations — use gsap-core only */
 function initCoreAnimations(clickCleanups: Array<() => void>) {
+  // ── On-load viewport stutter sequence (mirrors hero entrance cadence) ──
+  initViewportStutterDisplaySequence();
+
   // ── Section reveals (initial state set via CSS [data-anim="section-reveal"]) ──
   document.querySelectorAll("[data-anim='section-reveal']").forEach((el) => {
     ScrollTrigger.create({
@@ -467,6 +470,86 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
     },
     once: true,
   });
+}
+
+/**
+ * Applies hero-style stutter reveal to all visible, non-hero animation targets.
+ * This unifies first-screen motion language without interfering with scroll reveals.
+ */
+function initViewportStutterDisplaySequence() {
+  const excludedKinds = new Set([
+    "hero-title",
+    "hero-char",
+    "hero-slashes",
+    "hero-katakana",
+    "hero-farsi",
+    "hero-mandarin",
+    "hero-subtitle",
+    "hero-feel",
+    "hero-copy",
+    "hero-copy-dot",
+    "hero-mesh",
+    "hero-slash-moment",
+    "section-reveal",
+    "tag",
+    "comp-cell",
+    "ghost-label",
+    "cta-btn",
+    "error-code",
+  ]);
+
+  const candidates = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-anim]")
+  ).filter((el) => {
+    const kind = el.getAttribute("data-anim") ?? "";
+    if (!kind || excludedKinds.has(kind)) return false;
+    if (el.closest("[data-anim='stagger']")) return false;
+
+    const rect = el.getBoundingClientRect();
+    const isVisibleInViewport =
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight &&
+      rect.right > 0 &&
+      rect.left < window.innerWidth &&
+      rect.width > 0 &&
+      rect.height > 0;
+
+    return isVisibleInViewport;
+  });
+
+  if (candidates.length === 0) return;
+
+  gsap.set(candidates, { y: 24, opacity: 0 });
+
+  const stutterTl = gsap.timeline();
+  stutterTl
+    .to(candidates, {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: "power3.out",
+      stagger: 0.03,
+    })
+    .to(candidates, {
+      opacity: 0.3,
+      duration: 0.05,
+      stagger: { amount: 0.2, from: "random" },
+    })
+    .to(candidates, {
+      opacity: 1,
+      duration: 0.05,
+      stagger: { amount: 0.2, from: "random" },
+    })
+    .to(candidates, {
+      opacity: 0.7,
+      duration: 0.05,
+      stagger: { amount: 0.1, from: "random" },
+    })
+    .to(candidates, {
+      opacity: 1,
+      duration: 0.05,
+      stagger: { amount: 0.1, from: "random" },
+    });
 }
 
 /** Apply sharp background color shift (DU-style hard cut, no blend) */
