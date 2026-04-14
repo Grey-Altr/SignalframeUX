@@ -309,7 +309,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
       onClick={handleClick}
-      className={`group relative flex h-6 w-6 items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-slow)] ease-in-out ${
+      className={`group relative flex h-6 w-6 items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
         pinned || isFlashing ? "text-[var(--sfx-yellow)]" : "text-black"
       }`}
     >
@@ -335,7 +335,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
             {rowTops.map((rowTop, index) => (
               <span
                 key={index}
-                className="absolute left-0 flex items-center transition-[width,gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                className="absolute left-0 flex items-center transition-[width,gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
                 style={{
                   left: capW,
                   top: rowTop,
@@ -347,21 +347,21 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
                 {isActive ? (
                   <>
                     <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
                       style={{
                         width: SEG_W1_PX,
                         height: SEG_H_PX,
                       }}
                     />
                     <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
                       style={{
                         width: SEG_W2_PX,
                         height: SEG_H_PX,
                       }}
                     />
                     <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
                       style={{
                         width: SEG_W3_PX,
                         height: SEG_H_PX,
@@ -371,14 +371,14 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
                 ) : (
                   <>
                     <span
-                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-glacial)] ease-in-out"
                       style={{
                         width: pinned ? SEG_PIN_W1_PX : SEG_W1_PX,
                         height: SEG_H_PX,
                       }}
                     />
                     <span
-                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-slow)] ease-in-out"
+                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-glacial)] ease-in-out"
                       style={{
                         width: pinned ? SEG_PIN_W2_PX : SEG_W2_PX,
                         height: SEG_H_PX,
