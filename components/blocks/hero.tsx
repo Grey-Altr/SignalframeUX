@@ -47,10 +47,21 @@ export function Hero() {
             <ColorCycleFrame className="inline-block text-primary">
               <span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">S</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">I</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">G</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">N</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">L</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">F</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">R</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">M</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">E</span></span>
             </ColorCycleFrame>
-            <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10">
-              <span className="inline-flex flex-row items-baseline border-l-[3px] border-solid border-background dark:border-foreground box-border pl-[0.06em]">
-                <span aria-hidden="true" data-anim="hero-slashes" className="inline-block text-[var(--sf-dim-text)] text-[clamp(32px,9.1vw,250px)]">{"//"}</span>
-                <span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">U</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">X</span></span>
+            <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10 leading-[0.92]">
+              <span className="inline-block overflow-visible border-l-[3px] border-solid border-background dark:border-foreground box-border pl-[0.06em]">
+                <span aria-hidden="true" data-anim="hero-slashes" className="inline-block align-baseline text-[var(--sf-dim-text)] leading-none">
+                  {"//"}
+                </span>
+                <span className="inline-block overflow-hidden align-baseline">
+                  <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">
+                    U
+                  </span>
+                </span>
+                <span className="inline-block overflow-hidden align-baseline">
+                  <span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">
+                    X
+                  </span>
+                </span>
               </span>
             </span>
           </h1>

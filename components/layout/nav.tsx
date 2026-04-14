@@ -509,7 +509,9 @@ export function Nav() {
                 className="hidden sm:flex h-6 items-center gap-[var(--sfx-space-1)] bg-muted-foreground text-background pl-[var(--sfx-space-2)] pr-[var(--sfx-space-1)] text-[9px] font-bold uppercase tracking-[0.1em] no-underline"
               >
                 <span className="text-primary text-[10px]">◉◉</span>
-                SF<span className="text-primary">{"//"}</span>UX
+                <span className="inline-flex items-baseline gap-0">
+                  SF<span className="text-primary leading-none">{"//"}</span>UX
+                </span>
               </Link>
             </ColorCycleFrame>
             <button

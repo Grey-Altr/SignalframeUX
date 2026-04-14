@@ -14,7 +14,9 @@ export function Footer() {
               <span
                 className="sf-display text-2xl text-foreground"
               >
-                SF<span className="text-primary">{"//"}</span>UX
+                <span className="inline-flex items-baseline gap-0">
+                  SF<span className="text-primary leading-none">{"//"}</span>UX
+                </span>
               </span>
               <p className="mt-[var(--sfx-space-1)] text-muted-foreground text-[var(--text-sm)] uppercase tracking-wider">
                 Universal design system
