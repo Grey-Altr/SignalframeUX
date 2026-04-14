@@ -271,6 +271,13 @@ function bracketCaps(vb: number): { capH: number; capW: number; barW: number } {
   };
 }
 
+/** Ease for glyph vb / layout interpolation (matches glacial feel). */
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+}
+
+const GLYPH_VB_LERP_MS = 600;
+
 const NavSignalGlyph = memo(function NavSignalGlyph({
   pinned,
   onPinnedChange,
@@ -281,12 +288,55 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
   const [isHovered, setIsHovered] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
   const isActive = isHovered || pinned;
-  const vb = isActive ? GLYPH_VB_ACTIVE : GLYPH_VB_IDLE;
-  const rowCount = isActive ? 5 : 3;
+  const targetVb = isActive ? GLYPH_VB_ACTIVE : GLYPH_VB_IDLE;
+
+  const vbRef = useRef(GLYPH_VB_IDLE);
+  const rafRef = useRef<number | null>(null);
+  const [vb, setVb] = useState(GLYPH_VB_IDLE);
+
+  useEffect(() => {
+    const from = vbRef.current;
+    const to = targetVb;
+    if (Math.abs(from - to) < 0.001) {
+      vbRef.current = to;
+      setVb(to);
+      return;
+    }
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const u = Math.min(1, (now - t0) / GLYPH_VB_LERP_MS);
+      const eased = easeInOutCubic(u);
+      const next = from + (to - from) * eased;
+      vbRef.current = next;
+      setVb(next);
+      if (u < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        vbRef.current = to;
+        setVb(to);
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+  }, [targetVb]);
+
+  const vbSpan = GLYPH_VB_ACTIVE - GLYPH_VB_IDLE;
+  const expandT = Math.max(0, Math.min(1, (vb - GLYPH_VB_IDLE) / vbSpan));
+  const rowCount = Math.min(5, Math.max(3, Math.round(3 + (2 * (vb - GLYPH_VB_IDLE)) / vbSpan)));
   const { rowTops, rowH: rowBandH } = computeRolloutRows(rowCount, vb);
   const vSegs = bracketVerticalSegments(rowTops, vb, rowBandH);
   const { capH, capW, barW } = bracketCaps(vb);
-  const segmentGap = isActive ? SEG_GAP_ACTIVE_PX : SEG_GAP_IDLE_PX;
+  const segmentGap = SEG_GAP_IDLE_PX + expandT * (SEG_GAP_ACTIVE_PX - SEG_GAP_IDLE_PX);
+
+  const pinNarrow = pinned && expandT < 0.85;
+  const segW1 = pinNarrow ? SEG_PIN_W1_PX : SEG_W1_PX;
+  const segW2 = pinNarrow ? SEG_PIN_W2_PX : SEG_W2_PX;
+  const segW3 = expandT * SEG_W3_PX;
 
   useEffect(() => {
     if (!isFlashing) return;
@@ -335,7 +385,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
             {rowTops.map((rowTop, index) => (
               <span
                 key={index}
-                className="absolute left-0 flex items-center transition-[width,gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
+                className="absolute left-0 flex items-center"
                 style={{
                   left: capW,
                   top: rowTop,
@@ -344,48 +394,29 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
                   gap: segmentGap,
                 }}
               >
-                {isActive ? (
-                  <>
-                    <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
-                      style={{
-                        width: SEG_W1_PX,
-                        height: SEG_H_PX,
-                      }}
-                    />
-                    <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
-                      style={{
-                        width: SEG_W2_PX,
-                        height: SEG_H_PX,
-                      }}
-                    />
-                    <span
-                      className="bg-current shrink-0 transition-[gap] duration-[var(--sfx-duration-glacial)] ease-in-out"
-                      style={{
-                        width: SEG_W3_PX,
-                        height: SEG_H_PX,
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <span
-                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-glacial)] ease-in-out"
-                      style={{
-                        width: pinned ? SEG_PIN_W1_PX : SEG_W1_PX,
-                        height: SEG_H_PX,
-                      }}
-                    />
-                    <span
-                      className="bg-current shrink-0 transition-[width] duration-[var(--sfx-duration-glacial)] ease-in-out"
-                      style={{
-                        width: pinned ? SEG_PIN_W2_PX : SEG_W2_PX,
-                        height: SEG_H_PX,
-                      }}
-                    />
-                  </>
-                )}
+                <span
+                  className="bg-current shrink-0"
+                  style={{
+                    width: segW1,
+                    height: SEG_H_PX,
+                  }}
+                />
+                <span
+                  className="bg-current shrink-0"
+                  style={{
+                    width: segW2,
+                    height: SEG_H_PX,
+                  }}
+                />
+                <span
+                  className="shrink-0 min-w-0 overflow-hidden"
+                  style={{
+                    width: segW3,
+                    height: SEG_H_PX,
+                  }}
+                >
+                  <span className="block h-full bg-current" style={{ width: SEG_W3_PX }} />
+                </span>
               </span>
             ))}
           </span>
