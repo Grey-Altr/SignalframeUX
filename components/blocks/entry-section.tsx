@@ -14,7 +14,8 @@ export function EntrySection() {
           className="w-full whitespace-nowrap font-display text-center uppercase leading-[0.9] tracking-[0.02em] text-primary-foreground"
           style={{
             // Keep the lockup stable on short viewports by constraining with vh.
-            fontSize: "clamp(4.5rem, min(12vw, 32vh), 12rem)",
+            // Lockup +8% vs baseline (matches subtitle + slash overlay).
+            fontSize: "clamp(4.86rem, min(12.96vw, 34.56vh), 12.96rem)",
             fontWeight: 700,
           }}
         >
@@ -22,7 +23,7 @@ export function EntrySection() {
         </h1>
         <p
           data-anim="hero-subtitle"
-          className="mt-(--sfx-space-8) max-w-(--max-w-content) text-center font-sans text-xs font-medium text-foreground/56 tracking-[0.02em] md:text-sm animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards]"
+          className="mt-[calc(var(--sfx-space-8)*1.08)] max-w-(--max-w-content) text-center font-sans font-medium text-foreground/56 tracking-[0.02em] animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards] text-[calc(var(--sfx-text-xs)*1.08)] md:text-[calc(var(--sfx-text-sm)*1.08)]"
           style={{ opacity: 0 }}
         >
           A dual-layer design system for generative expression.
@@ -44,7 +45,7 @@ export function EntrySection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center whitespace-nowrap px-[1em] font-display uppercase tracking-[0.02em] text-primary"
         style={{
-          fontSize: "clamp(4.5rem, min(12vw, 32vh), 12rem)",
+          fontSize: "clamp(4.86rem, min(12.96vw, 34.56vh), 12.96rem)",
           lineHeight: 0.9,
           fontWeight: 700,
           opacity: 0.25,
