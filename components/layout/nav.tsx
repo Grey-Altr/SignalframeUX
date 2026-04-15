@@ -500,7 +500,10 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       }`}
       style={{ width: `${NAV_UNIT_PX}px`, height: `${NAV_UNIT_PX}px` }}
     >
-      <span className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
+      <span
+        className="pointer-events-none absolute inset-0 flex items-end justify-center"
+        aria-hidden="true"
+      >
         <span
           className="relative"
           style={{ width: vb, height: vb }}
