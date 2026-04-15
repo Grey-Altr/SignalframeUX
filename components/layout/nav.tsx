@@ -225,14 +225,14 @@ const NavCubeLink = memo(function NavCubeLink({
 
   const cubeBaseClass =
     "group relative flex items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-in-out pointer-events-auto";
-  const cubePaletteClass = isActive ? "ring-1 ring-black" : "";
+  const cubePaletteClass = isActive
+    ? "bg-[var(--sfx-yellow)] text-black ring-1 ring-black"
+    : "bg-[var(--sfx-yellow)] text-black hover:bg-[var(--sfx-yellow)]";
 
   return (
     <div
       className={`${cubeBaseClass} ${cubePaletteClass}`}
       style={{
-        backgroundColor: "oklch(0.7423 0.1526 77.58)",
-        color: "var(--sfx-primary-foreground)",
         width: expanded ? rolloutHoverWidth : isRolledOut ? rolloutWidth : `${NAV_UNIT_PX}px`,
         minWidth: `${NAV_UNIT_PX}px`,
         height: `${NAV_UNIT_PX}px`,
