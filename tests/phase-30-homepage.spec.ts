@@ -42,15 +42,15 @@ test.describe("Phase 30: Homepage Architecture", () => {
     expect(height).toBeGreaterThanOrEqual(vh - 2);
   });
 
-  // ── EN-02: SIGNALFRAME title renders at 120px+ Anton (scaled +30% in entry-section) ─
+  // ── EN-02: SIGNALFRAME title renders at 120px+ Anton ─────────────────────
   test("SIGNALFRAME title at 120px+", async ({ page }) => {
     const h1 = page.locator("#entry h1");
     await expect(h1).toContainText("SIGNALFRAME");
     const fontSize = await h1.evaluate((el) =>
       parseFloat(getComputedStyle(el).fontSize)
     );
-    // ~94px floor matches clamp min (5.85rem) on narrow viewports; desktop is 120px+ effective
-    expect(fontSize).toBeGreaterThanOrEqual(90);
+    // 100px floor allows for smaller test viewports; spec minimum is 120px at full vp
+    expect(fontSize).toBeGreaterThanOrEqual(100);
   });
 
   // ── EN-03: Subtitle only — no buttons in ENTRY ───────────────────────────
