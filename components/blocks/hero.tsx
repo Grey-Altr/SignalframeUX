@@ -38,21 +38,21 @@ export function Hero() {
             data-anim="hero-title"
             aria-label="SignalframeUX"
             suppressHydrationWarning
-            className="sf-display text-[clamp(58px,16.8vw,437px)] leading-[0.7] tracking-[-0.03em] text-background dark:text-foreground uppercase origin-top-left"
+            className="sf-display text-[clamp(58px,16.8vw,437px)] leading-[0.7] tracking-[-0.03em] text-white uppercase origin-top-left"
             style={{
               textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
               transform: "scale(1.176)",
             }}
           >
-            <ColorCycleFrame className="inline-block text-primary">
+            <ColorCycleFrame className="inline-block text-white">
               <span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">S</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">I</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">G</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">N</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">L</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">F</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">R</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">A</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">M</span></span><span className="inline-block overflow-hidden"><span suppressHydrationWarning aria-hidden="true" data-anim="hero-char" className="inline-block">E</span></span>
             </ColorCycleFrame>
-            <span className="block text-background dark:text-foreground text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10 leading-[0.92]">
-              <span className="inline-block overflow-visible border-l-[3px] border-solid border-background dark:border-foreground box-border pl-[0.06em]">
+            <span className="block text-white text-[clamp(48px,13.8vw,374px)] -mt-[0.05em] ml-[0.10em] relative z-10 leading-[0.92]">
+              <span className="inline-block overflow-visible border-l-[3px] border-solid border-white box-border pl-[0.06em]">
                 <span
                   aria-hidden="true"
                   data-anim="hero-slashes"
-                  className="inline-block align-baseline text-[1.14em] text-[var(--sf-dim-text)] leading-none"
+                  className="inline-block align-baseline text-[1.14em] text-white leading-none"
                 >
                   {"//"}
                 </span>
