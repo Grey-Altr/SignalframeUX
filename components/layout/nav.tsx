@@ -495,7 +495,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
       onClick={handleClick}
-      className={`group relative flex shrink-0 items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
+      className={`group relative flex items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
         pinned || isFlashing ? "text-warning" : "text-black"
       }`}
       style={{ width: `${NAV_UNIT_PX}px`, height: `${NAV_UNIT_PX}px` }}
@@ -583,9 +583,6 @@ const NAV_ROLLOUT_EXTRA_CH = 3.25;
 const NAV_LABEL_RIGHT_INSET_PX = NAV_UNIT_PX;
 const NAV_ROLLOUT_WIDTH = `calc(${NAV_UNIT_PX}px + ${NAV_LABEL_RIGHT_INSET_PX}px + ${NAV_LONGEST_WORD_CH + NAV_ROLLOUT_EXTRA_CH}ch)`;
 
-/** Fills the rolled-out text band; clipped by overflow — same width as other nav cube rollouts. */
-const NAV_ROLLOUT_SLASH_FILL = "/".repeat(480);
-
 
 function isActivePath(href: string, pathname: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
@@ -613,30 +610,7 @@ export function Nav() {
         <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">
           {/* Floating cube stack (desktop): I / A / S / G / G */}
           <div className="hidden md:flex flex-col items-start gap-[var(--sfx-space-1)]">
-            <div
-              className="group relative flex items-center overflow-hidden bg-[var(--sfx-yellow)] font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] text-black transition-all duration-[var(--sfx-duration-slow)] ease-in-out"
-              style={{
-                width: rolloutPinned ? NAV_ROLLOUT_WIDTH : `${NAV_UNIT_PX}px`,
-                minWidth: `${NAV_UNIT_PX}px`,
-                height: `${NAV_UNIT_PX}px`,
-                clipPath: `polygon(0 0, calc(100% - ${NAV_NOTCH_PX}px) 0, 100% ${NAV_NOTCH_PX}px, 100% 100%, 0 100%)`,
-                transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-              }}
-            >
-              <NavSignalGlyph pinned={rolloutPinned} onPinnedChange={setRolloutPinned} />
-              <span
-                className="pointer-events-none flex min-h-0 min-w-0 flex-1 items-center overflow-hidden opacity-0 transition-opacity duration-[var(--sfx-duration-fast)]"
-                style={{
-                  opacity: rolloutPinned ? 1 : 0,
-                  paddingRight: `${NAV_UNIT_PX}px`,
-                }}
-                aria-hidden="true"
-              >
-                <span className="block min-w-0 flex-1 overflow-hidden whitespace-nowrap leading-none select-none">
-                  {NAV_ROLLOUT_SLASH_FILL}
-                </span>
-              </span>
-            </div>
+            <NavSignalGlyph pinned={rolloutPinned} onPinnedChange={setRolloutPinned} />
             {NAV_LINKS.map((link) => (
               <NavCubeLink
                 key={link.href}
