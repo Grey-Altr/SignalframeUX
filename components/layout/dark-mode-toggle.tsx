@@ -17,12 +17,12 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
     const observer = new MutationObserver(sync);
     observer.observe(root, { attributes: true, attributeFilter: ["class"] });
     // Graphic render effect: progressively draw the toggle like scan lines
-    const phases = [500, 580, 640, 700, 740, 780, 850];
+    const phases = [0, 48, 96, 144, 192, 240, 288];
     const timeouts = phases.map((delay, i) =>
       setTimeout(() => setRenderPhase(i + 1), delay)
     );
     // Fallback: ensure toggle is accessible even if animation doesn't complete
-    const fallback = setTimeout(() => setRenderPhase(7), 2000);
+    const fallback = setTimeout(() => setRenderPhase(7), 400);
     return () => {
       observer.disconnect();
       timeouts.forEach(clearTimeout);
@@ -46,7 +46,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         backdropFilter: "blur(16px) brightness(3)",
         WebkitBackdropFilter: "blur(16px) brightness(3)",
         opacity: "1",
-        transition: "opacity 1.2s ease-out, backdrop-filter 1.2s ease-out, background 1.2s ease-out",
+        transition: "opacity 0.45s ease-out, backdrop-filter 0.45s ease-out, background 0.45s ease-out",
       });
       bloom.setAttribute("aria-hidden", "true");
       document.body.appendChild(bloom);
@@ -56,7 +56,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         bloom.style.backdropFilter = "blur(0px) brightness(1)";
         (bloom.style as CSSStyleDeclaration & { webkitBackdropFilter: string }).webkitBackdropFilter = "blur(0px) brightness(1)";
       });
-      setTimeout(() => bloom.remove(), 1200);
+      setTimeout(() => bloom.remove(), 500);
     }
   }
 
@@ -69,7 +69,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
       style={{
         opacity: renderOpacity,
         filter: renderFilter,
-        transition: "opacity 0.6s ease-out, filter 0.6s ease-out",
+        transition: "opacity 0.25s ease-out, filter 0.25s ease-out",
       }}
     >
       <button

@@ -234,7 +234,8 @@
   --sfx-duration-normal: 200ms;
   --sfx-duration-slow: 400ms;
   --sfx-duration-glacial: 600ms;
-  --sfx-theme-toggle-duration: 1100ms;
+  /* Theme flip: fast enough to feel responsive, still ease-in-out */
+  --sfx-theme-toggle-duration: var(--sfx-duration-slow);
   --sfx-theme-toggle-ease: ease-in-out;
   --sfx-ease-default: cubic-bezier(0, 0, 0.2, 1);
   --sfx-ease-hover: cubic-bezier(0, 0, 0.2, 1);
@@ -987,14 +988,14 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   .sf-theme-toggle-knob {
     transition:
       transform var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
-      background-color 350ms var(--sfx-theme-toggle-ease);
+      background-color var(--sfx-duration-normal) var(--sfx-theme-toggle-ease);
   }
 
   /* Keep knob motion synced during the same toggle sequence. */
   .sf-theme-animating .sf-theme-toggle-knob {
     transition:
       transform var(--sfx-theme-toggle-duration) var(--sfx-theme-toggle-ease),
-      background-color 350ms var(--sfx-theme-toggle-ease) !important;
+      background-color var(--sfx-duration-normal) var(--sfx-theme-toggle-ease) !important;
   }
 
   /* ── Halftone dot pattern overlay (specimen sections) ── */

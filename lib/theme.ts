@@ -19,6 +19,6 @@ export function toggleTheme(currentDark: boolean): boolean {
   root.classList.toggle("dark", next);
   window.setTimeout(() => {
     root.classList.remove("sf-theme-animating");
-  }, 1200);
+  }, 480);
   return next;
 }
