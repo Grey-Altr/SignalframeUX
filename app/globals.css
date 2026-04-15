@@ -2253,6 +2253,18 @@ html:not(.dark) .sf-mesh-gradient {
   transform-origin: center;
 }
 
+/* Single path — no trail stack or infinite hover-hold; transitions reset on blur */
+.sf-nav-icon--github {
+  transform-origin: center;
+  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .sf-nav-icon--github,
+.group:focus-visible .sf-nav-icon--github {
+  transform: translate(1.2px, -0.8px) rotate(3deg);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .sf-nav-icon--system {
   transform-origin: center;
 }
@@ -2415,6 +2427,11 @@ html:not(.dark) .sf-mesh-gradient {
   }
 
   .sf-nav-icon--inventory {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .sf-nav-icon--github {
     transition: none !important;
     transform: none !important;
   }

@@ -120,6 +120,7 @@ const NavCubeLink = memo(function NavCubeLink({
   isSystem,
   isBuilds,
   isInit,
+  isGithub,
   ariaLabel,
   external,
 }: {
@@ -134,6 +135,7 @@ const NavCubeLink = memo(function NavCubeLink({
   isSystem: boolean;
   isBuilds: boolean;
   isInit: boolean;
+  isGithub: boolean;
   ariaLabel?: string;
   external?: boolean;
 }) {
@@ -266,6 +268,11 @@ const NavCubeLink = memo(function NavCubeLink({
           ) : isInit ? (
             <Icon
               className="sf-nav-icon sf-nav-icon--init"
+              style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
+            />
+          ) : isGithub ? (
+            <Icon
+              className="sf-nav-icon sf-nav-icon--github"
               style={{ width: `${NAV_GLYPH_PX}px`, height: `${NAV_GLYPH_PX}px` }}
             />
           ) : (
@@ -616,6 +623,7 @@ export function Nav() {
                 isSystem={link.href === "/system"}
                 isBuilds={link.href === "/builds"}
                 isInit={link.href === "/init"}
+                isGithub={link.href.startsWith("https://github.com")}
               />
             ))}
           </div>
