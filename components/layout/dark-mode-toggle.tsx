@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useLayoutEffect, memo } from "react";
 import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
 
 export const DarkModeToggle = memo(function DarkModeToggle() {
-  const [dark, setDark] = useState(() =>
-    typeof window !== "undefined" &&
-    document.documentElement.classList.contains("dark")
-  );
+  // Must match SSR: never read `document` in the initial state initializer, or
+  // the client can disagree with the server when the blocking script has set `.dark`.
+  const [dark, setDark] = useState(false);
   const [renderPhase, setRenderPhase] = useState(0);
 
+  useLayoutEffect(() => {
+    setDark(document.documentElement.classList.contains("dark"));
+  }, []);
 
   useEffect(() => {
-    // Sync state with what the blocking script set and keep it in sync
-    // if theme is changed by other controls (e.g. command palette).
+    // Keep in sync if theme is changed by other controls (e.g. command palette).
     const root = document.documentElement;
     const sync = () => setDark(root.classList.contains("dark"));
     sync();
