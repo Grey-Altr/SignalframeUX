@@ -2333,12 +2333,6 @@ html:not(.dark) .sf-mesh-gradient {
   transition: transform 430ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.sf-api-segment-float {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: none;
-}
-
 /* Hover only: spread apart with fixed geometry (no scaling). */
 .group:hover .sf-api-segment,
 .group:focus-visible .sf-api-segment {
@@ -2363,36 +2357,6 @@ html:not(.dark) .sf-mesh-gradient {
   transition-delay: 24ms;
 }
 
-.group:hover .sf-api-segment-float--1,
-.group:focus-visible .sf-api-segment-float--1 {
-  animation: sf-api-segment-orbit 1.45s ease-in-out 160ms infinite;
-}
-
-.group:hover .sf-api-segment-float--2,
-.group:focus-visible .sf-api-segment-float--2 {
-  animation: sf-api-segment-orbit 1.6s ease-in-out 240ms infinite;
-}
-
-.group:hover .sf-api-segment-float--3,
-.group:focus-visible .sf-api-segment-float--3 {
-  animation: sf-api-segment-orbit 1.5s ease-in-out 320ms infinite;
-}
-
-@keyframes sf-api-segment-orbit {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  35% {
-    transform: translate(0.65px, -0.55px) rotate(1deg);
-  }
-  70% {
-    transform: translate(-0.5px, 0.6px) rotate(-1.1deg);
-  }
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-}
-
 /* Inventory glyph hover choreography (variant B) */
 .sf-inventory-cell {
   transform-box: fill-box;
@@ -2400,12 +2364,6 @@ html:not(.dark) .sf-mesh-gradient {
   transition-property: transform;
   transition-duration: 460ms;
   transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.sf-inventory-cell-float {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: none;
 }
 
 .group:hover .sf-inventory-cell,
@@ -2435,41 +2393,6 @@ html:not(.dark) .sf-mesh-gradient {
 .group:focus-visible .sf-inventory-cell--4 {
   transform: translate(4px, -0.65px) rotate(1.25deg);
   transition-delay: 132ms;
-}
-
-.group:hover .sf-inventory-cell-float--1,
-.group:focus-visible .sf-inventory-cell-float--1 {
-  animation: sf-inventory-cell-orbit 1.4s ease-in-out 120ms infinite;
-}
-
-.group:hover .sf-inventory-cell-float--2,
-.group:focus-visible .sf-inventory-cell-float--2 {
-  animation: sf-inventory-cell-orbit 1.55s ease-in-out 200ms infinite;
-}
-
-.group:hover .sf-inventory-cell-float--3,
-.group:focus-visible .sf-inventory-cell-float--3 {
-  animation: sf-inventory-cell-orbit 1.45s ease-in-out 280ms infinite;
-}
-
-.group:hover .sf-inventory-cell-float--4,
-.group:focus-visible .sf-inventory-cell-float--4 {
-  animation: sf-inventory-cell-orbit 1.6s ease-in-out 360ms infinite;
-}
-
-@keyframes sf-inventory-cell-orbit {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  35% {
-    transform: translate(0.75px, -0.65px) rotate(1.2deg);
-  }
-  70% {
-    transform: translate(-0.6px, 0.7px) rotate(-1.3deg);
-  }
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2516,13 +2439,7 @@ html:not(.dark) .sf-mesh-gradient {
     transform: none !important;
   }
 
-  .sf-api-segment-float {
-    animation: none !important;
-    transform: none !important;
-  }
-
-  .sf-inventory-cell,
-  .sf-inventory-cell-float {
+  .sf-inventory-cell {
     transition: none !important;
     transform: none !important;
     animation: none !important;

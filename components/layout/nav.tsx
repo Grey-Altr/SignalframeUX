@@ -9,24 +9,16 @@ import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 const IconInventory = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
     <g className="sf-inventory-cell sf-inventory-cell--1">
-      <g className="sf-inventory-cell-float sf-inventory-cell-float--1">
-        <rect x="3" y="3" width="8" height="8" />
-      </g>
+      <rect x="3" y="3" width="8" height="8" />
     </g>
     <g className="sf-inventory-cell sf-inventory-cell--2">
-      <g className="sf-inventory-cell-float sf-inventory-cell-float--2">
-        <rect x="13" y="3" width="8" height="4" />
-      </g>
+      <rect x="13" y="3" width="8" height="4" />
     </g>
     <g className="sf-inventory-cell sf-inventory-cell--3">
-      <g className="sf-inventory-cell-float sf-inventory-cell-float--3">
-        <rect x="13" y="9" width="8" height="12" />
-      </g>
+      <rect x="13" y="9" width="8" height="12" />
     </g>
     <g className="sf-inventory-cell sf-inventory-cell--4">
-      <g className="sf-inventory-cell-float sf-inventory-cell-float--4">
-        <rect x="3" y="13" width="8" height="8" />
-      </g>
+      <rect x="3" y="13" width="8" height="8" />
     </g>
   </svg>
 );
@@ -34,19 +26,13 @@ const IconInventory = (props: any) => (
 const IconApi = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
     <g className="sf-api-segment sf-api-segment--1">
-      <g className="sf-api-segment-float sf-api-segment-float--1">
-        <rect x="3" y="10" width="12" height="4" />
-      </g>
+      <rect x="3" y="10" width="12" height="4" />
     </g>
     <g className="sf-api-segment sf-api-segment--2">
-      <g className="sf-api-segment-float sf-api-segment-float--2">
-        <rect x="15" y="7" width="6" height="10" />
-      </g>
+      <rect x="15" y="7" width="6" height="10" />
     </g>
     <g className="sf-api-segment sf-api-segment--3">
-      <g className="sf-api-segment-float sf-api-segment-float--3">
-        <rect x="7" y="5" width="4" height="14" />
-      </g>
+      <rect x="7" y="5" width="4" height="14" />
     </g>
   </svg>
 );
