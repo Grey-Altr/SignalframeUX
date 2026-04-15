@@ -65,8 +65,12 @@ export function createSignalframeUX(config: SignalframeUXConfig = {}): {
   useSignalframe: () => UseSignalframeReturn;
 } {
   function SignalframeProvider({ children }: { children: React.ReactNode }) {
-    // SSR default: true (dark). Client reads the actual classList set by the blocking script.
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState(() => {
+      if (typeof window === 'undefined') {
+        return (config.defaultTheme ?? 'light') === 'dark';
+      }
+      return document.documentElement.classList.contains('dark');
+    });
     // SSR default: false. Client reads the actual OS preference.
     const [prefersReduced, setPrefersReduced] = useState(false);
 

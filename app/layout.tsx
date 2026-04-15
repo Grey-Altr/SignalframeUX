@@ -80,7 +80,8 @@ export default function RootLayout({
   // Removing headers() here is critical: calling headers() forces dynamic rendering which
   // defers Next.js metadata injection into the body via streaming, breaking SEO (Lighthouse
   // fails meta-description because the tag lands after </head>).
-  const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t!=='light')d.classList.add('dark');var b=localStorage.getItem('sf-borderless');if(b==='true')d.setAttribute('data-borderless','true')}catch(e){d.classList.add('dark')}})()`;
+  // Default theme is light; `dark` is applied only when sf-theme === "dark" (explicit user choice).
+  const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark')d.classList.add('dark');var b=localStorage.getItem('sf-borderless');if(b==='true')d.setAttribute('data-borderless','true')}catch(e){}})()`;
 
   return (
     <html

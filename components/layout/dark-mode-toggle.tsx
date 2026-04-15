@@ -4,7 +4,10 @@ import { useState, useEffect, memo } from "react";
 import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
 
 export const DarkModeToggle = memo(function DarkModeToggle() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() =>
+    typeof window !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+  );
   const [renderPhase, setRenderPhase] = useState(0);
 
 
