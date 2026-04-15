@@ -52,7 +52,7 @@ export function Hero() {
                 <span
                   aria-hidden="true"
                   data-anim="hero-slashes"
-                  className="inline-block align-baseline text-[1.14em] text-white leading-none"
+                  className="inline-block align-baseline text-[1.28em] text-white leading-none"
                 >
                   {"//"}
                 </span>
