@@ -663,6 +663,7 @@ export function Nav() {
                 </span>
               </Link>
             </ColorCycleFrame>
+            <DarkModeToggle />
             <button
               onClick={() => setCommandOpen(true)}
               className="hidden sm:flex items-center justify-center border-2 border-muted-foreground bg-transparent text-muted-foreground transition-colors duration-[var(--sfx-duration-fast)] hover:text-primary hover:border-primary"
@@ -672,7 +673,6 @@ export function Nav() {
               <IconCommandGrid aria-hidden="true" className="w-4 h-4" />
             </button>
             <BorderlessToggle />
-            <DarkModeToggle />
           </div>
         </div>
 
