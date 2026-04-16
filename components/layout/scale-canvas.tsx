@@ -83,6 +83,17 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
         ),
       );
       const navMorph = vw < NAV_HORIZONTAL_MIN_VW ? 1 : vhProgress;
+      // Conveyor-belt cascade: 5 slices (one per peel of cubes 6→2). Each
+      // slice has a peel-half (cube slides right) followed by a shift-half
+      // (remaining column drops one pitch so the next cube lands at the
+      // bottom row slot). phaseIdx picks the slice; phaseLocal is 0..1
+      // within the slice. CSS reads these to derive per-cube transforms.
+      const phaseIdxRaw = navMorph * 5;
+      const navPhaseIdx = Math.min(4, Math.max(0, Math.floor(phaseIdxRaw)));
+      const navPhaseLocal = Math.max(
+        0,
+        Math.min(1, phaseIdxRaw - navPhaseIdx),
+      );
       // Fully morphed = horizontal; partial progress still classifies as
       // vertical so --sf-nav-scale stays at 1 until the cascade completes.
       const navHorizontal = navMorph >= 1;
@@ -103,6 +114,8 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       root.setProperty("--sf-content-scale", String(contentScale));
       root.setProperty("--sf-nav-scale", String(navScale));
       root.setProperty("--sf-nav-morph", String(navMorph));
+      root.setProperty("--sf-nav-phase-idx", String(navPhaseIdx));
+      root.setProperty("--sf-nav-phase-local", String(navPhaseLocal));
       root.setProperty("--sf-hero-shift", "0px");
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
