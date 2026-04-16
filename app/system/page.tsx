@@ -24,7 +24,7 @@ export default async function TokensPage() {
           <div className="relative overflow-hidden flex-1 flex flex-col justify-end">
             <GhostLabel
               text="SYSTEM"
-              className="-left-[2vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
+              className="-left-[calc(2*var(--sf-vw))] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
             />
             <header
               data-nav-reveal-trigger
@@ -33,7 +33,7 @@ export default async function TokensPage() {
               <h1
                 aria-label="Token Explorer"
                 className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] relative z-10"
-                style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+                style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
               >
                 <span data-anim="page-heading" suppressHydrationWarning>TOKEN</span>
                 <br />

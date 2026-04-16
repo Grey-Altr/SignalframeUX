@@ -105,10 +105,10 @@ export const LogoMark = memo(function LogoMark() {
   }, []);
 
   const linkStyle = useMemo(() => ({
-    fontSize: "clamp(48px,6.5vw,80px)",
+    fontSize: "clamp(48px,calc(6.5*var(--sf-vw)),80px)",
     lineHeight: 1 as const,
     letterSpacing: "-0.02em",
-    width: "clamp(160px,23vw,300px)",
+    width: "clamp(160px,calc(23*var(--sf-vw)),300px)",
   }), []);
 
   const wrapperStyle = useMemo(() => ({
@@ -122,7 +122,7 @@ export const LogoMark = memo(function LogoMark() {
     <Link
       href="/"
       aria-label="SF//UX, go to homepage"
-      className="sf-logo sf-display no-underline shrink-0 mr-[clamp(8px,1.2vw,16px)] flex items-baseline gap-0 text-foreground"
+      className="sf-logo sf-display no-underline shrink-0 mr-[clamp(8px,calc(1.2*var(--sf-vw)),16px)] flex items-baseline gap-0 text-foreground"
       style={linkStyle}
     >
       <span
@@ -141,7 +141,7 @@ export const LogoMark = memo(function LogoMark() {
               className={`inline-block sf-logo-char ${isSlash ? "sf-logo-slash" : ""}`}
               style={{
                 color: showColor ? "var(--color-primary)" : undefined,
-                fontSize: isSlash ? "clamp(36px,5vw,62px)" : undefined,
+                fontSize: isSlash ? "clamp(36px,calc(5*var(--sf-vw)),62px)" : undefined,
                 verticalAlign: isSlash ? "baseline" : undefined,
                 alignSelf: isSlash ? "flex-end" : undefined,
                 opacity: isSlash ? (slashVisible ? 1 : 0) : undefined,

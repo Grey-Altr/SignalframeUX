@@ -34,7 +34,7 @@ export default function HomePage() {
             <EntrySection />
           </SFSection>
 
-          {/* THESIS — 200-300vh pinned manifesto (Phase 31) */}
+          {/* THESIS — 200-calc(300*var(--sf-vh)) pinned manifesto (Phase 31) */}
           <SFSection
             label="THESIS"
             bgShift="white"
@@ -44,7 +44,7 @@ export default function HomePage() {
           >
             <GhostLabel
               text="THESIS"
-              className="-left-[3vw] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
+              className="-left-[calc(3*var(--sf-vw))] top-1/2 -translate-y-1/2 text-foreground/[0.04]"
             />
             <ThesisSection />
             {/* ── Symbol divider: THESIS → PROOF ── */}
@@ -83,7 +83,7 @@ export default function HomePage() {
             </div>
           </SFSection>
 
-          {/* SIGNAL — 150vh atmospheric parallax (Phase 32) */}
+          {/* SIGNAL — calc(150*var(--sf-vh)) atmospheric parallax (Phase 32) */}
           <SFSection
             label="SIGNAL"
             bgShift="black"
@@ -94,7 +94,7 @@ export default function HomePage() {
             <SignalSection />
           </SFSection>
 
-          {/* ACQUISITION — terminal instrument panel, ≤50vh (Phase 33) */}
+          {/* ACQUISITION — terminal instrument panel, ≤calc(50*var(--sf-vh)) (Phase 33) */}
           <SFSection
             label="ACQUISITION"
             bgShift="black"

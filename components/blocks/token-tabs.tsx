@@ -230,10 +230,10 @@ export function TokenTabs() {
 
       {/* ═══ ELEVATION TAB ═══ */}
       <SFTabsContent value="ELEVATION" className="mt-0">
-        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, calc(5*var(--sf-vw)), 48px)" }}>
           ELEVATION_SYSTEM
         </div>
-        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,calc(48.611*var(--sf-vw)),700px)]">
           SignalframeUX&trade; uses a debossed surface model — elements are pressed <em>into</em> the surface, not floated above it. Shadows create tactile depth without z-axis lift. This is a deliberate rejection of material elevation.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -277,10 +277,10 @@ export function TokenTabs() {
 
       {/* ═══ RADIUS TAB ═══ */}
       <SFTabsContent value="RADIUS" className="mt-0">
-        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, calc(5*var(--sf-vw)), 48px)" }}>
           RADIUS_PHILOSOPHY
         </div>
-        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,calc(48.611*var(--sf-vw)),700px)]">
           Zero radius. Everywhere. Industrial edges communicate precision and intentionality. Rounded corners soften — SignalframeUX&trade; sharpens. Every element meets at 90°.
         </div>
         <SFTable className="border-b-4 border-foreground">
@@ -331,10 +331,10 @@ export function TokenTabs() {
 
       {/* ═══ BREAKPOINTS TAB ═══ */}
       <SFTabsContent value="BREAKPOINTS" className="mt-0">
-        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-8)] pb-[var(--sfx-space-4)] border-b-2 border-foreground" style={{ fontSize: "clamp(32px, calc(5*var(--sf-vw)), 48px)" }}>
           BREAKPOINT_SCALE
         </div>
-        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,48.611vw,700px)]">
+        <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-6)] border-b-2 border-foreground text-[var(--text-base)] leading-[1.8] text-muted-foreground max-w-[clamp(320px,calc(48.611*var(--sf-vw)),700px)]">
           Mobile-first responsive tokens aligned with Tailwind CSS defaults. SignalframeUX&trade; layouts shift at these thresholds — grid columns collapse, type scales compress, and spacing tightens.
         </div>
         <SFTable className="border-b-4 border-foreground">

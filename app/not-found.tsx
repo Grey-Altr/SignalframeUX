@@ -15,7 +15,7 @@ export default function NotFound() {
           <div
             data-anim="page-heading"
             aria-hidden="true"
-            className="sf-display text-[clamp(64px,12vw,120px)] text-foreground leading-none mb-[var(--sfx-space-4)]"
+            className="sf-display text-[clamp(64px,calc(12*var(--sf-vw)),120px)] text-foreground leading-none mb-[var(--sfx-space-4)]"
             suppressHydrationWarning
           >
             4<span className="text-primary">0</span>4

@@ -5,13 +5,13 @@ export function DualLayer() {
   return (
     <section data-anim="section-reveal" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — FRAME (white, structural) */}
-      <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground relative">
+      <div className="px-[clamp(24px,calc(5*var(--sf-vw)),48px)] py-[clamp(24px,calc(5*var(--sf-vw)),60px)] border-r-0 md:border-r-4 border-foreground relative">
         <h2
-          className="sf-display text-[clamp(48px,6vw,80px)] leading-none tracking-[-0.02em] text-foreground mb-[var(--sfx-space-6)]"
+          className="sf-display text-[clamp(48px,calc(6*var(--sf-vw)),80px)] leading-none tracking-[-0.02em] text-foreground mb-[var(--sfx-space-6)]"
         >
           FRAME
         </h2>
-        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,30.556vw,440px)] uppercase tracking-[0.08em] text-foreground/70">
+        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,calc(30.556*var(--sf-vw)),440px)] uppercase tracking-[0.08em] text-foreground/70">
           THE STRUCTURAL LOGIC LAYER. GRID CONTROL.
           STYLE CONTROL. TYPOGRAPHY. SEMANTIC TOKENS.
           EVERYTHING THE USER READS AND NAVIGATES.
@@ -31,13 +31,13 @@ export function DualLayer() {
       </div>
 
       {/* Right — //SIGNAL (black, generative) */}
-      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)]">
+      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] px-[clamp(24px,calc(5*var(--sf-vw)),48px)] py-[clamp(24px,calc(5*var(--sf-vw)),60px)]">
         <h2
-          className="sf-display text-[clamp(48px,6vw,80px)] leading-none tracking-[-0.02em] text-primary mb-[var(--sfx-space-6)]"
+          className="sf-display text-[clamp(48px,calc(6*var(--sf-vw)),80px)] leading-none tracking-[-0.02em] text-primary mb-[var(--sfx-space-6)]"
         >
           {"//SIGNAL"}
         </h2>
-        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,30.556vw,440px)] uppercase tracking-[0.08em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground">
+        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,calc(30.556*var(--sf-vw)),440px)] uppercase tracking-[0.08em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground">
           THE GENERATIVE EXPRESSION LAYER. PARAMETRIC NOISE.
           DATA-REACTIVE VISUALS. CANVAS OVERLAYS.
           EVERYTHING THE USER FEELS BUT DOESN&apos;T CLICK.

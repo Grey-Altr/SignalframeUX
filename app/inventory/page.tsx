@@ -31,7 +31,7 @@ export default async function ComponentsPage() {
       <Nav />
       <main id="main-content" data-cursor data-section="inv" data-section-label="INV" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
-        {/* ── Page Header & WebGL Showcase (100vh combined) ── */}
+        {/* ── Page Header & WebGL Showcase (calc(100*var(--sf-vh)) combined) ── */}
         <SFSection label="INVENTORY" className="py-0 relative h-screen flex flex-col justify-between overflow-hidden">
           <header
             data-nav-reveal-trigger
@@ -40,7 +40,7 @@ export default async function ComponentsPage() {
             <h1
               aria-label="Inventory"
               className="leading-[0.9] uppercase tracking-[-0.02em] px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] sf-display"
-              style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+              style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
             >
               <span data-anim="page-heading" suppressHydrationWarning>INVE</span>
               <br />
@@ -49,7 +49,7 @@ export default async function ComponentsPage() {
             <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right">
               <strong
                 className="block text-foreground sf-display"
-                style={{ fontSize: "clamp(28px, 4vw, 48px)", lineHeight: 1 }}
+                style={{ fontSize: "clamp(28px, calc(4*var(--sf-vw)), 48px)", lineHeight: 1 }}
               >
                 54
               </strong>

@@ -160,7 +160,7 @@ export default async function BuildDetailPage({ params }: PageProps) {
               <h1
                 aria-label={build.title}
                 className="sf-display leading-[0.9] uppercase tracking-[-0.02em]"
-                style={{ fontSize: "clamp(56px, 9vw, 132px)" }}
+                style={{ fontSize: "clamp(56px, calc(9*var(--sf-vw)), 132px)" }}
               >
                 {build.title}
               </h1>

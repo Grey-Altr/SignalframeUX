@@ -105,13 +105,13 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
       <button
         onClick={onClose}
         aria-label="Close navigation menu"
-        className="absolute top-[clamp(12px,3vw,24px)] right-[clamp(16px,4vw,32px)] text-background dark:text-foreground font-mono text-2xl leading-none p-[var(--sfx-space-2)] hover:text-primary transition-colors"
+        className="absolute top-[clamp(12px,calc(3*var(--sf-vw)),24px)] right-[clamp(16px,calc(4*var(--sf-vw)),32px)] text-background dark:text-foreground font-mono text-2xl leading-none p-[var(--sfx-space-2)] hover:text-primary transition-colors"
       >
         ✕
       </button>
 
       {/* Nav items */}
-      <div className="flex flex-col justify-center h-full px-[clamp(24px,6vw,64px)] gap-[var(--sfx-space-2)]">
+      <div className="flex flex-col justify-center h-full px-[clamp(24px,calc(6*var(--sf-vw)),64px)] gap-[var(--sfx-space-2)]">
         {links.map((link, i) => (
           <Link
             key={link.href}
@@ -126,7 +126,7 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
                 : "text-background dark:text-foreground hover:text-primary"
             }`}
             style={{
-              fontSize: "clamp(48px, 10vw, 72px)",
+              fontSize: "clamp(48px, calc(10*var(--sf-vw)), 72px)",
               opacity: open ? 1 : 0,
               transform: open ? "translateY(0)" : "translateY(30px)",
               transition: `opacity 0.4s ease ${0.15 + i * 0.06}s, transform 0.4s ease ${0.15 + i * 0.06}s, color 0.2s ease`,
@@ -139,7 +139,7 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
 
       {/* Bottom branding */}
       <div
-        className="absolute bottom-[clamp(16px,4vw,32px)] left-[clamp(24px,6vw,64px)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40"
+        className="absolute bottom-[clamp(16px,calc(4*var(--sf-vw)),32px)] left-[clamp(24px,calc(6*var(--sf-vw)),64px)] text-[var(--text-xs)] uppercase tracking-[0.2em] text-background/40 dark:text-foreground/40"
         style={{
           opacity: open ? 1 : 0,
           transition: `opacity 0.4s ease 0.5s`,

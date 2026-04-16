@@ -184,7 +184,7 @@ export default function InitPage() {
               <h1
                 aria-label="Initialize"
                 className="sf-display leading-[0.9] uppercase tracking-[-0.02em]"
-                style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+                style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
               >
                 <span data-anim="page-heading" suppressHydrationWarning>INITIA</span>
                 <br />
@@ -212,7 +212,7 @@ export default function InitPage() {
                   {/* Step number at display size */}
                   <div
                     className="sf-display leading-none text-foreground tabular-nums"
-                    style={{ fontSize: "clamp(80px, 10vw, 160px)" }}
+                    style={{ fontSize: "clamp(80px, calc(10*var(--sf-vw)), 160px)" }}
                   >
                     {step.number}
                   </div>

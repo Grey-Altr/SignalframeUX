@@ -12,7 +12,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap-core";
 interface PinnedSectionProps {
   children: ReactNode;
   className?: string;
-  /** Total scroll distance in viewport heights (e.g., 2 = 200vh, 3 = 300vh) */
+  /** Total scroll distance in viewport heights (e.g., 2 = calc(200*var(--sf-vh)), 3 = calc(300*var(--sf-vh))) */
   scrollDistance: number;
   id?: string;
 }
@@ -84,7 +84,7 @@ export const PinnedSection = forwardRef<HTMLDivElement, PinnedSectionProps>(
         ref={containerRef}
         id={id}
         className={className}
-        style={{ height: "var(--sf-canvas-h, 100vh)" }}
+        style={{ height: "var(--sf-canvas-h, calc(100*var(--sf-vh)))" }}
       >
         {children}
       </div>

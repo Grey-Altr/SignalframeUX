@@ -96,7 +96,7 @@ async function initHeroAnimations(
   // ── 1. Hero slashes — slide left to right (fires as chars begin) ──
   const slashes = document.querySelector("[data-anim='hero-slashes']");
   if (slashes) {
-    gsap.set(slashes, { x: "-100vw" });
+    gsap.set(slashes, { x: -1280 });
     gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 0.3 });
   }
 

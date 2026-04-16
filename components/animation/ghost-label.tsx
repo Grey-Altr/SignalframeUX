@@ -15,7 +15,7 @@ export function GhostLabel({ text, className }: GhostLabelProps) {
       data-anim="ghost-label"
       data-ghost-label="true"
       className={`sf-display pointer-events-none select-none absolute leading-none ${className ?? ""}`}
-      style={{ fontSize: "clamp(200px, 25vw, 400px)" }}
+      style={{ fontSize: "clamp(200px, calc(25*var(--sf-vw)), 400px)" }}
     >
       {text}
     </span>

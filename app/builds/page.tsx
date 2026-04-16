@@ -45,7 +45,7 @@ export default function BuildsPage() {
               <h1
                 aria-label="Builds"
                 className="sf-display leading-[0.9] uppercase tracking-[-0.02em]"
-                style={{ fontSize: "clamp(80px, 12vw, 160px)" }}
+                style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
               >
                 <span data-anim="page-heading" suppressHydrationWarning>BUILD</span>
                 <br />

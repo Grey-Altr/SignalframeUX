@@ -812,7 +812,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             <div className="text-center max-w-md">
               <div
                 aria-hidden="true"
-                className="sf-display text-[clamp(32px,4vw,48px)] text-muted-foreground mb-[var(--sfx-space-4)] tracking-[-0.02em]"
+                className="sf-display text-[clamp(32px,calc(4*var(--sf-vw)),48px)] text-muted-foreground mb-[var(--sfx-space-4)] tracking-[-0.02em]"
               >
                 0 MATCHES
               </div>

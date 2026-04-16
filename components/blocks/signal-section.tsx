@@ -5,7 +5,7 @@ import { ScrollTrigger, useGSAP } from "@/lib/gsap-core";
 import { GLSLSignalLazy } from "@/components/animation/glsl-signal-lazy";
 
 /**
- * SignalSection — 150vh Ikeda data field section.
+ * SignalSection — calc(150*var(--sf-vh)) Ikeda data field section.
  *
  * Full-viewport WebGL scene (scanlines + data columns + yellow spike markers).
  * No parallax transform — the scene is registered with SignalCanvas scissor
@@ -54,7 +54,7 @@ export function SignalSection() {
       ref={sectionRef}
       data-signal-root
       data-anim
-      style={{ height: "var(--sf-canvas-h, 100dvh)", position: "relative" }}
+      style={{ height: "var(--sf-canvas-h, calc(100*var(--sf-vh)))", position: "relative" }}
       className="rounded-none"
     >
       {/* SignalCanvas scissor tracks this div's getBoundingClientRect().

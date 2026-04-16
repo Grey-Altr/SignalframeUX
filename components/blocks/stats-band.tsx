@@ -19,7 +19,7 @@ export function StatsBand() {
         >
           <div
             aria-hidden="true"
-            className={`sf-display text-[clamp(48px,5vw,72px)] leading-none ${
+            className={`sf-display text-[clamp(48px,calc(5*var(--sf-vw)),72px)] leading-none ${
               stat.accent ? "text-primary" : "text-foreground"
             }`}
             {...(!stat.accent ? { "data-anim": "stat-number", "data-target": stat.value } : {})}

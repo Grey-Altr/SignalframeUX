@@ -10,7 +10,7 @@
  *
  * Constraints:
  *   - data-acquisition-root on section root (required by Phase 33 AQ-04 test)
- *   - maxHeight: '50vh' hard cap — if content exceeds 50vh it clips (overflow-hidden)
+ *   - maxHeight: 'calc(50*var(--sf-vh))' hard cap — if content exceeds calc(50*var(--sf-vh)) it clips (overflow-hidden)
  *   - Zero border-radius, no styled buttons, no CTA copy
  *   - Stats sourced from SYSTEM_STATS — single source of truth
  *   - Two text anchors only: → /init and → /inventory (no buttons)
@@ -28,7 +28,7 @@ export function AcquisitionSection() {
     <section
       data-acquisition-root
       className="font-mono w-full border-t-4 border-foreground overflow-hidden"
-      style={{ maxHeight: "50vh" }}
+      style={{ maxHeight: "calc(50*var(--sf-vh))" }}
     >
       <div className="px-[var(--sfx-space-8)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-8)] md:py-10 flex flex-col gap-[var(--sfx-space-6)] md:gap-[var(--sfx-space-8)]">
         {/* Section header — subdued, data-sheet register */}

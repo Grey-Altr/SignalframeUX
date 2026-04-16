@@ -28,7 +28,7 @@ function voidBeforeFor(index: number, total: number): number {
 }
 
 /**
- * ThesisSection — 200-300vh pinned manifesto.
+ * ThesisSection — 200-calc(300*var(--sf-vh)) pinned manifesto.
  *
  * Composes Phase 29's PinnedSection primitive with a nested scrubbed
  * ScrollTrigger that drives a single master GSAP timeline. The master
@@ -111,7 +111,7 @@ export function ThesisSection() {
         trigger: stage,
         pinnedContainer: pinned,
         start: "top top",
-        // Explicit +=Npx end is mandatory: "bottom bottom" on a 100vh-tall
+        // Explicit +=Npx end is mandatory: "bottom bottom" on a calc(100*var(--sf-vh))-tall
         // trigger resolves to the SAME scroll position as "top top" (zero
         // range), and scrub would never advance. Match the outer PinnedSection's
         // pin distance so the inner scrub spans the full pin window.
@@ -142,7 +142,7 @@ export function ThesisSection() {
               data-statement-size="anchor"
               className="font-[family-name:var(--font-display)] text-foreground"
               style={{
-                fontSize: "clamp(56px, 10vw, 120px)",
+                fontSize: "clamp(56px, calc(10*var(--sf-vw)), 120px)",
                 lineHeight: 0.9,
                 letterSpacing: "-0.02em",
               }}

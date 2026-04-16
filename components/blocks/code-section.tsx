@@ -50,13 +50,13 @@ export function CodeSection() {
   return (
     <section data-anim="section-reveal" aria-label="API initialization example" className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-foreground">
       {/* Left — Description */}
-      <div className="px-[clamp(24px,5vw,48px)] py-[clamp(24px,5vw,60px)] border-r-0 md:border-r-4 border-foreground">
+      <div className="px-[clamp(24px,calc(5*var(--sf-vw)),48px)] py-[clamp(24px,calc(5*var(--sf-vw)),60px)] border-r-0 md:border-r-4 border-foreground">
         <h2
-          className="sf-display text-[clamp(40px,5vw,64px)] leading-none text-foreground mb-[var(--sfx-space-6)]"
+          className="sf-display text-[clamp(40px,calc(5*var(--sf-vw)),64px)] leading-none text-foreground mb-[var(--sfx-space-6)]"
         >
           API_INIT
         </h2>
-        <p className="text-base leading-[1.8] text-muted-foreground max-w-[clamp(280px,30.556vw,440px)]">
+        <p className="text-base leading-[1.8] text-muted-foreground max-w-[clamp(280px,calc(30.556*var(--sf-vw)),440px)]">
           SIGNALFRAMEUX OPERATES AS A PROGRAMMABLE API.
           INITIALIZE WITH A CONFIG OBJECT. EVERY TOKEN,
           COMPONENT, AND FRAME EFFECT IS ADDRESSABLE

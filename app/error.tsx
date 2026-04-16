@@ -42,7 +42,7 @@ export default function Error({
           <div
             data-anim="error-code"
             aria-hidden="true"
-            className="sf-display sf-glitch text-[clamp(48px,8vw,80px)] text-destructive mb-[var(--sfx-space-4)]"
+            className="sf-display sf-glitch text-[clamp(48px,calc(8*var(--sf-vw)),80px)] text-destructive mb-[var(--sfx-space-4)]"
           >
             ERROR
           </div>

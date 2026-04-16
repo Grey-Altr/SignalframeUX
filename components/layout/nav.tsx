@@ -600,7 +600,7 @@ export function Nav() {
       <nav 
         ref={navRef} 
         aria-label="Main navigation" 
-        className="fixed bottom-[clamp(16px,2vw,24px)] left-[clamp(16px,2vw,24px)] z-[var(--sfx-z-nav)] transition-[filter] duration-75"
+        className="fixed bottom-[clamp(16px,calc(2*var(--sf-vw)),24px)] left-[clamp(16px,calc(2*var(--sf-vw)),24px)] z-[var(--sfx-z-nav)] transition-[filter] duration-75"
         
       >
         <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">

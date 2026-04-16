@@ -15,7 +15,7 @@ export function EntrySection() {
           style={{
             // Keep the lockup stable on short viewports by constraining with vh.
             // Lockup +8% vs baseline (matches subtitle + slash overlay).
-            fontSize: "clamp(4.86rem, min(12.96vw, 34.56vh), 12.96rem)",
+            fontSize: "clamp(4.86rem, min(calc(12.96*var(--sf-vw)), calc(34.56*var(--sf-vh))), 12.96rem)",
             fontWeight: 700,
           }}
         >
@@ -45,7 +45,7 @@ export function EntrySection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center whitespace-nowrap px-[1em] font-display uppercase tracking-[0.02em] text-primary"
         style={{
-          fontSize: "clamp(4.86rem, min(12.96vw, 34.56vh), 12.96rem)",
+          fontSize: "clamp(4.86rem, min(calc(12.96*var(--sf-vw)), calc(34.56*var(--sf-vh))), 12.96rem)",
           lineHeight: 0.9,
           fontWeight: 700,
           opacity: 0.25,

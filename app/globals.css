@@ -184,16 +184,16 @@
   --sfx-font-display: var(--font-anton), "Impact", sans-serif;
 
   /* ── Type Scale: Industrial Minor Third (1.2) ── */
-  --sfx-text-2xs: clamp(8px, 0.625vw, 12px);  /* 9px at 1440px — micro labels, copy buttons */
-  --sfx-text-xs: clamp(9px, 0.694vw, 14px);   /* 10px at 1440px — tag pills, stat labels */
-  --sfx-text-sm: clamp(10px, 0.764vw, 16px);  /* 11px at 1440px — nav, footer, grid metadata */
-  --sfx-text-base: clamp(11px, 0.903vw, 18px); /* 13px at 1440px — body copy, descriptions */
-  --sfx-text-md: clamp(14px, 1.111vw, 24px);   /* 16px at 1440px — hero body, prominent copy */
-  --sfx-text-lg: clamp(16px, 1.25vw, 28px);    /* 18px at 1440px — section intros */
-  --sfx-text-xl: clamp(20px, 1.667vw, 36px);   /* 24px at 1440px — subheadings */
-  --sfx-text-2xl: clamp(24px, 2.222vw, 48px);  /* 32px at 1440px — section titles */
-  --sfx-text-3xl: clamp(32px, 3.333vw, 72px);  /* 48px at 1440px — page headers */
-  --sfx-text-4xl: clamp(48px, 5.556vw, 120px); /* 80px at 1440px — display type */
+  --sfx-text-2xs: clamp(8px, calc(0.625*var(--sf-vw)), 12px);  /* 9px at 1440px — micro labels, copy buttons */
+  --sfx-text-xs: clamp(9px, calc(0.694*var(--sf-vw)), 14px);   /* 10px at 1440px — tag pills, stat labels */
+  --sfx-text-sm: clamp(10px, calc(0.764*var(--sf-vw)), 16px);  /* 11px at 1440px — nav, footer, grid metadata */
+  --sfx-text-base: clamp(11px, calc(0.903*var(--sf-vw)), 18px); /* 13px at 1440px — body copy, descriptions */
+  --sfx-text-md: clamp(14px, calc(1.111*var(--sf-vw)), 24px);   /* 16px at 1440px — hero body, prominent copy */
+  --sfx-text-lg: clamp(16px, calc(1.25*var(--sf-vw)), 28px);    /* 18px at 1440px — section intros */
+  --sfx-text-xl: clamp(20px, calc(1.667*var(--sf-vw)), 36px);   /* 24px at 1440px — subheadings */
+  --sfx-text-2xl: clamp(24px, calc(2.222*var(--sf-vw)), 48px);  /* 32px at 1440px — section titles */
+  --sfx-text-3xl: clamp(32px, calc(3.333*var(--sf-vw)), 72px);  /* 48px at 1440px — page headers */
+  --sfx-text-4xl: clamp(48px, calc(5.556*var(--sf-vw)), 120px); /* 80px at 1440px — display type */
 
   /* ── SignalframeUX Extension Variables ── */
   --sfx-yellow: oklch(0.91 0.18 98);
@@ -272,30 +272,34 @@
   /* ── Spacing Tokens (blessed stops only) ──
      Based on 4px base. These are the ONLY valid content spacing values.
      Tailwind equivalents: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 12=48px, 16=64px, 24=96px */
-  --sfx-space-1: clamp(2px, 0.278vw, 6px);    /* 4px at 1440px */
-  --sfx-space-2: clamp(4px, 0.556vw, 12px);   /* 8px at 1440px */
-  --sfx-space-3: clamp(8px, 0.833vw, 16px);   /* 12px at 1440px */
-  --sfx-space-4: clamp(12px, 1.111vw, 24px);  /* 16px at 1440px */
-  --sfx-space-6: clamp(16px, 1.667vw, 36px);  /* 24px at 1440px */
-  --sfx-space-8: clamp(24px, 2.222vw, 48px);  /* 32px at 1440px */
-  --sfx-space-12: clamp(32px, 3.333vw, 72px); /* 48px at 1440px */
-  --sfx-space-16: clamp(48px, 4.444vw, 96px); /* 64px at 1440px */
-  --sfx-space-24: clamp(64px, 6.667vw, 144px);/* 96px at 1440px */
+  --sfx-space-1: clamp(2px, calc(0.278*var(--sf-vw)), 6px);    /* 4px at 1440px */
+  --sfx-space-2: clamp(4px, calc(0.556*var(--sf-vw)), 12px);   /* 8px at 1440px */
+  --sfx-space-3: clamp(8px, calc(0.833*var(--sf-vw)), 16px);   /* 12px at 1440px */
+  --sfx-space-4: clamp(12px, calc(1.111*var(--sf-vw)), 24px);  /* 16px at 1440px */
+  --sfx-space-6: clamp(16px, calc(1.667*var(--sf-vw)), 36px);  /* 24px at 1440px */
+  --sfx-space-8: clamp(24px, calc(2.222*var(--sf-vw)), 48px);  /* 32px at 1440px */
+  --sfx-space-12: clamp(32px, calc(3.333*var(--sf-vw)), 72px); /* 48px at 1440px */
+  --sfx-space-16: clamp(48px, calc(4.444*var(--sf-vw)), 96px); /* 64px at 1440px */
+  --sfx-space-24: clamp(64px, calc(6.667*var(--sf-vw)), 144px);/* 96px at 1440px */
 
   /* ── Layout Tokens ── */
-  --sfx-max-w-content: clamp(320px, 46.667vw, 800px); /* 672px at 1440px — prose/readable width */
-  --sfx-max-w-wide: clamp(768px, 88.889vw, 1600px);   /* 1280px at 1440px — section width */
+  --sfx-max-w-content: clamp(320px, calc(46.667*var(--sf-vw)), 800px); /* 672px at 1440px — prose/readable width */
+  --sfx-max-w-wide: clamp(768px, calc(88.889*var(--sf-vw)), 1600px);   /* 1280px at 1440px — section width */
   --sfx-max-w-full: 100%;       /* full-bleed */
-  --sfx-gutter: clamp(16px, 1.667vw, 40px);           /* 24px at 1440px — standard horizontal padding */
-  --sfx-gutter-sm: clamp(12px, 1.111vw, 24px);        /* 16px at 1440px — mobile horizontal padding */
-  --sfx-nav-height: clamp(60px, 5.764vw, 100px);      /* 83px at 1440px */
+  --sfx-gutter: clamp(16px, calc(1.667*var(--sf-vw)), 40px);           /* 24px at 1440px — standard horizontal padding */
+  --sfx-gutter-sm: clamp(12px, calc(1.111*var(--sf-vw)), 24px);        /* 16px at 1440px — mobile horizontal padding */
+  --sfx-nav-height: clamp(60px, calc(5.764*var(--sf-vw)), 100px);      /* 83px at 1440px */
 
   /* ── Scale Canvas ──
      1280x800 is the reference design frame. <ScaleCanvas> uniformly scales
-     all content by (window.innerWidth / 1280); this token is the fixed
-     canvas height used to remap viewport-height utilities inside the canvas
-     so 100vh/h-screen match the 800px design panel at any viewport. */
+     all content by (window.innerWidth / 1280); these tokens are the fixed
+     canvas units used inside the canvas in place of viewport units, so
+     1cvw and 1cvh always resolve to 1% of the 1280x800 canvas rather than
+     1% of the (variable) real viewport. Authors write
+     `calc(X*var(--sf-vw))` or `calc(X*var(--sf-vh))` in arbitrary values. */
   --sf-canvas-h: 800px;
+  --sf-vw: 12.8px;   /* 1% of the 1280 canvas width */
+  --sf-vh: 8px;      /* 1% of the 800 canvas height */
 
   /* ── Z-Index Scale ── */
   --sfx-z-above-bg: 1;

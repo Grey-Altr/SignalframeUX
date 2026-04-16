@@ -202,7 +202,7 @@ export function InventorySection() {
               className="fixed right-0 top-0 bottom-0 overflow-y-auto bg-background border-l-4 border-foreground"
               style={{
                 zIndex: "var(--z-overlay, 100)",
-                width: "clamp(320px, 40vw, 600px)",
+                width: "clamp(320px, calc(40*var(--sf-vw)), 600px)",
               }}
             >
               <ComponentDetailLazy

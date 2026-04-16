@@ -273,11 +273,11 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
   }, []);
 
   return (
-    <section className="border-b-4 border-foreground h-screen h-[100dvh] flex flex-col overflow-hidden">
+    <section className="border-b-4 border-foreground h-screen h-[calc(100*var(--sf-vh))] flex flex-col overflow-hidden">
       {/* Section header */}
-      <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[clamp(8px,2vh,16px)] pb-[clamp(4px,1vh,6px)] border-b-2 border-foreground shrink-0">
+      <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[clamp(8px,calc(2*var(--sf-vh)),16px)] pb-[clamp(4px,calc(1*var(--sf-vh)),6px)] border-b-2 border-foreground shrink-0">
         <h2
-          className="sf-display text-[clamp(20px,3vw,48px)] leading-none text-foreground"
+          className="sf-display text-[clamp(20px,calc(3*var(--sf-vw)),48px)] leading-none text-foreground"
         >
           BROWSE_COMPONENTS ( 12 / 340 )
         </h2>
@@ -313,7 +313,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               }}
             >
               {/* Index — magenta numeral */}
-              <span className="absolute top-2 right-3 sf-display text-primary text-[clamp(24px,3vw,36px)] leading-none opacity-40 group-hover:opacity-80 transition-opacity duration-[var(--sfx-duration-normal)]">
+              <span className="absolute top-2 right-3 sf-display text-primary text-[clamp(24px,calc(3*var(--sf-vw)),36px)] leading-none opacity-40 group-hover:opacity-80 transition-opacity duration-[var(--sfx-duration-normal)]">
                 {comp.id}
               </span>
 

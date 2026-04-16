@@ -43,7 +43,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "DETERMINISTIC STRUCTURE. GENERATIVE EXPRESSION.",
     size: "anchor",
     pillar: "signal-frame",
-    anchor: { top: "22vh", left: "8vw" },
+    anchor: { top: "calc(22*var(--sf-vh))", left: "calc(8*var(--sf-vw))" },
     wikiSource: "concepts/frame-signal-architecture.md, concepts/cybernetic-biophilia.md",
   },
   {
@@ -51,7 +51,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "ZERO RADIUS. ZERO COMPROMISE.",
     size: "anchor",
     pillar: "enhanced-flat",
-    anchor: { top: "30vh", right: "6vw" },
+    anchor: { top: "calc(30*var(--sf-vh))", right: "calc(6*var(--sf-vw))" },
     wikiSource: "concepts/enhanced-flat-design.md (--radius: 0px everywhere)",
   },
   {
@@ -59,7 +59,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "CULTURE AS INFRASTRUCTURE.",
     size: "anchor",
     pillar: "culture-infrastructure",
-    anchor: { bottom: "34vh", left: "12vw" },
+    anchor: { bottom: "calc(34*var(--sf-vh))", left: "calc(12*var(--sf-vw))" },
     wikiSource: "entities/culture-division.md, concepts/cd-event-system.md",
   },
   {
@@ -67,7 +67,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "STRUCTURE THAT BREATHES.",
     size: "anchor",
     pillar: "biophilia",
-    anchor: { top: "50vh", right: "18vw" },
+    anchor: { top: "calc(50*var(--sf-vh))", right: "calc(18*var(--sf-vw))" },
     wikiSource: "concepts/cybernetic-biophilia.md, moodboards/generative-systems.md",
   },
   {
@@ -75,7 +75,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "FORMAT IS STRATEGY.",
     size: "anchor",
     pillar: "memetic-engineering",
-    anchor: { bottom: "18vh", right: "8vw" },
+    anchor: { bottom: "calc(18*var(--sf-vh))", right: "calc(8*var(--sf-vw))" },
     wikiSource: "concepts/memetic-engineering.md",
   },
   {
@@ -85,7 +85,7 @@ export const THESIS_MANIFESTO: readonly ManifestoStatementData[] = [
     text: "THE FRAME HOLDS. THE SIGNAL MOVES.",
     size: "anchor",
     pillar: "signal-frame",
-    anchor: { bottom: "28vh", left: "10vw" },
+    anchor: { bottom: "calc(28*var(--sf-vh))", left: "calc(10*var(--sf-vw))" },
     wikiSource: "concepts/frame-signal-architecture.md",
   },
 ] as const;

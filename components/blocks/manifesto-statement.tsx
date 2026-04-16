@@ -12,7 +12,7 @@ interface ManifestoStatementProps {
 }
 
 const STATEMENT_STYLE: CSSProperties = {
-  fontSize: "clamp(56px, 10vw, 120px)",
+  fontSize: "clamp(56px, calc(10*var(--sf-vw)), 120px)",
   lineHeight: 0.9,
   letterSpacing: "-0.02em",
 };
@@ -29,7 +29,7 @@ const STATEMENT_CLASS =
  * directly, which keeps the timeline logic centralized and the statement
  * subcomponent easy to reason about.
  *
- * All statements are display-scale anchors (Anton clamp(56px, 10vw, 120px)).
+ * All statements are display-scale anchors (Anton clamp(56px, calc(10*var(--sf-vw)), 120px)).
  * No connector tier exists — the wiki-locked 6-statement set is all-anchor.
  *
  * - D-13 compliance: this component renders nothing the parent tweens into;

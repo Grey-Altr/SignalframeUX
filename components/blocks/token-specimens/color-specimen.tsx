@@ -112,7 +112,7 @@ export function ColorSpecimen({
     <div className="border-b-4 border-foreground sf-halftone" data-halftone>
       {/* ── HEADER / AXIS LEGEND / TOGGLE ── */}
       <div className="border-b-2 border-foreground px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-8)] space-y-4">
-        <div className="sf-display" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>
+        <div className="sf-display" style={{ fontSize: "clamp(32px, calc(5*var(--sf-vw)), 48px)" }}>
           OKLCH_MATRIX ( {scales.length} )
         </div>
         <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-[var(--sfx-space-4)]">
