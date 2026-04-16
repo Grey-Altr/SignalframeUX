@@ -662,12 +662,12 @@ export function Nav() {
           </div>
 
           {/* Corner badge + utility controls cluster */}
-          <div className="mt-[var(--sfx-space-1)] flex items-center gap-[var(--sfx-space-1)]">
-            <ColorCycleFrame style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
+          <div className="flex items-center gap-[var(--sfx-space-1)]">
+            <ColorCycleFrame className="hidden sm:inline-flex" style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
               <Link
                 href="/"
                 aria-label="SF//UX homepage"
-                className="hidden sm:flex h-8 items-center gap-[var(--sfx-space-1)] overflow-hidden bg-muted-foreground text-background pl-[var(--sfx-space-2)] pr-[var(--sfx-space-2)] text-[10px] font-bold uppercase tracking-[0.1em] no-underline"
+                className="flex h-8 items-center gap-[var(--sfx-space-1)] overflow-hidden bg-muted-foreground text-background pl-[var(--sfx-space-2)] pr-[var(--sfx-space-2)] text-[10px] font-bold uppercase tracking-[0.1em] no-underline"
               >
                 <span className="inline-flex h-full items-center self-center leading-none text-primary text-[10px]">◉◉</span>
                 <span className="inline-flex items-baseline gap-0">
