@@ -618,8 +618,8 @@ body[data-nav-visible="true"] .sf-nav-hidden {
    transition-delay (bottom cube first, top last) produces the
    peel-from-bottom cascade the spec calls for.
    [data-nav-glyph] (the rollout toggle) does NOT join the cascade;
-   it parks one cube-height above the rightmost link cube so it
-   stays visually tethered to the end of the row.
+   it parks one cube-height above the leftmost link cube — the same
+   cube that sat directly below it in the vertical column.
    Pitch: NAV_UNIT_PX (32px) + the fluid stack gap (--sfx-space-1).
    --sf-nav-cube-max: 6 = highest link-cube index (GitHub, bottom of
    the original column → rightmost in the row).
@@ -654,11 +654,12 @@ body[data-nav-layout="horizontal"] [data-nav-cube] {
   );
 }
 
-/* Glyph parks at (5 × pitch, 5 × pitch): same X as the rightmost link
-   cube, one cube-height above the row. */
+/* Glyph parks at (0, 5 × pitch): same X as the leftmost link cube
+   (//INVENTORY, the one that sat directly below the glyph in the
+   vertical column), one cube-height above the row. */
 body[data-nav-layout="horizontal"] [data-nav-glyph] {
   transform: translate(
-    calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch)),
+    0,
     calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch))
   );
 }
