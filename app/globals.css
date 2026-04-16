@@ -290,6 +290,13 @@
   --sfx-gutter-sm: clamp(12px, 1.111vw, 24px);        /* 16px at 1440px — mobile horizontal padding */
   --sfx-nav-height: clamp(60px, 5.764vw, 100px);      /* 83px at 1440px */
 
+  /* ── Scale Canvas ──
+     1280x800 is the reference design frame. <ScaleCanvas> uniformly scales
+     all content by (window.innerWidth / 1280); this token is the fixed
+     canvas height used to remap viewport-height utilities inside the canvas
+     so 100vh/h-screen match the 800px design panel at any viewport. */
+  --sf-canvas-h: 800px;
+
   /* ── Z-Index Scale ── */
   --sfx-z-above-bg: 1;
   --sfx-z-content: 10;
@@ -2461,4 +2468,38 @@ html:not(.dark) .sf-mesh-gradient {
     transform: none !important;
     animation: none !important;
   }
+}
+
+/* ── Scale Canvas viewport-height remap ────────────────────────────────────
+   Inside <ScaleCanvas>, viewport-height utilities should resolve to the
+   fixed 800px canvas height (--sf-canvas-h), not the real window viewport.
+   Without this, h-screen / 100vh sections render at window.innerHeight
+   pre-transform and overshoot the 1280x800 design frame at any scale.
+   Global overlays (mesh gradient, HUD, toaster, SignalCanvas) sit OUTSIDE
+   [data-sf-canvas] and correctly continue to use real viewport heights. */
+[data-sf-canvas] .h-screen,
+[data-sf-canvas] .h-dvh,
+[data-sf-canvas] .h-svh,
+[data-sf-canvas] .h-lvh,
+[data-sf-canvas] .h-\[100vh\],
+[data-sf-canvas] .h-\[100dvh\],
+[data-sf-canvas] .h-\[100svh\],
+[data-sf-canvas] .h-\[100lvh\] {
+  height: var(--sf-canvas-h);
+}
+
+[data-sf-canvas] .min-h-screen,
+[data-sf-canvas] .min-h-dvh,
+[data-sf-canvas] .min-h-svh,
+[data-sf-canvas] .min-h-lvh,
+[data-sf-canvas] .min-h-\[100vh\],
+[data-sf-canvas] .min-h-\[100dvh\] {
+  min-height: var(--sf-canvas-h);
+}
+
+[data-sf-canvas] .max-h-screen,
+[data-sf-canvas] .max-h-dvh,
+[data-sf-canvas] .max-h-svh,
+[data-sf-canvas] .max-h-lvh {
+  max-height: var(--sf-canvas-h);
 }

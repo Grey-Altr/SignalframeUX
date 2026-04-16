@@ -163,7 +163,7 @@ export function APIExplorer() {
     <section
       ref={containerRef}
       data-cursor
-      className="relative min-h-[calc(100vh-var(--nav-height))] font-mono bg-background"
+      className="relative min-h-[calc(var(--sf-canvas-h)-var(--nav-height,0px))] font-mono bg-background"
     >
       {/* ── FILTER BAR ─────────────────────────────────────────── */}
       <div className="sticky top-[var(--nav-height)] z-[var(--z-content)] border-b border-foreground/25 bg-background">

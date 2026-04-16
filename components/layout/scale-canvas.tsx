@@ -65,6 +65,7 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     >
       <div
         ref={innerRef}
+        data-sf-canvas=""
         style={{
           width: `${DESIGN_WIDTH}px`,
           transformOrigin: "top left",

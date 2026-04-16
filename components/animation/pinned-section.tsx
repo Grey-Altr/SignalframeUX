@@ -84,7 +84,7 @@ export const PinnedSection = forwardRef<HTMLDivElement, PinnedSectionProps>(
         ref={containerRef}
         id={id}
         className={className}
-        style={{ height: "100vh" }}
+        style={{ height: "var(--sf-canvas-h, 100vh)" }}
       >
         {children}
       </div>

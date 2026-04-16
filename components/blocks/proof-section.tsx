@@ -284,7 +284,7 @@ export function ProofSection() {
       ref={sectionRef as React.RefObject<HTMLElement>}
       data-proof-root
       data-anim
-      style={{ height: "100vh", position: "relative", overflow: "hidden" }}
+      style={{ height: "var(--sf-canvas-h, 100vh)", position: "relative", overflow: "hidden" }}
       className="rounded-none"
     >
       {/* Layer A — ProofShader WebGL (absolute inset-0, z-0)
