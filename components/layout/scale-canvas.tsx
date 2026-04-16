@@ -4,18 +4,20 @@ import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "@/lib/gsap-core";
 
 const DESIGN_WIDTH = 1280;
+const DESIGN_HEIGHT = 800;
 
 /**
- * ScaleCanvas — uniformly scales the entire tree by window.innerWidth / 1280
- * so every element keeps its design-pixel proportions at any viewport width.
- * The page itself fills the viewport width; only the content inside scales.
- * Content taller than the scaled design height scrolls naturally.
+ * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
+ * the viewport width (no pillarbox). Content taller than the scaled design
+ * height scrolls naturally.
  *
- * Publishes --sf-canvas-scale, --sf-frame-offset-x (always 0), and
- * --sf-frame-bottom-gap (always 0) so fixed chrome (nav, HUD) resolves to
- * the real viewport corners under width-only scaling. The offset vars stay
- * in the contract so a future aspect-locked mode could reintroduce
- * pillarbox/letterbox without changing consumers.
+ * Publishes a separate chrome scale as --sf-canvas-scale: min(vw/1280, vh/800).
+ * This responds to both dimensions on resize, so nav / HUD / corner buttons
+ * shrink when either axis shrinks — matching the user's mental model of
+ * "chrome scales on any resize" while still keeping the page itself
+ * viewport-filling. --sf-frame-offset-x and --sf-frame-bottom-gap are pinned
+ * to 0 under this mode; the contract is preserved so a future aspect-locked
+ * mode could swap in non-zero offsets without changing consumers.
  */
 export function ScaleCanvas({ children }: { children: React.ReactNode }) {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -29,13 +31,22 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     let rafId = 0;
 
     const applyScale = () => {
-      const scale = window.innerWidth / DESIGN_WIDTH;
+      // Content scale: width-only — keeps the page filling the viewport
+      // horizontally so there is never a pillarbox.
+      const contentScale = window.innerWidth / DESIGN_WIDTH;
+      // Chrome scale: min of width/height ratios — responds to *either*
+      // dimension shrinking so nav/HUD/corner buttons get smaller when the
+      // window gets shorter OR narrower.
+      const chromeScale = Math.min(
+        contentScale,
+        window.innerHeight / DESIGN_HEIGHT,
+      );
 
-      inner.style.transform = `scale(${scale})`;
-      outer.style.height = `${inner.offsetHeight * scale}px`;
+      inner.style.transform = `scale(${contentScale})`;
+      outer.style.height = `${inner.offsetHeight * contentScale}px`;
 
       const root = document.documentElement.style;
-      root.setProperty("--sf-canvas-scale", String(scale));
+      root.setProperty("--sf-canvas-scale", String(chromeScale));
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
       ScrollTrigger.refresh();
