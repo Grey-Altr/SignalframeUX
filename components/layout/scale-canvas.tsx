@@ -12,31 +12,25 @@ const NAV_HORIZONTAL_MIN_VW = 768;
 const NAV_HORIZONTAL_EXTENT_PX = 320;
 
 /* ────────────────────────────────────────────────────────────
-   Hero-to-nav proportional distance (measured at design 1280×800):
-   - Vertical nav container: 332px total height (incl. 24px top padding).
-   - First visible nav cube top = viewport_bottom − 332 + 24 = 492 at vh=800.
-   - h1 bounding box: 217px tall at contentScale=1.
-   - Hero is flex-centered with subtitle below — title sits ~27px above
-     the viewport's vertical midpoint so the title+subtitle pair centers.
-   - Design gap between h1 bottom and first cube top = 10px at baseline.
-   Rule: morph when actualGap < (designGap × contentScale). As content
-   scales, the proportional gap shrinks, but the unscaled nav eats more
-   of the viewport bottom — once that mismatch breaks proportion, flip
-   the nav to horizontal so the bottom-left footprint collapses.
+   Nav morph is scrubbed independently along two axes:
+   - Width: cascade progresses as vw grows from _VW_START → _VW_END.
+   - Height: cascade progresses as vh shrinks from _VH_IDLE → _VH_FLOOR.
+   The published progress is max(vwProgress, vhProgress) — either
+   dimension can drive the cascade, so users with tall windows still
+   see cubes animate when they drag horizontally, and users who shrink
+   height still see the row collapse. At vh ≤ _VH_FLOOR the cascade is
+   fully morphed; above _VH_IDLE height contributes nothing and the
+   cascade is width-driven only.
    ──────────────────────────────────────────────────────────── */
-const NAV_VERTICAL_HEIGHT_PX = 332;
-const NAV_TOP_PADDING_PX = 24;
-const HERO_HALF_DESIGN_H_PX = 109;
-const HERO_SUBTITLE_OFFSET_PX = 27;
-const DESIGN_HERO_NAV_GAP_PX = 10;
-/** Preload (px) added to the proportional encroachment so the cascade starts
- *  while the nav still has nominal headroom. Larger = starts earlier in the
- *  viewport drag. */
-const NAV_MORPH_PRELOAD_PX = 20;
-/** Delta range (px) over which --sf-nav-morph scrubs 0→1 after the preload
- *  is applied. Tuned so the full cascade plays across a comfortable drag
- *  distance at vh≈810 (~vw 1070→1770). Larger = slower / more scrubbable. */
-const NAV_MORPH_RANGE_PX = 60;
+/** Width at which the width-driven scrub begins (morph=0 at or below). */
+const NAV_MORPH_VW_START = 1050;
+/** Width at which the width-driven scrub completes (morph=1 at or above). */
+const NAV_MORPH_VW_END = 1900;
+/** Height at or above which height does not contribute to morph. */
+const NAV_MORPH_VH_IDLE = 900;
+/** Height at or below which height fully forces morph to 1 (nav cannot
+ *  reasonably sit as a vertical column in this much vertical space). */
+const NAV_MORPH_VH_FLOOR = 435;
 
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
@@ -77,26 +71,30 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
-      // Nav layout: scrubbed by viewport. Compute the delta between the
-      // proportional hero/nav gap and the actual one, then add a preload so
-      // the cascade visibly begins while the nav still has nominal headroom
-      // — users dragging a window wider should see cube 6 peel off early,
-      // not wait until the hero is already crowding the nav. Morph progress
-      // ramps 0→1 over NAV_MORPH_RANGE_PX of (preloaded) encroachment.
-      // Mobile (vw<768) forces full horizontal.
-      const heroTitleBottom =
-        vh / 2 - HERO_SUBTITLE_OFFSET_PX * contentScale +
-        HERO_HALF_DESIGN_H_PX * contentScale;
-      const navFirstCubeTop = vh - NAV_VERTICAL_HEIGHT_PX + NAV_TOP_PADDING_PX;
-      const actualHeroNavGap = navFirstCubeTop - heroTitleBottom;
-      const proportionalHeroNavGap = DESIGN_HERO_NAV_GAP_PX * contentScale;
-      const encroachment =
-        proportionalHeroNavGap - actualHeroNavGap + NAV_MORPH_PRELOAD_PX;
-      const rawProgress = Math.max(
+      // Nav morph: scrubbed along vw and vh independently; take the max so
+      // either axis can drive the cascade. Mobile width (vw<768) forces
+      // full horizontal regardless. Above vh=900 height contributes nothing
+      // and the cascade is width-driven; below vh=435 height forces full
+      // horizontal (nav can't reasonably fit as a vertical column in that
+      // little vertical space).
+      const vwProgress = Math.max(
         0,
-        Math.min(1, encroachment / NAV_MORPH_RANGE_PX),
+        Math.min(
+          1,
+          (vw - NAV_MORPH_VW_START) /
+            (NAV_MORPH_VW_END - NAV_MORPH_VW_START),
+        ),
       );
-      const navMorph = vw < NAV_HORIZONTAL_MIN_VW ? 1 : rawProgress;
+      const vhProgress = Math.max(
+        0,
+        Math.min(
+          1,
+          (NAV_MORPH_VH_IDLE - vh) /
+            (NAV_MORPH_VH_IDLE - NAV_MORPH_VH_FLOOR),
+        ),
+      );
+      const navMorph =
+        vw < NAV_HORIZONTAL_MIN_VW ? 1 : Math.max(vwProgress, vhProgress);
       // Fully morphed = horizontal; partial progress still classifies as
       // vertical so --sf-nav-scale stays at 1 until the cascade completes.
       const navHorizontal = navMorph >= 1;
