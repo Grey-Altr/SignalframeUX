@@ -159,17 +159,19 @@ export function InstrumentHUD() {
   const [pos, setPos] = useState({ top: 80, right: 24 });
 
   // Align HUD with the end of the "X" in SIGNALFRAME//UX and make it equidistant from the top.
-  // Distances are measured relative to the aspect-locked 1280x800 design frame (not the raw
-  // window), so the HUD tracks the frame's top-right corner under pillarbox/letterbox — see
-  // ScaleCanvas for --sf-canvas-scale / --sf-frame-offset-x contract.
+  // Content geometry (hero right edge, frameRight) must use --sf-content-scale (width-only),
+  // while HUD's own transform uses --sf-canvas-scale (chrome, min-ratio). Using the chrome
+  // scale for content alignment would misalign the HUD at any viewport where the two scales
+  // diverge (e.g. 1238x599 where content=0.967 but chrome=0.749).
   useEffect(() => {
     const DESIGN_WIDTH = 1280;
     const updatePos = () => {
       const root = document.documentElement;
       const cs = getComputedStyle(root);
-      const scale = parseFloat(cs.getPropertyValue("--sf-canvas-scale")) || 1;
+      const chromeScale = parseFloat(cs.getPropertyValue("--sf-canvas-scale")) || 1;
+      const contentScale = parseFloat(cs.getPropertyValue("--sf-content-scale")) || chromeScale;
       const offsetX = parseFloat(cs.getPropertyValue("--sf-frame-offset-x")) || 0;
-      const frameRight = offsetX + DESIGN_WIDTH * scale;
+      const frameRight = offsetX + DESIGN_WIDTH * contentScale;
 
       const heroTitle = document.querySelector('[data-entry-section] h1[data-anim="hero-title"]');
       if (heroTitle) {
@@ -177,8 +179,9 @@ export function InstrumentHUD() {
         const rightDist = Math.max(0, frameRight - rect.right);
         setPos({ top: rightDist, right: offsetX + rightDist });
       } else {
-        // Fallback for subpages — 80/24 design-unit inset from frame top-right corner.
-        setPos({ top: 80 * scale, right: offsetX + 24 * scale });
+        // Fallback for subpages — 80/24 design-unit inset from frame top-right corner,
+        // scaled by the chrome scale to match the HUD's own transform.
+        setPos({ top: 80 * chromeScale, right: offsetX + 24 * chromeScale });
       }
     };
 

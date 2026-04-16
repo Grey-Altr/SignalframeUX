@@ -41,12 +41,25 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
         contentScale,
         window.innerHeight / DESIGN_HEIGHT,
       );
+      // Hero shift: when the viewport is too short to show the full
+      // 800-design-unit hero, slide the content up by the full height
+      // deficit so the hero's bottom edge meets the viewport bottom
+      // (instead of overflowing off-screen). This keeps 1280x800
+      // proportions intact while fully clearing the bottom-left nav
+      // from the title.
+      const heroRealHeight = DESIGN_HEIGHT * contentScale;
+      const heroShift = Math.max(
+        0,
+        heroRealHeight - window.innerHeight,
+      );
 
-      inner.style.transform = `scale(${contentScale})`;
-      outer.style.height = `${inner.offsetHeight * contentScale}px`;
+      inner.style.transform = `translateY(${-heroShift}px) scale(${contentScale})`;
+      outer.style.height = `${inner.offsetHeight * contentScale - heroShift}px`;
 
       const root = document.documentElement.style;
       root.setProperty("--sf-canvas-scale", String(chromeScale));
+      root.setProperty("--sf-content-scale", String(contentScale));
+      root.setProperty("--sf-hero-shift", `${heroShift}px`);
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
       ScrollTrigger.refresh();
