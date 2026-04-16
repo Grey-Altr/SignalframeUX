@@ -635,19 +635,13 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   will-change: transform;
 }
 
-[data-nav-cube] {
+/* Forward cascade (vertical → horizontal): bottom cube (index 6) peels
+   first with 0 delay, each next cube up follows after one stagger,
+   glyph settles last at MAX × stagger. */
+body[data-nav-layout="horizontal"] [data-nav-cube] {
   transition-delay: calc(
     (var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-stagger)
   );
-}
-
-/* Glyph doesn't cascade — it fires at the tail of the cascade so it
-   settles into place after the row has formed. */
-[data-nav-glyph] {
-  transition-delay: calc(var(--sf-nav-cube-max) * var(--sf-nav-cube-stagger));
-}
-
-body[data-nav-layout="horizontal"] [data-nav-cube] {
   transform: translate(
     calc((var(--cube-index, 1) - 1) * var(--sf-nav-cube-pitch)),
     calc((var(--sf-nav-cube-max) - var(--cube-index, 1)) * var(--sf-nav-cube-pitch))
@@ -658,10 +652,25 @@ body[data-nav-layout="horizontal"] [data-nav-cube] {
    (//INVENTORY, the one that sat directly below the glyph in the
    vertical column), one cube-height above the row. */
 body[data-nav-layout="horizontal"] [data-nav-glyph] {
+  transition-delay: calc(var(--sf-nav-cube-max) * var(--sf-nav-cube-stagger));
   transform: translate(
     0,
     calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch))
   );
+}
+
+/* Reverse cascade (horizontal → vertical): "first one in, last one out."
+   Glyph leaves its perch first (0 delay), then cube 1 reclaims the top
+   slot, cube 2 the next down, … cube 6 settles last at MAX × stagger —
+   mirror of the entry order. Delays here apply only during the reverse
+   transition because the "vertical" attribute is active as the transform
+   unwinds to none. */
+body[data-nav-layout="vertical"] [data-nav-cube] {
+  transition-delay: calc(var(--cube-index, 1) * var(--sf-nav-cube-stagger));
+}
+
+body[data-nav-layout="vertical"] [data-nav-glyph] {
+  transition-delay: 0ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
