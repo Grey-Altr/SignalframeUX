@@ -613,35 +613,59 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 
 /* ────────────────────────────────────────────────────────────
    Nav layout morph — vertical column ↔ horizontal row.
-   Each [data-nav-cube] translates to its horizontal position
-   when body[data-nav-layout="horizontal"] is active. Staggered
+   6 [data-nav-cube] link cubes (indices 1..6) cascade from the
+   vertical stack to a horizontal row packed from X=0. Staggered
    transition-delay (bottom cube first, top last) produces the
    peel-from-bottom cascade the spec calls for.
+   [data-nav-glyph] (the rollout toggle) does NOT join the cascade;
+   it parks one cube-height above the rightmost link cube so it
+   stays visually tethered to the end of the row.
    Pitch: NAV_UNIT_PX (32px) + the fluid stack gap (--sfx-space-1).
-   Max index: 6 (NavSignalGlyph at 0, 6 NavCubeLinks at 1..6).
+   --sf-nav-cube-max: 6 = highest link-cube index (GitHub, bottom of
+   the original column → rightmost in the row).
    ──────────────────────────────────────────────────────────── */
-[data-nav-cube] {
+[data-nav-cube],
+[data-nav-glyph] {
   --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
   --sf-nav-cube-max: 6;
   --sf-nav-cube-stagger: 55ms;
   --sf-nav-cube-duration: 420ms;
   transition:
     transform var(--sf-nav-cube-duration) var(--sfx-ease-default);
+  will-change: transform;
+}
+
+[data-nav-cube] {
   transition-delay: calc(
     (var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-stagger)
   );
-  will-change: transform;
+}
+
+/* Glyph doesn't cascade — it fires at the tail of the cascade so it
+   settles into place after the row has formed. */
+[data-nav-glyph] {
+  transition-delay: calc(var(--sf-nav-cube-max) * var(--sf-nav-cube-stagger));
 }
 
 body[data-nav-layout="horizontal"] [data-nav-cube] {
   transform: translate(
-    calc(var(--cube-index, 0) * var(--sf-nav-cube-pitch)),
-    calc((var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-pitch))
+    calc((var(--cube-index, 1) - 1) * var(--sf-nav-cube-pitch)),
+    calc((var(--sf-nav-cube-max) - var(--cube-index, 1)) * var(--sf-nav-cube-pitch))
+  );
+}
+
+/* Glyph parks at (5 × pitch, 5 × pitch): same X as the rightmost link
+   cube, one cube-height above the row. */
+body[data-nav-layout="horizontal"] [data-nav-glyph] {
+  transform: translate(
+    calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch)),
+    calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch))
   );
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-nav-cube] { transition: none; }
+  [data-nav-cube],
+  [data-nav-glyph] { transition: none; }
 }
 
 @keyframes sf-load-wipe-up {

@@ -491,7 +491,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
 
   return (
     <div
-      data-nav-cube=""
+      data-nav-glyph=""
       className="inline-flex"
       style={{ ["--cube-index" as string]: cubeIndex }}
     >
