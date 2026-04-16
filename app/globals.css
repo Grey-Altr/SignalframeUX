@@ -612,32 +612,42 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 }
 
 /* ────────────────────────────────────────────────────────────
-   Nav layout morph — conveyor-belt cascade, vh-scrubbed.
-   The morph range [0, 1] is partitioned into 5 equal slices, one
-   per peel (cubes 6→2). Each slice has two halves:
+   Nav layout morph — conveyor-belt cascade with leftward row
+   packing. Six slices (one per peel of cubes 6→1). Each slice:
      peel-half  (phase-local 0..0.5) — the peeling cube slides
-                right from the bottom-left row slot to its final
-                row position. The remaining column is stationary.
-     shift-half (phase-local 0.5..1) — the entire remaining column
-                drops by one pitch, bringing the next cube to the
-                bottom row slot so it can peel in the next slice.
-   Cube 1 and the glyph never peel — they ride the shift-belt and
-   end at (0, 6·pitch) and (0, 5·pitch) respectively after 5
-   shifts have been applied.
+                right from the bottom-left row slot toward 5·pitch.
+                Simultaneously, every already-peeled row cube
+                slides LEFT by one pitch over this same half, so
+                the row packs tight from the left without gaps.
+     shift-half (phase-local 0.5..1) — the remaining column drops
+                one pitch so the next cube lands at the bottom-left
+                row slot ready to peel. (Phase 5's shift-half is a
+                no-op — no more column cubes to shift.)
+   Glyph never peels — it absorbs 5 column shifts and lands at
+   (0, 5·pitch), parked one pitch above cube 6 (the new leftmost).
+
+   Final row (left → right): cube 6, 5, 4, 3, 2, 1. Cube 6 travels
+   all the way: first slides right to 5·pitch during its own peel,
+   then slides back left one pitch per subsequent peel, ending at
+   X=0. Cube 1 slides only right (no subsequent peels) to 5·pitch.
 
    ScaleCanvas publishes:
      --sf-nav-morph        0..1 full cascade progress
-     --sf-nav-phase-idx    0..4 integer (which slice we're in)
+     --sf-nav-phase-idx    0..5 integer (which slice we're in)
      --sf-nav-phase-local  0..1 within the current slice
 
    Per-cube geometry:
-     shift-cap  = MAX − cube-index  (how many shifts this cube will
-                  absorb before it peels; cube 6 = 0, cube 1 = 5)
-     peel-start = shift-cap / 5     (global morph at which peel begins)
-     peel-p     = clamp((morph − peel-start) · 10, 0, 1)
-     shift-count = min(shift-cap, phase-idx + shift-p)
-     transform = translate(peel-p · (cube-index − 1) · pitch,
-                           shift-count · pitch)
+     shift-cap   = MAX − cube-index  (column shifts absorbed)
+     peel-start  = shift-cap / 6     (global morph at which peel begins)
+     peel-p      = clamp((morph − peel-start) · 12, 0, 1)
+     shift-count = min(shift-cap, rolling-shift)  (Y translation, pitches)
+     left-shift  = clamp(P − (7 − N), 0, N − 1)  (X left-shift, pitches)
+       where P = phase-idx + peel-p-global tracks global peel progress
+       and N = cube-index.
+     transform   = translate(
+                     (peel-p · 5 − left-shift) · pitch,
+                      shift-count · pitch
+                   )
 
    No transition on transform — the resize drag is the timeline.
    ──────────────────────────────────────────────────────────── */
@@ -645,15 +655,30 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 [data-nav-glyph] {
   --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
   --sf-nav-cube-max: 6;
+  /* Peel-half progress of the currently-active slice (0..1). Drives the
+     leftward shift of already-peeled row cubes. */
+  --sf-nav-peel-p-global: clamp(
+    0,
+    calc(var(--sf-nav-phase-local, 0) * 2),
+    1
+  );
+  /* Shift-half progress of the currently-active slice (0..1). Drives
+     the column drop that readies the next peel. */
   --sf-nav-shift-p: clamp(
     0,
     calc((var(--sf-nav-phase-local, 0) - 0.5) * 2),
     1
   );
-  /* Rolling shift count for cubes still in the column. Caps per-cube via
-     min(shift-cap, …) in the rules below. */
-  --sf-nav-rolling-shift: calc(
-    var(--sf-nav-phase-idx, 0) + var(--sf-nav-shift-p)
+  /* Total peel progress counter (0..6). Increments by 1 per completed
+     peel; ramps continuously through each peel-half. */
+  --sf-nav-P: calc(
+    var(--sf-nav-phase-idx, 0) + var(--sf-nav-peel-p-global)
+  );
+  /* Column-shift counter (0..5). Ramps through each shift-half; capped
+     at 5 since phase 5 has no shift (no column cubes remain). */
+  --sf-nav-rolling-shift: min(
+    5,
+    calc(var(--sf-nav-phase-idx, 0) + var(--sf-nav-shift-p))
   );
   transition: none;
   will-change: transform;
@@ -663,26 +688,35 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   --sf-nav-shift-cap: calc(
     var(--sf-nav-cube-max) - var(--cube-index, 1)
   );
-  --sf-nav-peel-start: calc(var(--sf-nav-shift-cap) / 5);
+  --sf-nav-peel-start: calc(var(--sf-nav-shift-cap) / 6);
   --sf-nav-peel-p: clamp(
     0,
-    calc((var(--sf-nav-morph, 0) - var(--sf-nav-peel-start)) * 10),
+    calc((var(--sf-nav-morph, 0) - var(--sf-nav-peel-start)) * 12),
     1
   );
   --sf-nav-shift-count: min(
     var(--sf-nav-shift-cap),
     var(--sf-nav-rolling-shift)
   );
+  /* Leftward shift in pitches — how many peels have started since THIS
+     cube finished its own peel. Max = cube-index − 1 (cube 6 slides
+     5p left total, cube 1 slides 0). Formula: P − (7 − N), clamped. */
+  --sf-nav-left-shift: clamp(
+    0,
+    calc(var(--sf-nav-P) - (7 - var(--cube-index, 1))),
+    calc(var(--cube-index, 1) - 1)
+  );
   transform: translate(
     calc(
-      var(--sf-nav-peel-p) * (var(--cube-index, 1) - 1) *
+      (var(--sf-nav-peel-p) * 5 - var(--sf-nav-left-shift)) *
         var(--sf-nav-cube-pitch)
     ),
     calc(var(--sf-nav-shift-count) * var(--sf-nav-cube-pitch))
   );
 }
 
-/* Glyph never peels — absorbs up to 5 shifts to land at (0, 5·pitch). */
+/* Glyph never peels — absorbs up to 5 column shifts to land at
+   (0, 5·pitch), directly above cube 6 at the new row leftmost. */
 [data-nav-glyph] {
   --sf-nav-shift-count: min(5, var(--sf-nav-rolling-shift));
   transform: translate(

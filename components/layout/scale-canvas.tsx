@@ -83,13 +83,16 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
         ),
       );
       const navMorph = vw < NAV_HORIZONTAL_MIN_VW ? 1 : vhProgress;
-      // Conveyor-belt cascade: 5 slices (one per peel of cubes 6→2). Each
+      // Conveyor-belt cascade: 6 slices (one per peel of cubes 6→1). Each
       // slice has a peel-half (cube slides right) followed by a shift-half
       // (remaining column drops one pitch so the next cube lands at the
-      // bottom row slot). phaseIdx picks the slice; phaseLocal is 0..1
-      // within the slice. CSS reads these to derive per-cube transforms.
-      const phaseIdxRaw = navMorph * 5;
-      const navPhaseIdx = Math.min(4, Math.max(0, Math.floor(phaseIdxRaw)));
+      // bottom row slot). Row cubes also slide left during each subsequent
+      // peel-half so the row packs tight from the left — cube 6 ends up
+      // at X=0 (leftmost), cube 1 at X=5·pitch (rightmost). phaseIdx picks
+      // the slice; phaseLocal is 0..1 within the slice. CSS reads these
+      // to derive per-cube transforms.
+      const phaseIdxRaw = navMorph * 6;
+      const navPhaseIdx = Math.min(5, Math.max(0, Math.floor(phaseIdxRaw)));
       const navPhaseLocal = Math.max(
         0,
         Math.min(1, phaseIdxRaw - navPhaseIdx),
