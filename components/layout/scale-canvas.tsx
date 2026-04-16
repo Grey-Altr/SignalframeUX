@@ -4,18 +4,18 @@ import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "@/lib/gsap-core";
 
 const DESIGN_WIDTH = 1280;
-const DESIGN_HEIGHT = 800;
 
 /**
- * ScaleCanvas — aspect-locks content to a 1280x800 design frame. Computes
- * scale = min(vw/1280, vh/800) so the full frame always fits inside the
- * window (pillarbox on wide aspect ratios, letterbox on tall ones). The
- * scaled frame is horizontally centered; content below 800 design units
- * scrolls naturally.
+ * ScaleCanvas — uniformly scales the entire tree by window.innerWidth / 1280
+ * so every element keeps its design-pixel proportions at any viewport width.
+ * The page itself fills the viewport width; only the content inside scales.
+ * Content taller than the scaled design height scrolls naturally.
  *
- * Publishes --sf-canvas-scale, --sf-frame-offset-x, --sf-frame-bottom-gap
- * so fixed chrome (nav, HUD) can anchor to the design frame edges instead
- * of the raw window corners.
+ * Publishes --sf-canvas-scale, --sf-frame-offset-x (always 0), and
+ * --sf-frame-bottom-gap (always 0) so fixed chrome (nav, HUD) resolves to
+ * the real viewport corners under width-only scaling. The offset vars stay
+ * in the contract so a future aspect-locked mode could reintroduce
+ * pillarbox/letterbox without changing consumers.
  */
 export function ScaleCanvas({ children }: { children: React.ReactNode }) {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -29,21 +29,15 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     let rafId = 0;
 
     const applyScale = () => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const scale = Math.min(vw / DESIGN_WIDTH, vh / DESIGN_HEIGHT);
-      const renderedFrameWidth = DESIGN_WIDTH * scale;
-      const renderedFrameHeight = DESIGN_HEIGHT * scale;
-      const offsetX = Math.max(0, (vw - renderedFrameWidth) / 2);
-      const bottomGap = Math.max(0, vh - renderedFrameHeight);
+      const scale = window.innerWidth / DESIGN_WIDTH;
 
-      inner.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+      inner.style.transform = `scale(${scale})`;
       outer.style.height = `${inner.offsetHeight * scale}px`;
 
       const root = document.documentElement.style;
       root.setProperty("--sf-canvas-scale", String(scale));
-      root.setProperty("--sf-frame-offset-x", `${offsetX}px`);
-      root.setProperty("--sf-frame-bottom-gap", `${bottomGap}px`);
+      root.setProperty("--sf-frame-offset-x", "0px");
+      root.setProperty("--sf-frame-bottom-gap", "0px");
       ScrollTrigger.refresh();
     };
 
