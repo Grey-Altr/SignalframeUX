@@ -597,11 +597,16 @@ export function Nav() {
 
   return (
     <>
-      <nav 
-        ref={navRef} 
-        aria-label="Main navigation" 
-        className="fixed bottom-[clamp(16px,calc(2*var(--sf-vw)),24px)] left-[clamp(16px,calc(2*var(--sf-vw)),24px)] z-[var(--sfx-z-nav)] transition-[filter] duration-75"
-        
+      <nav
+        ref={navRef}
+        aria-label="Main navigation"
+        className="fixed origin-bottom-left z-[var(--sfx-z-nav)] transition-[filter] duration-75"
+        style={{
+          bottom: "var(--sf-frame-bottom-gap, 0px)",
+          left: "var(--sf-frame-offset-x, 0px)",
+          transform: "scale(var(--sf-canvas-scale, 1))",
+          padding: "24px",
+        }}
       >
         <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">
           {/* Floating cube stack (desktop): I / A / S / G / G */}
