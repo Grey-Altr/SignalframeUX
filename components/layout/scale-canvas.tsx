@@ -12,24 +12,22 @@ const NAV_HORIZONTAL_MIN_VW = 768;
 const NAV_HORIZONTAL_EXTENT_PX = 320;
 
 /* ────────────────────────────────────────────────────────────
-   Nav morph is scrubbed independently along two axes:
-   - Width: cascade progresses as vw grows from _VW_START → _VW_END.
-   - Height: cascade progresses as vh shrinks from _VH_IDLE → _VH_FLOOR.
-   The published progress is max(vwProgress, vhProgress) — either
-   dimension can drive the cascade, so users with tall windows still
-   see cubes animate when they drag horizontally, and users who shrink
-   height still see the row collapse. At vh ≤ _VH_FLOOR the cascade is
-   fully morphed; above _VH_IDLE height contributes nothing and the
-   cascade is width-driven only.
+   Nav morph is scrubbed by viewport height:
+   - vh ≥ _VH_IDLE: morph=0, full vertical column.
+   - vh ≤ _VH_FLOOR: morph=1, full horizontal row.
+   - between: linear scrub — as vh decreases, cubes peel off the
+     column into the row one by one in forward cascade order (cube 6,
+     then 5, 4, 3, 2, 1, glyph). As vh increases they stack back into
+     the column in reverse order (glyph first, cube 6 last — "first
+     in, last out"). Width does not contribute; at any vw the nav is
+     driven by vh alone. Mobile (vw<768) still forces morph=1 since
+     the nav must collapse regardless of height in that case.
    ──────────────────────────────────────────────────────────── */
-/** Width at which the width-driven scrub begins (morph=0 at or below). */
-const NAV_MORPH_VW_START = 1050;
-/** Width at which the width-driven scrub completes (morph=1 at or above). */
-const NAV_MORPH_VW_END = 1900;
-/** Height at or above which height does not contribute to morph. */
+/** Height at or above which the nav is fully vertical column (morph=0). */
 const NAV_MORPH_VH_IDLE = 900;
-/** Height at or below which height fully forces morph to 1 (nav cannot
- *  reasonably sit as a vertical column in this much vertical space). */
+/** Height at or below which the nav is fully horizontal row (morph=1).
+ *  The nav cannot reasonably sit as a vertical column in less vertical
+ *  space than this — hero + nav together would overflow. */
 const NAV_MORPH_VH_FLOOR = 435;
 
 /**
@@ -71,20 +69,11 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
-      // Nav morph: scrubbed along vw and vh independently; take the max so
-      // either axis can drive the cascade. Mobile width (vw<768) forces
-      // full horizontal regardless. Above vh=900 height contributes nothing
-      // and the cascade is width-driven; below vh=435 height forces full
-      // horizontal (nav can't reasonably fit as a vertical column in that
-      // little vertical space).
-      const vwProgress = Math.max(
-        0,
-        Math.min(
-          1,
-          (vw - NAV_MORPH_VW_START) /
-            (NAV_MORPH_VW_END - NAV_MORPH_VW_START),
-        ),
-      );
+      // Nav morph: scrubbed by vh alone. As vh decreases past IDLE the
+      // column peels out into the row one cube at a time; as vh increases
+      // cubes stack back into the column (glyph first, cube 6 last).
+      // Mobile width (vw<768) overrides to force full horizontal since the
+      // column orientation can't sit in a narrow viewport regardless of vh.
       const vhProgress = Math.max(
         0,
         Math.min(
@@ -93,8 +82,7 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
             (NAV_MORPH_VH_IDLE - NAV_MORPH_VH_FLOOR),
         ),
       );
-      const navMorph =
-        vw < NAV_HORIZONTAL_MIN_VW ? 1 : Math.max(vwProgress, vhProgress);
+      const navMorph = vw < NAV_HORIZONTAL_MIN_VW ? 1 : vhProgress;
       // Fully morphed = horizontal; partial progress still classifies as
       // vertical so --sf-nav-scale stays at 1 until the cascade completes.
       const navHorizontal = navMorph >= 1;
