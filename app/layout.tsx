@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
 import { SignalCanvasLazy } from "@/components/layout/signal-canvas-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
+import { Nav } from "@/components/layout/nav";
 import { ScaleCanvas } from "@/components/layout/scale-canvas";
 import { PageAnimations } from "@/components/layout/page-animations";
 import { PageTransition } from "@/components/animation/page-transition";
@@ -111,6 +112,7 @@ export default function RootLayout({
             <SignalframeProvider>
               <BorderlessProvider>
               <ScaleCanvas>{children}</ScaleCanvas>
+              <Nav />
             </BorderlessProvider>
             </SignalframeProvider>
           </LenisProvider>

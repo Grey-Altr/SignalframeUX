@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { TokenTabs } from "@/components/blocks/token-tabs";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -16,7 +15,6 @@ export default async function TokensPage() {
   'use cache';
   return (
     <>
-      <Nav />
       <main id="main-content" data-cursor data-section="sys" data-section-label="TOK" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
         {/* ═══ PAGE HEADER ═══ */}

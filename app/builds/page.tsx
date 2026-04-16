@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { SFSection, CDSymbol } from "@/components/sf";
@@ -17,7 +16,6 @@ export const metadata: Metadata = {
 export default function BuildsPage() {
   return (
     <>
-      <Nav />
       <main
         id="main-content"
         data-cursor

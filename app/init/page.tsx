@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
@@ -167,7 +166,6 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
 export default function InitPage() {
   return (
     <>
-      <Nav />
       <main id="main-content" data-cursor data-section="init" data-section-label="SYS" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INIT" }]} />
 

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { SFSection } from "@/components/sf";
 import { EntrySection } from "@/components/blocks/entry-section";
@@ -20,7 +19,6 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <Nav />
       <main id="main-content">
         <div id="bg-shift-wrapper">
           {/* ENTRY — full-viewport GLSL hero with title overlay */}

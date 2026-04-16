@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -28,7 +27,6 @@ export default async function ComponentsPage() {
 
   return (
     <>
-      <Nav />
       <main id="main-content" data-cursor data-section="inv" data-section-label="INV" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
         {/* ── Page Header & WebGL Showcase (calc(100*var(--sf-vh)) combined) ── */}

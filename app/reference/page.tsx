@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { APIExplorer } from "@/components/blocks/api-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 export default function APIPage() {
   return (
     <>
-      <Nav />
       <main id="main-content" data-cursor data-section="ref" data-section-label="API" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "API" }]} />
         <SFSection label="API REFERENCE HEADER" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">

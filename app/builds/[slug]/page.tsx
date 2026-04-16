@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { SFSection, CDSymbol } from "@/components/sf";
@@ -127,7 +126,6 @@ export default async function BuildDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <Nav />
       <main
         id="main-content"
         data-cursor
