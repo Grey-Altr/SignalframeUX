@@ -6,11 +6,29 @@ import { ScrollTrigger } from "@/lib/gsap-core";
 const DESIGN_WIDTH = 1280;
 const DESIGN_HEIGHT = 800;
 
-/** Below this viewport width OR height, the nav morphs from vertical column to horizontal row. */
+/** Width below which the nav always morphs to horizontal — row doesn't fit vertically on mobile. */
 const NAV_HORIZONTAL_MIN_VW = 768;
-const NAV_HORIZONTAL_MIN_VH = 600;
 /** Approx width the horizontal nav occupies at --sf-nav-scale=1 (7*32 cubes + 6*4 gaps + 2*24 padding). */
 const NAV_HORIZONTAL_EXTENT_PX = 320;
+
+/* ────────────────────────────────────────────────────────────
+   Hero-to-nav proportional distance (measured at design 1280×800):
+   - Vertical nav container: 332px total height (incl. 24px top padding).
+   - First visible nav cube top = viewport_bottom − 332 + 24 = 492 at vh=800.
+   - h1 bounding box: 217px tall at contentScale=1.
+   - Hero is flex-centered with subtitle below — title sits ~27px above
+     the viewport's vertical midpoint so the title+subtitle pair centers.
+   - Design gap between h1 bottom and first cube top = 10px at baseline.
+   Rule: morph when actualGap < (designGap × contentScale). As content
+   scales, the proportional gap shrinks, but the unscaled nav eats more
+   of the viewport bottom — once that mismatch breaks proportion, flip
+   the nav to horizontal so the bottom-left footprint collapses.
+   ──────────────────────────────────────────────────────────── */
+const NAV_VERTICAL_HEIGHT_PX = 332;
+const NAV_TOP_PADDING_PX = 24;
+const HERO_HALF_DESIGN_H_PX = 109;
+const HERO_SUBTITLE_OFFSET_PX = 27;
+const DESIGN_HERO_NAV_GAP_PX = 10;
 
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
@@ -51,9 +69,21 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
-      // Nav layout: vertical column until viewport is constrained on either
-      // axis; then the column morphs to a horizontal row at bottom-left.
-      const navHorizontal = vw < NAV_HORIZONTAL_MIN_VW || vh < NAV_HORIZONTAL_MIN_VH;
+      // Nav layout: vertical column is valid only while the hero and nav
+      // maintain their design-baseline proportional distance. Compute the
+      // actual vs. proportional gap between hero-title-bottom and the
+      // first nav cube; morph when the nav starts encroaching on hero
+      // space. Width threshold still applies separately for mobile where
+      // the vertical row simply can't sit in a narrow viewport.
+      const heroTitleBottom =
+        vh / 2 - HERO_SUBTITLE_OFFSET_PX * contentScale +
+        HERO_HALF_DESIGN_H_PX * contentScale;
+      const navFirstCubeTop = vh - NAV_VERTICAL_HEIGHT_PX + NAV_TOP_PADDING_PX;
+      const actualHeroNavGap = navFirstCubeTop - heroTitleBottom;
+      const proportionalHeroNavGap = DESIGN_HERO_NAV_GAP_PX * contentScale;
+      const navHorizontal =
+        vw < NAV_HORIZONTAL_MIN_VW ||
+        actualHeroNavGap < proportionalHeroNavGap;
       // Nav scale stays at 1 while vertical. Once horizontal, shrinks only if
       // the row doesn't fit the viewport width — "after all boxes are in
       // horizontal orientation, THEN start scaling."
