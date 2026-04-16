@@ -158,26 +158,42 @@ export function InstrumentHUD() {
 
   const [pos, setPos] = useState({ top: 80, right: 24 });
 
-  // Align HUD with the end of the "X" in SIGNALFRAME//UX and make it equidistant from the top
+  // Align HUD with the end of the "X" in SIGNALFRAME//UX and make it equidistant from the top.
+  // Distances are measured relative to the aspect-locked 1280x800 design frame (not the raw
+  // window), so the HUD tracks the frame's top-right corner under pillarbox/letterbox — see
+  // ScaleCanvas for --sf-canvas-scale / --sf-frame-offset-x contract.
   useEffect(() => {
+    const DESIGN_WIDTH = 1280;
     const updatePos = () => {
+      const root = document.documentElement;
+      const cs = getComputedStyle(root);
+      const scale = parseFloat(cs.getPropertyValue("--sf-canvas-scale")) || 1;
+      const offsetX = parseFloat(cs.getPropertyValue("--sf-frame-offset-x")) || 0;
+      const frameRight = offsetX + DESIGN_WIDTH * scale;
+
       const heroTitle = document.querySelector('[data-entry-section] h1[data-anim="hero-title"]');
       if (heroTitle) {
         const rect = heroTitle.getBoundingClientRect();
-        const rightDist = window.innerWidth - rect.right;
-        setPos({ top: rightDist, right: rightDist });
+        const rightDist = Math.max(0, frameRight - rect.right);
+        setPos({ top: rightDist, right: offsetX + rightDist });
       } else {
-        // Fallback for other pages
-        setPos({ top: 80, right: 24 });
+        // Fallback for subpages — 80/24 design-unit inset from frame top-right corner.
+        setPos({ top: 80 * scale, right: offsetX + 24 * scale });
       }
     };
-    
-    updatePos();
+
+    // Initial measurement races ScaleCanvas's first applyScale (sibling effects in the
+    // same commit). rAF-defer the first run so --sf-canvas-scale / --sf-frame-offset-x
+    // are guaranteed set. Subsequent runs (resize, fonts.ready) are fine as-is.
+    const rafId = requestAnimationFrame(updatePos);
     window.addEventListener('resize', updatePos);
     if (document.fonts) {
       document.fonts.ready.then(updatePos);
     }
-    return () => window.removeEventListener('resize', updatePos);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updatePos);
+    };
   }, [pathname]); // Re-run when route changes
 
   const sectionLabel =
@@ -194,8 +210,12 @@ export function InstrumentHUD() {
       data-instrument-hud
       role="complementary"
       aria-label="System readout"
-      className="fixed z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
-      style={{ top: `${pos.top}px`, right: `${pos.right}px` }}
+      className="fixed origin-top-right z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
+      style={{
+        top: `${pos.top}px`,
+        right: `${pos.right}px`,
+        transform: "scale(var(--sf-canvas-scale, 1))",
+      }}
     >
       <span data-hud-field="section" className="text-foreground">
         {sectionLabel}
