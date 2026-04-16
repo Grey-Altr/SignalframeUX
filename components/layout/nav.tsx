@@ -221,6 +221,7 @@ const NavCubeLink = memo(function NavCubeLink({
   return (
     <div
       data-nav-cube=""
+      data-cube-index={cubeIndex}
       className="inline-flex"
       style={{
         ["--cube-index" as string]: cubeIndex,

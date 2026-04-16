@@ -29,6 +29,10 @@ const NAV_TOP_PADDING_PX = 24;
 const HERO_HALF_DESIGN_H_PX = 109;
 const HERO_SUBTITLE_OFFSET_PX = 27;
 const DESIGN_HERO_NAV_GAP_PX = 10;
+/** Delta range (px) over which --sf-nav-morph scrubs 0→1. Tuned so the full
+ *  cascade plays across a comfortable viewport-drag distance at vh≈810
+ *  (~vw 1350→1920). Larger = slower / more scrubbable. */
+const NAV_MORPH_RANGE_PX = 40;
 
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
@@ -69,24 +73,29 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
-      // Nav layout: vertical column is valid only while the hero and nav
-      // maintain their design-baseline proportional distance. Compute the
-      // actual vs. proportional gap between hero-title-bottom and the
-      // first nav cube; morph when the nav starts encroaching on hero
-      // space. Width threshold still applies separately for mobile where
-      // the vertical row simply can't sit in a narrow viewport.
+      // Nav layout: scrubbed by viewport. Compute the delta between the
+      // proportional hero/nav gap and the actual one — when the nav starts
+      // encroaching on hero space, morph progress ramps 0→1 over the next
+      // NAV_MORPH_RANGE_PX of encroachment. Mobile (vw<768) forces full
+      // horizontal. Each cube peels off the column in sequence, driven by
+      // its own slice of this 0→1 progress (see globals.css).
       const heroTitleBottom =
         vh / 2 - HERO_SUBTITLE_OFFSET_PX * contentScale +
         HERO_HALF_DESIGN_H_PX * contentScale;
       const navFirstCubeTop = vh - NAV_VERTICAL_HEIGHT_PX + NAV_TOP_PADDING_PX;
       const actualHeroNavGap = navFirstCubeTop - heroTitleBottom;
       const proportionalHeroNavGap = DESIGN_HERO_NAV_GAP_PX * contentScale;
-      const navHorizontal =
-        vw < NAV_HORIZONTAL_MIN_VW ||
-        actualHeroNavGap < proportionalHeroNavGap;
-      // Nav scale stays at 1 while vertical. Once horizontal, shrinks only if
-      // the row doesn't fit the viewport width — "after all boxes are in
-      // horizontal orientation, THEN start scaling."
+      const encroachment = proportionalHeroNavGap - actualHeroNavGap;
+      const rawProgress = Math.max(
+        0,
+        Math.min(1, encroachment / NAV_MORPH_RANGE_PX),
+      );
+      const navMorph = vw < NAV_HORIZONTAL_MIN_VW ? 1 : rawProgress;
+      // Fully morphed = horizontal; partial progress still classifies as
+      // vertical so --sf-nav-scale stays at 1 until the cascade completes.
+      const navHorizontal = navMorph >= 1;
+      // Nav scale stays at 1 until the cascade fully lands. Once horizontal,
+      // shrinks only if the row doesn't fit the viewport width.
       const navScale = navHorizontal
         ? Math.min(1, vw / NAV_HORIZONTAL_EXTENT_PX)
         : 1;
@@ -101,6 +110,7 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       root.setProperty("--sf-canvas-scale", String(chromeScale));
       root.setProperty("--sf-content-scale", String(contentScale));
       root.setProperty("--sf-nav-scale", String(navScale));
+      root.setProperty("--sf-nav-morph", String(navMorph));
       root.setProperty("--sf-hero-shift", "0px");
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");

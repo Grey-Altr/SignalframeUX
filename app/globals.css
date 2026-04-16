@@ -612,65 +612,93 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 }
 
 /* ────────────────────────────────────────────────────────────
-   Nav layout morph — vertical column ↔ horizontal row.
-   6 [data-nav-cube] link cubes (indices 1..6) cascade from the
-   vertical stack to a horizontal row packed from X=0. Staggered
-   transition-delay (bottom cube first, top last) produces the
-   peel-from-bottom cascade the spec calls for.
-   [data-nav-glyph] (the rollout toggle) does NOT join the cascade;
-   it parks one cube-height above the leftmost link cube — the same
-   cube that sat directly below it in the vertical column.
-   Pitch: NAV_UNIT_PX (32px) + the fluid stack gap (--sfx-space-1).
-   --sf-nav-cube-max: 6 = highest link-cube index (GitHub, bottom of
-   the original column → rightmost in the row).
+   Nav layout morph — viewport-width scrubbed L-shape cascade.
+   Each cube peels off the bottom of the column in sequence. The
+   bottom cube (index 6) slides straight right; the next cube
+   (5) drops straight down, then slides right to its column
+   position; then cube 4 runs its L-shape; cube 3; cube 2. Cube
+   1 only drops (already at x=0). The glyph settles last, one
+   cube-height above cube 1.
+
+   Driven continuously by --sf-nav-morph (0..1), published by
+   ScaleCanvas from the hero/nav gap delta. No timed transition
+   on transform — the user's resize drag IS the timeline.
+
+   Progress space (7 non-overlapping slices of width 1/7):
+     [0,   1/7) cube 6 — slide only (already at bottom)
+     [1/7, 2/7) cube 5 — drop first-half, slide second-half
+     [2/7, 3/7) cube 4 — drop, slide
+     [3/7, 4/7) cube 3 — drop, slide
+     [4/7, 5/7) cube 2 — drop, slide
+     [5/7, 6/7) cube 1 — drop only (no x-slide)
+     [6/7, 1  ] glyph   — drop only, parks above cube 1
+
+   Geometry: pitch = NAV_UNIT_PX (32) + the fluid stack gap.
+   Final-state targets (relative to natural column position):
+     cube N: translate((N-1)·pitch, (6-N)·pitch)
+     glyph : translate(0, 5·pitch)
    ──────────────────────────────────────────────────────────── */
 [data-nav-cube],
 [data-nav-glyph] {
   --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
   --sf-nav-cube-max: 6;
-  --sf-nav-cube-stagger: 55ms;
-  --sf-nav-cube-duration: 420ms;
-  transition:
-    transform var(--sf-nav-cube-duration) var(--sfx-ease-default);
+  transition: none;
   will-change: transform;
 }
 
-/* Forward cascade (vertical → horizontal): bottom cube (index 6) peels
-   first with 0 delay, each next cube up follows after one stagger,
-   glyph settles last at MAX × stagger. */
-body[data-nav-layout="horizontal"] [data-nav-cube] {
-  transition-delay: calc(
-    (var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-stagger)
+/* Per-cube slice mapping. Cube 6 owns slice [0, 1/7); cube 1 owns
+   slice [5/7, 6/7). slice-start = (MAX − cube-index) / 7. Local
+   progress within the slice is (global − slice-start) · 7, clamped
+   to [0, 1]. Middle cubes split local progress: first half drops,
+   second half slides right. */
+[data-nav-cube] {
+  --sf-nav-slice-start: calc(
+    (var(--sf-nav-cube-max) - var(--cube-index, 1)) / 7
   );
-  transform: translate(
-    calc((var(--cube-index, 1) - 1) * var(--sf-nav-cube-pitch)),
-    calc((var(--sf-nav-cube-max) - var(--cube-index, 1)) * var(--sf-nav-cube-pitch))
-  );
-}
-
-/* Glyph parks at (0, 5 × pitch): same X as the leftmost link cube
-   (//INVENTORY, the one that sat directly below the glyph in the
-   vertical column), one cube-height above the row. */
-body[data-nav-layout="horizontal"] [data-nav-glyph] {
-  transition-delay: calc(var(--sf-nav-cube-max) * var(--sf-nav-cube-stagger));
-  transform: translate(
+  --sf-nav-local-p: clamp(
     0,
-    calc((var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch))
+    calc((var(--sf-nav-morph, 0) - var(--sf-nav-slice-start)) * 7),
+    1
+  );
+  --sf-nav-drop-dist: calc(
+    (var(--sf-nav-cube-max) - var(--cube-index, 1)) * var(--sf-nav-cube-pitch)
+  );
+  --sf-nav-slide-dist: calc(
+    (var(--cube-index, 1) - 1) * var(--sf-nav-cube-pitch)
+  );
+  --sf-nav-drop-p: clamp(0, calc(var(--sf-nav-local-p) * 2), 1);
+  --sf-nav-slide-p: clamp(0, calc((var(--sf-nav-local-p) - 0.5) * 2), 1);
+  transform: translate(
+    calc(var(--sf-nav-slide-dist) * var(--sf-nav-slide-p)),
+    calc(var(--sf-nav-drop-dist) * var(--sf-nav-drop-p))
   );
 }
 
-/* Reverse cascade (horizontal → vertical): "first one in, last one out."
-   Glyph leaves its perch first (0 delay), then cube 1 reclaims the top
-   slot, cube 2 the next down, … cube 6 settles last at MAX × stagger —
-   mirror of the entry order. Delays here apply only during the reverse
-   transition because the "vertical" attribute is active as the transform
-   unwinds to none. */
-body[data-nav-layout="vertical"] [data-nav-cube] {
-  transition-delay: calc(var(--cube-index, 1) * var(--sf-nav-cube-stagger));
+/* Cube 6: already at bottom, no drop phase — slide uses the full slice. */
+[data-nav-cube][data-cube-index="6"] {
+  --sf-nav-drop-p: 0;
+  --sf-nav-slide-p: var(--sf-nav-local-p);
 }
 
-body[data-nav-layout="vertical"] [data-nav-glyph] {
-  transition-delay: 0ms;
+/* Cube 1: already at x=0, no slide phase — drop uses the full slice. */
+[data-nav-cube][data-cube-index="1"] {
+  --sf-nav-drop-p: var(--sf-nav-local-p);
+  --sf-nav-slide-p: 0;
+}
+
+/* Glyph: last slice [6/7, 1]. Drops to (0, 5·pitch) — one cube-height
+   above cube 1's landing spot. No slide phase. */
+[data-nav-glyph] {
+  --sf-nav-slice-start: calc(6 / 7);
+  --sf-nav-local-p: clamp(
+    0,
+    calc((var(--sf-nav-morph, 0) - var(--sf-nav-slice-start)) * 7),
+    1
+  );
+  --sf-nav-drop-dist: calc(
+    (var(--sf-nav-cube-max) - 1) * var(--sf-nav-cube-pitch)
+  );
+  transform: translate(0, calc(var(--sf-nav-drop-dist) * var(--sf-nav-local-p)));
 }
 
 @media (prefers-reduced-motion: reduce) {
