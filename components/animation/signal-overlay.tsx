@@ -160,7 +160,7 @@ export function SignalOverlay() {
 
   return (
     <>
-      {/* Toggle button — always visible at bottom-right */}
+      {/* Toggle button — always visible at bottom-right, scales with --sf-canvas-scale */}
       <button
         onClick={() => setIsOpen((v) => !v)}
         aria-label={isOpen ? "Close SIGNAL overlay" : "Open SIGNAL overlay (or press Shift+S)"}
@@ -168,7 +168,7 @@ export function SignalOverlay() {
         aria-controls="signal-overlay-panel"
         className={cn(
           "signal-overlay-toggle",
-          "fixed bottom-4 right-4 z-[calc(var(--z-scroll-top,9000)+10)]",
+          "fixed origin-bottom-right z-[calc(var(--z-scroll-top,9000)+10)]",
           "w-8 h-8 border-2 border-foreground",
           "bg-background text-foreground",
           "text-[9px] font-bold uppercase tracking-widest",
@@ -177,6 +177,11 @@ export function SignalOverlay() {
           "transition-colors duration-[var(--sfx-duration-fast)]",
           isOpen && "bg-foreground text-background"
         )}
+        style={{
+          bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 16px * var(--sf-canvas-scale, 1))",
+          right: "calc(var(--sf-frame-offset-x, 0px) + 16px * var(--sf-canvas-scale, 1))",
+          transform: "scale(var(--sf-canvas-scale, 1))",
+        }}
       >
         S
       </button>
@@ -189,11 +194,16 @@ export function SignalOverlay() {
           role="dialog"
           aria-label="SIGNAL parameter controls"
           className={cn(
-            "fixed bottom-16 right-4 z-[calc(var(--z-scroll-top,9000)+10)]",
+            "fixed origin-bottom-right z-[calc(var(--z-scroll-top,9000)+10)]",
             "w-64",
             "bg-background/95 backdrop-blur-sm",
             "border-2 border-foreground"
           )}
+          style={{
+            bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 64px * var(--sf-canvas-scale, 1))",
+            right: "calc(var(--sf-frame-offset-x, 0px) + 16px * var(--sf-canvas-scale, 1))",
+            transform: "scale(var(--sf-canvas-scale, 1))",
+          }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-[var(--sfx-space-4)] py-[var(--sfx-space-3)] border-b-2 border-foreground">

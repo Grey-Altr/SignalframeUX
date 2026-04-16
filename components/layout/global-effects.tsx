@@ -200,11 +200,15 @@ function ScrollToTop() {
           window.scrollTo({ top: 0, behavior: "auto" });
         }
       }}
-      className="fixed bottom-20 right-6 z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-[var(--sfx-duration-normal)]"
+      className="fixed origin-bottom-right z-[var(--z-scroll-top)] w-10 h-10 border-2 border-foreground bg-background text-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:bg-foreground hover:text-background transition-colors duration-[var(--sfx-duration-normal)]"
       style={{
+        bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 80px * var(--sf-canvas-scale, 1))",
+        right: "calc(var(--sf-frame-offset-x, 0px) + 24px * var(--sf-canvas-scale, 1))",
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
-        transform: visible ? "translateY(0)" : "translateY(12px)",
+        transform: visible
+          ? "scale(var(--sf-canvas-scale, 1))"
+          : "translateY(12px) scale(var(--sf-canvas-scale, 1))",
         transition:
           "opacity var(--sfx-duration-normal) var(--sfx-ease-default), transform var(--sfx-duration-normal) var(--sfx-ease-default), background-color var(--sfx-duration-fast) var(--sfx-ease-default), color var(--sfx-duration-fast) var(--sfx-ease-default)",
       }}
