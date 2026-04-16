@@ -50,14 +50,6 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // dimension shrinking so HUD/corner buttons get smaller when the
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
-      // Hero shift: when the viewport is too short to show the full
-      // 800-design-unit hero, slide the content up by the full height
-      // deficit so the hero's bottom edge meets the viewport bottom
-      // (instead of overflowing off-screen). This keeps 1280x800
-      // proportions intact while fully clearing the bottom-left nav
-      // from the title.
-      const heroRealHeight = DESIGN_HEIGHT * contentScale;
-      const heroShift = Math.max(0, heroRealHeight - window.innerHeight);
 
       // Nav layout: vertical column until viewport is constrained on either
       // axis; then the column morphs to a horizontal row at bottom-left.
@@ -69,14 +61,17 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
         ? Math.min(1, vw / NAV_HORIZONTAL_EXTENT_PX)
         : 1;
 
-      inner.style.transform = `translateY(${-heroShift}px) scale(${contentScale})`;
-      outer.style.height = `${inner.offsetHeight * contentScale - heroShift}px`;
+      // No hero shift needed: h-screen sections inside [data-sf-canvas]
+      // resolve to 100vh/contentScale (see globals.css), so each section's
+      // post-scale height equals the viewport height. Hero sits centered.
+      inner.style.transform = `scale(${contentScale})`;
+      outer.style.height = `${inner.offsetHeight * contentScale}px`;
 
       const root = document.documentElement.style;
       root.setProperty("--sf-canvas-scale", String(chromeScale));
       root.setProperty("--sf-content-scale", String(contentScale));
       root.setProperty("--sf-nav-scale", String(navScale));
-      root.setProperty("--sf-hero-shift", `${heroShift}px`);
+      root.setProperty("--sf-hero-shift", "0px");
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
       document.body.setAttribute(

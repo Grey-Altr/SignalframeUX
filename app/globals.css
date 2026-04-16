@@ -2508,12 +2508,13 @@ html:not(.dark) .sf-mesh-gradient {
 }
 
 /* ── Scale Canvas viewport-height remap ────────────────────────────────────
-   Inside <ScaleCanvas>, viewport-height utilities should resolve to the
-   fixed 800px canvas height (--sf-canvas-h), not the real window viewport.
-   Without this, h-screen / 100vh sections render at window.innerHeight
-   pre-transform and overshoot the 1280x800 design frame at any scale.
-   Global overlays (mesh gradient, HUD, toaster, SignalCanvas) sit OUTSIDE
-   [data-sf-canvas] and correctly continue to use real viewport heights. */
+   Inside <ScaleCanvas>, viewport-height utilities resolve to a height that
+   fills the REAL viewport after the canvas scale transform is applied:
+   pre-scale height = 100vh / --sf-content-scale, so post-scale = 100vh.
+   This keeps every h-screen section (including the hero) vertically centered
+   in the viewport at any size. Inverse of the width-only contentScale in
+   ScaleCanvas. Global overlays outside [data-sf-canvas] continue to use real
+   viewport heights directly. */
 [data-sf-canvas] .h-screen,
 [data-sf-canvas] .h-dvh,
 [data-sf-canvas] .h-svh,
@@ -2522,7 +2523,7 @@ html:not(.dark) .sf-mesh-gradient {
 [data-sf-canvas] .h-\[100dvh\],
 [data-sf-canvas] .h-\[100svh\],
 [data-sf-canvas] .h-\[100lvh\] {
-  height: var(--sf-canvas-h);
+  height: calc(100vh / var(--sf-content-scale, 1));
 }
 
 [data-sf-canvas] .min-h-screen,
@@ -2531,12 +2532,12 @@ html:not(.dark) .sf-mesh-gradient {
 [data-sf-canvas] .min-h-lvh,
 [data-sf-canvas] .min-h-\[100vh\],
 [data-sf-canvas] .min-h-\[100dvh\] {
-  min-height: var(--sf-canvas-h);
+  min-height: calc(100vh / var(--sf-content-scale, 1));
 }
 
 [data-sf-canvas] .max-h-screen,
 [data-sf-canvas] .max-h-dvh,
 [data-sf-canvas] .max-h-svh,
 [data-sf-canvas] .max-h-lvh {
-  max-height: var(--sf-canvas-h);
+  max-height: calc(100vh / var(--sf-content-scale, 1));
 }
