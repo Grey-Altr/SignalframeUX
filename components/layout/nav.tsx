@@ -88,7 +88,6 @@ const IconCommandGrid = (props: any) => (
     <path d="M17 16h7v6h-7z" />
   </svg>
 );
-import { NavOverlay } from "@/components/layout/nav-overlay";
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
 
@@ -123,6 +122,7 @@ const NavCubeLink = memo(function NavCubeLink({
   isGithub,
   ariaLabel,
   external,
+  cubeIndex,
 }: {
   href: string;
   label: string;
@@ -138,6 +138,7 @@ const NavCubeLink = memo(function NavCubeLink({
   isGithub: boolean;
   ariaLabel?: string;
   external?: boolean;
+  cubeIndex: number;
 }) {
   const linkProps = external ? { target: "_blank" as const, rel: "noopener noreferrer" } : {};
   const [expanded, setExpanded] = useState(false);
@@ -219,21 +220,28 @@ const NavCubeLink = memo(function NavCubeLink({
 
   return (
     <div
-      className={`${cubeBaseClass} ${cubePaletteClass}`}
+      data-nav-cube=""
+      className="inline-flex"
       style={{
-        width: expanded ? rolloutHoverWidth : isRolledOut ? rolloutWidth : `${NAV_UNIT_PX}px`,
-        minWidth: `${NAV_UNIT_PX}px`,
-        height: `${NAV_UNIT_PX}px`,
-        cursor: "pointer",
-        clipPath: `polygon(0 0, calc(100% - ${NAV_NOTCH_PX}px) 0, 100% ${NAV_NOTCH_PX}px, 100% 100%, 0 100%)`,
-        transitionTimingFunction: expanded ? "var(--sfx-ease-default)" : "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        ["--cube-index" as string]: cubeIndex,
       }}
-      onMouseEnter={handleExpand}
-      onMouseLeave={handleCollapse}
-      onFocus={handleExpand}
-      onBlur={handleCollapse}
     >
-      <Link
+      <div
+        className={`${cubeBaseClass} ${cubePaletteClass}`}
+        style={{
+          width: expanded ? rolloutHoverWidth : isRolledOut ? rolloutWidth : `${NAV_UNIT_PX}px`,
+          minWidth: `${NAV_UNIT_PX}px`,
+          height: `${NAV_UNIT_PX}px`,
+          cursor: "pointer",
+          clipPath: `polygon(0 0, calc(100% - ${NAV_NOTCH_PX}px) 0, 100% ${NAV_NOTCH_PX}px, 100% 100%, 0 100%)`,
+          transitionTimingFunction: expanded ? "var(--sfx-ease-default)" : "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+        onMouseEnter={handleExpand}
+        onMouseLeave={handleCollapse}
+        onFocus={handleExpand}
+        onBlur={handleCollapse}
+      >
+        <Link
         href={href}
         data-anim="nav-link"
         aria-label={ariaLabel ?? label}
@@ -306,6 +314,7 @@ const NavCubeLink = memo(function NavCubeLink({
           {labelBody}
         </span>
       </Link>
+      </div>
     </div>
   );
 });
@@ -405,9 +414,11 @@ const GLYPH_VB_LERP_MS = 600;
 const NavSignalGlyph = memo(function NavSignalGlyph({
   pinned,
   onPinnedChange,
+  cubeIndex,
 }: {
   pinned: boolean;
   onPinnedChange: (next: boolean) => void;
+  cubeIndex: number;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
@@ -479,6 +490,11 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
   };
 
   return (
+    <div
+      data-nav-cube=""
+      className="inline-flex"
+      style={{ ["--cube-index" as string]: cubeIndex }}
+    >
     <button
       type="button"
       aria-label="Toggle signal glyph orientation"
@@ -491,7 +507,10 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       className={`group relative flex items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
         pinned || isFlashing ? "text-warning" : "text-black"
       }`}
-      style={{ width: `${NAV_UNIT_PX}px`, height: `${NAV_UNIT_PX}px` }}
+      style={{
+        width: `${NAV_UNIT_PX}px`,
+        height: `${NAV_UNIT_PX}px`,
+      }}
     >
       <span
         className="pointer-events-none absolute inset-0 flex items-end justify-center"
@@ -556,6 +575,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
         </span>
       </span>
     </button>
+    </div>
   );
 });
 
@@ -587,7 +607,6 @@ function isActivePath(href: string, pathname: string) {
 export function Nav() {
   const pathname = usePathname();
   const [commandOpen, setCommandOpen] = useState(false);
-  const [overlayOpen, setOverlayOpen] = useState(false);
   const [rolloutPinned, setRolloutPinned] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
@@ -600,19 +619,27 @@ export function Nav() {
       <nav
         ref={navRef}
         aria-label="Main navigation"
+        data-sf-nav=""
         className="fixed origin-bottom-left z-[var(--sfx-z-nav)] transition-[filter] duration-75"
         style={{
           bottom: "var(--sf-frame-bottom-gap, 0px)",
           left: "var(--sf-frame-offset-x, 0px)",
-          transform: "scale(var(--sf-canvas-scale, 1))",
+          transform: "scale(var(--sf-nav-scale, 1))",
           padding: "24px",
         }}
       >
         <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">
-          {/* Floating cube stack (desktop): I / A / S / G / G */}
-          <div className="hidden md:flex flex-col items-start gap-[var(--sfx-space-1)]">
-            <NavSignalGlyph pinned={rolloutPinned} onPinnedChange={setRolloutPinned} />
-            {NAV_LINKS.map((link) => (
+          {/* Floating cube stack. Morphs column↔row via body[data-nav-layout]. */}
+          <div
+            data-sf-nav-stack=""
+            className="flex flex-col items-start gap-[var(--sfx-space-1)]"
+          >
+            <NavSignalGlyph
+              pinned={rolloutPinned}
+              onPinnedChange={setRolloutPinned}
+              cubeIndex={0}
+            />
+            {NAV_LINKS.map((link, index) => (
               <NavCubeLink
                 key={link.href}
                 href={link.href}
@@ -629,27 +656,10 @@ export function Nav() {
                 isBuilds={link.href === "/builds"}
                 isInit={link.href === "/init"}
                 isGithub={link.href.startsWith("https://github.com")}
+                cubeIndex={index + 1}
               />
             ))}
           </div>
-
-          {/* Mobile nav trigger cube */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setOverlayOpen(true)}
-              className="flex h-[var(--sfx-space-12)] w-[var(--sfx-space-12)] items-center justify-center bg-muted-foreground text-background text-[var(--text-sm)] font-bold uppercase tracking-[0.12em] transition-colors duration-[var(--sfx-duration-fast)] hover:bg-primary hover:text-primary-foreground"
-              aria-label="Open navigation menu"
-              aria-expanded={overlayOpen}
-            >
-              M
-            </button>
-          </div>
-
-          <NavOverlay
-            open={overlayOpen}
-            onClose={() => setOverlayOpen(false)}
-            links={NAV_LINKS}
-          />
 
           {/* Corner badge + utility controls cluster */}
           <div className="mt-[var(--sfx-space-1)] flex items-center gap-[var(--sfx-space-1)]">

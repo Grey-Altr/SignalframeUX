@@ -611,6 +611,39 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   .sf-nav-roll-up { animation: none; }
 }
 
+/* ────────────────────────────────────────────────────────────
+   Nav layout morph — vertical column ↔ horizontal row.
+   Each [data-nav-cube] translates to its horizontal position
+   when body[data-nav-layout="horizontal"] is active. Staggered
+   transition-delay (bottom cube first, top last) produces the
+   peel-from-bottom cascade the spec calls for.
+   Pitch: NAV_UNIT_PX (32px) + the fluid stack gap (--sfx-space-1).
+   Max index: 6 (NavSignalGlyph at 0, 6 NavCubeLinks at 1..6).
+   ──────────────────────────────────────────────────────────── */
+[data-nav-cube] {
+  --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
+  --sf-nav-cube-max: 6;
+  --sf-nav-cube-stagger: 55ms;
+  --sf-nav-cube-duration: 420ms;
+  transition:
+    transform var(--sf-nav-cube-duration) var(--sfx-ease-default);
+  transition-delay: calc(
+    (var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-stagger)
+  );
+  will-change: transform;
+}
+
+body[data-nav-layout="horizontal"] [data-nav-cube] {
+  transform: translate(
+    calc(var(--cube-index, 0) * var(--sf-nav-cube-pitch)),
+    calc((var(--sf-nav-cube-max) - var(--cube-index, 0)) * var(--sf-nav-cube-pitch))
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-nav-cube] { transition: none; }
+}
+
 @keyframes sf-load-wipe-up {
   0%   { transform: scaleY(1); }
   100% { transform: scaleY(0); }

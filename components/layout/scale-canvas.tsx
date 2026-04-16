@@ -6,18 +6,28 @@ import { ScrollTrigger } from "@/lib/gsap-core";
 const DESIGN_WIDTH = 1280;
 const DESIGN_HEIGHT = 800;
 
+/** Below this viewport width OR height, the nav morphs from vertical column to horizontal row. */
+const NAV_HORIZONTAL_MIN_VW = 768;
+const NAV_HORIZONTAL_MIN_VH = 600;
+/** Approx width the horizontal nav occupies at --sf-nav-scale=1 (7*32 cubes + 6*4 gaps + 2*24 padding). */
+const NAV_HORIZONTAL_EXTENT_PX = 320;
+
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
  * the viewport width (no pillarbox). Content taller than the scaled design
  * height scrolls naturally.
  *
  * Publishes a separate chrome scale as --sf-canvas-scale: min(vw/1280, vh/800).
- * This responds to both dimensions on resize, so nav / HUD / corner buttons
- * shrink when either axis shrinks — matching the user's mental model of
- * "chrome scales on any resize" while still keeping the page itself
- * viewport-filling. --sf-frame-offset-x and --sf-frame-bottom-gap are pinned
- * to 0 under this mode; the contract is preserved so a future aspect-locked
- * mode could swap in non-zero offsets without changing consumers.
+ * This responds to both dimensions on resize, so HUD / corner buttons shrink
+ * when either axis shrinks.
+ *
+ * The nav gets its own --sf-nav-scale that stays at 1 while the nav is still
+ * in its vertical column layout. Only after viewport crosses the horizontal
+ * threshold (body[data-nav-layout="horizontal"]) does nav-scale start
+ * shrinking. This preserves the user's mental model: first rearrange the nav
+ * from column to row, then resize. --sf-frame-offset-x and --sf-frame-bottom-gap
+ * are pinned to 0 under this mode; the contract is preserved so a future
+ * aspect-locked mode could swap in non-zero offsets without changing consumers.
  */
 export function ScaleCanvas({ children }: { children: React.ReactNode }) {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -31,16 +41,15 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     let rafId = 0;
 
     const applyScale = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
       // Content scale: width-only — keeps the page filling the viewport
       // horizontally so there is never a pillarbox.
-      const contentScale = window.innerWidth / DESIGN_WIDTH;
+      const contentScale = vw / DESIGN_WIDTH;
       // Chrome scale: min of width/height ratios — responds to *either*
-      // dimension shrinking so nav/HUD/corner buttons get smaller when the
+      // dimension shrinking so HUD/corner buttons get smaller when the
       // window gets shorter OR narrower.
-      const chromeScale = Math.min(
-        contentScale,
-        window.innerHeight / DESIGN_HEIGHT,
-      );
+      const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
       // Hero shift: when the viewport is too short to show the full
       // 800-design-unit hero, slide the content up by the full height
       // deficit so the hero's bottom edge meets the viewport bottom
@@ -48,10 +57,17 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // proportions intact while fully clearing the bottom-left nav
       // from the title.
       const heroRealHeight = DESIGN_HEIGHT * contentScale;
-      const heroShift = Math.max(
-        0,
-        heroRealHeight - window.innerHeight,
-      );
+      const heroShift = Math.max(0, heroRealHeight - window.innerHeight);
+
+      // Nav layout: vertical column until viewport is constrained on either
+      // axis; then the column morphs to a horizontal row at bottom-left.
+      const navHorizontal = vw < NAV_HORIZONTAL_MIN_VW || vh < NAV_HORIZONTAL_MIN_VH;
+      // Nav scale stays at 1 while vertical. Once horizontal, shrinks only if
+      // the row doesn't fit the viewport width — "after all boxes are in
+      // horizontal orientation, THEN start scaling."
+      const navScale = navHorizontal
+        ? Math.min(1, vw / NAV_HORIZONTAL_EXTENT_PX)
+        : 1;
 
       inner.style.transform = `translateY(${-heroShift}px) scale(${contentScale})`;
       outer.style.height = `${inner.offsetHeight * contentScale - heroShift}px`;
@@ -59,9 +75,14 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       const root = document.documentElement.style;
       root.setProperty("--sf-canvas-scale", String(chromeScale));
       root.setProperty("--sf-content-scale", String(contentScale));
+      root.setProperty("--sf-nav-scale", String(navScale));
       root.setProperty("--sf-hero-shift", `${heroShift}px`);
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
+      document.body.setAttribute(
+        "data-nav-layout",
+        navHorizontal ? "horizontal" : "vertical",
+      );
       ScrollTrigger.refresh();
     };
 
