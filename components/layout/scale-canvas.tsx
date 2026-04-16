@@ -29,10 +29,14 @@ const NAV_TOP_PADDING_PX = 24;
 const HERO_HALF_DESIGN_H_PX = 109;
 const HERO_SUBTITLE_OFFSET_PX = 27;
 const DESIGN_HERO_NAV_GAP_PX = 10;
-/** Delta range (px) over which --sf-nav-morph scrubs 0→1. Tuned so the full
- *  cascade plays across a comfortable viewport-drag distance at vh≈810
- *  (~vw 1350→1920). Larger = slower / more scrubbable. */
-const NAV_MORPH_RANGE_PX = 40;
+/** Preload (px) added to the proportional encroachment so the cascade starts
+ *  while the nav still has nominal headroom. Larger = starts earlier in the
+ *  viewport drag. */
+const NAV_MORPH_PRELOAD_PX = 20;
+/** Delta range (px) over which --sf-nav-morph scrubs 0→1 after the preload
+ *  is applied. Tuned so the full cascade plays across a comfortable drag
+ *  distance at vh≈810 (~vw 1070→1770). Larger = slower / more scrubbable. */
+const NAV_MORPH_RANGE_PX = 60;
 
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
@@ -74,18 +78,20 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
       // Nav layout: scrubbed by viewport. Compute the delta between the
-      // proportional hero/nav gap and the actual one — when the nav starts
-      // encroaching on hero space, morph progress ramps 0→1 over the next
-      // NAV_MORPH_RANGE_PX of encroachment. Mobile (vw<768) forces full
-      // horizontal. Each cube peels off the column in sequence, driven by
-      // its own slice of this 0→1 progress (see globals.css).
+      // proportional hero/nav gap and the actual one, then add a preload so
+      // the cascade visibly begins while the nav still has nominal headroom
+      // — users dragging a window wider should see cube 6 peel off early,
+      // not wait until the hero is already crowding the nav. Morph progress
+      // ramps 0→1 over NAV_MORPH_RANGE_PX of (preloaded) encroachment.
+      // Mobile (vw<768) forces full horizontal.
       const heroTitleBottom =
         vh / 2 - HERO_SUBTITLE_OFFSET_PX * contentScale +
         HERO_HALF_DESIGN_H_PX * contentScale;
       const navFirstCubeTop = vh - NAV_VERTICAL_HEIGHT_PX + NAV_TOP_PADDING_PX;
       const actualHeroNavGap = navFirstCubeTop - heroTitleBottom;
       const proportionalHeroNavGap = DESIGN_HERO_NAV_GAP_PX * contentScale;
-      const encroachment = proportionalHeroNavGap - actualHeroNavGap;
+      const encroachment =
+        proportionalHeroNavGap - actualHeroNavGap + NAV_MORPH_PRELOAD_PX;
       const rawProgress = Math.max(
         0,
         Math.min(1, encroachment / NAV_MORPH_RANGE_PX),
