@@ -7,9 +7,10 @@ const DESIGN_WIDTH = 1280;
 const DESIGN_HEIGHT = 800;
 
 /** Nav cascade scrubs --sf-nav-morph between these vh bounds.
- *  Above IDLE the nav is untouched; below FLOOR it's fully peeled. */
-const NAV_MORPH_VH_IDLE = 435;
-const NAV_MORPH_VH_FLOOR = 425;
+ *  Above IDLE the nav is untouched; below FLOOR it's fully peeled.
+ *  At FLOOR the nav also begins scaling down via SHRINK_VH (same value). */
+const NAV_MORPH_VH_IDLE = 800;
+const NAV_MORPH_VH_FLOOR = 435;
 /** vh below which chrome + nav scale down; both stay at 1 when vh ≥ this. */
 const SHRINK_VH = 435;
 
@@ -21,8 +22,8 @@ const SHRINK_VH = 435;
  * Publishes --sf-canvas-scale (min(vw/1280, vh/800)) for chrome elements that
  * should shrink on either axis, --sf-content-scale for body content, and
  * --sf-nav-scale for the nav (tracks chrome scale). Also publishes
- * --sf-nav-morph (0..1) driven by vh: 0 at vh≥900, 1 at vh≤425. CSS reads
- * morph to run the per-cube peel cascade.
+ * --sf-nav-morph (0..1) driven by vh: 0 at vh≥800, 1 at vh≤435. CSS reads
+ * morph to run the per-cube peel cascade (column → L-shape row).
  *
  * --sf-frame-offset-x / --sf-frame-bottom-gap are pinned to 0; the contract is
  * preserved so a future aspect-locked mode could swap in non-zero offsets.

@@ -612,53 +612,68 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 }
 
 /* ────────────────────────────────────────────────────────────
-   Nav cascade — single-step peel scrubbed by --sf-nav-morph (0..1).
-   ScaleCanvas maps vh ∈ [425, 900] → morph ∈ [1, 0].
+   Nav cascade — wave peel scrubbed by --sf-nav-morph (0..1).
+   ScaleCanvas maps vh ∈ [435, 800] → morph ∈ [1, 0].
 
-   Six slices (1/6 of morph each) propagate a wave up the column:
-     slice 0  (morph 0..1/6)  — github (cube 6) slides RIGHT 1 pitch.
-     slice 1  (morph 1/6..2/6) — init   (cube 5) shifts DOWN 1 pitch.
-     slice 2  (morph 2/6..3/6) — builds (cube 4) shifts DOWN 1 pitch.
-     slice 3  (morph 3/6..4/6) — system (cube 3) shifts DOWN 1 pitch.
-     slice 4  (morph 4/6..5/6) — api    (cube 2) shifts DOWN 1 pitch.
-     slice 5  (morph 5/6..1)   — inventory (cube 1) shifts DOWN 1 pitch.
+   Five phases (1/5 of morph each) propagate a wave up the column.
+   In each phase the bottom-most stack cube peels into a horizontal
+   row that grows rightward, the stack descends one pitch, and any
+   already-peeled row members shift one pitch further right:
 
-   Signal glyph does NOT shift — wave stops at inventory.
-   Reverse (vh increasing) plays slices 5 → 0.
+     Phase 0 — github (cube 6) peels right;      stack 0–5 descends 1.
+     Phase 1 — init   (cube 5) peels right;      stack 0–4 descends 1;
+                                                 github pushed +1 right.
+     Phase 2 — builds (cube 4) peels;            stack 0–3 descends 1;
+                                                 init+github pushed +1.
+     Phase 3 — system (cube 3) peels;            stack 0–2 descends 1;
+                                                 builds/init/github +1.
+     Phase 4 — api    (cube 2) peels;            stack 0–1 descends 1;
+                                                 entire row pushed +1.
 
-   Per-cube slice-start = (6 − cube-index) / 6:
-     cube 6 → 0, cube 5 → 1/6, … cube 1 → 5/6.
+   Inventory (cube 1) and the signal glyph (cube 0) never peel; they
+   descend together through all five phases. At morph=1 inventory is
+   at the original bottom-of-stack slot (y=6P) and the five peeled
+   cubes form a row to its right: api, system, builds, init, github.
 
+   Per-cube derivation:
+     peel-phase p = 6 − cube-index           (glyph→6, inv→5, …, gh→0)
+     t = 5 · morph                           (phase cursor, 0..5)
+     ty-units = min(6 − cube-index, t)       (pitches descended)
+     tx-units = clamp(0, t − p, cube-index − 1)   (pitches slid right)
+     transform = translate(tx, ty) · pitch
+
+   clamp resolves to max(MIN, min(VAL, MAX)); for cube 0 the MAX is
+   −1, so clamp returns 0 — no special case needed for the glyph.
+
+   Below vh=435 --sf-nav-scale takes over and the whole nav shrinks.
+   Reverse (vh increasing) plays phases backwards via the scrub.
    No transition on transform — the resize drag is the timeline.
    ──────────────────────────────────────────────────────────── */
-[data-nav-cube] {
+[data-nav-cube],
+[data-nav-glyph] {
   --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
-  --sf-nav-slice-start: calc((6 - var(--cube-index, 1)) / 6);
-  --sf-nav-slice-p: clamp(
+  --sf-nav-t: calc(var(--sf-nav-morph, 0) * 5);
+  --sf-nav-peel-phase: calc(6 - var(--cube-index, 1));
+  --sf-nav-ty-units: min(
+    calc(6 - var(--cube-index, 1)),
+    var(--sf-nav-t)
+  );
+  --sf-nav-tx-units: clamp(
     0,
-    calc((var(--sf-nav-morph, 0) - var(--sf-nav-slice-start)) * 6),
-    1
+    calc(var(--sf-nav-t) - var(--sf-nav-peel-phase)),
+    calc(var(--cube-index, 1) - 1)
   );
-  transition: none;
+  transform: translate(
+    calc(var(--sf-nav-tx-units) * var(--sf-nav-cube-pitch)),
+    calc(var(--sf-nav-ty-units) * var(--sf-nav-cube-pitch))
+  );
   will-change: transform;
-}
-
-/* Cube 6 (github) — slides right 1 pitch. */
-[data-nav-cube][data-cube-index="6"] {
-  transform: translateX(
-    calc(var(--sf-nav-slice-p) * var(--sf-nav-cube-pitch))
-  );
-}
-
-/* Cubes 1–5 — each shifts down 1 pitch during its slice. */
-[data-nav-cube]:not([data-cube-index="6"]) {
-  transform: translateY(
-    calc(var(--sf-nav-slice-p) * var(--sf-nav-cube-pitch))
-  );
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-nav-cube] { transition: none; }
+  [data-nav-cube],
+  [data-nav-glyph] { transition: none; }
 }
 
 @keyframes sf-load-wipe-up {
