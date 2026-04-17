@@ -9,8 +9,8 @@ const DESIGN_HEIGHT = 800;
 /** Nav cascade scrubs --sf-nav-morph between these vh bounds. */
 const NAV_MORPH_VH_IDLE = 900;
 const NAV_MORPH_VH_FLOOR = 425;
-/** vh below which the nav scales down; stays at 1 when vh ≥ this. */
-const NAV_SHRINK_VH = 435;
+/** vh below which chrome + nav scale down; both stay at 1 when vh ≥ this. */
+const SHRINK_VH = 435;
 
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
@@ -43,14 +43,13 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // Content scale: width-only — keeps the page filling the viewport
       // horizontally so there is never a pillarbox.
       const contentScale = vw / DESIGN_WIDTH;
-      // Chrome scale: min of width/height ratios — responds to *either*
-      // dimension shrinking so HUD/corner buttons get smaller when the
-      // window gets shorter OR narrower.
-      const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
-
-      // Nav scale stays at 1 until vh drops below the shrink threshold.
-      // Below that, shrinks linearly with vh.
-      const navScale = Math.min(1, vh / NAV_SHRINK_VH);
+      // Chrome + nav scale: stays at 1 until vh drops below SHRINK_VH,
+      // then shrinks linearly with vh. Width still constrains it (so the
+      // chrome doesn't overflow a narrow viewport), but height does not
+      // until we cross the threshold.
+      const heightScale = Math.min(1, vh / SHRINK_VH);
+      const chromeScale = Math.min(contentScale, heightScale);
+      const navScale = heightScale;
 
       // Nav morph: 0 at vh ≥ IDLE, 1 at vh ≤ FLOOR, linear scrub between.
       // Drives the per-cube peel cascade in globals.css.
