@@ -6,8 +6,9 @@ import { ScrollTrigger } from "@/lib/gsap-core";
 const DESIGN_WIDTH = 1280;
 const DESIGN_HEIGHT = 800;
 
-/** Nav cascade scrubs --sf-nav-morph between these vh bounds. */
-const NAV_MORPH_VH_IDLE = 900;
+/** Nav cascade scrubs --sf-nav-morph between these vh bounds.
+ *  Above IDLE the nav is untouched; below FLOOR it's fully peeled. */
+const NAV_MORPH_VH_IDLE = 435;
 const NAV_MORPH_VH_FLOOR = 425;
 /** vh below which chrome + nav scale down; both stay at 1 when vh ≥ this. */
 const SHRINK_VH = 435;
