@@ -6,6 +6,10 @@ import { ScrollTrigger } from "@/lib/gsap-core";
 const DESIGN_WIDTH = 1280;
 const DESIGN_HEIGHT = 800;
 
+/** Nav cascade scrubs --sf-nav-morph between these vh bounds. */
+const NAV_MORPH_VH_IDLE = 900;
+const NAV_MORPH_VH_FLOOR = 425;
+
 /**
  * ScaleCanvas — scales content by window.innerWidth / 1280 so the page fills
  * the viewport width (no pillarbox). Content taller than the scaled design
@@ -13,7 +17,9 @@ const DESIGN_HEIGHT = 800;
  *
  * Publishes --sf-canvas-scale (min(vw/1280, vh/800)) for chrome elements that
  * should shrink on either axis, --sf-content-scale for body content, and
- * --sf-nav-scale for the nav (tracks chrome scale — nav is always vertical).
+ * --sf-nav-scale for the nav (tracks chrome scale). Also publishes
+ * --sf-nav-morph (0..1) driven by vh: 0 at vh≥900, 1 at vh≤425. CSS reads
+ * morph to run the per-cube peel cascade.
  *
  * --sf-frame-offset-x / --sf-frame-bottom-gap are pinned to 0; the contract is
  * preserved so a future aspect-locked mode could swap in non-zero offsets.
@@ -40,9 +46,19 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // window gets shorter OR narrower.
       const chromeScale = Math.min(contentScale, vh / DESIGN_HEIGHT);
 
-      // Nav: always vertical. Scale tracks chrome so the column shrinks as
-      // either axis shrinks, preserving legibility without morphing layout.
+      // Nav scale tracks chrome so the column shrinks on either axis.
       const navScale = chromeScale;
+
+      // Nav morph: 0 at vh ≥ IDLE, 1 at vh ≤ FLOOR, linear scrub between.
+      // Drives the per-cube peel cascade in globals.css.
+      const navMorph = Math.max(
+        0,
+        Math.min(
+          1,
+          (NAV_MORPH_VH_IDLE - vh) /
+            (NAV_MORPH_VH_IDLE - NAV_MORPH_VH_FLOOR),
+        ),
+      );
 
       // No hero shift needed: h-screen sections inside [data-sf-canvas]
       // resolve to 100vh/contentScale (see globals.css), so each section's
@@ -54,6 +70,7 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       root.setProperty("--sf-canvas-scale", String(chromeScale));
       root.setProperty("--sf-content-scale", String(contentScale));
       root.setProperty("--sf-nav-scale", String(navScale));
+      root.setProperty("--sf-nav-morph", String(navMorph));
       root.setProperty("--sf-hero-shift", "0px");
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");

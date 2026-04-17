@@ -611,9 +611,55 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   .sf-nav-roll-up { animation: none; }
 }
 
-/* Nav cascade removed — column stays vertical. ScaleCanvas publishes
-   --sf-nav-scale which the <Nav> root scales by; per-cube transforms
-   and the column↔row morph are gone. */
+/* ────────────────────────────────────────────────────────────
+   Nav cascade — single-step peel scrubbed by --sf-nav-morph (0..1).
+   ScaleCanvas maps vh ∈ [425, 900] → morph ∈ [1, 0].
+
+   Six slices (1/6 of morph each) propagate a wave up the column:
+     slice 0  (morph 0..1/6)  — github (cube 6) slides RIGHT 1 pitch.
+     slice 1  (morph 1/6..2/6) — init   (cube 5) shifts DOWN 1 pitch.
+     slice 2  (morph 2/6..3/6) — builds (cube 4) shifts DOWN 1 pitch.
+     slice 3  (morph 3/6..4/6) — system (cube 3) shifts DOWN 1 pitch.
+     slice 4  (morph 4/6..5/6) — api    (cube 2) shifts DOWN 1 pitch.
+     slice 5  (morph 5/6..1)   — inventory (cube 1) shifts DOWN 1 pitch.
+
+   Signal glyph does NOT shift — wave stops at inventory.
+   Reverse (vh increasing) plays slices 5 → 0.
+
+   Per-cube slice-start = (6 − cube-index) / 6:
+     cube 6 → 0, cube 5 → 1/6, … cube 1 → 5/6.
+
+   No transition on transform — the resize drag is the timeline.
+   ──────────────────────────────────────────────────────────── */
+[data-nav-cube] {
+  --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
+  --sf-nav-slice-start: calc((6 - var(--cube-index, 1)) / 6);
+  --sf-nav-slice-p: clamp(
+    0,
+    calc((var(--sf-nav-morph, 0) - var(--sf-nav-slice-start)) * 6),
+    1
+  );
+  transition: none;
+  will-change: transform;
+}
+
+/* Cube 6 (github) — slides right 1 pitch. */
+[data-nav-cube][data-cube-index="6"] {
+  transform: translateX(
+    calc(var(--sf-nav-slice-p) * var(--sf-nav-cube-pitch))
+  );
+}
+
+/* Cubes 1–5 — each shifts down 1 pitch during its slice. */
+[data-nav-cube]:not([data-cube-index="6"]) {
+  transform: translateY(
+    calc(var(--sf-nav-slice-p) * var(--sf-nav-cube-pitch))
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-nav-cube] { transition: none; }
+}
 
 @keyframes sf-load-wipe-up {
   0%   { transform: scaleY(1); }
