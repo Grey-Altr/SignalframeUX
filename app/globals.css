@@ -201,6 +201,22 @@
   --sfx-clock: oklch(0.145 0 0);
   --sfx-tracking-label: 0.15em;
   --sfx-grain-opacity: 0.03;
+
+  /* ── cdB Aesthetic Deep-Dive Tokens ──────────────────────────
+     Parallel token set for the cdB-grammar site (branch:
+     aesthetic-deep-dive). Hi-viz lime is the one-pop accent
+     per Black Flag / Cyber2k / NCL / Segapunk peer evidence —
+     NOT magenta. Do not mix these with --sfx-* on the same
+     surface; the cdB site owns its own palette.
+     ─────────────────────────────────────────────────────────── */
+  --cdb-black: oklch(0 0 0);
+  --cdb-paper: oklch(0.98 0.01 90);
+  --cdb-lime: oklch(0.93 0.3 130);
+  --cdb-lime-foreground: oklch(0 0 0);
+  --cdb-grain: oklch(0.98 0 0 / 0.04);
+  --cdb-chrome-line: oklch(0.98 0 0 / 0.15);
+  --cdb-tracking-chrome: 0.18em;
+  --cdb-tracking-code: 0.08em;
   --sfx-inset-shadow: inset 0 1px 2px oklch(0 0 0 / 0.08);
   --sfx-deboss-light: 0 1px 0 oklch(1 0 0 / 0.1);
   --sfx-deboss-shadow: 0 -1px 0 oklch(0 0 0 / 0.15);
