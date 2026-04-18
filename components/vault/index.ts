@@ -14,3 +14,8 @@ export {
   type VaultMorphology,
 } from "./vault-pointcloud";
 export { VaultBiocircuit } from "./vault-biocircuit";
+
+// V3 primitives — display / data
+export { VaultSchematic } from "./vault-schematic";
+export { VaultHelghanese } from "./vault-helghanese";
+export { VaultDataField } from "./vault-data-field";
