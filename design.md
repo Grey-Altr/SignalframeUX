@@ -162,6 +162,7 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--sfx-gutter` | 24px | Standard horizontal padding |
 | `--sfx-gutter-sm` | 16px | Mobile horizontal padding |
 | `--sfx-nav-height` | 83px | Top nav fixed height |
+| `--sfx-nav-chrome-gap` | 3px | Intra-nav gap (between cubes inside the stack, between stack and corner cluster, and inside the corner cluster). Paired with `--sf-nav-cube-pitch` which consumes this + the 32px cube size. Off the blessed spacing scale because the nav chrome has its own tight visual rhythm; chrome-only — do not use elsewhere. |
 
 **Viewport-unit consumption policy:** Components rendered inside `<ScaleCanvas>` must consume `--sf-vw` / `--sf-vh` (see §4.11) instead of `vw` / `vh`, so that scaled / letterboxed canvas states remain coherent. Global chrome rendered OUTSIDE `<ScaleCanvas>` (nav, modals, portals) consumes standard viewport units OR the width/gutter/height tokens in this section. Fixed-position chrome that must align to canvas geometry consumes `--sf-frame-offset-x` / `--sf-frame-bottom-gap` / `--sf-canvas-h` (see §4.11).
 

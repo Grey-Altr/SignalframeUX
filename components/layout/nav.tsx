@@ -629,11 +629,11 @@ export function Nav() {
           padding: "24px",
         }}
       >
-        <div className="flex flex-col items-start gap-[3px]">
+        <div className="flex flex-col items-start gap-[var(--sfx-nav-chrome-gap)]">
           {/* Floating cube stack. Morphs column↔row via body[data-nav-layout]. */}
           <div
             data-sf-nav-stack=""
-            className="flex flex-col items-start gap-[3px]"
+            className="flex flex-col items-start gap-[var(--sfx-nav-chrome-gap)]"
           >
             <NavSignalGlyph
               pinned={rolloutPinned}
@@ -663,7 +663,7 @@ export function Nav() {
           </div>
 
           {/* Corner badge + utility controls cluster */}
-          <div className="flex items-center gap-[3px]">
+          <div className="flex items-center gap-[var(--sfx-nav-chrome-gap)]">
             <ColorCycleFrame className="hidden sm:inline-flex" style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
               <Link
                 href="/"

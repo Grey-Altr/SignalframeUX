@@ -289,6 +289,7 @@
   --sfx-gutter: clamp(16px, calc(1.667*var(--sf-vw)), 40px);           /* 24px at 1440px — standard horizontal padding */
   --sfx-gutter-sm: clamp(12px, calc(1.111*var(--sf-vw)), 24px);        /* 16px at 1440px — mobile horizontal padding */
   --sfx-nav-height: clamp(60px, calc(5.764*var(--sf-vw)), 100px);      /* 83px at 1440px */
+  --sfx-nav-chrome-gap: 3px; /* intra-nav gap: between cubes, between stack+cluster, inside cluster — paired w/ --sf-nav-cube-pitch */
 
   /* ── Scale Canvas ──
      1280x800 is the reference design frame. <ScaleCanvas> uniformly scales
@@ -651,7 +652,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
    ──────────────────────────────────────────────────────────── */
 [data-nav-cube],
 [data-nav-glyph] {
-  --sf-nav-cube-pitch: calc(32px + 3px);
+  --sf-nav-cube-pitch: calc(32px + var(--sfx-nav-chrome-gap));
   --sf-nav-t: calc(var(--sf-nav-morph, 0) * 5);
   --sf-nav-peel-phase: calc(6 - var(--cube-index, 1));
   /* Wave-peel cascade — cubes never overlap during transit.
