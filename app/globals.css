@@ -1007,7 +1007,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 
   /* ── Toggle snap easing ── */
   .sf-toggle-snap {
-    transition: transform var(--sfx-duration-fast) cubic-bezier(0.68, -0.2, 0.27, 1.2);
+    transition: transform var(--sfx-duration-fast) var(--sfx-ease-default);
   }
 
   /* ── Input border-draw on focus (clockwise magenta trace) ── */
@@ -1394,10 +1394,10 @@ body[data-nav-visible="true"] .sf-nav-hidden {
 }
 .nav-hover-link:hover .nav-hover-underline[data-dir="left"],
 .nav-hover-link:hover .nav-hover-underline:not([data-dir]) {
-  animation: nav-underline-in-left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: nav-underline-in-left 0.5s var(--sfx-ease-default) forwards;
 }
 .nav-hover-link:hover .nav-hover-underline[data-dir="right"] {
-  animation: nav-underline-in-right 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: nav-underline-in-right 0.5s var(--sfx-ease-default) forwards;
 }
 .nav-hover-link:not(:hover) .nav-hover-underline[data-dir="left"],
 .nav-hover-link:not(:hover) .nav-hover-underline:not([data-dir]) {
@@ -2269,7 +2269,7 @@ html:not(.dark) .sf-mesh-gradient {
 .sf-nav-icon--main,
 .sf-nav-icon--trail {
   transform-origin: center;
-  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 300ms ease;
+  transition: transform 460ms var(--sfx-ease-default), opacity 300ms ease;
 }
 
 .sf-nav-icon--main {
@@ -2327,7 +2327,7 @@ html:not(.dark) .sf-mesh-gradient {
 
 .sf-nav-icon--inventory {
   transform-origin: center;
-  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 460ms var(--sfx-ease-default);
 }
 
 .group:hover .sf-nav-icon--inventory,
@@ -2343,7 +2343,7 @@ html:not(.dark) .sf-mesh-gradient {
 /* Single path — no trail stack or infinite hover-hold; transitions reset on blur */
 .sf-nav-icon--github {
   transform-origin: center;
-  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 460ms var(--sfx-ease-default);
 }
 
 .group:hover .sf-nav-icon--github,
@@ -2359,7 +2359,7 @@ html:not(.dark) .sf-mesh-gradient {
 .sf-system-outer {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 460ms var(--sfx-ease-default);
 }
 
 .group:hover .sf-system-outer,
@@ -2371,7 +2371,7 @@ html:not(.dark) .sf-mesh-gradient {
 .sf-builds-segment {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 430ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 430ms var(--sfx-ease-default);
 }
 
 .group:hover .sf-builds-segment,
@@ -2400,7 +2400,7 @@ html:not(.dark) .sf-mesh-gradient {
 .sf-init-segment {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 420ms var(--sfx-ease-default);
 }
 
 .group:hover .sf-init-segment,
@@ -2429,7 +2429,7 @@ html:not(.dark) .sf-mesh-gradient {
 .sf-api-segment {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 430ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 430ms var(--sfx-ease-default);
 }
 
 /* Hover only: spread apart with fixed geometry (no scaling). */
@@ -2462,7 +2462,7 @@ html:not(.dark) .sf-mesh-gradient {
   transform-origin: center;
   transition-property: transform;
   transition-duration: 460ms;
-  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-timing-function: var(--sfx-ease-default);
 }
 
 .group:hover .sf-inventory-cell,
