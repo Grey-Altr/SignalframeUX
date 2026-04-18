@@ -41,6 +41,9 @@ next-env.d.ts
 .playwright-mcp/
 *.png
 
+# preserve probe screenshots (provenance for AI tool drift audits)
+!.planning/claude-design-probes/**/*.png
+
 # lighthouse advisory audit trails (gitignored per plan 35-03)
 .planning/phases/35-performance-launch-gate/launch-gate-*.json
 
