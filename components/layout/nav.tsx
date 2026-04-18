@@ -506,7 +506,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       onBlur={() => setIsHovered(false)}
       onClick={handleClick}
       className={`group relative flex items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
-        pinned || isFlashing ? "text-warning" : "text-black"
+        pinned || isFlashing ? "text-warning" : "text-black dark:text-[var(--sfx-yellow)]"
       }`}
       style={{
         width: `${NAV_UNIT_PX}px`,
@@ -629,11 +629,11 @@ export function Nav() {
           padding: "24px",
         }}
       >
-        <div className="flex flex-col items-start gap-[var(--sfx-space-1)]">
+        <div className="flex flex-col items-start gap-[3px]">
           {/* Floating cube stack. Morphs column↔row via body[data-nav-layout]. */}
           <div
             data-sf-nav-stack=""
-            className="flex flex-col items-start gap-[var(--sfx-space-1)]"
+            className="flex flex-col items-start gap-[3px]"
           >
             <NavSignalGlyph
               pinned={rolloutPinned}
@@ -663,7 +663,7 @@ export function Nav() {
           </div>
 
           {/* Corner badge + utility controls cluster */}
-          <div className="flex items-center gap-[var(--sfx-space-1)]">
+          <div className="flex items-center gap-[3px]">
             <ColorCycleFrame className="hidden sm:inline-flex" style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
               <Link
                 href="/"

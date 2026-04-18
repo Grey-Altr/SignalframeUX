@@ -651,16 +651,26 @@ body[data-nav-visible="true"] .sf-nav-hidden {
    ──────────────────────────────────────────────────────────── */
 [data-nav-cube],
 [data-nav-glyph] {
-  --sf-nav-cube-pitch: calc(32px + var(--sfx-space-1));
+  --sf-nav-cube-pitch: calc(32px + 3px);
   --sf-nav-t: calc(var(--sf-nav-morph, 0) * 5);
   --sf-nav-peel-phase: calc(6 - var(--cube-index, 1));
+  /* Wave-peel cascade — cubes never overlap during transit.
+     Per-phase timing preserves the one-cube-peels-per-phase rhythm, but
+     the peel gets fast ease-out and the descent gets slow ease-in, so the
+     peeling cube clears the column (tx ≥ 32/35) before the descending
+     cube enters the overlap zone (ty ≥ 3/35). Both motions are continuous
+     throughout the phase — no sub-phase stops. */
+  --sf-nav-phase-index: round(down, var(--sf-nav-t), 1);
+  --sf-nav-phase-frac: mod(var(--sf-nav-t), 1);
+  --sf-nav-peel-frac: calc(1 - pow(calc(1 - var(--sf-nav-phase-frac)), 6));
+  --sf-nav-descent-frac: pow(var(--sf-nav-phase-frac), 3);
   --sf-nav-ty-units: min(
     calc(6 - var(--cube-index, 1)),
-    var(--sf-nav-t)
+    calc(var(--sf-nav-phase-index) + var(--sf-nav-descent-frac))
   );
   --sf-nav-tx-units: clamp(
     0,
-    calc(var(--sf-nav-t) - var(--sf-nav-peel-phase)),
+    calc(var(--sf-nav-phase-index) - var(--sf-nav-peel-phase) + var(--sf-nav-peel-frac)),
     calc(var(--cube-index, 1) - 1)
   );
   transform: translate(

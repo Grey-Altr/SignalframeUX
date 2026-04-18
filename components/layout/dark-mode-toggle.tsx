@@ -90,7 +90,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         <svg
           aria-hidden="true"
           viewBox="0 0 10 10"
-          className={`absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-muted-foreground" : "text-primary"}`}
+          className={`absolute left-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-primary" : "text-muted-foreground"}`}
         >
           <rect x="3" y="1" width="4" height="1" fill="currentColor" />
           <rect x="2" y="2" width="6" height="3" fill="currentColor" />
@@ -100,7 +100,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         <svg
           aria-hidden="true"
           viewBox="0 0 10 10"
-          className={`absolute right-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-primary" : "text-muted-foreground"}`}
+          className={`absolute right-[3px] top-1/2 h-4 w-4 -translate-y-1/2 ${dark ? "text-muted-foreground" : "text-primary"}`}
         >
           <rect x="3" y="1" width="4" height="1" fill="currentColor" />
           <rect x="2" y="2" width="1" height="1" fill="currentColor" />
@@ -114,7 +114,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
           className="sf-theme-toggle-knob absolute top-1/2 h-[22px] w-[8px] bg-muted-foreground"
           style={{
             left: "22px",
-            transform: `translate3d(${dark ? 20 : 0}px, -50%, 0)`,
+            transform: `translate3d(${dark ? 0 : 20}px, -50%, 0)`,
             backgroundColor: dark ? "var(--color-primary)" : undefined,
             willChange: "transform",
           }}

@@ -11,7 +11,7 @@ export function EntrySection() {
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-[1em]">
         <h1
           data-anim="hero-title"
-          className="w-full whitespace-nowrap font-display text-center uppercase leading-[0.9] tracking-[0.02em] text-primary-foreground"
+          className="w-full whitespace-nowrap font-display text-center uppercase leading-[0.9] tracking-[0.02em] text-foreground"
           style={{
             // Keep the lockup stable on short viewports by constraining with vh.
             // Lockup +8% vs baseline (matches subtitle + slash overlay).

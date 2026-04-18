@@ -429,16 +429,27 @@ function initCoreAnimations(clickCleanups: Array<() => void>) {
   }
 
   // ── Homepage background color shifts (sharp cuts between sections) ──
+  // The inline background-color is a resolved color literal, not a var(),
+  // so it doesn't auto-update when the theme class flips. Track the active
+  // target and re-apply on `<html>.class` change.
+  let currentBgShift: string | null = null;
   document.querySelectorAll("[data-bg-shift]").forEach((el) => {
     const target = (el as HTMLElement).getAttribute("data-bg-shift");
     ScrollTrigger.create({
       trigger: el,
       start: "top 50%",
       end: "bottom 50%",
-      onEnter: () => applyBgShift(target),
-      onEnterBack: () => applyBgShift(target),
+      onEnter: () => { currentBgShift = target; applyBgShift(target); },
+      onEnterBack: () => { currentBgShift = target; applyBgShift(target); },
     });
   });
+
+  const themeObserver = new MutationObserver(() => applyBgShift(currentBgShift));
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  clickCleanups.push(() => themeObserver.disconnect());
 
   // ── Click-pop on interactive elements ──
   const popSelectors = "[data-anim='comp-cell'], [data-anim='cta-btn'], [data-anim='tag']";
