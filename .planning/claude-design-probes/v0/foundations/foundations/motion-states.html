@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>Foundations · Motion & States — SignalframeUX</title>
+  <link rel="stylesheet" href="../colors_and_type.css"/>
+  <style>
+    body { margin: 0; background: var(--surface-base); color: var(--surface-fg); min-height: 100vh; }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 48px 24px 96px; }
+    .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 96px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 8px 0 0;
+    }
+    .accent { color: oklch(0.78 0.28 350); }
+    .lede { max-width: 64ch; color: oklch(0.75 0 0); font-size: 13px; line-height: 1.6; margin: -24px 0 48px; }
+
+    .sect-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 20px;
+      background: var(--surface-lift);
+      margin-top: 48px;
+    }
+    .sect-head:first-of-type { margin-top: 0; }
+
+    /* ── Motion tokens table ─────────────────── */
+    .tok {
+      background: var(--surface-raise);
+      display: grid;
+      grid-template-columns: 220px 100px 1fr 160px;
+    }
+    .tok > div {
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-bottom: 1px solid oklch(0.25 0 0);
+    }
+    .tok > div:nth-last-child(-n+4) { border-bottom: 0; }
+    .tok .hrow {
+      background: var(--surface-lift);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--surface-fg-muted);
+      text-transform: uppercase;
+    }
+    .tok .name { color: oklch(0.78 0.28 350); font-weight: 700; }
+    .tok .desc { color: oklch(0.85 0 0); font-family: var(--font-sans); font-size: 13px; line-height: 1.45; }
+    .tok .range { color: var(--surface-fg-muted); text-align: right; }
+
+    /* ── Choreography lab ────────────────────── */
+    .lab {
+      background: var(--surface-raise);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .lab-card {
+      background: var(--surface-base);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+    .lab-card .lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: oklch(0.78 0.28 350);
+    }
+    .lab-card .nm {
+      font-family: var(--font-display);
+      font-size: 28px;
+      text-transform: uppercase;
+      line-height: 0.9;
+    }
+    .lab-card .dur {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+    }
+    .lab-card .stage {
+      flex: 1;
+      background: var(--surface-lift);
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .lab-card button {
+      background: var(--surface-peak);
+      color: var(--surface-fg);
+      border: 0;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .lab-card button:hover { background: oklch(0.78 0.28 350); color: oklch(0.145 0 0); }
+
+    /* ── Individual motion kinds ──────────────────────────── */
+    .m-dot {
+      width: 12px; height: 12px;
+      background: oklch(0.78 0.28 350);
+    }
+
+    /* snap — fast ease-out translate */
+    .snap-target { transform: translateX(0); }
+    .snap-target.play { animation: snap-in 160ms cubic-bezier(0.2, 0.8, 0.4, 1) forwards; }
+    @keyframes snap-in {
+      from { transform: translateX(-40px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+
+    /* arrive — slower fade + rise */
+    .arrive-target.play { animation: arrive 480ms cubic-bezier(0.2, 0.8, 0.4, 1) forwards; }
+    @keyframes arrive {
+      from { transform: translateY(16px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    /* pulse — ambient loop */
+    .pulse-target {
+      width: 48px; height: 48px;
+      background: oklch(0.78 0.28 350);
+      animation: pulse 1600ms ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(0.85); opacity: 0.6; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    /* scan — horizontal seek */
+    .scan-well {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, oklch(0 0 0 / 0.3) 3px, oklch(0 0 0 / 0.3) 4px);
+    }
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: oklch(0.78 0.28 350);
+      box-shadow: 0 0 8px oklch(0.78 0.28 350);
+      top: 20%;
+      animation: scan 2400ms linear infinite;
+    }
+    @keyframes scan {
+      0%   { top: 10%;  opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { top: 90%; opacity: 0; }
+    }
+
+    /* ── State grid ───────────────────────────── */
+    .states {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .state-card {
+      background: var(--surface-raise);
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+    }
+    .state-card .chrome {
+      padding: 14px 20px;
+      background: var(--surface-lift);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .state-card .body {
+      flex: 1;
+      padding: 32px;
+      display: grid;
+      place-items: center;
+    }
+
+    /* Loading — scan readout */
+    .loading-readout {
+      width: 100%;
+      max-width: 480px;
+    }
+    .loading-readout .line {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .loading-readout .bars {
+      display: grid;
+      grid-template-columns: repeat(32, 1fr);
+      gap: 2px;
+      height: 20px;
+    }
+    .loading-readout .bars > div {
+      background: oklch(0.35 0 0);
+      animation: scan-in 3s steps(32) infinite;
+    }
+    @keyframes scan-in {
+      from { background: oklch(0.35 0 0); }
+      to   { background: oklch(0.78 0.28 350); }
+    }
+    .loading-readout .bars > div:nth-child(n+1)  { animation-delay: 0.00s; }
+    .loading-readout .bars > div:nth-child(n+5)  { animation-delay: 0.20s; }
+    .loading-readout .bars > div:nth-child(n+10) { animation-delay: 0.40s; }
+    .loading-readout .bars > div:nth-child(n+15) { animation-delay: 0.60s; }
+    .loading-readout .bars > div:nth-child(n+20) { animation-delay: 0.80s; }
+    .loading-readout .bars > div:nth-child(n+25) { animation-delay: 1.00s; }
+    .loading-readout .bars > div:nth-child(n+30) { animation-delay: 1.20s; }
+    .loading-readout .foot {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: oklch(0.78 0.28 350);
+    }
+
+    /* Empty — declarative */
+    .empty-wrap { text-align: center; }
+    .empty-wrap .glyph {
+      width: 64px; height: 64px;
+      margin: 0 auto 24px;
+      background: oklch(0.25 0 0);
+      position: relative;
+    }
+    .empty-wrap .glyph::before,
+    .empty-wrap .glyph::after {
+      content: "";
+      position: absolute;
+      background: var(--surface-raise);
+    }
+    .empty-wrap .glyph::before { top: 50%; left: 0; right: 0; height: 8px; transform: translateY(-50%); }
+    .empty-wrap .glyph::after  { left: 50%; top: 0; bottom: 0; width: 8px; transform: translateX(-50%); }
+    .empty-wrap h3 {
+      font-family: var(--font-display);
+      font-size: 40px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 0 0 10px;
+    }
+    .empty-wrap p {
+      font-size: 13px;
+      color: var(--surface-fg-muted);
+      max-width: 34ch;
+      margin: 0 auto 20px;
+      line-height: 1.5;
+    }
+    .empty-wrap .cta {
+      display: inline-block;
+      background: oklch(0.78 0.28 350);
+      color: oklch(0.145 0 0);
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    /* Error — fault band */
+    .error-wrap {
+      width: 100%;
+      max-width: 480px;
+    }
+    .error-wrap .banner {
+      background: oklch(0.55 0.18 25);
+      color: oklch(0.985 0 0);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+    .error-wrap h3 {
+      font-family: var(--font-display);
+      font-size: 48px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 20px 0 12px;
+    }
+    .error-wrap .code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+      background: var(--surface-base);
+      padding: 12px 16px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .error-wrap .code .k { color: oklch(0.7 0.15 25); }
+    .error-wrap .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .error-wrap .btns a {
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .error-wrap .btns a.primary { background: oklch(0.78 0.28 350); color: oklch(0.145 0 0); }
+    .error-wrap .btns a.ghost { background: var(--surface-peak); color: var(--surface-fg); }
+
+    /* Success — status stamp */
+    .success-wrap {
+      width: 100%;
+      max-width: 480px;
+    }
+    .success-wrap .stamp {
+      border: 2px solid oklch(0.85 0.25 145);
+      color: oklch(0.85 0.25 145);
+      padding: 20px;
+      font-family: var(--font-display);
+      font-size: 64px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .success-wrap .stamp .tick {
+      width: 40px; height: 40px;
+      background: oklch(0.85 0.25 145);
+      position: relative;
+    }
+    .success-wrap .stamp .tick::before,
+    .success-wrap .stamp .tick::after {
+      content: "";
+      position: absolute;
+      background: oklch(0.145 0 0);
+    }
+    .success-wrap .stamp .tick::before { left: 8px; top: 20px; width: 12px; height: 4px; transform: rotate(45deg); transform-origin: left; }
+    .success-wrap .stamp .tick::after  { left: 16px; top: 22px; width: 22px; height: 4px; transform: rotate(-45deg); transform-origin: left; }
+    .success-wrap .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      column-gap: 16px;
+      row-gap: 6px;
+    }
+    .success-wrap .meta .v { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .success-wrap .meta .v { color: oklch(0.85 0 0); }
+
+    /* ── Rules ──────────────────────────────── */
+    .rules {
+      margin-top: 48px;
+      background: var(--surface-raise);
+      padding: 32px;
+    }
+    .rules h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin: 0 0 16px;
+    }
+    .rules ul {
+      margin: 0; padding: 0; list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .rules li {
+      padding: 14px 0 14px 28px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: oklch(0.88 0 0);
+      position: relative;
+      max-width: 56ch;
+    }
+    .rules li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 21px;
+      width: 12px; height: 3px;
+      background: oklch(0.78 0.28 350);
+    }
+    .rules li strong { color: var(--surface-fg); font-weight: 700; }
+    .rules li code { font-family: var(--font-mono); font-size: 12px; color: oklch(0.78 0.28 350); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="head">
+      <div>
+        <div class="caption">§06 · FOUNDATIONS · MOTION &amp; STATES</div>
+        <h1 class="title">WHEN THE<br/><span class="accent">FRAME MOVES.</span></h1>
+      </div>
+      <div class="caption" style="text-align:right; line-height: 1.5;">
+        SIGNALFRAMEUX<br/>
+        <span style="color: var(--surface-fg-dim);">v0.1 · 2026·Q2</span>
+      </div>
+    </div>
+
+    <p class="lede">
+      The frame is static. Motion belongs to the signal — arrival, scan, ambient drift, fault pulse. Four motion kinds cover the entire system: <strong>SNAP</strong> for UI response, <strong>ARRIVE</strong> for content entry, <strong>PULSE</strong> for ambient signal, <strong>SCAN</strong> for process. Every state (loading, empty, error, success) picks one and commits.
+    </p>
+
+    <!-- ── TOKENS ─────────────────────────────── -->
+    <div class="sect-head">
+      <span class="caption">TOKENS · MOTION</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">DIVIDED BY POSTURE SPEED</span>
+    </div>
+    <div class="tok">
+      <div class="hrow">TOKEN</div>
+      <div class="hrow">UNIT</div>
+      <div class="hrow">ROLE</div>
+      <div class="hrow">VALUE · LIVE</div>
+
+      <div class="name">--posture-motion-duration-sm</div>
+      <div>ms</div>
+      <div class="desc">SNAP. Small UI response — button press, row hover, focus ring. Ease-out, under 200ms.</div>
+      <div class="range">160ms / var(--posture-speed)</div>
+
+      <div class="name">--posture-motion-duration</div>
+      <div>ms</div>
+      <div class="desc">ARRIVE. Content entry — card mount, page load, panel swap. Ease-out, 300–400ms.</div>
+      <div class="range">320ms / var(--posture-speed)</div>
+
+      <div class="name">--posture-motion-duration-lg</div>
+      <div>ms</div>
+      <div class="desc">PULSE / SCAN. Ambient, repeating — signal bars, idle, processing readouts.</div>
+      <div class="range">640ms / var(--posture-speed)</div>
+
+      <div class="name">--ease-snap</div>
+      <div>cubic</div>
+      <div class="desc">Canonical easing curve. Ease-out, emphasized — decisive arrival, no bounce.</div>
+      <div class="range">cubic-bezier(0.2, 0.8, 0.4, 1)</div>
+    </div>
+
+    <!-- ── CHOREOGRAPHY LAB ─────────────────── -->
+    <div class="sect-head">
+      <span class="caption">CHOREOGRAPHY · THE FOUR KINDS</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">CLICK TO REPLAY</span>
+    </div>
+    <div class="lab">
+
+      <div class="lab-card">
+        <div class="lbl">01 · SNAP</div>
+        <div class="nm">Response.</div>
+        <div class="dur">160ms · ease-out · once</div>
+        <div class="stage">
+          <div class="m-dot snap-target" id="snap-t"></div>
+        </div>
+        <button data-replay="snap">Replay</button>
+      </div>
+
+      <div class="lab-card">
+        <div class="lbl">02 · ARRIVE</div>
+        <div class="nm">Entry.</div>
+        <div class="dur">480ms · ease-out · once</div>
+        <div class="stage">
+          <div class="m-dot arrive-target" id="arrive-t" style="width: 64px; height: 64px;"></div>
+        </div>
+        <button data-replay="arrive">Replay</button>
+      </div>
+
+      <div class="lab-card">
+        <div class="lbl">03 · PULSE</div>
+        <div class="nm">Ambient.</div>
+        <div class="dur">1600ms · alternate · ∞</div>
+        <div class="stage">
+          <div class="pulse-target"></div>
+        </div>
+        <button data-replay="pulse" style="visibility: hidden;">Replay</button>
+      </div>
+
+      <div class="lab-card">
+        <div class="lbl">04 · SCAN</div>
+        <div class="nm">Process.</div>
+        <div class="dur">2400ms · linear · ∞</div>
+        <div class="stage">
+          <div class="scan-well"></div>
+          <div class="scan-line"></div>
+        </div>
+        <button data-replay="scan" style="visibility: hidden;">Replay</button>
+      </div>
+
+    </div>
+
+    <!-- ── STATES ───────────────────────────── -->
+    <div class="sect-head">
+      <span class="caption">STATES · LOADING · EMPTY · ERROR · SUCCESS</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">EACH STATE PICKS ONE MOTION KIND</span>
+    </div>
+
+    <div class="states">
+
+      <!-- Loading — scan -->
+      <div class="state-card">
+        <div class="chrome">
+          <span class="caption" style="color: var(--surface-fg);">LOADING</span>
+          <span class="caption" style="color: oklch(0.78 0.28 350);">MOTION · SCAN</span>
+        </div>
+        <div class="body">
+          <div class="loading-readout">
+            <div class="line"><span>INGESTING · SF·BATCH·047</span><span>61%</span></div>
+            <div class="bars" id="loadbars"></div>
+            <div class="foot">HOLD THE FRAME · SIGNAL RISING</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty — declarative -->
+      <div class="state-card">
+        <div class="chrome">
+          <span class="caption" style="color: var(--surface-fg);">EMPTY</span>
+          <span class="caption" style="color: oklch(0.78 0.28 350);">MOTION · NONE</span>
+        </div>
+        <div class="body">
+          <div class="empty-wrap">
+            <div class="glyph"></div>
+            <h3>Nothing yet.</h3>
+            <p>The catalog is empty. Commit an entity to see it appear, coded and indexed.</p>
+            <a class="cta" href="#">Commit first entity</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error — fault -->
+      <div class="state-card">
+        <div class="chrome">
+          <span class="caption" style="color: var(--surface-fg);">ERROR</span>
+          <span class="caption" style="color: oklch(0.78 0.28 350);">MOTION · PULSE · ONCE</span>
+        </div>
+        <div class="body">
+          <div class="error-wrap">
+            <div class="banner">
+              <span>⚠ FAULT · COLOR DRIFT 3.2%</span>
+              <span>14:22:07</span>
+            </div>
+            <h3>Frame held.<br/>Signal lost.</h3>
+            <div class="code">
+              <span class="k">error:</span> oklch parse · token --color-chart-3<br/>
+              <span class="k">at:</span> palette/oklch-3 · revision 0xA4E<br/>
+              <span class="k">trace:</span> contrast fell below threshold (4.5:1)
+            </div>
+            <div class="btns">
+              <a class="primary" href="#">Retry deploy</a>
+              <a class="ghost" href="#">Open log</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success — stamp -->
+      <div class="state-card">
+        <div class="chrome">
+          <span class="caption" style="color: var(--surface-fg);">SUCCESS</span>
+          <span class="caption" style="color: oklch(0.78 0.28 350);">MOTION · ARRIVE · ONCE</span>
+        </div>
+        <div class="body">
+          <div class="success-wrap">
+            <div class="stamp">
+              <span>Armed.</span>
+              <span class="tick"></span>
+            </div>
+            <div class="meta">
+              <span>instance</span><span class="v">SF/CATALOG/350/LIVE</span>
+              <span>seed</span><span class="v">0xA4E3</span>
+              <span>stamped</span><span class="v">2026·04·18 · 14:22 UTC</span>
+              <span>handoff</span><span class="v">complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RULES ────────────────────────────── -->
+    <div class="rules">
+      <h2>Rules of motion &amp; states</h2>
+      <ul>
+        <li><strong>Four kinds, no more.</strong> SNAP / ARRIVE / PULSE / SCAN. If a motion doesn't fit one, it's the wrong motion.</li>
+        <li><strong>Frame does not move.</strong> Layout, grid, and chrome hold still. Only signal translates.</li>
+        <li><strong>Every state picks one.</strong> Loading scans. Empty holds. Error pulses once. Success arrives.</li>
+        <li><strong>Durations derive from posture.</strong> Read <code>--posture-motion-duration-*</code>, never hand-pick ms.</li>
+        <li><strong>Ease-out, never spring.</strong> <code>cubic-bezier(0.2, 0.8, 0.4, 1)</code> — no overshoot, no bounce.</li>
+        <li><strong>Respect reduced motion.</strong> <code>@media (prefers-reduced-motion)</code> flattens PULSE &amp; SCAN to static.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    // Build 32 loading bars
+    const lb = document.getElementById('loadbars');
+    for (let i = 0; i < 32; i++) lb.appendChild(document.createElement('div'));
+
+    // Replay buttons for SNAP & ARRIVE (non-looping)
+    document.querySelectorAll('[data-replay]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kind = btn.dataset.replay;
+        const t = document.getElementById(kind + '-t');
+        if (!t) return;
+        t.classList.remove('play');
+        // force reflow
+        void t.offsetWidth;
+        t.classList.add('play');
+      });
+    });
+
+    // Auto-play on mount
+    setTimeout(() => {
+      document.getElementById('snap-t')?.classList.add('play');
+      document.getElementById('arrive-t')?.classList.add('play');
+    }, 200);
+  </script>
+</body>
+</html>

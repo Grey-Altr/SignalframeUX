@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>Foundations · Spacing &amp; Rhythm — SignalframeUX</title>
+  <link rel="stylesheet" href="../colors_and_type.css"/>
+  <style>
+    body { margin: 0; background: var(--surface-base); color: var(--surface-fg); min-height: 100vh; }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 48px 24px 96px; }
+
+    /* ── Masthead ─────────────────────── */
+    .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 96px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 8px 0 0;
+    }
+    .accent { color: oklch(0.78 0.28 350); }
+    .lede { max-width: 64ch; color: oklch(0.75 0 0); font-size: 13px; line-height: 1.6; margin: 24px 0 48px; }
+
+    .sect-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 20px;
+      background: var(--surface-lift);
+      margin-top: 48px;
+    }
+    .sect-head:first-of-type { margin-top: 0; }
+
+    /* ── Ladder ───────────────────────── */
+    .ladder {
+      background: var(--surface-raise);
+      padding: 8px 0;
+    }
+    .rung {
+      display: grid;
+      grid-template-columns: 140px 80px 80px 1fr 220px;
+      align-items: center;
+      padding: 12px 24px;
+      gap: 24px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-bottom: 1px solid oklch(0.205 0 0);
+    }
+    .ladder .rung:last-child { border-bottom: 0; }
+    .rung .tok { color: oklch(0.78 0.28 350); font-weight: 700; }
+    .rung .px, .rung .rem { color: oklch(0.85 0 0); }
+    .rung .bar {
+      height: 14px;
+      background: oklch(0.78 0.28 350);
+      max-width: 100%;
+    }
+    .rung .use {
+      color: var(--surface-fg-muted);
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    /* ── Rhythm bands (vertical rhythm) ───────────────────── */
+    .rhythm-lab {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .rhythm-card {
+      background: var(--surface-raise);
+      padding: 32px;
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    .rhythm-card .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: oklch(0.78 0.28 350);
+      margin-bottom: 20px;
+    }
+    .rhythm-card h3 {
+      font-family: var(--font-display);
+      font-size: 36px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 0;
+    }
+
+    /* Grid overlay for rhythm-card --- 8px baseline */
+    .rhythm-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 7px,
+        oklch(0.78 0.28 350 / 0.12) 7px,
+        oklch(0.78 0.28 350 / 0.12) 8px
+      );
+      opacity: 0;
+      transition: opacity 160ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .rhythm-lab:hover .rhythm-card::after { opacity: 1; }
+
+    /* TIGHT variant — stops 1-3 */
+    .tight p { font-size: 13px; line-height: 1.5; color: oklch(0.88 0 0); margin: 0 0 var(--space-2); }
+    .tight p:last-of-type { margin-bottom: 0; }
+    .tight .row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid oklch(0.25 0 0);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .tight .row:last-child { border: 0; }
+    .tight .row .v { color: oklch(0.78 0.28 350); font-weight: 700; }
+
+    /* BASELINE variant — stops 4-8 */
+    .baseline h3 + p { margin-top: var(--space-4); }
+    .baseline p { font-size: 14px; line-height: 1.55; color: oklch(0.88 0 0); margin: 0 0 var(--space-4); }
+    .baseline .stack > * + * { margin-top: var(--space-4); }
+    .baseline .chip {
+      display: inline-block;
+      padding: var(--space-2) var(--space-3);
+      background: var(--surface-peak);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-right: var(--space-2);
+    }
+    .baseline .row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-4) 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      border-bottom: 1px solid oklch(0.25 0 0);
+    }
+    .baseline .row:last-child { border: 0; }
+    .baseline .row .v { color: oklch(0.78 0.28 350); font-weight: 700; }
+
+    /* EPIC variant — stops 12-24 */
+    .epic { padding: var(--space-12); }
+    .epic h3 { font-size: 56px; margin-bottom: var(--space-6); }
+    .epic p { font-size: 15px; line-height: 1.6; color: oklch(0.88 0 0); margin: 0 0 var(--space-8); max-width: 32ch; }
+    .epic .sign {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* ── Pairings table ─────────────────── */
+    .pairs {
+      background: var(--surface-raise);
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr 1fr;
+    }
+    .pairs > div {
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-bottom: 1px solid oklch(0.205 0 0);
+      border-right: 1px solid oklch(0.205 0 0);
+    }
+    .pairs > div:nth-child(4n) { border-right: 0; }
+    .pairs > div:nth-last-child(-n+4) { border-bottom: 0; }
+    .pairs .hrow {
+      background: var(--surface-lift);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--surface-fg-muted);
+      text-transform: uppercase;
+    }
+    .pairs .role { color: var(--surface-fg); font-weight: 700; font-family: var(--font-sans); font-size: 13px; }
+    .pairs .stops { color: oklch(0.78 0.28 350); font-weight: 700; }
+    .pairs .rule { color: oklch(0.88 0 0); font-family: var(--font-sans); font-size: 13px; line-height: 1.45; }
+    .pairs .note { color: var(--surface-fg-muted); line-height: 1.45; }
+
+    /* ── Do / Don't pair ─────────────── */
+    .dodont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .dd {
+      background: var(--surface-raise);
+      padding: 24px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .dd .stamp {
+      align-self: flex-start;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .dd.ok    .stamp { background: oklch(0.85 0.25 145); color: oklch(0.145 0 0); }
+    .dd.fail  .stamp { background: oklch(0.55 0.18 25); color: oklch(0.985 0 0); }
+    .dd h4 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: 0.95;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .dd .demo { flex: 1; background: var(--surface-base); display: grid; place-items: center; padding: 20px; }
+    .dd .note { font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted); line-height: 1.5; }
+
+    .demo-ok, .demo-fail {
+      width: 100%;
+      max-width: 260px;
+      background: var(--surface-raise);
+    }
+    .demo-ok > div, .demo-fail > div {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: oklch(0.88 0 0);
+    }
+    .demo-ok > div       { padding: var(--space-4); border-bottom: 1px solid oklch(0.25 0 0); }
+    .demo-ok > div:last-child { border: 0; }
+    .demo-fail > div:nth-child(1) { padding: 11px 17px; }
+    .demo-fail > div:nth-child(2) { padding: 13px 19px; border-top: 1px solid oklch(0.25 0 0); }
+    .demo-fail > div:nth-child(3) { padding: 9px 15px;  border-top: 1px solid oklch(0.25 0 0); }
+
+    /* ── Rules ──────────────────────────────── */
+    .rules {
+      margin-top: 48px;
+      background: var(--surface-raise);
+      padding: 32px;
+    }
+    .rules h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin: 0 0 16px;
+    }
+    .rules ul {
+      margin: 0; padding: 0; list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .rules li {
+      padding: 14px 28px 14px 28px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: oklch(0.88 0 0);
+      position: relative;
+      max-width: 56ch;
+    }
+    .rules li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 21px;
+      width: 12px; height: 3px;
+      background: oklch(0.78 0.28 350);
+    }
+    .rules li strong { color: var(--surface-fg); font-weight: 700; }
+    .rules li code { font-family: var(--font-mono); font-size: 12px; color: oklch(0.78 0.28 350); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="head">
+      <div>
+        <div class="caption">§07 · FOUNDATIONS · SPACING &amp; RHYTHM</div>
+        <h1 class="title">NINE STOPS.<br/><span class="accent">NO IN-BETWEENS.</span></h1>
+      </div>
+      <div class="caption" style="text-align:right; line-height: 1.5;">
+        SIGNALFRAMEUX<br/>
+        <span style="color: var(--surface-fg-dim);">v0.1 · 2026·Q2</span>
+      </div>
+    </div>
+
+    <p class="lede">
+      The spacing scale is closed. Nine stops on a 4px base — everything reads from <code>--space-*</code>, nothing is hand-picked. Rhythm is the <em>pairing</em> of stops across a layout: tight for data, baseline for UI, epic for signal moments. Hover the rhythm band below to see the 8px baseline grid.
+    </p>
+
+    <!-- ── LADDER ─────────────────────── -->
+    <div class="sect-head">
+      <span class="caption">LADDER · THE NINE STOPS</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">CLOSED SET · 4PX BASE</span>
+    </div>
+    <div class="ladder">
+      <div class="rung">
+        <span class="tok">--space-1</span>
+        <span class="px">4 px</span>
+        <span class="rem">0.25 rem</span>
+        <span><span class="bar" style="width: 4px;"></span></span>
+        <span class="use">Hairline. Icon-to-label. Micro-gap.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-2</span>
+        <span class="px">8 px</span>
+        <span class="rem">0.5 rem</span>
+        <span><span class="bar" style="width: 8px;"></span></span>
+        <span class="use">Baseline unit. Inline chip padding. Row gap.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-3</span>
+        <span class="px">12 px</span>
+        <span class="rem">0.75 rem</span>
+        <span><span class="bar" style="width: 12px;"></span></span>
+        <span class="use">Control padding y. Inline group gap.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-4</span>
+        <span class="px">16 px</span>
+        <span class="rem">1 rem</span>
+        <span><span class="bar" style="width: 16px;"></span></span>
+        <span class="use">Default margin. Card inner padding (dense).</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-6</span>
+        <span class="px">24 px</span>
+        <span class="rem">1.5 rem</span>
+        <span><span class="bar" style="width: 24px;"></span></span>
+        <span class="use">Card padding. Section inner gap.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-8</span>
+        <span class="px">32 px</span>
+        <span class="rem">2 rem</span>
+        <span><span class="bar" style="width: 32px;"></span></span>
+        <span class="use">Panel padding. Heading→body gap.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-12</span>
+        <span class="px">48 px</span>
+        <span class="rem">3 rem</span>
+        <span><span class="bar" style="width: 48px;"></span></span>
+        <span class="use">Section top/bottom. Page gutter.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-16</span>
+        <span class="px">64 px</span>
+        <span class="rem">4 rem</span>
+        <span><span class="bar" style="width: 64px;"></span></span>
+        <span class="use">Section break. Epic margin.</span>
+      </div>
+      <div class="rung">
+        <span class="tok">--space-24</span>
+        <span class="px">96 px</span>
+        <span class="rem">6 rem</span>
+        <span><span class="bar" style="width: 96px;"></span></span>
+        <span class="use">Signal moment. Hero breathing room.</span>
+      </div>
+    </div>
+
+    <!-- ── RHYTHM LAB ─────────────────── -->
+    <div class="sect-head">
+      <span class="caption">RHYTHM · THREE POSTURES</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">HOVER FOR 8PX BASELINE GRID</span>
+    </div>
+    <div class="rhythm-lab">
+
+      <div class="rhythm-card tight">
+        <div class="label">01 · TIGHT · stops 1–3</div>
+        <h3>Data.</h3>
+        <p style="margin-top: var(--space-4);">Packed tables, terminal readouts, dense catalog rows. Lines breathe at 8px. Rows separated by hairline.</p>
+        <div class="row"><span>SF·BATCH·047</span><span class="v">live</span></div>
+        <div class="row"><span>SF·BATCH·048</span><span class="v">queued</span></div>
+        <div class="row"><span>SF·BATCH·049</span><span class="v">drift</span></div>
+        <div class="row"><span>SF·BATCH·050</span><span class="v">live</span></div>
+        <div class="row"><span>SF·BATCH·051</span><span class="v">live</span></div>
+        <div class="row"><span>SF·BATCH·052</span><span class="v">queued</span></div>
+      </div>
+
+      <div class="rhythm-card baseline">
+        <div class="label">02 · BASELINE · stops 4–8</div>
+        <h3>UI.</h3>
+        <p>Default posture for forms, cards, panels, nav. 16/24/32 grid. Every spec you ship lives here unless it has reason to leave.</p>
+        <div class="stack">
+          <div>
+            <span class="chip">live</span>
+            <span class="chip">v0.1</span>
+          </div>
+          <div class="row"><span>instance</span><span class="v">SF/CATALOG/350</span></div>
+          <div class="row"><span>revision</span><span class="v">0xA4E3</span></div>
+          <div class="row"><span>handoff</span><span class="v">complete</span></div>
+        </div>
+      </div>
+
+      <div class="rhythm-card epic">
+        <div class="label">03 · EPIC · stops 12–24</div>
+        <h3>Signal.</h3>
+        <p>Hero blocks, empty states, launch pages, section covers. Room for the frame to hold a single idea.</p>
+        <div class="sign">ARMED · 2026·04·18</div>
+      </div>
+
+    </div>
+
+    <!-- ── PAIRINGS ─────────────────── -->
+    <div class="sect-head">
+      <span class="caption">PAIRINGS · WHEN TO USE WHICH STOP</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">IF IT ISN'T HERE, IT'S WRONG</span>
+    </div>
+    <div class="pairs">
+      <div class="hrow">CONTEXT</div>
+      <div class="hrow">INLINE (x)</div>
+      <div class="hrow">STACK (y)</div>
+      <div class="hrow">CONTAINER</div>
+
+      <div class="role">Table row</div>
+      <div><span class="stops">--space-4</span> between cells</div>
+      <div><span class="stops">--space-2</span> row height pad</div>
+      <div class="note">Hairline rule, no shadow</div>
+
+      <div class="role">Control (button, field)</div>
+      <div><span class="stops">--space-4</span> x-pad</div>
+      <div><span class="stops">--space-3</span> y-pad</div>
+      <div class="note">Min 44px hit · density scales</div>
+
+      <div class="role">Card / panel</div>
+      <div><span class="stops">--space-6</span> inner pad</div>
+      <div><span class="stops">--space-4</span> between children</div>
+      <div class="note">Flat fill — no border, no shadow</div>
+
+      <div class="role">Section (within page)</div>
+      <div><span class="stops">--space-8</span> inner pad</div>
+      <div><span class="stops">--space-12</span> to next section</div>
+      <div class="note">Section band on --surface-lift</div>
+
+      <div class="role">Page gutter</div>
+      <div><span class="stops">--space-6</span> mobile · <span class="stops">--space-12</span> desktop</div>
+      <div><span class="stops">--space-16</span> between major regions</div>
+      <div class="note">Max width 1360px</div>
+
+      <div class="role">Signal / epic</div>
+      <div><span class="stops">--space-12</span></div>
+      <div><span class="stops">--space-24</span> before &amp; after</div>
+      <div class="note">One per page · earn it</div>
+    </div>
+
+    <!-- ── DO / DON'T ─────────────────── -->
+    <div class="sect-head">
+      <span class="caption">DO · DON'T</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">HAND-PICKED PIXELS BREAK THE FRAME</span>
+    </div>
+    <div class="dodont">
+      <div class="dd ok">
+        <span class="stamp">✓ ON SCALE</span>
+        <h4>Stops only.</h4>
+        <div class="demo">
+          <div class="demo-ok">
+            <div>SF·BATCH·047</div>
+            <div>SF·BATCH·048</div>
+            <div>SF·BATCH·049</div>
+          </div>
+        </div>
+        <div class="note">Padding: <code style="color: oklch(0.78 0.28 350);">var(--space-4)</code>. Every row identical. Rhythm locks.</div>
+      </div>
+      <div class="dd fail">
+        <span class="stamp">✗ OFF SCALE</span>
+        <h4>Hand-picked.</h4>
+        <div class="demo">
+          <div class="demo-fail">
+            <div>SF·BATCH·047</div>
+            <div>SF·BATCH·048</div>
+            <div>SF·BATCH·049</div>
+          </div>
+        </div>
+        <div class="note">11/17 · 13/19 · 9/15. Drift accumulates, rhythm rots. Never ship pixel values — always reference a stop.</div>
+      </div>
+    </div>
+
+    <!-- ── RULES ──────────────────────── -->
+    <div class="rules">
+      <h2>Rules of spacing &amp; rhythm</h2>
+      <ul>
+        <li><strong>Nine stops, closed.</strong> Only values in <code>--space-*</code>. No raw px, no <code>calc()</code> on spacing, no eyeball-picked rem.</li>
+        <li><strong>Pick a posture per region.</strong> Tight (1–3) for data. Baseline (4–8) for UI. Epic (12–24) for signal. Never interleave.</li>
+        <li><strong>8px baseline, everywhere.</strong> Component heights and vertical rhythm round to 8px. Hover the bands above to verify.</li>
+        <li><strong>One epic per page.</strong> 96px gets used when something must land. If everything is epic, nothing is.</li>
+        <li><strong>Density scales the stops.</strong> <code>--posture-density</code> multiplies control pad — the ratios stay fixed.</li>
+        <li><strong>Gutter before section before control.</strong> Outer spacing must always exceed inner spacing, or the frame collapses.</li>
+      </ul>
+    </div>
+
+  </div>
+</body>
+</html>

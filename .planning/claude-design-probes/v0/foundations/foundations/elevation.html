@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>Foundations · Elevation — SignalframeUX</title>
+  <link rel="stylesheet" href="../colors_and_type.css"/>
+  <style>
+    body {
+      margin: 0;
+      background: var(--surface-base);
+      color: var(--surface-fg);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
+    .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 120px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 8px 0 0;
+    }
+    .accent { color: oklch(0.78 0.28 350); }
+    .lede { max-width: 64ch; color: oklch(0.75 0 0); font-size: 13px; line-height: 1.6; margin: -24px 0 48px; }
+
+    /* ── Ladder diagram ───────────────────────────────── */
+    .ladder {
+      background: var(--surface-base);
+      display: grid;
+      grid-template-columns: 120px 1fr 80px 120px;
+      gap: 0;
+    }
+    .ladder > div {
+      padding: 20px 24px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .ladder > div.row { display: contents; }
+    .rung-label { font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--surface-fg); }
+    .rung-usage { color: var(--surface-fg-muted); font-family: var(--font-sans); font-size: 12px; line-height: 1.4; }
+    .rung-L { color: oklch(0.78 0.28 350); text-align: right; }
+    .rung-chip { }
+    .rung-chip > div { height: 100%; min-height: 44px; }
+
+    /* ── Composition demo ─────────────────────────────── */
+    .comp {
+      margin-top: 48px;
+      background: var(--surface-sink);
+      padding: 32px;
+    }
+    .comp-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .panel-stack {
+      background: var(--surface-base);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--surface-raise);
+      padding: 24px;
+      display: grid;
+      gap: 12px;
+    }
+    .panel h3 {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .panel p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: oklch(0.85 0 0);
+      margin: 0;
+      max-width: 56ch;
+    }
+    .row-grid { display: grid; gap: 2px; }
+    .row-item {
+      background: var(--surface-lift);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .row-item.selected { background: var(--surface-peak); }
+    .row-item .id { color: oklch(0.78 0.28 350); }
+    .row-item .meta { color: var(--surface-fg-muted); }
+    .inline-code {
+      background: var(--surface-sink);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: oklch(0.85 0 0);
+      line-height: 1.6;
+    }
+    .inline-code .comment { color: var(--surface-fg-dim); }
+    .inline-code .key { color: oklch(0.78 0.28 350); }
+    .popover {
+      background: var(--surface-peak);
+      padding: 16px 20px;
+      display: inline-block;
+      min-width: 280px;
+    }
+    .popover .label { color: var(--surface-fg-muted); }
+    .popover .value { font-family: var(--font-display); font-size: 32px; text-transform: uppercase; line-height: 1; margin-top: 4px; color: var(--surface-fg); }
+
+    /* ── Rules panel ─────────────────────────────────── */
+    .rules {
+      margin-top: 48px;
+      background: var(--surface-raise);
+      padding: 32px;
+    }
+    .rules h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin: 0 0 16px;
+    }
+    .rules ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .rules li {
+      padding: 14px 0 14px 28px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: oklch(0.88 0 0);
+      position: relative;
+      max-width: 56ch;
+    }
+    .rules li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 21px;
+      width: 12px; height: 3px;
+      background: oklch(0.78 0.28 350);
+    }
+    .rules li strong { color: var(--surface-fg); font-weight: 700; }
+
+    /* ── Anti-patterns ───────────────────────────────── */
+    .anti {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .anti-item { background: var(--surface-raise); padding: 24px; }
+    .anti-item .caption { margin-bottom: 12px; }
+    .anti-item .demo {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--surface-fg-muted);
+    }
+    .anti-no .demo { background: var(--surface-base); border: 1px solid oklch(0.45 0 0); box-shadow: 0 4px 20px oklch(0 0 0 / 0.5); border-radius: 8px; }
+    .anti-yes .demo { background: var(--surface-lift); }
+    .anti-item .verdict {
+      margin-top: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .anti-no .verdict { color: oklch(0.65 0.25 25); }
+    .anti-yes .verdict { color: oklch(0.82 0.18 145); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="caption">§02 · FOUNDATIONS · ELEVATION</div>
+        <h1 class="title">SURFACE<br/><span class="accent">LADDER.</span></h1>
+      </div>
+      <div class="caption" style="text-align:right; line-height: 1.5;">
+        SIGNALFRAMEUX<br/>
+        <span style="color: var(--surface-fg-dim);">v0.1 · 2026·Q2</span>
+      </div>
+    </div>
+
+    <p class="lede">
+      Five steps. No shadows, no borders, no rounding. Surfaces separate by L-step only — every UI region in the system maps to exactly one rung. If a new surface needs inventing, the system has failed and the case should be escalated, not resolved locally.
+    </p>
+
+    <!-- ── LADDER ──────────────────────────────────────── -->
+    <div class="ladder">
+      <div class="rung-chip" style="background: var(--surface-sink);"><div></div></div>
+      <div class="rung-chip" style="grid-column: 2 / 5; background: var(--surface-sink); display: grid; grid-template-columns: 1fr 80px 120px; align-items: center; padding: 0;">
+        <div style="padding: 20px 24px;">
+          <div class="rung-label">SINK</div>
+          <div class="rung-usage">Content below the base. Code blocks, inset readouts, terminal wells.</div>
+        </div>
+        <div class="rung-L">L 0.080</div>
+        <div style="padding: 20px 24px; font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted);">--surface-sink</div>
+      </div>
+
+      <div class="rung-chip" style="background: var(--surface-base);"><div></div></div>
+      <div class="rung-chip" style="grid-column: 2 / 5; background: var(--surface-base); display: grid; grid-template-columns: 1fr 80px 120px; align-items: center; padding: 0;">
+        <div style="padding: 20px 24px;">
+          <div class="rung-label">BASE</div>
+          <div class="rung-usage">Page background. The default canvas every component paints onto.</div>
+        </div>
+        <div class="rung-L">L 0.145</div>
+        <div style="padding: 20px 24px; font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted);">--surface-base</div>
+      </div>
+
+      <div class="rung-chip" style="background: var(--surface-raise);"><div></div></div>
+      <div class="rung-chip" style="grid-column: 2 / 5; background: var(--surface-raise); display: grid; grid-template-columns: 1fr 80px 120px; align-items: center; padding: 0;">
+        <div style="padding: 20px 24px;">
+          <div class="rung-label">RAISE</div>
+          <div class="rung-usage">Primary panels, cards, spec containers, section wells.</div>
+        </div>
+        <div class="rung-L">L 0.180</div>
+        <div style="padding: 20px 24px; font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted);">--surface-raise</div>
+      </div>
+
+      <div class="rung-chip" style="background: var(--surface-lift);"><div></div></div>
+      <div class="rung-chip" style="grid-column: 2 / 5; background: var(--surface-lift); display: grid; grid-template-columns: 1fr 80px 120px; align-items: center; padding: 0;">
+        <div style="padding: 20px 24px;">
+          <div class="rung-label">LIFT</div>
+          <div class="rung-usage">Controls, inline chrome, row stripes, header bars.</div>
+        </div>
+        <div class="rung-L">L 0.205</div>
+        <div style="padding: 20px 24px; font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted);">--surface-lift</div>
+      </div>
+
+      <div class="rung-chip" style="background: var(--surface-peak);"><div></div></div>
+      <div class="rung-chip" style="grid-column: 2 / 5; background: var(--surface-peak); display: grid; grid-template-columns: 1fr 80px 120px; align-items: center; padding: 0;">
+        <div style="padding: 20px 24px;">
+          <div class="rung-label">PEAK</div>
+          <div class="rung-usage">Floating surfaces. Popovers, selected rows, top-of-stack elements.</div>
+        </div>
+        <div class="rung-L">L 0.269</div>
+        <div style="padding: 20px 24px; font-family: var(--font-mono); font-size: 11px; color: var(--surface-fg-muted);">--surface-peak</div>
+      </div>
+    </div>
+
+    <!-- ── COMPOSITION DEMO ───────────────────────────── -->
+    <div class="comp">
+      <div class="comp-head">
+        <span>IN COMPOSITION · ALL FIVE RUNGS ON SCREEN AT ONCE</span>
+        <span style="color: oklch(0.78 0.28 350);">SINK → BASE → RAISE → LIFT → PEAK</span>
+      </div>
+
+      <div class="panel-stack">
+
+        <div class="panel">
+          <h3>Entity inspector</h3>
+          <p>Panel sits on RAISE. Its header runs on LIFT, rows alternate between LIFT and PEAK for selection, and the code readout sinks to SINK. Every rung earns a role.</p>
+        </div>
+
+        <div class="panel" style="padding: 0;">
+          <div style="background: var(--surface-lift); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;">
+            <span>ENTITIES · 08</span>
+            <span style="color: oklch(0.78 0.28 350);">FILTERED · LIVE</span>
+          </div>
+          <div class="row-grid">
+            <div class="row-item"><span><span class="id">SF·041</span> &nbsp; Component · button</span><span class="meta">primary · 2 variants</span></div>
+            <div class="row-item selected"><span><span class="id">SF·042</span> &nbsp; Component · card</span><span class="meta">peak · selected</span></div>
+            <div class="row-item"><span><span class="id">SF·043</span> &nbsp; Token · surface-lift</span><span class="meta">oklch(0.205 0 0)</span></div>
+            <div class="row-item"><span><span class="id">SF·044</span> &nbsp; Specimen · editorial</span><span class="meta">long-form</span></div>
+            <div class="row-item"><span><span class="id">SF·045</span> &nbsp; Agent · composer-4</span><span class="meta">armed</span></div>
+          </div>
+          <div class="inline-code">
+<span class="comment">// nested SINK readout — code always sinks, never rises</span>
+<span class="key">const</span> surface = getSurfaceToken(<span class="key">"--surface-lift"</span>);
+<span class="key">return</span> { level: <span class="key">3</span>, oklch: <span class="key">"0.205 0 0"</span>, role: <span class="key">"control"</span> };
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+          <div class="popover">
+            <div class="label" style="font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;">Popover · floats on PEAK</div>
+            <div class="value">0.269 L</div>
+            <div class="label" style="font-family: var(--font-mono); font-size: 11px; margin-top: 6px;">top-of-stack · dismiss with esc</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── RULES ─────────────────────────────────────── -->
+    <div class="rules">
+      <h2>Rules of elevation</h2>
+      <ul>
+        <li><strong>No shadows.</strong> Depth is conveyed by L-step, never by blur or offset.</li>
+        <li><strong>No borders for elevation.</strong> Borders are for rules and dividers only, not to suggest a raised surface.</li>
+        <li><strong>Zero radius.</strong> Every rung ends in a 90° corner. Rounding is not a design tool in this system.</li>
+        <li><strong>Skip one step only.</strong> RAISE on BASE is legal; PEAK on BASE is legal; PEAK on SINK is a smell.</li>
+        <li><strong>No invented rungs.</strong> If your component needs a sixth step, the composition is wrong — refactor, don't add.</li>
+        <li><strong>Inverts cleanly.</strong> Light-mode values invert the ladder automatically. Designers don't pick light/dark tones manually.</li>
+      </ul>
+    </div>
+
+    <!-- ── ANTI-PATTERNS ─────────────────────────────── -->
+    <div class="anti">
+      <div class="anti-item anti-no">
+        <div class="caption">ANTI-PATTERN</div>
+        <div class="demo">shadow + border + radius</div>
+        <div class="verdict">× REJECTED · TOKEN SHOP SMELL</div>
+      </div>
+      <div class="anti-item anti-yes">
+        <div class="caption">CORRECT</div>
+        <div class="demo">L-step only</div>
+        <div class="verdict">✓ ACCEPTED · FRAME-DISCIPLINED</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

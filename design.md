@@ -46,6 +46,8 @@ AI tools generating SF output MUST respect these. Violations count as drift.
 | **Color space** | OKLCH only. Never hex except in prose documentation. |
 | **New GSAP effects** | Forbidden in v0.1. Normalize existing usage, do not expand. |
 | **New SF components** | Forbidden in v0.1 unless in stabilization scope (container/section/stack/grid/text primitives). |
+| **Spring / bouncy easings** | Forbidden. Canonical easing is `cubic-bezier(0, 0, 0.2, 1)` (ease-out). No overshoot, no anticipation, no bounce. See §4.5 for rejected curves. |
+| **System-level inventions** | Forbidden in generated output. Do not invent subsystems (elevation ladders, posture systems, new parametric axes, new utility classes). If an addition seems warranted, emit it as a proposal note at the end of the artifact — do not merge it into the primary output. |
 
 ---
 
@@ -158,7 +160,18 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--sfx-duration-slow` | 400ms | Theme toggle, larger shifts |
 | `--sfx-duration-glacial` | 600ms | Dramatic reveals |
 
-**All easings currently resolve to `cubic-bezier(0, 0, 0.2, 1)`** (ease-out). This is intentional — no spring, no bounce, no anticipation. Motion is decisive.
+**Canonical easing curve:** `cubic-bezier(0, 0, 0.2, 1)` (ease-out). All six easing tokens — `--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring`, `--ease-in`, `--ease-out`, `--ease-in-out` — resolve to this exact curve. The system has **no spring motion, no anticipation, no bounce.** Motion is decisive. `--sfx-ease-spring` is a legacy name; the curve is ease-out.
+
+**Rejected curves — DO NOT substitute these anywhere in generated output:**
+
+- `cubic-bezier(0.34, 1.56, 0.64, 1)` — overshoot/spring, forbidden
+- `cubic-bezier(0.68, -0.55, 0.265, 1.55)` — back/anticipation, forbidden
+- `cubic-bezier(0.175, 0.885, 0.32, 1.275)` — easeOutBack, forbidden
+- `cubic-bezier(0.2, 0.8, 0.4, 1)` — different ease-out curve, do NOT substitute even though it *looks* similar
+- Any `cubic-bezier` with y-values outside `[0, 1]` range — spring/overshoot territory
+- CSS named easings (`ease`, `ease-in-out`, `ease-in`, `ease-out`) — always explicit `cubic-bezier` or an `--ease-*` token
+
+**When generating motion:** every transition and animation uses `cubic-bezier(0, 0, 0.2, 1)` directly, or references an `--sfx-ease-*` / `--ease-*` token. No exceptions.
 
 ### 4.6 Interaction Feedback
 
@@ -309,7 +322,7 @@ If generated output contains any of these, it has drifted. Grade against this li
 - ❌ Skeuomorphism — textures imitating paper, metal, glass
 
 ### Tokens
-- ❌ Hex colors in output (OKLCH only)
+- ❌ Hex colors **anywhere** in output — including comments, docs, class names, data attributes, and SVG `fill`/`stroke` attributes. OKLCH only. Convert any hex references to OKLCH before emitting.
 - ❌ Arbitrary spacing values (`5px`, `10px`, `20px`, `padding: 1.5rem` if 1.5rem isn't a blessed stop)
 - ❌ Invented color tokens (`--color-brand-2`, `--color-info`, etc.)
 - ❌ Inline font-family strings — always use `--sfx-font-*` tokens
@@ -327,7 +340,9 @@ If generated output contains any of these, it has drifted. Grade against this li
 - ❌ Decorative underlines, italics for emphasis only (OK for citations)
 
 ### Motion
-- ❌ Bouncy/spring easings (all easings are ease-out)
+- ❌ Spring / bouncy easings. Canonical curve is `cubic-bezier(0, 0, 0.2, 1)`. Do NOT emit `cubic-bezier(0.34, 1.56, 0.64, 1)`, `cubic-bezier(0.68, -0.55, ...)`, `easeOutBack`, or any curve with a y-value outside `[0, 1]`.
+- ❌ Multiple ease-out variants. Pick ONE canonical curve; do not substitute `0.2, 0.8, 0.4, 1` — it is a different curve and introduces inconsistency.
+- ❌ CSS named easings (`ease`, `ease-in-out`). Always explicit `cubic-bezier` or an `--ease-*` token.
 - ❌ Parallax for decoration
 - ❌ New GSAP effects beyond existing set
 - ❌ Scroll-jacking that breaks native scroll expectations
@@ -360,6 +375,7 @@ When generating SignalframeUX artifacts, AI tools MUST:
 4. **Translate aesthetic register from §6, not from tool defaults.** If in doubt about visual register, default to DU/TDR — NOT to "modern SaaS" or "generic dark mode."
 5. **Flag ambiguity, do not paper over it.** If a request is underspecified (e.g., "make a hero"), ask: core 5 colors only? which lineage influence? FRAME-weighted or SIGNAL-weighted?
 6. **Report deviations.** If an external constraint forces breaking a rule (e.g., platform requires rounded tap targets), declare it explicitly in the output.
+7. **Do not invent subsystems.** If generated output would benefit from a new parametric system, token category, utility class, or component family that does not already exist in §4 or §5, do NOT emit it as part of the primary artifact. Instead, produce a **proposal note** at the end of the artifact naming the proposed addition — the user will evaluate separately. Inventions merged into primary output count as drift, even when the invention is well-designed.
 
 ### When generating mockups
 - Use Inter for body, Anton for display unless explicitly directed otherwise.
@@ -395,4 +411,9 @@ This manifest is the distilled contract. Authoritative sources if an AI tool nee
 | `tailwind.config.*` / Tailwind v4 `@theme` in `globals.css` | Build-time token wiring |
 | `~/greyaltaer/vaults/wiki/` (cdSB) | Intellectual lineage; FRAME/SIGNAL theory; aesthetic rationale |
 
-**Updated:** 2026-04-17 · **Manifest version:** v0.1.0 · **Target SF version:** v0.1 (stabilization)
+**Updated:** 2026-04-18 · **Manifest version:** v0.1.1 · **Target SF version:** v0.1 (stabilization)
+
+### Changelog
+
+- **v0.1.1** (2026-04-18) — Hardened against drift observed in Claude Design v0 probe. Canonical easing curve locked (`cubic-bezier(0, 0, 0.2, 1)`); rejected spring/bouncy curves named explicitly; hex ban reinforced across all contexts (comments, attributes, SVG); new "no subsystem invention" rule (§3, §9 rule 7). Two Claude Design inventions (Elevation ladder, Posture system) captured as v0.2+ proposals at `.planning/proposals/`. See `.planning/claude-design-probes/v0/notes.md` for full probe findings.
+- **v0.1.0** (2026-04-17) — Initial manifest. Distilled from CLAUDE.md, SIGNALFRAMEUX_REFERENCE.md, app/globals.css, components/sf/.

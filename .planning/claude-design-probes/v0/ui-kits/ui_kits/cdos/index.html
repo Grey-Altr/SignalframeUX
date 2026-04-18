@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>cdOS — Culture Division Operator</title>
+  <link rel="stylesheet" href="../../colors_and_type.css"/>
+  <style>
+    body { margin: 0; background: oklch(0.145 0 0); color: oklch(0.985 0 0); overflow: hidden; }
+    input[type="range"] { -webkit-appearance: none; background: oklch(0.3 0 0); height: 2px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="../_shared/sf_primitives.jsx"></script>
+  <script type="text/babel" src="cdOS.jsx"></script>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    function App() {
+      const [active, setActive] = useState("composer");
+      const [hue, setHue] = useState(350);
+      const [intensity, setIntensity] = useState(0.55);
+      useEffect(() => { document.documentElement.style.setProperty("--sfx-theme-hue", hue); }, [hue]);
+      const view =
+        active === "queue" ? <QueueView hue={hue}/> :
+        active === "tokens" ? <TokensView hue={hue}/> :
+        <ComposerView hue={hue} intensity={intensity} onIntensity={setIntensity}/>;
+      return (
+        <OSChrome>
+          <Sidebar active={active} onSelect={setActive} hue={hue}/>
+          <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <Toolbar hue={hue} onHue={setHue}/>
+            <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{view}</div>
+          </div>
+        </OSChrome>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>Foundations · Signal Layer — SignalframeUX</title>
+  <link rel="stylesheet" href="../colors_and_type.css"/>
+  <style>
+    body {
+      margin: 0;
+      background: var(--surface-base);
+      color: var(--surface-fg);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 48px 24px 96px; }
+    .head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 120px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 8px 0 0;
+    }
+    .accent { color: oklch(0.78 0.28 350); }
+    .lede { max-width: 64ch; color: oklch(0.75 0 0); font-size: 13px; line-height: 1.6; margin: -24px 0 48px; }
+
+    .sect-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 20px;
+      background: var(--surface-lift);
+      margin-top: 48px;
+    }
+    .sect-head:first-of-type { margin-top: 0; }
+
+    /* ── Base composition (reused) ─────────────── */
+    .stage {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface-base);
+      color: var(--surface-fg);
+      aspect-ratio: 16 / 10;
+      padding: 32px;
+      isolation: isolate;
+    }
+    .stage > .content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+    .stage .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: oklch(0.78 0.28 350);
+    }
+    .stage .hero {
+      font-family: var(--font-display);
+      font-size: 88px;
+      line-height: 0.92;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      margin: 0;
+    }
+    .stage .meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+    }
+
+    /* ── Overlay primitives ────────────────────── */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* (a) grain — noise via svg asset */
+    .ov-grain {
+      background-image: url("../assets/grain.svg");
+      mix-blend-mode: screen;
+      opacity: var(--sf-grain-opacity, 0.15);
+    }
+
+    /* (b) scanlines — repeating dark rows */
+    .ov-scanline {
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        oklch(0 0 0 / 0.65) 3px,
+        oklch(0 0 0 / 0.65) 4px
+      );
+      opacity: var(--ov-scanline-op, 0.4);
+    }
+
+    /* (c) CRT — subtle RGB splits + vignette curvature */
+    .ov-crt {
+      opacity: var(--sf-vhs-crt-opacity, 0.5);
+    }
+    .ov-crt::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center,
+        transparent 55%,
+        oklch(0 0 0 / 0.5) 100%);
+    }
+    .ov-crt::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        to right,
+        oklch(0.5 0.25 30 / 0.08) 0 1px,
+        transparent 1px 2px,
+        oklch(0.5 0.25 240 / 0.08) 2px 3px,
+        transparent 3px 4px
+      );
+    }
+
+    /* (d) VHS tear — horizontal displacement band */
+    .ov-vhs {
+      opacity: var(--sf-vhs-noise-opacity-custom, 0.8);
+    }
+    .ov-vhs::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      top: 30%;
+      height: 18px;
+      background: oklch(0.85 0 0 / 0.12);
+      mix-blend-mode: screen;
+      animation: tear-drift 4.8s steps(30) infinite;
+    }
+    .ov-vhs::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      top: 64%;
+      height: 6px;
+      background: oklch(0.78 0.28 350 / 0.2);
+      mix-blend-mode: screen;
+      animation: tear-drift 3.2s steps(18) infinite reverse;
+    }
+    @keyframes tear-drift {
+      0%   { top: 10%; }
+      20%  { top: 72%; }
+      40%  { top: 22%; }
+      60%  { top: 58%; }
+      80%  { top: 38%; }
+      100% { top: 10%; }
+    }
+
+    /* ── Triad grid — one overlay per stage ────── */
+    .triad {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .card {
+      background: var(--surface-raise);
+    }
+    .card .chrome {
+      background: var(--surface-lift);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .card .chrome .name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+    .card .chrome .var { color: oklch(0.78 0.28 350); }
+
+    /* ── Combined/live row ─────────────────────── */
+    .combined {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 0;
+      background: var(--surface-raise);
+    }
+    .dials {
+      padding: 24px;
+      border-right: 1px solid oklch(0.25 0 0);
+    }
+    .dials label { display: block; margin-bottom: 20px; }
+    .dials .dname {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .dials .dname .v { color: oklch(0.78 0.28 350); }
+    .dials input[type=range] { width: 100%; accent-color: oklch(0.78 0.28 350); margin-top: 6px; }
+    .dials .preset-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .dials .preset-row button {
+      background: var(--surface-lift);
+      color: var(--surface-fg);
+      border: 0;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .dials .preset-row button:hover { background: var(--surface-peak); }
+    .dials .presets-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin-top: 16px;
+    }
+
+    /* ── Rules ───────────────────────────────── */
+    .rules {
+      margin-top: 48px;
+      background: var(--surface-raise);
+      padding: 32px;
+    }
+    .rules h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--surface-fg-muted);
+      margin: 0 0 16px;
+    }
+    .rules ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .rules li {
+      padding: 14px 0 14px 28px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: oklch(0.88 0 0);
+      position: relative;
+      max-width: 56ch;
+    }
+    .rules li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 21px;
+      width: 12px; height: 3px;
+      background: oklch(0.78 0.28 350);
+    }
+    .rules li strong { color: var(--surface-fg); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="head">
+      <div>
+        <div class="caption">§04 · FOUNDATIONS · SIGNAL LAYER</div>
+        <h1 class="title">THE<br/><span class="accent">NOISE.</span></h1>
+      </div>
+      <div class="caption" style="text-align:right; line-height: 1.5;">
+        SIGNALFRAMEUX<br/>
+        <span style="color: var(--surface-fg-dim);">v0.1 · 2026·Q2</span>
+      </div>
+    </div>
+
+    <p class="lede">
+      The signal layer is what separates this system from a flat dark theme. Four overlays — <strong>GRAIN</strong>, <strong>SCANLINE</strong>, <strong>CRT</strong>, <strong>VHS</strong> — each parametrically controlled, each mix-blended on top of the frame. They carry mood, not information. The frame beneath is always legible; the signal is always removable.
+    </p>
+
+    <!-- ── FOUR OVERLAYS ISOLATED ──────────────── -->
+    <div class="sect-head">
+      <span class="caption">OVERLAYS · ONE AT A TIME</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">SAME FRAME · DIFFERENT SIGNAL</span>
+    </div>
+    <div class="triad">
+
+      <div class="card">
+        <div class="chrome">
+          <span class="name">Grain</span>
+          <span class="caption var">--sf-grain-opacity · 0.15</span>
+        </div>
+        <div class="stage">
+          <div class="overlay ov-grain"></div>
+          <div class="content">
+            <div class="tag">OVERLAY · GRAIN</div>
+            <h2 class="hero">Film<br/>tooth.</h2>
+            <div class="meta"><span>SF · GR01</span><span>SCREEN BLEND · SVG</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chrome">
+          <span class="name">Scanline</span>
+          <span class="caption var">--ov-scanline-op · 0.40</span>
+        </div>
+        <div class="stage">
+          <div class="overlay ov-scanline"></div>
+          <div class="content">
+            <div class="tag">OVERLAY · SCANLINE</div>
+            <h2 class="hero">Horizontal<br/>hum.</h2>
+            <div class="meta"><span>SF · SC01</span><span>REPEATING · 3PX GAP</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chrome">
+          <span class="name">CRT</span>
+          <span class="caption var">--sf-vhs-crt-opacity · 0.50</span>
+        </div>
+        <div class="stage">
+          <div class="overlay ov-crt"></div>
+          <div class="content">
+            <div class="tag">OVERLAY · CRT</div>
+            <h2 class="hero">Curved<br/>glass.</h2>
+            <div class="meta"><span>SF · CR01</span><span>VIGNETTE + RGB SPLIT</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chrome">
+          <span class="name">VHS Tear</span>
+          <span class="caption var">--sf-vhs-noise-opacity · 0.80</span>
+        </div>
+        <div class="stage">
+          <div class="overlay ov-vhs"></div>
+          <div class="content">
+            <div class="tag">OVERLAY · VHS</div>
+            <h2 class="hero">Tape<br/>damage.</h2>
+            <div class="meta"><span>SF · VH01</span><span>2 DRIFTING BANDS</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COMBINED / LIVE ─────────────────────── -->
+    <div class="sect-head">
+      <span class="caption">COMBINED · ALL LAYERS · LIVE</span>
+      <span class="caption" style="color: oklch(0.78 0.28 350);">SCRUB · OR TRY A PRESET</span>
+    </div>
+    <div class="combined">
+
+      <div class="dials" id="dials">
+        <label>
+          <span class="dname"><span>grain</span><span class="v" id="v-grain">0.15</span></span>
+          <input type="range" min="0" max="1" step="0.01" value="0.15" data-k="grain">
+        </label>
+        <label>
+          <span class="dname"><span>scanline</span><span class="v" id="v-scanline">0.30</span></span>
+          <input type="range" min="0" max="1" step="0.01" value="0.3" data-k="scanline">
+        </label>
+        <label>
+          <span class="dname"><span>crt</span><span class="v" id="v-crt">0.40</span></span>
+          <input type="range" min="0" max="1" step="0.01" value="0.4" data-k="crt">
+        </label>
+        <label>
+          <span class="dname"><span>vhs</span><span class="v" id="v-vhs">0.50</span></span>
+          <input type="range" min="0" max="1" step="0.01" value="0.5" data-k="vhs">
+        </label>
+
+        <div class="presets-label">Presets</div>
+        <div class="preset-row">
+          <button data-preset="off">Off</button>
+          <button data-preset="clean">Clean</button>
+          <button data-preset="live">Live</button>
+          <button data-preset="degraded">Degraded</button>
+          <button data-preset="broadcast">Broadcast</button>
+        </div>
+      </div>
+
+      <div class="stage" style="aspect-ratio: 21/10;" id="stage-live">
+        <div class="overlay ov-grain" id="ov-grain"></div>
+        <div class="overlay ov-scanline" id="ov-scanline"></div>
+        <div class="overlay ov-crt" id="ov-crt"></div>
+        <div class="overlay ov-vhs" id="ov-vhs"></div>
+        <div class="content">
+          <div class="tag">COMBINED · SIGNAL STACK</div>
+          <h2 class="hero">Signal runs<br/><span class="accent">through</span><br/>the frame.</h2>
+          <div class="meta"><span>SF · ALL · LIVE</span><span>ORDER · GRAIN → SCANLINE → CRT → VHS</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RULES ───────────────────────────────── -->
+    <div class="rules">
+      <h2>Rules of the signal layer</h2>
+      <ul>
+        <li><strong>Carry mood, never meaning.</strong> Overlays convey no information. Any data must read with overlays at zero.</li>
+        <li><strong>Stack is fixed.</strong> Grain → scanline → CRT → VHS. Reordering is a smell; a different order is a different aesthetic.</li>
+        <li><strong>Always on the frame.</strong> Overlays live above content, below modal roofs. They decorate; they don't gate interaction.</li>
+        <li><strong>Driven by posture.</strong> In production, overlay opacities derive from <code>--posture-intensity</code>. These knobs exist for tuning, not for hand-placement.</li>
+        <li><strong>No shadows or borders to fake depth.</strong> Overlays simulate medium, not elevation.</li>
+        <li><strong>Removable.</strong> <code>@media (prefers-reduced-motion)</code> kills the VHS tear. An "off" preset is always one click away.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    (function(){
+      const stage = document.getElementById('stage-live');
+      const ov = {
+        grain: document.getElementById('ov-grain'),
+        scanline: document.getElementById('ov-scanline'),
+        crt: document.getElementById('ov-crt'),
+        vhs: document.getElementById('ov-vhs'),
+      };
+      const readout = {
+        grain: document.getElementById('v-grain'),
+        scanline: document.getElementById('v-scanline'),
+        crt: document.getElementById('v-crt'),
+        vhs: document.getElementById('v-vhs'),
+      };
+
+      function set(k, v) {
+        ov[k].style.opacity = v;
+        readout[k].textContent = Number(v).toFixed(2);
+        const input = document.querySelector(`input[data-k="${k}"]`);
+        if (input) input.value = v;
+      }
+
+      document.querySelectorAll('#dials input[type=range]').forEach(i => {
+        i.addEventListener('input', () => set(i.dataset.k, parseFloat(i.value)));
+      });
+
+      const presets = {
+        off:       { grain: 0,    scanline: 0,    crt: 0,    vhs: 0 },
+        clean:     { grain: 0.08, scanline: 0.15, crt: 0.25, vhs: 0 },
+        live:      { grain: 0.15, scanline: 0.30, crt: 0.40, vhs: 0.25 },
+        degraded:  { grain: 0.35, scanline: 0.55, crt: 0.70, vhs: 0.80 },
+        broadcast: { grain: 0.20, scanline: 0.75, crt: 0.85, vhs: 0.45 },
+      };
+      document.querySelectorAll('[data-preset]').forEach(b => {
+        b.addEventListener('click', () => {
+          const p = presets[b.dataset.preset];
+          Object.entries(p).forEach(([k, v]) => set(k, v));
+        });
+      });
+
+      // init
+      set('grain', 0.15); set('scanline', 0.30); set('crt', 0.40); set('vhs', 0.50);
+    })();
+  </script>
+</body>
+</html>

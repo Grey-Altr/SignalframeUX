@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <title>Foundations · Typographic Specimens — SignalframeUX</title>
+  <link rel="stylesheet" href="../colors_and_type.css"/>
+  <style>
+    body {
+      margin: 0;
+      background: oklch(0.08 0 0);
+      color: oklch(0.985 0 0);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 32px 120px;
+    }
+    .head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.6 0 0);
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 96px;
+      line-height: 0.85;
+      text-transform: uppercase;
+      margin: 8px 0 0;
+    }
+    .accent { color: oklch(0.78 0.28 350); }
+
+    /* Specimen scaffolding */
+    .spec {
+      background: oklch(0.145 0 0);
+      padding: 0;
+      margin-bottom: 40px;
+    }
+    .spec-head {
+      padding: 14px 20px;
+      background: oklch(0.205 0 0);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .spec-body { padding: 32px; }
+
+    /* ─────────────────────────────────────────── */
+    /* 01 · EDITORIAL SPREAD                        */
+    /* ─────────────────────────────────────────── */
+    .editorial {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 40px;
+    }
+    .edit-meta .kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: oklch(0.78 0.28 350);
+      padding-left: 20px;
+    }
+    .edit-meta .issue {
+      font-family: var(--font-display);
+      font-size: 72px;
+      line-height: 1;
+      text-transform: uppercase;
+      margin: 12px 0 32px;
+      padding-left: 20px;
+    }
+    .edit-meta dl {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      row-gap: 6px;
+      column-gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .edit-meta dt { color: oklch(0.55 0 0); letter-spacing: 0.15em; text-transform: uppercase; }
+    .edit-meta dd { margin: 0; color: oklch(0.92 0 0); }
+    .edit-body h2 {
+      font-family: var(--font-display);
+      font-size: 48px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 0 0 16px;
+    }
+    .edit-body .lead {
+      font-size: 18px;
+      line-height: 1.4;
+      font-weight: 500;
+      color: oklch(0.985 0 0);
+      margin: 0 0 20px;
+      max-width: 54ch;
+    }
+    .edit-body p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: oklch(0.88 0 0);
+      margin: 0 0 12px;
+      max-width: 64ch;
+      text-wrap: pretty;
+    }
+    .edit-body p.sub { color: oklch(0.72 0 0); }
+    .edit-body .pullquote {
+      font-family: var(--font-display);
+      font-size: 40px;
+      line-height: 1.0;
+      text-transform: uppercase;
+      color: oklch(0.985 0 0);
+      border-left: 4px solid oklch(0.78 0.28 350);
+      padding: 8px 0 8px 20px;
+      margin: 28px 0;
+      max-width: 28ch;
+    }
+    .edit-body .pullquote cite {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: oklch(0.78 0.28 350);
+      font-style: normal;
+      margin-top: 10px;
+    }
+    .byline {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.55 0 0);
+      margin: 24px 0 0;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .byline strong { color: oklch(0.92 0 0); font-weight: 700; }
+
+    /* ─────────────────────────────────────────── */
+    /* 02 · DATA TABLE                              */
+    /* ─────────────────────────────────────────── */
+    .data-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+    .data-head h3 {
+      font-family: var(--font-display);
+      font-size: 40px;
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .data-head .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: oklch(0.55 0 0);
+      text-transform: uppercase;
+    }
+    .datatable {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .datatable thead th {
+      background: oklch(0.205 0 0);
+      color: oklch(0.6 0 0);
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    .datatable thead th.num,
+    .datatable tbody td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .datatable tbody td {
+      padding: 10px 12px;
+      color: oklch(0.92 0 0);
+      background: oklch(0.18 0 0);
+    }
+    .datatable tbody tr:nth-child(even) td { background: oklch(0.16 0 0); }
+    .datatable tbody td.id { color: oklch(0.78 0.28 350); font-weight: 700; letter-spacing: 0.1em; }
+    .datatable tbody td .status {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+    }
+    .datatable tbody td .status.live    { background: oklch(0.85 0.25 145); color: oklch(0.145 0 0); }
+    .datatable tbody td .status.hold    { background: oklch(0.88 0.17 95);  color: oklch(0.145 0 0); }
+    .datatable tbody td .status.cold    { background: oklch(0.35 0 0);      color: oklch(0.985 0 0); }
+    .datatable tbody td .status.fault   { background: oklch(0.55 0.18 25);  color: oklch(0.985 0 0); }
+    .delta-pos { color: oklch(0.85 0.25 145); }
+    .delta-neg { color: oklch(0.7 0.18 25); }
+    .delta-zero { color: oklch(0.55 0 0); }
+
+    /* ─────────────────────────────────────────── */
+    /* 03 · TERMINAL READOUT                        */
+    /* ─────────────────────────────────────────── */
+    .terminal {
+      background: oklch(0.08 0 0);
+      padding: 0;
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.55;
+      position: relative;
+      overflow: hidden;
+    }
+    .terminal::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, oklch(0 0 0 / 0.3) 3px, oklch(0 0 0 / 0.3) 4px);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .terminal .bar {
+      background: oklch(0.18 0 0);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.55 0 0);
+    }
+    .terminal .bar .dot {
+      display: inline-block; width: 8px; height: 8px;
+      background: oklch(0.85 0.25 145);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .terminal pre {
+      margin: 0;
+      padding: 20px 24px 24px;
+      color: oklch(0.88 0 0);
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+    .terminal .prompt   { color: oklch(0.78 0.28 350); font-weight: 700; }
+    .terminal .key      { color: oklch(0.7 0.15 25); }
+    .terminal .val      { color: oklch(0.85 0.25 145); }
+    .terminal .str      { color: oklch(0.88 0.17 95); }
+    .terminal .num      { color: oklch(0.78 0.28 350); }
+    .terminal .comment  { color: oklch(0.5 0 0); }
+    .terminal .warn     { color: oklch(0.88 0.17 95); font-weight: 700; }
+    .terminal .err      { background: oklch(0.55 0.18 25); color: oklch(0.985 0 0); padding: 0 4px; }
+    .terminal .ok       { background: oklch(0.85 0.25 145); color: oklch(0.145 0 0); padding: 0 4px; }
+    .cursor {
+      display: inline-block;
+      width: 8px; height: 13px;
+      background: oklch(0.78 0.28 350);
+      vertical-align: text-bottom;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ─────────────────────────────────────────── */
+    /* 04 · SCALE LADDER                            */
+    /* ─────────────────────────────────────────── */
+    .ladder {
+      display: grid;
+      grid-template-columns: 80px 80px 1fr;
+      gap: 4px 20px;
+      align-items: baseline;
+    }
+    .ladder > div { padding: 8px 0; }
+    .ladder .rung-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: oklch(0.55 0 0);
+    }
+    .ladder .rung-size {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: oklch(0.7 0 0);
+      letter-spacing: 0.1em;
+    }
+    .ladder .rung-sample {
+      color: oklch(0.985 0 0);
+      line-height: 1.1;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ── HEAD ─────────────────────────────────────────── -->
+    <div class="head">
+      <div>
+        <div class="caption">§01 · FOUNDATIONS · TYPOGRAPHY</div>
+        <h1 class="title">TYPE<br/><span class="accent">SPECIMENS.</span></h1>
+      </div>
+      <div class="caption" style="text-align:right; line-height: 1.5;">
+        SIGNALFRAMEUX<br/>
+        <span style="color: oklch(0.4 0 0);">v0.1 · 2026·Q2</span>
+      </div>
+    </div>
+
+    <p style="max-width: 64ch; color: oklch(0.75 0 0); margin: -24px 0 48px; font-size: 13px; line-height: 1.6;">
+      Four specimens. Each one stress-tests the type stack at a different register — editorial prose, tabular data, machine output, the scale itself. Designers should read these before placing a single component; the system survives or fails here.
+    </p>
+
+    <!-- ── 01 · EDITORIAL SPREAD ───────────────────────── -->
+    <section class="spec">
+      <header class="spec-head">
+        <span class="caption">SPECIMEN · 01 · EDITORIAL SPREAD</span>
+        <span class="caption" style="color: oklch(0.78 0.28 350);">ANTON / INTER / JETBRAINS</span>
+      </header>
+      <div class="spec-body editorial">
+        <aside class="edit-meta">
+          <div class="kicker">DISPATCH · 047</div>
+          <div class="issue">FROM<br/>THE<br/>EDGE.</div>
+          <dl>
+            <dt>Section</dt><dd>Long-form</dd>
+            <dt>Issue</dt><dd>2026-Q2</dd>
+            <dt>Read time</dt><dd>9 min</dd>
+            <dt>Revision</dt><dd>0xA4E · live</dd>
+            <dt>Locale</dt><dd>EN–US, EN–GB</dd>
+          </dl>
+        </aside>
+        <article class="edit-body">
+          <h2>Signal is a material, not a decoration.</h2>
+          <p class="lead">For a decade the industry treated expressive interfaces as the opposite of legible ones. We do not accept the tradeoff. The FRAME is deterministic; the SIGNAL is what moves inside it. Both are engineered.</p>
+          <p>Every component in SignalframeUX is a contract between the frame and the signal. Buttons hold their geometry while their labels tighten under load. Tables keep their columns locked while their cells push status colors up from underneath. A terminal readout scrolls at its own cadence, unapologetically, because that's the pace of the data.</p>
+          <p class="sub">This is not a stylesheet. This is a posture. Designers who ship under this system inherit its constraints — zero radius, no gradients, no stray opacities — and its one permission: to make a thing feel like it was made, on purpose, by someone who was there.</p>
+
+          <blockquote class="pullquote">
+            "If the frame is locked, the signal is free."
+            <cite>— CD House Rule · 0003</cite>
+          </blockquote>
+
+          <p>Where other systems hand you a palette and ask you to be tasteful, SignalframeUX hands you an instrument. The tuning is fixed. The piece you play on it is yours.</p>
+          <p class="sub">The remainder of this dispatch walks through three applications of the type stack: a data density stress test, a machine-output readout, and the full scale ladder from micro-caption to display. None of these are decorative. Every one is in production.</p>
+
+          <div class="byline">
+            <span><strong>WRITTEN BY</strong> CD / ATELIER</span>
+            <span><strong>EDITED BY</strong> CD / FRAME</span>
+            <span><strong>STAMPED</strong> 2026·04·18 · 14:22 UTC</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── 02 · DATA TABLE ─────────────────────────────── -->
+    <section class="spec">
+      <header class="spec-head">
+        <span class="caption">SPECIMEN · 02 · DATA DENSITY</span>
+        <span class="caption" style="color: oklch(0.78 0.28 350);">JETBRAINS MONO · TABULAR NUMS</span>
+      </header>
+      <div class="spec-body">
+        <div class="data-head">
+          <h3>ENTITIES · LIVE</h3>
+          <span class="meta">12 rows · updated 00:00:03 ago · tick 1s</span>
+        </div>
+        <table class="datatable">
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th>ENTITY</th>
+              <th>CATEGORY</th>
+              <th>STATUS</th>
+              <th class="num">VALUE</th>
+              <th class="num">Δ 24H</th>
+              <th class="num">VOL</th>
+              <th class="num">LAST</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="id">SF·047</td><td>Atelier / frame-locked</td><td>Long-form</td><td><span class="status live">LIVE</span></td><td class="num">14,221.08</td><td class="num delta-pos">+2.41%</td><td class="num">812K</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·048</td><td>Vault · primary tokens</td><td>System</td><td><span class="status live">LIVE</span></td><td class="num">  8,904.32</td><td class="num delta-pos">+0.18%</td><td class="num">311K</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·049</td><td>Onboard · intake</td><td>Surface</td><td><span class="status hold">HOLD</span></td><td class="num">      0.00</td><td class="num delta-zero">—</td><td class="num">—</td><td class="num">14:18</td></tr>
+            <tr><td class="id">SF·050</td><td>cdOS / kernel</td><td>System</td><td><span class="status live">LIVE</span></td><td class="num">91,412.77</td><td class="num delta-pos">+11.02%</td><td class="num">2.1M</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·051</td><td>Dispatch · 047</td><td>Long-form</td><td><span class="status live">LIVE</span></td><td class="num">   422.19</td><td class="num delta-neg">−0.47%</td><td class="num"> 48K</td><td class="num">14:21</td></tr>
+            <tr><td class="id">SF·052</td><td>Portfolio / grid</td><td>Surface</td><td><span class="status cold">COLD</span></td><td class="num">      0.00</td><td class="num delta-zero">—</td><td class="num">—</td><td class="num">09:03</td></tr>
+            <tr><td class="id">SF·053</td><td>Signal · grain v3</td><td>Asset</td><td><span class="status live">LIVE</span></td><td class="num">     12.00</td><td class="num delta-pos">+0.00%</td><td class="num"> 82K</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·054</td><td>Datatype · OKLCH-3</td><td>Palette</td><td><span class="status fault">FAULT</span></td><td class="num">   800.44</td><td class="num delta-neg">−3.19%</td><td class="num">118K</td><td class="num">14:21</td></tr>
+            <tr><td class="id">SF·055</td><td>Frame / rule 003</td><td>Doctrine</td><td><span class="status live">LIVE</span></td><td class="num">      1.00</td><td class="num delta-zero">—</td><td class="num">—</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·056</td><td>Specimen / editorial</td><td>Long-form</td><td><span class="status live">LIVE</span></td><td class="num">  3,120.55</td><td class="num delta-pos">+4.88%</td><td class="num">204K</td><td class="num">14:22</td></tr>
+            <tr><td class="id">SF·057</td><td>Agent · composer-4</td><td>System</td><td><span class="status hold">HOLD</span></td><td class="num"> 55,217.00</td><td class="num delta-neg">−1.02%</td><td class="num">720K</td><td class="num">14:12</td></tr>
+            <tr><td class="id">SF·058</td><td>Kit / portfolio</td><td>Surface</td><td><span class="status live">LIVE</span></td><td class="num">  7,009.12</td><td class="num delta-pos">+0.92%</td><td class="num">143K</td><td class="num">14:22</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── 03 · TERMINAL READOUT ───────────────────────── -->
+    <section class="spec">
+      <header class="spec-head">
+        <span class="caption">SPECIMEN · 03 · MACHINE OUTPUT</span>
+        <span class="caption" style="color: oklch(0.78 0.28 350);">JETBRAINS MONO · CODE VOICE</span>
+      </header>
+      <div class="terminal">
+        <div class="bar">
+          <span><span class="dot"></span> SF · PIPELINE · 0x7A4F</span>
+          <span>2026·04·18 · 14:22:41 UTC</span>
+        </div>
+        <pre>
+<span class="comment"># ingest pass — frame locked, signal live</span>
+<span class="prompt">sfctl&gt;</span> <span class="key">build</span> <span class="val">--target</span> <span class="str">"frame/prod"</span> <span class="val">--seed</span> <span class="num">0xA4E3</span>
+  <span class="comment">→ resolving tokens …………………… 312 / 312</span>
+  <span class="comment">→ validating radius invariant …… 0px / OK</span>
+  <span class="comment">→ checking gradient ban …………… 0 detected / OK</span>
+  <span class="comment">→ compiling signal overlays …… 4 layers / OK</span>
+  <span class="ok">OK</span> frame compiled in <span class="num">412ms</span>
+
+<span class="prompt">sfctl&gt;</span> <span class="key">lint</span> <span class="val">--strict</span>
+  <span class="comment">→ scanning 1,204 nodes</span>
+  <span class="warn">WARN</span> <span class="key">portfolio/grid.tsx:84</span> — uses <span class="str">border-white</span>, expected filled surface
+  <span class="warn">WARN</span> <span class="key">cdos/shell.tsx:210</span> — outline applied to non-focus element
+  <span class="err">ERR</span> <span class="key">onboard/chip.tsx:12</span> — color <span class="str">"#ffcc00"</span> outside OKLCH registry
+  <span class="ok">OK</span> 2 warnings, 1 error — exit <span class="num">1</span>
+
+<span class="prompt">sfctl&gt;</span> <span class="key">deploy</span> <span class="val">--instance</span> <span class="str">"sf/catalog/350/live"</span>
+  <span class="comment">→ pushing manifest: SEED=0xA4E3, INTENSITY=0.50, SPEED=1.00</span>
+  <span class="comment">→ hue=350, accent=170, surface=NIGHT</span>
+  <span class="ok">OK</span> instance armed. handoff complete.
+
+<span class="prompt">sfctl&gt;</span> <span class="cursor"></span></pre>
+      </div>
+    </section>
+
+    <!-- ── 04 · SCALE LADDER ───────────────────────────── -->
+    <section class="spec">
+      <header class="spec-head">
+        <span class="caption">SPECIMEN · 04 · SCALE LADDER</span>
+        <span class="caption" style="color: oklch(0.78 0.28 350);">INDUSTRIAL MINOR THIRD · 1.2</span>
+      </header>
+      <div class="spec-body ladder">
+        <div class="rung-name">display-xl</div><div class="rung-size">80 / 0.9</div><div class="rung-sample" style="font-family: var(--font-display); font-size: 80px; line-height: 0.9; text-transform: uppercase; letter-spacing: -0.01em;">SIGNAL//FRAME</div>
+        <div class="rung-name">h1</div><div class="rung-size">48 / 0.9</div><div class="rung-sample" style="font-family: var(--font-display); font-size: 48px; line-height: 0.9; text-transform: uppercase;">Declare the primary.</div>
+        <div class="rung-name">h2</div><div class="rung-size">32 / 1.1</div><div class="rung-sample" style="font-size: 32px; line-height: 1.1; font-weight: 700;">Signal is a material, not a decoration.</div>
+        <div class="rung-name">h3</div><div class="rung-size">24 / 1.2</div><div class="rung-sample" style="font-size: 24px; line-height: 1.2; font-weight: 600;">Four specimens. Each stress-tests the stack.</div>
+        <div class="rung-name">lg</div><div class="rung-size">18 / 1.4</div><div class="rung-sample" style="font-size: 18px; line-height: 1.4; font-weight: 500;">Designers who ship under this system inherit its constraints.</div>
+        <div class="rung-name">md</div><div class="rung-size">16 / 1.5</div><div class="rung-sample" style="font-size: 16px; line-height: 1.5;">Where other systems hand you a palette, SignalframeUX hands you an instrument.</div>
+        <div class="rung-name">base</div><div class="rung-size">13 / 1.5</div><div class="rung-sample" style="font-size: 13px; line-height: 1.5;">Every component is a contract between the frame and the signal. Buttons hold their geometry while their labels tighten under load.</div>
+        <div class="rung-name">sm</div><div class="rung-size">11 / 1.4</div><div class="rung-sample" style="font-size: 11px; line-height: 1.4; font-family: var(--font-mono);">nav · footer · metadata · coded labels go here</div>
+        <div class="rung-name">xs</div><div class="rung-size">10 / 1.3</div><div class="rung-sample" style="font-size: 10px; line-height: 1.3; font-family: var(--font-mono); letter-spacing: 0.15em; text-transform: uppercase;">TAG PILLS · STAT LABELS · CAPTION STAMPS</div>
+        <div class="rung-name">2xs</div><div class="rung-size">9 / 1.2</div><div class="rung-sample" style="font-size: 9px; line-height: 1.2; font-family: var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase;">MICRO · MACHINE · SEED:0xA4E3 · STAMP</div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

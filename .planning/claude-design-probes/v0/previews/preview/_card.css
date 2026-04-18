@@ -1,0 +1,46 @@
+/* Preview card shared styles */
+@import url("../colors_and_type.css");
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+}
+.card {
+  width: 700px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+  position: relative;
+}
+.card.dark {
+  background: oklch(0.145 0 0);
+  color: oklch(0.985 0 0);
+}
+.row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
+.mono { font-family: var(--font-mono); }
+.display { font-family: var(--font-display); text-transform: uppercase; line-height: 0.9; }
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-muted-foreground);
+}
+.card.dark .label { color: oklch(0.65 0 0); }
+.hr-section { border: 0; border-top: 4px solid currentColor; margin: 12px 0; }
+.hr-divider { border: 0; border-top: 3px solid currentColor; margin: 12px 0; }
+.hr-element { border: 0; border-top: 2px solid currentColor; margin: 12px 0; }
+.chip {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 2px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}

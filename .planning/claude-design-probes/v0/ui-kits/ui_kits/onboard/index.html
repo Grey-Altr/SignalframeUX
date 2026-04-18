@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>SF Onboard — Ingest a new frame</title>
+  <link rel="stylesheet" href="../../colors_and_type.css"/>
+  <style>
+    body { margin: 0; background: oklch(0.145 0 0); color: oklch(0.985 0 0); min-height: 100vh; }
+    ::selection { background: oklch(0.65 0.3 var(--sfx-theme-hue)); color: oklch(0.985 0 0); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="../_shared/sf_primitives.jsx"></script>
+  <script type="text/babel" src="Onboard.jsx"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+    function App() {
+      const [step, setStep] = useState(0);
+      const [hue, setHue] = useState(350);
+      const [answers, setAnswers] = useState({});
+      const [rationale, setRationale] = useState(null);
+      const [loadingRationale, setLoadingRationale] = useState(false);
+      useEffect(() => { document.documentElement.style.setProperty("--sfx-theme-hue", hue); }, [hue]);
+      const manifest = useMemo(() => synthesize({ hue, answers }), [hue, answers]);
+      useEffect(() => {
+        if (step !== 2) return;
+        if (Object.keys(answers).length < QUESTIONS.length) return;
+        setLoadingRationale(true);
+        setRationale(null);
+        requestRationale({ hue, answers, manifest }).then(text => {
+          setRationale(text);
+          setLoadingRationale(false);
+        });
+      }, [step, hue, JSON.stringify(answers)]);
+
+      const steps = ["00 · PRIMARY", "01 · INTAKE", "02 · SYNTHESIS"];
+
+      return (
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px 80px" }}>
+          {/* Header bar */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "4px solid oklch(0.985 0 0)", paddingBottom: 16, marginBottom: 32 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <img src="../../assets/logo-sf-mark.svg" height="22" alt="SF"/>
+              <div>
+                <SFLabel>INGEST · NEW FRAME</SFLabel>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "oklch(0.55 0 0)", letterSpacing: "0.15em", textTransform: "uppercase" }}>culture division · v0.1 · onboarding</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 2 }}>
+              {steps.map((s, i) => (
+                <button key={s} onClick={() => setStep(i)} style={{
+                  fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase",
+                  padding: "10px 14px", border: 0,
+                  background: step === i ? "oklch(0.985 0 0)" : "oklch(0.22 0 0)",
+                  color: step === i ? "oklch(0.145 0 0)" : "oklch(0.985 0 0)",
+                  cursor: "pointer"
+                }}>{s}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* HEADLINE */}
+          <div style={{ marginBottom: 32 }}>
+            <SFLabel style={{ color: `oklch(0.78 0.28 ${hue})` }}>§{steps[step].split(" ")[0]}</SFLabel>
+            <div style={{ fontFamily: "var(--font-display)", fontSize: 120, lineHeight: 0.85, textTransform: "uppercase", marginTop: 8 }}>
+              {step === 0 && <>DECLARE THE<br/><span style={{ color: `oklch(0.78 0.28 ${hue})` }}>PRIMARY.</span></>}
+              {step === 1 && <>DECLARE THE<br/><span style={{ color: `oklch(0.78 0.28 ${hue})` }}>POSTURE.</span></>}
+              {step === 2 && <>THE AGENT<br/><span style={{ color: `oklch(0.78 0.28 ${hue})` }}>COMPLIES.</span></>}
+            </div>
+            <div style={{ maxWidth: 640, fontSize: 13, color: "oklch(0.75 0 0)", lineHeight: 1.6, marginTop: 16 }}>
+              {step === 0 && "One hue. The remaining tokens — accent, ring, split, surface — derive from it under SignalframeUX constraints. Zero radius. No gradients."}
+              {step === 1 && "Five declarations. All required. Answers steer the generative passes. FRAME stays locked; SIGNAL is where the instance lives."}
+              {step === 2 && "The manifest below is deterministic from the answers and seed. Copy the CSS, hand it to an agent, or commit in cdOS."}
+            </div>
+          </div>
+
+          {/* STEP BODY */}
+          {step === 0 && <SwatchField hue={hue} setHue={setHue}/>}
+
+          {step === 1 && (
+            <div>
+              {QUESTIONS.map(q => (
+                <Question key={q.id} q={q} hue={hue}
+                  answer={answers[q.id]}
+                  setAnswer={v => setAnswers(a => ({ ...a, [q.id]: v }))}/>
+              ))}
+              <div style={{ borderTop: "2px solid oklch(0.4 0 0)", paddingTop: 16, display: "flex", justifyContent: "space-between", fontFamily: "var(--font-mono)", fontSize: 11, color: "oklch(0.65 0 0)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                <span>PROGRESS · {Object.keys(answers).length}/{QUESTIONS.length}</span>
+                <span>HUE:{String(hue).padStart(3,"0")}</span>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div>
+              <Manifest hue={hue} answers={answers} manifest={manifest} rationale={loadingRationale ? "Agent is composing the frame…" : rationale}/>
+              <CodeExport hue={hue} manifest={manifest} answers={answers}/>
+              <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <SFButton variant="primary">HAND TO AGENT ↗</SFButton>
+                <SFButton variant="solid" style={{ background: "oklch(0.985 0 0)", color: "oklch(0.145 0 0)", borderColor: "oklch(0.985 0 0)" }}>OPEN IN cdOS</SFButton>
+                <SFButton variant="ghost" style={{ color: "oklch(0.985 0 0)" }}>APPLY TRADITIONALLY</SFButton>
+                <SFButton variant="ghost" style={{ color: "oklch(0.985 0 0)" }} onClick={() => { setAnswers({}); setStep(0); }}>↻ START OVER</SFButton>
+              </div>
+            </div>
+          )}
+
+          {/* FOOTER NAV */}
+          <div style={{ marginTop: 48, display: "flex", justifyContent: "space-between", borderTop: "2px solid oklch(0.4 0 0)", paddingTop: 16 }}>
+            <SFButton variant="ghost" style={{ color: "oklch(0.985 0 0)" }} onClick={() => setStep(s => Math.max(0, s - 1))} disabled={step === 0}>← PREV</SFButton>
+            <SFButton variant="primary" onClick={() => setStep(s => Math.min(2, s + 1))} disabled={step === 2 || (step === 1 && Object.keys(answers).length < QUESTIONS.length)}>
+              {step === 0 ? "INTAKE" : step === 1 ? "SYNTHESIZE" : "COMMIT"} →
+            </SFButton>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
