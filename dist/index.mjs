@@ -50,7 +50,7 @@ var SFSection = React7__default.forwardRef(
         "data-section": true,
         "data-section-label": label,
         "data-bg-shift": bgShift,
-        className: cn(`py-${spacing}`, className),
+        className: cn(`py-${spacing} min-h-screen flex flex-col`, className),
         ...props,
         children
       }
@@ -65,13 +65,13 @@ var sfStackVariants = cva("flex", {
       horizontal: "flex-row flex-wrap"
     },
     gap: {
-      "1": "gap-1",
-      "2": "gap-2",
-      "3": "gap-3",
-      "4": "gap-4",
-      "6": "gap-6",
-      "8": "gap-8",
-      "12": "gap-12",
+      "1": "gap-[var(--sfx-space-1)]",
+      "2": "gap-[var(--sfx-space-2)]",
+      "3": "gap-[var(--sfx-space-3)]",
+      "4": "gap-[var(--sfx-space-4)]",
+      "6": "gap-[var(--sfx-space-6)]",
+      "8": "gap-[var(--sfx-space-8)]",
+      "12": "gap-[var(--sfx-space-12)]",
       "16": "gap-16",
       "24": "gap-24"
     },
@@ -111,9 +111,9 @@ var sfGridVariants = cva("grid", {
       auto: "grid-cols-[repeat(auto-fill,minmax(280px,1fr))]"
     },
     gap: {
-      "4": "gap-4",
-      "6": "gap-6",
-      "8": "gap-8"
+      "4": "gap-[var(--sfx-space-4)]",
+      "6": "gap-[var(--sfx-space-6)]",
+      "8": "gap-[var(--sfx-space-8)]"
     }
   },
   defaultVariants: {
@@ -175,10 +175,10 @@ var buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline"
       },
       size: {
-        default: "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        default: "h-8 gap-[var(--sfx-space-1)].5 px-[var(--sfx-space-2)].5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-[var(--sfx-space-1)] rounded-[min(var(--radius-md),10px)] px-[var(--sfx-space-2)] text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-[var(--sfx-space-1)] rounded-[min(var(--radius-md),12px)] px-[var(--sfx-space-2)].5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-9 gap-[var(--sfx-space-1)].5 px-[var(--sfx-space-2)].5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs": "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
@@ -222,10 +222,10 @@ var sfButtonVariants = cva(
         signal: "bg-foreground text-background border-primary hover:bg-primary hover:text-primary-foreground"
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-6 text-sm",
-        lg: "h-12 px-8 text-base",
-        xl: "h-14 px-12 text-lg"
+        sm: "h-8 px-[var(--sfx-space-3)] text-xs",
+        md: "h-10 px-[var(--sfx-space-6)] text-sm",
+        lg: "h-12 px-[var(--sfx-space-8)] text-base",
+        xl: "h-14 px-[var(--sfx-space-12)] text-lg"
       }
     },
     defaultVariants: {
@@ -259,7 +259,7 @@ function Card({
       "data-slot": "card",
       "data-size": size,
       className: cn(
-        "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card flex flex-col gap-[var(--sfx-space-4)] overflow-hidden rounded-xl bg-card py-[var(--sfx-space-4)] text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-[var(--sfx-space-3)] data-[size=sm]:py-[var(--sfx-space-3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         className
       ),
       ...props
@@ -272,7 +272,7 @@ function CardHeader({ className, ...props }) {
     {
       "data-slot": "card-header",
       className: cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-[var(--sfx-space-1)] rounded-t-xl px-[var(--sfx-space-4)] group-data-[size=sm]/card:px-[var(--sfx-space-3)] has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-[var(--sfx-space-4)] group-data-[size=sm]/card:[.border-b]:pb-[var(--sfx-space-3)]",
         className
       ),
       ...props
@@ -307,7 +307,7 @@ function CardContent({ className, ...props }) {
     "div",
     {
       "data-slot": "card-content",
-      className: cn("px-4 group-data-[size=sm]/card:px-3", className),
+      className: cn("px-[var(--sfx-space-4)] group-data-[size=sm]/card:px-[var(--sfx-space-3)]", className),
       ...props
     }
   );
@@ -318,7 +318,7 @@ function CardFooter({ className, ...props }) {
     {
       "data-slot": "card-footer",
       className: cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
+        "flex items-center rounded-b-xl border-t bg-muted/50 p-[var(--sfx-space-4)] group-data-[size=sm]/card:p-[var(--sfx-space-3)]",
         className
       ),
       ...props
@@ -415,7 +415,7 @@ function SFCardHeader({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(CardHeader, { className: cn("pb-3", className), ...props });
+  return /* @__PURE__ */ jsx(CardHeader, { className: cn("pb-[var(--sfx-space-3)]", className), ...props });
 }
 function SFCardTitle({
   className,
@@ -445,13 +445,13 @@ function SFCardContent({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(CardContent, { className: cn("p-4", className), ...props });
+  return /* @__PURE__ */ jsx(CardContent, { className: cn("p-[var(--sfx-space-4)]", className), ...props });
 }
 function SFCardFooter({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(CardFooter, { className: cn("p-4 pt-0", className), ...props });
+  return /* @__PURE__ */ jsx(CardFooter, { className: cn("p-[var(--sfx-space-4)] pt-0", className), ...props });
 }
 function Input({ className, type, ...props }) {
   return /* @__PURE__ */ jsx(
@@ -460,7 +460,7 @@ function Input({ className, type, ...props }) {
       type,
       "data-slot": "input",
       className: cn(
-        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-[var(--sfx-space-2)].5 py-[var(--sfx-space-1)] text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
         className
       ),
       ...props
@@ -485,7 +485,7 @@ function SFInput({
   );
 }
 var badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-[var(--sfx-space-1)] overflow-hidden rounded-4xl border border-transparent px-[var(--sfx-space-2)] py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
@@ -555,7 +555,7 @@ function Tabs({
       "data-slot": "tabs",
       "data-orientation": orientation,
       className: cn(
-        "group/tabs flex gap-2 data-horizontal:flex-col",
+        "group/tabs flex gap-[var(--sfx-space-2)] data-horizontal:flex-col",
         className
       ),
       ...props
@@ -568,7 +568,7 @@ var tabsListVariants = cva(
     variants: {
       variant: {
         default: "bg-muted",
-        line: "gap-1 bg-transparent"
+        line: "gap-[var(--sfx-space-1)] bg-transparent"
       }
     },
     defaultVariants: {
@@ -600,7 +600,7 @@ function TabsTrigger({
     {
       "data-slot": "tabs-trigger",
       className: cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-[var(--sfx-space-1)].5 rounded-md border border-transparent px-[var(--sfx-space-1)].5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
         "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
         "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
@@ -649,7 +649,7 @@ function SFTabsTrigger({
     TabsTrigger,
     {
       className: cn(
-        "font-mono uppercase tracking-wider text-xs rounded-none px-4 py-2",
+        "font-mono uppercase tracking-wider text-xs rounded-none px-[var(--sfx-space-4)] py-[var(--sfx-space-2)]",
         "border-b-2 border-transparent -mb-[var(--border-element)]",
         "data-[state=active]:border-foreground data-[state=active]:bg-transparent",
         "data-[state=active]:shadow-none data-[state=active]:text-foreground",
@@ -762,7 +762,7 @@ function TableHead({ className, ...props }) {
     {
       "data-slot": "table-head",
       className: cn(
-        "h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0",
+        "h-10 px-[var(--sfx-space-2)] text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0",
         className
       ),
       ...props
@@ -775,7 +775,7 @@ function TableCell({ className, ...props }) {
     {
       "data-slot": "table-cell",
       className: cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
+        "p-[var(--sfx-space-2)] align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
         className
       ),
       ...props
@@ -814,7 +814,7 @@ function SFTableHead({
     TableHead,
     {
       className: cn(
-        "uppercase tracking-wider text-xs text-background font-normal h-9 px-3",
+        "uppercase tracking-wider text-xs text-background font-normal h-9 px-[var(--sfx-space-3)]",
         className
       ),
       ...props
@@ -840,7 +840,7 @@ function SFTableCell({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(TableCell, { className: cn("px-3 py-2", className), ...props });
+  return /* @__PURE__ */ jsx(TableCell, { className: cn("px-[var(--sfx-space-3)] py-[var(--sfx-space-2)]", className), ...props });
 }
 function SFTableBody({ className, ...props }) {
   return /* @__PURE__ */ jsx(TableBody, { className: cn(className), ...props });
@@ -867,7 +867,7 @@ function TooltipContent({
       "data-slot": "tooltip-content",
       sideOffset,
       className: cn(
-        "z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs text-background has-data-[slot=kbd]:pr-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 **:data-[slot=kbd]:relative **:data-[slot=kbd]:isolate **:data-[slot=kbd]:z-50 **:data-[slot=kbd]:rounded-sm data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        "z-50 inline-flex w-fit max-w-xs origin-(--radix-tooltip-content-transform-origin) items-center gap-[var(--sfx-space-1)].5 rounded-md bg-foreground px-[var(--sfx-space-3)] py-[var(--sfx-space-1)].5 text-xs text-background has-data-[slot=kbd]:pr-1.5 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 **:data-[slot=kbd]:relative **:data-[slot=kbd]:isolate **:data-[slot=kbd]:z-50 **:data-[slot=kbd]:rounded-sm data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
         className
       ),
       ...props,
@@ -890,7 +890,7 @@ function SFTooltipContent({
     {
       className: cn(
         "bg-foreground text-background font-mono text-xs uppercase tracking-wider",
-        "border-0 rounded-none px-3 py-1.5",
+        "border-0 rounded-none px-[var(--sfx-space-3)] py-[var(--sfx-space-1)]",
         className
       ),
       ...props
@@ -929,7 +929,7 @@ function DialogOverlay({
     {
       "data-slot": "dialog-overlay",
       className: cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-500 ease-in-out supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-50 bg-black/10 duration-500 ease-out supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         className
       ),
       ...props
@@ -949,7 +949,7 @@ function DialogContent({
       {
         "data-slot": "dialog-content",
         className: cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-500 ease-in-out outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-[var(--sfx-space-4)] rounded-xl bg-popover p-[var(--sfx-space-4)] text-sm text-popover-foreground ring-1 ring-foreground/10 duration-500 ease-out outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         ),
         ...props,
@@ -980,7 +980,7 @@ function DialogHeader({ className, ...props }) {
     "div",
     {
       "data-slot": "dialog-header",
-      className: cn("flex flex-col gap-2", className),
+      className: cn("flex flex-col gap-[var(--sfx-space-2)]", className),
       ...props
     }
   );
@@ -996,7 +996,7 @@ function DialogFooter({
     {
       "data-slot": "dialog-footer",
       className: cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "-mx-4 -mb-[var(--sfx-space-4)] flex flex-col-reverse gap-[var(--sfx-space-2)] rounded-b-xl border-t bg-muted/50 p-[var(--sfx-space-4)] sm:flex-row sm:justify-end",
         className
       ),
       ...props,
@@ -1070,7 +1070,7 @@ function SFDialogHeader({
   return /* @__PURE__ */ jsx(
     DialogHeader,
     {
-      className: cn("border-b-2 border-foreground pb-4", className),
+      className: cn("border-b-2 border-foreground pb-[var(--sfx-space-4)]", className),
       ...props
     }
   );
@@ -1163,7 +1163,7 @@ function SheetContent({
         "data-slot": "sheet-content",
         "data-side": side,
         className: cn(
-          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-[side=bottom]:data-open:slide-in-from-bottom-10 data-[side=left]:data-open:slide-in-from-left-10 data-[side=right]:data-open:slide-in-from-right-10 data-[side=top]:data-open:slide-in-from-top-10 data-closed:animate-out data-closed:fade-out-0 data-[side=bottom]:data-closed:slide-out-to-bottom-10 data-[side=left]:data-closed:slide-out-to-left-10 data-[side=right]:data-closed:slide-out-to-right-10 data-[side=top]:data-closed:slide-out-to-top-10",
+          "fixed z-50 flex flex-col gap-[var(--sfx-space-4)] bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-out data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-[side=bottom]:data-open:slide-in-from-bottom-10 data-[side=left]:data-open:slide-in-from-left-10 data-[side=right]:data-open:slide-in-from-right-10 data-[side=top]:data-open:slide-in-from-top-10 data-closed:animate-out data-closed:fade-out-0 data-[side=bottom]:data-closed:slide-out-to-bottom-10 data-[side=left]:data-closed:slide-out-to-left-10 data-[side=right]:data-closed:slide-out-to-right-10 data-[side=top]:data-closed:slide-out-to-top-10",
           className
         ),
         ...props,
@@ -1194,7 +1194,7 @@ function SheetHeader({ className, ...props }) {
     "div",
     {
       "data-slot": "sheet-header",
-      className: cn("flex flex-col gap-0.5 p-4", className),
+      className: cn("flex flex-col gap-0.5 p-[var(--sfx-space-4)]", className),
       ...props
     }
   );
@@ -1204,7 +1204,7 @@ function SheetFooter({ className, ...props }) {
     "div",
     {
       "data-slot": "sheet-footer",
-      className: cn("mt-auto flex flex-col gap-2 p-4", className),
+      className: cn("mt-auto flex flex-col gap-[var(--sfx-space-2)] p-[var(--sfx-space-4)]", className),
       ...props
     }
   );
@@ -1269,7 +1269,7 @@ function SFSheetHeader({
   return /* @__PURE__ */ jsx(
     SheetHeader,
     {
-      className: cn("border-b-2 border-foreground pb-4", className),
+      className: cn("border-b-2 border-foreground pb-[var(--sfx-space-4)]", className),
       ...props
     }
   );
@@ -1281,7 +1281,7 @@ function SFSheetFooter({
   return /* @__PURE__ */ jsx(
     SheetFooter,
     {
-      className: cn("border-t-2 border-foreground bg-muted/30 pt-4", className),
+      className: cn("border-t-2 border-foreground bg-muted/30 pt-[var(--sfx-space-4)]", className),
       ...props
     }
   );
@@ -1338,7 +1338,7 @@ function DropdownMenuContent({
       "data-slot": "dropdown-menu-content",
       sideOffset,
       align,
-      className: cn("z-50 max-h-(--radix-dropdown-menu-content-available-height) w-(--radix-dropdown-menu-trigger-width) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:overflow-hidden data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className),
+      className: cn("z-50 max-h-(--radix-dropdown-menu-content-available-height) w-(--radix-dropdown-menu-trigger-width) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-[var(--sfx-space-1)] text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:overflow-hidden data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className),
       ...props
     }
   ) });
@@ -1361,7 +1361,7 @@ function DropdownMenuItem({
       "data-inset": inset,
       "data-variant": variant,
       className: cn(
-        "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
+        "group/dropdown-menu-item relative flex cursor-default items-center gap-[var(--sfx-space-1)].5 rounded-md px-[var(--sfx-space-1)].5 py-[var(--sfx-space-1)] text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
         className
       ),
       ...props
@@ -1379,7 +1379,7 @@ function DropdownMenuLabel({
       "data-slot": "dropdown-menu-label",
       "data-inset": inset,
       className: cn(
-        "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
+        "px-[var(--sfx-space-1)].5 py-[var(--sfx-space-1)] text-xs font-medium text-muted-foreground data-inset:pl-7",
         className
       ),
       ...props
@@ -1506,7 +1506,7 @@ function SFDropdownMenuSeparator({
   );
 }
 var toggleVariants = cva(
-  "group/toggle inline-flex items-center justify-center gap-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all outline-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-pressed:bg-muted data-[state=on]:bg-muted dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/toggle inline-flex items-center justify-center gap-[var(--sfx-space-1)] rounded-lg text-sm font-medium whitespace-nowrap transition-all outline-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 aria-pressed:bg-muted data-[state=on]:bg-muted dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -1514,9 +1514,9 @@ var toggleVariants = cva(
         outline: "border border-input bg-transparent hover:bg-muted"
       },
       size: {
-        default: "h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        sm: "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
+        default: "h-8 min-w-8 px-[var(--sfx-space-2)].5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        sm: "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-[var(--sfx-space-2)].5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-9 min-w-9 px-[var(--sfx-space-2)].5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2"
       }
     },
     defaultVariants: {
@@ -1549,9 +1549,9 @@ var sfToggleVariants = cva(
         primary: "bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
       },
       size: {
-        sm: "h-8 min-w-8 px-3",
-        md: "h-10 min-w-10 px-4",
-        lg: "h-12 min-w-12 px-6"
+        sm: "h-8 min-w-8 px-[var(--sfx-space-3)]",
+        md: "h-10 min-w-10 px-[var(--sfx-space-4)]",
+        lg: "h-12 min-w-12 px-[var(--sfx-space-6)]"
       }
     },
     defaultVariants: {
@@ -1646,7 +1646,7 @@ function Textarea({ className, ...props }) {
     {
       "data-slot": "textarea",
       className: cn(
-        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-[var(--sfx-space-2)].5 py-[var(--sfx-space-2)] text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
         className
       ),
       ...props
@@ -1660,7 +1660,7 @@ function InputGroup({ className, ...props }) {
       "data-slot": "input-group",
       role: "group",
       className: cn(
-        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
+        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-[var(--sfx-space-3)] has-[>[data-align=block-start]]:[&>input]:pb-[var(--sfx-space-3)] has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
         className
       ),
       ...props
@@ -1668,14 +1668,14 @@ function InputGroup({ className, ...props }) {
   );
 }
 var inputGroupAddonVariants = cva(
-  "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
+  "flex h-auto cursor-text items-center justify-center gap-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
   {
     variants: {
       align: {
         "inline-start": "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]",
         "inline-end": "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]",
-        "block-start": "order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2",
-        "block-end": "order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
+        "block-start": "order-first w-full justify-start px-[var(--sfx-space-2)].5 pt-[var(--sfx-space-2)] group-has-[>input]/input-group:pt-[var(--sfx-space-2)] [.border-b]:pb-[var(--sfx-space-2)]",
+        "block-end": "order-last w-full justify-start px-[var(--sfx-space-2)].5 pb-[var(--sfx-space-2)] group-has-[>input]/input-group:pb-[var(--sfx-space-2)] [.border-t]:pt-[var(--sfx-space-2)]"
       }
     },
     defaultVariants: {
@@ -1706,11 +1706,11 @@ function InputGroupAddon({
   );
 }
 var inputGroupButtonVariants = cva(
-  "flex items-center gap-2 text-sm shadow-none",
+  "flex items-center gap-[var(--sfx-space-2)] text-sm shadow-none",
   {
     variants: {
       size: {
-        xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-[var(--sfx-space-1)] rounded-[calc(var(--radius)-3px)] px-[var(--sfx-space-1)].5 [&>svg:not([class*='size-'])]:size-3.5",
         sm: "",
         "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0",
         "icon-sm": "size-8 p-0 has-[>svg]:p-0"
@@ -1744,7 +1744,7 @@ function InputGroupText({ className, ...props }) {
     "span",
     {
       className: cn(
-        "flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        "flex items-center gap-[var(--sfx-space-2)] text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
         className
       ),
       ...props
@@ -1776,7 +1776,7 @@ function InputGroupTextarea({
     {
       "data-slot": "input-group-control",
       className: cn(
-        "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
+        "flex-1 resize-none rounded-none border-0 bg-transparent py-[var(--sfx-space-2)] shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
         className
       ),
       ...props
@@ -1792,7 +1792,7 @@ function Command({
     {
       "data-slot": "command",
       className: cn(
-        "flex size-full flex-col overflow-hidden rounded-xl! bg-popover p-1 text-popover-foreground",
+        "flex size-full flex-col overflow-hidden rounded-xl! bg-popover p-[var(--sfx-space-1)] text-popover-foreground",
         className
       ),
       ...props
@@ -1829,7 +1829,7 @@ function CommandInput({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx("div", { "data-slot": "command-input-wrapper", className: "p-1 pb-0", children: /* @__PURE__ */ jsxs(InputGroup, { className: "h-8! rounded-lg! border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!", children: [
+  return /* @__PURE__ */ jsx("div", { "data-slot": "command-input-wrapper", className: "p-[var(--sfx-space-1)] pb-0", children: /* @__PURE__ */ jsxs(InputGroup, { className: "h-8! rounded-lg! border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!", children: [
     /* @__PURE__ */ jsx(
       Command$1.Input,
       {
@@ -1853,7 +1853,7 @@ function CommandList({
     {
       "data-slot": "command-list",
       className: cn(
-        "no-scrollbar max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto outline-none",
+        "no-scrollbar max-h-72 scroll-py-[var(--sfx-space-1)] overflow-x-hidden overflow-y-auto outline-none",
         className
       ),
       ...props
@@ -1868,7 +1868,7 @@ function CommandEmpty({
     Command$1.Empty,
     {
       "data-slot": "command-empty",
-      className: cn("py-6 text-center text-sm", className),
+      className: cn("py-[var(--sfx-space-6)] text-center text-sm", className),
       ...props
     }
   );
@@ -1882,7 +1882,7 @@ function CommandGroup({
     {
       "data-slot": "command-group",
       className: cn(
-        "overflow-hidden p-1 text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground",
+        "overflow-hidden p-[var(--sfx-space-1)] text-foreground **:[[cmdk-group-heading]]:px-[var(--sfx-space-2)] **:[[cmdk-group-heading]]:py-[var(--sfx-space-1)].5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground",
         className
       ),
       ...props
@@ -1912,7 +1912,7 @@ function CommandItem({
     {
       "data-slot": "command-item",
       className: cn(
-        "group/command-item relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-lg! data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-selected:bg-muted data-selected:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-selected:*:[svg]:text-foreground",
+        "group/command-item relative flex cursor-default items-center gap-[var(--sfx-space-2)] rounded-sm px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-lg! data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-selected:bg-muted data-selected:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-selected:*:[svg]:text-foreground",
         className
       ),
       ...props,
@@ -2097,7 +2097,7 @@ function PopoverContent({
       align,
       sideOffset,
       className: cn(
-        "z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        "z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-[var(--sfx-space-2)].5 rounded-lg bg-popover p-[var(--sfx-space-2)].5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
         className
       ),
       ...props
@@ -2165,7 +2165,7 @@ function SFPopoverHeader({
   return /* @__PURE__ */ jsx(
     PopoverHeader,
     {
-      className: cn("border-b-2 border-foreground pb-2", className),
+      className: cn("border-b-2 border-foreground pb-[var(--sfx-space-2)]", className),
       ...props
     }
   );
@@ -2318,7 +2318,7 @@ function SelectTrigger({
     Select$1.Trigger,
     {
       className: cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-[var(--sfx-space-3)] py-[var(--sfx-space-2)] text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className
       ),
       ...props,
@@ -2337,7 +2337,7 @@ function SelectScrollUpButton({
     Select$1.ScrollUpButton,
     {
       className: cn(
-        "flex cursor-default items-center justify-center py-1",
+        "flex cursor-default items-center justify-center py-[var(--sfx-space-1)]",
         className
       ),
       ...props,
@@ -2353,7 +2353,7 @@ function SelectScrollDownButton({
     Select$1.ScrollDownButton,
     {
       className: cn(
-        "flex cursor-default items-center justify-center py-1",
+        "flex cursor-default items-center justify-center py-[var(--sfx-space-1)]",
         className
       ),
       ...props,
@@ -2383,7 +2383,7 @@ function SelectContent({
           Select$1.Viewport,
           {
             className: cn(
-              "p-1",
+              "p-[var(--sfx-space-1)]",
               position === "popper" && "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
             ),
             children
@@ -2401,7 +2401,7 @@ function SelectLabel({
   return /* @__PURE__ */ jsx(
     Select$1.Label,
     {
-      className: cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className),
+      className: cn("py-[var(--sfx-space-1)].5 pl-8 pr-2 text-sm font-semibold", className),
       ...props
     }
   );
@@ -2415,7 +2415,7 @@ function SelectItem({
     Select$1.Item,
     {
       className: cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-[var(--sfx-space-1)].5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       ),
       ...props,
@@ -2490,7 +2490,7 @@ function SFSelectLabel({
     SelectLabel,
     {
       className: cn(
-        "rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-2 py-1.5",
+        "rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-[var(--sfx-space-2)] py-[var(--sfx-space-1)]",
         className
       ),
       ...props
@@ -2543,7 +2543,7 @@ function RadioGroup({
   return /* @__PURE__ */ jsx(
     RadioGroup$1.Root,
     {
-      className: cn("grid gap-2", className),
+      className: cn("grid gap-[var(--sfx-space-2)]", className),
       ...props
     }
   );
@@ -2568,7 +2568,7 @@ function SFRadioGroup({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx(RadioGroup, { className: cn("grid gap-2", className), ...props });
+  return /* @__PURE__ */ jsx(RadioGroup, { className: cn("grid gap-[var(--sfx-space-2)]", className), ...props });
 }
 function SFRadioGroupItem({
   className,
@@ -2647,7 +2647,7 @@ function SFTextarea({
   );
 }
 var alertVariants = cva(
-  "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
+  "group/alert relative grid w-full gap-0.5 rounded-lg border px-[var(--sfx-space-2)].5 py-[var(--sfx-space-2)] text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -2697,7 +2697,7 @@ function AlertDescription({
     {
       "data-slot": "alert-description",
       className: cn(
-        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        "text-sm text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-[var(--sfx-space-4)]",
         className
       ),
       ...props
@@ -2788,7 +2788,7 @@ function AlertDialogContent({
         "data-slot": "alert-dialog-content",
         "data-size": size,
         className: cn(
-          "group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-[var(--sfx-space-4)] rounded-xl bg-popover p-[var(--sfx-space-4)] text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         ),
         ...props
@@ -2805,7 +2805,7 @@ function AlertDialogHeader({
     {
       "data-slot": "alert-dialog-header",
       className: cn(
-        "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-4 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
+        "grid grid-rows-[auto_1fr] place-items-center gap-[var(--sfx-space-1)].5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-4 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
         className
       ),
       ...props
@@ -2821,7 +2821,7 @@ function AlertDialogFooter({
     {
       "data-slot": "alert-dialog-footer",
       className: cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end",
+        "-mx-4 -mb-[var(--sfx-space-4)] flex flex-col-reverse gap-[var(--sfx-space-2)] rounded-b-xl border-t bg-muted/50 p-[var(--sfx-space-4)] group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end",
         className
       ),
       ...props
@@ -3089,7 +3089,7 @@ function BreadcrumbList({ className, ...props }) {
     {
       "data-slot": "breadcrumb-list",
       className: cn(
-        "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground",
+        "flex flex-wrap items-center gap-[var(--sfx-space-1)].5 text-sm wrap-break-word text-muted-foreground",
         className
       ),
       ...props
@@ -3101,7 +3101,7 @@ function BreadcrumbItem({ className, ...props }) {
     "li",
     {
       "data-slot": "breadcrumb-item",
-      className: cn("inline-flex items-center gap-1", className),
+      className: cn("inline-flex items-center gap-[var(--sfx-space-1)]", className),
       ...props
     }
   );
@@ -3382,7 +3382,7 @@ function NavigationMenuItem({
   );
 }
 var navigationMenuTriggerStyle = cva(
-  "group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted data-open:bg-muted/50 data-open:hover:bg-muted data-open:focus:bg-muted"
+  "group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center rounded-lg px-[var(--sfx-space-2)].5 py-[var(--sfx-space-1)].5 text-sm font-medium transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-popup-open:bg-muted/50 data-popup-open:hover:bg-muted data-open:bg-muted/50 data-open:hover:bg-muted data-open:focus:bg-muted"
 );
 function NavigationMenuTrigger({
   className,
@@ -3412,7 +3412,7 @@ function NavigationMenuContent({
     {
       "data-slot": "navigation-menu-content",
       className: cn(
-        "top-0 left-0 w-full p-1 ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:ring-foreground/10 group-data-[viewport=false]/navigation-menu:duration-300 data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none md:absolute md:w-auto group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0 group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95",
+        "top-0 left-0 w-full p-[var(--sfx-space-1)] ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-[var(--sfx-space-1)].5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:ring-1 group-data-[viewport=false]/navigation-menu:ring-foreground/10 group-data-[viewport=false]/navigation-menu:duration-300 data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none md:absolute md:w-auto group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0 group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95",
         className
       ),
       ...props
@@ -3434,7 +3434,7 @@ function NavigationMenuViewport({
         {
           "data-slot": "navigation-menu-viewport",
           className: cn(
-            "origin-top-center relative mt-1.5 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden rounded-lg bg-popover text-popover-foreground shadow ring-1 ring-foreground/10 duration-100 md:w-(--radix-navigation-menu-viewport-width) data-open:animate-in data-open:zoom-in-90 data-closed:animate-out data-closed:zoom-out-90",
+            "origin-top-center relative mt-[var(--sfx-space-1)].5 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden rounded-lg bg-popover text-popover-foreground shadow ring-1 ring-foreground/10 duration-100 md:w-(--radix-navigation-menu-viewport-width) data-open:animate-in data-open:zoom-in-90 data-closed:animate-out data-closed:zoom-out-90",
             className
           ),
           ...props
@@ -3452,7 +3452,7 @@ function NavigationMenuLink({
     {
       "data-slot": "navigation-menu-link",
       className: cn(
-        "flex items-center gap-2 rounded-lg p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
+        "flex items-center gap-[var(--sfx-space-2)] rounded-lg p-[var(--sfx-space-2)] text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
         className
       ),
       ...props
@@ -3561,7 +3561,7 @@ function SFNavigationMenuMobile({
     ),
     /* @__PURE__ */ jsxs(SFSheetContent, { side: "left", children: [
       /* @__PURE__ */ jsx(SFSheetHeader, { children: /* @__PURE__ */ jsx(SFSheetTitle, { children: title }) }),
-      /* @__PURE__ */ jsx("nav", { className: "flex flex-col gap-1 mt-4", children })
+      /* @__PURE__ */ jsx("nav", { className: "flex flex-col gap-[var(--sfx-space-1)] mt-[var(--sfx-space-4)]", children })
     ] })
   ] }) });
 }
@@ -3574,9 +3574,9 @@ var sfToggleGroupItemVariants = cva(
         primary: "bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
       },
       size: {
-        sm: "h-8 min-w-8 px-3",
-        md: "h-10 min-w-10 px-4",
-        lg: "h-12 min-w-12 px-6"
+        sm: "h-8 min-w-8 px-[var(--sfx-space-3)]",
+        md: "h-10 min-w-10 px-[var(--sfx-space-4)]",
+        lg: "h-12 min-w-12 px-[var(--sfx-space-6)]"
       }
     },
     defaultVariants: {
@@ -3820,7 +3820,7 @@ function HoverCardContent({
       align,
       sideOffset,
       className: cn(
-        "z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        "z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-lg bg-popover p-[var(--sfx-space-2)].5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
         className
       ),
       ...props
@@ -3857,13 +3857,11 @@ function toggleTheme(currentDark) {
   } catch {
   }
   const root = document.documentElement;
-  root.classList.add("sf-no-transition");
+  root.classList.add("sf-theme-animating");
   root.classList.toggle("dark", next);
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      root.classList.remove("sf-no-transition");
-    });
-  });
+  window.setTimeout(() => {
+    root.classList.remove("sf-theme-animating");
+  }, 480);
   return next;
 }
 var SignalframeContext = createContext(null);
@@ -3877,10 +3875,20 @@ async function getGsap() {
 }
 function createSignalframeUX(config = {}) {
   function SignalframeProvider({ children }) {
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState(() => {
+      if (typeof window === "undefined") {
+        return (config.defaultTheme ?? "light") === "dark";
+      }
+      return document.documentElement.classList.contains("dark");
+    });
     const [prefersReduced, setPrefersReduced] = useState(false);
     useEffect(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
+      const root = document.documentElement;
+      const sync = () => setIsDark(root.classList.contains("dark"));
+      sync();
+      const observer = new MutationObserver(sync);
+      observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+      return () => observer.disconnect();
     }, []);
     const prefersReducedRef = useRef(prefersReduced);
     useEffect(() => {
@@ -3922,8 +3930,9 @@ function createSignalframeUX(config = {}) {
     }, []);
     const setTheme = (theme) => {
       const wantDark = theme === "dark";
-      if (isDark !== wantDark) {
-        const nextDark = toggleTheme(isDark);
+      const currentDark = document.documentElement.classList.contains("dark");
+      if (currentDark !== wantDark) {
+        const nextDark = toggleTheme(currentDark);
         setIsDark(nextDark);
       }
     };

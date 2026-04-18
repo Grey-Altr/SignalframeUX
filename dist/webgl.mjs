@@ -8,6 +8,7 @@ import { jsx } from 'react/jsx-runtime';
 
 // lib/signal-canvas.tsx
 gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
+gsap.defaults({ ease: "power2.out" });
 var SIGNAL_KEY = "__sf_signal_canvas";
 function getState() {
   const g = globalThis;
@@ -159,10 +160,12 @@ function useSignalScene(elementRef, buildScene) {
   const idRef = useRef(
     typeof crypto?.randomUUID === "function" ? crypto.randomUUID() : `${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`
   );
+  const buildSceneRef = useRef(buildScene);
+  buildSceneRef.current = buildScene;
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
-    const { scene, camera, renderFn } = buildScene();
+    const { scene, camera, renderFn } = buildSceneRef.current();
     const id = idRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -183,7 +186,7 @@ function useSignalScene(elementRef, buildScene) {
       deregisterScene(id);
       disposeScene(scene);
     };
-  }, []);
+  }, [elementRef]);
 }
 var colorCache = /* @__PURE__ */ new Map();
 var cacheObserver = null;

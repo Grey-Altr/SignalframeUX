@@ -216,7 +216,7 @@ declare function SFCardTitle({ className, ...props }: React.ComponentProps<typeo
  */
 declare function SFCardDescription({ className, ...props }: React.ComponentProps<typeof CardDescription>): React$1.JSX.Element;
 /**
- * Sub-component of SFCard — renders the main card body content region with p-4 padding.
+ * Sub-component of SFCard — renders the main card body content region with p-[var(--sfx-space-4)] padding.
  * @example
  * <SFCardContent>Body text or nested components go here.</SFCardContent>
  */
@@ -383,7 +383,7 @@ declare function SFTableHead({ className, ...props }: React.ComponentProps<typeo
  */
 declare function SFTableRow({ className, ...props }: React.ComponentProps<typeof TableRow>): React$1.JSX.Element;
 /**
- * Sub-component of SFTable — data cell with consistent px-3 py-2 padding.
+ * Sub-component of SFTable — data cell with consistent px-[var(--sfx-space-3)] py-[var(--sfx-space-2)] padding.
  * @example
  * <SFTableCell>alice@example.com</SFTableCell>
  */
@@ -865,7 +865,7 @@ declare function ScrollBar({ className, orientation, ...props }: React$1.Compone
  *
  * @example
  * <SFScrollArea className="h-64">
- *   <div className="p-4">{longContent}</div>
+ *   <div className="p-[var(--sfx-space-4)]">{longContent}</div>
  * </SFScrollArea>
  */
 declare function SFScrollArea({ className, ...props }: React.ComponentProps<typeof ScrollArea>): React$1.JSX.Element;
@@ -1696,7 +1696,7 @@ declare function cn(...inputs: ClassValue[]): string;
 
 /**
  * Shared theme toggle — used by DarkModeToggle and CommandPalette.
- * Hard-cut switch (DU-style) — instant color inversion, no smooth blend.
+ * Sequenced switch — color transitions follow the toggle motion timing.
  *
  * @param currentDark - Whether dark mode is currently active
  * @returns The new dark mode state

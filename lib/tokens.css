@@ -211,9 +211,10 @@
   --sfx-duration-normal: 200ms;
   --sfx-duration-slow: 400ms;
   --sfx-duration-glacial: 600ms;
-  --sfx-ease-default: cubic-bezier(0.2, 0, 0, 1);
-  --sfx-ease-hover: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --sfx-ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.085 32.8%, 1.009 36.5%, 0.982 38.5%, 0.961, 0.946 42.4%, 0.938, 0.934 46.4%, 0.936 49.3%, 0.954 53.5%, 1 62.8%, 1.012 68.8%, 1.006 81.5%, 1);
+  --sfx-ease-default: cubic-bezier(0, 0, 0.2, 1);
+  --sfx-ease-hover: cubic-bezier(0, 0, 0.2, 1);
+  /* @deprecated v0.1.2 — name misleads; curve resolves to ease-out. Use --sfx-ease-default. */
+  --sfx-ease-spring: cubic-bezier(0, 0, 0.2, 1);
 
   /* ── VHS Overlay Tokens ── */
   --sfx-vhs-crt-opacity: 0.05;

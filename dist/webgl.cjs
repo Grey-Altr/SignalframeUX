@@ -33,6 +33,7 @@ var gsap__default = /*#__PURE__*/_interopDefault(gsap);
 
 // lib/signal-canvas.tsx
 gsap__default.default.registerPlugin(ScrollTrigger.ScrollTrigger, Observer.Observer, react.useGSAP);
+gsap__default.default.defaults({ ease: "power2.out" });
 var SIGNAL_KEY = "__sf_signal_canvas";
 function getState() {
   const g = globalThis;
@@ -184,10 +185,12 @@ function useSignalScene(elementRef, buildScene) {
   const idRef = react$1.useRef(
     typeof crypto?.randomUUID === "function" ? crypto.randomUUID() : `${Math.random().toString(36).slice(2)}-${Date.now().toString(36)}`
   );
+  const buildSceneRef = react$1.useRef(buildScene);
+  buildSceneRef.current = buildScene;
   react$1.useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
-    const { scene, camera, renderFn } = buildScene();
+    const { scene, camera, renderFn } = buildSceneRef.current();
     const id = idRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -208,7 +211,7 @@ function useSignalScene(elementRef, buildScene) {
       deregisterScene(id);
       disposeScene(scene);
     };
-  }, []);
+  }, [elementRef]);
 }
 var colorCache = /* @__PURE__ */ new Map();
 var cacheObserver = null;

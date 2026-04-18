@@ -58,7 +58,7 @@ function AccordionTrigger({
     {
       "data-slot": "accordion-trigger",
       className: cn(
-        "group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
+        "group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-[var(--sfx-space-2)].5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
         className
       ),
       ...props,
@@ -85,7 +85,7 @@ function AccordionContent({
         "div",
         {
           className: cn(
-            "h-(--radix-accordion-content-height) pt-0 pb-2.5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+            "h-(--radix-accordion-content-height) pt-0 pb-[var(--sfx-space-2)].5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-[var(--sfx-space-4)]",
             className
           ),
           children
@@ -95,6 +95,7 @@ function AccordionContent({
   );
 }
 gsap.registerPlugin(ScrollTrigger, Observer, useGSAP);
+gsap.defaults({ ease: "power2.out" });
 function SFAccordion({
   className,
   ...props
@@ -281,14 +282,14 @@ function SFToastContent({
     {
       ref,
       className: cn(
-        "flex flex-row items-start border-2 bg-background text-foreground font-mono rounded-none p-4 shadow-none",
+        "flex flex-row items-start border-2 bg-background text-foreground font-mono rounded-none p-[var(--sfx-space-4)] shadow-none",
         intentBorder[intent] ?? intentBorder.default
       ),
       children: [
         icon && /* @__PURE__ */ jsx("span", { className: "mr-3 mt-0.5 shrink-0", children: icon }),
         /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
           /* @__PURE__ */ jsx("div", { className: "text-sm font-mono uppercase tracking-wider", children: title }),
-          description && /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground mt-1", children: description })
+          description && /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground mt-[var(--sfx-space-1)]", children: description })
         ] }),
         /* @__PURE__ */ jsx(
           "button",
@@ -386,7 +387,7 @@ function SFStepper({ activeStep: _activeStep, children, className }) {
         const status = stepElement.props?.status ?? "pending";
         return /* @__PURE__ */ jsxs(React.Fragment, { children: [
           step,
-          !isLast && /* @__PURE__ */ jsx("div", { className: "flex justify-center py-1 pl-4", children: /* @__PURE__ */ jsx(
+          !isLast && /* @__PURE__ */ jsx("div", { className: "flex justify-center py-[var(--sfx-space-1)] pl-4", children: /* @__PURE__ */ jsx(
             SFProgress,
             {
               value: getConnectorValue(status),
@@ -413,7 +414,7 @@ function SFStep({
     {
       role: "listitem",
       "data-status": status,
-      className: cn("flex items-start gap-3", className),
+      className: cn("flex items-start gap-[var(--sfx-space-3)]", className),
       children: [
         /* @__PURE__ */ jsxs(
           "div",
@@ -445,9 +446,9 @@ function SFStep({
 function registerSFEasings() {
   CustomEase.create(
     "sf-snap",
-    "M0,0 C0.14,0 0.27,0.5 0.5,0.5 0.73,0.5 0.86,1 1,1"
+    "M0,0 C0.12,0.65 0.28,1 1,1"
   );
-  CustomEase.create("sf-punch", "M0,0 C0.7,0 0.3,1.5 1,1");
+  CustomEase.create("sf-punch", "M0,0 C0.16,0.75 0.3,1 1,1");
 }
 
 // lib/gsap-split.ts
@@ -514,7 +515,7 @@ function SFEmptyState({
     "div",
     {
       className: cn(
-        "relative flex flex-col items-center justify-center py-16 px-8 text-center font-mono uppercase tracking-wider",
+        "relative flex flex-col items-center justify-center py-16 px-[var(--sfx-space-8)] text-center font-mono uppercase tracking-wider",
         className
       ),
       children: [
@@ -535,11 +536,11 @@ function SFEmptyState({
             ScrambleText,
             {
               text: title,
-              className: "text-lg mb-4 block",
+              className: "text-lg mb-[var(--sfx-space-4)] block",
               trigger: "load"
             }
-          ) : /* @__PURE__ */ jsx("h3", { className: "text-lg mb-4 text-foreground", children: title }),
-          children && /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mb-6", children }),
+          ) : /* @__PURE__ */ jsx("h3", { className: "text-lg mb-[var(--sfx-space-4)] text-foreground", children: title }),
+          children && /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mb-[var(--sfx-space-6)]", children }),
           action
         ] })
       ]
@@ -592,6 +593,7 @@ gsap.registerPlugin(
   Observer,
   useGSAP
 );
+gsap.defaults({ ease: "power2.out" });
 registerSFEasings();
 var motionCleanup = null;
 function initReducedMotion() {
