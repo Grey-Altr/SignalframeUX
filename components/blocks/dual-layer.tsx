@@ -22,7 +22,7 @@ export function DualLayer() {
             <span
               key={tag}
               data-anim="tag"
-                           className="border border-foreground px-[var(--sfx-space-3)] py-[var(--sfx-space-1)].5 text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground inline-block"
+                           className="border border-foreground px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-foreground inline-block"
             >
               {tag}
             </span>
@@ -48,7 +48,7 @@ export function DualLayer() {
             <span
               key={tag}
               data-anim="tag"
-                           className="border border-[var(--sf-subtle-border)] dark:border-[var(--sf-dim-text)] px-[var(--sfx-space-3)] py-[var(--sfx-space-1)].5 text-[var(--text-xs)] uppercase tracking-[0.15em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground inline-block"
+                           className="border border-[var(--sf-subtle-border)] dark:border-[var(--sf-dim-text)] px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground inline-block"
             >
               {tag}
             </span>

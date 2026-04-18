@@ -55,11 +55,11 @@ type PatternFilter = (typeof PATTERNS)[number];
 
 function PreviewButton() {
   return (
-    <div className="flex gap-[var(--sfx-space-1)].5">
-      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)].5 py-0.5 uppercase">
+    <div className="flex gap-[var(--sfx-space-1)]">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)] py-0.5 uppercase">
         PRIMARY
       </span>
-      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)].5 py-0.5 uppercase">
+      <span className="inline-block h-5 border border-current text-[var(--text-xs)] px-[var(--sfx-space-2)] py-0.5 uppercase">
         GHOST
       </span>
     </div>
@@ -136,7 +136,7 @@ function PreviewBadge({ color, text }: { color: string; text: string }) {
     color === "var(--color-primary)";
   return (
     <span
-      className={`inline-block px-[var(--sfx-space-2)].5 py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
+      className={`inline-block px-[var(--sfx-space-2)] py-0.5 text-[var(--text-xs)] uppercase tracking-wider ${needsDarkText ? "text-foreground" : "text-background"}`}
       style={{ background: color }}
     >
       {text}
@@ -234,7 +234,7 @@ function PreviewBreadcrumb() {
 
 function PreviewAlert() {
   return (
-    <div className="w-[80%] h-6 border-2 border-foreground bg-foreground/10 flex items-center px-[var(--sfx-space-1)].5 text-[7px] uppercase font-mono">
+    <div className="w-[80%] h-6 border-2 border-foreground bg-foreground/10 flex items-center px-[var(--sfx-space-1)] text-[7px] uppercase font-mono">
       INFO
     </div>
   );
@@ -380,9 +380,9 @@ function PreviewCalendar() {
 function PreviewMenubar() {
   return (
     <div className="flex gap-0 border border-current">
-      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 border-r border-current font-mono">FILE</span>
-      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 border-r border-current font-mono">EDIT</span>
-      <span className="text-[6px] uppercase px-[var(--sfx-space-1)].5 py-0.5 font-mono">VIEW</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)] py-0.5 border-r border-current font-mono">FILE</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)] py-0.5 border-r border-current font-mono">EDIT</span>
+      <span className="text-[6px] uppercase px-[var(--sfx-space-1)] py-0.5 font-mono">VIEW</span>
     </div>
   );
 }
@@ -411,7 +411,7 @@ function PreviewInputOTP() {
 function PreviewInputGroup() {
   return (
     <div className="flex border border-current h-6 w-[80%]">
-      <span className="px-[var(--sfx-space-1)].5 text-[8px] font-mono border-r border-current flex items-center">@</span>
+      <span className="px-[var(--sfx-space-1)] text-[8px] font-mono border-r border-current flex items-center">@</span>
       <span className="flex-1" />
     </div>
   );
@@ -727,7 +727,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             onClick={() => handleFilter(cat)}
             aria-pressed={activeFilter === cat}
             data-filter={cat}
-            className={`border-0 border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] h-auto ${
+            className={`border-0 border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] text-[var(--text-sm)] tracking-[0.15em] h-auto ${
               activeFilter === cat ? "text-[var(--sf-primary-on-dark)]" : ""
             }`}
           >
@@ -740,13 +740,13 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
           aria-label="Search components"
           value={searchInput}
           onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 border-0 rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
+          className="flex-1 border-0 rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] h-auto text-[var(--text-sm)] uppercase tracking-[0.15em] font-bold shadow-none focus-visible:ring-0"
         />
         <div
           role="status"
           aria-live="polite"
           aria-atomic="true"
-          className="border-0 border-l-2 border-foreground px-[var(--sfx-space-6)] py-[var(--sfx-space-3)].5 text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
+          className="border-0 border-l-2 border-foreground px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] text-[var(--text-sm)] tracking-[0.15em] text-muted-foreground font-bold uppercase flex items-center"
         >
           {resultCount} RESULTS
         </div>
@@ -911,7 +911,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
       )}
 
       {/* ── Detail Hint Bar ── */}
-      <div className="flex justify-between items-center px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-3)].5 border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">
+      <div className="flex justify-between items-center px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-3)] border-t-[3px] border-foreground sf-yellow-band text-[var(--text-sm)] font-bold uppercase tracking-[0.15em]">
         <span>
           BROWSE COMPONENTS ABOVE · VIEW FULL API REFERENCE →
         </span>

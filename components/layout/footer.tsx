@@ -10,7 +10,7 @@ export function Footer() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-[var(--sfx-space-8)] md:gap-[var(--sfx-space-12)] items-start">
             {/* Brand */}
-            <div className="md:mt-[var(--sfx-space-1)].5">
+            <div className="md:mt-[var(--sfx-space-1)]">
               <span
                 className="sf-display text-2xl text-foreground"
               >

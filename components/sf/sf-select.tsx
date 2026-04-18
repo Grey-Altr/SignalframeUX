@@ -123,7 +123,7 @@ function SFSelectLabel({
   return (
     <SelectLabel
       className={cn(
-        "rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5",
+        "rounded-none font-mono uppercase tracking-wider text-[var(--text-2xs)] text-muted-foreground px-[var(--sfx-space-2)] py-[var(--sfx-space-1)]",
         className
       )}
       {...props}

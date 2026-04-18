@@ -82,18 +82,18 @@ function PreviewTable() {
     <SFTable className="w-[80%] max-w-[200px] text-[var(--text-sm)] uppercase tracking-wider">
       <SFTableHeader>
         <SFTableRow>
-          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5">TOKEN</SFTableHead>
-          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right">VALUE</SFTableHead>
+          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)]">TOKEN</SFTableHead>
+          <SFTableHead className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right">VALUE</SFTableHead>
         </SFTableRow>
       </SFTableHeader>
       <SFTableBody>
         <SFTableRow>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 opacity-60">primary</SFTableCell>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right text-primary">oklch(.65 .3 350)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] opacity-60">primary</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-primary">oklch(.65 .3 350)</SFTableCell>
         </SFTableRow>
         <SFTableRow>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 opacity-60">yellow</SFTableCell>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)].5 text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] opacity-60">yellow</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
         </SFTableRow>
       </SFTableBody>
     </SFTable>

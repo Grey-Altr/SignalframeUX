@@ -270,7 +270,7 @@ export function SignalOverlay() {
           <div className="px-[var(--sfx-space-4)] pb-[var(--sfx-space-4)]">
             <button
               onClick={handleReset}
-              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-[var(--sfx-space-1)].5 transition-colors duration-[var(--sfx-duration-fast)]"
+              className="w-full text-[9px] font-bold uppercase tracking-[0.12em] text-foreground/40 hover:text-foreground border border-foreground/20 hover:border-foreground py-[var(--sfx-space-1)] transition-colors duration-[var(--sfx-duration-fast)]"
             >
               Reset defaults
             </button>

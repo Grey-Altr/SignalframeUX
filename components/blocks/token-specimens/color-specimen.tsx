@@ -147,7 +147,7 @@ export function ColorSpecimen({
         data-anim="stagger"
         className="overflow-x-auto relative"
       >
-        <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-[var(--sfx-space-4)] py-[var(--sfx-space-1)].5 border-b border-foreground/20">
+        <div className="md:hidden text-[var(--text-2xs)] uppercase tracking-[0.2em] text-muted-foreground text-right px-[var(--sfx-space-4)] py-[var(--sfx-space-1)] border-b border-foreground/20">
           &larr; SCROLL &rarr;
         </div>
         {visibleScales.map((scale, scaleIdx) => (

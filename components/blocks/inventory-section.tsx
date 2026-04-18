@@ -134,7 +134,7 @@ export function InventorySection() {
             className={cn(
               GRID_COLS,
               "font-mono text-sm",
-              "border-b border-foreground/10 py-[var(--sfx-space-1)].5 px-0",
+              "border-b border-foreground/10 py-[var(--sfx-space-1)] px-0",
               "cursor-pointer transition-colors duration-[var(--sfx-duration-instant)]",
               "hover:bg-foreground hover:text-background",
               "focus:bg-foreground focus:text-background focus:outline-none"
