@@ -220,6 +220,8 @@
     --sfx-ease-hover: cubic-bezier(0, 0, 0.2, 1);
     /* @deprecated v0.1.2 — name misleads; curve resolves to ease-out. Use --sfx-ease-default. */
     --sfx-ease-spring: cubic-bezier(0, 0, 0.2, 1);
+    /* Explicit linear — continuous loops only (marquee, scanline, progress, shake/flash). Do not use for UI transitions. */
+    --sfx-ease-linear: cubic-bezier(0, 0, 1, 1);
 
     /* ── VHS Overlay Tokens ── */
     --sfx-vhs-crt-opacity: 0.05;

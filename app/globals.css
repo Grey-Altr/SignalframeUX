@@ -243,6 +243,8 @@
   --ease-in: cubic-bezier(0, 0, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0, 0, 0.2, 1);
+  /* Explicit linear — continuous loops (marquee, scanline, progress, shake/flash). Not part of the ease-out family; do not use for UI transitions. */
+  --sfx-ease-linear: cubic-bezier(0, 0, 1, 1);
 
   /* ── VHS Overlay Tokens ── */
   --sfx-vhs-crt-opacity: 0.05;
@@ -837,7 +839,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
     transform: translateY(var(--sfx-press-y)) scale(var(--sfx-press-scale));
     box-shadow: inset 0 2px 4px var(--sfx-inset-shadow-color, oklch(0 0 0 / 0.2));
     transition-duration: var(--sfx-duration-instant);
-    transition-timing-function: cubic-bezier(0, 0, 1, 1);
+    transition-timing-function: var(--sfx-ease-linear);
   }
 
   .sf-hoverable {
@@ -919,10 +921,10 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   }
 
   .sf-shake--active {
-    animation: sf-shake 0.4s cubic-bezier(0, 0, 1, 1);
+    animation: sf-shake 0.4s var(--sfx-ease-linear);
   }
   .sf-flash--active {
-    animation: sf-flash 0.15s cubic-bezier(0, 0, 1, 1);
+    animation: sf-flash 0.15s var(--sfx-ease-linear);
   }
 
   /* ── Border thicken on hover (ghost buttons, outlined elements) ── */
@@ -953,7 +955,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   }
   .sf-btn-progress[data-complete="true"]::after {
     width: 100%;
-    transition: width var(--sfx-duration-fast) cubic-bezier(0, 0, 1, 1);
+    transition: width var(--sfx-duration-fast) var(--sfx-ease-linear);
   }
 
   /* ── Copy-to-clipboard inline label swap ── */
@@ -976,7 +978,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   /* ── Input validation states ── */
   .sf-input-error {
     border-color: var(--sfx-destructive, oklch(0.550 0.180 25)) !important;
-    animation: sf-shake 0.4s cubic-bezier(0, 0, 1, 1);
+    animation: sf-shake 0.4s var(--sfx-ease-linear);
   }
   .sf-input-success {
     animation: sf-success-border 1.5s var(--sfx-ease-default) both;
@@ -1148,7 +1150,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   }
   .sf-idle-overlay--active {
     opacity: 1;
-    animation: sf-idle-scan 8s cubic-bezier(0, 0, 1, 1) infinite;
+    animation: sf-idle-scan 8s var(--sfx-ease-linear) infinite;
   }
 
   /* ── Element hover vocabulary ── */
@@ -1647,7 +1649,7 @@ body[data-nav-visible="true"] .sf-nav-hidden {
    ══════════════════════════════════════════════════════════════ */
 
 .animate-marquee {
-  animation: sf-marquee-scroll 20s cubic-bezier(0, 0, 1, 1) infinite;
+  animation: sf-marquee-scroll 20s var(--sfx-ease-linear) infinite;
 }
 
 /* ══════════════════════════════════════════════════════════════

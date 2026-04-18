@@ -178,6 +178,8 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 
 **Canonical easing curve:** `cubic-bezier(0, 0, 0.2, 1)` (ease-out). All six easing tokens — `--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring`, `--ease-in`, `--ease-out`, `--ease-in-out` — resolve to this exact curve. The system has **no spring motion, no anticipation, no bounce.** Motion is decisive.
 
+**Linear token (exception for continuous loops).** `--sfx-ease-linear: cubic-bezier(0, 0, 1, 1)` is the only non-ease-out easing in the system. Use ONLY for: marquee scroll, scanline drift, progress bar fill, shake / flash loops, scrub-driven sweeps. NEVER for UI transitions, hovers, fades, or reveals — those consume the ease-out token set above. Adding `--sfx-ease-linear` to a transition is a compliance violation.
+
 **`--sfx-ease-spring` is deprecated.** The curve resolves to ease-out; the name misleads and encourages spring thinking. New code must use `--sfx-ease-default`. The deprecated token is retained as an alias for one version to avoid a breaking sweep; `globals.css` should carry a `@deprecated` comment on its declaration.
 
 **Rejected curves — DO NOT substitute these anywhere in generated output:**
@@ -490,10 +492,11 @@ This manifest is the distilled contract. Authoritative sources if an AI tool nee
 | `tailwind.config.*` / Tailwind v4 `@theme` in `globals.css` | Build-time token wiring |
 | `~/greyaltaer/vaults/wiki/` (cdSB) | Intellectual lineage; FRAME/SIGNAL theory; aesthetic rationale |
 
-**Updated:** 2026-04-18 · **Manifest version:** v0.1.2 · **Target SF version:** v0.1 (stabilization + sanctioned SIGNAL-layer growth)
+**Updated:** 2026-04-18 · **Manifest version:** v0.1.3 · **Target SF version:** v0.1 (stabilization + sanctioned SIGNAL-layer growth)
 
 ### Changelog
 
+- **v0.1.3** (2026-04-18) — Added `--sfx-ease-linear: cubic-bezier(0, 0, 1, 1)` to §4.5. Names the explicit linear curve needed for continuous loops (marquee, scanline, progress, shake/flash) that were previously authored as `cubic-bezier(0, 0, 1, 1)` literals during the v0.1.2 §C.5 named-easing sweep. Scope: one new token, consumers at 7 sites in `globals.css`. Token also shipped in `lib/tokens.css` for downstream consumers. Documented with explicit "UI transitions must NOT use this" guidance to prevent drift back into non-canonical ease-outs via this token.
 - **v0.1.2** (2026-04-18) — Sanctioned SIGNAL-layer growth observed on `feature/navbar-redesign`. Added §4.10 Effects Pipeline, §4.11 Canvas Frame, §4.12 Keyframe Library. Extended §4.3 with HUD micro-type scale (5–8px chrome-only). Amended §4.5 with authoring discipline (no inline CSS named easings; timing function must be canonical bezier literal or token), procedural SIGNAL-layer motion exception (pow-based progression for scrub-driven animations), and `--sfx-ease-spring` deprecation. Rewrote §3 Gradients row to distinguish structural (permitted: hard-stop bars, edge vignettes, scanlines, halftone/grid) from decorative (forbidden). Extended §3 Color space row with Edge-runtime and Canvas 2D hex escape hatches tied to `lib/tokens.edge.ts` pattern. Amended §4.2 with anchor-value semantics, §4.4 with viewport-unit consumption policy, §3 System-level inventions row to name the sanctioned SIGNAL subsystems. Derived from `feature/navbar-redesign` at 64 commits ahead of main. Source delta doc: `.planning/proposals/v0.1.2-deltas.md`. Seven code-level items tracked in §C of the delta doc — not canonized, fix after branch lands.
 - **v0.1.1** (2026-04-18) — Hardened against drift observed in Claude Design v0 probe. Canonical easing curve locked (`cubic-bezier(0, 0, 0.2, 1)`); rejected spring/bouncy curves named explicitly; hex ban reinforced across all contexts (comments, attributes, SVG); new "no subsystem invention" rule (§3, §9 rule 7). Two Claude Design inventions (Elevation ladder, Posture system) captured as v0.2+ proposals at `.planning/proposals/`. See `.planning/claude-design-probes/v0/notes.md` for full probe findings.
 - **v0.1.0** (2026-04-17) — Initial manifest. Distilled from CLAUDE.md, SIGNALFRAMEUX_REFERENCE.md, app/globals.css, components/sf/.
