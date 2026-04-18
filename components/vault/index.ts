@@ -7,3 +7,10 @@ export {
   type VaultTrademarkGlyph,
 } from "./vault-trademark";
 export { VaultFlag, type FlagPattern } from "./vault-flag";
+
+// V2 primitives — shader / procedural
+export {
+  VaultPointcloud,
+  type VaultMorphology,
+} from "./vault-pointcloud";
+export { VaultBiocircuit } from "./vault-biocircuit";
