@@ -1,712 +1,669 @@
-import type { Metadata } from "next";
+"use client";
+import React from "react";
 import {
-  CdBField,
-  CdBCornerChrome,
-  CdBStamp,
-  CdBMark,
-  CdBBanner,
-  CdBPointcloud,
-} from "@/components/cdb";
+  VaultField,
+  VaultChrome,
+  VaultStamp,
+  type VaultStampTreatment,
+  VaultTrademark,
+  type VaultTrademarkGlyph,
+  VaultFlag,
+  type FlagPattern,
+  VaultPointcloud,
+  VaultBiocircuit,
+  VaultSchematic,
+  VaultHelghanese,
+  VaultDataField,
+} from "@/components/vault";
 
 /*
- * cdB aesthetic-deep-dive home.
- * Seven-section single-scroll, pure vault grammar. No reuse of
- * components/sf/* or blocks/*. Companion artifact to the two
- * digests at .planning/aesthetic/.
+ * cdB-v1 vault build. Direct pack quotations. 9 sections.
+ * Bootloader · KLOROFORM × Cyber2k HUD · Brando Corp 250 catalog ·
+ * E0000 Black Flag wall · Vanzyst circuitry · Diagrams2 schematic ·
+ * NCL typescape · Stamp circulation · Helghanese + Ikeda exit.
  */
-
-export const metadata: Metadata = {
-  title: "SIGNALFRAME//UX — cdB",
-  description:
-    "Culture Division · cdB aesthetic deep-dive build · pure peer-grammar reset.",
-};
 
 export default function HomePage() {
   return (
     <main className="bg-[var(--cdb-black)] text-[var(--cdb-paper)]">
-      <ColdOpen />
-      <Catalog />
-      <MoireBanners />
-      <Schematic />
-      <StampField />
-      <TypeSpecimen />
-      <TerminalClose />
+      <Bootloader />
+      <ColdVoid />
+      <BrandoCatalog />
+      <FlagWall />
+      <VanzystCircuitry />
+      <SchematicPage />
+      <NclTypescape />
+      <StampCirculation />
+      <HelghaneseExit />
+      <PageRail />
     </main>
   );
 }
 
-// ────────────────────────────────────────────────────────────────
-// 01 · COLD OPEN
-// ────────────────────────────────────────────────────────────────
-function ColdOpen() {
-  return (
-    <CdBField bleed="viewport" className="min-h-screen">
-      <CdBCornerChrome
-        topLeft="CULTURE DIVISION · SIGNALFRAME SYSTEM"
-        topRight={"CDBRANCH/EXT · 2026.04.18 · v1.0"}
-        bottomLeft="SF//FRM-001 · PAGE 01/07"
-        bottomRight="signalframe.culturedivision.com"
-        geoCoord="-33.9249°S · 18.4241°E"
-      />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <CdBPointcloud
-          morphology="ring"
-          pointCount={22000}
-          className="w-full h-full max-w-[78vw] max-h-[78vh]"
-        />
-      </div>
-      {/* decoded stamp floats top-center */}
-      <div className="absolute top-[14vh] left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3">
-        <CdBStamp text="DECODED" code="SF//STM-004" rotate={-1.5} />
-        <CdBStamp text="CLASS I" variant="outline" rotate={2} />
-      </div>
-      {/* hero wordmark */}
-      <div className="relative z-10 flex flex-col items-center justify-end min-h-screen pb-[14vh] gap-4">
-        <div className="font-[var(--font-bungee)] text-[clamp(48px,11vw,180px)] leading-[0.9] text-[var(--cdb-paper)] text-center tracking-[-0.02em]">
-          SIGNALFRAME
-        </div>
-        <div className="flex items-center gap-3 font-mono text-[11px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/70">
-          <span className="inline-block w-10 h-px bg-[var(--cdb-lime)]" />
-          <span>DETERMINISTIC INTERFACE / GENERATIVE EXPRESSION</span>
-          <span className="inline-block w-10 h-px bg-[var(--cdb-lime)]" />
-        </div>
-        <div className="font-[var(--font-archivo-narrow)] text-[var(--cdb-lime)] text-[clamp(12px,1.2vw,16px)] uppercase tracking-[0.4em] font-bold">
-          A CULTURE DIVISION PROTOCOL
-        </div>
-      </div>
-    </CdBField>
-  );
+// ─────────────────────────────────────────────────────────────
+// Shared: scroll progress hook
+// ─────────────────────────────────────────────────────────────
+function useSectionProgress(
+  ref: React.RefObject<HTMLElement | null>
+): number {
+  const [p, setP] = React.useState(0);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = rect.height + vh;
+      const progressed = vh - rect.top;
+      setP(Math.max(0, Math.min(1, progressed / total)));
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [ref]);
+  return p;
 }
 
-// ────────────────────────────────────────────────────────────────
-// 02 · CATALOG — the catalog IS the brand
-// ────────────────────────────────────────────────────────────────
-type MarkSpec = {
-  code: string;
-  label: string;
-  form: React.ReactNode;
-  accent?: boolean;
-};
-
-const MARK_SPECS: MarkSpec[] = [
-  { code: "SF//FRM-001", label: "FORM / CROSS", form: <FormCross /> },
-  { code: "SF//FRM-002", label: "FORM / RING", form: <FormRing /> },
-  { code: "SF//FRM-003", label: "FORM / BARS", form: <FormBars /> },
-  { code: "SF//FRM-004", label: "FORM / HEX", form: <FormHex /> },
-  {
-    code: "SF//FRM-005",
-    label: "FORM / TARGET",
-    form: <FormTarget />,
-    accent: true,
-  },
-  { code: "SF//FRM-006", label: "FORM / GRID", form: <FormDotGrid /> },
-  { code: "SF//GEN-007", label: "GEN / HALFTONE", form: <FormHalftone /> },
-  { code: "SF//GEN-008", label: "GEN / TRIANGLE", form: <FormTriangle /> },
-  { code: "SF//GEN-009", label: "GEN / NOTCH", form: <FormNotch /> },
-  { code: "SF//GEN-010", label: "GEN / ASTERISK", form: <FormAsterisk /> },
-  {
-    code: "SF//GEN-011",
-    label: "GEN / ARROW",
-    form: <FormArrow />,
-  },
-  { code: "SF//GEN-012", label: "GEN / S-CURVE", form: <FormCurve /> },
-  { code: "SF//SYS-013", label: "SYS / BRACKET", form: <FormBracket /> },
-  { code: "SF//SYS-014", label: "SYS / DIAGONAL", form: <FormDiagonal /> },
-  {
-    code: "SF//SYS-015",
-    label: "SYS / NESTED",
-    form: <FormNested />,
-    accent: true,
-  },
-  { code: "SF//SYS-016", label: "SYS / CIRCUIT", form: <FormCircuit /> },
-  { code: "SF//STM-017", label: "STM / PULSE", form: <FormPulse /> },
-  { code: "SF//STM-018", label: "STM / STAR", form: <FormStar /> },
-  { code: "SF//STM-019", label: "STM / LBRACKET", form: <FormLBracket /> },
-  { code: "SF//STM-020", label: "STM / DISC", form: <FormDisc /> },
-  { code: "SF//EXP-021", label: "EXP / RAYS", form: <FormRays /> },
-  { code: "SF//EXP-022", label: "EXP / STRIPE", form: <FormStripe /> },
-  { code: "SF//EXP-023", label: "EXP / COMB", form: <FormComb /> },
-  { code: "SF//EXP-024", label: "EXP / FIELD", form: <FormField /> },
-];
-
-function Catalog() {
+// ─────────────────────────────────────────────────────────────
+// 00 · BOOTLOADER — 4s cold-boot overlay then pointer-events:none
+// ─────────────────────────────────────────────────────────────
+function Bootloader() {
+  const [stage, setStage] = React.useState<"running" | "fade" | "gone">(
+    "running"
+  );
+  React.useEffect(() => {
+    const t1 = setTimeout(() => setStage("fade"), 3400);
+    const t2 = setTimeout(() => setStage("gone"), 4600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+  if (stage === "gone") return null;
+  const lines = [
+    "CULTURE DIVISION · COLD BOOT  ·  2026.04.18 / TS+22:19:52",
+    "........",
+    "[ OK ]  MEMORY BUS                        LINK  1.412GHz",
+    "[ OK ]  SIGNAL INTEGRITY CHECK            σ = 0.812",
+    "[ OK ]  FRAME REGISTRY                    N=184 TOKENS",
+    "[ OK ]  KLOROFORM MORPHOLOGY POOL         7 / 7",
+    "[ OK ]  E0000 PACK                        30 VARIANTS",
+    "[ OK ]  BRANDO CORP 250                   64 CATALOG CELLS",
+    "[ OK ]  VANZYST MULTICOLORED              SEED 10441",
+    "[ OK ]  NCL GRAXEBEOSA TYPEFACE           4864 GLYPHS",
+    "[ OK ]  HELGHANESE PARALLEL ALPHABET      26 GLYPHS",
+    "[ OK ]  IKEDA DATA-FIELD                  10 x 32 LIVE",
+    "........",
+    "SYS.READY · ENTERING SIGNALFRAME//UX",
+    "$ _",
+  ];
   return (
-    <CdBField className="py-[12vh] sm:py-[18vh] min-h-screen">
-      {/* section chrome */}
-      <div className="relative px-6 sm:px-12 mb-[6vh] flex items-end justify-between gap-6 flex-wrap">
-        <div>
-          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60 mb-3">
-            [02//CATALOG]
-          </div>
-          <h2 className="font-[var(--font-bungee)] text-[clamp(36px,6.5vw,96px)] leading-[0.95] uppercase">
-            24 SERIAL
-            <br />
-            MARKS
-          </h2>
-        </div>
-        <div className="max-w-[380px] font-mono text-[11px] sm:text-xs leading-[1.65] uppercase tracking-[var(--cdb-tracking-code)] text-[var(--cdb-paper)]/70">
-          <div className="border-t border-[var(--cdb-chrome-line)] pt-3">
-            the catalog IS the brand · every form is addressable by code ·
-            expansion controlled · no decoration without serial
-          </div>
-        </div>
-      </div>
-      <div className="px-6 sm:px-12">
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-px bg-[var(--cdb-chrome-line)]">
-          {MARK_SPECS.map((m) => (
-            <CdBMark
-              key={m.code}
-              code={m.code}
-              label={m.label}
-              accent={m.accent}
+    <div
+      aria-hidden="true"
+      className={`fixed inset-0 z-[9999] bg-[var(--cdb-black)] transition-opacity duration-[1200ms] ${
+        stage === "fade" ? "opacity-0 pointer-events-none" : "opacity-100"
+      }`}
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `repeating-linear-gradient(0deg, transparent 0 2px, rgba(250,250,250,0.04) 2px 3px)`,
+          }}
+        />
+        <div className="relative px-6 sm:px-10 py-10 sm:py-14 font-mono text-[11px] sm:text-[13px] leading-[1.6] text-[var(--cdb-paper)]">
+          {lines.map((l, i) => (
+            <div
+              key={i}
+              className="whitespace-pre"
+              style={{
+                opacity: 0,
+                animation: `vaultBootLine 0.001s ${i * 180 + 120}ms forwards`,
+              }}
             >
-              {m.form}
-            </CdBMark>
+              <span className={l.startsWith("[ OK ]") ? "text-[var(--cdb-lime)]" : ""}>
+                {l}
+              </span>
+            </div>
           ))}
         </div>
-      </div>
-    </CdBField>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────
-// 03 · MOIRE BANNERS
-// ────────────────────────────────────────────────────────────────
-function MoireBanners() {
-  return (
-    <CdBField className="py-[8vh] space-y-8 sm:space-y-14 overflow-visible">
-      <div className="px-6 sm:px-12">
-        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60">
-          [03//BANNERS · E0000 PACK]
-        </div>
-      </div>
-      <CdBBanner word="SIGNALFRAME" code="E0000_012 / CORRUGATED" skew={-4} />
-      <CdBBanner word="CULTURE DIVISION" code="E0000_021 / PEELING" skew={2} halftoneStep={5} />
-    </CdBField>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────
-// 04 · TECHNICAL SCHEMATIC
-// ────────────────────────────────────────────────────────────────
-function Schematic() {
-  return (
-    <CdBField className="py-[14vh] min-h-screen">
-      <div className="px-6 sm:px-12 grid md:grid-cols-[1.4fr_1fr] gap-10 md:gap-16 items-start">
-        <div>
-          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60 mb-3">
-            [04//SCHEMATIC · PROBE 0441]
-          </div>
-          <h2 className="font-[var(--font-bungee)] text-[clamp(36px,6vw,92px)] leading-[0.95] uppercase mb-6">
-            DUAL-LAYER
-            <br />
-            READOUT
-          </h2>
-          <div className="relative w-full aspect-[4/3] border border-[var(--cdb-chrome-line)] bg-[var(--cdb-black)]">
-            <DiagramRead />
-            <div className="absolute top-2 left-2 font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--cdb-paper)]/70">
-              FIG. 01 · FRAME ↔ SIGNAL TRANSFER
-            </div>
-            <div className="absolute bottom-2 right-2 font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--cdb-paper)]/70">
-              SCALE 1:1 · NO COLOUR
-            </div>
-          </div>
-        </div>
-        <div className="space-y-6 font-mono text-[12px] leading-[1.75] text-[var(--cdb-paper)]/85 uppercase tracking-[var(--cdb-tracking-code)]">
-          <div className="border-b border-[var(--cdb-chrome-line)] pb-4">
-            <div className="text-[var(--cdb-lime)] mb-1">FRAME LAYER /</div>
-            deterministic · legible · semantic · consistent · the structural
-            substrate through which SIGNAL passes.
-          </div>
-          <div className="border-b border-[var(--cdb-chrome-line)] pb-4">
-            <div className="text-[var(--cdb-lime)] mb-1">SIGNAL LAYER /</div>
-            generative · parametric · animated · data-driven · expression
-            constrained by frame; never allowed to interfere with utility.
-          </div>
-          <div className="border-b border-[var(--cdb-chrome-line)] pb-4">
-            <div className="text-[var(--cdb-lime)] mb-1">TRANSFER /</div>
-            signal-intensity scalar [0.000-1.000] drives parametric shader
-            and motion. frame responds via token not override.
-          </div>
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <Stat label="DIMENSIONS" v="11" />
-            <Stat label="TOKENS" v="184" />
-            <Stat label="MORPHOLOGIES" v="4" />
-            <Stat label="ACCENT" v="1" />
-          </div>
-        </div>
-      </div>
-    </CdBField>
-  );
-}
-
-function Stat({ label, v }: { label: string; v: string }) {
-  return (
-    <div className="border border-[var(--cdb-chrome-line)] p-3">
-      <div className="text-[10px] opacity-60 mb-1">{label}</div>
-      <div className="font-[var(--font-bungee)] text-[28px] leading-none text-[var(--cdb-paper)]">
-        {v}
+        <style>{`@keyframes vaultBootLine{to{opacity:1}}`}</style>
       </div>
     </div>
   );
 }
 
-// ────────────────────────────────────────────────────────────────
-// 05 · STAMP FIELD
-// ────────────────────────────────────────────────────────────────
-const STAMPS = [
-  { t: "ORGULLECIDA", c: "SF//STM-001", r: -3 },
-  { t: "NEVER COME BACK", c: "SF//STM-002", r: 2, v: "outline" as const },
-  { t: "BERSERKER!", c: "SF//STM-003", r: -1 },
-  { t: "DECODED", c: "SF//STM-004", r: 4, v: "outline" as const },
-  { t: "NEVERMORE", c: "SF//STM-005", r: -2 },
-  { t: "COUNTERPRODUCTIVE MMXXVI", c: "SF//STM-006", r: 1 },
-  { t: "FRAME LOCKED", c: "SF//STM-007", r: -4, v: "outline" as const },
-  { t: "SIGNAL VERIFIED", c: "SF//STM-008", r: 3 },
-  { t: "INTERRUPT", c: "SF//STM-009", r: 0 },
-  { t: "MACH ELEGY", c: "SF//STM-010", r: -2, v: "outline" as const },
-  { t: "LIMINAL CORP", c: "SF//STM-011", r: 3 },
-  { t: "DECLASSIFIED", c: "SF//STM-012", r: -1 },
-  { t: "CULTURE DIVISION", c: "SF//STM-013", r: 2 },
-  { t: "PARALLEL WORLD", c: "SF//STM-014", r: -3, v: "outline" as const },
-];
-
-function StampField() {
+// ─────────────────────────────────────────────────────────────
+// 01 · COLD VOID — KLOROFORM pointcloud × Cyber2k HUD
+// ─────────────────────────────────────────────────────────────
+function ColdVoid() {
+  const ref = React.useRef<HTMLElement | null>(null);
+  const progress = useSectionProgress(ref);
   return (
-    <CdBField className="py-[14vh] min-h-screen">
-      <div className="px-6 sm:px-12 mb-[6vh]">
-        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60 mb-3">
-          [05//STAMP FIELD · 14 OF 24]
-        </div>
-        <h2 className="font-[var(--font-bungee)] text-[clamp(32px,5.4vw,84px)] leading-[0.95] uppercase">
-          MARKS IN
-          <br />
-          CIRCULATION
-        </h2>
+    <VaultField
+      ref={ref as unknown as React.Ref<HTMLElement>}
+      bleed="viewport"
+      grain="strong"
+      scanlines
+      pack="KLOROFORM · POINTCLOUD FIELD / σ[0→1]"
+      className="min-h-[120vh]"
+    >
+      <VaultChrome
+        code="SF//VLT-001 · COLD VOID"
+        mode="FRAME / SIGNAL IDLE"
+        reticle
+        waveform
+        rangeFinder
+        brackets
+        ticks
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <VaultPointcloud
+          morphologies={[
+            "ring",
+            "torus",
+            "comet",
+            "eventHorizon",
+            "spiral",
+            "nebula",
+            "lattice",
+          ]}
+          progress={progress}
+          pointCount={22000}
+          className="w-full h-full max-w-[88vw] max-h-[82vh]"
+        />
       </div>
-      <div className="px-6 sm:px-12 flex flex-wrap gap-3 sm:gap-4">
+      {/* sticky wordmark */}
+      <div className="sticky top-[50vh] -translate-y-1/2 relative z-10 flex flex-col items-center gap-4 pointer-events-none">
+        <div className="font-[var(--font-bungee)] text-[clamp(96px,22vw,400px)] leading-[0.8] uppercase mix-blend-difference text-[var(--cdb-paper)]">
+          VOID
+        </div>
+        <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-[var(--cdb-paper)]/75">
+          {progressLabel(progress)} / SIGNAL σ={progress.toFixed(3)}
+        </div>
+      </div>
+      {/* floating stamps */}
+      <div className="absolute top-[22vh] right-[8vw] flex gap-3">
+        <VaultStamp text="COLD BOOT" code="STM-001" treatment="inverted" />
+        <VaultStamp text="σ VERIFIED" treatment="ink" rotate={-2} />
+      </div>
+    </VaultField>
+  );
+}
+function progressLabel(p: number): string {
+  if (p < 0.15) return "RING";
+  if (p < 0.3) return "TORUS";
+  if (p < 0.45) return "COMET";
+  if (p < 0.6) return "EVENT HORIZON";
+  if (p < 0.75) return "SPIRAL";
+  if (p < 0.9) return "NEBULA";
+  return "LATTICE";
+}
+
+// ─────────────────────────────────────────────────────────────
+// 02 · BRANDO CORP 250 CATALOG — 64-cell Y2K trademark grid
+// ─────────────────────────────────────────────────────────────
+const GLYPH_POOL: VaultTrademarkGlyph[] = [
+  "hexStacked",
+  "recycling",
+  "starBurst",
+  "peaceRing",
+  "cubeNest",
+  "circuitWheel",
+  "tigerEye",
+  "smileyCrown",
+  "quadrant",
+  "dotMatrix",
+  "chevronArrow",
+  "gearWedge",
+  "orbit",
+  "asterField",
+  "maze",
+  "sunburst",
+];
+function BrandoCatalog() {
+  const cells = React.useMemo(() => {
+    return Array.from({ length: 64 }).map((_, i) => ({
+      code: `SF//TMK-${String(i + 1).padStart(3, "0")}`,
+      glyph: GLYPH_POOL[i % GLYPH_POOL.length],
+      variant: (i % 17 === 5
+        ? "lime"
+        : i % 6 === 3
+        ? "fill"
+        : "line") as "line" | "fill" | "lime",
+    }));
+  }, []);
+  return (
+    <VaultField pack="BRANDO CORP 250 / UNSORTED TRADEMARKS" className="py-[10vh]">
+      <SectionHeader
+        code="[02 / CATALOG]"
+        title="64 TRADEMARK CELLS"
+        strap="every mark is addressable · expansion controlled · no decoration without serial"
+      />
+      <div className="px-6 sm:px-10 mt-12">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-px bg-[var(--cdb-chrome-line)]">
+          {cells.map((c) => (
+            <VaultTrademark
+              key={c.code}
+              code={c.code}
+              glyph={c.glyph}
+              variant={c.variant}
+            />
+          ))}
+        </div>
+      </div>
+    </VaultField>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 03 · E0000 BLACK FLAG WALL
+// ─────────────────────────────────────────────────────────────
+const FLAGS: { word: string; code: string; pattern: FlagPattern; skew: number; accent: "lime" | "paper" | "orange" }[] = [
+  { word: "SIGNAL", code: "E0000_004", pattern: "stripesTight", skew: -3, accent: "lime" },
+  { word: "FRAME", code: "E0000_011", pattern: "dotsGrid", skew: 2, accent: "lime" },
+  { word: "VAULT", code: "E0000_018", pattern: "corrugated", skew: -2, accent: "lime" },
+  { word: "CULTURE", code: "E0000_021", pattern: "dotsGradient", skew: 1, accent: "orange" },
+  { word: "DIVISION", code: "E0000_025", pattern: "crossHatch", skew: -4, accent: "lime" },
+  { word: "TRANSMIT", code: "E0000_028", pattern: "verticalBars", skew: 3, accent: "lime" },
+  { word: "RECEIVE", code: "E0000_030", pattern: "diagonal", skew: -1, accent: "paper" },
+];
+function FlagWall() {
+  return (
+    <VaultField pack="ENERO.STUDIO / BLACK FLAG PACK" className="py-[8vh]">
+      <SectionHeader
+        code="[03 / E0000 PACK]"
+        title="7 HALFTONE FLAGS"
+        strap="industrial substrate turned into a banner · moire is the form"
+      />
+      <div className="mt-10 space-y-6">
+        {FLAGS.map((f) => (
+          <VaultFlag key={f.code} {...f} />
+        ))}
+      </div>
+    </VaultField>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 04 · VANZYST CIRCUITRY — dither grain + procedural biocircuit
+// ─────────────────────────────────────────────────────────────
+function VanzystCircuitry() {
+  return (
+    <VaultField
+      grain="dither"
+      scanlines
+      pack="VANZYST · MULTICOLORED / SEED 10441"
+      className="py-[10vh] min-h-[110vh]"
+    >
+      <SectionHeader
+        code="[04 / VANZYST BIOCIRCUIT]"
+        title="CELLULAR / CYBERNETIC HYBRID"
+        strap="42 cells · 60 synapses · pixel-erosion substrate"
+      />
+      <div className="relative mt-8 mx-6 sm:mx-10 h-[70vh] border border-[var(--cdb-chrome-line)] overflow-hidden">
+        <VaultBiocircuit cellCount={42} synapseCount={60} seed={10441} />
+        <div className="pointer-events-none absolute top-4 left-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/70">
+          BIO-CIRCUIT FIELD · SUBSTRATE OK
+        </div>
+        <div className="pointer-events-none absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-lime)]">
+          MACH ELEGY
+        </div>
+        <div className="pointer-events-none absolute bottom-4 left-4 right-4 flex justify-between font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--cdb-paper)]/55">
+          <span>SAMPLE 0.1024s</span>
+          <span>DRIFT 0.002</span>
+          <span>LOCK ON</span>
+          <span>RESOLUTION 1200×800</span>
+        </div>
+      </div>
+      <div className="mt-6 mx-6 sm:mx-10 font-[var(--font-archivo-narrow)] text-[clamp(80px,14vw,220px)] leading-[0.82] font-bold uppercase text-[var(--cdb-paper)]">
+        DECEASED
+        <br />
+        <span className="text-[var(--cdb-lime)]">BUT RUNNING</span>
+      </div>
+    </VaultField>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 05 · DIAGRAMS2 SCHEMATIC
+// ─────────────────────────────────────────────────────────────
+function SchematicPage() {
+  return (
+    <VaultField grain="strong" pack="DIAGRAMS2 / FIG.44A" className="py-[10vh]">
+      <SectionHeader
+        code="[05 / SCHEMATIC]"
+        title="SIGNAL PATH / READOUT"
+        strap="oscillator → amplifier → coupling → rectifier → transducer"
+      />
+      <div className="relative mt-10 mx-6 sm:mx-10 aspect-[12/7] border border-[var(--cdb-chrome-line)] bg-[var(--cdb-black)]">
+        <VaultSchematic />
+        <div className="pointer-events-none absolute top-3 left-3 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/70">
+          FIG. 44A · SF//7 / SCHEMATIC 04 OF 17
+        </div>
+        <div className="pointer-events-none absolute bottom-3 right-3 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/70">
+          SCALE 1:1 · NO COLOUR · CULTURE DIVISION PRESS
+        </div>
+      </div>
+    </VaultField>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 06 · NCL TYPESCAPE — 3-axis specimen
+// ─────────────────────────────────────────────────────────────
+function NclTypescape() {
+  return (
+    <VaultField pack="NCL GRAXEBEOSA · ENXYCLO STUDIO / 4864 GLYPHS" className="py-[10vh]">
+      <SectionHeader
+        code="[06 / NCL TYPESCAPE]"
+        title="TWO-AXIS + PARALLEL SCRIPT"
+        strap="horizontal bungee · vertical archivo · fictional helghanese"
+      />
+      {/* three side-by-side specimens */}
+      <div className="mt-10 mx-6 sm:mx-10 grid md:grid-cols-3 gap-px bg-[var(--cdb-chrome-line)]">
+        {/* horizontal */}
+        <div className="bg-[var(--cdb-black)] p-6 md:p-10 min-h-[50vh] flex flex-col justify-between">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-lime)]">
+            AXIS · HORIZONTAL · BUNGEE
+          </div>
+          <div className="font-[var(--font-bungee)] text-[clamp(68px,10vw,140px)] leading-[0.82] uppercase tracking-[-0.02em]">
+            EXPANSE
+          </div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/55">
+            608 GLYPHS · REG 400 · LATIN-EXT
+          </div>
+        </div>
+        {/* vertical */}
+        <div className="bg-[var(--cdb-black)] p-6 md:p-10 min-h-[50vh] flex flex-col justify-between">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-lime)]">
+            AXIS · VERTICAL · ARCHIVO
+          </div>
+          <div className="font-[var(--font-archivo-narrow)] text-[clamp(100px,14vw,220px)] leading-[0.82] font-bold uppercase text-[var(--cdb-paper)] tracking-[-0.03em]">
+            RUPTURE
+          </div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/55">
+            4 WEIGHTS · 400-700 · CONDENSED GROTESQUE
+          </div>
+        </div>
+        {/* fictional */}
+        <div className="bg-[var(--cdb-black)] p-6 md:p-10 min-h-[50vh] flex flex-col justify-between">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-lime)]">
+            AXIS · FICTIONAL · HELGHANESE
+          </div>
+          <VaultHelghanese text="SILENT PARALLEL" size={60} letterSpacing={4} />
+          <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/55">
+            26 GLYPHS · GEOMETRIC · NO CURVES
+          </div>
+        </div>
+      </div>
+      {/* sample-word strip — Warp lineage */}
+      <div className="mt-8 mx-6 sm:mx-10 border-t border-[var(--cdb-chrome-line)] pt-6">
+        <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cdb-paper)]/55 mb-4">
+          SAMPLE WORDS / WARP LINEAGE / GENRE TAGGING
+        </div>
+        <div className="font-[var(--font-bungee)] text-[clamp(22px,3.2vw,46px)] leading-[1.05] uppercase flex flex-wrap gap-x-6 gap-y-1 text-[var(--cdb-paper)]">
+          <span>aphex</span>
+          <span className="text-[var(--cdb-lime)]">xstacy</span>
+          <span>björk</span>
+          <span>archive</span>
+          <span className="text-[var(--vault-orange)]">sinogram</span>
+          <span>autechre</span>
+          <span>oval</span>
+          <span>pansonic</span>
+        </div>
+      </div>
+      {/* bezier-debug callout */}
+      <div className="mt-10 mx-6 sm:mx-10 grid md:grid-cols-[1.2fr_1fr] gap-10 items-center">
+        <div className="relative border border-[var(--cdb-chrome-line)] bg-[var(--cdb-black)] p-8 aspect-[5/3] flex items-center justify-center">
+          <BezierDebug />
+          <div className="pointer-events-none absolute top-3 left-3 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--cdb-lime)]">
+            BEZIER DEBUG · GLYPH /C/ · 24 CONTROL POINTS
+          </div>
+        </div>
+        <div className="font-mono text-[12px] leading-[1.75] uppercase tracking-[0.08em] text-[var(--cdb-paper)]/85">
+          <div className="text-[var(--cdb-lime)] mb-3">DEN® · BEZIER-AS-DESIGN</div>
+          construction visible as aesthetic · the typeface shows its anchor
+          points · process visible = substrate-as-content · letterforms are
+          not rendered output, they are catalogued geometry.
+        </div>
+      </div>
+    </VaultField>
+  );
+}
+
+// Bezier-debug mockup: a big letter C with visible control points + handles.
+function BezierDebug() {
+  return (
+    <svg viewBox="0 0 400 220" className="w-full h-full">
+      <path
+        d="M 320 50 Q 260 30 200 30 Q 80 30 80 110 Q 80 190 200 190 Q 260 190 320 170"
+        fill="none"
+        stroke="var(--cdb-paper)"
+        strokeWidth="36"
+        strokeLinecap="butt"
+      />
+      {/* control lines */}
+      <g stroke="var(--cdb-lime)" strokeWidth="0.75" fill="none" opacity="0.85">
+        <line x1="320" y1="50" x2="260" y2="30" />
+        <line x1="260" y1="30" x2="200" y2="30" />
+        <line x1="200" y1="30" x2="80" y2="30" />
+        <line x1="80" y1="30" x2="80" y2="110" />
+        <line x1="80" y1="110" x2="80" y2="190" />
+        <line x1="80" y1="190" x2="200" y2="190" />
+        <line x1="200" y1="190" x2="260" y2="190" />
+        <line x1="260" y1="190" x2="320" y2="170" />
+      </g>
+      {/* anchor points */}
+      {[
+        [320, 50],
+        [260, 30],
+        [200, 30],
+        [80, 30],
+        [80, 110],
+        [80, 190],
+        [200, 190],
+        [260, 190],
+        [320, 170],
+      ].map(([x, y], i) => (
+        <g key={i}>
+          <rect
+            x={x - 3}
+            y={y - 3}
+            width="6"
+            height="6"
+            fill="var(--cdb-lime)"
+            stroke="var(--cdb-black)"
+            strokeWidth="1"
+          />
+          <text
+            x={x + 6}
+            y={y + 10}
+            fontFamily="var(--font-jetbrains), monospace"
+            fontSize="7"
+            fill="var(--cdb-lime)"
+          >
+            {String(i).padStart(2, "0")}
+          </text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 07 · STAMP CIRCULATION — 40-stamp manifesto wall
+// ─────────────────────────────────────────────────────────────
+const STAMPS: { t: string; c: string; tr: VaultStampTreatment; r?: number }[] = [
+  { t: "ORGULLECIDA", c: "STM-001", tr: "ink", r: -3 },
+  { t: "NEVER COME BACK", c: "STM-002", tr: "outline", r: 2 },
+  { t: "BERSERKER!", c: "STM-003", tr: "smeared", r: -1 },
+  { t: "DECODED", c: "STM-004", tr: "double", r: 4 },
+  { t: "NEVERMORE", c: "STM-005", tr: "faded", r: -2 },
+  { t: "COUNTERPRODUCTIVE MMXXVI", c: "STM-006", tr: "ink", r: 1 },
+  { t: "FRAME LOCKED", c: "STM-007", tr: "rotated" },
+  { t: "SIGNAL VERIFIED", c: "STM-008", tr: "ink", r: 3 },
+  { t: "INTERRUPT", c: "STM-009", tr: "strike" },
+  { t: "MACH ELEGY", c: "STM-010", tr: "inverted", r: -2 },
+  { t: "LIMINAL CORP", c: "STM-011", tr: "ink", r: 3 },
+  { t: "DECLASSIFIED", c: "STM-012", tr: "faded", r: -1 },
+  { t: "CULTURE DIVISION", c: "STM-013", tr: "ink", r: 2 },
+  { t: "PARALLEL WORLD", c: "STM-014", tr: "outline", r: -3 },
+  { t: "LONG LIVE THE NOISE", c: "STM-015", tr: "smeared" },
+  { t: "END HORIZON", c: "STM-016", tr: "ink" },
+  { t: "SIGNAL COLLAPSE", c: "STM-017", tr: "strike" },
+  { t: "FRAME ABSORBED", c: "STM-018", tr: "ink", r: 5 },
+  { t: "CULTURE SEIZED", c: "STM-019", tr: "inverted" },
+  { t: "DIVISION WON", c: "STM-020", tr: "ink", r: -4 },
+  { t: "STATIC HOLDS", c: "STM-021", tr: "faded" },
+  { t: "NO FUTURE PHASE", c: "STM-022", tr: "ink" },
+  { t: "BRUTALIST HEART", c: "STM-023", tr: "outline", r: 2 },
+  { t: "POST-CORPORATE", c: "STM-024", tr: "double" },
+  { t: "DEATH TO UX", c: "STM-025", tr: "smeared", r: -1 },
+  { t: "CATALOG IS BRAND", c: "STM-026", tr: "ink" },
+  { t: "SIGNAL / FRAME", c: "STM-027", tr: "inverted", r: 1 },
+  { t: "BEZIERS VISIBLE", c: "STM-028", tr: "outline" },
+  { t: "GRAIN REQUIRED", c: "STM-029", tr: "faded" },
+  { t: "REJECT LIQUID GLASS", c: "STM-030", tr: "strike", r: -2 },
+  { t: "ZERO RADIUS", c: "STM-031", tr: "ink", r: 4 },
+  { t: "ONE POP COLOR", c: "STM-032", tr: "ink" },
+  { t: "KLOROFORM / LIVE", c: "STM-033", tr: "inverted", r: -3 },
+  { t: "E0000 / REPEAT", c: "STM-034", tr: "outline" },
+  { t: "HELGHANESE PASSKEY", c: "STM-035", tr: "faded" },
+  { t: "IKEDA TRANSMISSION", c: "STM-036", tr: "smeared" },
+  { t: "TDR / DU / LINEAGE", c: "STM-037", tr: "ink", r: 2 },
+  { t: "SYSTEM WITHOUT SOFTNESS", c: "STM-038", tr: "ink" },
+  { t: "BURN THE SPLASH", c: "STM-039", tr: "strike", r: -1 },
+  { t: "END OF TRANSMISSION", c: "STM-040", tr: "rotated" },
+];
+function StampCirculation() {
+  return (
+    <VaultField pack="STAMP CIRCULATION / 40 VARIANTS / 8 TREATMENTS" className="py-[12vh]">
+      <SectionHeader
+        code="[07 / STAMP WALL]"
+        title="MARKS IN CIRCULATION"
+        strap="physical-ink register · 8 treatments · varying registration error"
+      />
+      <div className="mt-10 mx-6 sm:mx-10 flex flex-wrap gap-2 sm:gap-3 items-start">
         {STAMPS.map((s) => (
-          <CdBStamp
+          <VaultStamp
             key={s.c}
             text={s.t}
             code={s.c}
-            rotate={s.r}
-            variant={s.v ?? "fill"}
+            treatment={s.tr}
+            rotate={s.r ?? 0}
           />
         ))}
       </div>
-    </CdBField>
+    </VaultField>
   );
 }
 
-// ────────────────────────────────────────────────────────────────
-// 06 · TYPE SPECIMEN
-// ────────────────────────────────────────────────────────────────
-function TypeSpecimen() {
+// ─────────────────────────────────────────────────────────────
+// 08 · HELGHANESE + IKEDA EXIT
+// ─────────────────────────────────────────────────────────────
+function HelghaneseExit() {
   return (
-    <CdBField className="py-[14vh] min-h-screen">
-      <div className="px-6 sm:px-12 mb-[8vh] flex justify-between items-end gap-6 flex-wrap">
-        <div>
-          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60 mb-3">
-            [06//SPECIMEN · TWO-AXIS]
-          </div>
-          <h2 className="font-[var(--font-bungee)] text-[clamp(32px,5.4vw,84px)] leading-[0.95] uppercase">
-            TYPE
-            <br />
-            SYSTEM
-          </h2>
-        </div>
-        <div className="max-w-[300px] font-mono text-[11px] uppercase tracking-[var(--cdb-tracking-code)] text-[var(--cdb-paper)]/70 leading-[1.7]">
-          two opposite distortions — extreme horizontal (Bungee) / extreme
-          vertical (Archivo Narrow). never combined on one surface.
-        </div>
-      </div>
-      <div className="px-6 sm:px-12 grid md:grid-cols-2 gap-px bg-[var(--cdb-chrome-line)]">
-        <div className="bg-[var(--cdb-black)] p-6 sm:p-10 min-h-[50vh] flex flex-col justify-between">
-          <div className="font-mono text-[10px] uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-lime)]">
-            AXIS · HORIZONTAL · BUNGEE
-          </div>
-          <div className="font-[var(--font-bungee)] text-[clamp(88px,14vw,220px)] leading-[0.8] text-[var(--cdb-paper)] uppercase tracking-[-0.02em]">
-            EXPANSE
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[var(--cdb-tracking-code)] text-[var(--cdb-paper)]/60 flex justify-between">
-            <span>608 glyphs</span>
-            <span>regular 400</span>
-            <span>latin-ext</span>
-          </div>
-        </div>
-        <div className="bg-[var(--cdb-black)] p-6 sm:p-10 min-h-[50vh] flex flex-col justify-between">
-          <div className="font-mono text-[10px] uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-lime)]">
-            AXIS · VERTICAL · ARCHIVO NARROW
-          </div>
-          <div className="font-[var(--font-archivo-narrow)] text-[clamp(120px,18vw,280px)] leading-[0.82] text-[var(--cdb-paper)] uppercase font-bold tracking-[-0.03em]">
-            RUPTURE
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[var(--cdb-tracking-code)] text-[var(--cdb-paper)]/60 flex justify-between">
-            <span>4 weights</span>
-            <span>400–700</span>
-            <span>condensed grotesque</span>
-          </div>
-        </div>
-      </div>
-    </CdBField>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────
-// 07 · TERMINAL CLOSE
-// ────────────────────────────────────────────────────────────────
-function TerminalClose() {
-  return (
-    <CdBField bleed="viewport" className="min-h-screen">
-      <CdBCornerChrome
-        topLeft="TRANSMISSION · SIGNALFRAME//UX"
-        topRight="TERMINAL OPEN · 2026.04.18"
-        bottomLeft="SF//FRM-007 · PAGE 07/07"
-        bottomRight="END OF SYSTEM"
-        geoCoord="SIGNAL CLOSED"
+    <VaultField
+      bleed="viewport"
+      grain="strong"
+      scanlines
+      pack="IKEDA · DATA FIELD / HELGHANESE EXIT"
+      className="min-h-screen"
+    >
+      <VaultChrome
+        code="SF//VLT-008 · END OF SIGNAL"
+        mode="TRANSMISSION CLOSED"
+        reticle={false}
+        waveform
+        rangeFinder={false}
+        brackets
+        ticks
       />
-      {/* background data-field */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `repeating-linear-gradient(0deg, transparent 0 3px, rgba(250,250,250,0.04) 3px 4px)`,
-        }}
-      />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-10 px-6 text-center">
-        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-lime)]">
-          $ CULTURE-DIVISION --SIGNALFRAME INIT
+      {/* background data field */}
+      <div className="absolute inset-[12vh_6vw] opacity-75">
+        <VaultDataField columns={10} rows={36} />
+      </div>
+      {/* center content over the data */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-10 px-6 text-center pointer-events-none">
+        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.28em] text-[var(--cdb-lime)]">
+          $ CULTURE-DIVISION --SIGNALFRAME END
         </div>
-        <div className="font-[var(--font-bungee)] text-[clamp(44px,9vw,156px)] leading-[0.9] uppercase max-w-[1200px]">
+        <div className="font-[var(--font-bungee)] text-[clamp(48px,9.5vw,160px)] leading-[0.9] uppercase">
           END OF
           <br />
           TRANSMISSION
         </div>
+        <VaultHelghanese text="SILENCE IS A SIGNAL" size={36} letterSpacing={3} />
         <div className="flex gap-3 flex-wrap justify-center">
-          <CdBStamp text="SIGNAL CLOSED" code="SF//STM-024" />
-          <CdBStamp text="FRAME HELD" variant="outline" code="SF//STM-025" />
+          <VaultStamp text="SIGNAL CLOSED" code="STM-041" treatment="ink" />
+          <VaultStamp text="FRAME HELD" code="STM-042" treatment="outline" />
+          <VaultStamp text="CATALOG PRESERVED" code="STM-043" treatment="inverted" rotate={-2} />
         </div>
-        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[var(--cdb-tracking-chrome)] text-[var(--cdb-paper)]/60 max-w-[560px] leading-[1.7]">
-          the last thing a user sees should feel like a terminal session that
-          ended — not an invitation. the catalog remains. the signal does not.
+        <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--cdb-paper)]/55 max-w-[640px] leading-[1.75]">
+          the catalog remains. the signal does not. the frame is absorbed.
+          every transmission ends in silence — the silence is the proof that
+          the transmission happened at all.
         </div>
       </div>
-    </CdBField>
+    </VaultField>
   );
 }
 
-// ────────────────────────────────────────────────────────────────
-// Mark form primitives — simple SVG glyphs for catalog cells.
-// Each fills 64×64 viewBox, stroke lime or paper, no rounded joins.
-// ────────────────────────────────────────────────────────────────
-const svgBase =
-  "w-[58%] h-[58%] stroke-[var(--cdb-paper)] fill-none stroke-[2.5]";
-const svgAccent =
-  "w-[58%] h-[58%] stroke-[var(--cdb-lime-foreground)] fill-none stroke-[2.5]";
-
-function FormCross() {
+// ─────────────────────────────────────────────────────────────
+// Shared: section header
+// ─────────────────────────────────────────────────────────────
+function SectionHeader({
+  code,
+  title,
+  strap,
+}: {
+  code: string;
+  title: string;
+  strap: string;
+}) {
   return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="8" y1="32" x2="56" y2="32" />
-      <line x1="32" y1="8" x2="32" y2="56" />
-    </svg>
-  );
-}
-function FormRing() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <circle cx="32" cy="32" r="22" />
-      <circle cx="32" cy="32" r="3" fill="var(--cdb-paper)" />
-    </svg>
-  );
-}
-function FormBars() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="14" y1="18" x2="50" y2="18" />
-      <line x1="14" y1="32" x2="50" y2="32" />
-      <line x1="14" y1="46" x2="50" y2="46" />
-    </svg>
-  );
-}
-function FormHex() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polygon points="32,6 56,20 56,44 32,58 8,44 8,20" />
-    </svg>
-  );
-}
-function FormTarget() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgAccent}>
-      <circle cx="32" cy="32" r="24" />
-      <circle cx="32" cy="32" r="15" />
-      <circle cx="32" cy="32" r="6" fill="var(--cdb-lime-foreground)" />
-      <line x1="0" y1="32" x2="64" y2="32" />
-      <line x1="32" y1="0" x2="32" y2="64" />
-    </svg>
-  );
-}
-function FormDotGrid() {
-  return (
-    <svg viewBox="0 0 64 64" className="w-[58%] h-[58%]">
-      {[16, 32, 48].flatMap((y) =>
-        [16, 32, 48].map((x) => (
-          <circle
-            key={`${x}-${y}`}
-            cx={x}
-            cy={y}
-            r={3}
-            fill="var(--cdb-paper)"
-          />
-        ))
-      )}
-    </svg>
-  );
-}
-function FormHalftone() {
-  return (
-    <svg viewBox="0 0 64 64" className="w-[58%] h-[58%]">
-      {[0, 8, 16, 24, 32, 40, 48, 56].map((y) =>
-        [0, 8, 16, 24, 32, 40, 48, 56].map((x) => (
-          <rect
-            key={`${x}-${y}`}
-            x={x + 1}
-            y={y + 1}
-            width={Math.max(1, (64 - x) / 14)}
-            height={Math.max(1, (64 - x) / 14)}
-            fill="var(--cdb-paper)"
-          />
-        ))
-      )}
-    </svg>
-  );
-}
-function FormTriangle() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polygon points="32,8 56,52 8,52" />
-    </svg>
-  );
-}
-function FormNotch() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <path d="M8 8 H44 L56 20 V56 H8 Z" />
-    </svg>
-  );
-}
-function FormAsterisk() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="32" y1="8" x2="32" y2="56" />
-      <line x1="11" y1="20" x2="53" y2="44" />
-      <line x1="53" y1="20" x2="11" y2="44" />
-      <line x1="8" y1="32" x2="56" y2="32" />
-    </svg>
-  );
-}
-function FormArrow() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="10" y1="32" x2="54" y2="32" />
-      <polyline points="38,16 54,32 38,48" />
-    </svg>
-  );
-}
-function FormCurve() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <path d="M8 48 C 20 48, 20 16, 32 16 S 44 48, 56 48" />
-    </svg>
-  );
-}
-function FormBracket() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polyline points="18,8 8,8 8,56 18,56" />
-      <polyline points="46,8 56,8 56,56 46,56" />
-    </svg>
-  );
-}
-function FormDiagonal() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="8" y1="56" x2="56" y2="8" />
-      <line x1="8" y1="8" x2="24" y2="8" />
-      <line x1="8" y1="8" x2="8" y2="24" />
-      <line x1="56" y1="56" x2="40" y2="56" />
-      <line x1="56" y1="56" x2="56" y2="40" />
-    </svg>
-  );
-}
-function FormNested() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgAccent}>
-      <rect x="8" y="8" width="48" height="48" />
-      <rect x="18" y="18" width="28" height="28" />
-      <rect x="28" y="28" width="8" height="8" fill="var(--cdb-lime-foreground)" />
-    </svg>
-  );
-}
-function FormCircuit() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="8" y1="32" x2="22" y2="32" />
-      <rect x="22" y="26" width="20" height="12" />
-      <line x1="42" y1="32" x2="56" y2="32" />
-      <circle cx="32" cy="18" r="3" fill="var(--cdb-paper)" />
-      <line x1="32" y1="21" x2="32" y2="26" />
-    </svg>
-  );
-}
-function FormPulse() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polyline points="4,40 16,40 22,20 30,52 38,40 50,40 60,40" />
-    </svg>
-  );
-}
-function FormStar() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polygon points="32,6 38,26 58,26 42,38 48,58 32,46 16,58 22,38 6,26 26,26" />
-    </svg>
-  );
-}
-function FormLBracket() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <polyline points="8,8 8,56 56,56" />
-      <line x1="8" y1="32" x2="32" y2="32" />
-      <line x1="32" y1="56" x2="32" y2="32" />
-    </svg>
-  );
-}
-function FormDisc() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <circle cx="32" cy="32" r="22" fill="var(--cdb-paper)" />
-      <circle cx="32" cy="32" r="8" fill="var(--cdb-black)" />
-    </svg>
-  );
-}
-function FormRays() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <circle cx="32" cy="32" r="5" fill="var(--cdb-paper)" />
-      {Array.from({ length: 8 }).map((_, i) => {
-        const a = (i * Math.PI) / 4;
-        const x2 = 32 + Math.cos(a) * 26;
-        const y2 = 32 + Math.sin(a) * 26;
-        return (
-          <line key={i} x1={32 + Math.cos(a) * 10} y1={32 + Math.sin(a) * 10} x2={x2} y2={y2} />
-        );
-      })}
-    </svg>
-  );
-}
-function FormStripe() {
-  return (
-    <svg viewBox="0 0 64 64" className="w-[58%] h-[58%]">
-      {[6, 14, 22, 30, 38, 46, 54].map((x) => (
-        <line
-          key={x}
-          x1={x}
-          y1="8"
-          x2={x + 12}
-          y2="56"
-          stroke="var(--cdb-paper)"
-          strokeWidth="2"
-        />
-      ))}
-    </svg>
-  );
-}
-function FormComb() {
-  return (
-    <svg viewBox="0 0 64 64" className={svgBase}>
-      <line x1="8" y1="20" x2="56" y2="20" />
-      {[10, 18, 26, 34, 42, 50].map((x) => (
-        <line key={x} x1={x} y1="20" x2={x} y2={Math.random() > 0.5 ? 44 : 52} />
-      ))}
-    </svg>
-  );
-}
-function FormField() {
-  return (
-    <svg viewBox="0 0 64 64" className="w-[58%] h-[58%]">
-      <rect width="64" height="64" fill="var(--cdb-paper)" />
-      <rect x="10" y="10" width="44" height="44" fill="var(--cdb-black)" />
-      <rect x="20" y="20" width="24" height="24" fill="var(--cdb-paper)" />
-    </svg>
+    <div className="relative px-6 sm:px-10 flex items-end justify-between gap-6 flex-wrap">
+      <div>
+        <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.16em] text-[var(--cdb-paper)]/55 mb-3">
+          {code}
+        </div>
+        <h2 className="font-[var(--font-bungee)] text-[clamp(36px,6.5vw,96px)] leading-[0.95] uppercase">
+          {title}
+        </h2>
+      </div>
+      <div className="max-w-[380px] font-mono text-[11px] sm:text-xs leading-[1.65] uppercase tracking-[0.08em] text-[var(--cdb-paper)]/70">
+        <div className="border-t border-[var(--cdb-chrome-line)] pt-3">
+          {strap}
+        </div>
+      </div>
+    </div>
   );
 }
 
-// ── Schematic diagram ──────────────────────────────────────────
-function DiagramRead() {
+// ─────────────────────────────────────────────────────────────
+// Persistent page-edge rail — runs along the right side the entire
+// time, shows section index + current position. Like a movie-film
+// edge strip.
+// ─────────────────────────────────────────────────────────────
+function PageRail() {
   return (
-    <svg
-      viewBox="0 0 400 300"
-      className="w-full h-full stroke-[var(--cdb-paper)] fill-none stroke-[1.25]"
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed top-0 right-0 bottom-0 w-[22px] z-[60] flex flex-col border-l border-[var(--vault-chrome-soft)]"
     >
-      {/* frame rail */}
-      <line x1="30" y1="80" x2="370" y2="80" />
-      <line x1="30" y1="220" x2="370" y2="220" />
-      {/* frame label */}
-      <text
-        x="30"
-        y="70"
-        fontFamily="var(--font-jetbrains), monospace"
-        fontSize="9"
-        fill="var(--cdb-paper)"
-        letterSpacing="1"
-      >
-        FRAME
-      </text>
-      <text
-        x="30"
-        y="240"
-        fontFamily="var(--font-jetbrains), monospace"
-        fontSize="9"
-        fill="var(--cdb-paper)"
-        letterSpacing="1"
-      >
-        SIGNAL
-      </text>
-      {/* coupling — resistor */}
-      <line x1="100" y1="80" x2="100" y2="110" />
-      <polyline points="100,110 90,118 110,126 90,134 110,142 90,150 100,158" />
-      <line x1="100" y1="158" x2="100" y2="220" />
-      {/* coupling — capacitor */}
-      <line x1="200" y1="80" x2="200" y2="130" />
-      <line x1="188" y1="130" x2="212" y2="130" />
-      <line x1="188" y1="140" x2="212" y2="140" />
-      <line x1="200" y1="140" x2="200" y2="220" />
-      {/* coupling — transformer */}
-      <line x1="300" y1="80" x2="300" y2="110" />
-      <path d="M290 110 Q 300 118 310 110 Q 300 118 290 110 M290 125 Q 300 133 310 125 Q 300 133 290 125 M290 140 Q 300 148 310 140 Q 300 148 290 140" />
-      <line x1="300" y1="155" x2="300" y2="220" />
-      {/* arrows — signal intensity scalar */}
-      <line x1="360" y1="150" x2="390" y2="150" />
-      <polyline points="382,144 390,150 382,156" />
-      <text
-        x="354"
-        y="140"
-        fontFamily="var(--font-jetbrains), monospace"
-        fontSize="8"
-        fill="var(--cdb-lime)"
-      >
-        σ[0→1]
-      </text>
-      {/* terminal dots */}
-      {[30, 100, 200, 300, 370].map((x) => (
-        <g key={x}>
-          <circle cx={x} cy="80" r="3" fill="var(--cdb-paper)" />
-          <circle cx={x} cy="220" r="3" fill="var(--cdb-paper)" />
-        </g>
+      {Array.from({ length: 64 }).map((_, i) => (
+        <div
+          key={i}
+          className="flex-1 border-b border-[var(--vault-chrome-soft)] flex items-center justify-center"
+        >
+          {i % 8 === 0 && (
+            <div className="font-mono text-[7px] uppercase tracking-[0.08em] text-[var(--cdb-paper)]/55 rotate-90 whitespace-nowrap">
+              SF//{String(i).padStart(3, "0")}
+            </div>
+          )}
+        </div>
       ))}
-    </svg>
+    </div>
   );
 }
