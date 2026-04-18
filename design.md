@@ -10,7 +10,7 @@
 
 **SignalframeUX** is a high-performance design system for **Culture Division**, a design studio operating at the intersection of electronic music culture, critical design, and product engineering. SignalframeUX powers the Culture Division portfolio, internal tooling (cdOS), and downstream studio work (CD-Operator).
 
-- **Current version:** v0.1 (stabilization phase — not expansion)
+- **Current version:** v0.1 (stabilization + sanctioned SIGNAL-layer growth — see §4.10–§4.12)
 - **Aesthetic lineage:** Detroit Underground (DU) + The Designers Republic (TDR), with adjacent influences from Ryoji Ikeda, Autechre, Neville Brody / Fuse, and Rick Owens.
 - **Register:** Sharp, controlled, structured, slightly tense. Sophisticated, not sterile. Not friendly, not playful, not cozy.
 - **Quality bar:** Awwwards SOTD execution within Culture Division's aesthetic.
@@ -36,18 +36,18 @@ AI tools generating SF output MUST respect these. Violations count as drift.
 | Constraint | Rule |
 |---|---|
 | **Border radius** | Zero everywhere. All `--sfx-radius-*` tokens resolve to `0px`. No exceptions. |
-| **Gradients** | None. No decorative gradients, no fake depth, no "glassmorphism." |
+| **Gradients** | No **decorative** gradients (blur-to-color, aurora, glassmorphic, rainbow, color-shift ornamentation, generic "mesh"). Permitted **structural** uses: hard-stop bars for typographic strikes, edge-vignette `mask-image` for scroll clipping, `repeating-linear-gradient` scanlines in the SIGNAL-layer overlay, halftone/grid hard-stop patterns. No soft color transitions anywhere. |
 | **Shadows** | None decorative. Allowed only as micro-feedback (press/hover) or as `--sfx-deboss-*` tactile tokens. |
 | **Rounded corners** | None. See Border radius. |
 | **Skeuomorphism** | None. No textures imitating real materials. |
 | **Generic dark-mode** | Forbidden. No "default black + neon accent" aesthetic. Must borrow directly from DU/TDR visual language. |
 | **Arbitrary spacing** | Forbidden. Use only blessed stops (see §4.2). |
 | **Palette expansion** | Forbidden. Work within core 5 + extended. Do not introduce new hues. |
-| **Color space** | OKLCH only. Never hex except in prose documentation. |
+| **Color space** | OKLCH only. Never hex except in prose documentation and two sanctioned escape hatches: (a) Edge-runtime files rendered by Satori / Next.js `icon`/`opengraph-image` / global error pages, where CSS custom properties cannot resolve — values must be sourced from a compile-time constant map derived from the OKLCH token definitions (see `lib/tokens.edge.ts` pattern); (b) Canvas 2D / WebGL fallback where `getComputedStyle()` cannot read the token at init — a single hex literal matching the default theme hue is permitted as last resort. Free-authored hex remains forbidden. |
 | **New GSAP effects** | Forbidden in v0.1. Normalize existing usage, do not expand. |
 | **New SF components** | Forbidden in v0.1 unless in stabilization scope (container/section/stack/grid/text primitives). |
 | **Spring / bouncy easings** | Forbidden. Canonical easing is `cubic-bezier(0, 0, 0.2, 1)` (ease-out). No overshoot, no anticipation, no bounce. See §4.5 for rejected curves. |
-| **System-level inventions** | Forbidden in generated output. Do not invent subsystems (elevation ladders, posture systems, new parametric axes, new utility classes). If an addition seems warranted, emit it as a proposal note at the end of the artifact — do not merge it into the primary output. |
+| **System-level inventions** | Forbidden in generated output. Do not invent subsystems (elevation ladders, posture systems, new parametric axes, new utility classes). If an addition seems warranted, emit it as a proposal note at the end of the artifact — do not merge it into the primary output. **Sanctioned SIGNAL-layer subsystems** — Effects Pipeline (§4.10), Canvas Frame (§4.11), Keyframe Library (§4.12) — are in-scope and may be referenced. They are the complete sanctioned set; inventions beyond them still require the proposal workflow. |
 
 ---
 
@@ -104,6 +104,8 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 
 **Rule:** Only these values. Never `5px`, `10px`, `20px`, etc. If Tailwind utilities are used, map to these stops only.
 
+**Anchor semantics:** The fixed-target column lists values at the 1440px viewport. The `clamp()` expressions produce scaled-but-proportional values at other viewports. Component spacing MUST reference `--sfx-space-N` tokens; never author raw pixel spacing that "aims for" an intermediate scaled value. A rendered value of `42px` at a 1280px viewport (where `--sfx-space-12` falls below its 72px ceiling) is compliant — the token is the contract, not the pixel.
+
 ### 4.3 Typography
 
 **Fonts:**
@@ -126,6 +128,17 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--text-2xl` | 32px | section titles |
 | `--text-3xl` | 48px | page headers |
 | `--text-4xl` | 80px | display type |
+
+**HUD micro-type scale (chrome only — never content):**
+
+| Token | Target | Use |
+|---|---|---|
+| `--text-hud-xs` | 5px | Miniature preview pixel-grid labels |
+| `--text-hud-sm` | 6px | Miniature preview inline chrome |
+| `--text-hud-md` | 7px | Compact chrome rows in mini-previews |
+| `--text-hud-lg` | 8px | HUD badges, footer pill text |
+
+**Accessibility exception:** HUD micro-type falls below WCAG minimum readability. It is permitted ONLY for decorative chrome where the size IS the aesthetic signal (Ikeda perception-threshold register) — glyph chrome, instrumentation HUDs, inline meta labels, miniature-component previews. Must NEVER render text that users are expected to read.
 
 **Semantic aliases (preferred for new work):**
 
@@ -150,6 +163,8 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--sfx-gutter-sm` | 16px | Mobile horizontal padding |
 | `--sfx-nav-height` | 83px | Top nav fixed height |
 
+**Viewport-unit consumption policy:** Components rendered inside `<ScaleCanvas>` must consume `--sf-vw` / `--sf-vh` (see §4.11) instead of `vw` / `vh`, so that scaled / letterboxed canvas states remain coherent. Global chrome rendered OUTSIDE `<ScaleCanvas>` (nav, modals, portals) consumes standard viewport units OR the width/gutter/height tokens in this section. Fixed-position chrome that must align to canvas geometry consumes `--sf-frame-offset-x` / `--sf-frame-bottom-gap` / `--sf-canvas-h` (see §4.11).
+
 ### 4.5 Animation
 
 | Token | Value | Use |
@@ -160,7 +175,9 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--sfx-duration-slow` | 400ms | Theme toggle, larger shifts |
 | `--sfx-duration-glacial` | 600ms | Dramatic reveals |
 
-**Canonical easing curve:** `cubic-bezier(0, 0, 0.2, 1)` (ease-out). All six easing tokens — `--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring`, `--ease-in`, `--ease-out`, `--ease-in-out` — resolve to this exact curve. The system has **no spring motion, no anticipation, no bounce.** Motion is decisive. `--sfx-ease-spring` is a legacy name; the curve is ease-out.
+**Canonical easing curve:** `cubic-bezier(0, 0, 0.2, 1)` (ease-out). All six easing tokens — `--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring`, `--ease-in`, `--ease-out`, `--ease-in-out` — resolve to this exact curve. The system has **no spring motion, no anticipation, no bounce.** Motion is decisive.
+
+**`--sfx-ease-spring` is deprecated.** The curve resolves to ease-out; the name misleads and encourages spring thinking. New code must use `--sfx-ease-default`. The deprecated token is retained as an alias for one version to avoid a breaking sweep; `globals.css` should carry a `@deprecated` comment on its declaration.
 
 **Rejected curves — DO NOT substitute these anywhere in generated output:**
 
@@ -168,10 +185,20 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 - `cubic-bezier(0.68, -0.55, 0.265, 1.55)` — back/anticipation, forbidden
 - `cubic-bezier(0.175, 0.885, 0.32, 1.275)` — easeOutBack, forbidden
 - `cubic-bezier(0.2, 0.8, 0.4, 1)` — different ease-out curve, do NOT substitute even though it *looks* similar
+- `cubic-bezier(0.22, 1, 0.36, 1)` / `cubic-bezier(0.16, 1, 0.3, 1)` / `cubic-bezier(0.16, 0, 0.5, 1)` — alternate ease-out shapes, forbidden (multiple variants introduce inconsistency)
 - Any `cubic-bezier` with y-values outside `[0, 1]` range — spring/overshoot territory
-- CSS named easings (`ease`, `ease-in-out`, `ease-in`, `ease-out`) — always explicit `cubic-bezier` or an `--ease-*` token
+- CSS named easings (`ease`, `ease-in-out`, `ease-in`, `ease-out`, `linear`) — always explicit `cubic-bezier` or an `--ease-*` token
 
-**When generating motion:** every transition and animation uses `cubic-bezier(0, 0, 0.2, 1)` directly, or references an `--sfx-ease-*` / `--ease-*` token. No exceptions.
+**Authoring discipline:** In any `transition:` or `animation:` declaration (CSS or inline), the timing function must be either (a) the literal canonical string `cubic-bezier(0, 0, 0.2, 1)` or (b) a reference to an `--sfx-ease-*` / `--ease-*` token. Any other literal bezier or CSS named easing in a transition/animation context fails compliance. Applies to `@keyframes` consumers equally — `animation-timing-function` references must resolve to the canonical curve.
+
+**Procedural SIGNAL-layer motion (exception):** Parametric animations driven by CSS math functions (`pow()`, runtime-written custom properties, scrub variables) may compute progression via non-bezier functions, subject to:
+
+1. Input must be monotonic (scrub progress, scroll position, time). No bouncing inputs.
+2. Output must stay within `[0, 1]` for t in `[0, 1]`. No overshoot.
+3. Usage is per-component and documented inline. This is NOT a reusable math-utility layer.
+4. Not a license to reintroduce bezier overshoot curves. A `cubic-bezier` literal is a transition curve, not a procedural function.
+
+Reference pattern — nav cube cascade (`--sf-nav-peel-frac: calc(1 - pow(calc(1 - var(--sf-nav-phase-frac)), 6))`).
 
 ### 4.6 Interaction Feedback
 
@@ -217,6 +244,57 @@ Fluid-scaled from a 1280px canvas using `clamp()` and `--sf-vw`. Target values a
 | `--sfx-z-skip` | 900 |
 | `--sfx-z-nav` | 9999 |
 | `--sfx-z-vhs` | 99999 |
+
+### 4.10 Effects Pipeline (SIGNAL-layer parametric)
+
+Runtime tokens written by `updateSignalDerivedProps()` in `components/layout/global-effects.tsx`. CSS consumers read them without JS. Primitives in `components/animation/` use the JS API in `lib/effects/` directly for numeric precision.
+
+| Token | Default | Purpose |
+|---|---|---|
+| `--sfx-fx-tier` | `fallback` | Current effects tier (`fallback` / `baseline` / `enhanced` / `premium`) |
+| `--sfx-fx-multiplier` | `0` | Master scalar for all effect-layer opacity/intensity (0–1) |
+| `--sfx-fx-feedback-decay` | `0.88` | Feedback loop decay coefficient |
+| `--sfx-fx-displace-gain` | `0` | Displacement field gain (0–1) |
+| `--sfx-fx-bloom-intensity` | `0` | Bloom pass intensity (0–1) |
+| `--sfx-fx-glitch-rate` | `0` | Glitch pass event rate (0–1) |
+| `--sfx-fx-particle-opacity` | `0` | Particle field opacity (0–1) |
+| `--sfx-audio-bass` | `0` | Audio-reactive bass amplitude (0–1) |
+| `--sfx-audio-mid` | `0` | Audio-reactive mid amplitude (0–1) |
+| `--sfx-audio-high` | `0` | Audio-reactive high amplitude (0–1) |
+
+**Contract:** These tokens parameterize existing effect primitives. They do NOT spawn new CVA variants, new SF components, or new utility classes. Orchestrated through `SFSignalComposer` (§5).
+
+### 4.11 Canvas Frame (SIGNAL-layer viewport remap)
+
+The ScaleCanvas aspect-lock contract. Fixed-position chrome that must align to canvas geometry consumes these rather than raw `vw` / `vh`, so scaled / letterboxed canvas states remain coherent.
+
+| Token | Default | Purpose |
+|---|---|---|
+| `--sf-vw` | `1vw` (no-canvas fallback) | Canvas-remapped viewport width unit |
+| `--sf-vh` | `1vh` (no-canvas fallback) | Canvas-remapped viewport height unit |
+| `--sf-canvas-scale` | `1` | Active canvas scale factor |
+| `--sf-canvas-h` | `calc(100 * var(--sf-vh))` | Canvas height in CSS pixels |
+| `--sf-frame-offset-x` | `0px` | Horizontal offset of canvas within viewport |
+| `--sf-frame-bottom-gap` | `0px` | Bottom-edge gap for fixed HUD clearance |
+| `--nav-height` | `83px` | Top nav fixed height (short-form alias; canonical is `--sfx-nav-height` §4.4) |
+
+**Naming exception:** These use the `--sf-*` prefix rather than `--sfx-*` because they are runtime viewport variables written by `components/layout/scale-canvas.tsx`, not token values. The prefix distinction signals "consume freely, do not author."
+
+### 4.12 Keyframe Library
+
+v0.1.1 blocked new GSAP effects but left CSS `@keyframes` unbounded. The sanctioned families below are the complete inventory. Keyframes outside these families count as subsystem invention and route through the proposal workflow.
+
+| Family | Keyframes | Purpose |
+|---|---|---|
+| Fade | `sf-typewriter-fade`, `sf-slow-fade-in`, `sf-hero-slow-fade-in`, `sf-feel-bloom-fade-in` | Intro / reveal timing |
+| Nav | `sf-nav-roll-up`, `sf-nav-icon-hover-hold` | Nav chrome micro-behavior |
+| Hero | `sf-hero-slash-enter`, `sf-period-in` | Display-type entries |
+| VHS / CRT | `sf-vhs-ease-in`, `sf-scanline-drift`, `sf-idle-scan`, `sf-jfm-flicker` | Signal-layer overlay motion |
+| Feedback | `sf-skeleton-sweep`, `sf-shake`, `sf-flash`, `sf-feel-pulse` | User-feedback micro-motion |
+| Mesh | `sf-mesh-drift` | Background generative motion |
+| Marquee | `sf-marquee-scroll` | Horizontal ticker |
+
+**Addition policy:** New keyframes require a family assignment. All `animation-timing-function` references must resolve to the canonical ease-out curve (§4.5) or a monotonic procedural progression (§4.5 SIGNAL-layer exception). Every new keyframe ships with an inline comment naming its family and use site.
 
 ---
 
@@ -411,9 +489,10 @@ This manifest is the distilled contract. Authoritative sources if an AI tool nee
 | `tailwind.config.*` / Tailwind v4 `@theme` in `globals.css` | Build-time token wiring |
 | `~/greyaltaer/vaults/wiki/` (cdSB) | Intellectual lineage; FRAME/SIGNAL theory; aesthetic rationale |
 
-**Updated:** 2026-04-18 · **Manifest version:** v0.1.1 · **Target SF version:** v0.1 (stabilization)
+**Updated:** 2026-04-18 · **Manifest version:** v0.1.2 · **Target SF version:** v0.1 (stabilization + sanctioned SIGNAL-layer growth)
 
 ### Changelog
 
+- **v0.1.2** (2026-04-18) — Sanctioned SIGNAL-layer growth observed on `feature/navbar-redesign`. Added §4.10 Effects Pipeline, §4.11 Canvas Frame, §4.12 Keyframe Library. Extended §4.3 with HUD micro-type scale (5–8px chrome-only). Amended §4.5 with authoring discipline (no inline CSS named easings; timing function must be canonical bezier literal or token), procedural SIGNAL-layer motion exception (pow-based progression for scrub-driven animations), and `--sfx-ease-spring` deprecation. Rewrote §3 Gradients row to distinguish structural (permitted: hard-stop bars, edge vignettes, scanlines, halftone/grid) from decorative (forbidden). Extended §3 Color space row with Edge-runtime and Canvas 2D hex escape hatches tied to `lib/tokens.edge.ts` pattern. Amended §4.2 with anchor-value semantics, §4.4 with viewport-unit consumption policy, §3 System-level inventions row to name the sanctioned SIGNAL subsystems. Derived from `feature/navbar-redesign` at 64 commits ahead of main. Source delta doc: `.planning/proposals/v0.1.2-deltas.md`. Seven code-level items tracked in §C of the delta doc — not canonized, fix after branch lands.
 - **v0.1.1** (2026-04-18) — Hardened against drift observed in Claude Design v0 probe. Canonical easing curve locked (`cubic-bezier(0, 0, 0.2, 1)`); rejected spring/bouncy curves named explicitly; hex ban reinforced across all contexts (comments, attributes, SVG); new "no subsystem invention" rule (§3, §9 rule 7). Two Claude Design inventions (Elevation ladder, Posture system) captured as v0.2+ proposals at `.planning/proposals/`. See `.planning/claude-design-probes/v0/notes.md` for full probe findings.
 - **v0.1.0** (2026-04-17) — Initial manifest. Distilled from CLAUDE.md, SIGNALFRAMEUX_REFERENCE.md, app/globals.css, components/sf/.
