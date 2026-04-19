@@ -29,7 +29,7 @@ export function EntrySection() {
               innerRadius={0.06}
               trail={0.04}
               pixelSort={0.5}
-              sortThreshold={8}
+              sortThreshold={4}
               className="absolute inset-0"
             />
             {/* Main ring — on top of the iris */}
@@ -38,7 +38,7 @@ export function EntrySection() {
               radius={0.42}
               trail={0.1}
               pixelSort={0.33}
-              sortThreshold={20}
+              sortThreshold={10}
               className="absolute inset-0"
             />
           </div>
