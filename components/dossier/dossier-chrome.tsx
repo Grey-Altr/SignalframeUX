@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { headers } from "next/headers";
 import { CornerLabel } from "./corner-label";
 import { CatalogNav, DOSSIER_CODE, type DossierRoute } from "./catalog-nav";
 
@@ -15,7 +16,39 @@ const substrateStyle: Record<Substrate, { background: string; color: string }> =
 // shift across server restarts but won't cause hydration mismatches within a session.
 const SERVER_START_DATE = new Date().toISOString().slice(0, 10);
 
-export function DossierChrome({
+// Studio location — used as the fallback when geo headers aren't available
+// (local dev, non-Vercel deploys, missing-header edge cases).
+const FALLBACK_LOCATION = { code: "LAX", coords: "34°03'N 118°15'W" };
+
+function formatDMS(decimal: number, axis: "lat" | "lon"): string {
+  const abs = Math.abs(decimal);
+  const deg = Math.floor(abs);
+  const min = Math.floor((abs - deg) * 60);
+  const dir = axis === "lat" ? (decimal >= 0 ? "N" : "S") : (decimal >= 0 ? "E" : "W");
+  return `${String(deg).padStart(2, "0")}°${String(min).padStart(2, "0")}'${dir}`;
+}
+
+async function resolveLocation(): Promise<{ code: string; coords: string }> {
+  try {
+    const h = await headers();
+    const cityRaw = h.get("x-vercel-ip-city");
+    const lat = h.get("x-vercel-ip-latitude");
+    const lon = h.get("x-vercel-ip-longitude");
+    if (!cityRaw || !lat || !lon) return FALLBACK_LOCATION;
+    const city = decodeURIComponent(cityRaw);
+    const code = city.replace(/[^a-zA-Z]/g, "").slice(0, 3).toUpperCase();
+    const latNum = Number(lat);
+    const lonNum = Number(lon);
+    if (!code || !Number.isFinite(latNum) || !Number.isFinite(lonNum)) {
+      return FALLBACK_LOCATION;
+    }
+    return { code, coords: `${formatDMS(latNum, "lat")} ${formatDMS(lonNum, "lon")}` };
+  } catch {
+    return FALLBACK_LOCATION;
+  }
+}
+
+export async function DossierChrome({
   route,
   substrate = "black",
   children,
@@ -25,6 +58,7 @@ export function DossierChrome({
   children: ReactNode;
 }) {
   const s = substrateStyle[substrate];
+  const location = await resolveLocation();
   return (
     <div
       data-dossier-route={route}
@@ -45,7 +79,7 @@ export function DossierChrome({
       </CornerLabel>
 
       <CornerLabel slot="tr">
-        <div>LAX 34°03&apos;N 118°15&apos;W</div>
+        <div>{location.code} {location.coords}</div>
         <div style={{ opacity: 0.6 }}>{SERVER_START_DATE}</div>
       </CornerLabel>
 
