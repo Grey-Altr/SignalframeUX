@@ -49,10 +49,12 @@ export default function Page() {
                 style={{
                   fontFamily: "var(--font-syne), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(48px, 12vw, 200px)",
+                  fontSize: "clamp(44px, 7vw, 104px)",
                 }}
               >
-                SIGNALFRAME<span style={{ opacity: 0.5 }}>{"//"}</span>UX
+                SIGNALFRAME
+                <br />
+                <span style={{ opacity: 0.5 }}>{"//"}</span>UX
               </h1>
 
               <p
