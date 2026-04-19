@@ -12,7 +12,7 @@ type Entry = {
 
 export function BlackflagCatalog({ entries }: { entries: Entry[] }) {
   return (
-    <section className="p-6 md:p-12">
+    <section className="px-6 md:px-12 pt-6 md:pt-12 pb-32 md:pb-40">
       <div
         className="mb-8 text-[11px] uppercase tracking-[0.2em] opacity-60"
         style={{ fontFamily: "var(--font-jetbrains), monospace" }}
