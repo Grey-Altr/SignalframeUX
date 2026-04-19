@@ -14,13 +14,7 @@ export function EntrySection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
-        <div
-          className="aspect-square w-[min(90vw,90vh)]"
-          style={{
-            filter:
-              "drop-shadow(0 0 4px oklch(0.96 0.01 90 / 0.6)) drop-shadow(0 0 12px oklch(0.96 0.01 90 / 0.4)) drop-shadow(0 0 28px oklch(0.96 0.01 90 / 0.2))",
-          }}
-        >
+        <div className="aspect-square w-[min(90vw,90vh)]">
           <div className="relative h-full w-full">
             {/* Iris — inward-drifting cloud behind the main ring */}
             <IrisCloud
