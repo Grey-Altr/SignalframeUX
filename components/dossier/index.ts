@@ -4,3 +4,4 @@ export { CornerLabel } from "./corner-label";
 export { PointcloudRing } from "./pointcloud-ring";
 export { HudOctagonFrame } from "./hud-octagon-frame";
 export { HalftoneCorrugated } from "./halftone-corrugated";
+export { BuildSchematic, type SchematicNode } from "./build-schematic";
