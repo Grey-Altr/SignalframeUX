@@ -34,6 +34,7 @@ export default function ReferencePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,42ch)] gap-10 md:gap-16 items-start">
             <h1
               data-plate="brando-hero"
+              aria-label="API REFERENCE"
               className="uppercase tracking-[-0.02em] leading-[0.88]"
               style={{
                 fontFamily: "var(--font-archivo-black), sans-serif",

@@ -34,6 +34,7 @@ export default function SystemPage() {
         <main className="min-h-screen px-6 md:px-16 py-24">
           <h1
             data-plate="cyber2k-hero"
+            aria-label="TOKEN INSTRUMENT"
             className="uppercase tracking-[0.02em] leading-none mb-12 md:mb-16"
             style={{
               fontFamily: "var(--font-chakra-petch), sans-serif",

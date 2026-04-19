@@ -45,6 +45,7 @@ export default function BuildsPage() {
         <main className="min-h-screen px-6 md:px-16 pt-24 pb-[var(--dossier-chrome-clearance)]">
           <h1
             data-plate="diagrams2-title"
+            aria-label="SIGNALFRAME//UX BUILD SCHEMATIC"
             className="uppercase tracking-[0.01em] leading-[0.95] mb-12"
             style={{
               fontFamily: "var(--font-ibm-plex-sans-condensed), sans-serif",
