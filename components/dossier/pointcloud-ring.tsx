@@ -19,8 +19,10 @@ export function PointcloudRing({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    // DPR read inside resize so canvas stays crisp across monitor / zoom changes.
+    let dpr = window.devicePixelRatio || 1;
     const resize = () => {
+      dpr = window.devicePixelRatio || 1;
       canvas.width = canvas.clientWidth * dpr;
       canvas.height = canvas.clientHeight * dpr;
     };
