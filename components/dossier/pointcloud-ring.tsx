@@ -118,11 +118,20 @@ export function PointcloudRing({
         const img = ctx.getImageData(0, rowStart, W, rowCount);
         const data = img.data;
         const stride = W * 4;
-        // Bleed tuning: streak length ~8% of canvas width, alpha capped well
-        // below source (~191) so extended pixels stay dim haze and never
-        // trigger recursive bleed in subsequent frames.
-        const bleedLen = Math.max(1, Math.round(W * 0.08));
+        // Bleed tuning: streak length ~24% of canvas width (3× prior reach).
+        // Alpha capped well below source (~191) so extended pixels stay dim
+        // haze. Bleed position is GEOMETRIC (pinned to ring outer boundary)
+        // so growing sort runs can't drift the bleed origin outward across
+        // frames — prevents recursive canvas-fill.
+        const bleedLen = Math.max(1, Math.round(W * 0.24));
         const bleedAlphaCap = 95;
+        // Cream fillStyle is oklch(0.96 0.01 90 / 0.75). Pre-multiply-free
+        // sRGB is approximately (243, 243, 230) @ A=191. Using a fixed
+        // seed decouples bleed intensity from whatever ends up at the run
+        // edge after sort (which varies with dir).
+        const seedR = 243, seedG = 243, seedB = 230, seedA = 191;
+        // Outermost particle radius: base + max breath swing + max rJitter.
+        const rMax = r + 0.04 * thicknessScale + 0.02 * thicknessScale;
 
         for (let y = 0; y < rowCount; y++) {
           const rowBase = y * stride;
@@ -146,54 +155,53 @@ export function PointcloudRing({
               for (let i = 0; i < runLen; i++) buf[i] = view.getUint32(i * 4);
               buf.sort((a, b) => dir * ((a & 0xff) - (b & 0xff)));
               for (let i = 0; i < runLen; i++) view.setUint32(i * 4, buf[i]);
-
-              // Bleed each run's outer-facing end into empty space with
-              // decaying alpha. "Outer" = away from canvas horizontal center,
-              // so the pupil area stays clean at middle rows.
-              const leftIdx = rowBase + runStart * 4;
-              const leftR = data[leftIdx];
-              const leftG = data[leftIdx + 1];
-              const leftB = data[leftIdx + 2];
-              const leftA = data[leftIdx + 3];
-              if (runStart < W / 2) {
-                for (let b = 1; b <= bleedLen; b++) {
-                  const tx = runStart - b;
-                  if (tx < 0) break;
-                  const fade = 1 - b / bleedLen;
-                  const newA = Math.min(bleedAlphaCap, (leftA * fade) | 0);
-                  if (newA < 1) break;
-                  const ti = rowBase + tx * 4;
-                  if (newA > data[ti + 3]) {
-                    data[ti] = leftR;
-                    data[ti + 1] = leftG;
-                    data[ti + 2] = leftB;
-                    data[ti + 3] = newA;
-                  }
-                }
-              }
-              const rightX = runStart + runLen - 1;
-              const rightIdx = rowBase + rightX * 4;
-              const rightR = data[rightIdx];
-              const rightG = data[rightIdx + 1];
-              const rightB = data[rightIdx + 2];
-              const rightA = data[rightIdx + 3];
-              if (rightX >= W / 2) {
-                for (let b = 1; b <= bleedLen; b++) {
-                  const tx = rightX + b;
-                  if (tx >= W) break;
-                  const fade = 1 - b / bleedLen;
-                  const newA = Math.min(bleedAlphaCap, (rightA * fade) | 0);
-                  if (newA < 1) break;
-                  const ti = rowBase + tx * 4;
-                  if (newA > data[ti + 3]) {
-                    data[ti] = rightR;
-                    data[ti + 1] = rightG;
-                    data[ti + 2] = rightB;
-                    data[ti + 3] = newA;
-                  }
-                }
-              }
               runStart = -1;
+            }
+          }
+
+          // Geometry-based bleed: paint decaying streaks outward from the
+          // ring's outer boundary on this row. Unlike run-based bleed, the
+          // bleed ORIGIN is pinned to ring geometry, not to run endpoints —
+          // so run growth across frames can't walk the bleed front outward.
+          const absY = rowStart + y;
+          const dy = absY - cy;
+          const xOuterSq = rMax * rMax - dy * dy;
+          if (xOuterSq > 0) {
+            const xOuter = Math.sqrt(xOuterSq);
+            const leftBoundary = (cx - xOuter) | 0;
+            const rightBoundary = (cx + xOuter) | 0;
+
+            if (leftBoundary >= 0 && leftBoundary < W / 2) {
+              for (let b = 1; b <= bleedLen; b++) {
+                const tx = leftBoundary - b;
+                if (tx < 0) break;
+                const fade = 1 - b / bleedLen;
+                const newA = Math.min(bleedAlphaCap, (seedA * fade) | 0);
+                if (newA < 1) break;
+                const ti = rowBase + tx * 4;
+                if (newA > data[ti + 3]) {
+                  data[ti] = seedR;
+                  data[ti + 1] = seedG;
+                  data[ti + 2] = seedB;
+                  data[ti + 3] = newA;
+                }
+              }
+            }
+            if (rightBoundary < W && rightBoundary >= W / 2) {
+              for (let b = 1; b <= bleedLen; b++) {
+                const tx = rightBoundary + b;
+                if (tx >= W) break;
+                const fade = 1 - b / bleedLen;
+                const newA = Math.min(bleedAlphaCap, (seedA * fade) | 0);
+                if (newA < 1) break;
+                const ti = rowBase + tx * 4;
+                if (newA > data[ti + 3]) {
+                  data[ti] = seedR;
+                  data[ti + 1] = seedG;
+                  data[ti + 2] = seedB;
+                  data[ti + 3] = newA;
+                }
+              }
             }
           }
         }
