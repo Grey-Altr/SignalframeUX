@@ -35,6 +35,7 @@ export default function InventoryPage() {
             <div className="absolute inset-0 flex items-end p-6 md:p-12">
               <h1
                 data-plate="blackflag-hero"
+                aria-label="INVENTORY"
                 className="uppercase leading-[0.85] tracking-[-0.02em]"
                 style={{
                   fontFamily: "var(--font-anton), sans-serif",
