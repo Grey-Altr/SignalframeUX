@@ -22,17 +22,22 @@ export const metadata: Metadata = {
   description: "Dossier plate 05. Conceptual SFUX builds rendered as a circuit diagram.",
 };
 
-const KINDS: SchematicNode["kind"][] = [
-  "transformer", "relay", "cathode", "plate", "transformer", "relay",
-];
+const BUILD_KIND: Record<string, SchematicNode["kind"]> = {
+  "sonic-pressure-map": "transformer",
+  "ritual-poster-engine": "relay",
+  "operator-wardrobe-skin": "cathode",
+  "caption-interceptor": "plate",
+  "archive-heatwave": "transformer",
+  "night-shift-wayfinder": "relay",
+};
 
 export default function BuildsPage() {
-  const nodes: SchematicNode[] = BUILDS.map((b, i) => ({
+  const nodes: SchematicNode[] = BUILDS.map((b) => ({
     slug: b.slug,
     code: b.code,
     label: b.title,
     subject: b.subject,
-    kind: KINDS[i % KINDS.length],
+    kind: BUILD_KIND[b.slug] ?? "plate",
   }));
 
   return (

@@ -11,7 +11,7 @@ test.describe("@dossier /builds Diagrams2", () => {
     await page.goto("/builds", { waitUntil: "domcontentloaded" });
     const title = page.locator("[data-plate='diagrams2-title']");
     const family = await title.evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(family).toMatch(/Plex/i);
+    expect(family).toMatch(/Plex.*Condensed/i);
   });
 
   test("index: schematic has 6 build nodes", async ({ page }) => {

@@ -46,6 +46,8 @@ const NODE_GLYPH: Record<SchematicNode["kind"], ReactNode> = {
 export function BuildSchematic({ nodes }: { nodes: SchematicNode[] }) {
   return (
     <div
+      role="img"
+      aria-label="Build schematic — six conceptual SFUX builds wired as a circuit diagram"
       className="relative w-full"
       style={{
         fontFamily: "var(--font-ibm-plex-mono), monospace",
@@ -55,8 +57,7 @@ export function BuildSchematic({ nodes }: { nodes: SchematicNode[] }) {
       <svg
         viewBox="0 0 1200 520"
         className="w-full h-auto"
-        role="img"
-        aria-label="Build schematic — six conceptual SFUX builds wired as a circuit diagram"
+        aria-hidden="true"
       >
         <g stroke="currentColor" strokeWidth="1" fill="none">
           <polyline points="40,120 1160,120" />
