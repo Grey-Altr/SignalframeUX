@@ -29,32 +29,40 @@ export default function Page() {
   return (
     <DossierChrome route="kloroform" substrate="black">
       <div className={syne.variable}>
-        <main className="relative min-h-screen overflow-hidden">
-          {/* Pointcloud layer — full bleed, centered */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="aspect-square w-[min(90vw,90vh)]">
-              <PointcloudRing count={2400} radius={0.42} />
-            </div>
+        {/* Pointcloud layer — sibling of <main>, paints behind it */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="aspect-square w-[min(90vw,90vh)]">
+            <PointcloudRing count={2400} radius={0.42} />
           </div>
+        </div>
 
+        <main className="relative min-h-screen overflow-hidden">
           {/* Content layer — centered column */}
           <div className="relative z-10 flex min-h-screen items-center justify-center px-6 md:px-12">
             <div className="w-full max-w-[1200px] text-center">
               <h1
                 data-plate="kloroform-hero"
                 className={cn(
-                  "uppercase italic leading-[0.85] tracking-[-0.04em]",
-                  "font-[var(--font-syne)]",
+                  "uppercase leading-[0.85] tracking-[-0.04em]",
+                  "font-[var(--font-jetbrains)]",
                 )}
                 style={{
-                  fontFamily: "var(--font-syne), sans-serif",
+                  fontFamily: "var(--font-jetbrains), monospace",
                   fontWeight: 800,
                   fontSize: "clamp(26px, 7vw, 104px)",
                 }}
               >
                 SIGNALFRAME
-                <br />
-                <span style={{ opacity: 0.5 }}>{"//"}</span>UX
+                <span
+                  style={{
+                    opacity: 0.5,
+                    letterSpacing: "-0.2em",
+                    fontSize: "1.3em",
+                  }}
+                >
+                  {"//"}
+                </span>
+                UX
               </h1>
 
               <p
@@ -69,7 +77,7 @@ export default function Page() {
 
               <nav
                 aria-label="Plate previews"
-                className="mt-16 grid grid-cols-3 gap-3 md:grid-cols-6"
+                className="mx-auto mt-16 grid max-w-[75%] grid-cols-3 gap-3 md:grid-cols-6"
               >
                 {TILES.map((t) => (
                   <Link
@@ -77,19 +85,34 @@ export default function Page() {
                     href={t.href}
                     data-plate="kloroform-tile"
                     className={cn(
-                      "group border p-4 no-underline transition-colors",
-                      "border-[color:oklch(0.95_0_0_/_0.2)]",
-                      "hover:border-[color:oklch(0.95_0_0_/_0.6)]",
+                      "group border px-4 py-1 text-left no-underline transition-colors",
+                      "border-[color:oklch(0_0_0_/_0.2)]",
+                      "hover:border-[color:oklch(0_0_0_/_0.6)]",
                     )}
-                    style={{ fontFamily: "var(--font-jetbrains), monospace" }}
+                    style={{
+                      fontFamily: "var(--font-jetbrains), monospace",
+                      background: "var(--sfx-yellow, oklch(0.91 0.18 98))",
+                      color: "oklch(0.15 0 0)",
+                      clipPath:
+                        "polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%)",
+                    }}
                   >
-                    <div className="mb-3 text-[20px] leading-none opacity-80">
+                    <div
+                      className="mb-2 text-[20px] leading-none"
+                      style={{ color: "oklch(0.15 0 0)" }}
+                    >
                       {t.glyph}
                     </div>
-                    <div className="text-[9px] uppercase tracking-[0.15em] opacity-60">
+                    <div
+                      className="text-[9px] uppercase tracking-[0.15em]"
+                      style={{ color: "oklch(0.4 0 0)" }}
+                    >
                       {t.code}
                     </div>
-                    <div className="mt-1 text-[11px] uppercase tracking-[0.1em]">
+                    <div
+                      className="mt-1 text-[11px] uppercase tracking-[0.1em]"
+                      style={{ color: "oklch(0.2 0 0)" }}
+                    >
                       {t.label}
                     </div>
                   </Link>
