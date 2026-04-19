@@ -1,3 +1,3 @@
-export { DossierChrome } from "./dossier-chrome";
-export { CatalogNav, type DossierRoute } from "./catalog-nav";
+export { DossierChrome, type Substrate } from "./dossier-chrome";
+export { CatalogNav, DOSSIER_CODE, DOSSIER_ENTRIES, type DossierRoute } from "./catalog-nav";
 export { CornerLabel } from "./corner-label";
