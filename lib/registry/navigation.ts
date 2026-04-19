@@ -139,4 +139,56 @@ import SFMenubarLazy from '@/components/sf/sf-menubar-lazy'
     pattern: "B",
     category: "NAVIGATION",
   },
+
+  "045": {
+    index: "045",
+    name: "COMMAND",
+    component: "SFCommand",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import { SFCommand, SFCommandInput, SFCommandList, SFCommandEmpty, SFCommandGroup, SFCommandItem, SFCommandShortcut } from '@/components/sf'
+
+<SFCommand>
+  <SFCommandInput placeholder="SEARCH..." />
+  <SFCommandList>
+    <SFCommandEmpty>NO RESULTS</SFCommandEmpty>
+    <SFCommandGroup heading="ACTIONS">
+      <SFCommandItem>OPEN FILE<SFCommandShortcut>⌘O</SFCommandShortcut></SFCommandItem>
+      <SFCommandItem>NEW FILE<SFCommandShortcut>⌘N</SFCommandShortcut></SFCommandItem>
+    </SFCommandGroup>
+  </SFCommandList>
+</SFCommand>`,
+    docId: "SFCommand",
+    layer: "frame",
+    pattern: "B",
+    category: "NAVIGATION",
+  },
+
+  "046": {
+    index: "046",
+    name: "DROPDOWN",
+    component: "SFDropdownMenu",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import { SFDropdownMenu, SFDropdownMenuTrigger, SFDropdownMenuContent, SFDropdownMenuItem, SFDropdownMenuSeparator, SFDropdownMenuShortcut, SFButton } from '@/components/sf'
+
+<SFDropdownMenu>
+  <SFDropdownMenuTrigger asChild>
+    <SFButton intent="ghost">OPTIONS</SFButton>
+  </SFDropdownMenuTrigger>
+  <SFDropdownMenuContent>
+    <SFDropdownMenuItem>EDIT<SFDropdownMenuShortcut>⌘E</SFDropdownMenuShortcut></SFDropdownMenuItem>
+    <SFDropdownMenuSeparator />
+    <SFDropdownMenuItem>DELETE</SFDropdownMenuItem>
+  </SFDropdownMenuContent>
+</SFDropdownMenu>`,
+    docId: "SFDropdownMenu",
+    layer: "frame",
+    pattern: "B",
+    category: "NAVIGATION",
+  },
 };

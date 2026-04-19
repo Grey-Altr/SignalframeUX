@@ -230,4 +230,103 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
     pattern: "C",
     category: "FEEDBACK",
   },
+
+  "047": {
+    index: "047",
+    name: "ALERT_DIALOG",
+    component: "SFAlertDialog",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import { SFAlertDialog, SFAlertDialogTrigger, SFAlertDialogContent, SFAlertDialogHeader, SFAlertDialogTitle, SFAlertDialogDescription, SFAlertDialogFooter, SFAlertDialogAction, SFAlertDialogCancel, SFButton } from '@/components/sf'
+
+<SFAlertDialog>
+  <SFAlertDialogTrigger asChild>
+    <SFButton intent="destructive">DELETE</SFButton>
+  </SFAlertDialogTrigger>
+  <SFAlertDialogContent>
+    <SFAlertDialogHeader>
+      <SFAlertDialogTitle>CONFIRM DELETE</SFAlertDialogTitle>
+      <SFAlertDialogDescription>THIS ACTION CANNOT BE UNDONE.</SFAlertDialogDescription>
+    </SFAlertDialogHeader>
+    <SFAlertDialogFooter>
+      <SFAlertDialogCancel>CANCEL</SFAlertDialogCancel>
+      <SFAlertDialogAction>DELETE</SFAlertDialogAction>
+    </SFAlertDialogFooter>
+  </SFAlertDialogContent>
+</SFAlertDialog>`,
+    docId: "SFAlertDialog",
+    layer: "frame",
+    pattern: "B",
+    category: "FEEDBACK",
+  },
+
+  "048": {
+    index: "048",
+    name: "POPOVER",
+    component: "SFPopover",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import { SFPopover, SFPopoverTrigger, SFPopoverContent, SFPopoverHeader, SFPopoverTitle, SFPopoverDescription, SFButton } from '@/components/sf'
+
+<SFPopover>
+  <SFPopoverTrigger asChild>
+    <SFButton intent="ghost" size="sm">INFO</SFButton>
+  </SFPopoverTrigger>
+  <SFPopoverContent>
+    <SFPopoverHeader>
+      <SFPopoverTitle>DETAILS</SFPopoverTitle>
+    </SFPopoverHeader>
+    <SFPopoverDescription>ADDITIONAL CONTEXT RENDERED HERE.</SFPopoverDescription>
+  </SFPopoverContent>
+</SFPopover>`,
+    docId: "SFPopover",
+    layer: "frame",
+    pattern: "B",
+    category: "FEEDBACK",
+  },
+
+  "049": {
+    index: "049",
+    name: "SKELETON",
+    component: "SFSkeleton",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "LINE",  props: { className: "h-4 w-48" } },
+      { label: "BLOCK", props: { className: "h-32 w-full" } },
+    ],
+    code: `import { SFSkeleton } from '@/components/sf'
+
+<SFSkeleton className="h-4 w-48" />
+<SFSkeleton className="h-32 w-full" />`,
+    docId: "SFSkeleton",
+    layer: "frame",
+    pattern: "A",
+    category: "FEEDBACK",
+  },
+
+  "050": {
+    index: "050",
+    name: "TOOLTIP",
+    component: "SFTooltip",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: {} },
+    ],
+    code: `import { SFTooltip, SFTooltipTrigger, SFTooltipContent, SFButton } from '@/components/sf'
+
+<SFTooltip>
+  <SFTooltipTrigger asChild>
+    <SFButton intent="ghost" size="sm">?</SFButton>
+  </SFTooltipTrigger>
+  <SFTooltipContent>KEYBOARD SHORTCUT: ⌘K</SFTooltipContent>
+</SFTooltip>`,
+    docId: "SFTooltip",
+    layer: "frame",
+    pattern: "B",
+    category: "FEEDBACK",
+  },
 };

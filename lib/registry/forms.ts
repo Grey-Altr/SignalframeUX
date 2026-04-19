@@ -164,4 +164,137 @@ import SFCalendarLazy from '@/components/sf/sf-calendar-lazy'
     pattern: "A",
     category: "FORMS",
   },
+
+  "031": {
+    index: "031",
+    name: "CHECKBOX",
+    component: "SFCheckbox",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT",  props: { "aria-label": "Accept terms" } },
+      { label: "CHECKED",  props: { "aria-label": "Accept terms", defaultChecked: true } },
+      { label: "DISABLED", props: { "aria-label": "Accept terms", disabled: true } },
+    ],
+    code: `import { SFCheckbox, SFLabel } from '@/components/sf'
+
+<div className="flex items-center gap-[var(--sfx-space-2)]">
+  <SFCheckbox id="terms" defaultChecked />
+  <SFLabel htmlFor="terms">ACCEPT TERMS</SFLabel>
+</div>`,
+    docId: "SFCheckbox",
+    layer: "frame",
+    pattern: "A",
+    category: "FORMS",
+  },
+
+  "032": {
+    index: "032",
+    name: "LABEL",
+    component: "SFLabel",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT", props: { htmlFor: "project-name", children: "PROJECT NAME" } },
+    ],
+    code: `import { SFLabel, SFInput } from '@/components/sf'
+
+<SFLabel htmlFor="project-name">PROJECT NAME</SFLabel>
+<SFInput id="project-name" placeholder="UNTITLED" />`,
+    docId: "SFLabel",
+    layer: "frame",
+    pattern: "A",
+    category: "FORMS",
+  },
+
+  "033": {
+    index: "033",
+    name: "RADIO",
+    component: "SFRadioGroup",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT",  props: { defaultValue: "option-a" } },
+      { label: "DISABLED", props: { defaultValue: "option-a", disabled: true } },
+    ],
+    code: `import { SFRadioGroup, SFRadioGroupItem, SFLabel } from '@/components/sf'
+
+<SFRadioGroup defaultValue="option-a">
+  <div className="flex items-center gap-[var(--sfx-space-2)]">
+    <SFRadioGroupItem value="option-a" id="opt-a" />
+    <SFLabel htmlFor="opt-a">OPTION A</SFLabel>
+  </div>
+  <div className="flex items-center gap-[var(--sfx-space-2)]">
+    <SFRadioGroupItem value="option-b" id="opt-b" />
+    <SFLabel htmlFor="opt-b">OPTION B</SFLabel>
+  </div>
+</SFRadioGroup>`,
+    docId: "SFRadioGroup",
+    layer: "frame",
+    pattern: "B",
+    category: "FORMS",
+  },
+
+  "034": {
+    index: "034",
+    name: "SELECT",
+    component: "SFSelect",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT",  props: {} },
+      { label: "DISABLED", props: { disabled: true } },
+    ],
+    code: `import { SFSelect, SFSelectTrigger, SFSelectValue, SFSelectContent, SFSelectItem } from '@/components/sf'
+
+<SFSelect>
+  <SFSelectTrigger className="w-48">
+    <SFSelectValue placeholder="SELECT THEME" />
+  </SFSelectTrigger>
+  <SFSelectContent>
+    <SFSelectItem value="dark">DARK</SFSelectItem>
+    <SFSelectItem value="light">LIGHT</SFSelectItem>
+  </SFSelectContent>
+</SFSelect>`,
+    docId: "SFSelect",
+    layer: "frame",
+    pattern: "B",
+    category: "FORMS",
+  },
+
+  "035": {
+    index: "035",
+    name: "SWITCH",
+    component: "SFSwitch",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT",  props: { "aria-label": "Enable notifications" } },
+      { label: "ACTIVE",   props: { "aria-label": "Enable notifications", defaultChecked: true } },
+      { label: "DISABLED", props: { "aria-label": "Enable notifications", disabled: true } },
+    ],
+    code: `import { SFSwitch, SFLabel } from '@/components/sf'
+
+<div className="flex items-center gap-[var(--sfx-space-2)]">
+  <SFSwitch id="notifications" defaultChecked />
+  <SFLabel htmlFor="notifications">ENABLE NOTIFICATIONS</SFLabel>
+</div>`,
+    docId: "SFSwitch",
+    layer: "frame",
+    pattern: "A",
+    category: "FORMS",
+  },
+
+  "036": {
+    index: "036",
+    name: "TEXTAREA",
+    component: "SFTextarea",
+    importPath: "@/components/sf",
+    variants: [
+      { label: "DEFAULT",  props: { placeholder: "ENTER NOTES", rows: 4 } },
+      { label: "DISABLED", props: { placeholder: "ENTER NOTES", rows: 4, disabled: true } },
+    ],
+    code: `import { SFTextarea } from '@/components/sf'
+
+<SFTextarea placeholder="ENTER NOTES" rows={4} />`,
+    docId: "SFTextarea",
+    layer: "frame",
+    pattern: "A",
+    category: "FORMS",
+  },
 };
