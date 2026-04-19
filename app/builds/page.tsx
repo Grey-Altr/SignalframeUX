@@ -36,7 +36,6 @@ export default function BuildsPage() {
     slug: b.slug,
     code: b.code,
     label: b.title,
-    subject: b.subject,
     kind: BUILD_KIND[b.slug] ?? "plate",
   }));
 

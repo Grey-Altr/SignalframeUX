@@ -5,7 +5,6 @@ export type SchematicNode = {
   slug: string;
   code: string;
   label: string;
-  subject: string;
   kind: "transformer" | "relay" | "cathode" | "plate";
 };
 
