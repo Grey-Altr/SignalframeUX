@@ -1,11 +1,49 @@
 "use client";
 
 import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
+import { PointcloudRing } from "@/components/dossier/pointcloud-ring";
+import { IrisCloud } from "@/components/dossier/iris-cloud";
 
 export function EntrySection() {
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
       <GLSLHeroLazy />
+
+      {/* Pointcloud ring — above GLSL, behind all text (no z-index, z-auto). */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <div
+          className="aspect-square w-[min(90vw,90vh)]"
+          style={{
+            filter:
+              "drop-shadow(0 0 4px oklch(0.96 0.01 90 / 0.6)) drop-shadow(0 0 12px oklch(0.96 0.01 90 / 0.4)) drop-shadow(0 0 28px oklch(0.96 0.01 90 / 0.2))",
+          }}
+        >
+          <div className="relative h-full w-full">
+            {/* Iris — inward-drifting cloud behind the main ring */}
+            <IrisCloud
+              count={4500}
+              outerRadius={0.36}
+              innerRadius={0.06}
+              trail={0.04}
+              pixelSort={0.5}
+              sortThreshold={8}
+              className="absolute inset-0"
+            />
+            {/* Main ring — on top of the iris */}
+            <PointcloudRing
+              count={2400}
+              radius={0.42}
+              trail={0.1}
+              pixelSort={0.33}
+              sortThreshold={20}
+              className="absolute inset-0"
+            />
+          </div>
+        </div>
+      </div>
 
       {/* HTML overlay — LCP target */}
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-[1em]">

@@ -2,32 +2,35 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-export function PointcloudRing({
-  count = 2400,
-  radius = 0.38,
+/**
+ * IrisCloud — an inward-drifting pointcloud that fills the annular region
+ * between `innerRadius` (the pupil, kept empty) and `outerRadius` (just
+ * inside the main ring). Each particle has a random phase and drift speed,
+ * so the cloud reads as a continuous stream flowing toward the pupil.
+ *
+ * Paired with PointcloudRing: mount both inside the same sized wrapper
+ * with IrisCloud first so the iris paints behind the main ring.
+ */
+export function IrisCloud({
+  count = 800,
+  outerRadius = 0.36,
+  innerRadius = 0.06,
   trail = 0,
   pixelSort = 0,
   sortThreshold = 20,
-  borderRadius = 0,
-  borderAlpha = 0.4,
   className,
 }: {
   count?: number;
-  radius?: number;
-  // Per-frame fade alpha for particle trails (0 = hard clear / no trail,
-  // 0.05–0.15 gives a subtle decay, 0.3+ feels aggressive).
+  outerRadius?: number;
+  innerRadius?: number;
+  // Per-frame fade alpha (0 = hard clear; 0.05–0.15 subtle decay trails).
   trail?: number;
   // Fraction of canvas rows to pixel-sort per frame, rotating through the
-  // canvas over time (0 = off; 0.33 = sort 1/3 of rows each frame).
+  // canvas over time (0 = off; 0.33 = sort 1/3 of rows each frame). Sort
+  // key is alpha, so trails (dimmer) pull to one end of each bright run.
   pixelSort?: number;
   // Alpha threshold (0-255) below which pixels are excluded from sort runs.
   sortThreshold?: number;
-  // Optional thin stroked circle drawn at this fraction of canvas size,
-  // concentric with the ring. 0 = no border. Useful as an outer frame
-  // enclosing the particle ring at a larger radius.
-  borderRadius?: number;
-  // Alpha for the border stroke (0-1).
-  borderAlpha?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -38,7 +41,6 @@ export function PointcloudRing({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // DPR read inside resize so canvas stays crisp across monitor / zoom changes.
     let dpr = window.devicePixelRatio || 1;
     const resize = () => {
       dpr = window.devicePixelRatio || 1;
@@ -48,11 +50,13 @@ export function PointcloudRing({
     resize();
     window.addEventListener("resize", resize);
 
-    const pts = Array.from({ length: count }, () => {
-      const theta = Math.random() * Math.PI * 2;
-      const rJitter = (Math.random() - 0.5) * 0.04;
-      return { theta, rJitter };
-    });
+    // Per-particle state: angular position, phase offset along the inward
+    // life cycle, and a per-particle drift speed multiplier for depth.
+    const pts = Array.from({ length: count }, () => ({
+      theta: Math.random() * Math.PI * 2,
+      phase: Math.random(),
+      speed: 0.6 + Math.random() * 0.8,
+    }));
 
     const reduced =
       typeof window !== "undefined" &&
@@ -68,19 +72,10 @@ export function PointcloudRing({
       const H = canvas.height;
       const cx = W / 2;
       const cy = H / 2;
-      // Thickness is locked to a reference radius (0.42) so the ring can
-      // grow via `radius` without also getting thicker — rJitter and breath
-      // below both use `thicknessScale`, not `r`.
-      const canvasR = Math.min(W, H);
-      const thicknessScale = canvasR * 0.42;
-      const breath = Math.sin(t * 0.3) * 0.04 * thicknessScale;
-      const rot = reduced ? 0 : t * 0.12;
-      const r = canvasR * radius;
+      const rOuter = Math.min(W, H) * outerRadius;
+      const rInner = Math.min(W, H) * innerRadius;
 
       if (trail > 0) {
-        // Fade previous frame via destination-out: erases existing alpha by
-        // `trail` without adding black pixels, so canvas stays transparent
-        // between particles and the backdrop (GLSL hero) shows through.
         ctx.globalCompositeOperation = "destination-out";
         ctx.fillStyle = `rgba(0, 0, 0, ${trail})`;
         ctx.fillRect(0, 0, W, H);
@@ -88,28 +83,30 @@ export function PointcloudRing({
       } else {
         ctx.clearRect(0, 0, W, H);
       }
-      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.3)";
       for (const p of pts) {
-        // Particle radius = base ring radius + breath oscillation + per-particle
-        // jitter. Both oscillation and jitter are absolute pixel offsets scaled
-        // by `thicknessScale`, so thickness stays constant as `radius` grows.
-        const pr = r + breath + p.rJitter * thicknessScale;
-        const x = cx + Math.cos(p.theta + rot) * pr;
-        const y = cy + Math.sin(p.theta + rot) * pr;
-        ctx.fillRect(x, y, 1.2 * dpr, 1.2 * dpr);
+        // life ∈ [0, 1). 0 → just spawned at outer edge; near 1 → near pupil.
+        const life = reduced
+          ? p.phase
+          : (p.phase + t * p.speed * 0.04) % 1;
+        // Fade to zero as particles approach the pupil so disappearance is
+        // graceful rather than a hard pop when they wrap.
+        const edgeFade = life < 0.9 ? 1 : (1 - life) / 0.1;
+        const r01 = 1 - life;
+        const r = rInner + (rOuter - rInner) * r01;
+        // Fixed angle per particle → motion is purely radial (straight line
+        // from spawn at the outer edge toward the pupil at the center).
+        const x = cx + Math.cos(p.theta) * r;
+        const y = cy + Math.sin(p.theta) * r;
+        ctx.globalAlpha = edgeFade;
+        ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
-
-      // Optional outer border — thin circular stroke concentric with the
-      // particle ring, drawn after particles so pixel sort operates on it too.
-      if (borderRadius > 0) {
-        ctx.strokeStyle = `oklch(0.96 0.01 90 / ${borderAlpha})`;
-        ctx.lineWidth = 1 * dpr;
-        ctx.beginPath();
-        ctx.arc(cx, cy, canvasR * borderRadius, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      ctx.globalAlpha = 1;
 
       // Horizontal row-sort pass, throttled & rotating.
+      // Only sorts a subset of rows per frame; sort key is alpha so
+      // bright fresh particles separate from dim trail pixels within
+      // each contiguous run above `sortThreshold`.
       if (pixelSort > 0 && !reduced) {
         const chunkSize = Math.max(1, Math.round(H * pixelSort));
         const rowStart = (frameIdx * chunkSize) % H;
@@ -156,14 +153,14 @@ export function PointcloudRing({
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
-  }, [count, radius, trail, pixelSort, sortThreshold, borderRadius, borderAlpha]);
+  }, [count, outerRadius, innerRadius, trail, pixelSort, sortThreshold]);
 
   return (
     <canvas
       ref={ref}
-      data-plate="kloroform-pointcloud"
+      data-plate="kloroform-iris"
       role="img"
-      aria-label="KLOROFORM-style dissolving ring pointcloud"
+      aria-label="KLOROFORM-style iris pointcloud drifting toward the pupil"
       className={cn("block h-full w-full", className)}
     />
   );
