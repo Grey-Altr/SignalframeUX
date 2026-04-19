@@ -39,7 +39,7 @@ export default function InitPage() {
   return (
     <DossierChrome route="helghanese" substrate="black">
       <div className={`${zenDots.variable} ${shareTech.variable}`}>
-        <main className="min-h-screen grid grid-rows-[auto_1fr_auto] px-6 md:px-16 py-24 md:py-32">
+        <main className="min-h-screen grid grid-rows-[auto_1fr_auto] px-6 md:px-16 py-24">
 
           <h1
             data-plate="helghanese-header"

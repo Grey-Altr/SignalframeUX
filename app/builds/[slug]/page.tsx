@@ -48,7 +48,7 @@ export default async function BuildDetailPage({
     <DossierChrome route="diagrams2" substrate="paper-warm">
       <div className={`${ibmPlexMono.variable} ${ibmPlexSansCondensed.variable}`}>
         <main
-          className="min-h-screen px-6 md:px-16 py-24 md:py-32"
+          className="min-h-screen px-6 md:px-16 py-24"
           style={{ color: "oklch(0.25 0.18 28)" }}
         >
           <div className="text-[11px] uppercase tracking-[0.2em] opacity-70 mb-4" style={monoFont}>

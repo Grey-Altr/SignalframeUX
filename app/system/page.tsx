@@ -31,7 +31,7 @@ export default function SystemPage() {
   return (
     <DossierChrome route="cyber2k" substrate="black">
       <div className={chakraPetch.variable}>
-        <main className="min-h-screen px-6 md:px-16 py-24 md:py-32">
+        <main className="min-h-screen px-6 md:px-16 py-24">
           <h1
             data-plate="cyber2k-hero"
             className="uppercase tracking-[0.02em] leading-none mb-12 md:mb-16"
