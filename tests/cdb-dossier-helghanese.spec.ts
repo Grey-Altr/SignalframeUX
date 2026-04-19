@@ -11,12 +11,13 @@ test.describe("@dossier /init Helghanese", () => {
     );
     await expect(active).toHaveText("SF//HLG-00");
     const color = await active.evaluate((el) => getComputedStyle(el).color);
-    // lime-green oklch(0.8 0.2 135). Chromium normalizes wide-gamut oklch to
-    // either rgb(148, 230, 0)-ish or lab(78.93 -45.7 61.25)-ish depending on
-    // build; both are green-dominant. Accept either and verify green dominance.
+    // lime-green oklch(0.8 0.2 135). Chromium serializes wide-gamut oklch
+    // as raw oklch(...), rgb(...), or lab(...) depending on build. Accept
+    // any serialization whose green dominance is preserved.
+    const oklchMatch = /oklch\(\s*0\.8\s+0\.2\s+135\s*\)/.test(color);
     const rgbMatch = /rgb\(\s*1[0-9]{2},\s*2[0-9]{2},\s*\d+\s*\)/.test(color);
     const labMatch = /lab\(\s*[5-9][0-9](?:\.\d+)?\s+-[3-9][0-9](?:\.\d+)?\s+[2-9][0-9](?:\.\d+)?/.test(color);
-    expect(rgbMatch || labMatch).toBe(true);
+    expect(oklchMatch || rgbMatch || labMatch).toBe(true);
   });
 
   test("plate: Zen Dots header loaded", async ({ page }) => {

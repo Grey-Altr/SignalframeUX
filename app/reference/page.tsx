@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Archivo, Archivo_Black } from "next/font/google";
 import Link from "next/link";
-import { DossierChrome, Y2KMarkGrid } from "@/components/dossier";
+import { DossierChrome } from "@/components/dossier";
+import { Y2KMarkGridDeferred } from "@/components/dossier/y2k-mark-grid-deferred";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -13,7 +14,10 @@ const archivoBlack = Archivo_Black({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-archivo-black",
-  display: "swap",
+  // LCP-critical: 180px hero "API REFERENCE". display: "optional" keeps
+  // the fallback permanently if the font doesn't arrive within ~100ms,
+  // preventing the font-swap from re-triggering LCP measurement.
+  display: "optional",
 });
 
 export const metadata: Metadata = {
@@ -56,7 +60,7 @@ export default function ReferencePage() {
           </div>
 
           <div className="mt-16 md:mt-20">
-            <Y2KMarkGrid count={60} litIndex={42} />
+            <Y2KMarkGridDeferred count={60} litIndex={42} />
           </div>
         </main>
       </div>

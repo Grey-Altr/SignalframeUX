@@ -23,16 +23,21 @@ test.describe("@dossier /inventory Black Flag", () => {
   });
 
   test("plate: serialized catalog has expected entries", async ({ page }) => {
+    // Catalog is ssr:false-deferred — wait for hydration to mount the first entry.
     const entries = page.locator("[data-plate='blackflag-entry']");
+    await entries.first().waitFor({ state: "attached" });
     const count = await entries.count();
     expect(count).toBeGreaterThanOrEqual(40);
     expect(count).toBeLessThan(200);
   });
 
   test("plate: first entry has SF//E00-001 code", async ({ page }) => {
-    await expect(
-      page.locator("[data-plate='blackflag-entry']").first().locator("[data-plate='blackflag-code']")
-    ).toHaveText("SF//E00-001");
+    const first = page
+      .locator("[data-plate='blackflag-entry']")
+      .first()
+      .locator("[data-plate='blackflag-code']");
+    await first.waitFor({ state: "attached" });
+    await expect(first).toHaveText("SF//E00-001");
   });
 
   test("no console errors", async ({ page }) => {
