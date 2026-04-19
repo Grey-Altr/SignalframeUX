@@ -31,13 +31,13 @@ export default function ReferencePage() {
       <div className={`${archivo.variable} ${archivoBlack.variable}`}>
         <main className="min-h-screen px-6 md:px-12 py-24 md:py-28">
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_42ch] gap-10 md:gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,42ch)] gap-10 md:gap-16 items-start">
             <h1
               data-plate="brando-hero"
               className="uppercase tracking-[-0.02em] leading-[0.88]"
               style={{
                 fontFamily: "var(--font-archivo-black), sans-serif",
-                fontSize: "clamp(48px, 11vw, 180px)",
+                fontSize: "clamp(40px, 9vw, 140px)",
                 color: "oklch(0.15 0 0)",
               }}
             >
