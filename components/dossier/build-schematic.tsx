@@ -53,9 +53,12 @@ export function BuildSchematic({ nodes }: { nodes: SchematicNode[] }) {
         color: "oklch(0.35 0.18 28)",
       }}
     >
+      {/* Rail is the desktop compositional device. At narrow viewports it
+          auto-scales too short for the 6 node cards to fit; hide it and let
+          the grid flow naturally as a 2-column stack. */}
       <svg
         viewBox="0 0 1200 520"
-        className="w-full h-auto"
+        className="hidden md:block w-full h-auto"
         aria-hidden="true"
       >
         <g stroke="currentColor" strokeWidth="1" fill="none">
@@ -65,7 +68,7 @@ export function BuildSchematic({ nodes }: { nodes: SchematicNode[] }) {
           <line x1="1160" y1="120" x2="1160" y2="400" />
         </g>
       </svg>
-      <ul className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-4 p-8 list-none">
+      <ul className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-4 p-4 md:p-8 md:absolute md:inset-0 md:grid-rows-2 list-none">
         {nodes.map((n) => (
           <li
             key={n.slug}
