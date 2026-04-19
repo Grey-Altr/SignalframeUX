@@ -49,13 +49,16 @@ export function DossierChrome({
         <div style={{ opacity: 0.6 }}>{SERVER_START_DATE}</div>
       </CornerLabel>
 
-      <CornerLabel slot="bl">
-        <CatalogNav active={route} />
-      </CornerLabel>
-
+      {/* br before bl: on narrow viewports bl grows taller (wrapped catalog
+          nav) and rectangularly overlaps br; rendering bl last lets its scrim
+          win the z-stack so catalog links remain readable. */}
       <CornerLabel slot="br">
         <div>signalframe.culturedivision.com</div>
         <div style={{ opacity: 0.6 }}>v0.1 / CDB-V3</div>
+      </CornerLabel>
+
+      <CornerLabel slot="bl">
+        <CatalogNav active={route} />
       </CornerLabel>
 
       {children}
