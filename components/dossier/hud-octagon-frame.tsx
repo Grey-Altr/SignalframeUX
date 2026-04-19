@@ -6,15 +6,17 @@ export function HudOctagonFrame({
   children,
   corner = 24,
   className = "",
+  dataPlate,
 }: {
   children: ReactNode;
   corner?: number; // px
   className?: string;
+  dataPlate?: string;
 }) {
   const c = `${corner}px`;
   return (
     <div
-      data-plate="cyber2k-octagon"
+      data-plate={dataPlate}
       className={`relative ${className}`}
       style={{
         clipPath: `polygon(

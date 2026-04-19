@@ -64,7 +64,7 @@ export default function SystemPage() {
             </ul>
 
             {/* Center: octagon with reticle */}
-            <HudOctagonFrame className="aspect-square w-full max-w-[520px] mx-auto">
+            <HudOctagonFrame dataPlate="cyber2k-octagon" className="aspect-square w-full max-w-[520px] mx-auto">
               <div className="absolute inset-0 flex items-center justify-center">
                 {/* brackets + waveform */}
                 <div
