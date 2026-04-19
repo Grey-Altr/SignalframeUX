@@ -3,6 +3,7 @@ type Line = { prompt?: boolean; text: string; intent?: "normal" | "ok" | "warn" 
 export function TerminalSession({ lines }: { lines: Line[] }) {
   return (
     <pre
+      aria-label="Installation session output"
       className="whitespace-pre-wrap leading-[1.7] text-[12px] md:text-[13px]"
       style={{ fontFamily: "var(--font-share-tech-mono), monospace" }}
     >
@@ -12,7 +13,7 @@ export function TerminalSession({ lines }: { lines: Line[] }) {
           data-plate="helghanese-line"
           style={{
             color:
-              l.intent === "ok" ? "oklch(0.8 0.2 135)" :
+              l.intent === "ok" ? "var(--dossier-nav-active-break)" :
               l.intent === "warn" ? "oklch(0.75 0.2 85)" :
               "oklch(0.85 0 0)",
             opacity: l.intent ? 1 : 0.85,
@@ -29,7 +30,7 @@ export function TerminalSession({ lines }: { lines: Line[] }) {
           display: "inline-block",
           width: "0.6em",
           height: "1em",
-          background: "oklch(0.8 0.2 135)",
+          background: "var(--dossier-nav-active-break)",
           verticalAlign: "text-bottom",
           animation: "helghBlink 1.1s steps(1) infinite",
         }}

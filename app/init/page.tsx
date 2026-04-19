@@ -47,7 +47,7 @@ export default function InitPage() {
             style={{
               fontFamily: "var(--font-zen-dots), monospace",
               fontSize: "clamp(22px, 4vw, 56px)",
-              color: "oklch(0.8 0.2 135)",
+              color: "var(--dossier-nav-active-break)",
             }}
           >
             SF//UX INIT v0.1
