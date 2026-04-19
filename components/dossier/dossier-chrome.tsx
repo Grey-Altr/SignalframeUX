@@ -35,6 +35,7 @@ export function DossierChrome({
           background: s.background,
           color: s.color,
           ["--dossier-ink" as string]: s.color,
+          ["--dossier-substrate" as string]: s.background,
         } as React.CSSProperties
       }
     >

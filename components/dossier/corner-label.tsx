@@ -27,7 +27,10 @@ export function CornerLabel({
         slotClass[slot],
         className,
       )}
-      style={{ color: "var(--dossier-ink, oklch(0.95 0 0))" }}
+      style={{
+        color: "var(--dossier-ink, oklch(0.95 0 0))",
+        backgroundColor: "var(--dossier-substrate, oklch(0 0 0))",
+      }}
     >
       {children}
     </div>
