@@ -59,9 +59,9 @@ This is intentional. The branch's thesis is a **pure aesthetic reset**, parallel
 └──────────────────────────────────────────────┘
 ```
 
-- **Chrome layer (shared).** A `<DossierChrome>` component rendered inside `layout.tsx` (or as a wrapper on each page — see §Open question C1). Four corners:
+- **Chrome layer (shared).** A `<DossierChrome route="...">{children}</DossierChrome>` component wrapped around each `page.tsx`'s content (decided: **per-page wrapper**, not inside `layout.tsx` — see §Resolved C1). Takes explicit `route` prop so each page declares which catalog entry is active, plus optional `substrate="black" | "paper-cream" | "paper-warm"` for Brando/Diagrams2 substrate breaks. Four corners:
   - **Top-left:** `SF//UX` wordmark + current-route catalog code (e.g. `SF//KLO-00`).
-  - **Top-right:** Geo-coords (static: `SOC/IDN 37°46'N 122°25'W` or fictional — see §Q2) + ISO date.
+  - **Top-right:** Geo-coords + ISO date. Coords: **`LAX 34°03'N 118°15'W`** (real Los Angeles anchor — user's location; see §Resolved C2). Date is statically rendered from build time, not runtime (no hydration mismatch risk).
   - **Bottom-left:** Catalog nav — all six route codes rendered inline, active entry lit in magenta, others in muted foreground. Clicking navigates.
   - **Bottom-right:** `signalframe.culturedivision.com` + version tag `v0.1 / CDB-V3`.
   - Chrome occupies fixed 24–32px insets. Does not scroll. Readable at all times.
@@ -223,7 +223,7 @@ Content direction: the marks are decorative-generative, but the page is still fu
 
 - **Four-corner insets:** 24px mobile, 32px desktop. Fixed position, z-50, pointer-events only on interactive elements (catalog nav + URL).
 - **Corner typography:** all corner labels in JetBrains Mono, `text-[10px]` mobile → `text-[11px]` desktop, uppercase, tracking `0.15em`.
-- **Active catalog entry:** magenta (`oklch(0.65 0.3 350)`), underlined.
+- **Active catalog entry:** magenta (`oklch(0.65 0.3 350)`) on every plate EXCEPT `/init`, where the active-entry color is lime-green (`oklch(0.8 0.2 135)`) to match the plate's parallel-world accent override. Underlined on every plate.
 - **No hamburger, no menu trigger.** The catalog IS the nav. Six entries always visible.
 - **Mobile:** catalog nav wraps to two lines (3 entries per line). Still visible.
 
@@ -260,11 +260,11 @@ Content direction: the marks are decorative-generative, but the page is still fu
 
 Each plate ships as its own commit. Commit prefixes per CLAUDE.md: `Feat: D1 dossier chrome + font slate`, `Feat: D2 /  KLOROFORM plate`, etc. ("D" for dossier, paralleling V/C branch naming). Per the project convention, commit before every change — each plate's scratch work also gets a checkpoint commit before substantive edits if the work spans multiple files.
 
-## Open questions (flagged for user, not blocking)
+## Resolutions (confirmed by user before implementation)
 
-- **C1** — Should `<DossierChrome>` live inside `layout.tsx` (automatic on every route) or be a wrapper each page opts into? Leaning toward `layout.tsx` for consistency; the only risk is `/reference` needing a paper substrate background, which can be handled via a `data-substrate="paper"` attribute on `<main>` that chrome reads.
-- **C2** — Geo-coordinates in the chrome: real (Culture Division HQ location) or fictional (SOC/IDN 7°33'22"S style, matching the vault reference)? Leaning fictional to fit the parallel-worlds register.
-- **C3** — Should `/init`'s lime-green accent ACTUALLY break the one-accent rule, or should it stay magenta like every other plate? Leaning break-it, because "parallel worlds" is the point of that plate. But this is the only place in the whole site that breaks the one-accent contract.
+- **C1 resolved → per-page wrapper.** `<DossierChrome route="...">` is imported and wrapped around `children` inside each `page.tsx`. Root `layout.tsx` stays lean and does not know about chrome. Rationale: each page declares its own active catalog entry and substrate explicitly, avoiding a central `usePathname()` routing map that would need to be kept in sync as routes change. Slight verbosity cost per page, paid once.
+- **C2 resolved → real coords, Los Angeles anchor.** Chrome displays `LAX 34°03'N 118°15'W` (static string, user's real location). Reasonable one-line change later if the user relocates or wants a different anchor. Date is build-time ISO, not runtime.
+- **C3 resolved → break the rule on `/init`.** Plate 06 replaces the magenta accent with lime-green `oklch(0.8 0.2 135)` (Helghast/Killzone parallel-world register). The catalog-nav active state on `/init` also renders lime-green to keep the plate internally consistent. Every other plate stays magenta. This is the only documented break of the one-accent contract on this branch — spec'd, not drifted.
 
 ## Success criteria
 
@@ -274,4 +274,4 @@ Each plate ships as its own commit. Commit prefixes per CLAUDE.md: `Feat: D1 dos
 - Font slate loaded; no Bungee, no Archivo Narrow on any route.
 - Lighthouse ≥ 95 all categories on at least two plates (target 100 eventually, but 95 is the ship bar for this branch).
 - Zero WCAG AA contrast violations.
-- CLAUDE.md quality bar maintained: zero border-radius, no decorative gradients, no fake depth, one accent per plate (one exception noted at C3).
+- CLAUDE.md quality bar maintained: zero border-radius, no decorative gradients, no fake depth, one accent per plate (one documented exception on `/init`, resolved in §Resolutions C3).
