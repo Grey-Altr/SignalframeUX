@@ -1,263 +1,97 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/layout/footer";
-import { SFSection } from "@/components/sf";
-import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
-import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { Zen_Dots, Share_Tech_Mono } from "next/font/google";
+import { DossierChrome, TerminalSession } from "@/components/dossier";
+
+const zenDots = Zen_Dots({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-zen-dots",
+  display: "swap",
+});
+const shareTech = Share_Tech_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-share-tech-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "[00//BOOT] — SIGNALFRAME//UX",
-  description: "From zero to Signal//Frame in 5 minutes. Install, initialize, and deploy.",
+  title: "SF//HLG-00 — Helghanese init plate",
+  description: "Dossier plate 06. Parallel-world terminal session.",
 };
 
-const STEPS: Array<{ number: string; title: string; description: string; code: CodeLine[]; note: string | null; highlight: boolean }> = [
-  {
-    number: "01",
-    title: "INSTALL",
-    description:
-      "ADD SIGNALFRAMEUX\u2122 TO YOUR PROJECT. THE CORE PACKAGE INCLUDES ALL FRAME LAYER COMPONENTS, TOKENS, AND THE API SURFACE. SIGNAL LAYER IS INCLUDED BUT OPT-IN.",
-    code: [
-      { type: "comment", text: "# NPM" },
-      { type: "line", parts: [{ text: "npm", cls: "fn" }, { text: " install " }, { text: "@sfux/core @sfux/components @sfux/tokens", cls: "str" }] },
-      { type: "blank" },
-      { type: "comment", text: "# PNPM (RECOMMENDED)" },
-      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " add " }, { text: "@sfux/core @sfux/components @sfux/tokens", cls: "str" }] },
-      { type: "blank" },
-      { type: "comment", text: "# SIGNAL LAYER (OPTIONAL)" },
-      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " add " }, { text: "@sfux/signal", cls: "str" }] },
-    ],
-    note: "REQUIRES REACT 18+ AND TYPESCRIPT 5+. TAILWINDCSS IS OPTIONAL BUT RECOMMENDED.",
-    highlight: false,
-  },
-  {
-    number: "02",
-    title: "INITIALIZE",
-    description:
-      "WRAP YOUR APP IN THE SFUX PROVIDER. PASS A CONFIG OBJECT TO SET YOUR THEME, TOKEN MODE, AND SIGNAL LAYER PREFERENCES.",
-    code: [
-      { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "SFUXProvider", cls: "fn" }, { text: ", " }, { text: "createSignalframeUX", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/core'", cls: "str" }] },
-      { type: "blank" },
-      { type: "line", parts: [{ text: "const", cls: "kw" }, { text: " config = " }, { text: "createSignalframeUX", cls: "fn" }, { text: "({" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "theme", cls: "cn" }, { text: ": " }, { text: "'dark'", cls: "str" }, { text: "," }] },
-      { type: "line", parts: [{ text: "  " }, { text: "tokens", cls: "cn" }, { text: ": " }, { text: "'oklch'", cls: "str" }, { text: "," }] },
-      { type: "line", parts: [{ text: "  " }, { text: "signal", cls: "cn" }, { text: ": { " }, { text: "enabled", cls: "cn" }, { text: ": " }, { text: "true", cls: "kw" }, { text: " }" }] },
-      { type: "line", parts: [{ text: "})" }] },
-      { type: "blank" },
-      { type: "line", parts: [{ text: "export default function", cls: "kw" }, { text: " " }, { text: "App", cls: "fn" }, { text: "() {" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "return", cls: "kw" }, { text: " (" }] },
-      { type: "line", parts: [{ text: "    <" }, { text: "SFUXProvider", cls: "fn" }, { text: " " }, { text: "config", cls: "cn" }, { text: "={config}>" }] },
-      { type: "line", parts: [{ text: "      <" }, { text: "YourApp", cls: "fn" }, { text: " />" }] },
-      { type: "line", parts: [{ text: "    </" }, { text: "SFUXProvider", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "  )" }] },
-      { type: "line", parts: [{ text: "}" }] },
-    ],
-    note: null,
-    highlight: false,
-  },
-  {
-    number: "03",
-    title: "USE_COMPONENTS",
-    description:
-      "IMPORT ANY OF THE 340+ COMPONENTS. THEY AUTOMATICALLY INHERIT YOUR THEME AND TOKEN CONFIGURATION. FRAME COMPONENTS ARE STRUCTURAL. SIGNAL VARIANTS ADD GENERATIVE EFFECTS ON TOP.",
-    code: [
-      { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "Button", cls: "fn" }, { text: ", " }, { text: "Card", cls: "fn" }, { text: ", " }, { text: "Input", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/components'", cls: "str" }] },
-      { type: "blank" },
-      { type: "line", parts: [{ text: "function", cls: "kw" }, { text: " " }, { text: "Dashboard", cls: "fn" }, { text: "() {" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "return", cls: "kw" }, { text: " (" }] },
-      { type: "line", parts: [{ text: "    <" }, { text: "Card", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "      <" }, { text: "Input", cls: "fn" }, { text: " " }, { text: "placeholder", cls: "cn" }, { text: "=" }, { text: '"SEARCH SIGNALS..."', cls: "str" }, { text: " />" }] },
-      { type: "line", parts: [{ text: "      <" }, { text: "Button", cls: "fn" }, { text: " " }, { text: "variant", cls: "cn" }, { text: "=" }, { text: '"signal"', cls: "str" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "        \u2022TRANSMIT" }] },
-      { type: "line", parts: [{ text: "      </" }, { text: "Button", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "      <" }, { text: "Button", cls: "fn" }, { text: " " }, { text: "variant", cls: "cn" }, { text: "=" }, { text: '"signal"', cls: "str" }, { text: " " }, { text: "signalEffect", cls: "cn" }, { text: "=" }, { text: '"shimmer"', cls: "str" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "        ENGAGE FRAME" }] },
-      { type: "line", parts: [{ text: "      </" }, { text: "Button", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "    </" }, { text: "Card", cls: "fn" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "  )" }] },
-      { type: "line", parts: [{ text: "}" }] },
-    ],
-    note: null,
-    highlight: true,
-  },
-  {
-    number: "04",
-    title: "ACTIVATE_FRAME",
-    description:
-      "THE SIGNAL LAYER IS THE GENERATIVE EXPRESSION SYSTEM. ADD NOISE BACKGROUNDS, PARTICLE MESHES, GLITCH TEXT, AND REACTIVE CANVAS EFFECTS. THEY NEVER INTERFERE WITH THE FRAME LAYER\u2019S READABILITY.",
-    code: [
-      { type: "line", parts: [{ text: "import", cls: "kw" }, { text: " { " }, { text: "NoiseBG", cls: "fn" }, { text: ", " }, { text: "GlitchText", cls: "fn" }, { text: " } " }, { text: "from", cls: "kw" }, { text: " " }, { text: "'@sfux/signal'", cls: "str" }] },
-      { type: "blank" },
-      { type: "line", parts: [{ text: "<" }, { text: "NoiseBG", cls: "fn" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "intensity", cls: "cn" }, { text: "={" }, { text: "0.3", cls: "cn" }, { text: "}" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "reactive", cls: "cn" }, { text: "=" }, { text: '"cursor"', cls: "str" }] },
-      { type: "line", parts: [{ text: "  " }, { text: "color", cls: "cn" }, { text: "=" }, { text: '"oklch(0.6 0.28 330)"', cls: "str" }] },
-      { type: "line", parts: [{ text: "/>" }] },
-      { type: "blank" },
-      { type: "line", parts: [{ text: "<" }, { text: "GlitchText", cls: "fn" }, { text: " " }, { text: "trigger", cls: "cn" }, { text: "=" }, { text: '"hover"', cls: "str" }, { text: ">" }] },
-      { type: "line", parts: [{ text: "  SIGNAL//FRAME\u2122" }] },
-      { type: "line", parts: [{ text: "</" }, { text: "GlitchText", cls: "fn" }, { text: ">" }] },
-    ],
-    note: "SIGNAL EFFECTS AUTOMATICALLY RESPECT PREFERS-REDUCED-MOTION. USE signalIntensity TO CONTROL VISUAL WEIGHT.",
-    highlight: false,
-  },
-  {
-    number: "05",
-    title: "DEPLOY",
-    description:
-      "SIGNALFRAMEUX\u2122 IS BUILT FOR REACT + NEXT.JS + VERCEL. TREE-SHAKING ENSURES YOU ONLY SHIP THE COMPONENTS YOU USE. SIGNAL LAYER IS CODE-SPLIT AND LOADED ON DEMAND.",
-    code: [
-      { type: "comment", text: "# BUILD FOR PRODUCTION" },
-      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " build" }] },
-      { type: "blank" },
-      { type: "comment", text: "# BUNDLE ANALYSIS" },
-      { type: "line", parts: [{ text: "pnpm", cls: "fn" }, { text: " analyze" }] },
-      { type: "blank" },
-      { type: "comment", text: "# CORE: ~12KB GZIPPED" },
-      { type: "comment", text: "# COMPONENTS: ~3KB PER COMPONENT (AVG)" },
-      { type: "comment", text: "# FRAME: ~8KB BASE + ~2KB PER EFFECT" },
-    ],
-    note: null,
-    highlight: false,
-  },
+const SESSION = [
+  { prompt: true,  text: "npx signalframeux init" },
+  { text: "» reading dossier...              [ok]", intent: "ok" as const },
+  { text: "» resolving reference packs (6)...[ok]", intent: "ok" as const },
+  { text: "» downloading signal shaders...   [ok]", intent: "ok" as const },
+  { text: "» compiling frame primitives...   [ok]", intent: "ok" as const },
+  { text: "» calibrating lime-green accent.. [ok]", intent: "ok" as const },
+  { text: "» projecting parallel timeline... [ok]", intent: "ok" as const },
+  { text: "» handshake: CULTURE DIVISION     [ok]", intent: "ok" as const },
+  { text: "" },
+  { text: "installed. you are now in the parallel timeline." },
+  { text: "" },
+  { text: "» exit 0" },
 ];
-
-type CodePart = { text: string; cls?: string };
-type CodeLine =
-  | { type: "comment"; text: string }
-  | { type: "blank" }
-  | { type: "line"; parts: CodePart[] };
-
-const COLOR_MAP: Record<string, string> = {
-  kw: "text-primary",
-  str: "text-[var(--sf-yellow)]",
-  fn: "text-[var(--sf-code-text)]",
-  cn: "text-[var(--sf-code-keyword)]",
-};
-
-function CodeBlock({ lines }: { lines: CodeLine[] }) {
-  return (
-    <SharedCodeBlock label="TERMINAL™" className="text-base">
-      <code>
-        {lines.map((line, i) => {
-          if (line.type === "blank") return <br key={i} />;
-          if (line.type === "comment")
-            return (
-              <div key={i} className="text-muted-foreground">
-                {line.text}
-              </div>
-            );
-          return (
-            <div key={i} className="text-[var(--sf-code-text)]">
-              {line.parts.map((part, j) => {
-                if (!part.cls) return <span key={j}>{part.text}</span>;
-                return (
-                  <span key={j} className={COLOR_MAP[part.cls] ?? ""}>
-                    {part.text}
-                  </span>
-                );
-              })}
-            </div>
-          );
-        })}
-      </code>
-    </SharedCodeBlock>
-  );
-}
 
 export default function InitPage() {
   return (
-    <>
-      <main id="main-content" data-cursor data-section="init" data-section-label="SYS" data-primary className="mt-[var(--nav-height)]">
-        <Breadcrumb segments={[{ label: "INIT" }]} />
+    <DossierChrome route="helghanese" substrate="black">
+      <div className={`${zenDots.variable} ${shareTech.variable}`}>
+        <main className="min-h-screen grid grid-rows-[auto_1fr_auto] px-6 md:px-16 py-24 md:py-32">
 
-        {/* ═══ PAGE HEADER ═══ */}
-        <SFSection label="INIT" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
-          <header
-            data-nav-reveal-trigger
-            className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end relative z-10"
+          <h1
+            data-plate="helghanese-header"
+            className="uppercase tracking-[0.02em] leading-none"
+            style={{
+              fontFamily: "var(--font-zen-dots), monospace",
+              fontSize: "clamp(22px, 4vw, 56px)",
+              color: "oklch(0.8 0.2 135)",
+            }}
           >
-            <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)]">
-              <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-4)]">
-                [00//BOOT]
-              </div>
-              <h1
-                aria-label="Initialize"
-                className="sf-display leading-[0.9] uppercase tracking-[-0.02em]"
-                style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
-              >
-                <span data-anim="page-heading" suppressHydrationWarning>INITIA</span>
-                <br />
-                <span data-anim="page-heading" suppressHydrationWarning>LIZE</span>
-              </h1>
+            SF//UX INIT v0.1
+          </h1>
+
+          <div className="grid grid-cols-[auto_1fr_auto] gap-10 md:gap-16 items-start mt-16">
+
+            {/* Left margin: repeating glyph column (Helghanese-like) */}
+            <div
+              aria-hidden="true"
+              className="text-[22px] leading-[1.4] opacity-40 flex flex-col gap-1"
+              style={{ fontFamily: "var(--font-zen-dots), monospace" }}
+            >
+              {"◆◈◆◉◇◈◆◉◇◈◆".split("").map((g, i) => (
+                <span key={i}>{g}</span>
+              ))}
             </div>
-            <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
-              5 STEP SEQUENCE
+
+            {/* Center: terminal session */}
+            <div>
+              <TerminalSession lines={SESSION} />
             </div>
-          </header>
-        </SFSection>
 
-        {/* ═══ BRINGUP SEQUENCE ═══ */}
-        <SFSection label="SEQUENCE" className="py-0">
-          <div className="divide-y divide-foreground/15">
-            {STEPS.map((step, i) => {
-              const CODES = ["INIT", "HANDSHAKE", "LINK", "TRANSMIT", "DEPLOY"] as const;
-              const code = `[${step.number}//${CODES[i]}]`;
-              return (
-                <article
-                  key={step.number}
-                  data-init-step={step.number}
-                  className="grid grid-cols-[auto_1fr] gap-[var(--sfx-space-8)] md:gap-[var(--sfx-space-12)] py-[var(--sfx-space-12)] md:py-16 px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)]"
-                >
-                  {/* Step number at display size */}
-                  <div
-                    className="sf-display leading-none text-foreground tabular-nums"
-                    style={{ fontSize: "clamp(80px, calc(10*var(--sf-vw)), 160px)" }}
-                  >
-                    {step.number}
-                  </div>
-
-                  <div className="min-w-0">
-                    {/* Coded indicator */}
-                    <div className="font-mono text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground mb-[var(--sfx-space-3)]">
-                      {code}
-                    </div>
-
-                    {/* Title */}
-                    <h2
-                      className="sf-display uppercase tracking-tight mb-5 leading-[0.95]"
-                      style={{ fontSize: "var(--text-3xl)" }}
-                    >
-                      {step.title}
-                    </h2>
-
-                    {/* Description — all caps monospace, tracking tight */}
-                    <p className="font-mono uppercase text-[var(--text-sm)] leading-relaxed tracking-tight text-muted-foreground max-w-prose mb-[var(--sfx-space-6)]">
-                      {step.description}
-                    </p>
-
-                    {/* Code block — preserve CodeBlock helper */}
-                    <CodeBlock lines={step.code} />
-
-                    {/* Optional note — terminal comment register */}
-                    {step.note && (
-                      <div className="mt-[var(--sfx-space-4)] font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
-                        {"// " + step.note}
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
+            {/* Right margin: vertical repeated wordmark */}
+            <div
+              aria-hidden="true"
+              className="uppercase opacity-40 text-[11px] tracking-[0.3em] [writing-mode:vertical-rl] rotate-180"
+              style={{ fontFamily: "var(--font-share-tech-mono), monospace" }}
+            >
+              PARALLEL WORLDS · PARALLEL WORLDS · PARALLEL WORLDS
+            </div>
           </div>
-        </SFSection>
 
-        {/* ═══ TERMINAL FOOTER ═══ */}
-        <SFSection label="TERMINAL" className="border-t-4 border-foreground py-16 px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)]">
-          <div className="font-mono uppercase tracking-[0.15em] text-muted-foreground">
-            [OK] SYSTEM READY
-          </div>
-        </SFSection>
-      </main>
-      <Footer />
-    </>
+          <p
+            className="mt-16 max-w-[60ch] text-[13px] opacity-70 leading-[1.7]"
+            style={{ fontFamily: "var(--font-share-tech-mono), monospace" }}
+          >
+            To adopt SignalframeUX, run the install sequence above. The system
+            resolves against its dossier — six reference plates, one coherent
+            grammar. This page is the only plate in the system that breaks the
+            one-accent rule; everything else uses magenta.
+          </p>
+        </main>
+      </div>
+    </DossierChrome>
   );
 }

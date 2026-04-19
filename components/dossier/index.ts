@@ -6,3 +6,4 @@ export { HudOctagonFrame } from "./hud-octagon-frame";
 export { HalftoneCorrugated } from "./halftone-corrugated";
 export { BuildSchematic, type SchematicNode } from "./build-schematic";
 export { Y2KMarkGrid } from "./y2k-mark-grid";
+export { TerminalSession } from "./terminal-session";
