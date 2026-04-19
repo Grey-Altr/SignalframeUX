@@ -111,7 +111,7 @@ export function Y2KMarkGrid({ count = 60, litIndex = 42 }: { count?: number; lit
             className="border-r border-b p-3 flex flex-col items-center justify-center aspect-square"
             style={{
               borderColor: "oklch(0.15 0 0 / 0.4)",
-              color: isLit ? "oklch(0.5 0.3 350)" : "oklch(0.15 0 0)",
+              color: isLit ? "oklch(0.45 0.25 350)" : "oklch(0.15 0 0)",
             }}
           >
             <Shape size={40} />

@@ -37,7 +37,7 @@ export function CatalogNav({ active }: { active: DossierRoute }) {
               href={entry.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "no-underline transition-colors",
+                "no-underline transition-colors inline-flex items-center min-h-6",
                 isActive
                   ? "underline underline-offset-[3px]"
                   : "hover:text-[color:var(--dossier-nav-hover)]",

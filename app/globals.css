@@ -236,7 +236,7 @@
      Active route is magenta by default; /init (helghanese plate)
      breaks to lime-green as a parallel-world visual tell.
      ─────────────────────────────────────────────────────────── */
-  --dossier-nav-idle: oklch(0.55 0 0);
+  --dossier-nav-idle: oklch(0.65 0 0);
   --dossier-nav-hover: oklch(0.95 0 0);
   --dossier-nav-sep: oklch(0.35 0 0);
   --dossier-nav-active: oklch(0.65 0.3 350);         /* magenta */
@@ -389,6 +389,17 @@
   --sfx-text-small-size: var(--sfx-text-sm);
   --sfx-text-small-weight: 400;
   --sfx-text-small-leading: 1.4;
+}
+
+/* ── Dossier Nav Substrate Overrides (cdb-v3-dossier branch) ──
+   Nav tokens at :root assume a black substrate. On paper plates
+   (/reference, /builds) we invert to dark ink for WCAG AA contrast. */
+[data-substrate="paper-cream"],
+[data-substrate="paper-warm"] {
+  --dossier-nav-idle: oklch(0.35 0 0);
+  --dossier-nav-hover: oklch(0.15 0 0);
+  --dossier-nav-sep: oklch(0.55 0 0);
+  --dossier-nav-active: oklch(0.45 0.25 350);
 }
 
 /* ── Detail Panel Z-Index Override ── */

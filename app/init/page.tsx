@@ -58,7 +58,7 @@ export default function InitPage() {
             {/* Left margin: repeating glyph column (Helghanese-like) */}
             <div
               aria-hidden="true"
-              className="text-[22px] leading-[1.4] opacity-40 flex flex-col gap-1"
+              className="text-[22px] leading-[1.4] opacity-60 flex flex-col gap-1"
               style={{ fontFamily: "var(--font-zen-dots), monospace" }}
             >
               {"◆◈◆◉◇◈◆◉◇◈◆".split("").map((g, i) => (
@@ -74,7 +74,7 @@ export default function InitPage() {
             {/* Right margin: vertical repeated wordmark */}
             <div
               aria-hidden="true"
-              className="uppercase opacity-40 text-[11px] tracking-[0.3em] [writing-mode:vertical-rl] rotate-180"
+              className="uppercase opacity-60 text-[11px] tracking-[0.3em] [writing-mode:vertical-rl] rotate-180"
               style={{ fontFamily: "var(--font-share-tech-mono), monospace" }}
             >
               PARALLEL WORLDS · PARALLEL WORLDS · PARALLEL WORLDS

@@ -86,7 +86,7 @@ export default function InventoryPage() {
                     {e.value?.importPath ?? "—"}
                   </div>
                   <div
-                    className="text-[9px] uppercase tracking-[0.15em] opacity-40 mt-3"
+                    className="text-[9px] uppercase tracking-[0.15em] opacity-60 mt-3"
                     style={{ fontFamily: "var(--font-jetbrains), monospace" }}
                   >
                     {e.value?.category ?? "—"}
