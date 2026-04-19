@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 type MarkProps = { size?: number; color?: string };
 
 function Hexagon({ size = 60, color = "currentColor" }: MarkProps) {
@@ -82,10 +80,10 @@ function Spiral({ size = 60, color = "currentColor" }: MarkProps) {
     </svg>
   );
 }
-function Arrows(): ReactNode {
+function Arrows({ size = 60, color = "currentColor" }: MarkProps) {
   return (
-    <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden="true">
-      <g stroke="currentColor" strokeWidth="2" fill="none">
+    <svg viewBox="0 0 60 60" width={size} height={size} aria-hidden="true">
+      <g stroke={color} strokeWidth="2" fill="none">
         <path d="M10 30 L50 30" />
         <path d="M44 24 L50 30 L44 36" />
         <path d="M30 10 L30 50" />
@@ -95,7 +93,7 @@ function Arrows(): ReactNode {
   );
 }
 
-const SHAPES = [Hexagon, Recycle, Asterisk, NestedCubes, Peace, Target, Triad, Orbit, Spiral, () => <Arrows />];
+const SHAPES = [Hexagon, Recycle, Asterisk, NestedCubes, Peace, Target, Triad, Orbit, Spiral, Arrows];
 
 function pad(n: number) { return String(n).padStart(3, "0"); }
 
@@ -113,7 +111,7 @@ export function Y2KMarkGrid({ count = 60, litIndex = 42 }: { count?: number; lit
             className="border-r border-b p-3 flex flex-col items-center justify-center aspect-square"
             style={{
               borderColor: "oklch(0.15 0 0 / 0.4)",
-              color: isLit ? "oklch(0.65 0.3 350)" : "oklch(0.15 0 0)",
+              color: isLit ? "oklch(0.5 0.3 350)" : "oklch(0.15 0 0)",
             }}
           >
             <Shape size={40} />
