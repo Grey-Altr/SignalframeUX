@@ -1,44 +1,65 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/layout/footer";
-import { APIExplorer } from "@/components/blocks/api-explorer";
-import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { SFSection } from "@/components/sf";
+import { Archivo, Archivo_Black } from "next/font/google";
+import Link from "next/link";
+import { DossierChrome, Y2KMarkGrid } from "@/components/dossier";
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+const archivoBlack = Archivo_Black({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-archivo-black",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "API Reference — SIGNALFRAME//UX",
-  description: "Full API documentation — props, hooks, tokens, and the programmable surface.",
+  title: "SF//MRK-00 — Brando Y2K reference plate",
+  description: "Dossier plate 03. Catalog of SFUX reference marks.",
 };
 
-export default function APIPage() {
+export default function ReferencePage() {
   return (
-    <>
-      <main id="main-content" data-cursor data-section="ref" data-section-label="API" data-primary className="mt-[var(--nav-height)]">
-        <Breadcrumb segments={[{ label: "API" }]} />
-        <SFSection label="API REFERENCE HEADER" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
-          <header
-            data-nav-reveal-trigger
-            className="grid grid-cols-1 md:grid-cols-[1fr_auto] border-b-4 border-foreground items-end min-w-0"
-          >
+    <DossierChrome route="brando" substrate="paper-cream">
+      <div className={`${archivo.variable} ${archivoBlack.variable}`}>
+        <main className="min-h-screen px-6 md:px-12 py-24 md:py-28">
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_42ch] gap-10 md:gap-16 items-start">
             <h1
-              aria-label="API Reference"
-              className="sf-display px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] leading-[0.9] uppercase tracking-[-0.02em] min-w-0 break-all"
-              style={{ fontSize: "clamp(80px, calc(12*var(--sf-vw)), 160px)" }}
+              data-plate="brando-hero"
+              className="uppercase tracking-[-0.02em] leading-[0.88]"
+              style={{
+                fontFamily: "var(--font-archivo-black), sans-serif",
+                fontSize: "clamp(48px, 11vw, 180px)",
+                color: "oklch(0.15 0 0)",
+              }}
             >
-              <span data-anim="page-heading" suppressHydrationWarning>API</span>
-              <br />
-              <span data-anim="page-heading" suppressHydrationWarning>REFERENCE</span>
+              API<br/>REFERENCE
             </h1>
-            <div className="hidden md:block px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pb-[var(--sfx-space-6)] text-right text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-              PROGRAMMABLE SURFACES
+            <div
+              className="text-[13px] leading-[1.7] max-w-[44ch]"
+              style={{ fontFamily: "var(--font-archivo), sans-serif", color: "oklch(0.2 0 0)" }}
+            >
+              <p>
+                SignalframeUX exposes a programmable surface — 54 components, 49 color scales, 9 spacing stops, 12 easings. The marks below catalog the system&apos;s reference vocabulary, Brando-style.
+              </p>
+              <p className="mt-4">
+                Every mark is serialized. Look for <strong>SF//MRK-042</strong> — it is the one you are meant to notice.
+              </p>
+              <p className="mt-6 text-[11px] uppercase tracking-[0.15em] opacity-70">
+                → <Link href="/inventory" style={{ color: "inherit" }}>see component inventory for props and live previews</Link>
+              </p>
             </div>
-          </header>
-        </SFSection>
-        <SFSection label="API REFERENCE" className="py-0">
-          <APIExplorer />
-        </SFSection>
-      </main>
-      <Footer />
-    </>
+          </div>
+
+          <div className="mt-16 md:mt-20">
+            <Y2KMarkGrid count={60} litIndex={42} />
+          </div>
+        </main>
+      </div>
+    </DossierChrome>
   );
 }
-
