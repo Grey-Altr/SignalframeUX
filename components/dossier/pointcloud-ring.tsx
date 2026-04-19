@@ -50,10 +50,7 @@ export function PointcloudRing({
 
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      // Asymmetric radial scatter: tight inner edge (preserves the iris gap),
-      // extended outer tail so the ring dissolves outward into haze.
-      // Range [-0.02, 0.06] → outer boundary reaches 3× further than before.
-      const rJitter = (Math.random() - 0.25) * 0.08;
+      const rJitter = (Math.random() - 0.5) * 0.04;
       return { theta, rJitter };
     });
 
@@ -121,6 +118,11 @@ export function PointcloudRing({
         const img = ctx.getImageData(0, rowStart, W, rowCount);
         const data = img.data;
         const stride = W * 4;
+        // Bleed tuning: streak length ~8% of canvas width, alpha capped well
+        // below source (~191) so extended pixels stay dim haze and never
+        // trigger recursive bleed in subsequent frames.
+        const bleedLen = Math.max(1, Math.round(W * 0.08));
+        const bleedAlphaCap = 95;
 
         for (let y = 0; y < rowCount; y++) {
           const rowBase = y * stride;
@@ -144,6 +146,53 @@ export function PointcloudRing({
               for (let i = 0; i < runLen; i++) buf[i] = view.getUint32(i * 4);
               buf.sort((a, b) => dir * ((a & 0xff) - (b & 0xff)));
               for (let i = 0; i < runLen; i++) view.setUint32(i * 4, buf[i]);
+
+              // Bleed each run's outer-facing end into empty space with
+              // decaying alpha. "Outer" = away from canvas horizontal center,
+              // so the pupil area stays clean at middle rows.
+              const leftIdx = rowBase + runStart * 4;
+              const leftR = data[leftIdx];
+              const leftG = data[leftIdx + 1];
+              const leftB = data[leftIdx + 2];
+              const leftA = data[leftIdx + 3];
+              if (runStart < W / 2) {
+                for (let b = 1; b <= bleedLen; b++) {
+                  const tx = runStart - b;
+                  if (tx < 0) break;
+                  const fade = 1 - b / bleedLen;
+                  const newA = Math.min(bleedAlphaCap, (leftA * fade) | 0);
+                  if (newA < 1) break;
+                  const ti = rowBase + tx * 4;
+                  if (newA > data[ti + 3]) {
+                    data[ti] = leftR;
+                    data[ti + 1] = leftG;
+                    data[ti + 2] = leftB;
+                    data[ti + 3] = newA;
+                  }
+                }
+              }
+              const rightX = runStart + runLen - 1;
+              const rightIdx = rowBase + rightX * 4;
+              const rightR = data[rightIdx];
+              const rightG = data[rightIdx + 1];
+              const rightB = data[rightIdx + 2];
+              const rightA = data[rightIdx + 3];
+              if (rightX >= W / 2) {
+                for (let b = 1; b <= bleedLen; b++) {
+                  const tx = rightX + b;
+                  if (tx >= W) break;
+                  const fade = 1 - b / bleedLen;
+                  const newA = Math.min(bleedAlphaCap, (rightA * fade) | 0);
+                  if (newA < 1) break;
+                  const ti = rowBase + tx * 4;
+                  if (newA > data[ti + 3]) {
+                    data[ti] = rightR;
+                    data[ti + 1] = rightG;
+                    data[ti + 2] = rightB;
+                    data[ti + 3] = newA;
+                  }
+                }
+              }
               runStart = -1;
             }
           }
