@@ -231,37 +231,6 @@ sfToast('SIGNAL TRANSMISSION COMPLETE', { duration: 4000 })`,
     category: "FEEDBACK",
   },
 
-  "047": {
-    index: "047",
-    name: "ALERT_DIALOG",
-    component: "SFAlertDialog",
-    importPath: "@/components/sf",
-    variants: [
-      { label: "DEFAULT", props: {} },
-    ],
-    code: `import { SFAlertDialog, SFAlertDialogTrigger, SFAlertDialogContent, SFAlertDialogHeader, SFAlertDialogTitle, SFAlertDialogDescription, SFAlertDialogFooter, SFAlertDialogAction, SFAlertDialogCancel, SFButton } from '@/components/sf'
-
-<SFAlertDialog>
-  <SFAlertDialogTrigger asChild>
-    <SFButton intent="destructive">DELETE</SFButton>
-  </SFAlertDialogTrigger>
-  <SFAlertDialogContent>
-    <SFAlertDialogHeader>
-      <SFAlertDialogTitle>CONFIRM DELETE</SFAlertDialogTitle>
-      <SFAlertDialogDescription>THIS ACTION CANNOT BE UNDONE.</SFAlertDialogDescription>
-    </SFAlertDialogHeader>
-    <SFAlertDialogFooter>
-      <SFAlertDialogCancel>CANCEL</SFAlertDialogCancel>
-      <SFAlertDialogAction>DELETE</SFAlertDialogAction>
-    </SFAlertDialogFooter>
-  </SFAlertDialogContent>
-</SFAlertDialog>`,
-    docId: "SFAlertDialog",
-    layer: "frame",
-    pattern: "B",
-    category: "FEEDBACK",
-  },
-
   "048": {
     index: "048",
     name: "POPOVER",
