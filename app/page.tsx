@@ -49,7 +49,7 @@ export default function Page() {
                 style={{
                   fontFamily: "var(--font-syne), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(44px, 7vw, 104px)",
+                  fontSize: "clamp(26px, 7vw, 104px)",
                 }}
               >
                 SIGNALFRAME
