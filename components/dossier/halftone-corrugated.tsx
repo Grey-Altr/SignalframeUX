@@ -1,6 +1,15 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+// Pre-bucket the gray ramp so the inner loop (2,560 cells / frame) stops
+// allocating a fresh template string per fill. 32 steps sits below the
+// perceptual threshold for neutral gray discrimination at small sizes.
+const PALETTE_STEPS = 32;
+const PALETTE: readonly string[] = Array.from({ length: PALETTE_STEPS }, (_, i) => {
+  const l = (0.85 * i) / (PALETTE_STEPS - 1);
+  return `oklch(${l} 0 0)`;
+});
+
 export function HalftoneCorrugated({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
@@ -42,7 +51,13 @@ export function HalftoneCorrugated({ className = "" }: { className?: string }) {
           const v = (wave + tilt) * 0.5; // -1..1
           const lightness = 0.5 + v * 0.5;
           const size = Math.max(0.2, Math.min(1, lightness)) * Math.min(cw, rh) * 0.9;
-          ctx.fillStyle = `oklch(${0.85 * lightness} 0 0)`;
+          const idx =
+            lightness <= 0
+              ? 0
+              : lightness >= 1
+                ? PALETTE_STEPS - 1
+                : Math.floor(lightness * PALETTE_STEPS);
+          ctx.fillStyle = PALETTE[idx];
           ctx.fillRect(c * cw + (cw - size) / 2, r * rh + (rh - size) / 2, size, size);
         }
       }
