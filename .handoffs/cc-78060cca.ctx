@@ -1,0 +1,7 @@
+r=unset
+n=Branch cdb-v3-dossier is closed and pushed to remote. Decide merge vs archive. If merge: open PR at https://github.com/Grey-Altr/SignalframeUX/pull/new/cdb-v3-dossier and triage out-of-allowlist additions (components/cdb/*, components/vault/*, lib/registry/*) as pre-dossier aesthetic work.
+ws=T8 closed. Branch pushed as origin/cdb-v3-dossier. No in-flight work.
+b=none
+msg=
+kb=
+kh=
