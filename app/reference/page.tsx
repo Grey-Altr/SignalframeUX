@@ -29,7 +29,7 @@ export default function ReferencePage() {
   return (
     <DossierChrome route="brando" substrate="paper-cream">
       <div className={`${archivo.variable} ${archivoBlack.variable}`}>
-        <main className="min-h-screen px-6 md:px-12 pt-24 md:pt-28 pb-32 md:pb-40">
+        <main className="min-h-screen px-6 md:px-12 pt-24 pb-[var(--dossier-chrome-clearance)]">
 
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,42ch)] gap-10 md:gap-16 items-start">
             <h1

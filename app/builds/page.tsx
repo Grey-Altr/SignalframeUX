@@ -42,7 +42,7 @@ export default function BuildsPage() {
   return (
     <DossierChrome route="diagrams2" substrate="paper-warm">
       <div className={`${ibmPlexMono.variable} ${ibmPlexSansCondensed.variable}`}>
-        <main className="min-h-screen px-6 md:px-16 pt-24 md:pt-32 pb-32 md:pb-40">
+        <main className="min-h-screen px-6 md:px-16 pt-24 pb-[var(--dossier-chrome-clearance)]">
           <h1
             data-plate="diagrams2-title"
             className="uppercase tracking-[0.01em] leading-[0.95] mb-12"
