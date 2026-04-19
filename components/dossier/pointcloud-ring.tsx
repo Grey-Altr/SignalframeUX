@@ -50,7 +50,10 @@ export function PointcloudRing({
 
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      const rJitter = (Math.random() - 0.5) * 0.04;
+      // Asymmetric radial scatter: tight inner edge (preserves the iris gap),
+      // extended outer tail so the ring dissolves outward into haze.
+      // Range [-0.02, 0.06] → outer boundary reaches 3× further than before.
+      const rJitter = (Math.random() - 0.25) * 0.08;
       return { theta, rJitter };
     });
 
