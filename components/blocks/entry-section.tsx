@@ -25,7 +25,7 @@ export function EntrySection() {
             {/* Iris — inward-drifting cloud behind the main ring */}
             <IrisCloud
               count={4500}
-              outerRadius={0.36}
+              outerRadius={0.39}
               innerRadius={0.06}
               trail={0.04}
               pixelSort={0.5}
