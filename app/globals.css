@@ -241,6 +241,12 @@
   --dossier-nav-sep: oklch(0.35 0 0);
   --dossier-nav-active: oklch(0.65 0.3 350);         /* magenta */
   --dossier-nav-active-break: oklch(0.8 0.2 135);    /* lime-green for /init parallel-world break */
+  /* Keyboard focus ring for dossier chrome. Default = near-white for black
+     substrate (≈15:1 vs oklch(0 0 0)). Paper + helghanese overrides below.
+     Global `* { outline-ring/50 }` ring is a 1.5px magenta-at-50%-alpha that
+     fails WCAG 2.2 §1.4.11 against every dossier substrate; this token
+     replaces it for CatalogNav links. */
+  --dossier-focus-ring: oklch(0.95 0 0);
 
   /* Structural token — not a rhythm stop. Tracks the fixed corner-chrome
      band height (~94px) plus buffer so tall plates don't collide with the
@@ -405,6 +411,31 @@
   --dossier-nav-hover: oklch(0.15 0 0);
   --dossier-nav-sep: oklch(0.55 0 0);
   --dossier-nav-active: oklch(0.45 0.25 350);
+  /* Dark ink focus ring on paper. oklch(0.15) ≈ 12:1 on cream, 10:1 on warm. */
+  --dossier-focus-ring: oklch(0.15 0 0);
+}
+
+/* Helghanese plate breaks the one-accent rule to lime-green; the focus ring
+   follows the plate accent so /init stays self-consistent. */
+[data-dossier-route="helghanese"] {
+  --dossier-focus-ring: oklch(0.8 0.2 135);
+}
+
+/* CatalogNav keyboard focus — 2px solid ring at 2px offset. Scoped to the
+   dossier catalog nav so global SF focus styles elsewhere are unaffected.
+   The Link wrapper carries Tailwind's `transition-colors` class, which
+   animates outline-color between the base-layer `* { outline-color: ... }`
+   reset (magenta-50%) and our token value, so we drop outline-color from the
+   transition property list on these links — the ring must appear instantly
+   on Tab, not fade in over 150ms from a failing-contrast start state. */
+nav[aria-label="Dossier catalog"] a {
+  transition-property: color, background-color;
+}
+nav[aria-label="Dossier catalog"] a:focus-visible {
+  outline-width: 2px;
+  outline-style: solid;
+  outline-color: var(--dossier-focus-ring);
+  outline-offset: 2px;
 }
 
 /* ── Detail Panel Z-Index Override ── */
