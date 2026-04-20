@@ -438,26 +438,33 @@
   100% { opacity: 1; }
 }
 
-/* Canvas layer entrance — the GLSL noise field + pointcloud ring + iris
-   resolve from blurred-and-absent into focus on page load. Blur is driven
-   by an SVG feGaussianBlur filter (see EntrySection) whose stdDeviation is
-   animated via SMIL, because true Gaussian has a softer rolloff than the
-   browser's approximated CSS filter: blur(). Opacity stays on CSS. Text
-   overlays are siblings of this wrapper so they keep their own timing. */
-.sf-hero-canvas-resolve {
-  filter: url("#sf-hero-gaussian");
-  animation: sf-hero-canvas-resolve 1.1s var(--sfx-ease-default) both;
-  will-change: opacity, filter;
+/* Staged hero entrance choreography.
+   t=0       iris begins 2s fade-in (sf-hero-iris-reveal), nothing else visible
+   t=2–7s   ring worker gates particle bands in sequentially (1s per band,
+            see pointcloud-ring-worker.ts:RING_REVEAL_OFFSET_S)
+   t=7s     GLSL backdrop + hero text + chrome begin constructing in parallel
+            (sf-hero-construct + GSAP hero timeline delayed by matching offset)
+   t=~9s    subtitle fades in last (handled in page-animations.tsx)
+   All delays ride a shared `animation-delay` strategy so the page loads idle
+   until the iris owns the first two seconds alone. */
+.sf-hero-iris-reveal {
+  opacity: 0;
+  animation: sf-hero-fade-simple 2s var(--sfx-ease-default) 0s both;
 }
 
-@keyframes sf-hero-canvas-resolve {
+.sf-hero-construct {
+  opacity: 0;
+  animation: sf-hero-fade-simple 1s var(--sfx-ease-default) var(--sf-hero-construct-delay, 7s) both;
+}
+
+@keyframes sf-hero-fade-simple {
   0%   { opacity: 0; }
   100% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sf-hero-canvas-resolve {
-    filter: none;
+  .sf-hero-iris-reveal,
+  .sf-hero-construct {
     animation: hero-fade-in 0.4s var(--sfx-ease-default) both;
   }
 }
