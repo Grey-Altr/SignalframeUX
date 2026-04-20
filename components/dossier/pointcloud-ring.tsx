@@ -261,30 +261,27 @@ export function PointcloudRing({
         const rowCount = rowEnd - rowStart;
         const img = offCtx.getImageData(0, rowStart, W, rowCount);
         const data = img.data;
-        const stride = W * 4;
+        // Wrap the ImageData buffer as Uint32 once so runs can be sorted
+        // in-place via typed-array subarrays — no per-run allocation. On LE
+        // systems each u32 packs (A << 24) | (B << 16) | (G << 8) | R, so
+        // `v >>> 24` is the alpha byte used as sort key (matches original
+        // big-endian DataView path: `(BE value) & 0xff` == A).
+        const u32 = new Uint32Array(data.buffer, data.byteOffset, W * rowCount);
+        const cmpAsc = (a: number, b: number) => (a >>> 24) - (b >>> 24);
+        const cmpDesc = (a: number, b: number) => (b >>> 24) - (a >>> 24);
 
         for (let y = 0; y < rowCount; y++) {
-          const rowBase = y * stride;
-          // Bidirectional: alternate sort direction per absolute row so
-          // consecutive rows pull bright pixels in opposite directions.
-          const dir = ((rowStart + y) & 1) ? -1 : 1;
+          const rowBaseU32 = y * W;
+          const rowBaseBytes = y * W * 4;
+          const cmp = ((rowStart + y) & 1) ? cmpDesc : cmpAsc;
           let runStart = -1;
           for (let x = 0; x <= W; x++) {
             const bright =
-              x < W && data[rowBase + x * 4 + 3] > sortThreshold;
+              x < W && data[rowBaseBytes + x * 4 + 3] > sortThreshold;
             if (bright && runStart === -1) {
               runStart = x;
             } else if (!bright && runStart !== -1) {
-              const runLen = x - runStart;
-              const buf = new Uint32Array(runLen);
-              const view = new DataView(
-                data.buffer,
-                data.byteOffset + rowBase + runStart * 4,
-                runLen * 4,
-              );
-              for (let i = 0; i < runLen; i++) buf[i] = view.getUint32(i * 4);
-              buf.sort((a, b) => dir * ((a & 0xff) - (b & 0xff)));
-              for (let i = 0; i < runLen; i++) view.setUint32(i * 4, buf[i]);
+              u32.subarray(rowBaseU32 + runStart, rowBaseU32 + x).sort(cmp);
               runStart = -1;
             }
           }
