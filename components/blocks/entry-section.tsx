@@ -33,6 +33,8 @@ export function EntrySection() {
               trail={0.1}
               pixelSort={0.33}
               sortThreshold={10}
+              borderRadius={0.46}
+              borderAlpha={1}
               className="absolute inset-0"
             />
           </div>
