@@ -62,9 +62,14 @@ let running = false;
 let rafId = 0;
 let frameIdx = 0;
 let anchor = 0;
+let lastDrawTs = 0;
 
 const WARMUP_FRAMES = 180;
 const FRAME_MS = 1000 / 60;
+// Cap draw rate at 60 FPS — see pointcloud-ring-worker.ts for rationale
+// (trails tuned for 60, no gain on 60Hz displays, unified look across
+// 120/144Hz monitors).
+const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
 function initPoints(count: number, groupCount: number): Point[] {
   const out: Point[] = new Array(count);
@@ -155,13 +160,17 @@ function draw(now: number): void {
 }
 
 function tick(now: number): void {
-  draw(now);
+  if (now - lastDrawTs >= DRAW_INTERVAL_MS) {
+    lastDrawTs = now;
+    draw(now);
+  }
   rafId = self.requestAnimationFrame(tick);
 }
 
 function startAnim(): void {
   if (running) return;
   running = true;
+  lastDrawTs = 0;
   rafId = self.requestAnimationFrame(tick);
 }
 

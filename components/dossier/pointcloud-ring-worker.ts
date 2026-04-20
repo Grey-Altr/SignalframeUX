@@ -65,9 +65,16 @@ let running = false;
 let rafId = 0;
 let frameIdx = 0;
 let anchor = 0;
+let lastDrawTs = 0;
 
 const WARMUP_FRAMES = 180;
 const FRAME_MS = 1000 / 60;
+// Cap draw rate at 60 FPS even when the compositor vsyncs at 120/144Hz.
+// Trails (config.trail) and pixel-sort progression were tuned for 60; running
+// faster bleeds trails out too quickly and burns CPU for no visible gain on
+// the common 60Hz display. 0.5ms slack avoids losing a frame that lands just
+// shy of the budget due to rAF jitter.
+const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
 function initPoints(count: number, groupCount: number): Point[] {
   const GROUP_SLICE = (Math.PI * 2) / groupCount;
@@ -213,13 +220,17 @@ function draw(now: number): void {
 }
 
 function tick(now: number): void {
-  draw(now);
+  if (now - lastDrawTs >= DRAW_INTERVAL_MS) {
+    lastDrawTs = now;
+    draw(now);
+  }
   rafId = self.requestAnimationFrame(tick);
 }
 
 function startAnim(): void {
   if (running) return;
   running = true;
+  lastDrawTs = 0;
   rafId = self.requestAnimationFrame(tick);
 }
 
