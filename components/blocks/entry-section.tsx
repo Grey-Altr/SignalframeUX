@@ -41,14 +41,28 @@ export function EntrySection() {
 
   useEffect(() => {
     const rerollCount = Math.max(1, Math.round(SHARED_GROUP_COUNT * REROLL_FRACTION));
+    // BroadcastChannel fans re-rolls out to every worker canvas on the page.
+    // Main-thread readers of `sharedGroups` (if any are re-added later) keep
+    // seeing the live Float32Array; workers get a fresh structured-clone copy.
+    const ch =
+      typeof BroadcastChannel !== "undefined"
+        ? new BroadcastChannel("sf-hero-shared-groups")
+        : null;
     const id = window.setInterval(() => {
       for (let k = 0; k < rerollCount; k++) {
         const g = Math.floor(Math.random() * SHARED_GROUP_COUNT);
         sharedGroups.intensity[g] = rollIntensity();
         sharedGroups.fade[g] = rollFade();
       }
+      ch?.postMessage({
+        intensity: sharedGroups.intensity,
+        fade: sharedGroups.fade,
+      });
     }, REROLL_INTERVAL_MS);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearInterval(id);
+      ch?.close();
+    };
   }, [sharedGroups]);
 
   return (
