@@ -80,6 +80,13 @@ async function initHeroAnimations(
 
   const ctx = gsap.context(() => {
 
+  // Staged hero entrance: iris owns 0–2s alone, ring worker reveals its
+  // five particle bands across 2–7s (see pointcloud-ring-worker.ts), then
+  // the text + chrome "construct themselves" starting at t=7s. Every GSAP
+  // delay below is offset by this base so the entire GSAP hero timeline
+  // slides in behind the canvas-layer choreography.
+  const HERO_ENTRANCE_BASE_DELAY = 7;
+
   // ── 0. Hero mesh — FIRST visible motion, fires at delay:0 (<500ms from load) ──
   // Initial opacity:0 is set in CSS ([data-anim="hero-mesh"]) and in hero.tsx wrapper.
   // GSAP controls the fade-in to 0.45 opacity.
@@ -89,7 +96,7 @@ async function initHeroAnimations(
     gsap.fromTo(
       heroMesh,
       { opacity: 0 },
-      { opacity: 0.45, duration: 0.3, ease: "power2.out", delay: 0 }
+      { opacity: 0.45, duration: 0.3, ease: "power2.out", delay: HERO_ENTRANCE_BASE_DELAY }
     );
   }
 
@@ -97,16 +104,17 @@ async function initHeroAnimations(
   const slashes = document.querySelector("[data-anim='hero-slashes']");
   if (slashes) {
     gsap.set(slashes, { x: -1280 });
-    gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 0.3 });
+    gsap.to(slashes, { x: 0, duration: 3, ease: "power2.out", delay: 0.3 + HERO_ENTRANCE_BASE_DELAY });
   }
 
   // ── 2. Hero headline — char reveal (fires on load) ──
   const heroChars = document.querySelectorAll("[data-anim='hero-char']");
   if (heroChars.length > 0) {
     gsap.set(heroChars, { y: "100%", opacity: 0, display: "inline-block" });
-    
+
     // Create a timeline for the roll up and flicker effect
     const charTl = gsap.timeline({
+      delay: HERO_ENTRANCE_BASE_DELAY,
       onComplete: () => revealMultilingual(),
     });
     
@@ -180,13 +188,13 @@ async function initHeroAnimations(
   // ── 4. Hero feel — "feel" blur bloom (right panel) ──
   const heroFeel = document.querySelector("[data-anim='hero-feel']");
   if (heroFeel) {
-    gsap.to(heroFeel, { opacity: 1, filter: "blur(0px)", duration: 1, ease: "power2.out", delay: 0.5 });
+    gsap.to(heroFeel, { opacity: 1, filter: "blur(0px)", duration: 1, ease: "power2.out", delay: 0.5 + HERO_ENTRANCE_BASE_DELAY });
   }
 
   // ── 5. Hero copy — "a system you can" slow fade ──
   const heroCopy = document.querySelector("[data-anim='hero-copy']");
   if (heroCopy) {
-    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.out", delay: 1.0 });
+    gsap.to(heroCopy, { opacity: 1, duration: 5, ease: "power1.out", delay: 1.0 + HERO_ENTRANCE_BASE_DELAY });
   }
 
   // ── 6. CTA button entrance (initial state set via CSS [data-anim="cta-btn"]) ──
@@ -199,7 +207,7 @@ async function initHeroAnimations(
       duration: 0.5,
       ease: "power2.out",
       stagger: 0.1,
-      delay: 1.5,
+      delay: 1.5 + HERO_ENTRANCE_BASE_DELAY,
     });
   }
 
@@ -214,7 +222,7 @@ async function initHeroAnimations(
     "oklch(0.65 0.3 350)",   // Magenta (home)
   ];
   const root = document.documentElement;
-  const colorTl = gsap.timeline({ delay: 2.0 });
+  const colorTl = gsap.timeline({ delay: 2.0 + HERO_ENTRANCE_BASE_DELAY });
   accentColors.forEach((color, i) => {
     const isLast = i === accentColors.length - 1;
     colorTl
@@ -230,7 +238,7 @@ async function initHeroAnimations(
   // ── 8. Hero copy dot — period punctuation, lands last ──
   const heroDot = document.querySelector("[data-anim='hero-copy-dot']");
   if (heroDot) {
-    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.out", delay: 3.0 });
+    gsap.to(heroDot, { opacity: 1, duration: 3, ease: "power1.out", delay: 3.0 + HERO_ENTRANCE_BASE_DELAY });
   }
 
   // ── 9. Hero slash moment — canonical magenta signal-intensity scrub (VL-05) ──

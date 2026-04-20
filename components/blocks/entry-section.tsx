@@ -133,7 +133,7 @@ export function EntrySection() {
         </h1>
         <p
           data-anim="hero-subtitle"
-          className="mt-[calc(var(--sfx-space-8)*1.08)] max-w-(--max-w-content) text-center font-sans font-medium text-foreground/56 tracking-[0.02em] animate-[hero-fade-in_0.5s_ease-out_0.2s_forwards] text-[calc(var(--sfx-text-xs)*1.58)] md:text-[calc(var(--sfx-text-sm)*1.58)]"
+          className="mt-[calc(var(--sfx-space-8)*1.08)] max-w-(--max-w-content) text-center font-sans font-medium text-foreground/56 tracking-[0.02em] text-[calc(var(--sfx-text-xs)*1.58)] md:text-[calc(var(--sfx-text-sm)*1.58)]"
           style={{ opacity: 0 }}
         >
           A dual-layer design system for generative expression.
