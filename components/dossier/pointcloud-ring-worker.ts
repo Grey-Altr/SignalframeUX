@@ -9,6 +9,7 @@
  * at components/dossier/pointcloud-ring.tsx — this is a pure relocation, not
  * a semantic change. If any constant drifts, the ring will look different.
  */
+export {};
 
 type Point = {
   theta: number;
@@ -240,7 +241,7 @@ function handleInit(msg: InitMsg): void {
   if (!ctx) return;
 
   offscreen = new OffscreenCanvas(canvas.width, canvas.height);
-  offCtx = offscreen.getContext("2d");
+  offCtx = offscreen.getContext("2d", { willReadFrequently: true });
   if (!offCtx) return;
 
   if (msg.config.groups) {
