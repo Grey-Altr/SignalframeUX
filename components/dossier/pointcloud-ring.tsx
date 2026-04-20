@@ -48,8 +48,17 @@ export function PointcloudRing({
     resize();
     window.addEventListener("resize", resize);
 
-    const pts = Array.from({ length: count }, () => {
-      const theta = Math.random() * Math.PI * 2;
+    const GROUP_SIZE = 33;
+    const GROUP_COUNT = Math.ceil(count / GROUP_SIZE);
+    const GROUP_SLICE = (Math.PI * 2) / GROUP_COUNT;
+    const GROUP_SPREAD = 0.5; // fraction of slice each group occupies
+    const pts = Array.from({ length: count }, (_, i) => {
+      // Angular clustering: particles are assigned to groups of GROUP_SIZE,
+      // each group anchored at an evenly-spaced theta around the ring.
+      // Within a group, particles jitter by ± (slice × spread / 2).
+      const groupIdx = Math.floor(i / GROUP_SIZE);
+      const groupCenter = groupIdx * GROUP_SLICE;
+      const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       // Penta-modal radial distribution — five nested bands growing outward:
       //   core   [-0.02, 0.02]   — dense core (~43% of particles)
       //   halo   [0.022, 0.14]   — sparse, 1px outside core (~14%)
