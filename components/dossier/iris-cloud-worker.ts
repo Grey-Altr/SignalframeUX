@@ -63,11 +63,11 @@ let rafId = 0;
 let frameIdx = 0;
 let anchor = 0;
 // Pixel-sort onset ramp. See pointcloud-ring-worker.ts for rationale — the
-// sorted-streak artifact eases in via smoothstep over PIXEL_SORT_RAMP_S
-// seconds starting at PIXEL_SORT_START_S so the // shadow transitions
-// gradually from quiet trail-blur to active pixel-sort ghost.
+// sorted-streak artifact eases in with a quadratic ease-in (t²) over
+// PIXEL_SORT_RAMP_S seconds starting at PIXEL_SORT_START_S — soft entry,
+// then accelerates toward full intensity.
 const PIXEL_SORT_START_S = 16;
-const PIXEL_SORT_RAMP_S = 6;
+const PIXEL_SORT_RAMP_S = 3;
 let revealStartedAt = 0;
 let lastDrawTs = 0;
 
@@ -176,7 +176,7 @@ function draw(now: number): void {
     0,
     Math.min(1, (revealElapsed - PIXEL_SORT_START_S) / PIXEL_SORT_RAMP_S),
   );
-  const sortGate = sortRampT * sortRampT * (3 - 2 * sortRampT);
+  const sortGate = sortRampT * sortRampT;
   const rawSortChunk = Math.round(H * config.pixelSort * sortGate);
   if (
     config.pixelSort > 0 &&

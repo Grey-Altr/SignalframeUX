@@ -172,11 +172,11 @@ const RING_BAND_DURATION_S = 1;
 const RING_BAND_COUNT = 5;
 // Pixel-sort onset ramp. Sequence-complete lands around t≈10s (iris 0–2s +
 // rings 2–7s + construct/text 7–10s); the sorted-streak artifact ramps in
-// over a smoothstep window starting 6s after that and finishing 6s later,
-// so the // shadow transitions from quiet trail-blur to active pixel-sort
-// ghost without a visible on/off step.
+// with a quadratic ease-in (t²) over PIXEL_SORT_RAMP_S starting at
+// PIXEL_SORT_START_S — soft entry so the // shadow opens quietly, then
+// accelerates toward full intensity.
 const PIXEL_SORT_START_S = 16;
-const PIXEL_SORT_RAMP_S = 6;
+const PIXEL_SORT_RAMP_S = 3;
 
 let revealStartedAt = 0;
 const bandAlphaTable = new Float32Array(RING_BAND_COUNT);
@@ -354,7 +354,7 @@ function draw(now: number): void {
     0,
     Math.min(1, (revealElapsed - PIXEL_SORT_START_S) / PIXEL_SORT_RAMP_S),
   );
-  const sortGate = sortRampT * sortRampT * (3 - 2 * sortRampT);
+  const sortGate = sortRampT * sortRampT;
   const rawSortChunk = Math.round(H * config.pixelSort * sortGate);
   if (
     config.pixelSort > 0 &&
