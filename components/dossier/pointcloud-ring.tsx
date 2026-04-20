@@ -55,9 +55,14 @@ export function PointcloudRing({
     // 33% of groups get a random per-group intensity multiplier (sort
     // prominence); a separate independent 33% get a random fade multiplier
     // (sort persistence — lower alpha means trail decay drops pixels below
-    // sortThreshold faster, shortening the visible streak lifetime).
+    // sortThreshold faster, shortening the visible streak lifetime); a third
+    // independent 33% are "sort-reset" groups — their particles are drawn
+    // AFTER the sort pass so no long streaks can accumulate on them, while
+    // trail-fade remnants still get mildly smeared until they drop below
+    // sortThreshold.
     const groupIntensity = new Float32Array(GROUP_COUNT);
     const groupFade = new Float32Array(GROUP_COUNT);
+    const groupSortReset = new Uint8Array(GROUP_COUNT);
     for (let g = 0; g < GROUP_COUNT; g++) {
       groupIntensity[g] = Math.random() < 0.33
         ? 0.4 + Math.random() * 1.2 // [0.4, 1.6]
@@ -65,6 +70,7 @@ export function PointcloudRing({
       groupFade[g] = Math.random() < 0.33
         ? 0.3 + Math.random() * 0.4 // [0.3, 0.7] — faster fade-out
         : 1.0;
+      groupSortReset[g] = Math.random() < 0.33 ? 1 : 0;
     }
     const pts = Array.from({ length: count }, (_, i) => {
       // Angular clustering: particles are assigned to groups of GROUP_SIZE,
@@ -75,6 +81,7 @@ export function PointcloudRing({
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       const intensity = groupIntensity[groupIdx];
       const fade = groupFade[groupIdx];
+      const sortReset = groupSortReset[groupIdx] === 1;
       // Penta-modal radial distribution — five nested bands growing outward:
       //   core   [-0.02, 0.02]   — dense core (~43% of particles)
       //   halo   [0.022, 0.14]   — sparse, 1px outside core (~14%)
@@ -101,7 +108,7 @@ export function PointcloudRing({
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
       }
-      return { theta, rJitter, intensity, fade, rotDir };
+      return { theta, rJitter, intensity, fade, rotDir, sortReset };
     });
 
     const reduced =
@@ -144,7 +151,10 @@ export function PointcloudRing({
         ctx.clearRect(0, 0, W, H);
       }
       ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      // Pre-sort pass: draw every particle NOT flagged as sortReset. These
+      // pixels enter the sort pass below and get smeared into streaks.
       for (const p of pts) {
+        if (p.sortReset) continue;
         // Particle radius = base ring radius + breath oscillation + per-particle
         // jitter. Both oscillation and jitter are absolute pixel offsets scaled
         // by `thicknessScale`, so thickness stays constant as `radius` grows.
@@ -220,6 +230,23 @@ export function PointcloudRing({
         }
         ctx.putImageData(img, 0, rowStart);
       }
+
+      // Post-sort pass: draw sortReset-flagged groups on top of the sorted
+      // image so their current-frame pixels are never part of a sort run.
+      // Trail fade in subsequent frames will still briefly smear their
+      // remnants, but no long streaks accumulate on these groups.
+      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      for (const p of pts) {
+        if (!p.sortReset) continue;
+        const pr = r + breath + p.rJitter * thicknessScale;
+        const angle = p.theta + rot * p.rotDir;
+        const x = cx + Math.cos(angle) * pr;
+        const y = cy + Math.sin(angle) * pr;
+        const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
+        ctx.globalAlpha = p.intensity * p.fade * bandMul;
+        ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
+      }
+      ctx.globalAlpha = 1;
     };
 
     // Warm up: pre-run WARMUP_FRAMES of draw synchronously so the canvas has
