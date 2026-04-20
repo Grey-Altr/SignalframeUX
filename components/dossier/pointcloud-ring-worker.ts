@@ -101,10 +101,12 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
 /**
  * Bake the per-wedge trail alpha into an OffscreenCanvas sized to the
- * live ring canvas. Each wedge is drawn as a pie slice from center at
- * alpha = config.trail × trailWedgeMul[w]. On resize, regenerated against
- * the same frozen multiplier table so the radial pattern is stable across
- * the session.
+ * live ring canvas. Uses a conic gradient anchored at canvas center with
+ * one color stop per wedge multiplier — the browser linearly interpolates
+ * alpha between adjacent stops, so wedge boundaries feather smoothly
+ * instead of appearing as hard radial seams. On resize, regenerated
+ * against the same frozen multiplier table so the radial pattern is
+ * stable across the session.
  */
 function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
   const map = new OffscreenCanvas(W, H);
@@ -112,27 +114,18 @@ function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
   if (!mctx) return map;
   const cx = W / 2;
   const cy = H / 2;
-  // Distance from center to the furthest corner — ensures the wedges
-  // completely tile the canvas with no unpainted gaps along the edges.
-  const maxR = Math.sqrt(cx * cx + cy * cy) + 1;
-  const wedgeAngle = (Math.PI * 2) / TRAIL_WEDGE_COUNT;
+  const grad = mctx.createConicGradient(0, cx, cy);
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const stop = w / TRAIL_WEDGE_COUNT;
     const alpha = Math.min(1, trail * trailWedgeMul[w]);
-    mctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-    mctx.beginPath();
-    mctx.moveTo(cx, cy);
-    // +0.002 rad overdraw per wedge so floating-point arc endpoints never
-    // leave 1px radial seams of unpainted pixels between slices.
-    mctx.arc(
-      cx,
-      cy,
-      maxR,
-      w * wedgeAngle,
-      (w + 1) * wedgeAngle + 0.002,
-    );
-    mctx.closePath();
-    mctx.fill();
+    grad.addColorStop(stop, `rgba(0, 0, 0, ${alpha})`);
   }
+  // Close the loop back to the first wedge so the 0°/360° seam blends
+  // through the same gradient math as every other boundary.
+  const closingAlpha = Math.min(1, trail * trailWedgeMul[0]);
+  grad.addColorStop(1, `rgba(0, 0, 0, ${closingAlpha})`);
+  mctx.fillStyle = grad;
+  mctx.fillRect(0, 0, W, H);
   return map;
 }
 

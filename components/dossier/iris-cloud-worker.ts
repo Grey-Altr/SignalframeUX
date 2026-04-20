@@ -87,23 +87,16 @@ function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
   if (!mctx) return map;
   const cx = W / 2;
   const cy = H / 2;
-  const maxR = Math.sqrt(cx * cx + cy * cy) + 1;
-  const wedgeAngle = (Math.PI * 2) / TRAIL_WEDGE_COUNT;
+  const grad = mctx.createConicGradient(0, cx, cy);
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const stop = w / TRAIL_WEDGE_COUNT;
     const alpha = Math.min(1, trail * trailWedgeMul[w]);
-    mctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-    mctx.beginPath();
-    mctx.moveTo(cx, cy);
-    mctx.arc(
-      cx,
-      cy,
-      maxR,
-      w * wedgeAngle,
-      (w + 1) * wedgeAngle + 0.002,
-    );
-    mctx.closePath();
-    mctx.fill();
+    grad.addColorStop(stop, `rgba(0, 0, 0, ${alpha})`);
   }
+  const closingAlpha = Math.min(1, trail * trailWedgeMul[0]);
+  grad.addColorStop(1, `rgba(0, 0, 0, ${closingAlpha})`);
+  mctx.fillStyle = grad;
+  mctx.fillRect(0, 0, W, H);
   return map;
 }
 
