@@ -141,14 +141,54 @@ export function EntrySection() {
       </div>
 
       {/*
+        VL-05 clip mask — SVG <mask> whose luminance is the h1 line with only
+        the // span in white, everything else in black. Rendered via foreignObject
+        so it uses the page's loaded Anton font + HTML layout engine, matching
+        the h1's glyph metrics pixel-for-pixel. VL-05 applies this via
+        mask-image so its magenta is confined to the h1 //'s silhouette —
+        no bleed beyond the main slash.
+      */}
+      <svg
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        style={{ overflow: "visible" }}
+      >
+        <defs>
+          <mask id="hero-slash-clip">
+            <foreignObject width="100%" height="100%">
+              <div
+                {...{ xmlns: "http://www.w3.org/1999/xhtml" }}
+                className="flex h-full w-full items-center justify-center whitespace-nowrap px-[1em] font-display uppercase tracking-[0.02em]"
+                style={{
+                  fontSize: "clamp(4.86rem, min(calc(12.96*var(--sf-vw)), calc(34.56*var(--sf-vh))), 12.96rem)",
+                  lineHeight: 0.9,
+                  fontWeight: 700,
+                }}
+              >
+                <span style={{ color: "black" }}>SIGNALFRAME</span>
+                <span
+                  className="relative top-[0.08em] pr-[0.28em] tracking-[-0.12em] text-[1.28em]"
+                  style={{ color: "white" }}
+                >{"//"}</span>
+                <span className="-ml-[0.15em]" style={{ color: "black" }}>UX</span>
+              </div>
+            </foreignObject>
+          </mask>
+        </defs>
+      </svg>
+
+      {/*
         VL-05: Canonical magenta hero moment — scroll-driven signal-intensity slash.
         Layered sibling to the h1 (cannot be a child — parent h1 has opacity: 0.01
         which caps children). Invisible SIGNALFRAME/UX spacer spans pin the //
         to the exact x-position of the h1 slash without layout math, so the two
         layers visually register at any viewport. mix-blend-mode: screen lets
         the magenta punch through the dark GLSL background like an analog bloom.
-        Baseline 0.18 is the reduced-motion / pre-GSAP fallback; page-animations
-        scrubs 0.18 → 1.0 across entry-section scroll progress.
+        mask-image clips the whole layer to #hero-slash-clip so any sub-pixel
+        overshoot from the screen-blend or font antialiasing stays inside the
+        h1 // silhouette. Baseline 0.18 is the reduced-motion / pre-GSAP
+        fallback; page-animations scrubs 0.18 → 1.0 across entry-section
+        scroll progress.
       */}
       <div
         data-anim="hero-slash-moment"
@@ -160,6 +200,8 @@ export function EntrySection() {
           fontWeight: 700,
           opacity: 0.25,
           mixBlendMode: "screen",
+          maskImage: "url(#hero-slash-clip)",
+          WebkitMaskImage: "url(#hero-slash-clip)",
         }}
       >
         <span className="invisible" aria-hidden="true">SIGNALFRAME</span>
