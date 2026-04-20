@@ -73,6 +73,16 @@ let groupIntensity: Float32Array = new Float32Array(0);
 let groupFade: Float32Array = new Float32Array(0);
 let running = false;
 let rafId = 0;
+
+// Per-band random trail multiplier. Generated once on worker init ("on
+// page load"), then used every frame to draw TRAIL_BAND_COUNT horizontal
+// strips of destination-out fade instead of a single full-canvas fillRect.
+// Multiplier in [0.25, 2.0] gives ~8× dynamic range: low-mul strips hold
+// pixels longer (long streaks), high-mul strips clear fast (tight trails).
+const TRAIL_BAND_COUNT = 32;
+const TRAIL_BAND_MUL_MIN = 0.25;
+const TRAIL_BAND_MUL_MAX = 2.0;
+const trailBandMul = new Float32Array(TRAIL_BAND_COUNT);
 let frameIdx = 0;
 let anchor = 0;
 let lastDrawTs = 0;
@@ -237,8 +247,14 @@ function draw(now: number): void {
 
   if (config.trail > 0) {
     offCtx.globalCompositeOperation = "destination-out";
-    offCtx.fillStyle = `rgba(0, 0, 0, ${config.trail})`;
-    offCtx.fillRect(0, 0, W, H);
+    const bandH = H / TRAIL_BAND_COUNT;
+    for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
+      const alpha = Math.min(1, config.trail * trailBandMul[b]);
+      offCtx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+      // +1 pixel overdraw so floating-point band boundaries don't leave
+      // 1px seams of never-cleared pixels between strips.
+      offCtx.fillRect(0, b * bandH, W, bandH + 1);
+    }
     offCtx.globalCompositeOperation = "source-over";
   } else {
     offCtx.clearRect(0, 0, W, H);
@@ -404,6 +420,14 @@ function handleInit(msg: InitMsg): void {
   // performance.now() + RING_REVEAL_OFFSET_S * 1000. Decoupled from `anchor`
   // (which is back-shifted by warmup span) so reveal math stays simple.
   revealStartedAt = performance.now();
+
+  // Freeze the per-band trail multipliers at load. Regenerating this would
+  // re-shuffle streak persistence mid-run, which reads as a glitch.
+  for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
+    trailBandMul[b] =
+      TRAIL_BAND_MUL_MIN +
+      Math.random() * (TRAIL_BAND_MUL_MAX - TRAIL_BAND_MUL_MIN);
+  }
 
   // Tick starts immediately. Main-thread IntersectionObserver may send an
   // early `visibility: false` if the canvas happens to be offscreen; that

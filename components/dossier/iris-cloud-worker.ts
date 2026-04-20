@@ -71,6 +71,14 @@ const FRAME_MS = 1000 / 60;
 // 120/144Hz monitors).
 const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
+// Per-band random trail multiplier — see pointcloud-ring-worker.ts for the
+// full rationale. Frozen at worker init so the streak-persistence pattern
+// is stable across the session.
+const TRAIL_BAND_COUNT = 32;
+const TRAIL_BAND_MUL_MIN = 0.25;
+const TRAIL_BAND_MUL_MAX = 2.0;
+const trailBandMul = new Float32Array(TRAIL_BAND_COUNT);
+
 function initPoints(count: number, groupCount: number): Point[] {
   const out: Point[] = new Array(count);
   for (let i = 0; i < count; i++) {
@@ -103,8 +111,12 @@ function draw(now: number): void {
 
   if (config.trail > 0) {
     ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = `rgba(0, 0, 0, ${config.trail})`;
-    ctx.fillRect(0, 0, W, H);
+    const bandH = H / TRAIL_BAND_COUNT;
+    for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
+      const alpha = Math.min(1, config.trail * trailBandMul[b]);
+      ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+      ctx.fillRect(0, b * bandH, W, bandH + 1);
+    }
     ctx.globalCompositeOperation = "source-over";
   } else {
     ctx.clearRect(0, 0, W, H);
@@ -205,6 +217,13 @@ function handleInit(msg: InitMsg): void {
   // See pointcloud-ring-worker.ts — synthetic warmup draws skipped to unblock
   // first real frame; anchor kept so t starts mid-cycle.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
+
+  // Freeze the per-band trail multipliers at load.
+  for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
+    trailBandMul[b] =
+      TRAIL_BAND_MUL_MIN +
+      Math.random() * (TRAIL_BAND_MUL_MAX - TRAIL_BAND_MUL_MIN);
+  }
 
   startAnim();
 }
