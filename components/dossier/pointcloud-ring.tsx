@@ -50,13 +50,22 @@ export function PointcloudRing({
 
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      // Bi-modal radial distribution: 75% of particles cluster in the dense
-      // ring core [-0.02, 0.02], 25% scatter into a sparse outer halo
-      // [0.022, 0.14] that hugs the core ~1px away and extends out to the
-      // trail boundary at 0.479 × canvasR.
-      const rJitter = Math.random() < 0.75
-        ? (Math.random() - 0.5) * 0.04
-        : 0.022 + Math.random() * 0.118;
+      // Tri-modal radial distribution with three nested bands:
+      //   core  [-0.02, 0.02]   — dense (18,750 relative density, ~55% of particles)
+      //   halo  [0.022, 0.14]   — sparse, 1px outside core (~18% of particles)
+      //   outer [0.142, 0.378]  — widest band, 75% of halo density (~27%)
+      // The outer band's outer edge reaches rJitter 0.378 × thicknessScale,
+      // which puts pr past the canvas axes limit (0.5 × canvasR) — rendering
+      // clips to a diamond on axes and fills at diagonals.
+      const bucket = Math.random();
+      let rJitter;
+      if (bucket < 0.5455) {
+        rJitter = (Math.random() - 0.5) * 0.04;
+      } else if (bucket < 0.7273) {
+        rJitter = 0.022 + Math.random() * 0.118;
+      } else {
+        rJitter = 0.142 + Math.random() * 0.236;
+      }
       return { theta, rJitter };
     });
 

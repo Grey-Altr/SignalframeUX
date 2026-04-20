@@ -28,7 +28,7 @@ export function EntrySection() {
             />
             {/* Main ring — on top of the iris */}
             <PointcloudRing
-              count={2400}
+              count={3300}
               radius={0.42}
               trail={0.04}
               pixelSort={0.33}
