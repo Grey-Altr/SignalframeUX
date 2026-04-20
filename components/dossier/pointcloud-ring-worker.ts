@@ -83,6 +83,14 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 // layers interleaved. 0.156 matches the CCW outer band share for a
 // visually balanced duplicate.
 const OUTER_CW_DUP_SHARE = 0.156;
+// Second "far" ring sitting just outside the existing outermost band. Same
+// radial width (0.47 in rJitter units) but 25% of the density of the full
+// outer band (CCW + CW duplicate = 0.312 of count → 0.078 here). Density
+// is exponentially biased toward the outside boundary: with α=3 the
+// outer edge is ≈ e^3 ≈ 20× denser than the inner edge of this ring.
+// Rotation splits 50/50 between CCW (rotDir=-1) and CW (rotDir=+1).
+const FAR_RING_SHARE = 0.078;
+const FAR_RING_EXP_ALPHA = 3;
 
 function initPoints(count: number, groupCount: number): Point[] {
   const GROUP_SLICE = (Math.PI * 2) / groupCount;
@@ -91,7 +99,8 @@ function initPoints(count: number, groupCount: number): Point[] {
   // zeroed so every particle participates in the sort pass at full strength.
   const groupSortReset = new Uint8Array(groupCount);
   const outerDupCount = Math.round(count * OUTER_CW_DUP_SHARE);
-  const total = count + outerDupCount;
+  const farCount = Math.round(count * FAR_RING_SHARE);
+  const total = count + outerDupCount + farCount;
   const out: Point[] = new Array(total);
   for (let i = 0; i < count; i++) {
     const groupIdx = Math.floor((i * groupCount) / count);
@@ -133,6 +142,29 @@ function initPoints(count: number, groupCount: number): Point[] {
       groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
     const rJitter = 1.09 + Math.random() * 0.47;
     out[count + k] = { theta, rJitter, groupIdx, rotDir: 1, sortReset: false };
+  }
+  // Far ring — one band-width outside the outermost (rJitter 1.56–2.03),
+  // exponentially denser along the outer edge via inverse-CDF sampling of
+  // an exponential distribution (density(x) ∝ e^(αx) on [0,1], α=3).
+  // Rotation coin-flips per particle so the layer reads as a turbulent
+  // shell rather than a coherent stream.
+  const farExpScale = Math.exp(FAR_RING_EXP_ALPHA) - 1;
+  for (let k = 0; k < farCount; k++) {
+    const groupIdx = Math.floor((k * groupCount) / farCount);
+    const groupCenter = groupIdx * GROUP_SLICE;
+    const theta =
+      groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
+    const u = Math.random();
+    const x01 = Math.log(1 + u * farExpScale) / FAR_RING_EXP_ALPHA;
+    const rJitter = 1.56 + 0.47 * x01;
+    const rotDir = Math.random() < 0.5 ? -1 : 1;
+    out[count + outerDupCount + k] = {
+      theta,
+      rJitter,
+      groupIdx,
+      rotDir,
+      sortReset: false,
+    };
   }
   return out;
 }
