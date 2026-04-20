@@ -84,6 +84,12 @@ let rafId = 0;
 const TRAIL_WEDGE_COUNT = 64;
 const TRAIL_MUL_MIN = 0.25;
 const TRAIL_MUL_MAX = 2.0;
+// Post-bake Gaussian blur applied to the conic-gradient trail map. The
+// conic already interpolates linearly between stops; this pass softens
+// those transitions into a Gaussian fall-off, dissolving any last sense
+// of discrete wedge boundaries and giving the radial modulation a
+// continuous atmospheric quality.
+const TRAIL_BLUR_PX = 32;
 const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
 let trailMap: OffscreenCanvas | null = null;
 let frameIdx = 0;
@@ -109,12 +115,13 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
  * stable across the session.
  */
 function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
-  const map = new OffscreenCanvas(W, H);
-  const mctx = map.getContext("2d");
-  if (!mctx) return map;
+  // Stage 1 — render the raw conic gradient to a scratch canvas.
+  const scratch = new OffscreenCanvas(W, H);
+  const sctx = scratch.getContext("2d");
+  if (!sctx) return scratch;
   const cx = W / 2;
   const cy = H / 2;
-  const grad = mctx.createConicGradient(0, cx, cy);
+  const grad = sctx.createConicGradient(0, cx, cy);
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
     const stop = w / TRAIL_WEDGE_COUNT;
     const alpha = Math.min(1, trail * trailWedgeMul[w]);
@@ -124,8 +131,18 @@ function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
   // through the same gradient math as every other boundary.
   const closingAlpha = Math.min(1, trail * trailWedgeMul[0]);
   grad.addColorStop(1, `rgba(0, 0, 0, ${closingAlpha})`);
-  mctx.fillStyle = grad;
-  mctx.fillRect(0, 0, W, H);
+  sctx.fillStyle = grad;
+  sctx.fillRect(0, 0, W, H);
+
+  // Stage 2 — blit the gradient through a Gaussian filter into the final
+  // trail map. OffscreenCanvas 2D `filter` is supported in Chromium, Safari
+  // 16.4+, Firefox 105+ (same matrix as OffscreenCanvas itself).
+  const map = new OffscreenCanvas(W, H);
+  const mctx = map.getContext("2d");
+  if (!mctx) return scratch;
+  mctx.filter = `blur(${TRAIL_BLUR_PX}px)`;
+  mctx.drawImage(scratch, 0, 0);
+  mctx.filter = "none";
   return map;
 }
 

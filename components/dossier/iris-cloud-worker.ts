@@ -78,16 +78,17 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 const TRAIL_WEDGE_COUNT = 64;
 const TRAIL_MUL_MIN = 0.25;
 const TRAIL_MUL_MAX = 2.0;
+const TRAIL_BLUR_PX = 32;
 const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
 let trailMap: OffscreenCanvas | null = null;
 
 function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
-  const map = new OffscreenCanvas(W, H);
-  const mctx = map.getContext("2d");
-  if (!mctx) return map;
+  const scratch = new OffscreenCanvas(W, H);
+  const sctx = scratch.getContext("2d");
+  if (!sctx) return scratch;
   const cx = W / 2;
   const cy = H / 2;
-  const grad = mctx.createConicGradient(0, cx, cy);
+  const grad = sctx.createConicGradient(0, cx, cy);
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
     const stop = w / TRAIL_WEDGE_COUNT;
     const alpha = Math.min(1, trail * trailWedgeMul[w]);
@@ -95,8 +96,15 @@ function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
   }
   const closingAlpha = Math.min(1, trail * trailWedgeMul[0]);
   grad.addColorStop(1, `rgba(0, 0, 0, ${closingAlpha})`);
-  mctx.fillStyle = grad;
-  mctx.fillRect(0, 0, W, H);
+  sctx.fillStyle = grad;
+  sctx.fillRect(0, 0, W, H);
+
+  const map = new OffscreenCanvas(W, H);
+  const mctx = map.getContext("2d");
+  if (!mctx) return scratch;
+  mctx.filter = `blur(${TRAIL_BLUR_PX}px)`;
+  mctx.drawImage(scratch, 0, 0);
+  mctx.filter = "none";
   return map;
 }
 
