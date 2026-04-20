@@ -87,7 +87,12 @@ export function PointcloudRing({
 
     let raf = 0;
     let frameIdx = 0;
-    const start = performance.now();
+    // Shift start back by the warm-up window so real-time `now` picks up
+    // smoothly where the synthetic warm-up frames left off (breath + rotation
+    // don't jump backward).
+    const WARMUP_FRAMES = 20;
+    const FRAME_MS = 1000 / 60;
+    const start = performance.now() - WARMUP_FRAMES * FRAME_MS;
     const draw = (now: number) => {
       frameIdx++;
       const t = (now - start) / 1000;
@@ -190,10 +195,20 @@ export function PointcloudRing({
         }
         ctx.putImageData(img, 0, rowStart);
       }
-
-      raf = requestAnimationFrame(draw);
     };
-    raf = requestAnimationFrame(draw);
+
+    // Warm up: pre-run WARMUP_FRAMES of draw synchronously so the canvas has
+    // accumulated trails + sort streaks before the user ever sees it. No
+    // fade-in from empty.
+    for (let i = 0; i < WARMUP_FRAMES; i++) {
+      draw(start + i * FRAME_MS);
+    }
+
+    const tick = (now: number) => {
+      draw(now);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
