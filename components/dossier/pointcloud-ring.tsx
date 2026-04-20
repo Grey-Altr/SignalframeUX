@@ -320,14 +320,37 @@ export function PointcloudRing({
       draw(start + i * FRAME_MS);
     }
 
+    // rAF is gated by IntersectionObserver — only runs while the canvas is
+    // in (or near) the viewport. Animation state persists across pauses; t
+    // keeps advancing with wall-clock so rotation/breath phase matches what
+    // it would be had the loop never stopped.
+    let running = false;
     const tick = (now: number) => {
       draw(now);
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+    const startAnim = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stopAnim = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) startAnim();
+        else stopAnim();
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopAnim();
+      io.disconnect();
       window.removeEventListener("resize", resize);
       themeObserver.disconnect();
     };
