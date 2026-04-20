@@ -52,14 +52,18 @@ export function PointcloudRing({
     const GROUP_COUNT = Math.ceil(count / GROUP_SIZE);
     const GROUP_SLICE = (Math.PI * 2) / GROUP_COUNT;
     const GROUP_SPREAD = 0.5; // fraction of slice each group occupies
-    // 33% of groups get a random per-group intensity multiplier that
-    // modulates particle alpha at paint time. High-intensity groups produce
-    // longer/brighter sort runs; low-intensity groups produce shorter/dimmer
-    // runs. The other 67% stay at intensity 1 (default sort character).
+    // 33% of groups get a random per-group intensity multiplier (sort
+    // prominence); a separate independent 33% get a random fade multiplier
+    // (sort persistence — lower alpha means trail decay drops pixels below
+    // sortThreshold faster, shortening the visible streak lifetime).
     const groupIntensity = new Float32Array(GROUP_COUNT);
+    const groupFade = new Float32Array(GROUP_COUNT);
     for (let g = 0; g < GROUP_COUNT; g++) {
       groupIntensity[g] = Math.random() < 0.33
-        ? 0.4 + Math.random() * 1.2 // randomized [0.4, 1.6]
+        ? 0.4 + Math.random() * 1.2 // [0.4, 1.6]
+        : 1.0;
+      groupFade[g] = Math.random() < 0.33
+        ? 0.3 + Math.random() * 0.4 // [0.3, 0.7] — faster fade-out
         : 1.0;
     }
     const pts = Array.from({ length: count }, (_, i) => {
@@ -70,6 +74,7 @@ export function PointcloudRing({
       const groupCenter = groupIdx * GROUP_SLICE;
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       const intensity = groupIntensity[groupIdx];
+      const fade = groupFade[groupIdx];
       // Penta-modal radial distribution — five nested bands growing outward:
       //   core   [-0.02, 0.02]   — dense core (~43% of particles)
       //   halo   [0.022, 0.14]   — sparse, 1px outside core (~14%)
@@ -92,7 +97,7 @@ export function PointcloudRing({
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
       }
-      return { theta, rJitter, intensity };
+      return { theta, rJitter, intensity, fade };
     });
 
     const reduced =
@@ -142,7 +147,7 @@ export function PointcloudRing({
         const pr = r + breath + p.rJitter * thicknessScale;
         const x = cx + Math.cos(p.theta + rot) * pr;
         const y = cy + Math.sin(p.theta + rot) * pr;
-        ctx.globalAlpha = p.intensity;
+        ctx.globalAlpha = p.intensity * p.fade;
         ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
       ctx.globalAlpha = 1;
