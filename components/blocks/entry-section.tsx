@@ -67,27 +67,46 @@ export function EntrySection() {
 
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
-      <GLSLHeroLazy />
+      {/* Canvas layer — GLSL noise field + pointcloud ring + iris. Wrapped
+          so the whole generative layer fade-blurs in on page load as one
+          cohesive "resolve into focus" moment. Text overlays below are
+          siblings, outside this wrapper, so their own reveal timing is
+          untouched and they never get blurred. */}
+      <div className="sf-hero-canvas-resolve absolute inset-0">
+        <GLSLHeroLazy />
 
-      {/* Pointcloud ring — above GLSL, behind all text (no z-index, z-auto). */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-      >
-        {/*
-          Wrapper height matches the old square dim so min(W,H) = H and the
-          ring/iris render at identical pixel sizes. Wrapper width spans the
-          full viewport so the tri-modal outer band can render past the old
-          canvas axes without horizontal clipping.
-        */}
-        <div className="relative h-[min(90vw,90vh)] w-full">
-          {/* Iris — centered square sub-container, canvas dims = square dims,
-              so iris size is exactly what it was before. */}
-          <div className="absolute left-1/2 top-0 aspect-square h-full -translate-x-1/2">
-            <IrisCloud
-              count={4500}
-              outerRadius={0.39}
-              innerRadius={0.12}
+        {/* Pointcloud ring — above GLSL, behind all text (no z-index, z-auto). */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
+          {/*
+            Wrapper height matches the old square dim so min(W,H) = H and the
+            ring/iris render at identical pixel sizes. Wrapper width spans the
+            full viewport so the tri-modal outer band can render past the old
+            canvas axes without horizontal clipping.
+          */}
+          <div className="relative h-[min(90vw,90vh)] w-full">
+            {/* Iris — centered square sub-container, canvas dims = square dims,
+                so iris size is exactly what it was before. */}
+            <div className="absolute left-1/2 top-0 aspect-square h-full -translate-x-1/2">
+              <IrisCloud
+                count={4500}
+                outerRadius={0.39}
+                innerRadius={0.12}
+                trail={0.04}
+                pixelSort={1}
+                sortThreshold={4}
+                groups={sharedGroups}
+                className="absolute inset-0"
+              />
+            </div>
+            {/* Ring — full-width canvas (width=viewport, height=square-dim).
+                canvasR = min(W,H) = H = square-dim → ring size unchanged,
+                but canvas has horizontal room for the outer band. */}
+            <PointcloudRing
+              count={4200}
+              radius={0.42}
               trail={0.04}
               pixelSort={1}
               sortThreshold={4}
@@ -95,18 +114,6 @@ export function EntrySection() {
               className="absolute inset-0"
             />
           </div>
-          {/* Ring — full-width canvas (width=viewport, height=square-dim).
-              canvasR = min(W,H) = H = square-dim → ring size unchanged,
-              but canvas has horizontal room for the outer band. */}
-          <PointcloudRing
-            count={4200}
-            radius={0.42}
-            trail={0.04}
-            pixelSort={1}
-            sortThreshold={4}
-            groups={sharedGroups}
-            className="absolute inset-0"
-          />
         </div>
       </div>
 

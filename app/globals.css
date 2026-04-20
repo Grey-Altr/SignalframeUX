@@ -438,6 +438,25 @@
   100% { opacity: 1; }
 }
 
+/* Canvas layer entrance — the GLSL noise field + pointcloud ring + iris
+   resolve from blurred-and-absent into focus on page load. Text overlays
+   are siblings of this wrapper so they keep their own reveal timing. */
+.sf-hero-canvas-resolve {
+  animation: sf-hero-canvas-resolve 1.1s var(--sfx-ease-default) both;
+  will-change: opacity, filter;
+}
+
+@keyframes sf-hero-canvas-resolve {
+  0%   { opacity: 0; filter: blur(28px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-hero-canvas-resolve {
+    animation: hero-fade-in 0.4s var(--sfx-ease-default) both;
+  }
+}
+
 @keyframes sf-hero-slow-fade-in {
   0%   { opacity: 0; }
   60%  { opacity: 0.05; }
