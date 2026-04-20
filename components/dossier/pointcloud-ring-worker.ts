@@ -76,13 +76,23 @@ const FRAME_MS = 1000 / 60;
 // shy of the budget due to rAF jitter.
 const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
+// Fraction of `count` appended as a clockwise-rotating duplicate of the
+// outermost band. The base 6-band scheme keeps its current distribution
+// (outermost CCW = 15.6% of `count`); these extras sit at the same radius
+// range with rotDir = +1 so the outer ring reads as two counter-rotating
+// layers interleaved. 0.156 matches the CCW outer band share for a
+// visually balanced duplicate.
+const OUTER_CW_DUP_SHARE = 0.156;
+
 function initPoints(count: number, groupCount: number): Point[] {
   const GROUP_SLICE = (Math.PI * 2) / groupCount;
   const GROUP_SPREAD = 0.5;
   // sortReset feature plumbing retained for reversible disable; currently
   // zeroed so every particle participates in the sort pass at full strength.
   const groupSortReset = new Uint8Array(groupCount);
-  const out: Point[] = new Array(count);
+  const outerDupCount = Math.round(count * OUTER_CW_DUP_SHARE);
+  const total = count + outerDupCount;
+  const out: Point[] = new Array(total);
   for (let i = 0; i < count; i++) {
     const groupIdx = Math.floor((i * groupCount) / count);
     const groupCenter = groupIdx * GROUP_SLICE;
@@ -112,6 +122,17 @@ function initPoints(count: number, groupCount: number): Point[] {
     }
     const sortReset = groupSortReset[groupIdx] === 1 && rJitter < 0.38;
     out[i] = { theta, rJitter, groupIdx, rotDir, sortReset };
+  }
+  // Clockwise duplicate of the outermost band — same radius range, opposite
+  // rotation. Theta is redistributed across groups independently so the CW
+  // layer isn't angularly co-located with the CCW one.
+  for (let k = 0; k < outerDupCount; k++) {
+    const groupIdx = Math.floor((k * groupCount) / outerDupCount);
+    const groupCenter = groupIdx * GROUP_SLICE;
+    const theta =
+      groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
+    const rJitter = 1.09 + Math.random() * 0.47;
+    out[count + k] = { theta, rJitter, groupIdx, rotDir: 1, sortReset: false };
   }
   return out;
 }
