@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
 import { PointcloudRing } from "@/components/dossier/pointcloud-ring";
 import { IrisCloud } from "@/components/dossier/iris-cloud";
@@ -39,6 +39,17 @@ export function EntrySection() {
     return { intensity, fade };
   }, []);
 
+  // Toggle the canvas-layer entrance filter off once the animation settles.
+  // SVG `filter: url(...)` keeps the filter pipeline hot on every composited
+  // frame even after stdDeviation reaches 0, which we don't want for the
+  // sustained 60 FPS hero loop. Timeout matches the animation's 1.1s + a
+  // single-frame margin so the handoff from filter → no-filter is invisible.
+  const [entranceDone, setEntranceDone] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setEntranceDone(true), 1120);
+    return () => window.clearTimeout(id);
+  }, []);
+
   useEffect(() => {
     const rerollCount = Math.max(1, Math.round(SHARED_GROUP_COUNT * REROLL_FRACTION));
     // BroadcastChannel fans re-rolls out to every worker canvas on the page.
@@ -67,12 +78,53 @@ export function EntrySection() {
 
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
+      {/* True-Gaussian blur filter for the canvas-layer entrance. SMIL
+          animates stdDeviation 9 → 0 over 1.1s with an ease-out spline
+          matching --sfx-ease-default (cubic-bezier(0, 0, 0.2, 1)). Lives
+          here (not a global layout SVG) so the filter is scoped to the
+          hero and doesn't participate in other filter: url() lookups.
+          `aria-hidden` + zero-size + position:absolute keep it out of
+          layout and a11y trees. */}
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        width="0"
+        height="0"
+        className="pointer-events-none absolute"
+        style={{ width: 0, height: 0 }}
+      >
+        <defs>
+          <filter id="sf-hero-gaussian" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="9">
+              <animate
+                attributeName="stdDeviation"
+                from="9"
+                to="0"
+                dur="1.1s"
+                fill="freeze"
+                calcMode="spline"
+                keyTimes="0;1"
+                keySplines="0 0 0.2 1"
+              />
+            </feGaussianBlur>
+          </filter>
+        </defs>
+      </svg>
+
       {/* Canvas layer — GLSL noise field + pointcloud ring + iris. Wrapped
           so the whole generative layer fade-blurs in on page load as one
           cohesive "resolve into focus" moment. Text overlays below are
           siblings, outside this wrapper, so their own reveal timing is
-          untouched and they never get blurred. */}
-      <div className="sf-hero-canvas-resolve absolute inset-0">
+          untouched and they never get blurred. Filter is dropped after
+          the 1.1s entrance to keep the sustained hero loop off the SVG
+          filter pipeline. */}
+      <div
+        className={
+          entranceDone
+            ? "absolute inset-0"
+            : "sf-hero-canvas-resolve absolute inset-0"
+        }
+      >
         <GLSLHeroLazy />
 
         {/* Pointcloud ring — above GLSL, behind all text (no z-index, z-auto). */}

@@ -439,20 +439,25 @@
 }
 
 /* Canvas layer entrance — the GLSL noise field + pointcloud ring + iris
-   resolve from blurred-and-absent into focus on page load. Text overlays
-   are siblings of this wrapper so they keep their own reveal timing. */
+   resolve from blurred-and-absent into focus on page load. Blur is driven
+   by an SVG feGaussianBlur filter (see EntrySection) whose stdDeviation is
+   animated via SMIL, because true Gaussian has a softer rolloff than the
+   browser's approximated CSS filter: blur(). Opacity stays on CSS. Text
+   overlays are siblings of this wrapper so they keep their own timing. */
 .sf-hero-canvas-resolve {
+  filter: url("#sf-hero-gaussian");
   animation: sf-hero-canvas-resolve 1.1s var(--sfx-ease-default) both;
   will-change: opacity, filter;
 }
 
 @keyframes sf-hero-canvas-resolve {
-  0%   { opacity: 0; filter: blur(28px); }
-  100% { opacity: 1; filter: blur(0); }
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sf-hero-canvas-resolve {
+    filter: none;
     animation: hero-fade-in 0.4s var(--sfx-ease-default) both;
   }
 }
