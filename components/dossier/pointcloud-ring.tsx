@@ -95,11 +95,11 @@ export function PointcloudRing({
       const intensity = groupIntensity[groupIdx];
       const fade = groupFade[groupIdx];
       // Penta-modal radial distribution — five nested bands growing outward:
-      //   core   [-0.02, 0.02]   — dense core (~32% of particles)
-      //   halo   [0.022, 0.14]   — sparse, 1px outside core (~14%)
-      //   outer1 [0.142, 0.378]  — 2× halo width, 75% halo density (~22%)
-      //   outer2 [0.380, 0.616]  — same width as outer1, ~50% density (~10%)
-      //   outer3 [0.618, 1.090]  — 2× outer2 width, doubled density (~22%)
+      //   core   [-0.02, 0.02]   — dense core (~22% of particles)
+      //   halo   [0.022, 0.14]   — sparse, 1px outside core (~12%)
+      //   outer1 [0.142, 0.378]  — 2× halo width (~20%)
+      //   outer2 [0.380, 0.616]  — same width as outer1 (~10%)
+      //   outer3 [0.618, 1.090]  — 2× outer2 width, highest bucket share (~36%)
       // outer3 reaches pr ≈ 0.895 × canvasR — only horizontal rendering
       // fits on the viewport-wide canvas; vertical/diagonal clipping grows
       // progressively across outer bands.
@@ -108,14 +108,14 @@ export function PointcloudRing({
       // Core band rotates counter-clockwise; all outer bands co-rotate
       // clockwise with the global `rot`.
       let rotDir = 1;
-      if (bucket < 0.32) {
+      if (bucket < 0.22) {
         rJitter = (Math.random() - 0.5) * 0.04;
         rotDir = -1;
-      } else if (bucket < 0.46) {
+      } else if (bucket < 0.34) {
         rJitter = 0.022 + Math.random() * 0.118;
-      } else if (bucket < 0.68) {
+      } else if (bucket < 0.54) {
         rJitter = 0.142 + Math.random() * 0.236;
-      } else if (bucket < 0.78) {
+      } else if (bucket < 0.64) {
         rJitter = 0.380 + Math.random() * 0.236;
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
