@@ -147,9 +147,10 @@ export function PointcloudRing({
         const pr = r + breath + p.rJitter * thicknessScale;
         const x = cx + Math.cos(p.theta + rot) * pr;
         const y = cy + Math.sin(p.theta + rot) * pr;
-        // Outer3 (rJitter ≥ 0.618) gets further alpha reduction so the
-        // outermost wings read more as haze than as solid particles.
-        const bandMul = p.rJitter >= 0.618 ? 0.4 : 1.0;
+        // Outer3 (rJitter ≥ 0.618) is dimmed vs. inner bands but sits at
+        // 0.76× (0.4 × 1.9) so it still crosses sortThreshold strongly and
+        // contributes 90% more pixels to the sort pass than the haze setting.
+        const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
         ctx.globalAlpha = p.intensity * p.fade * bandMul;
         ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
