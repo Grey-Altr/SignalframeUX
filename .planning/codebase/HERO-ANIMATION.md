@@ -44,10 +44,15 @@ All four couple through a small number of CSS custom properties (`--sfx-primary`
 | `lib/color-resolve.ts` | TTL-cached CSS var → `THREE.Color` parser. Keeps shader `uColor` updates decoupled from per-frame `getComputedStyle`. |
 
 ### 2.4 Canvas 2D particles (above GLSL, below text)
+
+Both pointclouds now render entirely off the main thread. Each React wrapper creates a dedicated Web Worker, calls `canvas.transferControlToOffscreen()` and posts the handle + config to the worker; the worker owns particle state, the rAF loop, and the pixel-sort pass. Main thread only forwards lifecycle events (theme, resize, visibility, group re-rolls) via `postMessage` + `BroadcastChannel`.
+
 | File | Role |
 |---|---|
-| `components/dossier/pointcloud-ring.tsx` | `PointcloudRing` — ~4 200 particles across 6 nested radial bands (core/halo/outer1–4), counter-rotating band groups, breath oscillation, offscreen buffer + `destination-out` trail fade, bidirectional row-chunked pixel-sort. **180-frame synchronous warmup** runs in the mount effect so streaks are mature at first paint. Exports the `SharedGroups` type. Reads `--sf-hero-particle-lch` with a `MutationObserver([class])` re-resolver. |
-| `components/dossier/iris-cloud.tsx` | `IrisCloud` — ~4 500 particles drifting radially outer→pupil. Same warmup + sort + theme observer. Particle `groupIdx` derived from `theta` so wedges align with the ring. |
+| `components/dossier/pointcloud-ring.tsx` | Thin React host. Transfers the canvas, spawns `pointcloud-ring-worker.ts`, owns the `IntersectionObserver` (visibility gate), `MutationObserver` (`--sf-hero-particle-lch` forwarding), and `window.resize` forwarding. Exports the `SharedGroups` type. |
+| `components/dossier/pointcloud-ring-worker.ts` | Dedicated worker. Owns ~4 200 particles across 6 nested radial bands (core/halo/outer1–4), counter-rotating band groups, breath oscillation, offscreen `OffscreenCanvas` buffer + `destination-out` trail fade, **in-place Uint32 row-sort** (sort key = alpha high byte under LE native Uint32; matches original `DataView BE + & 0xff` semantics). **180-frame synchronous warmup** on init so streaks are mature at first visible frame. Subscribes to `sf-hero-shared-groups` BroadcastChannel for cross-layer group coherence. |
+| `components/dossier/iris-cloud.tsx` | Thin React host. Same pattern as ring host; spawns `iris-cloud-worker.ts`. |
+| `components/dossier/iris-cloud-worker.ts` | Dedicated worker. Owns ~4 500 particles drifting radially outer→pupil. Same warmup + in-place Uint32 sort + BroadcastChannel subscription. Particle `groupIdx` derived from `theta` so wedges align with the ring. |
 
 ### 2.5 HTML wordmark (z-10 — LCP target)
 | Location | Role |
@@ -221,3 +226,4 @@ When extracting this subsystem for distribution:
 ## Changelog
 
 - 2026-04-20 — Initial map. Captures state at commits `3a7be99` (theme-aware hero particle color) + `752075e` (halved aberration edges).
+- 2026-04-19 — **Hero perf refactor.** PointcloudRing + IrisCloud render loops moved off main thread via OffscreenCanvas + dedicated Web Workers. Shared-group re-rolls now fan out through the `sf-hero-shared-groups` BroadcastChannel (owned by EntrySection). Row-sort switched to in-place `Uint32Array` subarray sort. IntersectionObserver gates both canvases' rAF. Commits: `6a1dd1c` (A1 IO pause), `26fcea8` (A2 in-place sort), `7558022` (B1 ring worker), `be564a4` (B2 iris worker). Steady-state prod hero-visible FPS: **10 → 120**. Long-task main-thread time in a 6s window: **6062ms → 0ms**. LCP: 198 → 77 ms. Visuals unchanged. CLS (0.65) and bundle size (452 kB) remain as separate open items.
