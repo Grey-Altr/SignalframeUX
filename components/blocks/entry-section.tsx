@@ -38,7 +38,7 @@ export function EntrySection() {
               canvasR = min(W,H) = H = square-dim → ring size unchanged,
               but canvas has horizontal room for the outer band. */}
           <PointcloudRing
-            count={3300}
+            count={3750}
             radius={0.42}
             trail={0.04}
             pixelSort={0.33}

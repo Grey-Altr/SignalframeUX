@@ -50,21 +50,24 @@ export function PointcloudRing({
 
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      // Tri-modal radial distribution with three nested bands:
-      //   core  [-0.02, 0.02]   — dense (18,750 relative density, ~55% of particles)
-      //   halo  [0.022, 0.14]   — sparse, 1px outside core (~18% of particles)
-      //   outer [0.142, 0.378]  — widest band, 75% of halo density (~27%)
-      // The outer band's outer edge reaches rJitter 0.378 × thicknessScale,
-      // which puts pr past the canvas axes limit (0.5 × canvasR) — rendering
-      // clips to a diamond on axes and fills at diagonals.
+      // Quad-modal radial distribution with four nested bands:
+      //   core   [-0.02, 0.02]    — dense core (48% of particles)
+      //   halo   [0.022, 0.14]    — sparse, 1px outside core (16%)
+      //   outer1 [0.142, 0.378]   — 2× halo width, 75% halo density (24%)
+      //   outer2 [0.380, 0.616]   — same width as outer1, 50% its density (12%)
+      // outer2 reaches pr ≈ 0.696 × canvasR — well past canvas axes limits
+      // (0.5 × canvasR vertical, canvasR horizontal on viewport-width canvas).
+      // Renders as a horizontal fan on the wide canvas; clips top/bottom.
       const bucket = Math.random();
       let rJitter;
-      if (bucket < 0.5455) {
+      if (bucket < 0.48) {
         rJitter = (Math.random() - 0.5) * 0.04;
-      } else if (bucket < 0.7273) {
+      } else if (bucket < 0.64) {
         rJitter = 0.022 + Math.random() * 0.118;
-      } else {
+      } else if (bucket < 0.88) {
         rJitter = 0.142 + Math.random() * 0.236;
+      } else {
+        rJitter = 0.380 + Math.random() * 0.236;
       }
       return { theta, rJitter };
     });
