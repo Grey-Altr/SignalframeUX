@@ -50,11 +50,14 @@ export function PointcloudRing({
 
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      // Asymmetric radial scatter: inner edge stays at -0.02 × thicknessScale
-      // (preserves the thin iris-to-ring gap); outer tail extends to +0.08
-      // × thicknessScale (4× the old ±0.02 symmetric range) so pixel-sort
-      // runs reach farther at the sides.
-      const rJitter = Math.random() * 0.10 - 0.02;
+      // Bi-modal radial distribution: 75% of particles cluster in the dense
+      // ring core [-0.02, 0.02], 25% scatter into a sparse outer halo
+      // [0.06, 0.14]. The low-density trough at [0.02, 0.06] reads as
+      // visible SPACE between the ring and the outer trail boundary.
+      // The halo's outer tail (0.14) pushes rMax to 0.479 × canvasR.
+      const rJitter = Math.random() < 0.75
+        ? (Math.random() - 0.5) * 0.04
+        : 0.06 + Math.random() * 0.08;
       return { theta, rJitter };
     });
 
