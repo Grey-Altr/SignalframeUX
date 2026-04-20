@@ -118,9 +118,10 @@ export function PointcloudRing({
       // clipping grows progressively across outer bands.
       const bucket = Math.random();
       let rJitter;
-      // Core (band 1) and outer1 (band 3) rotate counter-clockwise; halo,
-      // outer2, outer3, outer4 co-rotate clockwise with the global `rot`.
-      // The alternating direction gives the ring a nested, differential feel.
+      // Core (band 1), outer1 (band 3), and outer4 (band 6) rotate
+      // counter-clockwise; halo, outer2, outer3 co-rotate clockwise with
+      // the global `rot`. The alternating direction gives the ring a
+      // nested, differential feel.
       let rotDir = 1;
       if (bucket < 0.18) {
         rJitter = (Math.random() - 0.5) * 0.04;
@@ -136,6 +137,7 @@ export function PointcloudRing({
         rJitter = 0.618 + Math.random() * 0.472;
       } else {
         rJitter = 1.090 + Math.random() * 0.470;
+        rotDir = -1;
       }
       // sortReset gated to inner 3 bands (core / halo / outer1). outer2 and
       // outer3 stay in the sort pass so their streaks remain intact.
@@ -154,8 +156,10 @@ export function PointcloudRing({
     let frameIdx = 0;
     // Shift start back by the warm-up window so real-time `now` picks up
     // smoothly where the synthetic warm-up frames left off (breath + rotation
-    // don't jump backward).
-    const WARMUP_FRAMES = 20;
+    // don't jump backward). 180 frames ≈ 3s of simulated time — lets the
+    // pixel-sort streaks fully develop synchronously before first paint, so
+    // the canvas appears with mature sort saturation on page load.
+    const WARMUP_FRAMES = 180;
     const FRAME_MS = 1000 / 60;
     const start = performance.now() - WARMUP_FRAMES * FRAME_MS;
     const draw = (now: number) => {

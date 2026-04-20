@@ -86,8 +86,11 @@ export function IrisCloud({
     let raf = 0;
     let frameIdx = 0;
     // Shift start back by the warm-up window so real-time `now` picks up
-    // smoothly where the synthetic warm-up frames left off.
-    const WARMUP_FRAMES = 20;
+    // smoothly where the synthetic warm-up frames left off. 180 frames ≈
+    // 3s of simulated time — lets the pixel-sort streaks fully develop
+    // synchronously before first paint, so the canvas appears with mature
+    // sort saturation on page load.
+    const WARMUP_FRAMES = 180;
     const FRAME_MS = 1000 / 60;
     const start = performance.now() - WARMUP_FRAMES * FRAME_MS;
     const draw = (now: number) => {
