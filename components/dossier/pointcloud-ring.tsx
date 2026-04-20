@@ -86,8 +86,12 @@ export function PointcloudRing({
       // progressively across outer bands.
       const bucket = Math.random();
       let rJitter;
+      // Core band rotates counter-clockwise; all outer bands co-rotate
+      // clockwise with the global `rot`.
+      let rotDir = 1;
       if (bucket < 0.4286) {
         rJitter = (Math.random() - 0.5) * 0.04;
+        rotDir = -1;
       } else if (bucket < 0.5714) {
         rJitter = 0.022 + Math.random() * 0.118;
       } else if (bucket < 0.7857) {
@@ -97,7 +101,7 @@ export function PointcloudRing({
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
       }
-      return { theta, rJitter, intensity, fade };
+      return { theta, rJitter, intensity, fade, rotDir };
     });
 
     const reduced =
@@ -145,8 +149,9 @@ export function PointcloudRing({
         // jitter. Both oscillation and jitter are absolute pixel offsets scaled
         // by `thicknessScale`, so thickness stays constant as `radius` grows.
         const pr = r + breath + p.rJitter * thicknessScale;
-        const x = cx + Math.cos(p.theta + rot) * pr;
-        const y = cy + Math.sin(p.theta + rot) * pr;
+        const angle = p.theta + rot * p.rotDir;
+        const x = cx + Math.cos(angle) * pr;
+        const y = cy + Math.sin(angle) * pr;
         // Outer3 (rJitter ≥ 0.618) is dimmed vs. inner bands but sits at
         // 0.76× (0.4 × 1.9) so it still crosses sortThreshold strongly and
         // contributes 90% more pixels to the sort pass than the haze setting.
