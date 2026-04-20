@@ -51,10 +51,10 @@ export function PointcloudRing({
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
       // Asymmetric radial scatter: inner edge stays at -0.02 × thicknessScale
-      // (preserves the thin iris-to-ring gap); outer tail extends to +0.08
-      // × thicknessScale (4× further out than the old ±0.02 symmetric range)
-      // so pixel-sort runs at the ring's sides reach farther horizontally.
-      const rJitter = (Math.random() - 0.2) * 0.10;
+      // (preserves the thin iris-to-ring gap); outer tail extends to +0.04
+      // × thicknessScale (2× the old ±0.02 symmetric range) so pixel-sort
+      // runs reach farther at the sides without reading as a hazy cloud.
+      const rJitter = (Math.random() - 1 / 3) * 0.06;
       return { theta, rJitter };
     });
 
