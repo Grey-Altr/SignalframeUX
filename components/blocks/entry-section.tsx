@@ -20,7 +20,7 @@ export function EntrySection() {
             <IrisCloud
               count={4500}
               outerRadius={0.39}
-              innerRadius={0.06}
+              innerRadius={0.12}
               trail={0.04}
               pixelSort={0.5}
               sortThreshold={4}
