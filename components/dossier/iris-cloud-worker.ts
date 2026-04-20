@@ -62,13 +62,6 @@ let running = false;
 let rafId = 0;
 let frameIdx = 0;
 let anchor = 0;
-// Pixel-sort onset ramp. See pointcloud-ring-worker.ts for rationale — the
-// sorted-streak artifact eases in with a quadratic ease-in (t²) over
-// PIXEL_SORT_RAMP_S seconds starting at PIXEL_SORT_START_S — soft entry,
-// then accelerates toward full intensity.
-const PIXEL_SORT_START_S = 16;
-const PIXEL_SORT_RAMP_S = 3;
-let revealStartedAt = 0;
 let lastDrawTs = 0;
 
 const WARMUP_FRAMES = 180;
@@ -171,19 +164,8 @@ function draw(now: number): void {
   }
   ctx.globalAlpha = 1;
 
-  const revealElapsed = (now - revealStartedAt) / 1000;
-  const sortRampT = Math.max(
-    0,
-    Math.min(1, (revealElapsed - PIXEL_SORT_START_S) / PIXEL_SORT_RAMP_S),
-  );
-  const sortGate = sortRampT * sortRampT;
-  const rawSortChunk = Math.round(H * config.pixelSort * sortGate);
-  if (
-    config.pixelSort > 0 &&
-    !config.reduced &&
-    rawSortChunk >= 1
-  ) {
-    const chunkSize = rawSortChunk;
+  if (config.pixelSort > 0 && !config.reduced) {
+    const chunkSize = Math.max(1, Math.round(H * config.pixelSort));
     const rowStart = (frameIdx * chunkSize) % H;
     const rowEnd = Math.min(H, rowStart + chunkSize);
     const rowCount = rowEnd - rowStart;
@@ -259,8 +241,6 @@ function handleInit(msg: InitMsg): void {
   // See pointcloud-ring-worker.ts — synthetic warmup draws skipped to unblock
   // first real frame; anchor kept so t starts mid-cycle.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
-  // Reveal clock for pixel-sort gate (PIXEL_SORT_START_S).
-  revealStartedAt = performance.now();
 
   // Freeze the per-wedge trail multipliers at load, build the radial map.
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
