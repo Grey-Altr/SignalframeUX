@@ -99,14 +99,25 @@ export function PointcloudRing({
         ctx.fillRect(x, y, 1.2 * dpr, 1.2 * dpr);
       }
 
-      // Optional outer border — thin circular stroke concentric with the
-      // particle ring, drawn after particles so pixel sort operates on it too.
+      // Optional outer border — rendered as a multi-stroke band with a
+      // triangular alpha profile (dim → bright → dim across thickness) so
+      // the downstream pixel-sort pass has alpha variation per row crossing
+      // to drag horizontally. A single uniform stroke would sort into itself
+      // (no visible effect); the gradient band gives sort meaningful runs.
       if (borderRadius > 0) {
-        ctx.strokeStyle = `oklch(0.96 0.01 90 / ${borderAlpha})`;
-        ctx.lineWidth = 1 * dpr;
-        ctx.beginPath();
-        ctx.arc(cx, cy, canvasR * borderRadius, 0, Math.PI * 2);
-        ctx.stroke();
+        const layers = 7;
+        const spanPx = 3; // half-thickness in CSS px; ±3 × dpr physical
+        for (let i = 0; i < layers; i++) {
+          const norm = (i - (layers - 1) / 2) / ((layers - 1) / 2); // -1..1
+          const offsetPx = norm * spanPx * dpr;
+          const alpha = (1 - Math.abs(norm)) * borderAlpha;
+          if (alpha <= 0.02) continue;
+          ctx.strokeStyle = `oklch(0.96 0.01 90 / ${alpha.toFixed(3)})`;
+          ctx.lineWidth = 1 * dpr;
+          ctx.beginPath();
+          ctx.arc(cx, cy, canvasR * borderRadius + offsetPx, 0, Math.PI * 2);
+          ctx.stroke();
+        }
       }
 
       // Horizontal row-sort pass, throttled & rotating.
