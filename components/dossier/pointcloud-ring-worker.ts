@@ -17,6 +17,16 @@ type Point = {
   groupIdx: number;
   rotDir: number;
   sortReset: boolean;
+  /**
+   * 0..RING_BAND_COUNT-1. Controls staged entrance reveal: each ring fades
+   * in sequentially after the iris, 1s per band. Mapping:
+   *   0 — core/center (bucket < 0.18)
+   *   1 — inner bands (bucket 0.18 – 0.47)
+   *   2 — mid band (bucket 0.47 – 0.844)
+   *   3 — outermost (bucket >= 0.844 + CW duplicate)
+   *   4 — far ring (beyond outermost)
+   */
+  bandIdx: number;
 };
 
 type InitConfig = {
@@ -92,6 +102,17 @@ const OUTER_CW_DUP_SHARE = 0.156;
 const FAR_RING_SHARE = 0.078;
 const FAR_RING_EXP_ALPHA = 3;
 
+// Staged entrance reveal. The iris canvas owns the first 2s (pure CSS fade
+// on the iris wrapper). Rings start fading in at t=2s, one band at a time,
+// 1s per band — five bands (see Point.bandIdx) → rings fully visible at
+// t=7s. After that the rest of the hero constructs in parallel.
+const RING_REVEAL_OFFSET_S = 2;
+const RING_BAND_DURATION_S = 1;
+const RING_BAND_COUNT = 5;
+
+let revealStartedAt = 0;
+const bandAlphaTable = new Float32Array(RING_BAND_COUNT);
+
 function initPoints(count: number, groupCount: number): Point[] {
   const GROUP_SLICE = (Math.PI * 2) / groupCount;
   const GROUP_SPREAD = 0.5;
@@ -110,27 +131,34 @@ function initPoints(count: number, groupCount: number): Point[] {
     const bucket = Math.random();
     let rJitter: number;
     let rotDir = 1;
+    let bandIdx: number;
     if (bucket < 0.18) {
       rJitter = (Math.random() - 0.5) * 0.04;
       rotDir = -1;
+      bandIdx = 0;
     } else if (bucket < 0.29) {
       rJitter = 0.022 + Math.random() * 0.118;
+      bandIdx = 1;
     } else if (bucket < 0.47) {
       rJitter = 0.142 + Math.random() * 0.236;
       rotDir = -1;
+      bandIdx = 1;
     } else if (bucket < 0.57) {
       rJitter = 0.38 + Math.random() * 0.236;
+      bandIdx = 2;
     } else if (bucket < 0.844) {
       rJitter = 0.618 + Math.random() * 0.472;
+      bandIdx = 2;
     } else {
       // Outermost band — originally 9% (bucket >= 0.91), now 15.6% of
       // particles (bucket >= 0.844). Two compounding bumps pulled from the
       // adjacent outer-mid band, which already bleeds into this radius.
       rJitter = 1.09 + Math.random() * 0.47;
       rotDir = -1;
+      bandIdx = 3;
     }
     const sortReset = groupSortReset[groupIdx] === 1 && rJitter < 0.38;
-    out[i] = { theta, rJitter, groupIdx, rotDir, sortReset };
+    out[i] = { theta, rJitter, groupIdx, rotDir, sortReset, bandIdx };
   }
   // Clockwise duplicate of the outermost band — same radius range, opposite
   // rotation. Theta is redistributed across groups independently so the CW
@@ -141,7 +169,14 @@ function initPoints(count: number, groupCount: number): Point[] {
     const theta =
       groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
     const rJitter = 1.09 + Math.random() * 0.47;
-    out[count + k] = { theta, rJitter, groupIdx, rotDir: 1, sortReset: false };
+    out[count + k] = {
+      theta,
+      rJitter,
+      groupIdx,
+      rotDir: 1,
+      sortReset: false,
+      bandIdx: 3,
+    };
   }
   // Far ring — one band-width outside the outermost (rJitter 1.56–2.03),
   // exponentially denser along the outer edge via inverse-CDF sampling of
@@ -164,6 +199,7 @@ function initPoints(count: number, groupCount: number): Point[] {
       groupIdx,
       rotDir,
       sortReset: false,
+      bandIdx: 4,
     };
   }
   return out;
@@ -184,6 +220,20 @@ function draw(now: number): void {
   const r = canvasR * config.radius;
   const dpr = config.dpr;
 
+  // Per-band reveal alpha for the staged entrance. Computed once per frame,
+  // indexed by Point.bandIdx in the draw loop. Ease-out cubic so bands
+  // bloom in rather than linearly crossfade.
+  const revealElapsed = (now - revealStartedAt) / 1000;
+  for (let b = 0; b < RING_BAND_COUNT; b++) {
+    const bandStart = RING_REVEAL_OFFSET_S + b * RING_BAND_DURATION_S;
+    const progress = Math.max(
+      0,
+      Math.min(1, (revealElapsed - bandStart) / RING_BAND_DURATION_S),
+    );
+    const inv = 1 - progress;
+    bandAlphaTable[b] = 1 - inv * inv * inv;
+  }
+
   if (config.trail > 0) {
     offCtx.globalCompositeOperation = "destination-out";
     offCtx.fillStyle = `rgba(0, 0, 0, ${config.trail})`;
@@ -195,13 +245,18 @@ function draw(now: number): void {
   offCtx.fillStyle = `oklch(${particleLCH} / 0.75)`;
   for (const p of pts) {
     if (p.sortReset) continue;
+    const revealAlpha = bandAlphaTable[p.bandIdx];
+    if (revealAlpha <= 0) continue;
     const pr = r + breath + p.rJitter * thicknessScale;
     const angle = p.theta + rot * p.rotDir;
     const x = cx + Math.cos(angle) * pr;
     const y = cy + Math.sin(angle) * pr;
     const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
     offCtx.globalAlpha =
-      groupIntensity[p.groupIdx] * groupFade[p.groupIdx] * bandMul;
+      groupIntensity[p.groupIdx] *
+      groupFade[p.groupIdx] *
+      bandMul *
+      revealAlpha;
     offCtx.fillRect(x, y, 1 * dpr, 1 * dpr);
   }
   offCtx.globalAlpha = 1;
@@ -344,6 +399,10 @@ function handleInit(msg: InitMsg): void {
   // to load". Trail now builds organically in ~30 rAF frames once running,
   // which fits the exposed-construction register anyway.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
+  // Reveal clock starts at worker init — rings begin fading in at
+  // performance.now() + RING_REVEAL_OFFSET_S * 1000. Decoupled from `anchor`
+  // (which is back-shifted by warmup span) so reveal math stays simple.
+  revealStartedAt = performance.now();
 
   // Tick starts immediately. Main-thread IntersectionObserver may send an
   // early `visibility: false` if the canvas happens to be offscreen; that
