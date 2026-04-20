@@ -202,10 +202,9 @@ function handleInit(msg: InitMsg): void {
     if (d.fade) groupFade = d.fade;
   });
 
+  // See pointcloud-ring-worker.ts — synthetic warmup draws skipped to unblock
+  // first real frame; anchor kept so t starts mid-cycle.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
-  for (let i = 0; i < WARMUP_FRAMES; i++) {
-    draw(anchor + i * FRAME_MS);
-  }
 
   startAnim();
 }

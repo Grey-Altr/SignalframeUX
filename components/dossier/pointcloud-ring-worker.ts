@@ -281,12 +281,13 @@ function handleInit(msg: InitMsg): void {
     if (d.fade) groupFade = d.fade;
   });
 
-  // Shift anchor back by warmup span so real-time `now` continues smoothly
-  // where synthetic frames ended — same formula as main-thread version.
+  // Shift anchor back by warmup span so the first visible frame lands at a
+  // mid-rotation t, not t=0. Warmup *draws* are intentionally skipped — the
+  // full-canvas pixel-sort pass made this a ~1.4s synchronous block before
+  // the first real frame could tick, which read as "animation takes a while
+  // to load". Trail now builds organically in ~30 rAF frames once running,
+  // which fits the exposed-construction register anyway.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
-  for (let i = 0; i < WARMUP_FRAMES; i++) {
-    draw(anchor + i * FRAME_MS);
-  }
 
   // Tick starts immediately. Main-thread IntersectionObserver may send an
   // early `visibility: false` if the canvas happens to be offscreen; that
