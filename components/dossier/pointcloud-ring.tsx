@@ -38,12 +38,23 @@ export function PointcloudRing({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Offscreen buffer holds only the "smeared" layer: non-reset particles +
+    // border + trail-fade + sort pass. The visible canvas is cleared each
+    // frame, then offscreen is drawImage'd on and reset particles stamp on
+    // top — so reset-particle pixels never enter any sort pass (including
+    // across frames), fully isolating them from the sort effect.
+    const offscreen = document.createElement("canvas");
+    const offCtx = offscreen.getContext("2d");
+    if (!offCtx) return;
+
     // DPR read inside resize so canvas stays crisp across monitor / zoom changes.
     let dpr = window.devicePixelRatio || 1;
     const resize = () => {
       dpr = window.devicePixelRatio || 1;
       canvas.width = canvas.clientWidth * dpr;
       canvas.height = canvas.clientHeight * dpr;
+      offscreen.width = canvas.width;
+      offscreen.height = canvas.height;
     };
     resize();
     window.addEventListener("resize", resize);
@@ -56,10 +67,10 @@ export function PointcloudRing({
     // prominence); a separate independent 33% get a random fade multiplier
     // (sort persistence — lower alpha means trail decay drops pixels below
     // sortThreshold faster, shortening the visible streak lifetime); a third
-    // independent 33% are "sort-reset" groups — their particles are drawn
-    // AFTER the sort pass so no long streaks can accumulate on them, while
-    // trail-fade remnants still get mildly smeared until they drop below
-    // sortThreshold.
+    // independent 33% are "sort-reset" groups — their particles are rendered
+    // directly on the visible canvas after the offscreen (smeared) layer is
+    // composited, so their pixels never enter any sort pass — no streaks at
+    // all, across any frame.
     const groupIntensity = new Float32Array(GROUP_COUNT);
     const groupFade = new Float32Array(GROUP_COUNT);
     const groupSortReset = new Uint8Array(GROUP_COUNT);
@@ -145,16 +156,17 @@ export function PointcloudRing({
         // Fade previous frame via destination-out: erases existing alpha by
         // `trail` without adding black pixels, so canvas stays transparent
         // between particles and the backdrop (GLSL hero) shows through.
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = `rgba(0, 0, 0, ${trail})`;
-        ctx.fillRect(0, 0, W, H);
-        ctx.globalCompositeOperation = "source-over";
+        offCtx.globalCompositeOperation = "destination-out";
+        offCtx.fillStyle = `rgba(0, 0, 0, ${trail})`;
+        offCtx.fillRect(0, 0, W, H);
+        offCtx.globalCompositeOperation = "source-over";
       } else {
-        ctx.clearRect(0, 0, W, H);
+        offCtx.clearRect(0, 0, W, H);
       }
-      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
-      // Pre-sort pass: draw every particle NOT flagged as sortReset. These
-      // pixels enter the sort pass below and get smeared into streaks.
+      offCtx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      // Main layer: draw every particle NOT flagged as sortReset onto the
+      // offscreen buffer. These pixels enter the sort pass below and get
+      // smeared into streaks.
       for (const p of pts) {
         if (p.sortReset) continue;
         // Particle radius = base ring radius + breath oscillation + per-particle
@@ -168,10 +180,10 @@ export function PointcloudRing({
         // 0.76× (0.4 × 1.9) so it still crosses sortThreshold strongly and
         // contributes 90% more pixels to the sort pass than the haze setting.
         const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
-        ctx.globalAlpha = p.intensity * p.fade * bandMul;
-        ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
+        offCtx.globalAlpha = p.intensity * p.fade * bandMul;
+        offCtx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
-      ctx.globalAlpha = 1;
+      offCtx.globalAlpha = 1;
 
       // Optional outer border — rendered as a multi-stroke band with a
       // triangular alpha profile (dim → bright → dim across thickness) so
@@ -186,21 +198,23 @@ export function PointcloudRing({
           const offsetPx = norm * spanPx * dpr;
           const alpha = (1 - Math.abs(norm)) * borderAlpha;
           if (alpha <= 0.02) continue;
-          ctx.strokeStyle = `oklch(0.96 0.01 90 / ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1 * dpr;
-          ctx.beginPath();
-          ctx.arc(cx, cy, canvasR * borderRadius + offsetPx, 0, Math.PI * 2);
-          ctx.stroke();
+          offCtx.strokeStyle = `oklch(0.96 0.01 90 / ${alpha.toFixed(3)})`;
+          offCtx.lineWidth = 1 * dpr;
+          offCtx.beginPath();
+          offCtx.arc(cx, cy, canvasR * borderRadius + offsetPx, 0, Math.PI * 2);
+          offCtx.stroke();
         }
       }
 
-      // Horizontal row-sort pass, throttled & rotating.
+      // Horizontal row-sort pass, throttled & rotating — runs on offscreen
+      // buffer, which contains ONLY non-reset particles + border. Reset
+      // particles are drawn after this composite step and never visible here.
       if (pixelSort > 0 && !reduced) {
         const chunkSize = Math.max(1, Math.round(H * pixelSort));
         const rowStart = (frameIdx * chunkSize) % H;
         const rowEnd = Math.min(H, rowStart + chunkSize);
         const rowCount = rowEnd - rowStart;
-        const img = ctx.getImageData(0, rowStart, W, rowCount);
+        const img = offCtx.getImageData(0, rowStart, W, rowCount);
         const data = img.data;
         const stride = W * 4;
 
@@ -230,13 +244,16 @@ export function PointcloudRing({
             }
           }
         }
-        ctx.putImageData(img, 0, rowStart);
+        offCtx.putImageData(img, 0, rowStart);
       }
 
-      // Post-sort pass: draw sortReset-flagged groups on top of the sorted
-      // image so their current-frame pixels are never part of a sort run.
-      // Trail fade in subsequent frames will still briefly smear their
-      // remnants, but no long streaks accumulate on these groups.
+      // Composite: clear visible canvas fully, blit the offscreen (smeared)
+      // layer, then stamp reset particles on top. Reset particles have no
+      // persistence on the visible canvas from previous frames (it was just
+      // cleared) and no presence on the offscreen canvas (never drawn
+      // there), so no sort pass ever touches their pixels.
+      ctx.clearRect(0, 0, W, H);
+      ctx.drawImage(offscreen, 0, 0);
       ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
       for (const p of pts) {
         if (!p.sortReset) continue;
