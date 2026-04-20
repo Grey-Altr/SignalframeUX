@@ -107,33 +107,37 @@ export function PointcloudRing({
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       const intensity = groupIntensity[groupIdx];
       const fade = groupFade[groupIdx];
-      // Penta-modal radial distribution — five nested bands growing outward:
-      //   core   [-0.02, 0.02]   — dense core (~22% of particles)
-      //   halo   [0.022, 0.14]   — sparse, 1px outside core (~12%)
-      //   outer1 [0.142, 0.378]  — 2× halo width (~20%)
+      // Hexa-modal radial distribution — six nested bands growing outward:
+      //   core   [-0.02, 0.02]   — dense core (~18% of particles)
+      //   halo   [0.022, 0.14]   — sparse, 1px outside core (~11%)
+      //   outer1 [0.142, 0.378]  — 2× halo width (~18%)
       //   outer2 [0.380, 0.616]  — same width as outer1 (~10%)
-      //   outer3 [0.618, 1.090]  — 2× outer2 width, highest bucket share (~36%)
-      // outer3 reaches pr ≈ 0.895 × canvasR — only horizontal rendering
-      // fits on the viewport-wide canvas; vertical/diagonal clipping grows
-      // progressively across outer bands.
+      //   outer3 [0.618, 1.090]  — 2× outer2 width, highest bucket share (~34%)
+      //   outer4 [1.090, 1.560]  — same width as outer3, 75% less dense (~9%)
+      // outer3 / outer4 both extend past the square container: outer3 max
+      // pr ≈ 0.878×canvasR, outer4 max pr ≈ 1.075×canvasR — only a
+      // horizontal slice renders on landscape viewports; vertical/diagonal
+      // clipping grows progressively across outer bands.
       const bucket = Math.random();
       let rJitter;
       // Core (band 1) and outer1 (band 3) rotate counter-clockwise; halo,
-      // outer2, outer3 co-rotate clockwise with the global `rot`. The
-      // alternating direction gives the ring a nested, differential feel.
+      // outer2, outer3, outer4 co-rotate clockwise with the global `rot`.
+      // The alternating direction gives the ring a nested, differential feel.
       let rotDir = 1;
-      if (bucket < 0.22) {
+      if (bucket < 0.18) {
         rJitter = (Math.random() - 0.5) * 0.04;
         rotDir = -1;
-      } else if (bucket < 0.34) {
+      } else if (bucket < 0.29) {
         rJitter = 0.022 + Math.random() * 0.118;
-      } else if (bucket < 0.54) {
+      } else if (bucket < 0.47) {
         rJitter = 0.142 + Math.random() * 0.236;
         rotDir = -1;
-      } else if (bucket < 0.64) {
+      } else if (bucket < 0.57) {
         rJitter = 0.380 + Math.random() * 0.236;
-      } else {
+      } else if (bucket < 0.91) {
         rJitter = 0.618 + Math.random() * 0.472;
+      } else {
+        rJitter = 1.090 + Math.random() * 0.470;
       }
       // sortReset gated to inner 3 bands (core / halo / outer1). outer2 and
       // outer3 stay in the sort pass so their streaks remain intact.
