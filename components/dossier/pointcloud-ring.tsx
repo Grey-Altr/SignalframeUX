@@ -94,7 +94,7 @@ export function PointcloudRing({
       // below both use `thicknessScale`, not `r`.
       const canvasR = Math.min(W, H);
       const thicknessScale = canvasR * 0.42;
-      const breath = Math.sin(t * 0.3) * 0.04 * thicknessScale;
+      const breath = Math.sin(t * 0.05) * 0.04 * thicknessScale;
       const rot = reduced ? 0 : t * 0.03;
       const r = canvasR * radius;
 
