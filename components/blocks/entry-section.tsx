@@ -41,7 +41,7 @@ export function EntrySection() {
             count={4200}
             radius={0.42}
             trail={0.04}
-            pixelSort={1}
+            pixelSort={0.94}
             sortThreshold={4}
             className="absolute inset-0"
           />
