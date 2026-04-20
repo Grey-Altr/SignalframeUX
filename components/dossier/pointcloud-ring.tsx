@@ -52,12 +52,11 @@ export function PointcloudRing({
       const theta = Math.random() * Math.PI * 2;
       // Bi-modal radial distribution: 75% of particles cluster in the dense
       // ring core [-0.02, 0.02], 25% scatter into a sparse outer halo
-      // [0.06, 0.14]. The low-density trough at [0.02, 0.06] reads as
-      // visible SPACE between the ring and the outer trail boundary.
-      // The halo's outer tail (0.14) pushes rMax to 0.479 × canvasR.
+      // [0.022, 0.14] that hugs the core ~1px away and extends out to the
+      // trail boundary at 0.479 × canvasR.
       const rJitter = Math.random() < 0.75
         ? (Math.random() - 0.5) * 0.04
-        : 0.06 + Math.random() * 0.08;
+        : 0.022 + Math.random() * 0.118;
       return { theta, rJitter };
     });
 
