@@ -30,7 +30,7 @@ export function EntrySection() {
             <PointcloudRing
               count={2400}
               radius={0.42}
-              trail={0.1}
+              trail={0.04}
               pixelSort={0.33}
               sortThreshold={4}
               className="absolute inset-0"
