@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import type { SharedGroups } from "./pointcloud-ring";
 
 /**
  * IrisCloud — an inward-drifting pointcloud that fills the annular region
@@ -9,7 +10,10 @@ import { cn } from "@/lib/utils";
  * so the cloud reads as a continuous stream flowing toward the pupil.
  *
  * Paired with PointcloudRing: mount both inside the same sized wrapper
- * with IrisCloud first so the iris paints behind the main ring.
+ * with IrisCloud first so the iris paints behind the main ring. When a
+ * shared `groups` table is passed to both, their angular wedges carry
+ * coherent intensity/fade — a dim wedge on the ring reads as dim on the
+ * iris at the same angle.
  */
 export function IrisCloud({
   count = 800,
@@ -18,6 +22,7 @@ export function IrisCloud({
   trail = 0,
   pixelSort = 0,
   sortThreshold = 20,
+  groups,
   className,
 }: {
   count?: number;
@@ -31,6 +36,10 @@ export function IrisCloud({
   pixelSort?: number;
   // Alpha threshold (0-255) below which pixels are excluded from sort runs.
   sortThreshold?: number;
+  // Optional shared angular-group table (intensity + fade per wedge). When
+  // provided, each iris particle looks up its group by angular position so
+  // the iris's alpha modulation matches the ring at every angle.
+  groups?: SharedGroups;
   className?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -51,12 +60,25 @@ export function IrisCloud({
     window.addEventListener("resize", resize);
 
     // Per-particle state: angular position, phase offset along the inward
-    // life cycle, and a per-particle drift speed multiplier for depth.
-    const pts = Array.from({ length: count }, () => ({
-      theta: Math.random() * Math.PI * 2,
-      phase: Math.random(),
-      speed: 0.6 + Math.random() * 0.8,
-    }));
+    // life cycle, per-particle drift speed multiplier for depth, and a
+    // resolved groupMul (intensity × fade) looked up from the shared group
+    // table by angular position. groupMul collapses to 1 when no shared
+    // table is provided.
+    const groupCount = groups?.intensity.length ?? 0;
+    const pts = Array.from({ length: count }, () => {
+      const theta = Math.random() * Math.PI * 2;
+      let groupMul = 1;
+      if (groups && groupCount > 0) {
+        const g = Math.floor((theta / (Math.PI * 2)) * groupCount) % groupCount;
+        groupMul = groups.intensity[g] * groups.fade[g];
+      }
+      return {
+        theta,
+        phase: Math.random(),
+        speed: 0.6 + Math.random() * 0.8,
+        groupMul,
+      };
+    });
 
     const reduced =
       typeof window !== "undefined" &&
@@ -102,7 +124,7 @@ export function IrisCloud({
         // from spawn at the outer edge toward the pupil at the center).
         const x = cx + Math.cos(p.theta) * r;
         const y = cy + Math.sin(p.theta) * r;
-        ctx.globalAlpha = edgeFade;
+        ctx.globalAlpha = edgeFade * p.groupMul;
         ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
       ctx.globalAlpha = 1;
@@ -166,7 +188,7 @@ export function IrisCloud({
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
-  }, [count, outerRadius, innerRadius, trail, pixelSort, sortThreshold]);
+  }, [count, outerRadius, innerRadius, trail, pixelSort, sortThreshold, groups]);
 
   return (
     <canvas

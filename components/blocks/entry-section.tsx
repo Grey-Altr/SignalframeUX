@@ -1,10 +1,31 @@
 "use client";
 
+import { useMemo } from "react";
 import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
 import { PointcloudRing } from "@/components/dossier/pointcloud-ring";
 import { IrisCloud } from "@/components/dossier/iris-cloud";
 
+// Shared angular group count — both the ring's 5 radial bands and the iris
+// partition the same 128 angular wedges, so an angular position carries
+// coherent intensity/fade across every layer in the stack.
+const SHARED_GROUP_COUNT = 128;
+
 export function EntrySection() {
+  // Shared group traits — 33% of wedges get a random intensity multiplier,
+  // an independent 33% get a random fade multiplier. PointcloudRing and
+  // IrisCloud both receive these arrays and look up their particles' group
+  // by angular position, so a "dim" wedge at 45° reads as dim across the
+  // core, halo, outer1/2/3 ring bands AND the iris cloud simultaneously.
+  const sharedGroups = useMemo(() => {
+    const intensity = new Float32Array(SHARED_GROUP_COUNT);
+    const fade = new Float32Array(SHARED_GROUP_COUNT);
+    for (let g = 0; g < SHARED_GROUP_COUNT; g++) {
+      intensity[g] = Math.random() < 0.33 ? 0.4 + Math.random() * 1.2 : 1.0;
+      fade[g] = Math.random() < 0.33 ? 0.3 + Math.random() * 0.4 : 1.0;
+    }
+    return { intensity, fade };
+  }, []);
+
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
       <GLSLHeroLazy />
@@ -31,6 +52,7 @@ export function EntrySection() {
               trail={0.04}
               pixelSort={1}
               sortThreshold={4}
+              groups={sharedGroups}
               className="absolute inset-0"
             />
           </div>
@@ -43,6 +65,7 @@ export function EntrySection() {
             trail={0.04}
             pixelSort={1}
             sortThreshold={4}
+            groups={sharedGroups}
             className="absolute inset-0"
           />
         </div>

@@ -2,6 +2,11 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
+export type SharedGroups = {
+  intensity: Float32Array;
+  fade: Float32Array;
+};
+
 export function PointcloudRing({
   count = 2400,
   radius = 0.38,
@@ -10,6 +15,7 @@ export function PointcloudRing({
   sortThreshold = 20,
   borderRadius = 0,
   borderAlpha = 0.4,
+  groups,
   className,
 }: {
   count?: number;
@@ -28,6 +34,12 @@ export function PointcloudRing({
   borderRadius?: number;
   // Alpha for the border stroke (0-1).
   borderAlpha?: number;
+  // Optional shared angular-group table (intensity + fade per wedge). When
+  // provided, the component looks up its particles' group by angular
+  // position using `groups.intensity.length` as the wedge count. Lets the
+  // ring share group traits with IrisCloud for coherent cross-component
+  // wedge modulation. When omitted, falls back to internal random groups.
+  groups?: SharedGroups;
   className?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -59,37 +71,38 @@ export function PointcloudRing({
     resize();
     window.addEventListener("resize", resize);
 
-    const GROUP_SIZE = 33;
-    const GROUP_COUNT = Math.ceil(count / GROUP_SIZE);
+    // Shared groups (from prop) take priority — they let angular wedges
+    // carry coherent intensity/fade across ring + iris. When no shared table
+    // is passed, fall back to an internally generated one sized by count.
+    const groupIntensity = groups?.intensity
+      ?? (() => {
+        const arr = new Float32Array(Math.ceil(count / 33));
+        for (let g = 0; g < arr.length; g++) {
+          arr[g] = Math.random() < 0.33 ? 0.4 + Math.random() * 1.2 : 1.0;
+        }
+        return arr;
+      })();
+    const groupFade = groups?.fade
+      ?? (() => {
+        const arr = new Float32Array(Math.ceil(count / 33));
+        for (let g = 0; g < arr.length; g++) {
+          arr[g] = Math.random() < 0.33 ? 0.3 + Math.random() * 0.4 : 1.0;
+        }
+        return arr;
+      })();
+    const GROUP_COUNT = groupIntensity.length;
     const GROUP_SLICE = (Math.PI * 2) / GROUP_COUNT;
     const GROUP_SPREAD = 0.5; // fraction of slice each group occupies
-    // 33% of groups get a random per-group intensity multiplier (sort
-    // prominence); a separate independent 33% get a random fade multiplier
-    // (sort persistence — lower alpha means trail decay drops pixels below
-    // sortThreshold faster, shortening the visible streak lifetime); a third
-    // independent 33% are "sort-reset" groups — their particles are rendered
-    // directly on the visible canvas after the offscreen (smeared) layer is
-    // composited, so their pixels never enter any sort pass — no streaks at
-    // all, across any frame.
-    const groupIntensity = new Float32Array(GROUP_COUNT);
-    const groupFade = new Float32Array(GROUP_COUNT);
+    // sortReset feature plumbing retained for reversible disable; currently
+    // zeroed so every particle participates in the sort pass at full strength.
     const groupSortReset = new Uint8Array(GROUP_COUNT);
-    for (let g = 0; g < GROUP_COUNT; g++) {
-      groupIntensity[g] = Math.random() < 0.33
-        ? 0.4 + Math.random() * 1.2 // [0.4, 1.6]
-        : 1.0;
-      groupFade[g] = Math.random() < 0.33
-        ? 0.3 + Math.random() * 0.4 // [0.3, 0.7] — faster fade-out
-        : 1.0;
-      // Disabled: all particles participate in the sort pass at full strength.
-      // Set probability > 0 to re-enable per-group sort-reset behavior.
-      groupSortReset[g] = 0;
-    }
     const pts = Array.from({ length: count }, (_, i) => {
-      // Angular clustering: particles are assigned to groups of GROUP_SIZE,
-      // each group anchored at an evenly-spaced theta around the ring.
-      // Within a group, particles jitter by ± (slice × spread / 2).
-      const groupIdx = Math.floor(i / GROUP_SIZE);
+      // Angular clustering: particles are distributed evenly across
+      // GROUP_COUNT groups, each group anchored at an evenly-spaced theta
+      // around the ring. Within a group, particles jitter by ± (slice ×
+      // spread / 2). GROUP_COUNT is driven by the shared groups table when
+      // provided so angular wedges align with iris.
+      const groupIdx = Math.floor((i * GROUP_COUNT) / count);
       const groupCenter = groupIdx * GROUP_SLICE;
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       const intensity = groupIntensity[groupIdx];
@@ -289,7 +302,7 @@ export function PointcloudRing({
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
-  }, [count, radius, trail, pixelSort, sortThreshold, borderRadius, borderAlpha]);
+  }, [count, radius, trail, pixelSort, sortThreshold, borderRadius, borderAlpha, groups]);
 
   return (
     <canvas
