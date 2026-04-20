@@ -105,8 +105,9 @@ export function PointcloudRing({
       // progressively across outer bands.
       const bucket = Math.random();
       let rJitter;
-      // Core band rotates counter-clockwise; all outer bands co-rotate
-      // clockwise with the global `rot`.
+      // Core (band 1) and outer1 (band 3) rotate counter-clockwise; halo,
+      // outer2, outer3 co-rotate clockwise with the global `rot`. The
+      // alternating direction gives the ring a nested, differential feel.
       let rotDir = 1;
       if (bucket < 0.22) {
         rJitter = (Math.random() - 0.5) * 0.04;
@@ -115,6 +116,7 @@ export function PointcloudRing({
         rJitter = 0.022 + Math.random() * 0.118;
       } else if (bucket < 0.54) {
         rJitter = 0.142 + Math.random() * 0.236;
+        rotDir = -1;
       } else if (bucket < 0.64) {
         rJitter = 0.380 + Math.random() * 0.236;
       } else {
