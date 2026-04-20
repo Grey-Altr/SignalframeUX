@@ -1,0 +1,7 @@
+r=unset
+n=Decide between CLS 0.65 fix or bundle-size audit — both are top remaining perf items on /
+ws=Hero perf refactor shipped (5 commits); hero 10→120 FPS, main thread idle, visuals identical
+b=none
+msg=
+kb=
+kh=
