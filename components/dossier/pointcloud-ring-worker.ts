@@ -84,6 +84,12 @@ let rafId = 0;
 const TRAIL_WEDGE_COUNT = 64;
 const TRAIL_MUL_MIN = 0.25;
 const TRAIL_MUL_MAX = 2.0;
+// Random bias curve for per-wedge trail persistence. The multiplier feeds
+// a destination-out fade, so LOWER multiplier = LONGER trail. Raising the
+// exponent pulls Math.random() toward 0 → more wedges land near MIN →
+// overall longer trails. 1.0 = uniform, 2.0 = quadratic pull toward MIN,
+// 3.0 = cubic (strongly weighted toward the longest trails).
+const TRAIL_MUL_EXP = 2;
 // Post-bake Gaussian blur applied to the conic-gradient trail map. The
 // conic already interpolates linearly between stops; this pass softens
 // those transitions into a Gaussian fall-off, dissolving any last sense
@@ -466,9 +472,13 @@ function handleInit(msg: InitMsg): void {
   // Freeze the per-wedge trail multipliers at load. Regenerating these
   // would re-shuffle the radial persistence pattern mid-run, which reads
   // as a glitch. Resize regenerates the bitmap but keeps these values.
+  // TRAIL_MUL_EXP biases Math.random() toward 0, concentrating wedges at
+  // the low-multiplier end so the majority of radial directions hold
+  // pixels longer (longer sunburst-ray persistence).
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const biased = Math.random() ** TRAIL_MUL_EXP;
     trailWedgeMul[w] =
-      TRAIL_MUL_MIN + Math.random() * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
+      TRAIL_MUL_MIN + biased * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
   }
   trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
 

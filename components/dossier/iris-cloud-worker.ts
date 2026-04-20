@@ -78,6 +78,9 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 const TRAIL_WEDGE_COUNT = 64;
 const TRAIL_MUL_MIN = 0.25;
 const TRAIL_MUL_MAX = 2.0;
+// See pointcloud-ring-worker.ts — quadratic bias pulls Math.random()
+// toward 0 so most wedges land near MIN (longer trails).
+const TRAIL_MUL_EXP = 2;
 const TRAIL_BLUR_PX = 72;
 const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
 let trailMap: OffscreenCanvas | null = null;
@@ -243,9 +246,11 @@ function handleInit(msg: InitMsg): void {
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
 
   // Freeze the per-wedge trail multipliers at load, build the radial map.
+  // TRAIL_MUL_EXP biases toward MIN so most directions hold pixels longer.
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const biased = Math.random() ** TRAIL_MUL_EXP;
     trailWedgeMul[w] =
-      TRAIL_MUL_MIN + Math.random() * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
+      TRAIL_MUL_MIN + biased * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
   }
   trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
 
