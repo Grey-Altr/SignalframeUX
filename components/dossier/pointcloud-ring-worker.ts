@@ -101,9 +101,12 @@ function initPoints(count: number, groupCount: number): Point[] {
       rotDir = -1;
     } else if (bucket < 0.57) {
       rJitter = 0.38 + Math.random() * 0.236;
-    } else if (bucket < 0.91) {
+    } else if (bucket < 0.88) {
       rJitter = 0.618 + Math.random() * 0.472;
     } else {
+      // Outermost band — previously 9% of particles (bucket >= 0.91), now
+      // 12% (+33% density) pulled from the adjacent outer-mid band, which
+      // already spills into this radius visually.
       rJitter = 1.09 + Math.random() * 0.47;
       rotDir = -1;
     }
