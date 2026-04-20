@@ -81,7 +81,6 @@ export function PointcloudRing({
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
       const intensity = groupIntensity[groupIdx];
       const fade = groupFade[groupIdx];
-      const sortReset = groupSortReset[groupIdx] === 1;
       // Penta-modal radial distribution — five nested bands growing outward:
       //   core   [-0.02, 0.02]   — dense core (~43% of particles)
       //   halo   [0.022, 0.14]   — sparse, 1px outside core (~14%)
@@ -108,6 +107,9 @@ export function PointcloudRing({
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
       }
+      // sortReset gated to inner 3 bands (core / halo / outer1). outer2 and
+      // outer3 stay in the sort pass so their streaks remain intact.
+      const sortReset = groupSortReset[groupIdx] === 1 && rJitter < 0.380;
       return { theta, rJitter, intensity, fade, rotDir, sortReset };
     });
 
