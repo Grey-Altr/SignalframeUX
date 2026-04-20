@@ -122,6 +122,13 @@
   /* ── Generative Theme Seed ── */
   --sfx-theme-hue: 350; /* Default Magenta. Replaced dynamically by AI during scaffolding. */
 
+  /* ── Hero particle LCH (consumed by pointcloud-ring + iris-cloud canvases) ──
+     Stored as raw L C H values (no oklch() wrapper, no alpha) so per-frame
+     fillStyle strings can interpolate alpha: `oklch(${lch} / ${alpha})`.
+     Light mode: neutral light-grey, visible on white bgShift surface.
+     Dark mode override lives in the .dark block below. */
+  --sf-hero-particle-lch: 0.7 0 0;
+
   /* ── Color Values ── */
   --sfx-background: oklch(1 0 0);
   --sfx-foreground: oklch(0.145 0 0);
@@ -365,6 +372,8 @@
 
 /* ── Dark Mode ── */
 .dark {
+  /* Hero particle LCH — restores warm cream (near-white, hue 90) on dark bg */
+  --sf-hero-particle-lch: 0.96 0.01 90;
   --sfx-background: oklch(0.145 0 0);
   --sfx-foreground: oklch(0.985 0 0);
   --sfx-card: oklch(0.205 0 0);

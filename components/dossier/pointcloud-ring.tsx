@@ -71,6 +71,25 @@ export function PointcloudRing({
     resize();
     window.addEventListener("resize", resize);
 
+    // Theme-aware particle color. Canvas 2D fillStyle strings can't reference
+    // CSS var() — we resolve --sf-hero-particle-lch once and re-resolve only
+    // when `<html>.class` flips (light ↔ dark). Cached as a plain string so
+    // the per-frame template literal interpolation is free.
+    let particleLCH =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--sf-hero-particle-lch")
+        .trim() || "0.96 0.01 90";
+    const themeObserver = new MutationObserver(() => {
+      particleLCH =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--sf-hero-particle-lch")
+          .trim() || particleLCH;
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     // Shared groups (from prop) take priority — they let angular wedges
     // carry coherent intensity/fade across ring + iris. When no shared table
     // is passed, fall back to an internally generated one sized by count.
@@ -189,7 +208,7 @@ export function PointcloudRing({
       } else {
         offCtx.clearRect(0, 0, W, H);
       }
-      offCtx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      offCtx.fillStyle = `oklch(${particleLCH} / 0.75)`;
       // Main layer: draw every particle NOT flagged as sortReset onto the
       // offscreen buffer. These pixels enter the sort pass below and get
       // smeared into streaks.
@@ -224,7 +243,7 @@ export function PointcloudRing({
           const offsetPx = norm * spanPx * dpr;
           const alpha = (1 - Math.abs(norm)) * borderAlpha;
           if (alpha <= 0.02) continue;
-          offCtx.strokeStyle = `oklch(0.96 0.01 90 / ${alpha.toFixed(3)})`;
+          offCtx.strokeStyle = `oklch(${particleLCH} / ${alpha.toFixed(3)})`;
           offCtx.lineWidth = 1 * dpr;
           offCtx.beginPath();
           offCtx.arc(cx, cy, canvasR * borderRadius + offsetPx, 0, Math.PI * 2);
@@ -280,7 +299,7 @@ export function PointcloudRing({
       // there), so no sort pass ever touches their pixels.
       ctx.clearRect(0, 0, W, H);
       ctx.drawImage(offscreen, 0, 0);
-      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.75)";
+      ctx.fillStyle = `oklch(${particleLCH} / 0.75)`;
       for (const p of pts) {
         if (!p.sortReset) continue;
         const pr = r + breath + p.rJitter * thicknessScale;
@@ -310,6 +329,7 @@ export function PointcloudRing({
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      themeObserver.disconnect();
     };
   }, [count, radius, trail, pixelSort, sortThreshold, borderRadius, borderAlpha, groups]);
 

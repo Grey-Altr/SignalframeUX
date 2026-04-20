@@ -59,6 +59,24 @@ export function IrisCloud({
     resize();
     window.addEventListener("resize", resize);
 
+    // Theme-aware particle color. Mirrors the pattern in pointcloud-ring so
+    // both canvases flip between the dark-mode cream and light-mode grey as
+    // `<html>.class` toggles. Cached per mount; observer re-resolves on change.
+    let particleLCH =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--sf-hero-particle-lch")
+        .trim() || "0.96 0.01 90";
+    const themeObserver = new MutationObserver(() => {
+      particleLCH =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--sf-hero-particle-lch")
+          .trim() || particleLCH;
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     // Per-particle state: angular position, phase offset along the inward
     // life cycle, per-particle drift speed multiplier for depth, and a
     // groupIdx into the shared group table (resolved from theta). The draw
@@ -111,7 +129,7 @@ export function IrisCloud({
       } else {
         ctx.clearRect(0, 0, W, H);
       }
-      ctx.fillStyle = "oklch(0.96 0.01 90 / 0.3)";
+      ctx.fillStyle = `oklch(${particleLCH} / 0.3)`;
       for (const p of pts) {
         // life ∈ [0, 1). 0 → just spawned at outer edge; near 1 → near pupil.
         const life = reduced
@@ -192,6 +210,7 @@ export function IrisCloud({
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      themeObserver.disconnect();
     };
   }, [count, outerRadius, innerRadius, trail, pixelSort, sortThreshold, groups]);
 
