@@ -62,6 +62,11 @@ let running = false;
 let rafId = 0;
 let frameIdx = 0;
 let anchor = 0;
+// Pixel-sort start gate. See pointcloud-ring-worker.ts for rationale —
+// sorted streaks activate 6s after the hero entrance sequence completes
+// so the // slash's shadow stays quiet until then, then comes alive.
+const PIXEL_SORT_START_S = 16;
+let revealStartedAt = 0;
 let lastDrawTs = 0;
 
 const WARMUP_FRAMES = 180;
@@ -164,7 +169,12 @@ function draw(now: number): void {
   }
   ctx.globalAlpha = 1;
 
-  if (config.pixelSort > 0 && !config.reduced) {
+  const revealElapsed = (now - revealStartedAt) / 1000;
+  if (
+    config.pixelSort > 0 &&
+    !config.reduced &&
+    revealElapsed > PIXEL_SORT_START_S
+  ) {
     const chunkSize = Math.max(1, Math.round(H * config.pixelSort));
     const rowStart = (frameIdx * chunkSize) % H;
     const rowEnd = Math.min(H, rowStart + chunkSize);
@@ -241,6 +251,8 @@ function handleInit(msg: InitMsg): void {
   // See pointcloud-ring-worker.ts — synthetic warmup draws skipped to unblock
   // first real frame; anchor kept so t starts mid-cycle.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
+  // Reveal clock for pixel-sort gate (PIXEL_SORT_START_S).
+  revealStartedAt = performance.now();
 
   // Freeze the per-wedge trail multipliers at load, build the radial map.
   for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {

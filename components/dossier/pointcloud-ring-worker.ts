@@ -170,6 +170,13 @@ const FAR_RING_EXP_ALPHA = 3;
 const RING_REVEAL_OFFSET_S = 2;
 const RING_BAND_DURATION_S = 1;
 const RING_BAND_COUNT = 5;
+// Pixel-sort gate. Sequence-complete lands around t≈10s (iris 0–2s + rings
+// 2–7s + construct/text 7–10s); the user wants the sorted-streak artifact
+// to activate 6s after that. Until this moment the trail blur alone
+// carries the // shadow behind the VL-05 slash; once it opens the sorted
+// streaks start bleeding through the screen-blend, turning the shadow into
+// an active pixel-sort ghost.
+const PIXEL_SORT_START_S = 16;
 
 let revealStartedAt = 0;
 const bandAlphaTable = new Float32Array(RING_BAND_COUNT);
@@ -343,7 +350,11 @@ function draw(now: number): void {
     }
   }
 
-  if (config.pixelSort > 0 && !config.reduced) {
+  if (
+    config.pixelSort > 0 &&
+    !config.reduced &&
+    revealElapsed > PIXEL_SORT_START_S
+  ) {
     const chunkSize = Math.max(1, Math.round(H * config.pixelSort));
     const rowStart = (frameIdx * chunkSize) % H;
     const rowEnd = Math.min(H, rowStart + chunkSize);
