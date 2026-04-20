@@ -14,9 +14,16 @@ export function EntrySection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
-        <div className="aspect-square w-[min(90vw,90vh)]">
-          <div className="relative h-full w-full">
-            {/* Iris — inward-drifting cloud behind the main ring */}
+        {/*
+          Wrapper height matches the old square dim so min(W,H) = H and the
+          ring/iris render at identical pixel sizes. Wrapper width spans the
+          full viewport so the tri-modal outer band can render past the old
+          canvas axes without horizontal clipping.
+        */}
+        <div className="relative h-[min(90vw,90vh)] w-full">
+          {/* Iris — centered square sub-container, canvas dims = square dims,
+              so iris size is exactly what it was before. */}
+          <div className="absolute left-1/2 top-0 aspect-square h-full -translate-x-1/2">
             <IrisCloud
               count={4500}
               outerRadius={0.39}
@@ -26,16 +33,18 @@ export function EntrySection() {
               sortThreshold={4}
               className="absolute inset-0"
             />
-            {/* Main ring — on top of the iris */}
-            <PointcloudRing
-              count={3300}
-              radius={0.42}
-              trail={0.04}
-              pixelSort={0.33}
-              sortThreshold={4}
-              className="absolute inset-0"
-            />
           </div>
+          {/* Ring — full-width canvas (width=viewport, height=square-dim).
+              canvasR = min(W,H) = H = square-dim → ring size unchanged,
+              but canvas has horizontal room for the outer band. */}
+          <PointcloudRing
+            count={3300}
+            radius={0.42}
+            trail={0.04}
+            pixelSort={0.33}
+            sortThreshold={4}
+            className="absolute inset-0"
+          />
         </div>
       </div>
 
