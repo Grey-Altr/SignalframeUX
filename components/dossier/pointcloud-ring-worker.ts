@@ -94,12 +94,13 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 // visually balanced duplicate.
 const OUTER_CW_DUP_SHARE = 0.156;
 // Second "far" ring sitting just outside the existing outermost band. Same
-// radial width (0.47 in rJitter units) but 25% of the density of the full
-// outer band (CCW + CW duplicate = 0.312 of count → 0.078 here). Density
-// is exponentially biased toward the outside boundary: with α=3 the
-// outer edge is ≈ e^3 ≈ 20× denser than the inner edge of this ring.
+// radial width (0.47 in rJitter units). Started at 25% of the full outer
+// band's density (0.312 × 0.25 = 0.078) then stepped up 50% to 0.117 of
+// count (~491 particles at count=4200). Density is exponentially biased
+// toward the outside boundary: with α=3 the outer edge is ≈ e^3 ≈ 20×
+// denser than the inner edge of this ring.
 // Rotation splits 50/50 between CCW (rotDir=-1) and CW (rotDir=+1).
-const FAR_RING_SHARE = 0.078;
+const FAR_RING_SHARE = 0.117;
 const FAR_RING_EXP_ALPHA = 3;
 
 // Staged entrance reveal. The iris canvas owns the first 2s (pure CSS fade
