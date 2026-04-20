@@ -1,0 +1,7 @@
+r=design
+n=Commit iris-cloud.tsx + entry-section.tsx + pointcloud-ring.tsx as one feat commit on main before next iteration
+ws=EntrySection wired with IrisCloud + PointcloudRing + bloom wrapper; all three files uncommitted
+b=Chrome DevTools MCP disconnected; perf unverified after latest bidirectional sort + threshold 8 tweaks
+msg=
+kb=
+kh=
