@@ -164,6 +164,9 @@ export function PointcloudRing({
 
         for (let y = 0; y < rowCount; y++) {
           const rowBase = y * stride;
+          // Bidirectional: alternate sort direction per absolute row so
+          // consecutive rows pull bright pixels in opposite directions.
+          const dir = ((rowStart + y) & 1) ? -1 : 1;
           let runStart = -1;
           for (let x = 0; x <= W; x++) {
             const bright =
@@ -171,24 +174,16 @@ export function PointcloudRing({
             if (bright && runStart === -1) {
               runStart = x;
             } else if (!bright && runStart !== -1) {
-              // Irregularity: skip ~25% of runs randomly so streaks flicker
-              // across frames instead of refreshing uniformly each pass.
-              if (Math.random() < 0.75) {
-                // Per-run random direction (replaces row-parity pattern) —
-                // adjacent runs on the same row can drag in opposite
-                // directions, breaking the clean alternating stripe look.
-                const dir = Math.random() < 0.5 ? 1 : -1;
-                const runLen = x - runStart;
-                const buf = new Uint32Array(runLen);
-                const view = new DataView(
-                  data.buffer,
-                  data.byteOffset + rowBase + runStart * 4,
-                  runLen * 4,
-                );
-                for (let i = 0; i < runLen; i++) buf[i] = view.getUint32(i * 4);
-                buf.sort((a, b) => dir * ((a & 0xff) - (b & 0xff)));
-                for (let i = 0; i < runLen; i++) view.setUint32(i * 4, buf[i]);
-              }
+              const runLen = x - runStart;
+              const buf = new Uint32Array(runLen);
+              const view = new DataView(
+                data.buffer,
+                data.byteOffset + rowBase + runStart * 4,
+                runLen * 4,
+              );
+              for (let i = 0; i < runLen; i++) buf[i] = view.getUint32(i * 4);
+              buf.sort((a, b) => dir * ((a & 0xff) - (b & 0xff)));
+              for (let i = 0; i < runLen; i++) view.setUint32(i * 4, buf[i]);
               runStart = -1;
             }
           }
