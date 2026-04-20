@@ -61,6 +61,11 @@ export function PointcloudRing({
       // progressively across outer bands.
       const bucket = Math.random();
       let rJitter;
+      // Per-particle pixel footprint (CSS px, before dpr). Outer3 gets
+      // doubled size to give its sparse rows longer bright runs — pixel-sort
+      // drag scales with run length, so bigger outer3 particles = heavier
+      // visible sort streaks on the outermost band.
+      let size = 1.2;
       if (bucket < 0.4286) {
         rJitter = (Math.random() - 0.5) * 0.04;
       } else if (bucket < 0.5714) {
@@ -71,8 +76,9 @@ export function PointcloudRing({
         rJitter = 0.380 + Math.random() * 0.236;
       } else {
         rJitter = 0.618 + Math.random() * 0.472;
+        size = 2.4;
       }
-      return { theta, rJitter };
+      return { theta, rJitter, size };
     });
 
     const reduced =
@@ -117,7 +123,7 @@ export function PointcloudRing({
         const pr = r + breath + p.rJitter * thicknessScale;
         const x = cx + Math.cos(p.theta + rot) * pr;
         const y = cy + Math.sin(p.theta + rot) * pr;
-        ctx.fillRect(x, y, 1.2 * dpr, 1.2 * dpr);
+        ctx.fillRect(x, y, p.size * dpr, p.size * dpr);
       }
 
       // Optional outer border — rendered as a multi-stroke band with a
