@@ -81,7 +81,9 @@ export function PointcloudRing({
       groupFade[g] = Math.random() < 0.33
         ? 0.3 + Math.random() * 0.4 // [0.3, 0.7] — faster fade-out
         : 1.0;
-      groupSortReset[g] = Math.random() < 0.33 ? 1 : 0;
+      // Disabled: all particles participate in the sort pass at full strength.
+      // Set probability > 0 to re-enable per-group sort-reset behavior.
+      groupSortReset[g] = 0;
     }
     const pts = Array.from({ length: count }, (_, i) => {
       // Angular clustering: particles are assigned to groups of GROUP_SIZE,
