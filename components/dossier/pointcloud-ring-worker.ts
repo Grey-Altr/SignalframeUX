@@ -74,15 +74,18 @@ let groupFade: Float32Array = new Float32Array(0);
 let running = false;
 let rafId = 0;
 
-// Per-band random trail multiplier. Generated once on worker init ("on
-// page load"), then used every frame to draw TRAIL_BAND_COUNT horizontal
-// strips of destination-out fade instead of a single full-canvas fillRect.
-// Multiplier in [0.25, 2.0] gives ~8× dynamic range: low-mul strips hold
-// pixels longer (long streaks), high-mul strips clear fast (tight trails).
-const TRAIL_BAND_COUNT = 32;
-const TRAIL_BAND_MUL_MIN = 0.25;
-const TRAIL_BAND_MUL_MAX = 2.0;
-const trailBandMul = new Float32Array(TRAIL_BAND_COUNT);
+// Radial trail modulation. The per-frame destination-out fade is baked
+// into a pre-rendered OffscreenCanvas composed of angular wedges that
+// emanate from canvas center: each wedge gets a random multiplier frozen
+// on worker init, so some radial directions hold pixels long (persistent
+// sorted streaks read as sunburst rays) while others clear fast. Drawn
+// every frame as a single drawImage blit — cheaper than the N-fillRect
+// band approach it replaces.
+const TRAIL_WEDGE_COUNT = 64;
+const TRAIL_MUL_MIN = 0.25;
+const TRAIL_MUL_MAX = 2.0;
+const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
+let trailMap: OffscreenCanvas | null = null;
 let frameIdx = 0;
 let anchor = 0;
 let lastDrawTs = 0;
@@ -95,6 +98,43 @@ const FRAME_MS = 1000 / 60;
 // the common 60Hz display. 0.5ms slack avoids losing a frame that lands just
 // shy of the budget due to rAF jitter.
 const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
+
+/**
+ * Bake the per-wedge trail alpha into an OffscreenCanvas sized to the
+ * live ring canvas. Each wedge is drawn as a pie slice from center at
+ * alpha = config.trail × trailWedgeMul[w]. On resize, regenerated against
+ * the same frozen multiplier table so the radial pattern is stable across
+ * the session.
+ */
+function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
+  const map = new OffscreenCanvas(W, H);
+  const mctx = map.getContext("2d");
+  if (!mctx) return map;
+  const cx = W / 2;
+  const cy = H / 2;
+  // Distance from center to the furthest corner — ensures the wedges
+  // completely tile the canvas with no unpainted gaps along the edges.
+  const maxR = Math.sqrt(cx * cx + cy * cy) + 1;
+  const wedgeAngle = (Math.PI * 2) / TRAIL_WEDGE_COUNT;
+  for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const alpha = Math.min(1, trail * trailWedgeMul[w]);
+    mctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+    mctx.beginPath();
+    mctx.moveTo(cx, cy);
+    // +0.002 rad overdraw per wedge so floating-point arc endpoints never
+    // leave 1px radial seams of unpainted pixels between slices.
+    mctx.arc(
+      cx,
+      cy,
+      maxR,
+      w * wedgeAngle,
+      (w + 1) * wedgeAngle + 0.002,
+    );
+    mctx.closePath();
+    mctx.fill();
+  }
+  return map;
+}
 
 // Fraction of `count` appended as a clockwise-rotating duplicate of the
 // outermost band. The base 6-band scheme keeps its current distribution
@@ -245,16 +285,9 @@ function draw(now: number): void {
     bandAlphaTable[b] = 1 - inv * inv * inv;
   }
 
-  if (config.trail > 0) {
+  if (config.trail > 0 && trailMap) {
     offCtx.globalCompositeOperation = "destination-out";
-    const bandH = H / TRAIL_BAND_COUNT;
-    for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
-      const alpha = Math.min(1, config.trail * trailBandMul[b]);
-      offCtx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-      // +1 pixel overdraw so floating-point band boundaries don't leave
-      // 1px seams of never-cleared pixels between strips.
-      offCtx.fillRect(0, b * bandH, W, bandH + 1);
-    }
+    offCtx.drawImage(trailMap, 0, 0);
     offCtx.globalCompositeOperation = "source-over";
   } else {
     offCtx.clearRect(0, 0, W, H);
@@ -421,13 +454,14 @@ function handleInit(msg: InitMsg): void {
   // (which is back-shifted by warmup span) so reveal math stays simple.
   revealStartedAt = performance.now();
 
-  // Freeze the per-band trail multipliers at load. Regenerating this would
-  // re-shuffle streak persistence mid-run, which reads as a glitch.
-  for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
-    trailBandMul[b] =
-      TRAIL_BAND_MUL_MIN +
-      Math.random() * (TRAIL_BAND_MUL_MAX - TRAIL_BAND_MUL_MIN);
+  // Freeze the per-wedge trail multipliers at load. Regenerating these
+  // would re-shuffle the radial persistence pattern mid-run, which reads
+  // as a glitch. Resize regenerates the bitmap but keeps these values.
+  for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    trailWedgeMul[w] =
+      TRAIL_MUL_MIN + Math.random() * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
   }
+  trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
 
   // Tick starts immediately. Main-thread IntersectionObserver may send an
   // early `visibility: false` if the canvas happens to be offscreen; that
@@ -455,6 +489,11 @@ self.onmessage = (e: MessageEvent<Msg>): void => {
       canvas.height = Math.round(msg.height * msg.dpr);
       offscreen.width = canvas.width;
       offscreen.height = canvas.height;
+      // Rebuild the radial trail map at the new dims using the existing
+      // frozen wedge multipliers so the pattern stays stable.
+      if (config) {
+        trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
+      }
       break;
     }
     case "visibility":

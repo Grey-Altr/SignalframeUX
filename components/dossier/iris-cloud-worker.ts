@@ -71,13 +71,41 @@ const FRAME_MS = 1000 / 60;
 // 120/144Hz monitors).
 const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 
-// Per-band random trail multiplier — see pointcloud-ring-worker.ts for the
-// full rationale. Frozen at worker init so the streak-persistence pattern
-// is stable across the session.
-const TRAIL_BAND_COUNT = 32;
-const TRAIL_BAND_MUL_MIN = 0.25;
-const TRAIL_BAND_MUL_MAX = 2.0;
-const trailBandMul = new Float32Array(TRAIL_BAND_COUNT);
+// Radial trail modulation — wedges emanate from canvas center, each
+// holding pixels for a different number of frames. See the ring worker
+// for the full rationale; iris uses an independent random seed so the
+// two layers don't visually align.
+const TRAIL_WEDGE_COUNT = 64;
+const TRAIL_MUL_MIN = 0.25;
+const TRAIL_MUL_MAX = 2.0;
+const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
+let trailMap: OffscreenCanvas | null = null;
+
+function buildTrailMap(W: number, H: number, trail: number): OffscreenCanvas {
+  const map = new OffscreenCanvas(W, H);
+  const mctx = map.getContext("2d");
+  if (!mctx) return map;
+  const cx = W / 2;
+  const cy = H / 2;
+  const maxR = Math.sqrt(cx * cx + cy * cy) + 1;
+  const wedgeAngle = (Math.PI * 2) / TRAIL_WEDGE_COUNT;
+  for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    const alpha = Math.min(1, trail * trailWedgeMul[w]);
+    mctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+    mctx.beginPath();
+    mctx.moveTo(cx, cy);
+    mctx.arc(
+      cx,
+      cy,
+      maxR,
+      w * wedgeAngle,
+      (w + 1) * wedgeAngle + 0.002,
+    );
+    mctx.closePath();
+    mctx.fill();
+  }
+  return map;
+}
 
 function initPoints(count: number, groupCount: number): Point[] {
   const out: Point[] = new Array(count);
@@ -109,14 +137,9 @@ function draw(now: number): void {
   const rInner = Math.min(W, H) * config.innerRadius;
   const dpr = config.dpr;
 
-  if (config.trail > 0) {
+  if (config.trail > 0 && trailMap) {
     ctx.globalCompositeOperation = "destination-out";
-    const bandH = H / TRAIL_BAND_COUNT;
-    for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
-      const alpha = Math.min(1, config.trail * trailBandMul[b]);
-      ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
-      ctx.fillRect(0, b * bandH, W, bandH + 1);
-    }
+    ctx.drawImage(trailMap, 0, 0);
     ctx.globalCompositeOperation = "source-over";
   } else {
     ctx.clearRect(0, 0, W, H);
@@ -218,12 +241,12 @@ function handleInit(msg: InitMsg): void {
   // first real frame; anchor kept so t starts mid-cycle.
   anchor = performance.now() - WARMUP_FRAMES * FRAME_MS;
 
-  // Freeze the per-band trail multipliers at load.
-  for (let b = 0; b < TRAIL_BAND_COUNT; b++) {
-    trailBandMul[b] =
-      TRAIL_BAND_MUL_MIN +
-      Math.random() * (TRAIL_BAND_MUL_MAX - TRAIL_BAND_MUL_MIN);
+  // Freeze the per-wedge trail multipliers at load, build the radial map.
+  for (let w = 0; w < TRAIL_WEDGE_COUNT; w++) {
+    trailWedgeMul[w] =
+      TRAIL_MUL_MIN + Math.random() * (TRAIL_MUL_MAX - TRAIL_MUL_MIN);
   }
+  trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
 
   startAnim();
 }
@@ -246,6 +269,9 @@ self.onmessage = (e: MessageEvent<Msg>): void => {
       if (config) config.dpr = msg.dpr;
       canvas.width = Math.round(msg.width * msg.dpr);
       canvas.height = Math.round(msg.height * msg.dpr);
+      if (config) {
+        trailMap = buildTrailMap(canvas.width, canvas.height, config.trail);
+      }
       break;
     }
     case "visibility":
