@@ -89,7 +89,7 @@ const TRAIL_MUL_MAX = 2.0;
 // those transitions into a Gaussian fall-off, dissolving any last sense
 // of discrete wedge boundaries and giving the radial modulation a
 // continuous atmospheric quality.
-const TRAIL_BLUR_PX = 32;
+const TRAIL_BLUR_PX = 72;
 const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
 let trailMap: OffscreenCanvas | null = null;
 let frameIdx = 0;

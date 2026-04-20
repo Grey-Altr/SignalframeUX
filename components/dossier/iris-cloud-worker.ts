@@ -78,7 +78,7 @@ const DRAW_INTERVAL_MS = FRAME_MS - 0.5;
 const TRAIL_WEDGE_COUNT = 64;
 const TRAIL_MUL_MIN = 0.25;
 const TRAIL_MUL_MAX = 2.0;
-const TRAIL_BLUR_PX = 32;
+const TRAIL_BLUR_PX = 72;
 const trailWedgeMul = new Float32Array(TRAIL_WEDGE_COUNT);
 let trailMap: OffscreenCanvas | null = null;
 
