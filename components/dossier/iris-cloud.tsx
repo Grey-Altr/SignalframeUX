@@ -61,22 +61,21 @@ export function IrisCloud({
 
     // Per-particle state: angular position, phase offset along the inward
     // life cycle, per-particle drift speed multiplier for depth, and a
-    // resolved groupMul (intensity × fade) looked up from the shared group
-    // table by angular position. groupMul collapses to 1 when no shared
-    // table is provided.
+    // groupIdx into the shared group table (resolved from theta). The draw
+    // loop reads intensity × fade live each frame so re-rolls of group
+    // traits propagate immediately. groupIdx is -1 when no shared table
+    // is provided; the draw loop then treats the modulation as 1.
     const groupCount = groups?.intensity.length ?? 0;
     const pts = Array.from({ length: count }, () => {
       const theta = Math.random() * Math.PI * 2;
-      let groupMul = 1;
-      if (groups && groupCount > 0) {
-        const g = Math.floor((theta / (Math.PI * 2)) * groupCount) % groupCount;
-        groupMul = groups.intensity[g] * groups.fade[g];
-      }
+      const groupIdx = groupCount > 0
+        ? Math.floor((theta / (Math.PI * 2)) * groupCount) % groupCount
+        : -1;
       return {
         theta,
         phase: Math.random(),
         speed: 0.6 + Math.random() * 0.8,
-        groupMul,
+        groupIdx,
       };
     });
 
@@ -124,7 +123,10 @@ export function IrisCloud({
         // from spawn at the outer edge toward the pupil at the center).
         const x = cx + Math.cos(p.theta) * r;
         const y = cy + Math.sin(p.theta) * r;
-        ctx.globalAlpha = edgeFade * p.groupMul;
+        const groupMul = p.groupIdx >= 0 && groups
+          ? groups.intensity[p.groupIdx] * groups.fade[p.groupIdx]
+          : 1;
+        ctx.globalAlpha = edgeFade * groupMul;
         ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
       ctx.globalAlpha = 1;

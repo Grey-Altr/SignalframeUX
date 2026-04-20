@@ -105,8 +105,6 @@ export function PointcloudRing({
       const groupIdx = Math.floor((i * GROUP_COUNT) / count);
       const groupCenter = groupIdx * GROUP_SLICE;
       const theta = groupCenter + (Math.random() - 0.5) * GROUP_SLICE * GROUP_SPREAD;
-      const intensity = groupIntensity[groupIdx];
-      const fade = groupFade[groupIdx];
       // Hexa-modal radial distribution — six nested bands growing outward:
       //   core   [-0.02, 0.02]   — dense core (~18% of particles)
       //   halo   [0.022, 0.14]   — sparse, 1px outside core (~11%)
@@ -142,7 +140,10 @@ export function PointcloudRing({
       // sortReset gated to inner 3 bands (core / halo / outer1). outer2 and
       // outer3 stay in the sort pass so their streaks remain intact.
       const sortReset = groupSortReset[groupIdx] === 1 && rJitter < 0.380;
-      return { theta, rJitter, intensity, fade, rotDir, sortReset };
+      // groupIdx is stored (not the cached intensity/fade values) so the
+      // draw loop reads live from the shared arrays — this makes re-rolls
+      // of group traits take effect immediately.
+      return { theta, rJitter, groupIdx, rotDir, sortReset };
     });
 
     const reduced =
@@ -201,7 +202,7 @@ export function PointcloudRing({
         // 0.76× (0.4 × 1.9) so it still crosses sortThreshold strongly and
         // contributes 90% more pixels to the sort pass than the haze setting.
         const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
-        offCtx.globalAlpha = p.intensity * p.fade * bandMul;
+        offCtx.globalAlpha = groupIntensity[p.groupIdx] * groupFade[p.groupIdx] * bandMul;
         offCtx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
       offCtx.globalAlpha = 1;
@@ -283,7 +284,7 @@ export function PointcloudRing({
         const x = cx + Math.cos(angle) * pr;
         const y = cy + Math.sin(angle) * pr;
         const bandMul = p.rJitter >= 0.618 ? 0.76 : 1.0;
-        ctx.globalAlpha = p.intensity * p.fade * bandMul;
+        ctx.globalAlpha = groupIntensity[p.groupIdx] * groupFade[p.groupIdx] * bandMul;
         ctx.fillRect(x, y, 1 * dpr, 1 * dpr);
       }
       ctx.globalAlpha = 1;

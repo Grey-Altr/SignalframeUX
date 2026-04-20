@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { GLSLHeroLazy } from "@/components/animation/glsl-hero-lazy";
 import { PointcloudRing } from "@/components/dossier/pointcloud-ring";
 import { IrisCloud } from "@/components/dossier/iris-cloud";
@@ -9,22 +9,47 @@ import { IrisCloud } from "@/components/dossier/iris-cloud";
 // partition the same 128 angular wedges, so an angular position carries
 // coherent intensity/fade across every layer in the stack.
 const SHARED_GROUP_COUNT = 128;
+// Every REROLL_INTERVAL_MS, a fraction REROLL_FRACTION of the shared groups
+// gets their intensity + fade re-randomized in place. Ring + iris read the
+// arrays live each frame, so the re-roll propagates immediately and is
+// visually coherent across every layer modulated by the same wedge.
+const REROLL_INTERVAL_MS = 13_000;
+const REROLL_FRACTION = 0.13;
+
+function rollIntensity() {
+  return Math.random() < 0.33 ? 0.4 + Math.random() * 1.2 : 1.0;
+}
+function rollFade() {
+  return Math.random() < 0.33 ? 0.3 + Math.random() * 0.4 : 1.0;
+}
 
 export function EntrySection() {
   // Shared group traits — 33% of wedges get a random intensity multiplier,
   // an independent 33% get a random fade multiplier. PointcloudRing and
   // IrisCloud both receive these arrays and look up their particles' group
   // by angular position, so a "dim" wedge at 45° reads as dim across the
-  // core, halo, outer1/2/3 ring bands AND the iris cloud simultaneously.
+  // core, halo, outer1/2/3/4 ring bands AND the iris cloud simultaneously.
   const sharedGroups = useMemo(() => {
     const intensity = new Float32Array(SHARED_GROUP_COUNT);
     const fade = new Float32Array(SHARED_GROUP_COUNT);
     for (let g = 0; g < SHARED_GROUP_COUNT; g++) {
-      intensity[g] = Math.random() < 0.33 ? 0.4 + Math.random() * 1.2 : 1.0;
-      fade[g] = Math.random() < 0.33 ? 0.3 + Math.random() * 0.4 : 1.0;
+      intensity[g] = rollIntensity();
+      fade[g] = rollFade();
     }
     return { intensity, fade };
   }, []);
+
+  useEffect(() => {
+    const rerollCount = Math.max(1, Math.round(SHARED_GROUP_COUNT * REROLL_FRACTION));
+    const id = window.setInterval(() => {
+      for (let k = 0; k < rerollCount; k++) {
+        const g = Math.floor(Math.random() * SHARED_GROUP_COUNT);
+        sharedGroups.intensity[g] = rollIntensity();
+        sharedGroups.fade[g] = rollFade();
+      }
+    }, REROLL_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [sharedGroups]);
 
   return (
     <div className="relative h-screen w-full overflow-hidden" data-entry-section>
