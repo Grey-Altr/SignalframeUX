@@ -10,7 +10,7 @@ import { PageAnimations } from "@/components/layout/page-animations";
 import { PageTransition } from "@/components/animation/page-transition";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SignalframeProvider } from "@/components/layout/signalframe-config";
-import { SFToaster } from "@/components/sf";
+import { SFToasterLazy } from "@/components/sf/sf-toast-lazy";
 import { InstrumentHUD } from "@/components/layout/instrument-hud";
 import { BorderlessProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
@@ -128,7 +128,7 @@ export default function RootLayout({
             </SignalframeProvider>
           </LenisProvider>
         </TooltipProvider>
-        <SFToaster />
+        <SFToasterLazy />
         <GlobalEffectsLazy />
         <SignalCanvasLazy />
         <PageAnimations />

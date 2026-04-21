@@ -3,7 +3,7 @@
 import { useState, memo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CommandPalette } from "@/components/layout/command-palette";
+import { CommandPaletteLazy as CommandPalette } from "@/components/layout/command-palette-lazy";
 import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 
 const IconInventory = (props: any) => (

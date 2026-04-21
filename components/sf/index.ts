@@ -66,17 +66,10 @@ export {
 } from "./sf-dropdown-menu";
 export { SFToggle } from "./sf-toggle";
 export { SFSlider } from "./sf-slider";
-export {
-  SFCommand,
-  SFCommandDialog,
-  SFCommandInput,
-  SFCommandList,
-  SFCommandEmpty,
-  SFCommandGroup,
-  SFCommandItem,
-  SFCommandSeparator,
-  SFCommandShortcut,
-} from "./sf-command";
+// SFCommand* — NOT re-exported from the barrel. cmdk (~12 kB gz) + nested
+// radix-dialog/primitives add up. Only CommandPalette consumes these; import
+// directly to keep the barrel tree-shakeable:
+//   import { SFCommand, ... } from "@/components/sf/sf-command";
 export { SFSkeleton } from "./sf-skeleton";
 export {
   SFPopover,
@@ -128,7 +121,11 @@ export {
   SFAccordionContent,
 } from "./sf-accordion";
 export { SFProgress } from "./sf-progress";
-export { SFToaster, sfToast } from "./sf-toast";
+// SFToaster / sfToast — NOT re-exported from the barrel. Pulling these eagerly
+// through the barrel drags sonner (~33 kB gz) into every consumer's critical
+// path. Import directly when needed:
+//   import { SFToasterLazy } from "@/components/sf/sf-toast-lazy"; // mount
+//   import { sfToast } from "@/components/sf/sf-toast";           // imperative API
 
 // Navigation
 export { SFAvatar, SFAvatarImage, SFAvatarFallback } from "./sf-avatar";
@@ -188,5 +185,9 @@ export { CDSymbol } from "./cd-symbol";
 // Overlays
 export { SFHoverCard, SFHoverCardTrigger, SFHoverCardContent } from "./sf-hover-card";
 
-// Effects Subsystem
-export { SFSignalComposer, type EffectPassName, type SFSignalComposerProps } from "@/components/animation/sf-signal-composer";
+// Effects Subsystem — NOT re-exported from the barrel. Importing this eagerly
+// pulls three.js (~130 kB gz) into every consumer's critical path. Consumers
+// that need it must import the lazy variant directly:
+//   import { SFSignalComposerLazy } from "@/components/animation/sf-signal-composer-lazy";
+// Types still import-able from the non-barrel path:
+//   import type { EffectPassName, SFSignalComposerProps } from "@/components/animation/sf-signal-composer";
