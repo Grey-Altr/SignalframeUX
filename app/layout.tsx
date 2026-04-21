@@ -85,6 +85,15 @@ export default function RootLayout({
   // Default theme is light; `dark` is applied only when sf-theme === "dark" (explicit user choice).
   const themeScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem('sf-theme');if(t==='dark')d.classList.add('dark');var b=localStorage.getItem('sf-borderless');if(b==='true')d.setAttribute('data-borderless','true')}catch(e){}})()`;
 
+  // Pre-hydration scale setup — CLS fix. ScaleCanvas's useEffect runs AFTER first
+  // paint; sections inside [data-sf-canvas] use calc(100vh / var(--sf-content-scale, 1))
+  // which resolves to 100vh pre-JS, then jumps to 100vh/scale post-JS. That flex-center
+  // re-computation shifts every absolutely-positioned hero element (CLS 0.65 @ t=646ms).
+  // This blocking script mirrors the initial applyScale() computation so the CSS var is
+  // set before first paint and the CSS rule [data-sf-canvas]{transform:scale(var(...))}
+  // renders the first frame already scaled. ScaleCanvas's effect keeps running for resize.
+  const scaleScript = `(function(){try{var vw=window.innerWidth,vh=window.innerHeight,DW=1280,SHRINK=435,IDLE=800;var s=vw/DW,hs=Math.min(1,vh/SHRINK),cs=Math.min(s,hs),ns=hs;var m=Math.max(0,Math.min(1,(IDLE-vh)/(IDLE-SHRINK)));var r=document.documentElement.style;r.setProperty('--sf-content-scale',String(s));r.setProperty('--sf-canvas-scale',String(cs));r.setProperty('--sf-nav-scale',String(ns));r.setProperty('--sf-nav-morph',String(m));r.setProperty('--sf-hero-shift','0px');r.setProperty('--sf-frame-offset-x','0px');r.setProperty('--sf-frame-bottom-gap','0px')}catch(e){}})()`;
+
   return (
     <html
       lang="en"
@@ -93,13 +102,15 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Blocking theme script — prevents FOUC. */}
+        {/* Blocking theme script — prevents FOUC. Static literal, no user input. */}
         <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Blocking scale script — CLS fix. Static literal, no user input. */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: scaleScript }} />
         <noscript>
           <style>{`.sf-hero-deferred, .sf-anim-hidden, .sf-motion-hidden, [data-anim="section-reveal"], [data-anim="tag"], [data-anim="comp-cell"], [data-anim="cta-btn"], [data-anim="manifesto-word"], [data-anim="hero-mesh"], [data-anim="error-code"], [data-anim="ghost-label"], [data-anim="stagger"] > * { opacity: 1 !important; visibility: visible !important; transform: none !important; }`}</style>
         </noscript>
       </head>
-      <body className="antialiased overflow-x-hidden">
+      <body className="antialiased overflow-x-hidden" data-nav-layout="vertical">
         <div className="sf-mesh-gradient" aria-hidden="true" />
         <a
           href="#main-content"

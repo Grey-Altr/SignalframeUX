@@ -67,7 +67,8 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       // No hero shift needed: h-screen sections inside [data-sf-canvas]
       // resolve to 100vh/contentScale (see globals.css), so each section's
       // post-scale height equals the viewport height. Hero sits centered.
-      inner.style.transform = `scale(${contentScale})`;
+      // Transform itself is driven by CSS rule reading --sf-content-scale
+      // (set pre-hydration by blocking script in layout.tsx to avoid CLS).
       outer.style.height = `${inner.offsetHeight * contentScale}px`;
 
       const root = document.documentElement.style;
@@ -78,7 +79,6 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
       root.setProperty("--sf-hero-shift", "0px");
       root.setProperty("--sf-frame-offset-x", "0px");
       root.setProperty("--sf-frame-bottom-gap", "0px");
-      document.body.setAttribute("data-nav-layout", "vertical");
       ScrollTrigger.refresh();
     };
 

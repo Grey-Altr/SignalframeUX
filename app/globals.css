@@ -2593,6 +2593,19 @@ html:not(.dark) .sf-mesh-gradient {
   }
 }
 
+/* ── Scale Canvas transform (CSS-driven) ───────────────────────────────────
+   Blocking head script in layout.tsx sets --sf-content-scale before first
+   paint; this rule applies the matching transform so the first rendered
+   frame is already scaled. ScaleCanvas's useEffect still updates the var on
+   resize (CSS re-reads it, transform recomputes).
+   Fixes CLS 0.65 @ t=646ms where the wrapper flex-center jumped from the
+   pre-JS unscaled geometry to the post-JS scaled geometry. */
+[data-sf-canvas] {
+  transform: scale(var(--sf-content-scale, 1));
+  transform-origin: top left;
+  will-change: transform;
+}
+
 /* ── Scale Canvas viewport-height remap ────────────────────────────────────
    Inside <ScaleCanvas>, viewport-height utilities resolve to a height that
    fills the REAL viewport after the canvas scale transform is applied:
