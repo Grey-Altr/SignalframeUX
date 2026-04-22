@@ -2,6 +2,16 @@
 
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
+import { getQualityTier, type QualityTier } from "@/lib/effects/quality-tier";
+
+// DPR cap per tier. Halves-to-quarters fragment shader cost on lower tiers;
+// the visual delta at 1.5x vs 2x on FBM noise is imperceptible.
+const TIER_DPR_CAP: Record<QualityTier, number> = {
+  ultra: 2,
+  high: 1.5,
+  medium: 1,
+  fallback: 1,
+};
 
 // ---------------------------------------------------------------------------
 // Singleton key — mirrors use-scramble-text.ts HMR-safe pattern
@@ -100,7 +110,11 @@ export function initSignalCanvas(canvas: HTMLCanvasElement): void {
     antialias: false,
   });
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Tier-gated DPR cap. On Retina + M1/Apple Silicon, cap=2 means 4x fragment
+  // work vs cap=1 — dominant GPU-thermal driver. getQualityTier() is cheap
+  // (memoised singleton) and picks a cap based on hardware + reduced-motion.
+  const dprCap = TIER_DPR_CAP[getQualityTier()];
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   state.renderer = renderer;
@@ -146,6 +160,22 @@ export function initSignalCanvas(canvas: HTMLCanvasElement): void {
     }
   };
   mql.addEventListener("change", motionHandler);
+
+  // Tab-hidden pause — stops rAF when the page is backgrounded or the tab
+  // isn't visible. Critical on mobile (battery) and low-end laptops (thermal).
+  // Reduced-motion users are already paused; no-op for them.
+  const visibilityHandler = () => {
+    if (state.reducedMotion) return;
+    if (document.hidden) {
+      if (state.rafId !== null) {
+        cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      }
+    } else if (state.rafId === null) {
+      state.rafId = requestAnimationFrame(loop);
+    }
+  };
+  document.addEventListener("visibilitychange", visibilityHandler);
 
   // Resize handler — passive for scroll performance
   const resizeHandler = () => {

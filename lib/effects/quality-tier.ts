@@ -79,7 +79,17 @@ function computeTier(): QualityTier {
 
   if (!gpu.webgl2 || gpu.maxTextureSize < 4096) return "medium";
 
-  if (cores >= 8 && dpr >= 2 && gpu.maxTextureSize >= 8192) return "ultra";
+  // Touch-primary / coarse-pointer devices hit thermal + battery ceilings fast.
+  // iPhones and Android flagships can technically run an "ultra" shader pipeline
+  // but pay for it in heat and battery within minutes. Cap at "high" so DPR
+  // drops to 1.5x and shader LOD steps down one rung, regardless of hardware.
+  const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const isTouchPrimary = window.matchMedia("(hover: none)").matches;
+  const isMobileish = isCoarsePointer || isTouchPrimary;
+
+  if (cores >= 8 && dpr >= 2 && gpu.maxTextureSize >= 8192) {
+    return isMobileish ? "high" : "ultra";
+  }
 
   if (cores >= 4 && dpr >= 1.5) return "high";
 
