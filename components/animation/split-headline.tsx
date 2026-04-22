@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @status reference-template
+ * No live consumers (lockdown audit 2026-04-22, §6.10).
+ * See: .planning/lockdown-audit/AUDIT-VERDICTS.md
+ * Retained as layout-generation reference per KEEP-ref policy.
+ */
+
 import { useRef } from "react";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap-split";
 

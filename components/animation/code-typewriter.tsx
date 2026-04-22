@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * @status reference-template
+ * LIVE-via-dead-consumer (lockdown audit 2026-04-22, §6.12).
+ * Only caller is CodeSection (itself an orphan per §3.3) — effectively unused.
+ * See: .planning/lockdown-audit/AUDIT-VERDICTS.md
+ * Retained as layout-generation reference per KEEP-ref policy.
+ */
+
 import { useRef, useState, useEffect, useCallback } from "react";
 
 export interface CodeLine {

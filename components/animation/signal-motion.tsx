@@ -1,6 +1,13 @@
 "use client";
 
 /**
+ * @status reference-template
+ * No live consumers (lockdown audit 2026-04-22, §6.38).
+ * See: .planning/lockdown-audit/AUDIT-VERDICTS.md
+ * Retained as layout-generation reference per KEEP-ref policy.
+ */
+
+/**
  * SignalMotion — Scrub-capable scroll-driven animation wrapper.
  *
  * Distinct from ScrollReveal (one-shot entrance animation) in three ways:

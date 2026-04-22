@@ -1,6 +1,13 @@
 "use client";
 
 /**
+ * @status reference-template
+ * No live consumers (lockdown audit 2026-04-22, §6.39).
+ * See: .planning/lockdown-audit/AUDIT-VERDICTS.md
+ * Retained as layout-generation reference per KEEP-ref policy.
+ */
+
+/**
  * AudioReactiveModulator — CHOP-like Web Audio frequency analysis input.
  *
  * Provides real-time audio frequency data (bass/mid/high bands) as CSS custom
