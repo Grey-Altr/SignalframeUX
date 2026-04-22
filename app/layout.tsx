@@ -6,6 +6,7 @@ import { SignalCanvasLazy } from "@/components/layout/signal-canvas-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
 import { Nav } from "@/components/layout/nav";
 import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
+import { CdCornerPanel } from "@/components/layout/cd-corner-panel";
 import { ScaleCanvas } from "@/components/layout/scale-canvas";
 import { PageAnimations } from "@/components/layout/page-animations";
 import { PageTransition } from "@/components/animation/page-transition";
@@ -129,6 +130,9 @@ export default function RootLayout({
                   Homepage uses [data-entry-section]; subpages use [data-nav-reveal-trigger].
                   On no-match, useNavReveal falls back to nav-visible (safe default). */}
               <NavRevealMount targetSelector="[data-entry-section], [data-nav-reveal-trigger]" />
+              {/* CULTURE DIVISION / SIGNALFRAME SYSTEM corner panel — ported
+                  from cdb-v3-dossier, anchored bottom-right. */}
+              <CdCornerPanel />
             </BorderlessProvider>
             </SignalframeProvider>
           </LenisProvider>
