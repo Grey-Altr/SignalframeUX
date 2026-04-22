@@ -19,14 +19,19 @@ export function CdCornerPanel() {
     <div
       data-corner="br"
       data-cd-corner-panel=""
-      className="fixed z-[var(--sfx-z-nav,40)] font-mono text-[10px] md:text-[11px] uppercase tracking-[0.16em] leading-[1.4] text-muted-foreground text-right pointer-events-none pb-3 pr-3 before:content-[''] before:absolute before:bottom-0 before:right-0 before:w-3 before:h-px before:bg-muted-foreground after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-px after:h-3 after:bg-muted-foreground"
+      className="fixed z-[var(--sfx-z-nav,40)] font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-[0.16em] leading-[1.4] bg-muted-foreground text-background text-right pointer-events-none px-3 py-2"
       style={{
         bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 24px)",
         right: "calc(var(--sf-frame-offset-x, 0px) + 24px)",
+        // Top-left corner notch — mirrors the nav cubes' top-right notch
+        // (NAV_NOTCH_PX = 8), so the panel reads as part of the same angled-
+        // label family. TL cut on a BR-anchored panel points diagonally
+        // toward the nav in the opposite corner.
+        clipPath: "polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px)",
       }}
     >
       <div>CULTURE DIVISION</div>
-      <div className="text-muted-foreground/55">SIGNALFRAME SYSTEM</div>
+      <div>SIGNALFRAME SYSTEM</div>
     </div>
   );
 }
