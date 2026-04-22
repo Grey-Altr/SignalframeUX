@@ -30,8 +30,8 @@ export function CdCornerPanel() {
         clipPath: "polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px)",
       }}
     >
-      <div>CULTURE DIVISION</div>
-      <div>SIGNALFRAME SYSTEM</div>
+      <div className="text-black">CULTURE DIVISION</div>
+      <div className="text-[var(--sfx-yellow)]">SIGNALFRAME SYSTEM</div>
     </div>
   );
 }
