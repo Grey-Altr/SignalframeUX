@@ -640,15 +640,19 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   opacity: 1;
 }
 
-/* ── Nav page-load construct (homepage entry sequence) ──────────
+/* ── Nav page-load entrance (homepage entry sequence) ───────────
    NavRevealMount sets body[data-nav-intro="true"] on homepage mount.
-   Each block (signal glyph, 6 cube links, 4 chrome utilities) steps in
-   with a clip-path scan-fill, bottom-up, staggered by its stack index.
-   Quantized with steps(3) for DU/TDR channel-switch cadence, not fade.
-   Start t=7.0s aligns with the existing hero char reveal / GLSL construct;
-   the last block lands ~8.6s, before the subtitle at ~9s, so total intro
-   length is unchanged. clip-path on the wrapper is composition-safe
-   vs the cube peel transforms driven by --sf-nav-morph.
+   Each block (signal glyph, 6 cube links, 6 chrome utilities) slides
+   in from the left, bottom-up, staggered by its stack index. Cadence
+   lives in the 120ms offset between blocks; each individual slide
+   uses ease-out-expo for a snappy arrival ("settles into place").
+   Start t=7.0s aligns with the existing hero char reveal / GLSL
+   construct; the last block lands ~8.8s, before the subtitle at ~9s,
+   so total intro length is unchanged.
+   The translate property composes with the cube peel transforms
+   driven by --sf-nav-morph (per CSS Transforms L2, translate is
+   applied before `transform`), so the existing morph chain is
+   untouched.
    ──────────────────────────────────────────────────────────────── */
 body[data-nav-intro="true"] [data-nav-glyph],
 body[data-nav-intro="true"] [data-nav-cube],
@@ -656,8 +660,9 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > * {
   --sf-nav-intro-start: 7s;
   --sf-nav-intro-step: 0.12s;
   --sf-nav-intro-dur: 0.36s;
-  clip-path: inset(0 100% 0 0);
-  animation: sf-nav-intro-construct var(--sf-nav-intro-dur) linear
+  translate: -72px 0;
+  opacity: 0;
+  animation: sf-nav-intro-slide var(--sf-nav-intro-dur) cubic-bezier(0.22, 1, 0.36, 1)
     calc(var(--sf-nav-intro-start) + var(--sf-nav-intro-index, 0) * var(--sf-nav-intro-step))
     both;
 }
@@ -676,11 +681,9 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(4) { --sf-nav-int
 body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(5) { --sf-nav-intro-index: 11; }
 body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-intro-index: 12; }
 
-@keyframes sf-nav-intro-construct {
-  0%, 32%   { clip-path: inset(0 100% 0 0); }
-  33%, 65%  { clip-path: inset(0 66% 0 0); }
-  66%, 99%  { clip-path: inset(0 33% 0 0); }
-  100%      { clip-path: inset(0 0% 0 0); }
+@keyframes sf-nav-intro-slide {
+  from { translate: -72px 0; opacity: 0; }
+  to   { translate: 0 0;     opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -688,7 +691,8 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-int
   body[data-nav-intro="true"] [data-nav-cube],
   body[data-nav-intro="true"] [data-sf-nav-chrome] > * {
     animation: none;
-    clip-path: none;
+    translate: 0 0;
+    opacity: 1;
   }
 }
 
