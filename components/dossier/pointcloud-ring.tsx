@@ -126,22 +126,31 @@ export function PointcloudRing({
 
     // Visibility gating stays on main thread — IO fires on the DOM element,
     // not the transferred OffscreenCanvas. Worker pauses its rAF on request.
+    // Combined gate: `ioVisible && !document.hidden` — IO catches scroll-offscreen,
+    // visibilitychange catches tab-switch / backgrounded tab (battery saver on mobile).
+    let ioVisible = false;
+    const syncVisibility = () => {
+      worker.postMessage({
+        type: "visibility",
+        visible: ioVisible && !document.hidden,
+      });
+    };
     const io = new IntersectionObserver(
       ([entry]) => {
-        worker.postMessage({
-          type: "visibility",
-          visible: entry.isIntersecting,
-        });
+        ioVisible = entry.isIntersecting;
+        syncVisibility();
       },
       { rootMargin: "200px" },
     );
     io.observe(canvas);
+    document.addEventListener("visibilitychange", syncVisibility);
 
     return () => {
       worker.terminate();
       themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       io.disconnect();
+      document.removeEventListener("visibilitychange", syncVisibility);
     };
     // Worker is a one-shot resource keyed to the initial prop snapshot;
     // transferControlToOffscreen is illegal to call twice, so we never

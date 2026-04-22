@@ -120,22 +120,31 @@ export function IrisCloud({
     };
     window.addEventListener("resize", resize);
 
+    // Combined gate: ioVisible && !document.hidden — IO catches scroll-offscreen,
+    // visibilitychange catches tab-switch / backgrounded tab (battery saver on mobile).
+    let ioVisible = false;
+    const syncVisibility = () => {
+      worker.postMessage({
+        type: "visibility",
+        visible: ioVisible && !document.hidden,
+      });
+    };
     const io = new IntersectionObserver(
       ([entry]) => {
-        worker.postMessage({
-          type: "visibility",
-          visible: entry.isIntersecting,
-        });
+        ioVisible = entry.isIntersecting;
+        syncVisibility();
       },
       { rootMargin: "200px" },
     );
     io.observe(canvas);
+    document.addEventListener("visibilitychange", syncVisibility);
 
     return () => {
       worker.terminate();
       themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       io.disconnect();
+      document.removeEventListener("visibilitychange", syncVisibility);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
