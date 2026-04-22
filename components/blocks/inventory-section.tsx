@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-core";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
 // API_DOCS no longer imported here — ComponentDetail looks it up internally
 // off entry.docId (see components/blocks/component-detail.tsx). Keeps /'s
@@ -64,10 +65,43 @@ export function InventorySection() {
   const [openIndex, setOpenIndex] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Stagger-reveal rows when the section enters viewport. `gsap.from` with
+  // embedded scrollTrigger handles all the edge cases: if the page loads
+  // already past the trigger, GSAP skips the animation and renders final
+  // state; if the user scrolls in normally, rows cascade from opacity:0 +
+  // x:-24 to their final position with a 40ms stagger (matches the
+  // page-animations.tsx batch cadence). start "top 70%" gives the eye time
+  // to parse the header before rows start cascading.
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const rows = section.querySelectorAll<HTMLElement>("[data-inventory-row]");
+      if (rows.length === 0) return;
+
+      gsap.from(rows, {
+        opacity: 0,
+        x: -24,
+        duration: 0.45,
+        stagger: 0.04,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 70%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    },
+    { scope: sectionRef, dependencies: [] },
+  );
 
   const handleOpen = useCallback((index: string, el: HTMLElement) => {
     triggerRef.current = el;
@@ -93,12 +127,12 @@ export function InventorySection() {
 
   return (
     <section
+      ref={sectionRef}
       id="inventory-section"
-      
-      className="w-full px-[var(--sfx-space-8)] md:px-[var(--sfx-space-12)] py-16 md:py-24"
+      className="w-full h-full flex flex-col px-[var(--sfx-space-8)] md:px-[var(--sfx-space-12)] py-16 md:py-24"
     >
       {/* Section header */}
-      <div className="mb-[var(--sfx-space-8)] flex items-baseline justify-between">
+      <div className="mb-[var(--sfx-space-6)] flex items-baseline justify-between">
         <span className="font-mono text-xs text-foreground/70 tracking-widest uppercase">
           — INVENTORY
         </span>
@@ -107,14 +141,18 @@ export function InventorySection() {
         </span>
       </div>
 
-      {/* Table */}
-      <div role="table" aria-label="Component inventory" className="w-full">
+      {/* Table — flex-1 to fill remaining viewport, rows distribute evenly */}
+      <div
+        role="table"
+        aria-label="Component inventory"
+        className="w-full flex-1 flex flex-col min-h-0"
+      >
         {/* Header row — aria-hidden, use plain spans (no role= on hidden children) */}
         <div
           role="row"
           className={cn(
             GRID_COLS,
-            "font-mono text-xs text-foreground/70 border-b border-foreground/20 pb-[var(--sfx-space-1)] mb-[var(--sfx-space-1)]"
+            "font-mono text-xs text-foreground/70 border-b border-foreground/20 pb-[var(--sfx-space-2)] mb-[var(--sfx-space-1)] shrink-0 items-end"
           )}
           aria-hidden="true"
         >
@@ -125,7 +163,7 @@ export function InventorySection() {
           <span>—</span>
         </div>
 
-        {/* Data rows */}
+        {/* Data rows — flex-1 each, distributes available height across 12 rows */}
         {INVENTORY_ROWS.map((row) => (
           <div
             key={row.index}
@@ -135,7 +173,8 @@ export function InventorySection() {
             className={cn(
               GRID_COLS,
               "font-mono text-sm",
-              "border-b border-foreground/10 py-[var(--sfx-space-1)] px-0",
+              "border-b border-foreground/10 px-0",
+              "flex-1 items-center min-h-0",
               "cursor-pointer transition-colors duration-[var(--sfx-duration-instant)]",
               "hover:bg-foreground hover:text-background",
               "focus:bg-foreground focus:text-background focus:outline-none"
@@ -169,20 +208,20 @@ export function InventorySection() {
             <span role="cell" data-pattern-tier className="text-foreground/70">
               {row.pattern}
             </span>
-              <span role="cell" aria-hidden="true">→</span>
-            </div>
-          ))}
-        </div>
+            <span role="cell" aria-hidden="true">→</span>
+          </div>
+        ))}
+      </div>
 
-        {/* Footer link */}
-        <div className="mt-[var(--sfx-space-6)]">
-          <Link
-            href="/inventory"
-            className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
-          >
-            → /inventory
-          </Link>
-        </div>
+      {/* Footer link */}
+      <div className="mt-[var(--sfx-space-4)] shrink-0">
+        <Link
+          href="/inventory"
+          className="font-mono text-sm text-foreground/70 hover:text-foreground transition-colors duration-[var(--sfx-duration-instant)]"
+        >
+          → /inventory
+        </Link>
+      </div>
 
       {/* Fixed portal for ComponentDetail */}
       {mounted &&
