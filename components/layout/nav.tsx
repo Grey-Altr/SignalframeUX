@@ -668,7 +668,7 @@ export function Nav() {
           </div>
 
           {/* Corner badge + utility controls cluster */}
-          <div className="flex items-center gap-[var(--sfx-nav-chrome-gap)]">
+          <div data-sf-nav-chrome="" className="flex items-center gap-[var(--sfx-nav-chrome-gap)]">
             <ColorCycleFrame className="hidden sm:inline-flex" style={{ marginTop: 0, overflow: "visible", verticalAlign: "baseline" }}>
               <Link
                 href="/"

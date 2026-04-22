@@ -640,6 +640,56 @@ body[data-nav-visible="true"] .sf-nav-hidden {
   opacity: 1;
 }
 
+/* ── Nav page-load construct (homepage entry sequence) ──────────
+   NavRevealMount sets body[data-nav-intro="true"] on homepage mount.
+   Each block (signal glyph, 6 cube links, 4 chrome utilities) steps in
+   with a clip-path scan-fill, bottom-up, staggered by its stack index.
+   Quantized with steps(3) for DU/TDR channel-switch cadence, not fade.
+   Start t=7.0s aligns with the existing hero char reveal / GLSL construct;
+   the last block lands ~8.6s, before the subtitle at ~9s, so total intro
+   length is unchanged. clip-path on the wrapper is composition-safe
+   vs the cube peel transforms driven by --sf-nav-morph.
+   ──────────────────────────────────────────────────────────────── */
+body[data-nav-intro="true"] [data-nav-glyph],
+body[data-nav-intro="true"] [data-nav-cube],
+body[data-nav-intro="true"] [data-sf-nav-chrome] > * {
+  --sf-nav-intro-start: 7s;
+  --sf-nav-intro-step: 0.12s;
+  --sf-nav-intro-dur: 0.36s;
+  clip-path: inset(0 100% 0 0);
+  animation: sf-nav-intro-construct var(--sf-nav-intro-dur) linear
+    calc(var(--sf-nav-intro-start) + var(--sf-nav-intro-index, 0) * var(--sf-nav-intro-step))
+    both;
+}
+
+body[data-nav-intro="true"] [data-nav-glyph] { --sf-nav-intro-index: 0; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="1"] { --sf-nav-intro-index: 1; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="2"] { --sf-nav-intro-index: 2; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="3"] { --sf-nav-intro-index: 3; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="4"] { --sf-nav-intro-index: 4; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="5"] { --sf-nav-intro-index: 5; }
+body[data-nav-intro="true"] [data-nav-cube][data-cube-index="6"] { --sf-nav-intro-index: 6; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(1) { --sf-nav-intro-index: 7; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(2) { --sf-nav-intro-index: 8; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(3) { --sf-nav-intro-index: 9; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(4) { --sf-nav-intro-index: 10; }
+
+@keyframes sf-nav-intro-construct {
+  0%, 32%   { clip-path: inset(0 100% 0 0); }
+  33%, 65%  { clip-path: inset(0 66% 0 0); }
+  66%, 99%  { clip-path: inset(0 33% 0 0); }
+  100%      { clip-path: inset(0 0% 0 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-nav-intro="true"] [data-nav-glyph],
+  body[data-nav-intro="true"] [data-nav-cube],
+  body[data-nav-intro="true"] [data-sf-nav-chrome] > * {
+    animation: none;
+    clip-path: none;
+  }
+}
+
 .sf-nav-roll-up {
   animation: sf-nav-roll-up 0.6s var(--sfx-ease-default) 3.5s both;
   transform-origin: top;
