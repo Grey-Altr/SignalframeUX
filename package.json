@@ -46,7 +46,14 @@
     "CHANGELOG.md",
     "MIGRATION.md"
   ],
-  "sideEffects": true,
+  "sideEffects": [
+    "**/*.css",
+    "./lib/gsap-core.ts",
+    "./lib/gsap-draw.ts",
+    "./lib/gsap-flip.ts",
+    "./lib/gsap-plugins.ts",
+    "./lib/gsap-split.ts"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
