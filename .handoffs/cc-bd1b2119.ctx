@@ -1,0 +1,7 @@
+r=audit
+n=Resume lockdown audit at Section 6 (animation/signal primitives, 44 entries) — start with signal-layer canvases batch
+ws=AUDIT-VERDICTS.md sections 4+5 complete; resume pointer at Section 6
+b=none
+msg=
+kb=
+kh=
