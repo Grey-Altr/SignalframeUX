@@ -5,6 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CommandPaletteLazy as CommandPalette } from "@/components/layout/command-palette-lazy";
 import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
+import { useLenisInstance } from "@/components/layout/lenis-provider";
+import {
+  getSignalOverlayOpen,
+  subscribeSignalOverlay,
+  toggleSignalOverlayOpen,
+} from "@/lib/signal-overlay-store";
 
 const IconInventory = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -90,6 +96,89 @@ const IconCommandGrid = (props: any) => (
 );
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
+
+/**
+ * SIGNAL overlay toggle living inside the nav chrome cluster (was previously
+ * a floating bottom-right "S" button in components/animation/signal-overlay.tsx).
+ * Drives the shared lib/signal-overlay-store so the panel + Shift+S shortcut
+ * stay in sync. Always visible — opening the panel is a deliberate action, so
+ * the affordance should be discoverable at all times.
+ */
+function NavSignalToggle() {
+  const [isOpen, setIsOpen] = useState<boolean>(getSignalOverlayOpen);
+  useEffect(() => subscribeSignalOverlay(setIsOpen), []);
+  return (
+    <button
+      type="button"
+      onClick={toggleSignalOverlayOpen}
+      aria-label={isOpen ? "Close SIGNAL overlay" : "Open SIGNAL overlay (or press Shift+S)"}
+      aria-expanded={isOpen}
+      aria-controls="signal-overlay-panel"
+      className={`flex items-center justify-center w-8 h-8 border-2 text-[11px] font-bold uppercase tracking-widest transition-colors duration-[var(--sfx-duration-fast)] ${
+        isOpen
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-muted-foreground bg-transparent text-muted-foreground hover:text-primary hover:border-primary"
+      }`}
+    >
+      S
+    </button>
+  );
+}
+
+/**
+ * Scroll-to-top control living inside the nav chrome cluster (was previously
+ * a floating bottom-right button). Stays in-flow so the row doesn't reflow on
+ * first scroll; opacity + pointer-events gate the affordance until the user
+ * has actually scrolled past 1 viewport.
+ */
+function NavScrollToTop() {
+  const [visible, setVisible] = useState(false);
+  const visibleRef = useRef(false);
+  const lenis = useLenisInstance();
+
+  useEffect(() => {
+    let rafId = 0;
+    function onScroll() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const next = window.scrollY > window.innerHeight;
+        if (next !== visibleRef.current) {
+          visibleRef.current = next;
+          setVisible(next);
+        }
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return (
+    <button
+      type="button"
+      aria-label="Scroll to top"
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
+      onClick={() => {
+        if (lenis) lenis.scrollTo(0);
+        else window.scrollTo({ top: 0, behavior: "auto" });
+      }}
+      className="flex items-center justify-center w-8 h-8 border-2 border-muted-foreground bg-transparent text-muted-foreground text-[var(--text-md)] font-bold hover:text-primary hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
+      style={{
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? "auto" : "none",
+        transition:
+          "opacity var(--sfx-duration-normal) var(--sfx-ease-default), background-color var(--sfx-duration-fast) var(--sfx-ease-default), color var(--sfx-duration-fast) var(--sfx-ease-default), border-color var(--sfx-duration-fast) var(--sfx-ease-default)",
+      }}
+    >
+      ↑
+    </button>
+  );
+}
 
 const SCRAMBLE_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_/[]{}";
 const NAV_UNIT_PX = 32;
@@ -691,6 +780,8 @@ export function Nav() {
             </button>
             <DarkModeToggle />
             <BorderlessToggle />
+            <NavSignalToggle />
+            <NavScrollToTop />
           </div>
         </div>
 

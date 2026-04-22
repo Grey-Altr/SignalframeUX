@@ -673,6 +673,8 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(1) { --sf-nav-int
 body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(2) { --sf-nav-intro-index: 8; }
 body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(3) { --sf-nav-intro-index: 9; }
 body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(4) { --sf-nav-intro-index: 10; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(5) { --sf-nav-intro-index: 11; }
+body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-intro-index: 12; }
 
 @keyframes sf-nav-intro-construct {
   0%, 32%   { clip-path: inset(0 100% 0 0); }

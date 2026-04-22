@@ -26,6 +26,12 @@
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { SFSlider } from "@/components/sf/sf-slider";
+import {
+  getSignalOverlayOpen,
+  setSignalOverlayOpen,
+  subscribeSignalOverlay,
+  toggleSignalOverlayOpen,
+} from "@/lib/signal-overlay-store";
 
 // ---------------------------------------------------------------------------
 // Default values
@@ -103,12 +109,16 @@ function SliderControl({
  * <SignalOverlayLazy />
  */
 export function SignalOverlay() {
-  const [isOpen, setIsOpen] = useState(false);
+  // Open state is owned by lib/signal-overlay-store so the nav chrome toggle
+  // (components/layout/nav.tsx NavSignalToggle) drives the same boolean.
+  const [isOpen, setIsOpenState] = useState<boolean>(getSignalOverlayOpen);
   const [intensity, setIntensity] = useState(DEFAULTS.intensity);
   const [speed, setSpeed] = useState(DEFAULTS.speed);
   const [accent, setAccent] = useState(DEFAULTS.accent);
   const [reducedMotion, setReducedMotion] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => subscribeSignalOverlay(setIsOpenState), []);
 
   // Detect reduced-motion preference on mount
   useEffect(() => {
@@ -124,7 +134,7 @@ export function SignalOverlay() {
     function onKeyDown(e: KeyboardEvent) {
       if (e.shiftKey && e.key === "S") {
         e.preventDefault();
-        setIsOpen((v) => !v);
+        toggleSignalOverlayOpen();
       }
     }
     document.addEventListener("keydown", onKeyDown);
@@ -160,31 +170,9 @@ export function SignalOverlay() {
 
   return (
     <>
-      {/* Toggle button — always visible at bottom-right, scales with --sf-canvas-scale */}
-      <button
-        onClick={() => setIsOpen((v) => !v)}
-        aria-label={isOpen ? "Close SIGNAL overlay" : "Open SIGNAL overlay (or press Shift+S)"}
-        aria-expanded={isOpen}
-        aria-controls="signal-overlay-panel"
-        className={cn(
-          "signal-overlay-toggle",
-          "fixed origin-bottom-right z-[calc(var(--z-scroll-top,9000)+10)]",
-          "w-8 h-8 border-2 border-foreground",
-          "bg-background text-foreground",
-          "text-[9px] font-bold uppercase tracking-widest",
-          "flex items-center justify-center",
-          "hover:bg-foreground hover:text-background",
-          "transition-colors duration-[var(--sfx-duration-fast)]",
-          isOpen && "bg-foreground text-background"
-        )}
-        style={{
-          bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 16px * var(--sf-canvas-scale, 1))",
-          right: "calc(var(--sf-frame-offset-x, 0px) + 16px * var(--sf-canvas-scale, 1))",
-          transform: "scale(var(--sf-canvas-scale, 1))",
-        }}
-      >
-        S
-      </button>
+      {/* Toggle now lives in the nav chrome row (NavSignalToggle) — no
+          standalone floating button here. Keyboard (Shift+S) and the nav
+          button both drive the shared lib/signal-overlay-store. */}
 
       {/* Panel */}
       {isOpen && (
@@ -194,14 +182,16 @@ export function SignalOverlay() {
           role="dialog"
           aria-label="SIGNAL parameter controls"
           className={cn(
-            "fixed origin-bottom-right z-[calc(var(--z-scroll-top,9000)+10)]",
+            "fixed origin-bottom-left z-[calc(var(--z-scroll-top,9000)+10)]",
             "w-64",
             "bg-background/95 backdrop-blur-sm",
             "border-2 border-foreground"
           )}
           style={{
-            bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 64px * var(--sf-canvas-scale, 1))",
-            right: "calc(var(--sf-frame-offset-x, 0px) + 16px * var(--sf-canvas-scale, 1))",
+            // Anchor above the nav chrome row in the bottom-left corner so the
+            // panel lands adjacent to its toggle button inside the nav.
+            bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 72px * var(--sf-canvas-scale, 1))",
+            left: "calc(var(--sf-frame-offset-x, 0px) + 24px * var(--sf-canvas-scale, 1))",
             transform: "scale(var(--sf-canvas-scale, 1))",
           }}
         >
@@ -211,7 +201,7 @@ export function SignalOverlay() {
               SIGNAL//
             </span>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => setSignalOverlayOpen(false)}
               aria-label="Close SIGNAL overlay"
               className="text-[11px] font-bold text-foreground/60 hover:text-foreground transition-colors duration-[var(--sfx-duration-fast)] leading-none"
             >

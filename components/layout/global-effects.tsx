@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap-core";
-import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { playTone } from "@/lib/audio-feedback";
 import { triggerHaptic } from "@/lib/haptic-feedback";
 import { VHSOverlay } from "@/components/animation/vhs-overlay";
@@ -159,65 +158,9 @@ function ScrollProgress() {
   );
 }
 
-/** Scroll-to-top button — appears after scrolling past 1 viewport */
-function ScrollToTop() {
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const [visible, setVisible] = useState(false);
-  const visibleRef = useRef(false);
-  const lenis = useLenisInstance();
-
-  useEffect(() => {
-    let rafId = 0;
-    function onScroll() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        const next = window.scrollY > window.innerHeight;
-        if (next !== visibleRef.current) {
-          visibleRef.current = next;
-          setVisible(next);
-        }
-      });
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
-
-  return (
-    <button
-      ref={btnRef}
-      tabIndex={visible ? 0 : -1}
-      aria-hidden={!visible}
-      onClick={() => {
-        if (lenis) {
-          lenis.scrollTo(0);
-        } else {
-          window.scrollTo({ top: 0, behavior: "auto" });
-        }
-      }}
-      className="fixed origin-bottom-right z-[var(--z-scroll-top)] w-8 h-8 border-2 border-muted-foreground bg-transparent text-muted-foreground flex items-center justify-center text-[var(--text-md)] font-bold hover:text-primary hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
-      style={{
-        bottom: "calc(var(--sf-frame-bottom-gap, 0px) + 24px * var(--sf-canvas-scale, 1))",
-        right: "calc(var(--sf-frame-offset-x, 0px) + 24px * var(--sf-canvas-scale, 1))",
-        opacity: visible ? 1 : 0,
-        pointerEvents: visible ? "auto" : "none",
-        transform: visible
-          ? "scale(var(--sf-canvas-scale, 1))"
-          : "translateY(12px) scale(var(--sf-canvas-scale, 1))",
-        transition:
-          "opacity var(--sfx-duration-normal) var(--sfx-ease-default), transform var(--sfx-duration-normal) var(--sfx-ease-default), background-color var(--sfx-duration-fast) var(--sfx-ease-default), color var(--sfx-duration-fast) var(--sfx-ease-default)",
-      }}
-      aria-label="Scroll to top"
-    >
-      ↑
-    </button>
-  );
-}
+// Scroll-to-top moved into the nav chrome cluster (components/layout/nav.tsx
+// NavScrollToTop). Lives inline next to the dark-mode/borderless toggles so the
+// bottom-right no longer owns a stray floating button.
 
 /**
  * Idle standby overlay — grain drift + OKLCH color pulse after 8s of no interaction.
@@ -360,7 +303,6 @@ export function GlobalEffects() {
       <VHSOverlay />
       <CanvasCursor />
       <ScrollProgress />
-      <ScrollToTop />
       <InteractionFeedback />
       <SignalOverlayLazy />
       <SignalIntensityBridge />
