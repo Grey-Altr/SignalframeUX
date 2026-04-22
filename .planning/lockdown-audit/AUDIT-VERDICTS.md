@@ -1,8 +1,8 @@
 # LOCKDOWN AUDIT · COMPONENT VERDICTS
 
-**Status:** in progress — Section 6 complete; resume at Shipped redline into main LOCKDOWN.md.
+**Status:** complete — all 6 sections walked; §6 rules (R-61, R-62) redlined into LOCKDOWN.md v0.1.1 (task #7 ✓).
 **Date begun:** 2026-04-21 (session 1)
-**Last worked:** 2026-04-22 (session 3)
+**Last worked:** 2026-04-22 (session 4 — redline close)
 **Source:** INDEX.md walk — one-by-one verdict per component.
 
 ---
@@ -260,12 +260,20 @@
 
 ## Shipped commits (this audit)
 
+**During audit (sessions 1–3, seal = `a5db013`):**
 - `4866bdb` — Fix: THESIS empty — portal PinnedSection out of ScaleCanvas transform
 - `35aa254` — Fix: HUD section detector + SignalCanvas render loop
 - `61eb02d` — Feat: INVENTORY section fills viewport + stagger-reveal animation
 - `8cdb24c` — Feat: SIGNAL section FRAME overlay — headline + data row
 - `52fafbd` — Refine: APIExplorer density + tabular column alignment
 - `a5db013` — Fix: borderless mode overriding inline swatch backgrounds
+
+**Post-seal signal-layer shipped (session 4, new seal = `158ef6f`):**
+- `b437812` — Fix: Borderless-first — zero ring/outline + codify R-60
+- `c5b2630` — Fix: InstrumentHUD rAF loop — eliminate per-frame forced reflows → new rule R-61 in LOCKDOWN §6.5
+- `b25b2dc` — Perf: Tier-gate DPR + mobile floor + tab-hidden pause (SignalCanvas) → R-62 in LOCKDOWN §6.6
+- `430195e` — Perf: Pause pointcloud/iris workers on tab-hidden (battery saver) → R-62-d/e in LOCKDOWN §6.6
+- `158ef6f` — Perf: Tier-gate FBM octaves in GLSLHero + ProofShader → R-62-c in LOCKDOWN §6.6
 
 ## Post-v0.1 queue
 
@@ -284,10 +292,12 @@
 
 ## Resume protocol
 
-1. Open INDEX.md alongside this file.
-2. Section 6 is complete. Remaining audit work: redline verdicts into main LOCKDOWN.md (task #7).
-3. Dev server running on :3200 pre-session — relaunch if hot-reload state is stale (`kill <PID> && pnpm dev`).
-4. Verification-engineering notes for re-doing Section 6 if needed:
+**AUDIT COMPLETE as of 2026-04-22 session 4.** No resume needed. Next work is post-v0.1 queue items (#10–#19 above); each is independently actionable.
+
+Archive notes for reference:
+1. Open INDEX.md alongside this file if revisiting.
+2. Dev server running on :3200 pre-session — relaunch if hot-reload state is stale (`kill <PID> && pnpm dev`).
+3. Verification-engineering notes for re-doing Section 6 if needed:
    - Shared-singleton canvases: probe `window.__sf_signal_canvas.scenes.size` + `rafId` increment across scroll. Cannot be detected via `document.querySelectorAll('canvas')` alone (scissor-split multiplexing).
    - OffscreenCanvas worker canvases: main-thread `getContext` throws `InvalidStateError` after `transferControlToOffscreen`. Guard probes with try/catch and treat the throw as the positive signal.
    - Preview-card mock functions in `components-explorer.tsx` can fake a "live consumer" without importing the real component. Verify by reading the preview function body, not just grepping for the component name in that file.

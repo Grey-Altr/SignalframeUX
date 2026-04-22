@@ -1,9 +1,9 @@
 # SIGNALFRAMEUX LOCKDOWN
 
-**Version:** v0.1 (post-audit redline — 2026-04-22)
-**Sealed from:** `main` @ `a5db013` (post-audit; includes 6 shipped fixes — see AUDIT-VERDICTS.md)
+**Version:** v0.1.1 (post-audit redline — 2026-04-22, §6 rules codified)
+**Sealed from:** `main` @ `158ef6f` (post-audit + 5 signal-layer perf fixes; 11 shipped fixes total — see AUDIT-VERDICTS.md)
 **Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21)
-**Status:** Lockdown audit complete. v0 drifts redlined below. Remaining v0.1 work is execution-queue items; no new spec changes.
+**Status:** Lockdown audit complete. §6 shipped-code rules codified below (R-61, R-62). v0 drifts redlined. Remaining v0.1 work is execution-queue items; no new spec changes.
 
 > **Rule of the lockdown:** every rule below is extracted from shipped code (cited).
 > Nothing is aspirational. Nothing is negotiable without a user DECIDE callback.
@@ -227,10 +227,31 @@ Pointer (desktop), touch-drag (mobile), device-tilt γ ±60° (iOS) all drive th
 - Opacity driven in same rAF tick, not via GSAP tween (pitfall 4 avoidance)
 - Single rAF loop per surface
 
-### 6.5 · Parametric parity
+### 6.5 · rAF no-layout-reads (R-61)
+Every rAF loop is **read-only against layout/style**. Reading `getBoundingClientRect()`, `offsetWidth/Height`, `scrollTop`, or computed styles inside the tick forces synchronous reflow — the fan-spin regression pattern (fixed 2026-04-22 via `c5b2630` InstrumentHUD).
+
+- rAF body touches state + DOM writes only; never reads geometry
+- Cache geometry via `ResizeObserver` (size) + `MutationObserver` (DOM-shape) + one-shot reads on mount
+- If a per-frame geometry read is truly required, debounce to a secondary observer tick, never the rAF body
+- Reviewer rule: any `rect/offset/scroll*` access inside `requestAnimationFrame` is rejected unless accompanied by a JSDoc comment explaining why caching is impossible
+*Source: `InstrumentHUD` c5b2630; `feedback_raf_loop_no_layout_reads.md`*
+
+### 6.6 · Quality-tier conformance (R-62)
+Every signal surface MUST consume `getQualityTier()` and step down DPR + per-frame iteration counts. Mobile/low-end parity is a ship blocker — a surface that renders at full quality on a mid-range phone is a violation, not a feature.
+
+| # | Rule | Source |
+|---|---|---|
+| **R-62-a** | Surface reads `getQualityTier()` once on mount, stores the tier, and branches all DPR / octave / count parameters on it | `SignalCanvas` b25b2dc; `GLSLHero`/`ProofShader` 158ef6f |
+| **R-62-b** | Mobile gets a hard DPR floor (≤ 1.5) regardless of `devicePixelRatio` | `SignalCanvas` b25b2dc |
+| **R-62-c** | Shader iteration counts (FBM octaves, loop depth, particle counts) step down with tier | `GLSLHero` + `ProofShader` 158ef6f |
+| **R-62-d** | Every rAF loop + worker pauses on `document.visibilityState === "hidden"` and resumes on visible (battery-saver mandatory) | `SignalCanvas` b25b2dc; pointcloud/iris workers 430195e |
+| **R-62-e** | Workerized surfaces (pixel-sort pair) send `pause`/`resume` messages; workers gate their own rAF on that flag | `pointcloud-ring-worker.ts` / `iris-cloud-worker.ts` 430195e |
+*Source: `feedback_consume_quality_tier.md`; shipped commits b25b2dc / 430195e / 158ef6f*
+
+### 6.7 · Parametric parity
 New signal surfaces MUST expose the T1-c parametric contract (`count, radius, trail, pixelSort, sortThreshold, groups`) or explain in a JSDoc comment why not.
 
-### 6.6 · Section registration
+### 6.8 · Section registration
 Signal layer scope respects section boundaries. No signal effect bleeds past its section's `bgShift` context.
 
 ---
@@ -387,6 +408,13 @@ Branches B (cdb-v3-dossier), C (cdb-v2-broadcast = subset), D (aesthetic-deep-di
 - ~~SignalCanvas render loop silently dead~~ — **fixed** (`35aa254`): switched from `gsap.ticker.add` to plain `rAF`. §2.3.
 - ~~Borderless mode overriding inline swatch backgrounds~~ — **fixed** (`a5db013`). §3.16.
 - ~~/builds route not visually audited~~ — partial audit complete: post-processing chain via `SFSignalComposer` verified; trademark 6.a-f coverage in AUDIT-VERDICTS.md §6.
+
+**Resolved post-seal (shipped-code → rules codified this redline):**
+- ~~Borderless-first not codified as a spec rule~~ — **shipped** (`b437812`): zero ring/outline defaults now R-60 at §2.5.
+- ~~InstrumentHUD rAF forced reflows~~ — **fixed** (`c5b2630`): per-frame `getBoundingClientRect` loop eliminated; geometry cached via ResizeObserver + MutationObserver. New rule **R-61** codified at §6.5.
+- ~~SignalCanvas DPR unbounded on mobile / no tab-hidden pause~~ — **fixed** (`b25b2dc`): tier-gated DPR + mobile floor (≤1.5) + visibility pause. Part of **R-62** at §6.6.
+- ~~Pointcloud/iris workers running on hidden tabs~~ — **fixed** (`430195e`): workers pause/resume on visibility. Part of **R-62** at §6.6.
+- ~~FBM octaves not tier-gated in GLSLHero + ProofShader~~ — **fixed** (`158ef6f`): shader iteration counts step down with `getQualityTier()`. Part of **R-62** at §6.6.
 
 **Open (carry to v0.2):**
 - **Catalog count drift** — 36/48/53/54/158/49 vary across pages. Reconciliation is an execution item. (tracked in §14 #4)
