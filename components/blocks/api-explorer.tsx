@@ -200,7 +200,7 @@ export function APIExplorer() {
           <div key={group.key} data-api-surface-group={group.key}>
             <div
               data-api-surface-group-head
-              className="flex items-baseline justify-between px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-12)] pb-[var(--sfx-space-4)] text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
+              className="flex items-baseline justify-between px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-6)] pb-[var(--sfx-space-2)] text-[var(--text-xs)] uppercase tracking-[0.25em] text-muted-foreground border-b border-foreground/15"
             >
               <span className="text-foreground">
                 {group.label} <span className="text-muted-foreground">{"//"}</span> {group.entries.length} SURFACES
@@ -229,7 +229,7 @@ export function APIExplorer() {
                         aria-expanded={isActive}
                         onClick={() => handleEntryClick(entry.id)}
                         onKeyDown={(e) => handleEntryKeyDown(e, entry.id)}
-                        className={`group w-full text-left px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-3)] flex items-baseline gap-[var(--sfx-space-6)] border-l-[3px] transition-colors outline-none ${
+                        className={`group w-full text-left px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-1)] grid grid-cols-[16px_1fr_6ch_9ch_8ch] md:grid-cols-[16px_1fr_8ch_10ch_9ch] items-baseline gap-[var(--sfx-space-4)] border-l-[3px] transition-colors outline-none ${
                           isActive
                             ? "border-l-primary bg-foreground/[0.06]"
                             : "border-l-transparent hover:bg-foreground/[0.04] focus-visible:bg-foreground/[0.08] focus-visible:border-l-foreground/40"
@@ -237,21 +237,21 @@ export function APIExplorer() {
                       >
                         <span
                           aria-hidden="true"
-                          className="w-4 shrink-0 text-[var(--text-xs)] tabular-nums text-muted-foreground"
+                          className="text-[var(--text-xs)] tabular-nums text-muted-foreground"
                         >
                           {isActive ? "◉" : "○"}
                         </span>
-                        <span className="flex-1 text-foreground tracking-tight text-[var(--text-sm)] break-all">
+                        <span className="min-w-0 text-foreground tracking-tight text-[var(--text-sm)] truncate">
                           {doc.importName}
                           <span className="text-muted-foreground">{formatSignature(doc)}</span>
                         </span>
-                        <span className="hidden sm:inline text-[var(--text-xs)] tabular-nums text-muted-foreground">
+                        <span className="text-[var(--text-xs)] tabular-nums text-muted-foreground text-right">
                           {doc.version}
                         </span>
-                        <span className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+                        <span className="text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground text-right">
                           [{doc.layer}]
                         </span>
-                        <span className="hidden md:inline text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+                        <span className="hidden md:inline text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground text-right">
                           {doc.status}
                         </span>
                       </button>
