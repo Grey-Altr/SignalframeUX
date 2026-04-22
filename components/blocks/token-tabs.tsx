@@ -132,13 +132,22 @@ const TYPE_SCALE = [
   { name: "CODE", sample: "const sfux = createSignalframeUX()", font: "var(--font-mono)", size: 13, weight: 400, meta: "JETBRAINS MONO · 13PX · 400", code: true },
 ];
 
-/* ── MOTION DATA — values match globals.css motion tokens ── */
+/* ── MOTION DATA — values extracted from app/globals.css (source of truth).
+   Durations cover the full --sfx-duration-* range (INSTANT→GLACIAL).
+   Easings are named distinctly per LOCKDOWN §5.2 but currently collapse to
+   the same cubic-bezier in globals.css; specimen renders what ships, not
+   what's aspirational. Ease distinctness is tracked as a separate queue
+   item — do not fake distinct curves here.
+   ── */
 const MOTION_TOKENS = [
-  { name: "EASE-DEFAULT", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "200ms", css: "var(--ease-default) \u00b7 200ms" },
-  { name: "EASE-HOVER", easing: "cubic-bezier(0.34, 1.56, 0.64, 1)", duration: "200ms", css: "var(--ease-hover) \u00b7 200ms" },
-  { name: "DURATION-FAST", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "100ms", css: "var(--ease-default) \u00b7 100ms" },
-  { name: "DURATION-NORMAL", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "200ms", css: "var(--ease-default) \u00b7 200ms" },
-  { name: "DURATION-SLOW", easing: "cubic-bezier(0.2, 0, 0, 1)", duration: "400ms", css: "var(--ease-default) \u00b7 400ms" },
+  { name: "DURATION-INSTANT",  easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "34ms",  css: "var(--sfx-duration-instant) \u00b7 var(--sfx-ease-default)" },
+  { name: "DURATION-FAST",     easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "100ms", css: "var(--sfx-duration-fast) \u00b7 var(--sfx-ease-default)" },
+  { name: "DURATION-NORMAL",   easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "200ms", css: "var(--sfx-duration-normal) \u00b7 var(--sfx-ease-default)" },
+  { name: "DURATION-SLOW",     easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "400ms", css: "var(--sfx-duration-slow) \u00b7 var(--sfx-ease-default)" },
+  { name: "DURATION-GLACIAL",  easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "600ms", css: "var(--sfx-duration-glacial) \u00b7 var(--sfx-ease-default)" },
+  { name: "EASE-DEFAULT",      easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "200ms", css: "var(--sfx-ease-default) \u00b7 200ms" },
+  { name: "EASE-HOVER",        easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "200ms", css: "var(--sfx-ease-hover) \u00b7 200ms" },
+  { name: "EASE-SPRING",       easing: "cubic-bezier(0, 0, 0.2, 1)", duration: "200ms", css: "var(--sfx-ease-spring) \u00b7 200ms" },
 ];
 
 // Easing is accessed directly from MOTION_TOKENS[i].easing in the render loop

@@ -287,6 +287,8 @@
 - Task #17 — INDEX.md Section 6 header "44 — grouped by role" doesn't match file count (45) or slot count (39). Resolve by stating both figures.
 - Task #18 — Section 6 orphan ratio 17/39 ≈ 44%. v0.2 decision: promote orphans into live inventory demos (replace mock previews with real components) or archive them under `components/animation/_reference/`. Current v0.1 policy keeps them in-place.
 - Task #19 — `PreviewCircuitDivider` and `PreviewScrambleText` in `components-explorer.tsx` render mock static HTML while their registry entries ship import-the-real-component code samples. Either wire the real component into the preview or remove the registry entry.
+- Task #20 (surfaced during #12 reconciliation) — **Motion easing collapse.** `--sfx-ease-default` / `--sfx-ease-hover` / `--sfx-ease-spring` are all `cubic-bezier(0, 0, 0.2, 1)` in `app/globals.css:247-249` — named distinctly per LOCKDOWN §5.2 but implementation-identical. Either differentiate (proposed: hover = overshoot spring `cubic-bezier(0.34, 1.56, 0.64, 1)`; spring = stronger overshoot `cubic-bezier(0.5, 1.8, 0.4, 1)`) or strip the named aliases from LOCKDOWN §5.2 and ship one ease. Specimen currently shows three identical curves — honest but uninformative.
+- Task #21 (surfaced during #12 reconciliation) — **Motion token prefix drift.** LOCKDOWN §5.1/§5.2 + CLAUDE.md reference `--duration-*` / `--ease-*` (no `--sfx-` prefix); shipped globals.css uses `--sfx-duration-*` / `--sfx-ease-*`. The rest of the token system uses `--sfx-*` consistently. Reconcile by either updating LOCKDOWN+CLAUDE.md to the `--sfx-*` prefix or adding non-prefixed aliases in globals.css (one-line `--ease-default: var(--sfx-ease-default);` block).
 
 ---
 
