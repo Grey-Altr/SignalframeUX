@@ -74,37 +74,39 @@ Scroll `/` top-to-bottom, or jump via hash:
 | LogoMark | `SF//UX` brand mark | [logo-mark.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/logo-mark.tsx) |
 | DarkModeToggle | theme toggle cube | [dark-mode-toggle.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/dark-mode-toggle.tsx) |
 | BorderlessToggle | borderless mode toggle | [borderless-toggle.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/borderless-toggle.tsx) |
-| BackToTop | `↑` scroll-to-top | [back-to-top.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/back-to-top.tsx) |
+| BackToTop | `▲ BACK TO TOP` footer button (inline, bottom-of-page) | [back-to-top.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/back-to-top.tsx) |
 | CopyButton | `[COPY]` affordance | [copy-button.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/copy-button.tsx) |
 | CommandPalette | ⌘K command palette | [command-palette.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/command-palette.tsx) |
 | Footer | page footer | [footer.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/footer.tsx) |
 | ScaleCanvas | aspect-lock wrapper (--sf-canvas-scale) | [scale-canvas.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/scale-canvas.tsx) |
 | LenisProvider | smooth scroll provider | [lenis-provider.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/lenis-provider.tsx) |
 | PageAnimations | GSAP page-level timeline scan | [page-animations.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/page-animations.tsx) |
-| GlobalEffects | cursor + overlay effects | [global-effects.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/global-effects.tsx) |
+| GlobalEffects | cursor + overlays + floating `↑` ScrollToTop (nested — distinct from footer BackToTop `▲`) | [global-effects.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/global-effects.tsx) |
 | SignalCanvas | full-page signal canvas host | [signal-canvas-lazy.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/signal-canvas-lazy.tsx) |
 | SignalframeConfig | provider wrapper | [signalframe-config.tsx](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/layout/signalframe-config.tsx) |
 
 ---
 
-## 5 · SF component library (53 surfaces, from barrel)
+## 5 · SF component library (49 unique / 53 files; 44 barrel + 9 non-barrel)
+
+> **Count reconciliation:** 49 unique components, 53 files (4 pairs carry a `-lazy.tsx` wrapper: Calendar, Drawer, Menubar, Toast). Barrel exports = 44 from `sf/index.ts`; 9 non-barrel files are intentionally excluded (cmdk bundle weight, toast imperative-API pattern, heavy Radix primitives).
 
 **How to view live:** navigate to `/inventory`, click any row → overlay opens with the component rendered + API. Or inspect specimen cards in the /inventory grid. Or read the API at `/reference`.
 
 ### Layout primitives (5)
 - [SFContainer](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-container.tsx) · [SFSection](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-section.tsx) · [SFStack](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-stack.tsx) · [SFGrid](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-grid.tsx) · [SFText](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-text.tsx)
 
-### Forms (11)
-- [SFButton](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-button.tsx) · [SFInput](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input.tsx) · [SFCheckbox](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-checkbox.tsx) · [SFRadioGroup](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-radio-group.tsx) · [SFSwitch](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-switch.tsx) · [SFSelect](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-select.tsx) · [SFTextarea](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-textarea.tsx) · [SFSlider](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-slider.tsx) · [SFToggle](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-toggle.tsx) · [SFInputGroup](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input-group.tsx) · [SFInputOTP](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input-otp.tsx)
+### Forms (12)
+- [SFButton](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-button.tsx) · [SFInput](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input.tsx) · [SFCheckbox](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-checkbox.tsx) · [SFRadioGroup](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-radio-group.tsx) · [SFSwitch](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-switch.tsx) · [SFSelect](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-select.tsx) · [SFTextarea](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-textarea.tsx) · [SFSlider](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-slider.tsx) · [SFToggle](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-toggle.tsx) · [SFInputGroup](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input-group.tsx) · [SFInputOTP](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-input-otp.tsx) · [SFCalendar](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-calendar.tsx) (non-barrel; [lazy](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-calendar-lazy.tsx))
 
-### Overlays (5)
-- [SFDialog](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-dialog.tsx) · [SFSheet](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-sheet.tsx) · [SFPopover](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-popover.tsx) · [SFDropdownMenu](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-dropdown-menu.tsx) · [SFHoverCard](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-hover-card.tsx)
+### Overlays (6)
+- [SFDialog](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-dialog.tsx) · [SFSheet](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-sheet.tsx) · [SFPopover](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-popover.tsx) · [SFDropdownMenu](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-dropdown-menu.tsx) · [SFHoverCard](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-hover-card.tsx) · [SFDrawer](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-drawer.tsx) (non-barrel; [lazy](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-drawer-lazy.tsx))
 
 ### Feedback (7)
 - [SFAlert](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-alert.tsx) · [SFAlertDialog](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-alert-dialog.tsx) · [SFProgress](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-progress.tsx) · [SFSkeleton](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-skeleton.tsx) · [SFEmptyState](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-empty-state.tsx) · [SFToast](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-toast.tsx) · [SFToaster](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-toast-lazy.tsx)
 
-### Navigation (6)
-- [SFTabs](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-tabs.tsx) · [SFBreadcrumb](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-breadcrumb.tsx) · [SFPagination](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-pagination.tsx) · [SFNavigationMenu](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-navigation-menu.tsx) · [SFAccordion](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-accordion.tsx) · [SFCollapsible](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-collapsible.tsx)
+### Navigation (7)
+- [SFTabs](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-tabs.tsx) · [SFBreadcrumb](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-breadcrumb.tsx) · [SFPagination](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-pagination.tsx) · [SFNavigationMenu](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-navigation-menu.tsx) · [SFAccordion](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-accordion.tsx) · [SFCollapsible](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-collapsible.tsx) · [SFMenubar](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-menubar.tsx) (non-barrel; [lazy](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-menubar-lazy.tsx))
 
 ### Data display (7)
 - [SFTable](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-table.tsx) · [SFCard](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-card.tsx) · [SFBadge](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-badge.tsx) · [SFAvatar](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-avatar.tsx) · [SFStatusDot](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-status-dot.tsx) · [SFTooltip](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-tooltip.tsx) · [SFScrollArea](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/sf/sf-scroll-area.tsx)
@@ -123,7 +125,9 @@ Scroll `/` top-to-bottom, or jump via hash:
 
 ---
 
-## 6 · Animation / signal primitives (44 — grouped by role)
+## 6 · Animation / signal primitives (39 slots / 45 files)
+
+> **Count reconciliation:** 39 conceptual slots (Signal canvases 7 · Staging/reveal 8 · Micro-interaction 6 · Overlays/atmosphere 8 · Particle/field 6 · Token viz / signal-motion 4). 45 files on disk — the residual 6 are `-lazy.tsx` wrappers + tier variants (e.g. ParticleFieldHQ is a tier variant of ParticleField, not a separate slot).
 
 ### Signal-layer canvases (the TRADEMARK pixel-sort family)
 - [GLSLHero](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/animation/glsl-hero.tsx) / [lazy](https://github.com/Grey-Altr/SignalframeUX/blob/b650bf5/components/animation/glsl-hero-lazy.tsx) — FBM noise (hero)
