@@ -111,6 +111,21 @@ Extended feedback slots — `success`, `warning`, `destructive` — may carry ch
 
 The color origin is a **49-step OKLCH matrix** (L × C × H axes). Categories: NEUTRAL (H:0), SIGNAL (H:350), FRAME (H:?), plus extended. Documented in `/system → OKLCH_MATRIX ( 49 )`. Adding a color = adding a matrix scale, not a new variable.
 
+### 2.5 · Borderless-first — R-60
+
+**Borderless is the canonical visual register.** Every component MUST render correctly with zero borders, zero Tailwind rings, and zero native outlines — the `data-borderless="true"` attribute is the default state of the system.
+
+| # | Rule | Source |
+|---|---|---|
+| **R-60-a** | `<html data-borderless="true">` is the SSR default; bordered mode is strictly opt-in via localStorage (`sf-borderless=false`) | `app/layout.tsx:101` + `theme-provider.tsx:13` |
+| **R-60-b** | The `BorderlessToggle` is a debug/editorial affordance, not a user-facing style preference. Default state = borderless | `components/layout/borderless-toggle.tsx` |
+| **R-60-c** | Every new component is judged against its borderless-mode render first. If it depends on border/ring/outline to communicate structure, it violates the register and must redesign | system-wide |
+| **R-60-d** | The global borderless rule (`[data-borderless="true"] *`) zeros `border-width`, `outline-width`, and all `--tw-ring-*` shadow vars. Components MUST NOT work around this by using inline borders, SVG strokes, or box-shadows as faux-borders | `app/globals.css` BORDERLESS MODE block |
+| **R-60-e** | Structural separation in borderless mode comes from **spacing, contrast, and surface color** — `var(--color-muted)` backs ex-bordered surfaces. Never fake a border with a 1px box-shadow | `app/globals.css` |
+| **R-60-f** | Trademarks T1/T2/T3/T4 (pixel-sort, glyph, cube, `//`) retain identity under the borderless rule — the cube tiles (T3) use `bg-[var(--sfx-cube-hue)]` flat fill, never a ring-as-outline | `nav.tsx` + R-60-d compliance |
+
+**Why:** borders are the cheapest way to communicate structure and the most common way design systems drift into generic dark-mode aesthetic (rejected per `feedback_aesthetic_direction.md`). Forcing borderless-first compliance forces every component to earn its structural clarity through spacing, contrast, and the trademark primitives — not through lazy outlines.
+
 ---
 
 ## 3 · TYPOGRAPHY

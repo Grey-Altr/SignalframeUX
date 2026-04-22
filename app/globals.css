@@ -2270,8 +2270,16 @@ html:not(.dark) .sf-mesh-gradient {
    BORDERLESS MODE
    ========================================================================== */
 
+/* Borderless is the canonical register (LOCKDOWN v0.1 §2.5). Zero every
+   edge affordance — native borders, Tailwind rings (box-shadow-based),
+   and native outlines. Components must render correctly in this register;
+   the bordered mode is an opt-in debug/editorial affordance. */
 [data-borderless="true"] * {
   border-width: 0 !important;
+  outline-width: 0 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-inset: 0 0 #0000 !important;
 }
 
 [data-borderless="true"] :where([class*="border"], [class*="ring"], .sf-border) {
