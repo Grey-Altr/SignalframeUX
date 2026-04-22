@@ -2275,7 +2275,7 @@ html:not(.dark) .sf-mesh-gradient {
 }
 
 [data-borderless="true"] :where([class*="border"], [class*="ring"], .sf-border) {
-  background-color: var(--color-muted) !important;
+  background-color: var(--color-muted);
 }
 
 [data-borderless="true"] .hero-cta-btn.secondary:hover,
