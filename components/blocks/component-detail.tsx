@@ -11,7 +11,11 @@ import {
   SFBadge,
 } from "@/components/sf";
 import type { ComponentRegistryEntry } from "@/lib/component-registry";
-import type { ComponentDoc } from "@/lib/api-docs";
+// API_DOCS (~95 kB parsed) loads with this lazy chunk rather than via every
+// caller's bundle. Callers used to import API_DOCS to look up the doc and
+// pass it in; now the lookup happens here so /'s InventorySection doesn't
+// drag the docs table into First-Load JS.
+import { API_DOCS } from "@/lib/api-docs";
 import { cn } from "@/lib/utils";
 
 // ── Sub-components ─────────────────────────────────────────────────────────
@@ -71,7 +75,6 @@ const TAB_TRIGGER_CLASSES =
 
 export interface ComponentDetailProps {
   entry: ComponentRegistryEntry;
-  doc: ComponentDoc | undefined;
   highlightedCode: string;
   onClose: () => void;
   triggerRef: React.RefObject<HTMLElement | null>;
@@ -79,11 +82,11 @@ export interface ComponentDetailProps {
 
 export function ComponentDetail({
   entry,
-  doc,
   highlightedCode,
   onClose,
   triggerRef,
 }: ComponentDetailProps) {
+  const doc = API_DOCS[entry.docId];
   const panelRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
 

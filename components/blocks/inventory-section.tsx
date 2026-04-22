@@ -5,7 +5,9 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
-import { API_DOCS } from "@/lib/api-docs";
+// API_DOCS no longer imported here — ComponentDetail looks it up internally
+// off entry.docId (see components/blocks/component-detail.tsx). Keeps /'s
+// First-Load JS lean; the doc table loads with the lazy detail chunk.
 import {
   HOMEPAGE_INVENTORY_INDICES,
   CODED_REGISTRY,
@@ -88,7 +90,6 @@ export function InventorySection() {
   }, [openIndex, handleClose]);
 
   const openEntry = openIndex ? COMPONENT_REGISTRY[openIndex] : null;
-  const openDoc = openEntry ? API_DOCS[openEntry.docId] : undefined;
 
   return (
     <section
@@ -207,7 +208,6 @@ export function InventorySection() {
             >
               <ComponentDetailLazy
                 entry={openEntry}
-                doc={openDoc}
                 highlightedCode=""
                 onClose={handleClose}
                 triggerRef={

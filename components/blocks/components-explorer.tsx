@@ -7,7 +7,7 @@ import { SFButton, SFInput, SFBadge } from "@/components/sf";
 import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
-import { API_DOCS } from "@/lib/api-docs";
+// API_DOCS lookup now lives inside ComponentDetail (lazy chunk).
 import type * as GsapFlipMod from "@/lib/gsap-flip";
 type FlipModule = typeof GsapFlipMod;
 
@@ -903,7 +903,6 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
       {openIndex && COMPONENT_REGISTRY[openIndex] && (
         <ComponentDetailLazy
           entry={COMPONENT_REGISTRY[openIndex]}
-          doc={API_DOCS[COMPONENT_REGISTRY[openIndex].docId]}
           highlightedCode={highlightedCodeMap[openIndex] ?? ""}
           onClose={() => setOpenIndex(null)}
           triggerRef={{ current: triggerRefs.current[openIndex] ?? null }}

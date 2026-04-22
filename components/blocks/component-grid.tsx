@@ -20,7 +20,7 @@ import {
 import { GRAIN_SVG } from "@/lib/grain";
 import { PreviewTabs } from "@/components/blocks/preview-tabs";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
-import { API_DOCS } from "@/lib/api-docs";
+// API_DOCS lookup moved inside ComponentDetail (lazy chunk).
 
 /* ── Lazy-load ComponentDetail to keep it out of the shared bundle ── */
 const ComponentDetailLazy = dynamic(
@@ -338,7 +338,6 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
       {openIndex && COMPONENT_REGISTRY[openIndex] && (
         <ComponentDetailLazy
           entry={COMPONENT_REGISTRY[openIndex]}
-          doc={API_DOCS[COMPONENT_REGISTRY[openIndex].docId]}
           highlightedCode={highlightedCodeMap[openIndex] ?? ''}
           onClose={() => setOpenIndex(null)}
           triggerRef={{ current: triggerRefs.current[openIndex] ?? null }}
