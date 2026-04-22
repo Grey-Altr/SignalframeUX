@@ -62,25 +62,34 @@ export function InstrumentHUD() {
     const els = primaryEls.length > 0
       ? primaryEls
       : document.querySelectorAll<HTMLElement>("[data-section]");
+    // Phase 30 observer: the callback receives only `entries` whose intersection
+    // crossed a threshold this tick, NOT all observed elements. Comparing only
+    // those entries meant the "winner" could be the section that just crossed
+    // 0.1 (e.g. INVENTORY entering) even when another section (PROOF) still had
+    // the higher ratio. Every callback tick, recompute visibility for all sections
+    // from getBoundingClientRect — correctness over microperf, since this only
+    // runs on threshold crossings.
     const observer = new IntersectionObserver(
-      (entries) => {
+      () => {
         if (window.scrollY < 10) {
           activeIndexRef.current = 0;
           setActiveIndex(0);
           return;
         }
-        let bestIndex = activeIndexRef.current;
+        const list = Array.from(els);
+        const vpH = window.innerHeight;
+        let bestIndex = -1;
         let bestRatio = 0;
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
-            const idx = Array.from(els).indexOf(entry.target as HTMLElement);
-            if (idx !== -1) {
-              bestIndex = idx;
-              bestRatio = entry.intersectionRatio;
-            }
+        list.forEach((el, idx) => {
+          const rect = el.getBoundingClientRect();
+          const visible = Math.max(0, Math.min(rect.bottom, vpH) - Math.max(rect.top, 0));
+          const ratio = rect.height > 0 ? visible / rect.height : 0;
+          if (ratio > bestRatio) {
+            bestIndex = idx;
+            bestRatio = ratio;
           }
         });
-        if (bestRatio > 0) {
+        if (bestIndex !== -1) {
           activeIndexRef.current = bestIndex;
           setActiveIndex(bestIndex);
         }

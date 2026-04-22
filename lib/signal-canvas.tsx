@@ -2,7 +2,6 @@
 
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { gsap } from "@/lib/gsap-core";
 
 // ---------------------------------------------------------------------------
 // Singleton key — mirrors use-scramble-text.ts HMR-safe pattern
@@ -26,7 +25,7 @@ type SignalCanvasState = {
   renderer: THREE.WebGLRenderer | null;
   canvas: HTMLCanvasElement | null;
   scenes: Map<string, SceneEntry>;
-  tickerCallback: (() => void) | null;
+  rafId: number | null;
   reducedMotion: boolean;
   mql: MediaQueryList | null;
 };
@@ -42,7 +41,7 @@ export function getState(): SignalCanvasState {
       renderer: null,
       canvas: null,
       scenes: new Map(),
-      tickerCallback: null,
+      rafId: null,
       reducedMotion: false,
       mql: null,
     };
@@ -111,15 +110,21 @@ export function initSignalCanvas(canvas: HTMLCanvasElement): void {
   state.reducedMotion = mql.matches;
   state.mql = mql;
 
-  // GSAP ticker callback — GSAP is the ONLY render driver (not the Three.js animation loop)
-  const tickerCallback = () => {
-    if (state.reducedMotion || state.scenes.size === 0) return;
-    renderAllScenes(state);
+  // rAF-driven render loop — SignalCanvas owns its own frame timing. Earlier
+  // versions routed through gsap.ticker.add(), but in production builds the
+  // callback never fired (the ticker instance accessed here didn't tick even
+  // though Lenis's registration on the same ticker did — module duplication
+  // or plugin-registration side effect). Using rAF directly sidesteps the
+  // coupling entirely; rendering is deterministic and independent of GSAP.
+  const loop = () => {
+    if (!state.reducedMotion && state.scenes.size > 0) {
+      renderAllScenes(state);
+    }
+    state.rafId = requestAnimationFrame(loop);
   };
-  state.tickerCallback = tickerCallback;
 
   if (!state.reducedMotion) {
-    gsap.ticker.add(tickerCallback);
+    state.rafId = requestAnimationFrame(loop);
   } else {
     // Static fallback: render exactly one frame for reduced-motion users
     renderAllScenes(state);
@@ -129,12 +134,15 @@ export function initSignalCanvas(canvas: HTMLCanvasElement): void {
   const motionHandler = (e: MediaQueryListEvent) => {
     state.reducedMotion = e.matches;
     if (e.matches) {
-      // Entering reduced-motion: stop ticker, render one static frame
-      gsap.ticker.remove(tickerCallback);
+      // Entering reduced-motion: stop loop, render one static frame
+      if (state.rafId !== null) {
+        cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      }
       renderAllScenes(state);
-    } else {
-      // Leaving reduced-motion: re-add ticker to resume animation
-      gsap.ticker.add(tickerCallback);
+    } else if (state.rafId === null) {
+      // Leaving reduced-motion: restart loop
+      state.rafId = requestAnimationFrame(loop);
     }
   };
   mql.addEventListener("change", motionHandler);
