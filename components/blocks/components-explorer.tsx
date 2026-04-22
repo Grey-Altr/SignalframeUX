@@ -4,6 +4,8 @@ import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { SFButton, SFInput, SFBadge } from "@/components/sf";
+import { ScrambleText } from "@/components/animation/scramble-text";
+import { CircuitDivider } from "@/components/animation/circuit-divider";
 import { useSessionState, SESSION_KEYS } from "@/hooks/use-session-state";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
@@ -420,18 +422,24 @@ function PreviewInputGroup() {
 /* ── Component data ── */
 
 function PreviewScrambleText() {
+  // Real ScrambleText component — GSAP scramble on hover.
+  // Matches the registry code sample (lib/registry/generative.ts #105).
   return (
-    <span className="font-mono text-[var(--text-xs)] uppercase tracking-widest" style={{ color: "var(--sf-green)" }}>
-      S!GN#L &gt;&gt; TX
-    </span>
+    <ScrambleText
+      text="SIGNAL"
+      trigger="hover"
+      className="font-mono text-[var(--text-xs)] uppercase tracking-widest"
+    />
   );
 }
 
 function PreviewCircuitDivider() {
+  // Real CircuitDivider component in `preview` mode — skips the GSAP scroll-
+  // draw timeline and renders at full opacity (normal decoration use runs at
+  // opacity 0.06 as a background trace). Matches registry code sample (#106).
   return (
-    <div className="w-[80%] h-px relative" style={{ background: "currentColor" }}>
-      <span className="absolute left-[30%] -top-1 w-2 h-2 border border-current bg-background" />
-      <span className="absolute left-[60%] -top-1 w-2 h-2 border border-current bg-background" />
+    <div className="w-[80%]">
+      <CircuitDivider variant="minimal" preview />
     </div>
   );
 }

@@ -102,7 +102,7 @@ export const GENERATIVE: Record<string, ComponentRegistryEntry> = {
     variants: [
       { label: "DEFAULT", props: {} },
     ],
-    code: `import CircuitDivider from '@/components/animation/circuit-divider'
+    code: `import { CircuitDivider } from '@/components/animation/circuit-divider'
 
 <CircuitDivider />`,
     docId: "circuitDivider",

@@ -19,15 +19,25 @@ import { gsap, ScrollTrigger } from "@/lib/gsap-draw";
 interface CircuitDividerProps {
   variant?: "default" | "complex" | "minimal";
   className?: string;
+  /**
+   * When true, skip the GSAP scroll-draw timeline and render the SVG at full
+   * opacity in its already-drawn state. Used by inventory preview cells where
+   * the scroll-trigger + 0.06 background opacity make the default treatment
+   * invisible. The component remains a single source of truth — preview cells
+   * and live decoration render the same geometry.
+   */
+  preview?: boolean;
 }
 
 export function CircuitDivider({
   variant = "default",
   className = "",
+  preview = false,
 }: CircuitDividerProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
+    if (preview) return; // Static render for inventory preview cells
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const svg = svgRef.current;
@@ -87,10 +97,11 @@ export function CircuitDivider({
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [preview]);
 
+  const opacityClass = preview ? "opacity-100" : "opacity-[0.06]";
   return (
-    <div aria-hidden="true" className={`circuit-divider relative w-full opacity-[0.06] ${className}`}>
+    <div aria-hidden={preview ? undefined : "true"} className={`circuit-divider relative w-full ${opacityClass} ${className}`}>
       {variant === "default" && <DefaultCircuit ref={svgRef} />}
       {variant === "complex" && <ComplexCircuit ref={svgRef} />}
       {variant === "minimal" && <MinimalCircuit ref={svgRef} />}
