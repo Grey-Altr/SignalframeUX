@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-split";
 import { PinnedSection } from "@/components/animation/pinned-section";
 import { ManifestoStatement } from "@/components/blocks/manifesto-statement";
@@ -57,6 +57,15 @@ export function ThesisSection() {
   const [scrollDistance, setScrollDistance] = useState<number>(3.0);
   const [reducedMotion, setReducedMotion] = useState<boolean>(false);
 
+  // PinnedSection's portal mounts asynchronously (after its useState→true
+  // flip), so the stage div doesn't exist during ThesisSection's first render.
+  // Track mount via a callback ref so useGSAP re-runs once the DOM is ready.
+  const [stageMounted, setStageMounted] = useState(false);
+  const setStageEl = useCallback((el: HTMLDivElement | null) => {
+    stageRef.current = el;
+    setStageMounted(!!el);
+  }, []);
+
   useEffect(() => {
     const mobileMQ = window.matchMedia("(max-width: 667px)");
     const rmMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -107,9 +116,15 @@ export function ThesisSection() {
         );
       });
 
+      // Trigger is the PinnedSection's main-flow spacer (exposed via
+      // pinnedRef). The spacer lives inside ScaleCanvas and has the correct
+      // document position for the pin's scroll-start; the actual pinned
+      // element lives in #pin-portal (outside ScaleCanvas) to escape the
+      // transformed-ancestor containing-block issue. Using the spacer as the
+      // trigger means start/end align exactly with the pin window — no
+      // pinnedContainer adjustment required.
       ScrollTrigger.create({
-        trigger: stage,
-        pinnedContainer: pinned,
+        trigger: pinned,
         start: "top top",
         // Explicit +=Npx end is mandatory: "bottom bottom" on a calc(100*var(--sf-vh))-tall
         // trigger resolves to the SAME scroll position as "top top" (zero
@@ -121,7 +136,7 @@ export function ThesisSection() {
         invalidateOnRefresh: true,
       });
     },
-    { scope: stageRef, dependencies: [reducedMotion, scrollDistance] },
+    { scope: stageRef, dependencies: [reducedMotion, scrollDistance, stageMounted] },
   );
 
   // ── Reduced-motion branch: stacked specimen, no pin, no scrub, no SplitText
@@ -163,7 +178,7 @@ export function ThesisSection() {
       id="thesis-pin"
     >
       <div
-        ref={stageRef}
+        ref={setStageEl}
         data-pinned-container
         data-stage
         className="relative w-full h-screen"
