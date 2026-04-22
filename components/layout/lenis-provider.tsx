@@ -36,11 +36,16 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       if (e.defaultPrevented) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
-      const target = e.target as HTMLElement;
-      // Don't intercept if user is typing in an input or activating a button/link
-      if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) return;
-      if (target.getAttribute('role') === 'button') return;
-      if (target.isContentEditable) return;
+      // e.target is EventTarget | null — for synthetic events dispatched at window
+      // it can be Window itself (no getAttribute/tagName methods). Narrow to
+      // HTMLElement before accessing Element/HTMLElement-only properties.
+      const target = e.target;
+      if (target instanceof HTMLElement) {
+        // Don't intercept if user is typing in an input or activating a button/link
+        if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) return;
+        if (target.getAttribute('role') === 'button') return;
+        if (target.isContentEditable) return;
+      }
 
       const vh = window.innerHeight;
       const currentScroll = window.scrollY;
