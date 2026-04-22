@@ -139,30 +139,68 @@ export function InstrumentHUD() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Per-frame fields -- DOM refs + rAF direct writes (NO setState in the loop)
+  // Per-frame fields -- DOM refs + rAF direct writes (NO setState in the loop).
+  //
+  // Perf contract: the rAF loop MUST be read-only against layout/style. Earlier
+  // implementation read `doc.scrollHeight` and `getComputedStyle(:root)` every
+  // frame, forcing synchronous layout + style recomputation at 60-96fps — 122ms
+  // of reflow per 5s of wall-clock time (chrome-devtools perf trace, 2026-04-22).
+  // Fix: cache both inputs, refresh them via ResizeObserver (scrollHeight) and
+  // MutationObserver (:root --sfx-signal-intensity). Loop reads only cached vars.
   useEffect(() => {
     if (reducedMotion) {
       if (scrollRef.current) scrollRef.current.textContent = "\u2014%";
       if (sigRef.current) sigRef.current.textContent = "SIG:\u2014";
       return;
     }
+
+    const root = document.documentElement;
+
+    // Cached inputs updated outside the rAF tick
+    let cachedMax = Math.max(0, root.scrollHeight - window.innerHeight);
+    let cachedSigText = "SIG:0.0";
+
+    const readSigFromRoot = () => {
+      const raw = getComputedStyle(root).getPropertyValue("--sfx-signal-intensity").trim();
+      const n = parseFloat(raw);
+      cachedSigText = Number.isFinite(n) ? `SIG:${n.toFixed(1)}` : "SIG:0.0";
+    };
+    readSigFromRoot();
+
+    const refreshScrollMax = () => {
+      cachedMax = Math.max(0, root.scrollHeight - window.innerHeight);
+    };
+
+    // Doc height changes when content mounts/unmounts or viewport resizes.
+    const ro = new ResizeObserver(refreshScrollMax);
+    ro.observe(document.body);
+    window.addEventListener("resize", refreshScrollMax, { passive: true });
+
+    // Signal intensity mutates via :root inline style (SignalIntensityBridge,
+    // section handoffs). Observing the attribute, not getComputedStyle, means
+    // the rAF loop never triggers style recomputation.
+    const mo = new MutationObserver(readSigFromRoot);
+    mo.observe(root, { attributes: true, attributeFilter: ["style"] });
+
     let rafId = 0;
     const loop = () => {
       if (scrollRef.current) {
-        const doc = document.documentElement;
-        const max = doc.scrollHeight - window.innerHeight;
-        const pct = max > 0 ? Math.round((window.scrollY / max) * 100) : 0;
+        const pct = cachedMax > 0 ? Math.round((window.scrollY / cachedMax) * 100) : 0;
         scrollRef.current.textContent = `${pct}%`;
       }
       if (sigRef.current) {
-        const raw = getComputedStyle(document.documentElement).getPropertyValue("--sfx-signal-intensity").trim();
-        const n = parseFloat(raw);
-        sigRef.current.textContent = Number.isFinite(n) ? `SIG:${n.toFixed(1)}` : "SIG:0.0";
+        sigRef.current.textContent = cachedSigText;
       }
       rafId = requestAnimationFrame(loop);
     };
     rafId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafId);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+      mo.disconnect();
+      window.removeEventListener("resize", refreshScrollMax);
+    };
   }, [reducedMotion]);
 
   const [pos, setPos] = useState({ top: 80, right: 24 });
