@@ -1,3 +1,3 @@
 # ROLE|SLUG|UPDATED|STATE|ACTIVITY
 unset|cc-0c1ce102|2026-04-21 15:42|active|session-start
-audit|cc-bd1b2119|2026-04-22 20:30|active|Lockdown v0.1.1 shipped (a87f907) — R-61 (rAF no-layout-reads) + R-62 (quality-tier conformance) codified in §6. Seal a5db013 → 158ef6f. AUDIT-VERDICTS closed. Next: post-v0.1 queue #10–#19 (10 open items).
+audit|cc-bd1b2119|2026-04-22 21:15|active|Queue batch: 6/10 items closed (#14/#15/#16/#17/#12/#19). Surfaced #20/#21 (motion drift) as new items. Remaining: #10/#11 (visual tuning — need eyeball), #13/#18/#20/#21 (user decisions).

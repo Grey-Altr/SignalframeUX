@@ -36,6 +36,15 @@ const TIER_FBM_OCTAVES: Record<QualityTier, number> = {
   fallback: 2,
 };
 
+// Theme-reactive dither opacity (audit #10). Original 0.25 was tuned for
+// dark mode; in light mode the primary-color dots wash out against a light
+// ground. Conservative first-pass bump — tune in-browser if the light-mode
+// read still feels insufficient. Tied to html.dark class, not prefers-color-
+// scheme (the app uses a manual toggle; MutationObserver keeps the uniform
+// reactive to toggle state, not OS setting).
+const PROOF_DITHER_OPACITY_DARK = 0.25;
+const PROOF_DITHER_OPACITY_LIGHT = 0.45;
+
 // ---------------------------------------------------------------------------
 // WebGL availability check — identical to GLSLHero
 // ---------------------------------------------------------------------------
@@ -271,6 +280,27 @@ export function ProofShader({ sectionRef }: ProofShaderProps) {
     return () => observer.disconnect();
   }, [hasWebGL]);
 
+  // Theme-reactive uDitherOpacity (audit #10). Watch html.dark class
+  // mutations; when the toggle flips, swap the uniform without recompiling
+  // the shader. Pure uniform update — O(1), no allocations. Pattern mirrors
+  // InstrumentHUD's attribute-only MutationObserver (R-61 compliant: no
+  // getComputedStyle, no layout reads).
+  useEffect(() => {
+    if (!hasWebGL) return;
+    const root = document.documentElement;
+
+    const syncDitherOpacity = () => {
+      if (!uniformsRef.current) return;
+      uniformsRef.current.uDitherOpacity.value = root.classList.contains("dark")
+        ? PROOF_DITHER_OPACITY_DARK
+        : PROOF_DITHER_OPACITY_LIGHT;
+    };
+
+    const mo = new MutationObserver(syncDitherOpacity);
+    mo.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => mo.disconnect();
+  }, [hasWebGL]);
+
   // buildScene factory — called once by useSignalScene on mount
   const buildScene = () => {
     const container = containerRef.current!;
@@ -281,10 +311,18 @@ export function ProofShader({ sectionRef }: ProofShaderProps) {
       ttl: 2000,
     });
 
+    // Theme-reactive dither opacity (audit #10). Light-mode pages need higher
+    // alpha for the dithered primary-color dots to read against a light ground;
+    // dark mode was already legible at the original 0.25 tuning. Values are a
+    // first-pass bump; tune in-browser and commit as a separate refine if they
+    // need to move further.
+    const isDark = document.documentElement.classList.contains("dark");
+    const ditherOpacity = isDark ? PROOF_DITHER_OPACITY_DARK : PROOF_DITHER_OPACITY_LIGHT;
+
     const uniforms = {
       uTime: { value: 0 },
       uColor: { value: primaryColor },
-      uDitherOpacity: { value: 0.25 },
+      uDitherOpacity: { value: ditherOpacity },
       uResolution: {
         value: new THREE.Vector2(
           container.clientWidth,
