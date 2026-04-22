@@ -180,10 +180,14 @@ Extended prose in system copy uses **UPPERCASE mono + tight tracking** — gives
 ## 5 · MOTION + ANIMATION
 
 ### 5.1 · Duration tokens
-`--duration-instant` (34ms) → `--duration-glacial` (600ms)
+`--sfx-duration-instant` (34ms) · `--sfx-duration-fast` (100ms) · `--sfx-duration-normal` (200ms) · `--sfx-duration-slow` (400ms) · `--sfx-duration-glacial` (600ms)
+*Source: `app/globals.css:239-243`*
 
 ### 5.2 · Easing tokens
-`--ease-default`, `--ease-hover`, `--ease-spring`, `sf-snap` (thesis timeline)
+`--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring` (all three currently share `cubic-bezier(0, 0, 0.2, 1)` — a decelerate curve), `--sfx-ease-linear` (for continuous loops only), and `sf-snap` (thesis timeline).
+
+**Intentional collapse (audit #20):** The three named eases resolve to the same curve in shipped code. Differentiation is deliberately deferred — the DU/TDR register is "sharp, controlled, structured, slightly tense" (CLAUDE.md) and actively rejects spring/overshoot motion. Three aliases are retained in globals.css so future phases can differentiate per-token if the aesthetic evolves, without refactoring every call site. If spring/overshoot is ever introduced, it must be a deliberate DECIDE.
+*Source: `app/globals.css:247-254`*
 
 ### 5.3 · Signal-leads-frame staging
 Signal layer arrives first; frame lands on top. E.g. on `/`:
@@ -365,7 +369,7 @@ Fixed order, fixed semantics. Adding a block = user decision.
 | 02 | **THESIS** | 6-statement manifesto | PinnedSection scrub, enter-hold-exit 0.35/0.3/0.35 |
 | 03 | **PROOF** | interactive SIGNAL/FRAME demo | 3-layer composition, pointer/tilt input |
 | 04 | **INVENTORY** | 12-component catalog preview | Table: code · name · layer · tier · → |
-| 05 | **SIGNAL** | Ikeda data-field atmospheric | GLSL scanlines + data columns + yellow spikes, 150vh sticky |
+| 05 | **SIGNAL** | Ikeda data-field atmospheric | GLSL scanlines + data columns + yellow spikes, `sticky top-0 h-screen` (1 viewport) |
 | 06 | **ACQUISITION** | CTA terminal panel | `npx signalframeux init` hero, stats, handoffs |
 
 ---

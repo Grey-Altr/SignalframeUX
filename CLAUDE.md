@@ -62,7 +62,7 @@ Define and use these tokens — no arbitrary max-widths:
 - Breakpoints: Tailwind v4 defaults
 
 ### Animation
-Durations: `--duration-instant` (34ms) to `--duration-glacial` (600ms). Easings: `--ease-default`, `--ease-hover`, `--ease-spring`.
+Durations: `--sfx-duration-instant` (34ms) to `--sfx-duration-glacial` (600ms). Easings: `--sfx-ease-default`, `--sfx-ease-hover`, `--sfx-ease-spring` (all three currently share one decelerate curve — collapse is deliberate per DU/TDR register, see LOCKDOWN §5.2).
 DO NOT add new GSAP effects or animation components. Normalize existing usage. Refine, don't expand.
 
 ## Stabilization Scope (v0.1)
