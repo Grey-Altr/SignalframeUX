@@ -22,6 +22,18 @@ import * as THREE from "three";
 import { useSignalScene } from "@/hooks/use-signal-scene";
 import { resolveColorAsThreeColor } from "@/lib/color-resolve";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap-core";
+import { getQualityTier, type QualityTier } from "@/lib/effects/quality-tier";
+
+// FBM octaves per tier. Each octave is one noise() call per pixel; dropping
+// from 4 → 2 roughly halves fragment shader cost. Visual signature remains
+// intact on ultra; lower tiers get slightly smoother noise (imperceptible
+// under the Bayer dither pass).
+const TIER_FBM_OCTAVES: Record<QualityTier, number> = {
+  ultra: 4,
+  high: 3,
+  medium: 2,
+  fallback: 2, // only reached pre-reduced-motion; actual render is gated separately
+};
 
 // ---------------------------------------------------------------------------
 // WebGL availability check — runs once at module level on client
@@ -294,11 +306,18 @@ export function GLSLHero() {
     };
     uniformsRef.current = uniforms;
 
-    // Full-screen quad — PlaneGeometry(2,2) matches NDC clip space exactly
+    // Full-screen quad — PlaneGeometry(2,2) matches NDC clip space exactly.
+    // FBM loop bound is tier-gated at compile time via string replace — a GLSL
+    // const bound (no runtime branch cost, compiler unrolls the loop).
+    const octaves = TIER_FBM_OCTAVES[getQualityTier()];
+    const tieredFragmentShader = FRAGMENT_SHADER.replace(
+      /for \(int i = 0; i < 4; i\+\+\)/,
+      `for (int i = 0; i < ${octaves}; i++)`,
+    );
     const geo = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.ShaderMaterial({
       vertexShader:   VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
+      fragmentShader: tieredFragmentShader,
       uniforms,
       transparent:  true,
       depthWrite:   false,

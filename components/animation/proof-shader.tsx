@@ -25,6 +25,16 @@ import * as THREE from "three";
 import { useSignalScene } from "@/hooks/use-signal-scene";
 import { resolveColorAsThreeColor } from "@/lib/color-resolve";
 import { gsap, useGSAP } from "@/lib/gsap-core";
+import { getQualityTier, type QualityTier } from "@/lib/effects/quality-tier";
+
+// Mirror GLSLHero's tier → FBM octave mapping. Proof's loop is the same shape
+// (4 octaves, ×2 frequency, ×0.5 amplitude), same visual tolerance.
+const TIER_FBM_OCTAVES: Record<QualityTier, number> = {
+  ultra: 4,
+  high: 3,
+  medium: 2,
+  fallback: 2,
+};
 
 // ---------------------------------------------------------------------------
 // WebGL availability check — identical to GLSLHero
@@ -285,10 +295,17 @@ export function ProofShader({ sectionRef }: ProofShaderProps) {
     };
     uniformsRef.current = uniforms;
 
+    // FBM loop bound is tier-gated at compile time — see glsl-hero.tsx for
+    // the same pattern (const bound → compiler unrolls; zero runtime cost).
+    const octaves = TIER_FBM_OCTAVES[getQualityTier()];
+    const tieredFragmentShader = FRAGMENT_SHADER.replace(
+      /for \(int i = 0; i < 4; i\+\+\)/,
+      `for (int i = 0; i < ${octaves}; i++)`,
+    );
     const geo = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.ShaderMaterial({
       vertexShader: VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
+      fragmentShader: tieredFragmentShader,
       uniforms,
       transparent: true,
       depthWrite: false,
