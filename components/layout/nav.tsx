@@ -611,9 +611,14 @@ export function Nav() {
   const [rolloutPinned, setRolloutPinned] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
-  // Nav reveal is owned by per-page <NavRevealMount /> islands (Phase 34 SP-05).
-  // The Nav root keeps its initial `sf-nav-hidden` class; CSS in globals.css flips
-  // visibility based on body[data-nav-visible="true"] which the hook sets.
+  // Nav reveal pipeline (audit #13 restoration, 2026-04-22):
+  // - Nav ships with `sf-nav-hidden` in its className (below) — initial hidden state.
+  // - app/layout.tsx mounts <NavRevealMount targetSelector="..." /> which runs
+  //   useNavReveal with a trigger ref. Hook creates a ScrollTrigger on that element
+  //   and flips body[data-nav-visible] onEnter / onLeaveBack.
+  // - CSS rule `body[data-nav-visible="true"] .sf-nav-hidden` (globals.css) overrides
+  //   the hidden state back to visible once the trigger scrolls past.
+  // Triggers: [data-entry-section] on /, [data-nav-reveal-trigger] on subpages.
 
   return (
     <>
@@ -621,7 +626,7 @@ export function Nav() {
         ref={navRef}
         aria-label="Main navigation"
         data-sf-nav=""
-        className="fixed origin-bottom-left z-[var(--sfx-z-nav)] transition-[filter] duration-75"
+        className="sf-nav-hidden fixed origin-bottom-left z-[var(--sfx-z-nav)] transition-[filter] duration-75"
         style={{
           bottom: "var(--sf-frame-bottom-gap, 0px)",
           left: "var(--sf-frame-offset-x, 0px)",
