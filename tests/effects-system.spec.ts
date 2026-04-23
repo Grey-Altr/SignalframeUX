@@ -60,7 +60,13 @@ test.describe("@effects runtime CSS variables", () => {
 });
 
 test.describe("@effects WebGL canvas count", () => {
-  test("only one WebGL canvas on homepage", async ({ page }) => {
+  test("≤ 2 WebGL canvases on homepage (VL-05 slash moment adds the 2nd)", async ({ page }) => {
+    // Pre-VL-05 the homepage had exactly 1 WebGL canvas (the GLSL hero).
+    // Phase 34 shipped the VL-05 hero magenta slash moment (approved per
+    // project_phase34_planned.md, also the SignalCanvas pixel-sort ring),
+    // bringing the count to 2. Accretion guard kept at ≤2 so any 3rd
+    // canvas (e.g. accidental duplicate SignalMesh on the wrong route)
+    // still triggers.
     await page.goto("/", { waitUntil: "networkidle" });
     await page.waitForTimeout(500);
 
@@ -74,7 +80,7 @@ test.describe("@effects WebGL canvas count", () => {
       return webglCount;
     });
 
-    expect(canvasCount).toBeLessThanOrEqual(1);
+    expect(canvasCount).toBeLessThanOrEqual(2);
   });
 
   test("only one WebGL canvas on builds detail", async ({ page }) => {
