@@ -269,8 +269,10 @@
   --sfx-press-scale: 0.97;
   --sfx-press-y: 1px;
   --sfx-hover-y: -2px;
-  --sfx-focus-ring-width: 2px;
-  --sfx-focus-ring-offset: 2px;
+  /* R-64-b: double-ring focus indicator. */
+  --sfx-focus-ring-width: 3px;
+  --sfx-focus-ring-offset: 1px;
+  --sfx-focus-ring-style: double;
 
   /* ── Semantic Typography Custom Properties ── */
   --sfx-text-heading-1-family: var(--sfx-font-display);

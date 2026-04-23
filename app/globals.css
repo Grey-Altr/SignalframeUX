@@ -340,8 +340,12 @@
   --sfx-press-scale: 0.97;
   --sfx-press-y: 1px;
   --sfx-hover-y: -2px;
-  --sfx-focus-ring-width: 2px;
-  --sfx-focus-ring-offset: 2px;
+  /* R-64-b: double-ring focus indicator — TDR monospaced-box register.
+     outline-style: double renders as two 1px rings with a 1px transparent
+     gap, hard-edged, zero glow. Applied globally via :focus-visible below. */
+  --sfx-focus-ring-width: 3px;
+  --sfx-focus-ring-offset: 1px;
+  --sfx-focus-ring-style: double;
 
   /* ── Semantic Typography Custom Properties ── */
   --sfx-text-heading-1-family: var(--sfx-font-display);
@@ -956,11 +960,9 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-int
     transition-timing-function: var(--sfx-ease-hover);
   }
 
-  .sf-focusable:focus-visible {
-    outline: var(--sfx-focus-ring-width) solid var(--sfx-ring, oklch(0.65 0.3 var(--sfx-theme-hue)));
-    outline-offset: var(--sfx-focus-ring-offset);
-    animation: sf-focus-expand var(--sfx-duration-normal) var(--sfx-ease-default) both;
-  }
+  /* .sf-focusable kept as an opt-in marker for interactive SF surfaces
+     — primarily used for selector specificity in other rules. Focus
+     visual is owned by the unlayered R-64-b rule at file end. */
   .sf-focusable:focus:not(:focus-visible) {
     outline: none;
   }
@@ -2338,13 +2340,19 @@ html:not(.dark) .sf-mesh-gradient {
 /* Borderless is the canonical register (LOCKDOWN v0.1 §2.5). Zero every
    edge affordance — native borders, Tailwind rings (box-shadow-based),
    and native outlines. Components must render correctly in this register;
-   the bordered mode is an opt-in debug/editorial affordance. */
+   the bordered mode is an opt-in debug/editorial affordance.
+
+   :focus-visible is exempt from outline-width:0 so the R-64-b keyboard
+   focus ring survives borderless mode. Everything else (borders, Tailwind
+   ring shadows) still strips. */
 [data-borderless="true"] * {
   border-width: 0 !important;
-  outline-width: 0 !important;
   --tw-ring-shadow: 0 0 #0000 !important;
   --tw-ring-offset-shadow: 0 0 #0000 !important;
   --tw-ring-inset: 0 0 #0000 !important;
+}
+[data-borderless="true"] *:not(:focus-visible) {
+  outline-width: 0 !important;
 }
 
 [data-borderless="true"] :where([class*="border"], [class*="ring"], .sf-border) {
@@ -2712,4 +2720,23 @@ html:not(.dark) .sf-mesh-gradient {
 [data-sf-canvas] .max-h-svh,
 [data-sf-canvas] .max-h-lvh {
   max-height: calc(100vh / var(--sf-content-scale, 1));
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   R-64-b · Global double-ring focus indicator — UNLAYERED so it dominates
+   Tailwind utilities regardless of !important / specificity interplay across
+   @layer boundaries. Unlayered declarations win over all @layer content per
+   CSS Cascade Layers spec.
+
+   Single indicator per R-64-b: the outline. Tailwind ring-* box-shadow is
+   suppressed via the custom-prop zero-out so no double-stacking occurs.
+   Mouse-click focus (:focus without :focus-visible) stays clean — native
+   browser behavior. Skip-to-content link lives at document start in
+   app/layout.tsx.
+   ────────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: var(--sfx-focus-ring-width) var(--sfx-focus-ring-style) var(--sfx-ring, oklch(0.65 0.3 var(--sfx-theme-hue))) !important;
+  outline-offset: var(--sfx-focus-ring-offset) !important;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-ring-color: transparent;
 }
