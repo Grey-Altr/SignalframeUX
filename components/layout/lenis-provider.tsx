@@ -30,39 +30,9 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     setLenis(instance);
     (window as any).lenis = instance;
 
-    // Keyboard-driven viewport detent scrolling
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // If another accessibility shortcut already claimed this key, do nothing.
-      if (e.defaultPrevented) return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-
-      // e.target is EventTarget | null — for synthetic events dispatched at window
-      // it can be Window itself (no getAttribute/tagName methods). Narrow to
-      // HTMLElement before accessing Element/HTMLElement-only properties.
-      const target = e.target;
-      if (target instanceof HTMLElement) {
-        // Don't intercept if user is typing in an input or activating a button/link
-        if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) return;
-        if (target.getAttribute('role') === 'button') return;
-        if (target.isContentEditable) return;
-      }
-
-      const vh = window.innerHeight;
-      const currentScroll = window.scrollY;
-      const scrollDown = e.code === 'ArrowDown' || e.code === 'PageDown' || (e.code === 'Space' && !e.shiftKey);
-      const scrollUp = e.code === 'ArrowUp' || e.code === 'PageUp' || (e.code === 'Space' && e.shiftKey);
-
-      if (scrollDown) {
-        e.preventDefault();
-        const nextTarget = Math.ceil((currentScroll + 10) / vh) * vh;
-        instance.scrollTo(nextTarget, { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-      } else if (scrollUp) {
-        e.preventDefault();
-        const prevTarget = Math.floor((currentScroll - 10) / vh) * vh;
-        instance.scrollTo(Math.max(0, prevTarget), { duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown, { passive: false });
+    // Keyboard-driven panel snap (Space/Shift+Space/Home/End) now lives in
+    // useFrameNavigation (R-64 keyboard model). LenisProvider only owns wheel
+    // + touch smooth-scroll. FrameNavigation mount is in app/layout.tsx.
 
     // Sync Lenis scroll position with GSAP ScrollTrigger
     instance.on("scroll", ScrollTrigger.update);
@@ -84,7 +54,6 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     mql.addEventListener("change", motionHandler);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
       mql.removeEventListener("change", motionHandler);
       gsap.ticker.remove(tickerCallback);
       instance.destroy();

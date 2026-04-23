@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
 import { SignalCanvasLazy } from "@/components/layout/signal-canvas-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
+import { FrameNavigation } from "@/components/layout/frame-navigation";
 import { Nav } from "@/components/layout/nav";
 import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 import { CdCornerPanel } from "@/components/layout/cd-corner-panel";
@@ -122,6 +123,7 @@ export default function RootLayout({
         </a>
         <TooltipProvider>
           <LenisProvider>
+            <FrameNavigation />
             <SignalframeProvider>
               <BorderlessProvider>
               <ScaleCanvas>{children}</ScaleCanvas>
