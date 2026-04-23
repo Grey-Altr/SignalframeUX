@@ -19,6 +19,8 @@ interface APIIndexPanelProps {
 export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPrev, onNext }: APIIndexPanelProps) {
   const { activeEntryId, setActiveEntryId } = useAPIExplorer();
   const panelRef = useRef<HTMLElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const lastActivatedIdRef = useRef<string | null>(null);
 
   const activeInSlice = useMemo(
     () => (activeEntryId ? slice.find((e) => e.id === activeEntryId) ?? null : null),
@@ -26,7 +28,14 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
   );
 
   const handleRowClick = useCallback(
-    (id: string) => setActiveEntryId(activeEntryId === id ? null : id),
+    (id: string) => {
+      if (activeEntryId === id) {
+        setActiveEntryId(null);
+      } else {
+        lastActivatedIdRef.current = id;
+        setActiveEntryId(id);
+      }
+    },
     [activeEntryId, setActiveEntryId],
   );
 
@@ -41,6 +50,16 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
       }
     },
     [activeEntryId, handleRowClick, setActiveEntryId],
+  );
+
+  const handlePanelKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key === "Escape" && activeEntryId) {
+        e.preventDefault();
+        setActiveEntryId(null);
+      }
+    },
+    [activeEntryId, setActiveEntryId],
   );
 
   const label = `COMPONENTS ${String(panelIndex + 1).padStart(2, "0")}/${String(totalPanels).padStart(2, "0")}${
@@ -68,6 +87,25 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
     return () => ro.disconnect();
   }, [panelIndex, totalPanels, activeInSlice]);
 
+  // §14.18 R-64-j focus management: focus detail on open, re-focus row on close.
+  useEffect(() => {
+    if (activeInSlice) {
+      detailRef.current?.focus();
+      return;
+    }
+    // Grid restored — if we were previously active, re-focus the triggering row.
+    const lastId = lastActivatedIdRef.current;
+    if (!lastId || !panelRef.current) return;
+    const raf = requestAnimationFrame(() => {
+      const row = panelRef.current?.querySelector<HTMLButtonElement>(
+        `[data-api-entry="${lastId}"]`,
+      );
+      row?.focus();
+      lastActivatedIdRef.current = null;
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [activeInSlice]);
+
   const half = Math.ceil(slice.length / 2);
   const aSide = isDesktop ? slice.slice(0, half) : slice;
   const bSide = isDesktop ? slice.slice(half) : [];
@@ -89,7 +127,13 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
 
       <div data-panel-content className="flex-1 min-h-0 overflow-hidden">
         {activeInSlice ? (
-          <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-6)] pb-[var(--sfx-space-6)]">
+          <div
+            ref={detailRef}
+            tabIndex={-1}
+            onKeyDown={handlePanelKeyDown}
+            aria-label={`${activeInSlice.doc.importName} details. Press Escape to close.`}
+            className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] pt-[var(--sfx-space-6)] pb-[var(--sfx-space-6)] outline-none"
+          >
             <APIEntryDataSheet doc={activeInSlice.doc} />
           </div>
         ) : isDesktop ? (
@@ -149,7 +193,7 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
           aria-label="Previous panel"
           className="disabled:opacity-30 hover:text-foreground focus-visible:text-foreground outline-none"
         >
-          ◀
+          <span aria-hidden="true">◀</span>
         </button>
         <span className="tabular-nums">
           {String(panelIndex + 1).padStart(2, "0")}/{String(totalPanels).padStart(2, "0")}
@@ -161,7 +205,7 @@ export function APIIndexPanel({ slice, panelIndex, totalPanels, isDesktop, onPre
           aria-label="Next panel"
           className="disabled:opacity-30 hover:text-foreground focus-visible:text-foreground outline-none"
         >
-          ▶
+          <span aria-hidden="true">▶</span>
         </button>
       </div>
     </SFPanel>
