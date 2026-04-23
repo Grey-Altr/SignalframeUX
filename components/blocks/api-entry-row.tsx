@@ -11,6 +11,8 @@ interface APIEntryRowProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLButtonElement>, id: string) => void;
 }
 
+/** Render a monospaced type signature stub for a doc entry.
+ *  HOOKS render as `useName()`. TOKENS render as `name:`. Everything else as `Name(`. */
 function formatSignature(doc: ComponentDoc): string {
   if (doc.layer === "HOOK") return "()";
   if (doc.layer === "TOKEN") return ":";
@@ -19,7 +21,7 @@ function formatSignature(doc: ComponentDoc): string {
 
 export function APIEntryRow({ id, doc, active, showStatus = true, onClick, onKeyDown }: APIEntryRowProps) {
   const cols = showStatus
-    ? "grid-cols-[16px_1fr_6ch_8ch_8ch] md:grid-cols-[16px_1fr_8ch_10ch_9ch]"
+    ? "grid-cols-[16px_1fr_6ch_9ch_8ch] md:grid-cols-[16px_1fr_8ch_10ch_9ch]"
     : "grid-cols-[16px_1fr_7ch_7ch]";
 
   return (
