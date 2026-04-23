@@ -1,9 +1,9 @@
 # SIGNALFRAMEUX LOCKDOWN
 
-**Version:** v0.1.2 (R-63 panel model + R-64 keyboard model — 2026-04-22)
-**Sealed from:** `main` @ `158ef6f` (v0.1.1 perf/rules seal); v0.1.2 extends with two coupled interaction primitives
-**Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21), panel/keyboard model session (2026-04-22)
-**Status:** v0.1.2 locked. §4.4 (R-63) + §9.7 (R-64) codified with user DECIDEs resolved (D-08 paginate, D-09 cheatsheet ships v0.1, D-10 double-ring, D-11 ENTRY=one panel). Retrofit queued per §14 items 8–18. §14.18 (`/reference` pagination) shipped 2026-04-23 @ `58e1c93`.
+**Version:** v1.0 (LOCKED — 2026-04-23)
+**Lineage:** v0.1.1 perf/rules seal @ `158ef6f` → v0.1.2 interaction primitives (R-63 panel + R-64 keyboard — 2026-04-22) → v1.0 lock after §14 retrofit queue (items 8–18) closed 11/11.
+**Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21), panel/keyboard model session (2026-04-22), §14 retrofit 11/11 shipped (2026-04-22 → 2026-04-23).
+**Status:** **v1.0 LOCKED.** §4.4 (R-63) + §9.7 (R-64) codified with user DECIDEs resolved (D-08 paginate, D-09 cheatsheet ships v0.1, D-10 double-ring, D-11 ENTRY=one panel). §14 execution queue closed: items 8–18 all shipped. §14.18 (`/reference` pagination) merged 2026-04-23 @ `0163a7e`. Open known-issues carried to v1.1 backlog, not blocking lock.
 
 > **Rule of the lockdown:** every rule below is extracted from shipped code (cited) or locked by explicit user DECIDE.
 > Nothing is aspirational without a citation to a decision record.
@@ -515,6 +515,6 @@ Items to apply in execute phase after user approves this doc:
 
 ---
 
-*End of v0.1.2 redline.*
-*Audit sources: `.planning/lockdown-audit/AUDIT-VERDICTS.md` (2026-04-22 session 3) + panel/keyboard model session (2026-04-22, DECIDEs D-08/D-09/D-10/D-11 resolved).*
-*v0.1.2 → v1 lock pending retrofit completion per §14 items 8–18. §14.18 shipped 2026-04-23 @ `58e1c93`.*
+*End of v1.0 lock.*
+*Audit sources: `.planning/lockdown-audit/AUDIT-VERDICTS.md` (2026-04-22 session 3) + panel/keyboard model session (2026-04-22, DECIDEs D-08/D-09/D-10/D-11 resolved) + §14 retrofit ship evidence (2026-04-22 → 2026-04-23).*
+*v1.0 locked 2026-04-23. All §14 retrofit items (8–18) shipped; §14.18 merged @ `0163a7e`. Open items in §13 are v1.1 backlog, not lock blockers.*
