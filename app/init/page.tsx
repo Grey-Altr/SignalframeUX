@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer";
-import { SFSection } from "@/components/sf";
+import { SFPanel, SFSection } from "@/components/sf";
 import { SharedCodeBlock } from "@/components/blocks/shared-code-block";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 
@@ -169,8 +169,13 @@ export default function InitPage() {
       <main id="main-content" data-cursor data-section="init" data-section-label="SYS" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INIT" }]} />
 
-        {/* ═══ PAGE HEADER ═══ */}
-        <SFSection label="INIT" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+        {/* ═══ PAGE HEADER (R-63-f panel) ═══ */}
+        <SFPanel
+          name="init-hero"
+          mode="fit"
+          label="INIT"
+          className="relative flex flex-col justify-end"
+        >
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-[1fr_auto] border-b-4 border-foreground items-end relative z-10"
@@ -193,8 +198,14 @@ export default function InitPage() {
               5 STEP SEQUENCE
             </div>
           </header>
-        </SFSection>
+        </SFPanel>
 
+        {/*
+          R-63-g exception: SEQUENCE is a 5-step long-form bringup with
+          code blocks per step — inherently multi-port. Stays on SFSection
+          until pagination across SFPanel frames lands per §14 #18 / R-63-g.
+          Dev-only PanelHeightAssertion will warn on this route — expected.
+        */}
         {/* ═══ BRINGUP SEQUENCE ═══ */}
         <SFSection label="SEQUENCE" className="py-0">
           <div className="divide-y divide-foreground/15">
