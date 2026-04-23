@@ -2403,7 +2403,18 @@ html:not(.dark) .sf-mesh-gradient {
   outline-width: 0 !important;
 }
 
-[data-borderless="true"] :where([class*="border"], [class*="ring"], .sf-border) {
+/* R-60-e: ex-bordered surfaces get a muted fill in borderless mode. Excludes:
+ *   - `border-none` / `border-0` / `ring-0` — never carried a border to replace
+ *   - elements with an explicit `bg-*` utility — already have their own surface
+ * Fixes the WCAG AA regression where bg-primary + border-none buttons (e.g. the
+ * install-snippet copy button) were being overridden to muted, yielding
+ * white-on-light-grey contrast. */
+[data-borderless="true"]
+  :where(
+    [class*="border-"]:not([class*="border-none"]):not([class*="border-0"]),
+    [class*="ring-"]:not([class*="ring-0"]),
+    .sf-border
+  ):not([class*="bg-"]) {
   background-color: var(--color-muted);
 }
 
