@@ -14,6 +14,24 @@ import * as path from "path";
 
 const ROOT = path.resolve(__dirname, "..");
 
+// lib/api-docs.ts is now a barrel: entries live in lib/api-docs/{frame,signal,core,hook}.ts
+// and types in lib/api-docs/types.ts. Reading just the barrel misses the content
+// these tests care about — concatenate barrel + sub-files for source-level assertions.
+function readAllApiDocsSource(): string {
+  const files = [
+    "lib/api-docs.ts",
+    "lib/api-docs/types.ts",
+    "lib/api-docs/frame.ts",
+    "lib/api-docs/signal.ts",
+    "lib/api-docs/core.ts",
+    "lib/api-docs/hook.ts",
+  ];
+  return files
+    .filter((f) => fs.existsSync(path.join(ROOT, f)))
+    .map((f) => fs.readFileSync(path.join(ROOT, f), "utf8"))
+    .join("\n");
+}
+
 // Type-only exports excluded from API_DOCS coverage requirements
 const TYPE_ONLY_EXPORTS = new Set([
   "TextVariant",
@@ -112,7 +130,7 @@ function resolveModulePath(
 // ── No @sfux/ paths ───────────────────────────────────────────────────────────
 
 test("phase-40-04: api-docs.ts contains zero @sfux/ import paths", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   const matches = content.match(/@sfux\//g) || [];
   expect(
     matches.length,
@@ -123,7 +141,7 @@ test("phase-40-04: api-docs.ts contains zero @sfux/ import paths", () => {
 // ── All importPath values are valid ───────────────────────────────────────────
 
 test("phase-40-04: all importPath values in api-docs.ts match valid entry points", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
 
   // Extract all importPath string values
   const importPathRegex = /importPath:\s*['"]([^'"]+)['"]/g;
@@ -144,18 +162,18 @@ test("phase-40-04: all importPath values in api-docs.ts match valid entry points
 });
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   // Match both TS object literal (importPath: "...") and JSON format ("importPath": "...")
   expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux["']/);
 });
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux/animation", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux\/animation["']/);
 });
 
 test("phase-40-04: api-docs.ts has at least one entry with importPath signalframeux/webgl", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   expect(content).toMatch(/["']?importPath["']?\s*:\s*["']signalframeux\/webgl["']/);
 });
 
@@ -237,12 +255,12 @@ test("phase-40-04: all entry-webgl.ts exports appear as keys in API_DOCS", () =>
 // ── Structural integrity ───────────────────────────────────────────────────────
 
 test("phase-40-04: API_DOCS export exists in api-docs.ts", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   expect(content).toContain("export const API_DOCS");
 });
 
 test("phase-40-04: ComponentDoc interface defines required fields", () => {
-  const content = fs.readFileSync(path.join(ROOT, "lib/api-docs.ts"), "utf8");
+  const content = readAllApiDocsSource();
   expect(content).toContain("importPath");
   expect(content).toContain("importName");
   expect(content).toContain("layer:");
