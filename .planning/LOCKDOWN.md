@@ -490,6 +490,10 @@ Branches B (cdb-v3-dossier), C (cdb-v2-broadcast = subset), D (aesthetic-deep-di
 - **Lighthouse measurement methodology** (confirmed 2026-04-23) — `experimental.useCache: true` + Turbopack dev server wraps metadata emission in a React Suspense boundary, so `next dev` Lighthouse navigation-mode flags `meta-description` as missing even when the page declares `export const metadata`. Production (`next build && next start`) emits metadata in the initial `<head>` shell; `/reference` scores **SEO 100 / BP 100 / A11y 96** in prod navigation mode. Rule: the CLAUDE.md "Lighthouse 100/100" gate is measured against prod builds only; dev-mode scores are informational.
 - **Color-contrast on `bg-foreground` surfaces** (prod-confirmed 2026-04-23) — 4 violations on `/reference`: 3 span variants layered on `bg-foreground` (`sf-copy-label`, `--sf-primary-on-dark` text, `select-all` span) + one `text-black` element in a fixed overlay. Token re-tune needed to clear WCAG AA on inverted surfaces. Deferred to v1.1 — not a lock blocker, tracked separately from §14 retrofit queue.
 
+---
+
+## 14 · EXECUTION QUEUE (lockdown → code)
+
 Items to apply in execute phase after user approves this doc:
 
 1. Introduce `--sfx-cube-hue: 98` token; rewire `--sfx-yellow` to derive from it (T3-g).
