@@ -4,7 +4,7 @@ import { ComponentsExplorer } from "@/components/blocks/components-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 // Three.js WebGL scene — SignalMesh icosahedron relocated from homepage hero
 import { SignalMeshLazy } from "@/components/animation/signal-mesh-lazy";
-import { SFSection } from "@/components/sf";
+import { SFPanel } from "@/components/sf";
 import { highlight } from "@/lib/code-highlight";
 import { COMPONENT_REGISTRY } from "@/lib/component-registry";
 
@@ -29,8 +29,13 @@ export default async function ComponentsPage() {
     <>
       <main id="main-content" data-cursor data-section="inv" data-section-label="INV" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "INVENTORY" }]} />
-        {/* ── Page Header & WebGL Showcase (calc(100*var(--sf-vh)) combined) ── */}
-        <SFSection label="INVENTORY" className="py-0 relative h-screen flex flex-col justify-between overflow-hidden">
+        {/* ── Page Header & WebGL Showcase (R-63-f panel, mode=fill — SignalMesh edge-to-edge) ── */}
+        <SFPanel
+          name="inventory-hero"
+          mode="fill"
+          label="INVENTORY"
+          className="relative flex flex-col justify-between"
+        >
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-[1fr_auto] items-end border-b-4 border-foreground shrink-0"
@@ -63,8 +68,14 @@ export default async function ComponentsPage() {
           <div className="relative flex-1 border-b-4 border-foreground overflow-hidden" data-cursor>
             <SignalMeshLazy />
           </div>
-        </SFSection>
+        </SFPanel>
 
+        {/*
+          R-63-g exception: ComponentsExplorer is a filterable multi-port catalog
+          (54 components × variable preview heights). Stays outside the panel
+          model until pagination across SFPanel frames lands per §14 #18.
+          Dev-only PanelHeightAssertion will warn on this route — expected.
+        */}
         <ComponentsExplorer highlightedCodeMap={highlightedCodeMap} />
       </main>
       <Footer />
