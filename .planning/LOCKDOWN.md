@@ -487,10 +487,8 @@ Branches B (cdb-v3-dossier), C (cdb-v2-broadcast = subset), D (aesthetic-deep-di
 - **Keyboard model retrofit (R-64-j)** — existing overlays (NavOverlay, CommandPalette, SFDialog, SFSheet, SFDrawer, SFAlertDialog) need focus-trap + focus-return-to-trigger audit. Queued per §14 item 16.
 - **Typography `-fluid` tier unbuilt (R-63-h)** — semantic aliases exist fixed-size only (§3.2); fluid variants with `clamp()` scaling pending per §14 item 17.
 - ~~**Long-form prose retrofit (R-63-g)** — `/reference` (158 API surfaces) is the prose-heaviest existing page. Paginate across SFPanel frames per §14 item 18.~~ **RESOLVED** — §14.18 shipped 2026-04-23 @ `58e1c93`.
-
----
-
-## 14 · EXECUTION QUEUE (lockdown → code)
+- **Lighthouse measurement methodology** (confirmed 2026-04-23) — `experimental.useCache: true` + Turbopack dev server wraps metadata emission in a React Suspense boundary, so `next dev` Lighthouse navigation-mode flags `meta-description` as missing even when the page declares `export const metadata`. Production (`next build && next start`) emits metadata in the initial `<head>` shell; `/reference` scores **SEO 100 / BP 100 / A11y 96** in prod navigation mode. Rule: the CLAUDE.md "Lighthouse 100/100" gate is measured against prod builds only; dev-mode scores are informational.
+- **Color-contrast on `bg-foreground` surfaces** (prod-confirmed 2026-04-23) — 4 violations on `/reference`: 3 span variants layered on `bg-foreground` (`sf-copy-label`, `--sf-primary-on-dark` text, `select-all` span) + one `text-black` element in a fixed overlay. Token re-tune needed to clear WCAG AA on inverted surfaces. Deferred to v1.1 — not a lock blocker, tracked separately from §14 retrofit queue.
 
 Items to apply in execute phase after user approves this doc:
 
