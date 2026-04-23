@@ -201,10 +201,12 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
   // ── VL-02 (display type ≥120px) ────────────────────────────────────
 
   test("VL-02: source — /system /init /reference /inventory h1 clamp ≥ 80px min / ≥ 160px max", () => {
+    // Clamp syntax migrated to `calc(12*var(--sf-vw))` post-CLS fix
+    // (anton `display: optional` + pre-hydration scale script in app/layout.tsx).
     const targets = ["app/system/page.tsx", "app/init/page.tsx", "app/reference/page.tsx", "app/inventory/page.tsx"];
     for (const p of targets) {
       const src = fs.readFileSync(path.resolve(ROOT, p), "utf-8");
-      expect(src).toMatch(/clamp\(80px,\s*12vw,\s*160px\)/);
+      expect(src).toMatch(/clamp\(80px,\s*calc\(12\*var\(--sf-vw\)\),\s*160px\)/);
     }
   });
 
@@ -233,10 +235,22 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(matches.length).toBeLessThanOrEqual(5);
   });
 
-  test("VL-05: source — api-explorer ≤ 5 magenta uses", () => {
-    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
-    const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
-    expect(matches.length).toBeLessThanOrEqual(5);
+  test("VL-05: source — api-explorer ≤ 5 magenta uses (per paginated file)", () => {
+    // §14.18 R-63-g: api-explorer.tsx split into 5 files
+    // (orchestrator + index-panel + aux-panel + entry-row + data-sheet).
+    // Magenta budget still ≤5 per file.
+    const targets = [
+      "components/blocks/api-explorer-paginated.tsx",
+      "components/blocks/api-index-panel.tsx",
+      "components/blocks/api-aux-panel.tsx",
+      "components/blocks/api-entry-row.tsx",
+      "components/blocks/api-entry-data-sheet.tsx",
+    ];
+    for (const p of targets) {
+      const src = fs.readFileSync(path.resolve(ROOT, p), "utf-8");
+      const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
+      expect(matches.length, p).toBeLessThanOrEqual(5);
+    }
   });
 
   test("VL-05: source — app/init/page.tsx ≤ 5 magenta uses", () => {
@@ -395,9 +409,11 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(matches.length).toBeLessThanOrEqual(5);
   });
 
-  test("SP-03: source — /init renders NavRevealMount + has header[data-nav-reveal-trigger]", () => {
+  test("SP-03: source — /init has header[data-nav-reveal-trigger] (NavRevealMount is global)", () => {
+    // NavRevealMount mounted once in app/layout.tsx with
+    // targetSelector="[data-entry-section], [data-nav-reveal-trigger]".
+    // Subpages just need the trigger attribute on their hero/header.
     const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
-    expect(src).toContain("NavRevealMount");
     expect(src).toContain("data-nav-reveal-trigger");
     // Anti-pattern check: must NOT rely on the safety fallback
     expect(src).not.toMatch(/trigger\s*===\s*null/);
@@ -545,9 +561,9 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
 
   // ── SP-05 (34-02 reinforcement): /system renders NavRevealMount + header trigger ──
 
-  test("SP-05: source — /system renders NavRevealMount + header[data-nav-reveal-trigger]", () => {
+  test("SP-05: source — /system has header[data-nav-reveal-trigger] (NavRevealMount is global)", () => {
+    // NavRevealMount mounted once in app/layout.tsx; subpages just tag the trigger.
     const src = fs.readFileSync(path.resolve(ROOT, "app/system/page.tsx"), "utf-8");
-    expect(src).toContain("NavRevealMount");
     expect(src).toContain("data-nav-reveal-trigger");
     // Must not rely on the safety fallback
     expect(src).not.toMatch(/trigger\s*===\s*null/);
@@ -567,21 +583,29 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(fontSize).toBeGreaterThanOrEqual(80);
   });
 
-  test("SP-04: DOM — /reference renders 3 surface groups (COMPONENTS/HOOKS/TOKENS)", async ({ page }) => {
+  test("SP-04: DOM — /reference renders paginated panels (hero + N COMPONENTS + AUX)", async ({ page }) => {
+    // §14.18 R-63-g: surface groups replaced with fit-mode panels.
+    // Desktop (1280w) = hero + 3 COMPONENTS + AUX = 5 fit panels.
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/reference");
-    const groups = page.locator("[data-api-surface-group]");
-    await expect(groups).toHaveCount(3);
-    const keys = await groups.evaluateAll((els) =>
-      els.map((el) => el.getAttribute("data-api-surface-group")),
-    );
-    expect(keys).toEqual(expect.arrayContaining(["COMPONENTS", "HOOKS", "TOKENS"]));
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
+    await expect(page.locator('[data-section="reference-hero"]')).toBeAttached();
+    await expect(page.locator('[data-section="components-1"]')).toBeAttached();
+    await expect(page.locator('[data-section="aux-surfaces"]')).toBeAttached();
+    await expect(page.locator('[data-panel-mode="fit"]')).toHaveCount(5);
   });
 
   test("SP-04: DOM — /reference click entry shows props data sheet", async ({ page }) => {
+    // §14.18 R-63-g: rows live inside paginated fit-mode panels — scroll the
+    // first row into view before clicking (first COMPONENTS panel sits below
+    // the hero, which fills the viewport).
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/reference");
-    const firstEntry = page
-      .locator('[data-api-surface-group="COMPONENTS"] [data-api-entry]')
-      .first();
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
+    const firstEntry = page.locator("[data-api-entry]").first();
+    await firstEntry.scrollIntoViewIfNeeded();
     await expect(firstEntry).toBeVisible();
     await firstEntry.click();
     const propsTable = page.locator("[data-api-props-table]").first();
@@ -590,29 +614,44 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(display).toBe("grid");
   });
 
-  test("SP-04: DOM — /reference keyboard ArrowDown moves focus between entries", async ({ page }) => {
+  test("SP-04: DOM — /reference keyboard Enter opens detail + Escape restores grid", async ({ page }) => {
+    // §14.18 R-64-j: paginated panels use Enter/Space to open the detail
+    // data-sheet and Escape to return to the grid. ArrowDown nav was not
+    // implemented — entries are a 2-col grid on desktop, so row advance
+    // isn't 1-D. Enter/Escape is the real keyboard contract.
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/reference");
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
     const firstEntry = page.locator("[data-api-entry]").first();
+    await firstEntry.scrollIntoViewIfNeeded();
     await firstEntry.focus();
-    const firstId = await firstEntry.getAttribute("data-api-entry");
-    await page.keyboard.press("ArrowDown");
-    const focusedId = await page.evaluate(() =>
-      document.activeElement?.getAttribute("data-api-entry"),
-    );
-    expect(focusedId).toBeTruthy();
-    expect(focusedId).not.toBe(firstId);
+    await page.keyboard.press("Enter");
+    await expect(page.locator("[data-api-props-table]")).toBeVisible({ timeout: 3000 });
+    await page.keyboard.press("Escape");
+    await expect(page.locator("[data-api-props-table]")).toHaveCount(0);
   });
 
-  test("SP-04: DOM — /reference search input filters entries", async ({ page }) => {
+  test("SP-04: DOM — /reference ?q= filter drops matching entries", async ({ page }) => {
+    // §14.18 R-63-g: inline [data-api-search] input replaced with ?q= URL
+    // param (also wired to CommandPalette via Cmd+K). Filter narrows
+    // paginated panels and entries; empty query restores the default set.
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/reference");
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
     const initialCount = await page.locator("[data-api-entry]").count();
     expect(initialCount).toBeGreaterThan(0);
-    await page.locator("[data-api-search]").fill("XYZMATCHNOTHING");
-    await page.waitForTimeout(150);
+
+    await page.goto("/reference?q=button");
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
     const filteredCount = await page.locator("[data-api-entry]").count();
     expect(filteredCount).toBeLessThan(initialCount);
-    await page.locator("[data-api-search]").fill("");
-    await page.waitForTimeout(150);
+
+    await page.goto("/reference");
+    await page.waitForLoadState("networkidle");
+    await page.locator('[data-panel-mode="fit"]').first().waitFor();
     const restoredCount = await page.locator("[data-api-entry]").count();
     expect(restoredCount).toBe(initialCount);
   });
@@ -631,37 +670,67 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(src).toContain("export type { ComponentDoc");
   });
 
-  test("SP-04: source — api-explorer has no rounded-* classes", () => {
-    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
-    expect(src).not.toMatch(/\brounded-[a-z0-9]+/);
+  // §14.18 R-63-g: api-explorer.tsx was split into 5 files. Source-level assertions
+  // target each file; the data-attr contract is distributed across the new surface.
+  const API_EXPLORER_FILES = [
+    "components/blocks/api-explorer-paginated.tsx",
+    "components/blocks/api-index-panel.tsx",
+    "components/blocks/api-aux-panel.tsx",
+    "components/blocks/api-entry-row.tsx",
+    "components/blocks/api-entry-data-sheet.tsx",
+  ];
+
+  test("SP-04: source — api-explorer split has no rounded-* classes", () => {
+    for (const p of API_EXPLORER_FILES) {
+      const src = fs.readFileSync(path.resolve(ROOT, p), "utf-8");
+      expect(src, p).not.toMatch(/\brounded-[a-z0-9]+/);
+    }
   });
 
-  test("SP-04: source — api-explorer no longer references --api-sidebar-w / --api-preview-w", () => {
-    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
-    expect(src).not.toMatch(/--api-sidebar-w/);
-    expect(src).not.toMatch(/--api-preview-w/);
+  test("SP-04: source — api-explorer split no longer references --api-sidebar-w / --api-preview-w", () => {
+    for (const p of API_EXPLORER_FILES) {
+      const src = fs.readFileSync(path.resolve(ROOT, p), "utf-8");
+      expect(src, p).not.toMatch(/--api-sidebar-w/);
+      expect(src, p).not.toMatch(/--api-preview-w/);
+    }
   });
 
-  test("SP-04: source — api-explorer magenta count <= 5", () => {
-    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
-    const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
-    expect(matches.length).toBeLessThanOrEqual(5);
+  test("SP-04: source — api-explorer split magenta count <= 5 per file", () => {
+    for (const p of API_EXPLORER_FILES) {
+      const src = fs.readFileSync(path.resolve(ROOT, p), "utf-8");
+      const matches = src.match(/text-primary|bg-primary|border-primary|var\(--color-primary\)/g) || [];
+      expect(matches.length, p).toBeLessThanOrEqual(5);
+    }
   });
 
-  test("SP-04: source — api-explorer renders all 5 schematic data attrs + keyboard handler", () => {
-    const src = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-explorer.tsx"), "utf-8");
-    expect(src).toContain("data-api-surface-group");
-    expect(src).toContain("data-api-entry");
-    expect(src).toContain("data-api-props-table");
-    expect(src).toContain("data-api-search");
-    expect(src).toMatch(/ArrowDown|ArrowUp/);
+  test("SP-04: source — api-explorer split renders schematic data attrs + keyboard handler", () => {
+    // Post-§14.18 R-63-g contract:
+    //   data-section (components-N / aux-surfaces) — api-index-panel / api-aux-panel via SFPanel name
+    //   data-api-entry                              — api-entry-row
+    //   data-api-props-table                        — api-entry-data-sheet
+    // Search moved from inline [data-api-search] to URL ?q= + CommandPalette.
+    // Keyboard contract in the panels: Enter/Space open detail, Escape closes.
+    const indexPanel = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-index-panel.tsx"), "utf-8");
+    const auxPanel = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-aux-panel.tsx"), "utf-8");
+    const row = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-entry-row.tsx"), "utf-8");
+    const dataSheet = fs.readFileSync(path.resolve(ROOT, "components/blocks/api-entry-data-sheet.tsx"), "utf-8");
+
+    expect(indexPanel).toMatch(/name=\{?`?components-/);
+    expect(auxPanel).toContain('name="aux-surfaces"');
+    expect(row).toContain("data-api-entry");
+    expect(dataSheet).toContain("data-api-props-table");
+    // Enter/Space/Escape handling lives in the panels (not the row — row
+    // delegates via onKeyDown callback).
+    expect(indexPanel).toMatch(/"Enter"|"Escape"|"\s"/);
+    expect(auxPanel).toMatch(/"Enter"|"Escape"|"\s"/);
   });
 
-  test("SP-04: source — app/reference/page.tsx renders NavRevealMount + has header[data-nav-reveal-trigger]", () => {
+  test("SP-04: source — app/reference/page.tsx has header[data-nav-reveal-trigger] + clamp", () => {
+    // NavRevealMount is global (app/layout.tsx); pages just need the trigger tag.
+    // Clamp syntax uses calc(12*var(--sf-vw)) post-CLS fix.
     const src = fs.readFileSync(path.resolve(ROOT, "app/reference/page.tsx"), "utf-8");
-    expect(src).toContain("NavRevealMount");
     expect(src).toContain("data-nav-reveal-trigger");
-    expect(src).toMatch(/clamp\(80px,\s*12vw,\s*160px\)/);
+    expect(src).toMatch(/clamp\(80px,\s*calc\(12\*var\(--sf-vw\)\),\s*160px\)/);
     expect(src).not.toMatch(/trigger\s*===\s*null/);
   });
 });
