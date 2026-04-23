@@ -56,3 +56,6 @@ report*.json
 report*.html
 test-results/
 
+# Claude Code runtime locks
+.claude/scheduled_tasks.lock
+
