@@ -298,31 +298,47 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     expect(src).toMatch(/body\[data-nav-visible="true"\]\s+\.sf-nav-hidden/);
   });
 
-  test("SP-05: DOM — homepage nav starts hidden, appears after scroll past ENTRY", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 2000 });
-    await page.evaluate(() => window.scrollTo(0, window.innerHeight + 100));
+  // Scroll contract for nav-reveal tests:
+  //   - Use `page.mouse.wheel` (fires real WheelEvent that Lenis observes).
+  //     `window.scrollTo` does NOT drive Lenis → ScrollTrigger never updates
+  //     → nav stays hidden. See tests/phase-35-homepage.spec.ts Wave 3 T-03.
+  //   - Subpage headers sit inside `justify-end` SFPanel mode="fit" (100vh),
+  //     so the header bottom is ~100vh → need ≥1200px wheel to cross the
+  //     ScrollTrigger's "bottom top" start.
+
+  test("SP-05: DOM — homepage nav reveals via intro construct (not scroll-trigger)", async ({ page }) => {
+    // Homepage uses NavIntroMount — the page-load construct reveals the nav
+    // immediately after hydration (body[data-nav-intro="true"]). Subpages
+    // use NavScrollMount → useNavReveal, which is what the next 3 tests
+    // exercise. The old "hidden → visible after scroll" contract applied to
+    // the pre-intro world; it was superseded by the VL-06 entry choreography.
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 3000 });
+    await expect(page.locator("body")).toHaveAttribute("data-nav-intro", "true");
+    // Scrolling past ENTRY must NOT hide the nav (the intro path has no
+    // onLeaveBack). Verify stability.
+    await page.mouse.wheel(0, 1500);
+    await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true");
   });
 
   test("SP-05: DOM — /system nav hidden initially, becomes visible after scrolling past header", async ({ page }) => {
-    await page.goto("/system");
+    await page.goto("/system", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 2000 });
-    await page.evaluate(() => window.scrollTo(0, 600));
+    await page.mouse.wheel(0, 1200);
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 3000 });
   });
 
   test("SP-05: DOM — /init nav hidden initially, becomes visible after scrolling past header", async ({ page }) => {
-    await page.goto("/init");
+    await page.goto("/init", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 2000 });
-    await page.evaluate(() => window.scrollTo(0, 600));
+    await page.mouse.wheel(0, 1200);
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 3000 });
   });
 
   test("SP-05: DOM — /reference nav hidden initially, becomes visible after scrolling past header", async ({ page }) => {
-    await page.goto("/reference");
+    await page.goto("/reference", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 2000 });
-    await page.evaluate(() => window.scrollTo(0, 600));
+    await page.mouse.wheel(0, 1200);
     await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 3000 });
   });
 

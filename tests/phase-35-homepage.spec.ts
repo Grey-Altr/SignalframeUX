@@ -22,17 +22,19 @@ test.describe("@phase35 homepage / — Agent 1", () => {
     test.describe(`${vp.name} -- ${vp.width}x${vp.height}`, () => {
       test.use({ viewport: { width: vp.width, height: vp.height } });
 
-      // ── Nav-reveal contract ──────────────────────────────────────────────
-      test("nav-reveal: hidden on load, visible after scroll", async ({ page }) => {
-        // Phase 35 tightened pattern (Gap 1) — waitUntil domcontentloaded + timeout 500ms
-        // Wave 3 T-03 fix: window.scrollBy does not drive Lenis (Lenis intercepts native scroll
-        // but wheel events trigger its internal pipeline). Use page.mouse.wheel instead — Playwright
-        // wheel events are real WheelEvent dispatches that Lenis picks up via its event listeners.
+      // ── Nav-reveal contract (intro mode, NOT scroll-trigger) ─────────────
+      test("nav-reveal: intro reveal + stable after scroll", async ({ page }) => {
+        // Homepage uses NavIntroMount — the page-load construct reveals the
+        // nav immediately after hydration and sets body[data-nav-intro="true"].
+        // Subpages use NavScrollMount. Old "hidden → scroll → visible" contract
+        // was the pre-intro world; it was superseded by VL-06 entry choreography.
+        // Wave 3 T-03 carry-forward: page.mouse.wheel drives Lenis, used here
+        // only to verify nav stays visible past ENTRY (no onLeaveBack).
         await page.goto("/", { waitUntil: "domcontentloaded" });
-        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 500 });
-        // Scroll via wheel event — drives Lenis, which updates ScrollTrigger, which flips data-nav-visible
-        await page.mouse.wheel(0, 800);
-        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 2000 });
+        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 3000 });
+        await expect(page.locator("body")).toHaveAttribute("data-nav-intro", "true");
+        await page.mouse.wheel(0, 1500);
+        await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true");
       });
 
       // ── InstrumentHUD shape + [01//ENTRY] label ──────────────────────────
