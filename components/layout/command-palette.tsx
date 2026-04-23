@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { toggleTheme as sharedToggleTheme } from "@/lib/theme";
 import { useLenisInstance } from "@/components/layout/lenis-provider";
+import { buildAPISearchItems } from "@/lib/api-search-command";
 import {
   SFCommand,
   SFCommandDialog,
@@ -37,6 +39,9 @@ interface CommandPaletteProps {
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const router = useRouter();
   const lenis = useLenisInstance();
+  const pathname = usePathname();
+  const isReference = pathname === "/reference";
+  const apiItems = useMemo(() => (isReference ? buildAPISearchItems() : []), [isReference]);
 
   const openRef = useRef(open);
   useEffect(() => { openRef.current = open; }, [open]);
@@ -105,6 +110,30 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         <SFCommandInput placeholder="SEARCH COMMANDS..." />
         <SFCommandList>
           <SFCommandEmpty>NO RESULTS FOUND.</SFCommandEmpty>
+
+          {isReference && apiItems.length > 0 && (
+            <>
+              <SFCommandGroup heading="API SURFACES">
+                {apiItems.map((item) => (
+                  <SFCommandItem
+                    key={item.id}
+                    value={item.value}
+                    onSelect={() => {
+                      onOpenChange(false);
+                      // Hash change → APIExplorerProvider listener → panel swap.
+                      window.location.hash = `#${item.id}`;
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    <span className="ml-auto text-[var(--text-xs)] uppercase tracking-[0.15em] text-muted-foreground">
+                      {item.sublabel}
+                    </span>
+                  </SFCommandItem>
+                ))}
+              </SFCommandGroup>
+              <SFCommandSeparator />
+            </>
+          )}
 
           <SFCommandGroup heading="Navigation">
             {NAV_ITEMS.map((item) => (

@@ -4,6 +4,7 @@ import { useState, memo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CommandPaletteLazy as CommandPalette } from "@/components/layout/command-palette-lazy";
+import { SlashFocusListener } from "./slash-focus-listener";
 import { ColorCycleFrame } from "@/components/animation/color-cycle-frame";
 import { useLenisInstance } from "@/components/layout/lenis-provider";
 import {
@@ -785,6 +786,7 @@ export function Nav() {
           </div>
         </div>
 
+        <SlashFocusListener openPalette={() => setCommandOpen(true)} />
         <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
       </nav>
     </>
