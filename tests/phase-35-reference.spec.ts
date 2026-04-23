@@ -61,17 +61,19 @@ test.describe("@phase35 /reference — full suite", () => {
       // ── Schematic register density: monospaced font on category headings ─
       test("schematic register: font-mono applied to category headings", async () => {
         // Source-read check — monospaced font is a schematic register requirement
-        // for the /reference API explorer. Category headings must use font-mono.
-        const src = readFileSync(join(process.cwd(), "components/blocks/api-explorer.tsx"), "utf-8");
+        // for the /reference API explorer. §14.18 split the single-block explorer
+        // into APIExplorerPaginated + APIIndexPanel; panel owns the row headings.
+        const src = readFileSync(join(process.cwd(), "components/blocks/api-index-panel.tsx"), "utf-8");
         expect(src).toMatch(/font-mono/);
       });
 
       // ── Schematic register: at least 1 category row present ─────────────
       test("schematic register: reference page has API content rows", async ({ page }) => {
         await page.goto("/reference");
-        await page.waitForLoadState("domcontentloaded");
-        // At least one data row must be present in the reference table
-        const rows = page.locator("[data-section='API REFERENCE'] tr, table tr, [role='row']");
+        await page.waitForLoadState("networkidle");
+        // At least one data row must be present in the reference explorer.
+        // §14.18 rows are <button data-api-entry="..."> emitted by APIEntryRow.
+        const rows = page.locator("[data-api-entry]");
         const count = await rows.count();
         expect(count).toBeGreaterThanOrEqual(1);
       });

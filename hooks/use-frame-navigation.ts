@@ -24,7 +24,12 @@ import { useEffect, useRef } from "react";
 import { useLenisInstance } from "@/components/layout/lenis-provider";
 import { getQualityTier } from "@/lib/effects/quality-tier";
 
-const PANEL_SELECTOR = "[data-section]";
+// R-64 panels are leaf navigation targets, not their page-root container.
+// `data-primary` marks the subpage `<main>` wrapper (Phase 35-01 HUD label
+// source) — that wrapper also carries `data-section` for the HUD but must
+// be excluded from the offset registry, or Space advances within the page
+// container instead of between sibling panels. §14.18.
+const PANEL_SELECTOR = "[data-section]:not([data-primary])";
 const SNAP_TOLERANCE_PX = 2;
 
 const EDITABLE_ROLES = new Set([
