@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer";
 import { APIExplorer } from "@/components/blocks/api-explorer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { SFSection } from "@/components/sf";
+import { SFPanel, SFSection } from "@/components/sf";
 
 export const metadata: Metadata = {
   title: "API Reference — SIGNALFRAME//UX",
@@ -14,7 +14,13 @@ export default function APIPage() {
     <>
       <main id="main-content" data-cursor data-section="ref" data-section-label="API" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "API" }]} />
-        <SFSection label="API REFERENCE HEADER" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+        {/* ═══ PAGE HEADER (R-63-f panel) ═══ */}
+        <SFPanel
+          name="reference-hero"
+          mode="fit"
+          label="API REFERENCE"
+          className="relative flex flex-col justify-end"
+        >
           <header
             data-nav-reveal-trigger
             className="grid grid-cols-1 md:grid-cols-[1fr_auto] border-b-4 border-foreground items-end min-w-0"
@@ -32,7 +38,14 @@ export default function APIPage() {
               PROGRAMMABLE SURFACES
             </div>
           </header>
-        </SFSection>
+        </SFPanel>
+        {/*
+          R-63-g exception: APIExplorer is the prose-heaviest page in the
+          system (158 API surfaces × variable entry heights). Tracked
+          explicitly by §14 #18 for pagination across fit-mode SFPanel
+          frames. Remains on SFSection until that retrofit lands. Dev-only
+          PanelHeightAssertion will warn on this route — expected.
+        */}
         <SFSection label="API REFERENCE" className="py-0">
           <APIExplorer />
         </SFSection>
