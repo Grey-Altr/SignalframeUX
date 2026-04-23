@@ -133,8 +133,9 @@ function PreviewBadge({ color, text }: { color: string; text: string }) {
   // Use dark text on light/bright backgrounds (green, yellow, primary/magenta).
   // Magenta primary (#ff00a8) fails WCAG AA with white text (3.6:1) — dark text passes (5.8:1).
   const needsDarkText =
-    color === "var(--sf-green)" ||
-    color === "var(--sf-yellow)" ||
+    color === "var(--sfx-green)" ||
+    color === "var(--sfx-yellow)" ||
+    color === "var(--sfx-foreground)" ||
     color === "var(--color-primary)";
   return (
     <span
@@ -191,7 +192,7 @@ function PreviewWave() {
       className="w-[80%] h-5"
       style={{
         background:
-          "repeating-linear-gradient(90deg, transparent 0px, transparent 2px, var(--sf-green) 2px, var(--sf-green) 3px)",
+          "repeating-linear-gradient(90deg, transparent 0px, transparent 2px, var(--sfx-green) 2px, var(--sfx-green) 3px)",
       }}
     />
   );
@@ -203,7 +204,7 @@ function PreviewGlitch() {
       <span className="text-base uppercase sf-display">ABC</span>
       <span
         aria-hidden="true"
-        className="absolute left-0.5 top-px text-base uppercase sf-display text-[var(--sf-primary-on-dark)]"
+        className="absolute left-0.5 top-px text-base uppercase sf-display text-[var(--sfx-primary-on-dark)]"
         style={{ clipPath: "inset(30% 0 30% 0)" }}
       >
         ABC
@@ -214,7 +215,7 @@ function PreviewGlitch() {
 
 function PreviewParticle() {
   return (
-    <span className="text-lg tracking-[4px]" style={{ color: "var(--sf-green)" }}>
+    <span className="text-lg tracking-[4px]" style={{ color: "var(--sfx-green)" }}>
       · · · ·
     </span>
   );
@@ -452,9 +453,9 @@ const COMPONENTS: ComponentEntry[] = [
   { index: "005", name: "CARD",         category: "LAYOUT",       subcategory: "FRAME",  version: "v2.1.0", variant: "default", filterTag: "LAYOUT",       pattern: "A", preview: <PreviewCard /> },
   { index: "006", name: "MODAL",        category: "LAYOUT",       subcategory: "FRAME",  version: "v2.0.0", variant: "yellow",  filterTag: "LAYOUT",       pattern: "A", preview: <PreviewModal /> },
   { index: "007", name: "TABS",         category: "NAVIGATION",   subcategory: "FRAME",  version: "v2.1.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewTabs /> },
-  { index: "008", name: "BADGE",        category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "black",   filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--color-primary)" text="NEW" /> },
+  { index: "008", name: "BADGE",        category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "black",   filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--sfx-foreground)" text="NEW" /> },
   { index: "009", name: "TABLE",        category: "DATA_DISPLAY", subcategory: "FRAME",  version: "v2.1.0", variant: "black",   filterTag: "DATA_DISPLAY", pattern: "A", preview: <PreviewTable /> },
-  { index: "010", name: "TOAST (FRAME)",category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--sf-green)" text="SUCCESS" /> },
+  { index: "010", name: "TOAST (FRAME)",category: "FEEDBACK",     subcategory: "FRAME",  version: "v2.0.0", variant: "default", filterTag: "FEEDBACK",     pattern: "A", preview: <PreviewBadge color="var(--sfx-green)" text="SUCCESS" /> },
   { index: "011", name: "PAGINATION",   category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewPagination /> },
   { index: "012", name: "DRAWER",       category: "LAYOUT",       subcategory: "FRAME",  version: "v1.4.0", variant: "yellow",  filterTag: "LAYOUT",       pattern: "B", preview: <PreviewDrawer /> },
   { index: "013", name: "AVATAR",       category: "NAVIGATION",   subcategory: "FRAME",  version: "v1.3.0", variant: "default", filterTag: "NAVIGATION",   pattern: "A", preview: <PreviewAvatar /> },
@@ -736,7 +737,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
             aria-pressed={activeFilter === cat}
             data-filter={cat}
             className={`border-0 border-r-2 border-foreground rounded-none px-[var(--sfx-space-6)] py-[var(--sfx-space-3)] text-[var(--text-sm)] tracking-[0.15em] h-auto ${
-              activeFilter === cat ? "text-[var(--sf-primary-on-dark)]" : ""
+              activeFilter === cat ? "text-[var(--sfx-primary-on-dark)]" : ""
             }`}
           >
             {cat}
@@ -888,12 +889,13 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               <div
                 className={`w-full h-12 border flex items-center justify-center text-[var(--text-xs)] transition-colors duration-[var(--sfx-duration-fast)] mt-[var(--sfx-space-2)] mb-[var(--sfx-space-2)] ${
                   comp.variant === "black"
-                    ? "border-[var(--sf-subtle-border)] group-hover:border-foreground"
+                    ? "border-[var(--sfx-subtle-border)] group-hover:border-foreground"
                     : comp.variant === "yellow"
                       ? "border-foreground"
                       : "border-border/40 group-hover:border-foreground"
                 }`}
-                style={{ boxShadow: "var(--sf-inset-shadow)" }}
+                style={{ boxShadow: "var(--sfx-inset-shadow)" }}
+                data-flip-preview
               >
                 {comp.preview}
               </div>

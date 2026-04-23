@@ -127,10 +127,10 @@ type CodeLine =
   | { type: "line"; parts: CodePart[] };
 
 const COLOR_MAP: Record<string, string> = {
-  kw: "text-primary",
-  str: "text-[var(--sf-yellow)]",
-  fn: "text-[var(--sf-code-text)]",
-  cn: "text-[var(--sf-code-keyword)]",
+  kw: "text-[var(--sfx-primary-on-dark)]",
+  str: "text-[var(--sfx-yellow)]",
+  fn: "text-[var(--sfx-code-text)]",
+  cn: "text-[var(--sfx-code-keyword)]",
 };
 
 function CodeBlock({ lines }: { lines: CodeLine[] }) {
@@ -141,12 +141,12 @@ function CodeBlock({ lines }: { lines: CodeLine[] }) {
           if (line.type === "blank") return <br key={i} />;
           if (line.type === "comment")
             return (
-              <div key={i} className="text-muted-foreground">
+              <div key={i} className="text-[var(--sfx-muted-text-dark)]">
                 {line.text}
               </div>
             );
           return (
-            <div key={i} className="text-[var(--sf-code-text)]">
+            <div key={i} className="text-[var(--sfx-code-text)]">
               {line.parts.map((part, j) => {
                 if (!part.cls) return <span key={j}>{part.text}</span>;
                 return (

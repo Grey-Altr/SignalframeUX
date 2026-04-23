@@ -114,7 +114,7 @@ function PreviewToast() {
 
 function PreviewNoiseBg() {
   return (
-    <div className="w-[80%] max-w-[180px] h-[60px] relative overflow-hidden border border-[var(--sf-subtle-border)]">
+    <div className="w-[80%] max-w-[180px] h-[60px] relative overflow-hidden border border-[var(--sfx-subtle-border)]">
       <div
         className="absolute inset-0 opacity-30"
         style={{
@@ -139,14 +139,14 @@ function PreviewParticleMesh() {
           return <circle key={i} cx={x} cy={y} r="1.5" fill="var(--sf-dim-text)" />;
         })}
         {/* Connection lines */}
-        <line x1="15" y1="12" x2="45" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="45" y1="12" x2="75" y2="26" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="75" y1="26" x2="105" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="105" y1="12" x2="135" y2="26" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="135" y1="26" x2="165" y2="12" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="15" y1="26" x2="45" y2="40" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="45" y1="40" x2="75" y2="40" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
-        <line x1="105" y1="40" x2="135" y2="54" stroke="var(--sf-subtle-border)" strokeWidth="0.5" />
+        <line x1="15" y1="12" x2="45" y2="12" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="45" y1="12" x2="75" y2="26" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="75" y1="26" x2="105" y2="12" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="105" y1="12" x2="135" y2="26" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="135" y1="26" x2="165" y2="12" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="15" y1="26" x2="45" y2="40" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="45" y1="40" x2="75" y2="40" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
+        <line x1="105" y1="40" x2="135" y2="54" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
       </svg>
     </div>
   );
@@ -227,7 +227,7 @@ function PreviewWaveform() {
           strokeWidth="0.7"
           opacity="0.6"
         />
-        <line x1="0" y1={mid} x2={w} y2={mid} stroke="var(--sf-subtle-border)" strokeWidth="0.5" strokeDasharray="3 3" />
+        <line x1="0" y1={mid} x2={w} y2={mid} stroke="var(--sfx-subtle-border)" strokeWidth="0.5" strokeDasharray="3 3" />
       </svg>
     </div>
   );

@@ -49,8 +49,8 @@ export function TypeSpecimen({ tokens }: TypeSpecimenProps) {
                 lineHeight: 1,
                 ...(t.code
                   ? {
-                      color: "var(--sf-code-text)",
-                      background: "var(--sf-code-bg)",
+                      color: "var(--sfx-code-text)",
+                      background: "var(--sfx-code-bg)",
                       padding: "8px 12px",
                       display: "inline-block",
                     }

@@ -13,14 +13,14 @@ export function SharedCodeBlock({
   return (
     <div
       className={cn(
-        "relative overflow-x-auto font-mono bg-[var(--sf-code-bg)] text-[var(--sf-code-text)] p-[var(--sfx-space-6)] text-[var(--text-sm)] leading-[1.7] shadow-[inset_0_2px_4px_var(--sf-inset-shadow-color)]",
+        "relative overflow-x-auto font-mono bg-[var(--sfx-code-bg)] text-[var(--sfx-code-text)] p-[var(--sfx-space-6)] text-[var(--text-sm)] leading-[1.7] shadow-[inset_0_2px_4px_var(--sfx-inset-shadow-color)]",
         className
       )}
       role="region"
       aria-label={label ? `Code: ${label}` : "Code example"}
     >
       {label && (
-        <span className="absolute top-1.5 right-2.5 text-[var(--text-xs)] uppercase tracking-[0.2em] text-muted-foreground" aria-hidden="true">
+        <span className="absolute top-1.5 right-2.5 text-[var(--text-xs)] uppercase tracking-[0.2em]" style={{ color: "var(--sfx-muted-text-dark)" }} aria-hidden="true">
           {label}
         </span>
       )}

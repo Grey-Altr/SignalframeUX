@@ -10,8 +10,8 @@ const CODE_LINES: CodeLine[] = [
   { text: "  theme: 'dark',", color: "var(--sf-yellow)" },
   { text: "  tokens: 'oklch',", color: "var(--sf-yellow)" },
   { text: "  frame: {" },
-  { text: "    enabled: true,", color: "var(--sf-code-const)" },
-  { text: "    intensity: 0.6,", color: "var(--sf-code-const)" },
+  { text: "    enabled: true,", color: "var(--sfx-code-const)" },
+  { text: "    intensity: 0.6,", color: "var(--sfx-code-const)" },
   { text: "    reactive: 'cursor'", color: "var(--sf-yellow)" },
   { text: "  }" },
   { text: "})" },
@@ -68,7 +68,7 @@ export function CodeSection() {
       </div>
 
       {/* Right — Code block with typewriter + X-ray annotations */}
-      <div className="bg-[var(--sf-code-bg)] px-[var(--sfx-space-8)] py-[var(--sfx-space-12)] relative overflow-hidden" style={{ boxShadow: "var(--sf-inset-shadow)" }}>
+      <div className="bg-[var(--sfx-code-bg)] px-[var(--sfx-space-8)] py-[var(--sfx-space-12)] relative overflow-hidden" style={{ boxShadow: "var(--sfx-inset-shadow)" }}>
         {/* Terminal label */}
         <div className="absolute top-4 right-6 text-sm uppercase tracking-[0.2em] text-[var(--sf-dim-text)] font-bold z-[3]">
           TERMINAL™
@@ -85,7 +85,7 @@ export function CodeSection() {
             />
           }
           bottomLayer={
-            <div className="bg-[var(--sf-code-bg)]">
+            <div className="bg-[var(--sfx-code-bg)]">
               <pre className="text-base leading-[1.7] font-mono overflow-x-auto">
                 <code>
                   {ANNOTATION_LINES.map((line, i) => (
