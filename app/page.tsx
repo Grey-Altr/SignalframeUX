@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer";
-import { SFSection } from "@/components/sf";
+import { SFPanel, SFSection } from "@/components/sf";
 import { EntrySection } from "@/components/blocks/entry-section";
 import { ProofSection } from "@/components/blocks/proof-section";
 import { ThesisSection } from "@/components/blocks/thesis-section";
@@ -22,17 +22,23 @@ export default function HomePage() {
       <main id="main-content">
         <div id="bg-shift-wrapper">
           {/* ENTRY — full-viewport GLSL hero with title overlay */}
-          <SFSection
+          <SFPanel
+            name="entry"
+            mode="fill"
             label="ENTRY"
             bgShift="black"
             id="entry"
-            data-section="entry"
-            className="py-0 relative h-screen overflow-hidden"
+            className="relative"
           >
             <EntrySection />
-          </SFSection>
+          </SFPanel>
 
-          {/* THESIS — 200-calc(300*var(--sf-vh)) pinned manifesto (Phase 31) */}
+          {/* THESIS — 200-calc(300*var(--sf-vh)) pinned manifesto (Phase 31).
+              R-63-e / D-11 exception: pinned sections count as ONE panel
+              externally but internally consume N × port of scroll distance.
+              SFPanel enforces fixed height, so THESIS stays on SFSection
+              until a PinnedPanel primitive emerges. Registry still picks
+              it up via [data-section="thesis"]. */}
           <SFSection
             label="THESIS"
             bgShift="white"
@@ -54,23 +60,25 @@ export default function HomePage() {
           </SFSection>
 
           {/* PROOF — interactive SIGNAL/FRAME layer demo (Phase 32) */}
-          <SFSection
+          <SFPanel
+            name="proof"
+            mode="fill"
             label="PROOF"
             bgShift="black"
             id="proof"
-            data-section="proof"
-            className="py-0 sf-circuit relative h-screen overflow-hidden"
+            className="sf-circuit relative"
           >
             <ProofSection />
-          </SFSection>
+          </SFPanel>
 
           {/* INVENTORY — 12-item catalog table with fixed overlay ComponentDetail (Phase 33) */}
-          <SFSection
+          <SFPanel
+            name="inventory"
+            mode="fit"
             label="INVENTORY"
             bgShift="white"
             id="inventory"
-            data-section="inventory"
-            className="py-0 sf-circuit relative h-screen overflow-hidden"
+            className="sf-circuit relative"
           >
             <InventorySection />
             {/* ── Symbol divider: INVENTORY → SIGNAL ── */}
@@ -79,29 +87,33 @@ export default function HomePage() {
               <CDSymbol name="crosshair" size={12} className="text-primary" />
               <CDSymbol name="dash" size={16} className="text-foreground/30" />
             </div>
-          </SFSection>
+          </SFPanel>
 
           {/* SIGNAL — calc(150*var(--sf-vh)) atmospheric parallax (Phase 32) */}
-          <SFSection
+          <SFPanel
+            name="signal"
+            mode="fill"
             label="SIGNAL"
             bgShift="black"
             id="signal"
-            data-section="signal"
-            className="py-0 relative h-screen overflow-hidden"
+            className="relative"
           >
             <SignalSection />
-          </SFSection>
+          </SFPanel>
 
-          {/* ACQUISITION — terminal instrument panel, ≤calc(50*var(--sf-vh)) (Phase 33) */}
-          <SFSection
+          {/* ACQUISITION — terminal instrument panel, ≤calc(50*var(--sf-vh)) (Phase 33).
+              flex+flex-col+justify-center replaces the implicit flex layout
+              SFSection previously provided; SFPanel is minimal by design. */}
+          <SFPanel
+            name="acquisition"
+            mode="fit"
             label="ACQUISITION"
             bgShift="black"
             id="acquisition"
-            data-section="acquisition"
-            className="py-0 sf-circuit relative h-screen overflow-hidden justify-center"
+            className="sf-circuit relative flex flex-col justify-center"
           >
             <AcquisitionSection />
-          </SFSection>
+          </SFPanel>
         </div>
       </main>
       <Footer />
