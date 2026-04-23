@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { SFSection, CDSymbol } from "@/components/sf";
+import { SFPanel, SFSection, CDSymbol } from "@/components/sf";
 import { BUILDS } from "@/app/builds/builds-data";
 import { BuildSigilDiagram } from "@/components/animation/build-sigil-diagram";
 import { SFSignalComposerLazy as SFSignalComposer } from "@/components/animation/sf-signal-composer-lazy";
@@ -26,7 +26,13 @@ export default function BuildsPage() {
       >
         <Breadcrumb segments={[{ label: "BUILDS" }]} />
 
-        <SFSection label="BUILDS" className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+        {/* ═══ PAGE HEADER (R-63-f panel, mode=fill — SFSignalComposer edge-to-edge) ═══ */}
+        <SFPanel
+          name="builds-hero"
+          mode="fill"
+          label="BUILDS"
+          className="relative flex flex-col justify-end"
+        >
           <SFSignalComposer
             passes={["displace", "particle"]}
             intensity={0.4}
@@ -56,8 +62,14 @@ export default function BuildsPage() {
               FRAME + SIGNAL IN PRACTICE
             </div>
           </header>
-        </SFSection>
+        </SFPanel>
 
+        {/*
+          R-63-g exception: CALL, DIAGRAM, SHOWCASE are content-dense and
+          collectively multi-port (6-build grid in particular). Remain on
+          SFSection until pagination across SFPanel frames lands per §14 #18
+          / R-63-g. Dev-only PanelHeightAssertion will warn — expected.
+        */}
         <SFSection label="CALL" className="py-[var(--sfx-space-12)] border-b-2 border-foreground/20">
           <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-[var(--sfx-space-8)] items-start">
             <div>
