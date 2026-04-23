@@ -73,6 +73,26 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     }
   }, [onOpenChange, lenis]);
 
+  // R-64-i: frame navigation via synthetic keyboard events. Dispatched to
+  // window, handled by useFrameNavigation's keydown listener. setTimeout 0
+  // defers until after the dialog close animation starts so focus return
+  // and event dispatch don't race.
+  const dispatchFrameKey = useCallback(
+    (code: string, shiftKey = false) => {
+      onOpenChange(false);
+      setTimeout(() => {
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", { code, shiftKey, bubbles: true }),
+        );
+      }, 0);
+    },
+    [onOpenChange],
+  );
+  const nextFrame = useCallback(() => dispatchFrameKey("Space"), [dispatchFrameKey]);
+  const prevFrame = useCallback(() => dispatchFrameKey("Space", true), [dispatchFrameKey]);
+  const firstFrame = useCallback(() => dispatchFrameKey("Home"), [dispatchFrameKey]);
+  const lastFrame = useCallback(() => dispatchFrameKey("End"), [dispatchFrameKey]);
+
   const toggleTheme = useCallback(() => {
     onOpenChange(false);
     const isDark = document.documentElement.classList.contains("dark");
@@ -111,6 +131,31 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 {item.label}
               </SFCommandItem>
             ))}
+          </SFCommandGroup>
+
+          <SFCommandSeparator />
+
+          <SFCommandGroup heading="Frame">
+            <SFCommandItem onSelect={nextFrame}>
+              <span className="text-primary mr-2">▼</span>
+              NEXT FRAME
+              <SFCommandShortcut>SPACE</SFCommandShortcut>
+            </SFCommandItem>
+            <SFCommandItem onSelect={prevFrame}>
+              <span className="text-primary mr-2">▲</span>
+              PREVIOUS FRAME
+              <SFCommandShortcut>⇧ SPACE</SFCommandShortcut>
+            </SFCommandItem>
+            <SFCommandItem onSelect={firstFrame}>
+              <span className="text-primary mr-2">⇤</span>
+              FIRST FRAME
+              <SFCommandShortcut>HOME</SFCommandShortcut>
+            </SFCommandItem>
+            <SFCommandItem onSelect={lastFrame}>
+              <span className="text-primary mr-2">⇥</span>
+              LAST FRAME
+              <SFCommandShortcut>END</SFCommandShortcut>
+            </SFCommandItem>
           </SFCommandGroup>
 
           <SFCommandSeparator />
