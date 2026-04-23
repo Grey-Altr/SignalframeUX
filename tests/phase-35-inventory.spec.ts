@@ -32,18 +32,29 @@ test.describe("@phase35 /inventory — Agent 5", () => {
         await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 500 });
       });
 
-      // ── 12-row breadth integrity: 2 per category, GEN at positions 11-12 ──
+      // ── 12-row breadth integrity: ≥1 entry per category, ≥2 GEN entries ──
       test("12-row breadth: component grid has entries across all 6 categories", async () => {
         // Source check: registry must have entries in all 6 categories.
-        // Categories: FORMS(FRM), LAYOUT(LAY), NAVIGATION(NAV), FEEDBACK(FBK),
-        // DATA_DISPLAY(DAT), GENERATIVE(GEN). GEN entries are at the end (positions 11-12
-        // in the 12-row breadth sample).
-        const registrySrc = readFileSync(join(process.cwd(), "lib/component-registry.ts"), "utf-8");
-        for (const category of ["FORMS", "LAYOUT", "NAVIGATION", "FEEDBACK", "DATA_DISPLAY", "GENERATIVE"]) {
-          expect(registrySrc).toContain(`category: "${category}"`);
+        // Categories: FORMS, LAYOUT, NAVIGATION, FEEDBACK, DATA_DISPLAY, GENERATIVE.
+        // lib/component-registry.ts is a barrel now — per-category files live in
+        // lib/registry/*.ts. Each entry still declares `category: "..."`.
+        const categoryFiles: Record<string, string> = {
+          FORMS: "lib/registry/forms.ts",
+          LAYOUT: "lib/registry/layout.ts",
+          NAVIGATION: "lib/registry/navigation.ts",
+          FEEDBACK: "lib/registry/feedback.ts",
+          DATA_DISPLAY: "lib/registry/data-display.ts",
+          GENERATIVE: "lib/registry/generative.ts",
+        };
+        for (const [category, file] of Object.entries(categoryFiles)) {
+          const src = readFileSync(join(process.cwd(), file), "utf-8");
+          expect(src, `${file} should declare category: "${category}"`).toContain(
+            `category: "${category}"`,
+          );
         }
-        // GEN category exists at tail of registry (verified by grep)
-        const genMatches = registrySrc.match(/category: "GENERATIVE"/g) || [];
+        // GEN ≥2 entries at the tail of the registry
+        const genSrc = readFileSync(join(process.cwd(), "lib/registry/generative.ts"), "utf-8");
+        const genMatches = genSrc.match(/category: "GENERATIVE"/g) || [];
         expect(genMatches.length).toBeGreaterThanOrEqual(2);
       });
 
@@ -53,17 +64,17 @@ test.describe("@phase35 /inventory — Agent 5", () => {
         // on /inventory. Fixed-overlay is homepage behavior only.
         // Assert: clicking a component row does NOT add data-modal-open to body
         // (data-modal-open is the fixed-overlay / homepage pattern per SI-04 z-index contract).
+        // Prev implementation used [aria-expanded] which first-matched the CdCornerPanel
+        // SIGNAL overlay button (invisible) — scope to ComponentsExplorer grid rows.
         await page.goto("/inventory");
-        await page.waitForLoadState("domcontentloaded");
-        // Find first clickable component row
-        const firstRow = page.locator("[aria-expanded]").first();
-        const rowCount = await firstRow.count();
-        if (rowCount > 0) {
-          await firstRow.click();
-          // After expanding, body should NOT have data-modal-open (that's the fixed-overlay path)
-          const modalOpen = await page.locator("body").getAttribute("data-modal-open");
-          expect(modalOpen).toBeNull();
-        }
+        await page.waitForLoadState("networkidle");
+        const firstRow = page.locator("[data-component-index]").first();
+        await firstRow.waitFor();
+        await firstRow.scrollIntoViewIfNeeded();
+        await firstRow.click();
+        // After expanding, body should NOT have data-modal-open (that's the fixed-overlay path)
+        const modalOpen = await page.locator("body").getAttribute("data-modal-open");
+        expect(modalOpen).toBeNull();
       });
 
       // ── Magenta budget upper-bound ───────────────────────────────────────
