@@ -439,7 +439,11 @@ test.describe("Phase 34 — Visual Language + Subpage Redesign", () => {
     const src = fs.readFileSync(path.resolve(ROOT, "app/init/page.tsx"), "utf-8");
     expect(src).toContain("const STEPS");
     expect(src).toContain("function CodeBlock");
-    expect(src).toContain('kw: "text-primary"');
+    // COLOR_MAP.kw was text-primary pre-Cluster-C; swapped to primary-on-dark
+    // when code-block bg resolved correctly and primary failed WCAG AA on the
+    // dark surface. Either keyword-accent token is acceptable — guards against
+    // accidental removal of the keyword highlight, not the specific hue token.
+    expect(src).toMatch(/kw:\s*"text-(primary|\[var\(--sfx-primary-on-dark\)\])"/);
     // STEPS array must still contain 5 entries (grep proxy: number: "0...)
     const stepCount = (src.match(/number: "0/g) || []).length;
     expect(stepCount).toBe(5);
