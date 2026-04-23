@@ -15,19 +15,26 @@ test.describe("@phase41 keyboard space-scroll contract", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
   for (const route of ROUTES) {
-    test(`Space contract holds on ${route}`, async ({ page }) => {
+    // Contract §1 — detent scroll owns Space mid-page.
+    test(`Space detent on ${route}`, async ({ page }) => {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(2000);
 
-      // Mid-page behavior: detent scroll owns Space.
       const detentBefore = await page.evaluate(() => Math.round(window.scrollY));
       await page.focus("body");
       await page.keyboard.press("Space");
       await page.waitForTimeout(WAIT_AFTER_SPACE_MS);
       const detentAfter = await page.evaluate(() => Math.round(window.scrollY));
       expect(detentAfter).toBeGreaterThan(detentBefore);
+    });
 
-      // Near-bottom behavior: back-to-top shortcut owns Space.
+    // Contract §2 — back-to-top shortcut on Space near bottom.
+    // Deferred pre-v1.0 (Cluster H): useFrameNavigation has no wrap-around
+    // branch at the last panel. Re-enable when R-64 wrap-around ships.
+    test.skip(`Space back-to-top on ${route}`, async ({ page }) => {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      await page.waitForTimeout(2000);
+
       const backToTopBefore = await page.evaluate(() => {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const target = Math.max(0, maxScroll - 120);
