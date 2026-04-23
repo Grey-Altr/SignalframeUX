@@ -368,6 +368,17 @@
   --sfx-text-small-size: var(--sfx-text-sm);
   --sfx-text-small-weight: 400;
   --sfx-text-small-leading: 1.4;
+
+  /* ── R-63-h · Fluid Typography Tier ──
+     clamp(min, preferred-vi, max) for fit-mode panel composition.
+     Floors match the fixed-size tier → mobile parity guaranteed.
+     Ceilings cap before display sizes — hero/display type still uses
+     inline clamp() per-instance, see LOCKDOWN.md §3 for the separation. */
+  --sfx-text-heading-1-fluid-size: clamp(3rem, 8vi, 7.5rem);    /* 48 → 120px */
+  --sfx-text-heading-2-fluid-size: clamp(2rem, 5vi, 4.5rem);    /* 32 → 72px */
+  --sfx-text-heading-3-fluid-size: clamp(1.5rem, 3vi, 3rem);    /* 24 → 48px */
+  --sfx-text-body-fluid-size: clamp(0.813rem, 1.2vi, 1.125rem); /* 13 → 18px */
+  --sfx-text-small-fluid-size: clamp(0.75rem, 1vi, 0.875rem);   /* 12 → 14px */
 }
 
 /* ── Detail Panel Z-Index Override ── */
@@ -901,6 +912,43 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-int
   .text-small {
     font-family: var(--sfx-font-sans, "Inter", system-ui, sans-serif);
     font-size: var(--sfx-text-sm);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  /* ── R-63-h · Fluid Semantic Typography ──
+     clamp(min, preferred-vi, max) variants for fit-mode panel composition.
+     Same family/weight/leading/transform as the fixed tier — only font-size
+     becomes viewport-responsive. Floors = fixed-tier sizes, so mobile is
+     identical to the non-fluid variants. */
+  .text-heading-1-fluid {
+    font-family: var(--sfx-font-display, "Anton", "Impact", sans-serif);
+    font-size: var(--sfx-text-heading-1-fluid-size);
+    font-weight: 700;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .text-heading-2-fluid {
+    font-family: var(--sfx-font-sans, "Inter", system-ui, sans-serif);
+    font-size: var(--sfx-text-heading-2-fluid-size);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .text-heading-3-fluid {
+    font-family: var(--sfx-font-sans, "Inter", system-ui, sans-serif);
+    font-size: var(--sfx-text-heading-3-fluid-size);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .text-body-fluid {
+    font-family: var(--sfx-font-sans, "Inter", system-ui, sans-serif);
+    font-size: var(--sfx-text-body-fluid-size);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .text-small-fluid {
+    font-family: var(--sfx-font-sans, "Inter", system-ui, sans-serif);
+    font-size: var(--sfx-text-small-fluid-size);
     font-weight: 400;
     line-height: 1.4;
   }
