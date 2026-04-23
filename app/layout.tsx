@@ -5,6 +5,7 @@ import { GlobalEffectsLazy } from "@/components/layout/global-effects-lazy";
 import { SignalCanvasLazy } from "@/components/layout/signal-canvas-lazy";
 import { LenisProvider } from "@/components/layout/lenis-provider";
 import { FrameNavigation } from "@/components/layout/frame-navigation";
+import { PanelHeightAssertion } from "@/components/layout/panel-height-assertion";
 import { Nav } from "@/components/layout/nav";
 import { NavRevealMount } from "@/components/layout/nav-reveal-mount";
 import { CdCornerPanel } from "@/components/layout/cd-corner-panel";
@@ -124,6 +125,7 @@ export default function RootLayout({
         <TooltipProvider>
           <LenisProvider>
             <FrameNavigation />
+            <PanelHeightAssertion />
             <SignalframeProvider>
               <BorderlessProvider>
               <ScaleCanvas>{children}</ScaleCanvas>
