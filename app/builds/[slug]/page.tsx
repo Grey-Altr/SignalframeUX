@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { SFSection, CDSymbol } from "@/components/sf";
+import { SFPanel, SFSection, CDSymbol } from "@/components/sf";
 import { BUILDS, getBuildBySlug } from "@/app/builds/builds-data";
 import { BuildSigilDiagram } from "@/components/animation/build-sigil-diagram";
 import { SFSignalComposerLazy as SFSignalComposer } from "@/components/animation/sf-signal-composer-lazy";
@@ -141,7 +141,13 @@ export default async function BuildDetailPage({ params }: PageProps) {
           ]}
         />
 
-        <SFSection label={build.code} className="py-0 relative h-screen flex flex-col justify-end overflow-hidden">
+        {/* ═══ PAGE HEADER (R-63-f panel, mode=fill — SFSignalComposer edge-to-edge) ═══ */}
+        <SFPanel
+          name="build-hero"
+          mode="fill"
+          label={build.code}
+          className="relative flex flex-col justify-end"
+        >
           <SFSignalComposer
             passes={effects.passes}
             intensity={effects.intensity}
@@ -182,8 +188,15 @@ export default async function BuildDetailPage({ params }: PageProps) {
               </p>
             </div>
           </div>
-        </SFSection>
+        </SFPanel>
 
+        {/*
+          R-63-g exception: OVERVIEW, SYSTEM, FLOW are content-dense build
+          detail sections — each likely exceeds one port with diagrams,
+          stack lists, and interaction models. Remain on SFSection until
+          pagination across SFPanel frames lands per §14 #18. Dev-only
+          PanelHeightAssertion will warn on this route — expected.
+        */}
         <SFSection label="OVERVIEW" className="py-[var(--sfx-space-12)] border-b-2 border-foreground/20">
           <div className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] grid grid-cols-1 xl:grid-cols-[1fr_1fr] gap-[var(--sfx-space-8)]">
             <div>
