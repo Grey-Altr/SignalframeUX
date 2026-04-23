@@ -25,8 +25,7 @@ export function APIExplorerProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const params = useSearchParams();
 
-  const urlQuery = params.get("q") ?? "";
-  const [query, setQueryState] = useState(urlQuery);
+  const query = params.get("q") ?? "";
 
   // hash → activeEntryId
   const [activeEntryId, setActiveEntryIdState] = useState<string | null>(null);
@@ -42,7 +41,6 @@ export function APIExplorerProvider({ children }: { children: ReactNode }) {
 
   const setQuery = useCallback(
     (q: string) => {
-      setQueryState(q);
       const next = new URLSearchParams(params.toString());
       if (q) next.set("q", q);
       else next.delete("q");
