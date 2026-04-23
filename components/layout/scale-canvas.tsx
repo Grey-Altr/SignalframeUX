@@ -108,21 +108,32 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div
-      ref={outerRef}
-      style={{ position: "relative", width: "100%", overflow: "hidden" }}
-    >
+    <>
       <div
-        ref={innerRef}
-        data-sf-canvas=""
-        style={{
-          width: `${DESIGN_WIDTH}px`,
-          transformOrigin: "top left",
-          willChange: "transform",
-        }}
+        ref={outerRef}
+        style={{ position: "relative", width: "100%", overflow: "hidden" }}
       >
-        {children}
+        <div
+          ref={innerRef}
+          data-sf-canvas=""
+          style={{
+            width: `${DESIGN_WIDTH}px`,
+            transformOrigin: "top left",
+            willChange: "transform",
+          }}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+      {/* CLS fix: sync outer height to inner*scale before first paint.
+          Loaded as an external blocking script so it runs inline at HTML parse,
+          after inner [data-sf-canvas] is in DOM. Reading offsetHeight forces
+          a layout flush; setting outer.style.height happens pre-paint. The
+          React useEffect above takes over for resize/orientationchange.
+          Blocking placement is intentional — defer/async would run post-paint
+          and reintroduce the rehydration shift. */}
+      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+      <script src="/sf-canvas-sync.js" />
+    </>
   );
 }
