@@ -300,6 +300,15 @@
   --sfx-nav-height: clamp(60px, calc(5.764*var(--sf-vw)), 100px);      /* 83px at 1440px */
   --sfx-nav-chrome-gap: 3px; /* intra-nav gap: between cubes, between stack+cluster, inside cluster — paired w/ --sf-nav-cube-pitch */
 
+  /* ── Panel Tokens (R-63) ──
+     Canonical SFPanel height. Every page composes as N × this height.
+     Mobile browser chrome resize breaks composition mid-transition, so
+     never raw `vh` — dvh (dynamic) is canonical, svh (small, no chrome)
+     is the fit-mode floor, lvh (large, with chrome) is the explicit ceiling. */
+  --sf-panel-height: 100dvh;        /* canonical — N × this = total scroll */
+  --sf-panel-height-floor: 100svh;  /* fit-mode floor / older Safari fallback */
+  --sf-panel-height-max: 100lvh;    /* explicit ceiling if needed */
+
   /* ── Scale Canvas ──
      1280x800 is the reference design frame. <ScaleCanvas> uniformly scales
      all content by (window.innerWidth / 1280); these tokens are the fixed
