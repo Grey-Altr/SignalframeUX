@@ -3,7 +3,7 @@
 **Version:** v0.1.2 (R-63 panel model + R-64 keyboard model — 2026-04-22)
 **Sealed from:** `main` @ `158ef6f` (v0.1.1 perf/rules seal); v0.1.2 extends with two coupled interaction primitives
 **Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21), panel/keyboard model session (2026-04-22)
-**Status:** v0.1.2 locked. §4.4 (R-63) + §9.7 (R-64) codified with user DECIDEs resolved (D-08 paginate, D-09 cheatsheet ships v0.1, D-10 double-ring, D-11 ENTRY=one panel). Retrofit queued per §14 items 8–18.
+**Status:** v0.1.2 locked. §4.4 (R-63) + §9.7 (R-64) codified with user DECIDEs resolved (D-08 paginate, D-09 cheatsheet ships v0.1, D-10 double-ring, D-11 ENTRY=one panel). Retrofit queued per §14 items 8–18. §14.18 (`/reference` pagination) shipped 2026-04-23 @ `58e1c93`.
 
 > **Rule of the lockdown:** every rule below is extracted from shipped code (cited) or locked by explicit user DECIDE.
 > Nothing is aspirational without a citation to a decision record.
@@ -486,7 +486,7 @@ Branches B (cdb-v3-dossier), C (cdb-v2-broadcast = subset), D (aesthetic-deep-di
 - **Panel model retrofit (R-63)** — existing pages (`/`, `/system`, `/inventory`, `/reference`, `/init`, `/builds`, `/builds/[slug]`) are not yet `N × port` compliant. Pre-R-63 composition assumed variable-height sections. Retrofit queued per §14 items 13–14.
 - **Keyboard model retrofit (R-64-j)** — existing overlays (NavOverlay, CommandPalette, SFDialog, SFSheet, SFDrawer, SFAlertDialog) need focus-trap + focus-return-to-trigger audit. Queued per §14 item 16.
 - **Typography `-fluid` tier unbuilt (R-63-h)** — semantic aliases exist fixed-size only (§3.2); fluid variants with `clamp()` scaling pending per §14 item 17.
-- **Long-form prose retrofit (R-63-g)** — `/reference` (158 API surfaces) is the prose-heaviest existing page. Paginate across SFPanel frames per §14 item 18.
+- ~~**Long-form prose retrofit (R-63-g)** — `/reference` (158 API surfaces) is the prose-heaviest existing page. Paginate across SFPanel frames per §14 item 18.~~ **RESOLVED** — §14.18 shipped 2026-04-23 @ `58e1c93`.
 
 ---
 
@@ -511,10 +511,10 @@ Items to apply in execute phase after user approves this doc:
 15. Add dev-only assertion: warn when `scrollHeight % innerHeight !== 0` (within tolerance) (R-63-b).
 16. Audit every overlay for R-64-j focus-return-to-trigger on dismiss.
 17. Build `-fluid` typography tier — `heading-1-fluid` etc. with `clamp()` scaling (R-63-h).
-18. Paginate `/reference` across SFPanel frames (R-63-g).
+18. Paginate `/reference` across SFPanel frames (R-63-g). **SHIPPED** (branch `feat/s14-18-reference-pagination` @ `58e1c93`, 17 commits, 2026-04-23). APIExplorerPaginated orchestrator emits hero + N × COMPONENTS + AUX fit-mode panels; alpha sort + viewport-aware slicing via `useAPIPagination`; build-time audit guarantees every EntryDataSheet fits one port (LIMIT_PX=820). Command-palette API SURFACES group + `/` focus keybind. R-64-j grid↔detail focus-return implemented. Verified: §14.18 Playwright suite 9/9, Lighthouse A11y=96 / BP=100 / SEO=91 (2 failures pre-existing baseline, neither §14.18-caused). **Side-effect fix**: narrowed `useFrameNavigation` panel selector to `[data-section]:not([data-primary])` so the Phase 35-01 HUD container `<main data-primary data-section="…">` is no longer a Space-nav target — applies to all subpages.
 
 ---
 
 *End of v0.1.2 redline.*
 *Audit sources: `.planning/lockdown-audit/AUDIT-VERDICTS.md` (2026-04-22 session 3) + panel/keyboard model session (2026-04-22, DECIDEs D-08/D-09/D-10/D-11 resolved).*
-*v0.1.2 → v1 lock pending retrofit completion per §14 items 8–18.*
+*v0.1.2 → v1 lock pending retrofit completion per §14 items 8–18. §14.18 shipped 2026-04-23 @ `58e1c93`.*

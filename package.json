@@ -67,6 +67,7 @@
     "prepare": "husky",
     "prepublishOnly": "pnpm build:lib && npx tsx scripts/verify-tree-shake.ts && npx tsx scripts/verify-bundle-size.ts",
     "docs:generate": "tsx scripts/generate-api-docs.ts",
+    "audit:detail-size": "tsx scripts/audit-api-detail-size.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes"
