@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { TokenTabs } from "@/components/blocks/token-tabs";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { TokenVizLoader } from "@/components/animation/token-viz-loader";
-import { SFSection } from "@/components/sf";
+import { SFPanel } from "@/components/sf";
 import { GhostLabel } from "@/components/animation/ghost-label";
 
 export const metadata: Metadata = {
@@ -17,8 +17,13 @@ export default async function TokensPage() {
     <>
       <main id="main-content" data-cursor data-section="sys" data-section-label="TOK" data-primary className="mt-[var(--nav-height)]">
         <Breadcrumb segments={[{ label: "TOKENS" }]} />
-        {/* ═══ PAGE HEADER ═══ */}
-        <SFSection label="TOKENS" className="py-0 relative h-screen flex flex-col justify-center overflow-hidden">
+        {/* ═══ PAGE HEADER (R-63-f panel) ═══ */}
+        <SFPanel
+          name="tokens"
+          mode="fit"
+          label="TOKENS"
+          className="relative flex flex-col justify-center"
+        >
           <div className="relative overflow-hidden flex-1 flex flex-col justify-end">
             <GhostLabel
               text="SYSTEM"
@@ -42,12 +47,16 @@ export default async function TokensPage() {
               </div>
             </header>
           </div>
-        </SFSection>
+        </SFPanel>
 
-        {/* ═══ CATEGORY TABS (client island) ═══ */}
+        {/*
+          R-63-g exception: TokenTabs + TokenVizLoader are long-form, multi-port
+          surfaces (4 specimen tabs × variable height + Canvas 2D diagnostic).
+          Stay outside the panel model until pagination across SFPanel frames
+          lands per §14 #18 / R-63-g. Dev-only PanelHeightAssertion will warn
+          on this route — expected.
+        */}
         <TokenTabs />
-
-        {/* ═══ TOKEN DIAGNOSTIC VISUALIZATION (Canvas 2D) ═══ */}
         <TokenVizLoader />
 
         {/* Gradient separator */}
