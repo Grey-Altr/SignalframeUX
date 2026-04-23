@@ -44,7 +44,7 @@ export default function HomePage() {
             bgShift="white"
             id="thesis"
             data-section="thesis"
-            className="py-0 relative block"
+            className="py-0 relative block overflow-x-hidden"
           >
             <GhostLabel
               text="THESIS"
