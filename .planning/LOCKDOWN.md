@@ -1,12 +1,12 @@
 # SIGNALFRAMEUX LOCKDOWN
 
-**Version:** v0.1.1 (post-audit redline — 2026-04-22, §6 rules codified)
-**Sealed from:** `main` @ `158ef6f` (post-audit + 5 signal-layer perf fixes; 11 shipped fixes total — see AUDIT-VERDICTS.md)
-**Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21)
-**Status:** Lockdown audit complete. §6 shipped-code rules codified below (R-61, R-62). v0 drifts redlined. Remaining v0.1 work is execution-queue items; no new spec changes.
+**Version:** v0.1.2 (R-63 panel model + R-64 keyboard model — 2026-04-22)
+**Sealed from:** `main` @ `158ef6f` (v0.1.1 perf/rules seal); v0.1.2 extends with two coupled interaction primitives
+**Audit inputs:** 19 rendered-state screenshots + one-by-one walk of INDEX.md (7 sections, ~140 components), runtime canvas/scene probes, aesthetic digest from `aesthetic-deep-dive`, user-spoken trademark declarations (2026-04-21), panel/keyboard model session (2026-04-22)
+**Status:** v0.1.2 locked. §4.4 (R-63) + §9.7 (R-64) codified with user DECIDEs resolved (D-08 paginate, D-09 cheatsheet ships v0.1, D-10 double-ring, D-11 ENTRY=one panel). Retrofit queued per §14 items 8–18.
 
-> **Rule of the lockdown:** every rule below is extracted from shipped code (cited).
-> Nothing is aspirational. Nothing is negotiable without a user DECIDE callback.
+> **Rule of the lockdown:** every rule below is extracted from shipped code (cited) or locked by explicit user DECIDE.
+> Nothing is aspirational without a citation to a decision record.
 > Every future phase/component is tested against this doc. Violations = rejection or explicit trademark extension.
 
 ---
@@ -174,6 +174,34 @@ Extended prose in system copy uses **UPPERCASE mono + tight tracking** — gives
 
 ### 4.3 · Zero border-radius, system-wide
 `rounded-none` enforced explicitly where needed to resist inherited rounding.
+
+### 4.4 · Panel model — R-63
+
+Every page is composed of N viewport-height **panels**. Total document scroll-height is exactly `N × port-height`. No partial frames, no orphan content below the last full panel. This is the layout primitive from which the keyboard model (R-64) falls out — panels must be consistent for `Space` to land users on a whole frame.
+
+> **Trademark elevation:** the panel joins T1 (pixel-sort), T2 (glyph), T3 (cube), T4 (`//`) as a first-class system primitive. Every page ships as a deck.
+
+| # | Rule | Source |
+|---|---|---|
+| **R-63-a** | Panel height = `100dvh`. `100svh` as fallback floor for older Safari. Never raw `vh` — mobile browser chrome resize breaks composition mid-transition. | pending execution |
+| **R-63-b** | Total page scroll-height is an integer multiple of port height: `scrollHeight === N × innerHeight` within sub-pixel tolerance. No half-panels. Dev-only assertion warns on violation. | pending execution |
+| **R-63-c** | **No internal scroll inside a panel.** Breaks R-64 — user presses Space, nothing visible happens. Content that exceeds the port either recomposes (fit-mode) or paginates across panels (R-63-g). | pending execution |
+| **R-63-d** | Two authorial modes, author picks per panel: **`fit`** — content composes inside the port, type scales via `clamp()` with vi/vh units. **`fill`** — content fills edge-to-edge, may recompose per aspect ratio. Every panel is one or the other. | pending execution |
+| **R-63-e** | **Pinned sections count as one panel externally** (D-11 resolved). `PinnedSection` consumes N × port of scroll distance internally for sub-phase choreography — transparent to the keyboard model. R-64 skips the entire pin on one keystroke. ENTRY is one panel, not N. | `PinnedSection` + R-64 coupling + D-11 |
+| **R-63-f** | New primitive **SFPanel** — wrapper enforcing `height: var(--sf-panel-height)`, `overflow: hidden`, auto-sets `data-section`, takes `mode="fit" \| "fill"` prop. All page composition uses SFPanel; raw panel-sized `<div>`/`<section>` is a violation. | pending execution |
+| **R-63-g** | **Long-form prose paginates across panels** (D-08 resolved). Articles, case-study writeups, doc pages exceeding one port split into N fit-mode SFPanels. No dedicated relaxed-height template — R-63 holds site-wide. Frame-sized chunks force editorial sharpness. | D-08 resolution |
+| **R-63-h** | Typography gains a **`-fluid` tier** layered on semantic aliases (§3). `heading-1`, `body`, etc. remain stable; `heading-1-fluid` etc. layer `clamp(min, preferred-vi, max)` for fit-mode composition. Fixed-size tier unchanged. | pending execution |
+| **R-63-i** | Panel registry (offsets in px) cached on mount, invalidated via `ResizeObserver` (port resize) + `MutationObserver` (DOM shape change). Per R-61 — no `getBoundingClientRect` in keystroke hot paths. | R-61 compliance |
+
+**New tokens** (`app/globals.css`):
+
+```css
+--sf-panel-height: 100dvh;        /* canonical */
+--sf-panel-height-floor: 100svh;  /* fit-mode floor */
+--sf-panel-height-max: 100lvh;    /* explicit ceiling if needed */
+```
+
+**Why:** the deck model is the editorial register — Apple-keynote / Linear-landing / TDR-spread rhythm. Every transition is intentional. Non-conformance is self-evident: you see a half-panel and it's broken.
 
 ---
 
@@ -357,6 +385,27 @@ Every motion surface must render meaningful content without animation. `prefers-
 ### 9.6 · Theme-swap responsiveness
 Changing `--sfx-theme-hue` or `--sfx-cube-hue` at runtime re-tints every slot-bound surface. No component may hardcode a hue.
 
+### 9.7 · Keyboard model — R-64
+
+Site is **fully mouse-operable** (R-64-a) and **optimized for keyboard on desktop**. Spacebar advances one frame — the interaction verb mirrors the FRAME/SIGNAL metaphor. Mobile is unaffected (no hardware keyboard).
+
+| # | Rule | Source |
+|---|---|---|
+| **R-64-a** | **Mouse parity is mandatory.** Every keyboard affordance has a mouse equivalent and vice versa. No hover-only reveals without focus equivalents. No "click outside to dismiss" without Esc. | §9.3 extension |
+| **R-64-b** | **Double-ring focus indicator** (D-10 resolved). TDR-lineage monospaced-box feel via native `outline-style: double`: `outline: 3px double var(--primary); outline-offset: 1px;` — renders as two 1px primary rings with a 1px transparent gap, hard-edged, zero glow. Gap is transparent (works on any bg), no soft elevation. Logical tab order matches visual reading order. Skip-to-content link at document start. Applied via `:focus-visible` only — mouse-click focus stays clean. | D-10 resolution |
+| **R-64-c** | **`Space` advances to the next panel boundary** (R-63 snap target). **`Shift+Space`** retreats. **`PageDown`/`PageUp`** aliased. **`Home`/`End`** jump to first/last panel. One keypress = one frame. | pending execution |
+| **R-64-d** | **Focus guards — non-negotiable.** Keybindings inactive when focus is inside `<input>`, `<textarea>`, `[contenteditable]`, `[role="textbox"]`, or `[role="combobox"]`. Native spacebar preserved in those contexts. Without this guard, the site breaks every form and search field. | pending execution |
+| **R-64-e** | **Motion.** Smooth scroll via `lenis.scrollTo(panelOffset, { lock: true })`. Under `prefers-reduced-motion: reduce`, instant jump (no tween). Input locked during transition (debounce ≈ tween duration) to prevent mash-queuing. | `LenisProvider` + pending execution |
+| **R-64-f** | **Mouse wheel stays continuous.** No wheel-snap, no scroll-jacking. Snap is opt-in by keystroke; wheel remains fluid for granular control (including inside pinned sections for sub-phase choreography). | pending execution |
+| **R-64-g** | **R-61 compliance.** Keydown path never reads layout geometry. Panel offsets come from the R-63-i registry. Keystroke handler is O(1). | R-61 compliance |
+| **R-64-h** | **R-62 compliance.** Low quality-tier forces instant jumps (skips Lenis tween). Keyboard model must not re-introduce jank on low-end devices. | R-62 compliance |
+| **R-64-i** | **Discoverability ships with v0.1** (D-09 resolved). `?` cheatsheet overlay lists full keymap in FRAME vocabulary (`Space — Next frame`, `Shift+Space — Previous frame`, `Home/End — First/Last frame`, `⌘K — Command palette`, etc.). CommandPalette (`⌘K`, shipped) extends with `nextFrame` / `prevFrame` / `firstFrame` / `lastFrame` entries. Subtle `?` hint in nav chrome teaches at introduction. | D-09 resolution |
+| **R-64-j** | **Route-switch focus handling.** On route change, focus moves to the new route's `<h1>` or first panel heading. Focus never lands nowhere. Overlays (NavOverlay, CommandPalette, SFDialog, SFSheet, SFDrawer, SFAlertDialog) implement focus-trap + focus-return-to-trigger on dismiss. | pending execution |
+
+**New hook** — `hooks/use-frame-navigation.ts`: reads panel positions from a ref-cached registry, subscribes to Lenis, binds `keydown` at document level with focus guards, invalidates registry on resize + DOM mutation. Installed once at `app/layout.tsx` via a client component (`<FrameNavigation />`).
+
+**Why:** spacebar-as-frame-advance is the only honest interaction verb once the panel model is locked. Each panel is a frame; space advances the frame. The keyboard becomes a first-class navigation surface on desktop, matching the editorial rhythm of the deck.
+
 ---
 
 ## 10 · SIX CODED BLOCKS — homepage architecture
@@ -434,6 +483,10 @@ Branches B (cdb-v3-dossier), C (cdb-v2-broadcast = subset), D (aesthetic-deep-di
   - Section 6 header "44 — grouped by role" doesn't match file-count (45) or slot-count (39).
 - **Animation orphan ratio** (audit task #18) — 17 of 39 Section-6 slots (≈44%) have no live consumer. Policy per §3 keeps them as reference-template orphans. v0.2 decision: promote into live inventory demos or archive under `components/animation/_reference/`.
 - **Inventory preview mock vs real-component mismatch** (audit task #19) — `PreviewCircuitDivider` and `PreviewScrambleText` in `components-explorer.tsx` render static HTML mocks while their registry entries ship `import …CircuitDivider/ScrambleText` code samples. Either wire real components into previews or remove registry entries.
+- **Panel model retrofit (R-63)** — existing pages (`/`, `/system`, `/inventory`, `/reference`, `/init`, `/builds`, `/builds/[slug]`) are not yet `N × port` compliant. Pre-R-63 composition assumed variable-height sections. Retrofit queued per §14 items 13–14.
+- **Keyboard model retrofit (R-64-j)** — existing overlays (NavOverlay, CommandPalette, SFDialog, SFSheet, SFDrawer, SFAlertDialog) need focus-trap + focus-return-to-trigger audit. Queued per §14 item 16.
+- **Typography `-fluid` tier unbuilt (R-63-h)** — semantic aliases exist fixed-size only (§3.2); fluid variants with `clamp()` scaling pending per §14 item 17.
+- **Long-form prose retrofit (R-63-g)** — `/reference` (158 API surfaces) is the prose-heaviest existing page. Paginate across SFPanel frames per §14 item 18.
 
 ---
 
@@ -448,9 +501,20 @@ Items to apply in execute phase after user approves this doc:
 5. Revisit THESIS pin/scrub to resolve off-viewport position bug (execution task, not lockdown change).
 6. Audit feedback-tier chroma (success/warning/destructive) to confirm chroma < primary (R-40 exception compliance).
 7. Document two-hue model (`--sfx-theme-hue` + `--sfx-cube-hue`) in `SIGNALFRAMEUX_REFERENCE.md`.
+8. Add `--sf-panel-height` / `-floor` / `-max` tokens to `app/globals.css` (R-63).
+9. Build `SFPanel` primitive in `components/sf/sf-panel.tsx`; add to barrel export.
+10. Build `useFrameNavigation` hook + `<FrameNavigation />` mount in `app/layout.tsx` (R-64).
+11. Ship double-ring focus style globally via `:focus-visible` — audit every interactive surface (R-64-b).
+12. Ship `?` cheatsheet overlay + extend CommandPalette with `nextFrame`/`prevFrame`/`firstFrame`/`lastFrame` entries + `?` hint in nav chrome (R-64-i).
+13. Retrofit `/` to SFPanel composition (6 blocks → 6 panels; ENTRY = 1 panel per D-11).
+14. Retrofit `/system`, `/inventory`, `/reference`, `/init`, `/builds`, `/builds/[slug]` to SFPanel composition.
+15. Add dev-only assertion: warn when `scrollHeight % innerHeight !== 0` (within tolerance) (R-63-b).
+16. Audit every overlay for R-64-j focus-return-to-trigger on dismiss.
+17. Build `-fluid` typography tier — `heading-1-fluid` etc. with `clamp()` scaling (R-63-h).
+18. Paginate `/reference` across SFPanel frames (R-63-g).
 
 ---
 
-*End of v0.1 redline.*
-*Audit source: `.planning/lockdown-audit/AUDIT-VERDICTS.md` (2026-04-22 session 3).*
-*v0.1 → v1 lock pending user sign-off on §13 open items + §14 execution queue.*
+*End of v0.1.2 redline.*
+*Audit sources: `.planning/lockdown-audit/AUDIT-VERDICTS.md` (2026-04-22 session 3) + panel/keyboard model session (2026-04-22, DECIDEs D-08/D-09/D-10/D-11 resolved).*
+*v0.1.2 → v1 lock pending retrofit completion per §14 items 8–18.*
