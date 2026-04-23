@@ -14,7 +14,19 @@ import dynamic from "next/dynamic";
 
 const TokenVizDynamic = dynamic(
   () => import("@/components/animation/token-viz").then((m) => ({ default: m.TokenViz })),
-  { ssr: false }
+  {
+    ssr: false,
+    // CLS fix: reserve the canvas's computed totalH (~763px) + wrapper py
+    // padding so post-hydration injection doesn't shift layout. Matches the
+    // canvas min-height set inside TokenViz itself.
+    loading: () => (
+      <div
+        aria-hidden="true"
+        className="px-[var(--sfx-space-6)] md:px-[var(--sfx-space-12)] py-[var(--sfx-space-12)]"
+        style={{ minHeight: "840px" }}
+      />
+    ),
+  }
 );
 
 /** Client boundary wrapper for TokenViz — use this in Server Components. */

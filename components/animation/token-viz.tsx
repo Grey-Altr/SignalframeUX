@@ -257,6 +257,7 @@ export function TokenViz() {
         role="img"
         aria-label="Design system token visualization showing colors, spacing, and typography scales"
         className="w-full"
+        style={{ minHeight: "760px" }}
       />
     </div>
   );
