@@ -4,9 +4,11 @@
  * The dossier branch had a four-corner chrome strip with hairline bracket
  * ticks and JetBrains Mono labels. Label is bilingual: line 1 in Japanese
  * katakana (ユニバーサルデザインシステム — "universal design system"),
- * line 2 in English attribution ("BY CULTURE DIVISION"). The bilingual
- * pairing reads as a trademark stamp and ties the system into the tDR /
- * Autechre coded-nomenclature register.
+ * line 2 attribution in mixed script ("CULTURE DIVISION による" — brand
+ * in Latin caps + the JP attribution particle による, which follows the
+ * agent noun in standard JP grammar to mean "by CULTURE DIVISION"). The
+ * bilingual pairing reads as a trademark stamp and ties the system into
+ * the tDR / Autechre coded-nomenclature register.
  *
  * Only this one corner is ported — the main site already owns the other
  * corners (nav stack + utility row in BL, InstrumentHUD in TR, hero in TL
@@ -48,7 +50,11 @@ export function CdCornerPanel() {
        *  Noto Sans JP or Yu Gothic on Windows/Linux). Minor metric mismatch
        *  vs line 2 is intentional — reads as bilingual stamp, not unified run. */}
       <div lang="ja">ユニバーサルデザインシステム</div>
-      <div>BY CULTURE DIVISION</div>
+      {/* Mixed-script attribution: brand kept in Latin caps, JP particle
+       *  による ("by", agent-follows-noun construction) trails after.
+       *  Wrapped lang="ja" span on the particle keeps the platform's JP
+       *  fallback font consistent with line 1. */}
+      <div>CULTURE DIVISION <span lang="ja">による</span></div>
     </div>
   );
 }
