@@ -1508,8 +1508,16 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-int
   opacity: 0;
 }
 [data-anim="ghost-label"] {
-  visibility: hidden;
-  opacity: 0;
+  /* Paint at final state from first frame — Lighthouse ignores opacity:0
+     elements for LCP, so hiding and revealing via GSAP ScrollTrigger made
+     the ghost-label become the LCP candidate at ~6.5s (the moment GSAP's
+     reveal ran on throttled mobile). Starting at the animated end-state
+     (opacity 0.03, visible) lets first-frame paint become the LCP moment
+     instead. The GSAP `to` animation in page-animations.tsx becomes a
+     same-value no-op; keep it for consistency with other data-anim
+     registrations. */
+  visibility: visible;
+  opacity: 0.03;
 }
 .sf-motion-hidden {
   visibility: hidden;
