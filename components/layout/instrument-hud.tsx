@@ -260,14 +260,22 @@ export function InstrumentHUD() {
       data-instrument-hud
       role="complementary"
       aria-label="System readout"
-      className="fixed origin-top-right z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] text-muted-foreground pointer-events-none select-none leading-[1.6]"
+      className="fixed origin-top-right z-[var(--z-content)] flex flex-col items-end font-mono text-[var(--text-2xs)] uppercase tracking-[0.08em] font-bold bg-[var(--sfx-cube-fill)] text-black pointer-events-none select-none leading-[1.6] px-3 py-2"
       style={{
         top: `${pos.top}px`,
         right: `${pos.right}px`,
         transform: "scale(var(--sf-canvas-scale, 1))",
+        // Asymmetric-faceted notch — 8px cut on TL/TR/BR, steep deep BL cut
+        // (40px run × 80px rise, ~63° from horizontal). The steep BL slash
+        // reads as a directional cue pointing inward toward the opposite
+        // corner (mirroring the BR CdCornerPanel's TL cut), while the three
+        // small corners hold the instrument-plate faceting. Same cube-fill
+        // surface ties both panels into the trademark family.
+        clipPath:
+          "polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 40px 100%, 0 calc(100% - 80px), 0 8px)",
       }}
     >
-      <span data-hud-field="section" className="text-foreground">
+      <span data-hud-field="section">
         {sectionLabel}
       </span>
       {!isMobile && <span data-hud-field="viewport">{viewport || "0\u00d70"}</span>}
