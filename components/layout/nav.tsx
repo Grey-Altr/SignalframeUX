@@ -95,6 +95,18 @@ const IconCommandGrid = (props: any) => (
     <path d="M17 16h7v6h-7z" />
   </svg>
 );
+
+/**
+ * SIGNAL overlay button glyph — the // brand mark in the same brutalist-flat
+ * geometric register as the rest of the nav glyphs. Two parallelograms, 4-unit
+ * thick, 45° lean, 4-unit gap, symmetric in the 24x24 viewBox.
+ */
+const IconSignal = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <polygon points="10 2, 14 2, 6 22, 2 22" />
+    <polygon points="18 2, 22 2, 14 22, 10 22" />
+  </svg>
+);
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
 
@@ -115,13 +127,13 @@ function NavSignalToggle() {
       aria-label={isOpen ? "Close SIGNAL overlay" : "Open SIGNAL overlay (or press Shift+S)"}
       aria-expanded={isOpen}
       aria-controls="signal-overlay-panel"
-      className={`flex items-center justify-center w-8 h-8 border-2 text-[11px] font-bold uppercase tracking-widest transition-colors duration-[var(--sfx-duration-fast)] ${
+      className={`flex items-center justify-center w-8 h-8 border-2 transition-colors duration-[var(--sfx-duration-fast)] ${
         isOpen
           ? "border-primary bg-primary text-primary-foreground"
           : "border-muted-foreground bg-transparent text-muted-foreground hover:text-primary hover:border-primary"
       }`}
     >
-      S
+      <IconSignal width={NAV_GLYPH_PX} height={NAV_GLYPH_PX} aria-hidden />
     </button>
   );
 }
