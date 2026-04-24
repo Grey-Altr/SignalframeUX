@@ -18,7 +18,7 @@ const SFUX_THEME = {
     },
     {
       scope: ['entity.name', 'variable.other.constant'],
-      settings: { foreground: 'oklch(0.7 0.18 350)' }, // --sf-code-const
+      settings: { foreground: 'oklch(0.7 0.18 60)' }, // --sf-code-const
     },
     {
       scope: ['string'],

@@ -89,7 +89,7 @@ function PreviewTable() {
       <SFTableBody>
         <SFTableRow>
           <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] opacity-60">primary</SFTableCell>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-primary">oklch(.65 .3 350)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-primary">oklch(.65 .3 60)</SFTableCell>
         </SFTableRow>
         <SFTableRow>
           <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] opacity-60">yellow</SFTableCell>
