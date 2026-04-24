@@ -34,7 +34,7 @@ export function CdCornerPanel() {
        *  muted-foreground grey was 2.96:1, failing WCAG AA (needs 4.5:1).
        *  White on muted-foreground L=0.46 ≈ 4.57:1 passes. */}
       <div>CULTURE DIVISION</div>
-      <div className="text-[var(--sfx-yellow)]">SIGNALFRAME SYSTEM</div>
+      <div className="text-[var(--sfx-cube-fill)]">SIGNALFRAME SYSTEM</div>
     </div>
   );
 }
