@@ -320,8 +320,8 @@ export const SIGNAL_DOCS: Record<string, ComponentDoc> = {
     "props": [],
     "usage": [
       {
-        "label": "BASIC USAGE",
-        "code": "import { registerSFEasings } from 'signalframeux/animation'"
+        "label": "EXAMPLE 1",
+        "code": "// Register the SF custom easings once at app init (client-only).\nimport { registerSFEasings } from \"signalframeux/animation\";\nregisterSFEasings();\n// Then reference \"sf-snap\" or \"sf-punch\" in any gsap tween:\n// gsap.to(el, { x: 100, ease: \"sf-snap\", duration: 0.3 });"
       }
     ],
     "a11y": [
@@ -341,8 +341,8 @@ export const SIGNAL_DOCS: Record<string, ComponentDoc> = {
     "props": [],
     "usage": [
       {
-        "label": "BASIC USAGE",
-        "code": "import { initReducedMotion } from 'signalframeux/animation'"
+        "label": "EXAMPLE 1",
+        "code": "// In a top-level client component (layout.tsx, AppShell, etc.)\n\"use client\";\nimport { useEffect } from \"react\";\nimport { initReducedMotion } from \"signalframeux/animation\";\n\nexport function AppShell({ children }) {\n  useEffect(() => initReducedMotion(), []);\n  return <>{children}</>;\n}"
       }
     ],
     "a11y": [

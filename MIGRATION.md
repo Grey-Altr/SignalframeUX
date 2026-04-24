@@ -6,69 +6,16 @@ Migrating from internal SFUX app usage to the published `signalframeux` npm pack
 
 Named exports are identical. Only the import source changes.
 
-| Old (internal app path) | New (npm package) |
-|-------------------------|-------------------|
-| `@/components/sf/sf-button` | `signalframeux` |
-| `@/components/sf/sf-card` | `signalframeux` |
-| `@/components/sf/sf-container` | `signalframeux` |
-| `@/components/sf/sf-section` | `signalframeux` |
-| `@/components/sf/sf-stack` | `signalframeux` |
-| `@/components/sf/sf-grid` | `signalframeux` |
-| `@/components/sf/sf-text` | `signalframeux` |
-| `@/components/sf/sf-input` | `signalframeux` |
-| `@/components/sf/sf-badge` | `signalframeux` |
-| `@/components/sf/sf-tabs` | `signalframeux` |
-| `@/components/sf/sf-table` | `signalframeux` |
-| `@/components/sf/sf-dialog` | `signalframeux` |
-| `@/components/sf/sf-sheet` | `signalframeux` |
-| `@/components/sf/sf-dropdown-menu` | `signalframeux` |
-| `@/components/sf/sf-popover` | `signalframeux` |
-| `@/components/sf/sf-select` | `signalframeux` |
-| `@/components/sf/sf-checkbox` | `signalframeux` |
-| `@/components/sf/sf-radio-group` | `signalframeux` |
-| `@/components/sf/sf-switch` | `signalframeux` |
-| `@/components/sf/sf-alert` | `signalframeux` |
-| `@/components/sf/sf-alert-dialog` | `signalframeux` |
-| `@/components/sf/sf-avatar` | `signalframeux` |
-| `@/components/sf/sf-breadcrumb` | `signalframeux` |
-| `@/components/sf/sf-navigation-menu` | `signalframeux` |
-| `@/components/sf/sf-pagination` | `signalframeux` |
-| `@/components/sf/sf-command` | `signalframeux` |
-| `@/components/sf/sf-input-group` | `signalframeux` |
-| `@/components/sf/sf-input-otp` | `signalframeux` |
-| `@/components/sf/sf-hover-card` | `signalframeux` |
-| `@/components/sf/sf-separator` | `signalframeux` |
-| `@/components/sf/sf-skeleton` | `signalframeux` |
-| `@/components/sf/sf-tooltip` | `signalframeux` |
-| `@/components/sf/sf-scroll-area` | `signalframeux` |
-| `@/components/sf/sf-label` | `signalframeux` |
-| `@/components/sf/sf-toggle` | `signalframeux` |
-| `@/components/sf/sf-toggle-group` | `signalframeux` |
-| `@/components/sf/sf-slider` | `signalframeux` |
-| `@/components/sf/sf-collapsible` | `signalframeux` |
-| `@/lib/signalframe-provider` | `signalframeux` |
-| `@/lib/utils` (cn) | `signalframeux` |
-| `@/lib/theme` (toggleTheme) | `signalframeux` |
-| `@/lib/grain` (GRAIN_SVG) | `signalframeux` |
-| `@/hooks/use-scramble-text` | `signalframeux` |
-| `@/hooks/use-session-state` | `signalframeux` |
-| `@/components/sf/sf-accordion` | `signalframeux/animation` |
-| `@/components/sf/sf-progress` | `signalframeux/animation` |
-| `@/components/sf/sf-status-dot` | `signalframeux/animation` |
-| `@/components/sf/sf-toast` | `signalframeux/animation` |
-| `@/components/sf/sf-stepper` | `signalframeux/animation` |
-| `@/components/sf/sf-empty-state` | `signalframeux/animation` |
-| `@/hooks/use-nav-reveal` | `signalframeux/animation` |
-| `@/lib/gsap-core` | `signalframeux/animation` |
-| `@/lib/gsap-easings` | `signalframeux/animation` |
-| `@/lib/gsap-plugins` | `signalframeux/animation` |
-| `@/lib/gsap-draw` | `signalframeux/animation` |
-| `@/lib/gsap-flip` | `signalframeux/animation` |
-| `@/lib/gsap-split` | `signalframeux/animation` |
-| `@/lib/signal-canvas` | `signalframeux/webgl` |
-| `@/hooks/use-signal-scene` | `signalframeux/webgl` |
-| `@/lib/color-resolve` | `signalframeux/webgl` |
-| `@/app/globals.css` (tokens) | `signalframeux/signalframeux.css` |
+**Rule:** every `@/components/sf/*`, `@/hooks/*`, and `@/lib/*` path collapses to one of three entry points based on its dependency surface:
+
+| Internal path pattern | Package entry |
+|-----------------------|---------------|
+| Most SF components + hooks + `cn` / `toggleTheme` / `GRAIN_SVG` / `use-scramble-text` / `use-session-state` / `signalframe-provider` | `signalframeux` |
+| Components with transitive GSAP (`SFAccordion`, `SFProgress`, `SFStatusDot`, `SFToast`, `SFStepper`, `SFEmptyState`), plus `use-nav-reveal` and every `lib/gsap-*` module | `signalframeux/animation` |
+| WebGL surface: `signal-canvas`, `use-signal-scene`, `color-resolve` | `signalframeux/webgl` |
+| Design tokens: `@/app/globals.css` | `signalframeux/signalframeux.css` |
+
+If you're unsure which entry owns a symbol, import from `signalframeux` first — a TypeScript error will point you at the right subpath.
 
 ## PEER DEPENDENCIES
 
@@ -125,61 +72,14 @@ As of v1.7, all SignalframeUX CSS custom properties use the `--sfx-*` namespace.
 
 **What changed:** the authoritative token values live under `--sfx-*` in `:root`. Any JS/TS code that reads or writes tokens via `getPropertyValue()` or `setProperty()` must use the `--sfx-*` name.
 
-### Full Rename Table
+### Rename Rule
 
-| Old Name | New Name |
-|----------|----------|
-| `--color-background` | `--sfx-background` |
-| `--color-foreground` | `--sfx-foreground` |
-| `--color-primary` | `--sfx-primary` |
-| `--color-primary-foreground` | `--sfx-primary-foreground` |
-| `--color-secondary` | `--sfx-secondary` |
-| `--color-secondary-foreground` | `--sfx-secondary-foreground` |
-| `--color-accent` | `--sfx-accent` |
-| `--color-accent-foreground` | `--sfx-accent-foreground` |
-| `--color-muted` | `--sfx-muted` |
-| `--color-muted-foreground` | `--sfx-muted-foreground` |
-| `--color-card` | `--sfx-card` |
-| `--color-card-foreground` | `--sfx-card-foreground` |
-| `--color-popover` | `--sfx-popover` |
-| `--color-popover-foreground` | `--sfx-popover-foreground` |
-| `--color-destructive` | `--sfx-destructive` |
-| `--color-success` | `--sfx-success` |
-| `--color-warning` | `--sfx-warning` |
-| `--color-border` | `--sfx-border` |
-| `--color-input` | `--sfx-input` |
-| `--color-ring` | `--sfx-ring` |
-| `--color-chart-1` through `--color-chart-5` | `--sfx-chart-1` through `--sfx-chart-5` |
-| `--color-sidebar` | `--sfx-sidebar` |
-| `--color-sidebar-foreground` | `--sfx-sidebar-foreground` |
-| `--color-sidebar-primary` | `--sfx-sidebar-primary` |
-| `--color-sidebar-primary-foreground` | `--sfx-sidebar-primary-foreground` |
-| `--color-sidebar-accent` | `--sfx-sidebar-accent` |
-| `--color-sidebar-accent-foreground` | `--sfx-sidebar-accent-foreground` |
-| `--color-sidebar-border` | `--sfx-sidebar-border` |
-| `--color-sidebar-ring` | `--sfx-sidebar-ring` |
-| `--sf-grain-opacity` | `--sfx-grain-opacity` |
-| `--sf-yellow` | `--sfx-yellow` |
-| `--sf-green` | `--sfx-green` |
-| `--sf-clock` | `--sfx-clock` |
-| `--sf-tracking-label` | `--sfx-tracking-label` |
-| `--signal-intensity` | `--sfx-signal-intensity` |
-| `--signal-speed` | `--sfx-signal-speed` |
-| `--signal-accent` | `--sfx-signal-accent` |
-| `--duration-instant` | `--sfx-duration-instant` |
-| `--duration-fast` | `--sfx-duration-fast` |
-| `--duration-normal` | `--sfx-duration-normal` |
-| `--duration-slow` | `--sfx-duration-slow` |
-| `--duration-glacial` | `--sfx-duration-glacial` |
-| `--ease-default` | `--sfx-ease-default` |
-| `--ease-hover` | `--sfx-ease-hover` |
-| `--ease-spring` | `--sfx-ease-spring` |
-| `--text-2xs` through `--text-4xl` | `--sfx-text-2xs` through `--sfx-text-4xl` |
-| `--space-1` through `--space-24` | `--sfx-space-1` through `--sfx-space-24` |
-| `--max-w-content` | `--sfx-max-w-content` |
-| `--max-w-wide` | `--sfx-max-w-wide` |
-| `--max-w-full` | `--sfx-max-w-full` |
-| `--z-content` through `--z-vhs` | `--sfx-z-content` through `--sfx-z-vhs` |
+Every authoritative token moved into a single `--sfx-*` namespace. The renames follow two mechanical patterns:
+
+- Any `--color-*` token → `--sfx-*` (drops the `color-` segment).
+  Covers the full semantic palette (`background`, `foreground`, `primary[-foreground]`, `secondary[-foreground]`, `accent[-foreground]`, `muted[-foreground]`, `card[-foreground]`, `popover[-foreground]`, `destructive`, `success`, `warning`, `border`, `input`, `ring`, `chart-1` … `chart-5`, `sidebar[-foreground|-primary|-accent|-border|-ring]`).
+- Any unprefixed or legacy-`--sf-*` design-system token → `--sfx-*` (prepends `sfx-`).
+  Covers animation (`duration-*`, `ease-*`), typography (`text-2xs` … `text-4xl`), spacing (`space-1` … `space-24`), layout (`max-w-content|wide|full`), z-index (`z-content` … `z-vhs`), signal (`signal-intensity|speed|accent`), and legacy chrome (`sf-grain-opacity`, `sf-yellow`, `sf-green`, `sf-clock`, `sf-tracking-label`).
 
 ### JS/TS Code Migration
 

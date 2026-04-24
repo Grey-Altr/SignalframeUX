@@ -3,6 +3,13 @@
 /**
  * SignalframeUX custom GSAP easings — single canonical source.
  * Import from any gsap-* entry point that has CustomEase registered.
+ *
+ * @example
+ * // Register the SF custom easings once at app init (client-only).
+ * import { registerSFEasings } from "signalframeux/animation";
+ * registerSFEasings();
+ * // Then reference "sf-snap" or "sf-punch" in any gsap tween:
+ * // gsap.to(el, { x: 100, ease: "sf-snap", duration: 0.3 });
  */
 import { CustomEase } from "gsap/CustomEase";
 
