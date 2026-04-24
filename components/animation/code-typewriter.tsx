@@ -91,7 +91,7 @@ export function CodeTypewriter({
 
   return (
     <div ref={containerRef} className={className}>
-      <pre className="text-base leading-[1.7] font-mono overflow-x-auto text-[var(--sf-muted-text-dark)]">
+      <pre className="text-base leading-[1.7] font-mono overflow-x-auto text-[var(--sfx-muted-text-dark)]">
         <code>
           {lines.map((line, i) => {
             const isVisible = i < visibleCount;

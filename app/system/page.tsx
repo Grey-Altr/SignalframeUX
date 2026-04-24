@@ -62,7 +62,7 @@ export default async function TokensPage() {
         {/* Gradient separator */}
         <div
           className="h-1.5"
-          style={{ background: "linear-gradient(90deg, var(--color-primary), var(--sf-yellow), var(--color-primary))" }}
+          style={{ background: "linear-gradient(90deg, var(--color-primary), var(--sfx-yellow), var(--color-primary))" }}
         />
       </main>
       <Footer />

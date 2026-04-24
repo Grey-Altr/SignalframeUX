@@ -10,7 +10,7 @@ const sfBadgeVariants = cva(
         default: "border-2 border-foreground bg-foreground text-background",
         primary: "border-2 border-primary bg-primary text-primary-foreground",
         outline: "bg-transparent text-foreground border-2 border-foreground",
-        signal: "border-2 border-foreground bg-[var(--sf-yellow)] text-foreground",
+        signal: "border-2 border-foreground bg-[var(--sfx-yellow)] text-foreground",
       },
     },
     defaultVariants: {

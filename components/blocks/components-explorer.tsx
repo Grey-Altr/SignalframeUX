@@ -862,7 +862,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
               style={{
                 aspectRatio: "1.2",
                 ...(isYellow
-                  ? { backgroundColor: "var(--sf-yellow)" }
+                  ? { backgroundColor: "var(--sfx-yellow)" }
                   : {}),
               }}
             >
@@ -876,7 +876,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
                 />
               )}
 
-              <div className={`text-[var(--text-sm)] uppercase tracking-[0.2em] ${comp.variant === "black" ? "text-[var(--sf-muted-text-dark)]" : "text-muted-foreground"}`}>
+              <div className={`text-[var(--text-sm)] uppercase tracking-[0.2em] ${comp.variant === "black" ? "text-[var(--sfx-muted-text-dark)]" : "text-muted-foreground"}`}>
                 {comp.index} · {comp.category}
               </div>
 
@@ -900,7 +900,7 @@ export function ComponentsExplorer({ highlightedCodeMap }: { highlightedCodeMap:
                 {comp.preview}
               </div>
 
-              <div className={`flex justify-between text-[var(--text-sm)] uppercase tracking-[0.15em] ${comp.variant === "black" ? "text-[var(--sf-muted-text-dark)]" : "text-muted-foreground"}`}>
+              <div className={`flex justify-between text-[var(--text-sm)] uppercase tracking-[0.15em] ${comp.variant === "black" ? "text-[var(--sfx-muted-text-dark)]" : "text-muted-foreground"}`}>
                 <span>{comp.subcategory}</span>
                 <span>{comp.version}</span>
               </div>

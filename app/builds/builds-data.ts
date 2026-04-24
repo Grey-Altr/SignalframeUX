@@ -73,7 +73,7 @@ export const BUILDS: BuildDetail[] = [
     signalUse:
       "Injects controlled hue drift and scanline accents based on lineup tempo, creating per-night variance inside one system.",
     status: "CONCEPT / PUBLISHING MOD",
-    toneClass: "border-[var(--sf-yellow)]/50 bg-[var(--sf-yellow)]/10",
+    toneClass: "border-[var(--sfx-yellow)]/50 bg-[var(--sfx-yellow)]/10",
     mission:
       "Generate poster drops that feel singular each week while preserving one codified structural signature.",
     frameStack: [

@@ -15,7 +15,7 @@ export function StatsBand() {
             i < 2 ? "border-b-4 md:border-b-0" : ""
           } border-foreground ${
             i % 2 === 0 ? "border-r-4" : i < STATS.length - 1 ? "md:border-r-4" : ""
-          } ${stat.accent ? "bg-foreground dark:bg-[var(--sf-darker-surface)]" : ""}`}
+          } ${stat.accent ? "bg-foreground dark:bg-[var(--sfx-darker-surface)]" : ""}`}
         >
           <div
             aria-hidden="true"

@@ -3,20 +3,20 @@ import { XrayReveal } from "@/components/animation/xray-reveal";
 
 /** Code lines for the typewriter reveal */
 const CODE_LINES: CodeLine[] = [
-  { text: "// INITIALIZE SIGNALFRAMEUX™", color: "var(--sf-dim-text)" },
+  { text: "// INITIALIZE SIGNALFRAMEUX™", color: "var(--sfx-dim-text)" },
   { text: "import { createSignalframeUX } from '@sfux/core'" },
   { text: "" },
   { text: "const sfux = createSignalframeUX({" },
-  { text: "  theme: 'dark',", color: "var(--sf-yellow)" },
-  { text: "  tokens: 'oklch',", color: "var(--sf-yellow)" },
+  { text: "  theme: 'dark',", color: "var(--sfx-yellow)" },
+  { text: "  tokens: 'oklch',", color: "var(--sfx-yellow)" },
   { text: "  frame: {" },
   { text: "    enabled: true,", color: "var(--sfx-code-const)" },
   { text: "    intensity: 0.6,", color: "var(--sfx-code-const)" },
-  { text: "    reactive: 'cursor'", color: "var(--sf-yellow)" },
+  { text: "    reactive: 'cursor'", color: "var(--sfx-yellow)" },
   { text: "  }" },
   { text: "})" },
   { text: "" },
-  { text: "// ACCESS ANY COMPONENT", color: "var(--sf-dim-text)" },
+  { text: "// ACCESS ANY COMPONENT", color: "var(--sfx-dim-text)" },
   { text: "const btn = sfux.component('Button')" },
   { text: "btn.render({ variant: 'signal' })" },
 ];
@@ -26,7 +26,7 @@ const CODE_LINES: CodeLine[] = [
  * the 3 load-bearing anchor annotations keep var(--color-primary) accent to
  * mark the highest-signal system callouts. */
 const ANNOTATION_ACCENT = "var(--color-primary)";
-const ANNOTATION_MUTED = "var(--sf-muted-text-dark)";
+const ANNOTATION_MUTED = "var(--sfx-muted-text-dark)";
 const ANNOTATION_LINES: CodeLine[] = [
   { text: "" },
   { text: "// ← @sfux/core v2.1.0 — 12KB gzipped", color: ANNOTATION_ACCENT },
@@ -36,7 +36,7 @@ const ANNOTATION_LINES: CodeLine[] = [
   { text: "// ← 49 OKLCH scales auto-generated", color: ANNOTATION_MUTED },
   { text: "" },
   { text: "// ← Frame layer active", color: ANNOTATION_MUTED },
-  { text: "// ← 0–1 float, maps to --sf-grain-opacity", color: ANNOTATION_MUTED },
+  { text: "// ← 0–1 float, maps to --sfx-grain-opacity", color: ANNOTATION_MUTED },
   { text: "// ← 'cursor' | 'scroll' | 'audio'", color: ANNOTATION_MUTED },
   { text: "" },
   { text: "" },
@@ -70,7 +70,7 @@ export function CodeSection() {
       {/* Right — Code block with typewriter + X-ray annotations */}
       <div className="bg-[var(--sfx-code-bg)] px-[var(--sfx-space-8)] py-[var(--sfx-space-12)] relative overflow-hidden" style={{ boxShadow: "var(--sfx-inset-shadow)" }}>
         {/* Terminal label */}
-        <div className="absolute top-4 right-6 text-sm uppercase tracking-[0.2em] text-[var(--sf-dim-text)] font-bold z-[3]">
+        <div className="absolute top-4 right-6 text-sm uppercase tracking-[0.2em] text-[var(--sfx-dim-text)] font-bold z-[3]">
           TERMINAL™
         </div>
 
@@ -89,7 +89,7 @@ export function CodeSection() {
               <pre className="text-base leading-[1.7] font-mono overflow-x-auto">
                 <code>
                   {ANNOTATION_LINES.map((line, i) => (
-                    <div key={i} style={{ color: line.color || "var(--sf-muted-text-dark)" }}>
+                    <div key={i} style={{ color: line.color || "var(--sfx-muted-text-dark)" }}>
                       {line.text || "\u00A0"}
                     </div>
                   ))}

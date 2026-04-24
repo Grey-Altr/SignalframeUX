@@ -93,7 +93,7 @@ function PreviewTable() {
         </SFTableRow>
         <SFTableRow>
           <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] opacity-60">yellow</SFTableCell>
-          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-[var(--sf-yellow)]">oklch(.91 .18 98)</SFTableCell>
+          <SFTableCell className="px-[var(--sfx-space-2)] py-[var(--sfx-space-1)] text-right text-[var(--sfx-yellow)]">oklch(.91 .18 98)</SFTableCell>
         </SFTableRow>
       </SFTableBody>
     </SFTable>
@@ -102,7 +102,7 @@ function PreviewTable() {
 
 function PreviewToast() {
   return (
-    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sf-dark-surface)] dark:text-foreground p-[var(--sfx-space-3)] flex items-start gap-[var(--sfx-space-2)]">
+    <div className="w-[80%] max-w-[200px] border-2 border-primary bg-foreground text-background dark:bg-[var(--sfx-dark-surface)] dark:text-foreground p-[var(--sfx-space-3)] flex items-start gap-[var(--sfx-space-2)]">
       <span className="text-primary text-sm">◉</span>
       <div>
         <p className="text-[var(--text-xs)] font-bold uppercase tracking-wider">DEPLOYED</p>
@@ -121,7 +121,7 @@ function PreviewNoiseBg() {
           backgroundImage: GRAIN_SVG,
         }}
       />
-      <p className="absolute bottom-1 left-2 text-[var(--text-xs)] text-[var(--sf-dim-text)] uppercase tracking-wider">
+      <p className="absolute bottom-1 left-2 text-[var(--text-xs)] text-[var(--sfx-dim-text)] uppercase tracking-wider">
         FRACTAL NOISE
       </p>
     </div>
@@ -136,7 +136,7 @@ function PreviewParticleMesh() {
         {Array.from({ length: 24 }).map((_, i) => {
           const x = 15 + (i % 6) * 30;
           const y = 12 + Math.floor(i / 6) * 14;
-          return <circle key={i} cx={x} cy={y} r="1.5" fill="var(--sf-dim-text)" />;
+          return <circle key={i} cx={x} cy={y} r="1.5" fill="var(--sfx-dim-text)" />;
         })}
         {/* Connection lines */}
         <line x1="15" y1="12" x2="45" y2="12" stroke="var(--sfx-subtle-border)" strokeWidth="0.5" />
@@ -156,7 +156,7 @@ function PreviewGlitchText() {
   return (
     <div className="relative">
       <span
-        className="sf-display text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sf-muted-text-dark)]"
+        className="sf-display text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sfx-muted-text-dark)]"
       >
         GLITCH
       </span>
@@ -169,7 +169,7 @@ function PreviewGlitchText() {
       </span>
       <span
         aria-hidden="true"
-        className="sf-display absolute top-0 left-[-2px] text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sf-yellow)] opacity-40"
+        className="sf-display absolute top-0 left-[-2px] text-[var(--text-lg)] font-bold uppercase tracking-wider text-[var(--sfx-yellow)] opacity-40"
         style={{ clipPath: "inset(60% 0 10% 0)" }}
       >
         GLITCH
@@ -209,7 +209,7 @@ function PreviewWaveform() {
         <polyline
           points={wave(3, 22, 0)}
           fill="none"
-          stroke="var(--sf-waveform-bg)"
+          stroke="var(--sfx-waveform-bg)"
           strokeWidth="0.5"
         />
         <polyline
@@ -223,7 +223,7 @@ function PreviewWaveform() {
         <polyline
           points={wave(11, 6, 1.2)}
           fill="none"
-          stroke="var(--sf-waveform-harmonic)"
+          stroke="var(--sfx-waveform-harmonic)"
           strokeWidth="0.7"
           opacity="0.6"
         />
@@ -308,7 +308,7 @@ export function ComponentGrid({ highlightedCodeMap }: { highlightedCodeMap: Reco
               className="relative border-r-2 border-b-2 border-foreground group cursor-pointer hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
               style={{
                 aspectRatio: "1",
-                backgroundColor: isBlack ? "var(--sf-darker-surface)" : "var(--sf-cell-light-bg)",
+                backgroundColor: isBlack ? "var(--sfx-darker-surface)" : "var(--sfx-cell-light-bg)",
                 color: "var(--color-foreground)",
               }}
             >

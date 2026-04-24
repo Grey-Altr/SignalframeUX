@@ -94,7 +94,7 @@ export function NavOverlay({ open, onClose, links }: NavOverlayProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Navigation menu"
-      className="fixed inset-0 z-[var(--z-overlay)] bg-foreground dark:bg-[var(--sf-darkest-surface)]"
+      className="fixed inset-0 z-[var(--z-overlay)] bg-foreground dark:bg-[var(--sfx-darkest-surface)]"
       style={{
         clipPath: open ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
         transition: "clip-path 0.4s var(--sfx-ease-default)",

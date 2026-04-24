@@ -54,11 +54,11 @@ export function Footer() {
               <p className="text-[var(--text-sm)] font-mono uppercase tracking-wider text-foreground mb-[var(--sfx-space-3)] font-bold">
                 INSTALL
               </p>
-              <div className="bg-foreground dark:bg-[var(--sf-dark-surface)] text-background dark:text-foreground px-[var(--sfx-space-4)] py-[var(--sfx-space-3)] font-mono text-[var(--text-base)] border-2 border-foreground relative min-w-0 overflow-x-auto">
+              <div className="bg-foreground dark:bg-[var(--sfx-dark-surface)] text-background dark:text-foreground px-[var(--sfx-space-4)] py-[var(--sfx-space-3)] font-mono text-[var(--text-base)] border-2 border-foreground relative min-w-0 overflow-x-auto">
                 <div className="flex justify-end mb-[var(--sfx-space-1)]">
                   <CopyButton />
                 </div>
-                <span className="text-[var(--sf-primary-on-dark)] select-all break-all">pnpm dlx shadcn@latest add</span>
+                <span className="text-[var(--sfx-primary-on-dark)] select-all break-all">pnpm dlx shadcn@latest add</span>
                 <br />
                 <span className="select-all break-all">&quot;https://signalframeux.com/r/base.json&quot;</span>
               </div>

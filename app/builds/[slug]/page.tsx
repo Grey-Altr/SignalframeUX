@@ -37,9 +37,9 @@ const BUILD_VISUALS: Record<string, BuildVisual> = {
     motif: "zigzag",
     frameSymbol: "ring",
     signalSymbol: "triangle",
-    panelTone: "bg-[var(--sf-yellow)]/10 border-[var(--sf-yellow)]/40",
-    stripTone: "bg-[var(--sf-yellow)]/10",
-    interactionTone: "bg-[var(--sf-yellow)]/10",
+    panelTone: "bg-[var(--sfx-yellow)]/10 border-[var(--sfx-yellow)]/40",
+    stripTone: "bg-[var(--sfx-yellow)]/10",
+    interactionTone: "bg-[var(--sfx-yellow)]/10",
     cadenceLabel: "CADENCE: CAMPAIGN PULSE",
   },
   "operator-wardrobe-skin": {

@@ -31,13 +31,13 @@ export function DualLayer() {
       </div>
 
       {/* Right — //SIGNAL (black, generative) */}
-      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] px-[clamp(24px,calc(5*var(--sf-vw)),48px)] py-[clamp(24px,calc(5*var(--sf-vw)),60px)]">
+      <div className="bg-foreground dark:bg-[var(--sfx-darker-surface)] px-[clamp(24px,calc(5*var(--sf-vw)),48px)] py-[clamp(24px,calc(5*var(--sf-vw)),60px)]">
         <h2
           className="sf-display text-[clamp(48px,calc(6*var(--sf-vw)),80px)] leading-none tracking-[-0.02em] text-primary mb-[var(--sfx-space-6)]"
         >
           {"//SIGNAL"}
         </h2>
-        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,calc(30.556*var(--sf-vw)),440px)] uppercase tracking-[0.08em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground">
+        <p className="text-[var(--text-base)] leading-[1.8] max-w-[clamp(280px,calc(30.556*var(--sf-vw)),440px)] uppercase tracking-[0.08em] text-[var(--sfx-muted-text-dark)] dark:text-muted-foreground">
           THE GENERATIVE EXPRESSION LAYER. PARAMETRIC NOISE.
           DATA-REACTIVE VISUALS. CANVAS OVERLAYS.
           EVERYTHING THE USER FEELS BUT DOESN&apos;T CLICK.
@@ -48,7 +48,7 @@ export function DualLayer() {
             <span
               key={tag}
               data-anim="tag"
-                           className="border border-[var(--sf-subtle-border)] dark:border-[var(--sf-dim-text)] px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-[var(--sf-muted-text-dark)] dark:text-muted-foreground inline-block"
+                           className="border border-[var(--sfx-subtle-border)] dark:border-[var(--sfx-dim-text)] px-[var(--sfx-space-3)] py-[var(--sfx-space-1)] text-[var(--text-xs)] uppercase tracking-[0.15em] text-[var(--sfx-muted-text-dark)] dark:text-muted-foreground inline-block"
             >
               {tag}
             </span>

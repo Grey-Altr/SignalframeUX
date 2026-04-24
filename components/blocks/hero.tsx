@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="mt-[var(--nav-height)] grid grid-cols-1 md:grid-cols-2 h-[calc(var(--sf-canvas-h)-var(--nav-height,0px))] border-b-4 border-foreground overflow-hidden">
       {/* Left — Black panel */}
-      <div className="bg-foreground dark:bg-[var(--sf-darker-surface)] text-background dark:text-foreground pr-[clamp(16px,calc(4*var(--sf-vw)),48px)] pl-[calc(clamp(16px,calc(4*var(--sf-vw)),48px)-2em)] py-[clamp(16px,calc(3*var(--sf-vh)),60px)] flex flex-col justify-center relative overflow-hidden">
+      <div className="bg-foreground dark:bg-[var(--sfx-darker-surface)] text-background dark:text-foreground pr-[clamp(16px,calc(4*var(--sf-vw)),48px)] pl-[calc(clamp(16px,calc(4*var(--sf-vw)),48px)-2em)] py-[clamp(16px,calc(3*var(--sf-vh)),60px)] flex flex-col justify-center relative overflow-hidden">
         {/* Canvas mesh background — opacity-0 initial state; GSAP fades to 0.45 via data-anim="hero-mesh" */}
         <div data-anim="hero-mesh" className="absolute inset-0 z-0 opacity-0">
           <HeroMesh className="w-full h-full" />
@@ -18,7 +18,7 @@ export function Hero() {
           style={{
             clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
             background:
-              "radial-gradient(circle, transparent 30%, var(--sf-halftone-dot) 30%, var(--sf-halftone-dot) 32%, transparent 32%), radial-gradient(circle, transparent 30%, var(--sf-halftone-dot) 30%, var(--sf-halftone-dot) 32%, transparent 32%)",
+              "radial-gradient(circle, transparent 30%, var(--sfx-halftone-dot) 30%, var(--sfx-halftone-dot) 32%, transparent 32%), radial-gradient(circle, transparent 30%, var(--sfx-halftone-dot) 30%, var(--sfx-halftone-dot) 32%, transparent 32%)",
             backgroundSize: "8px 8px",
             backgroundPosition: "0 0, 4px 4px",
             filter: "contrast(2)",
@@ -40,7 +40,7 @@ export function Hero() {
             suppressHydrationWarning
             className="sf-display text-[clamp(58px,calc(16.8*var(--sf-vw)),437px)] leading-[0.7] tracking-[-0.03em] text-white uppercase origin-top-left"
             style={{
-              textShadow: "0 1px 0 var(--sf-text-shadow-light), 0 -1px 0 var(--sf-text-shadow-dark)",
+              textShadow: "0 1px 0 var(--sfx-text-shadow-light), 0 -1px 0 var(--sfx-text-shadow-dark)",
               transform: "scale(1.176)",
             }}
           >
@@ -73,26 +73,26 @@ export function Hero() {
 
         {/* Multilingual text */}
         <div className="relative z-[var(--z-content)] mt-[calc(clamp(4px,calc(1*var(--sf-vh)),12px)+60px)] ml-[1.5em] sf-jfm-flicker">
-          <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(5.8px,calc(0.77*var(--sf-vw)),11.5px)] font-bold">
+          <p lang="ja" data-anim="hero-katakana" data-text="シグナルフレーム™" className="sf-hero-deferred text-[var(--sfx-yellow)] tracking-[0.3em] text-[clamp(5.8px,calc(0.77*var(--sf-vw)),11.5px)] font-bold">
             シグナルフレーム™
           </p>
           <p
             lang="fa"
             data-anim="hero-farsi"
             data-text="سیگنال‌فریم™"
-            className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(11px,calc(1.38*var(--sf-vw)),16.6px)] font-black -mt-[2px]"
+            className="sf-hero-deferred text-[var(--sfx-yellow)] tracking-[0.3em] text-[clamp(11px,calc(1.38*var(--sf-vw)),16.6px)] font-black -mt-[2px]"
             dir="rtl"
             style={{ textAlign: "left" }}
           >
             سیگنال‌فریم™
           </p>
-          <p lang="zh" data-anim="hero-mandarin" data-text="信号框架™" className="sf-hero-deferred text-[var(--sf-yellow)] tracking-[0.3em] text-[clamp(4.6px,calc(0.62*var(--sf-vw)),9.2px)] font-black mt-[clamp(2px,calc(0.5*var(--sf-vh)),8px)]">
+          <p lang="zh" data-anim="hero-mandarin" data-text="信号框架™" className="sf-hero-deferred text-[var(--sfx-yellow)] tracking-[0.3em] text-[clamp(4.6px,calc(0.62*var(--sf-vw)),9.2px)] font-black mt-[clamp(2px,calc(0.5*var(--sf-vh)),8px)]">
             信号框架™
           </p>
         </div>
 
         {/* Subtitle */}
-        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[0.35em] ml-[calc(1.5em+4px)] text-[var(--sf-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,calc(1*var(--sf-vw)),13px)] max-w-[clamp(260px,calc(29.167*var(--sf-vw)),420px)] relative z-[var(--z-content)]">
+        <p data-anim="hero-subtitle" className="sf-hero-deferred mt-[0.35em] ml-[calc(1.5em+4px)] text-[var(--sfx-dim-text)] dark:text-muted-foreground uppercase tracking-[0.2em] text-[clamp(8px,calc(1*var(--sf-vw)),13px)] max-w-[clamp(260px,calc(29.167*var(--sf-vw)),420px)] relative z-[var(--z-content)]">
           <span className="whitespace-nowrap">DETERMINISTIC INTERFACE. GENERATIVE EXPRESSION.</span><br />
           <span className="whitespace-nowrap">UNIVERSAL DESIGN SYSTEM BY CULTURE DIVISION</span>
         </p>
