@@ -180,10 +180,10 @@ test("phase-40-04: api-docs.ts has at least one entry with importPath signalfram
 // ── All entry exports appear as API_DOCS keys ─────────────────────────────────
 
 test("phase-40-04: all entry-core.ts exports appear as keys in API_DOCS", () => {
-  const apiContent = fs.readFileSync(
-    path.join(ROOT, "lib/api-docs.ts"),
-    "utf8"
-  );
+  // API_DOCS is splatted from child files (frame/signal/core/hook.ts) —
+  // see commit c459038. Read all modules so the key-presence check covers
+  // entries declared in any of them.
+  const apiContent = readAllApiDocsSource();
   const exports = extractNamedExports(
     path.join(ROOT, "lib/entry-core.ts")
   ).filter((name) => !TYPE_ONLY_EXPORTS.has(name));
@@ -205,10 +205,10 @@ test("phase-40-04: all entry-core.ts exports appear as keys in API_DOCS", () => 
 });
 
 test("phase-40-04: all entry-animation.ts exports appear as keys in API_DOCS", () => {
-  const apiContent = fs.readFileSync(
-    path.join(ROOT, "lib/api-docs.ts"),
-    "utf8"
-  );
+  // API_DOCS is splatted from child files (frame/signal/core/hook.ts) —
+  // see commit c459038. Read all modules so the key-presence check covers
+  // entries declared in any of them.
+  const apiContent = readAllApiDocsSource();
   const exports = extractNamedExports(
     path.join(ROOT, "lib/entry-animation.ts")
   ).filter(
@@ -230,10 +230,10 @@ test("phase-40-04: all entry-animation.ts exports appear as keys in API_DOCS", (
 });
 
 test("phase-40-04: all entry-webgl.ts exports appear as keys in API_DOCS", () => {
-  const apiContent = fs.readFileSync(
-    path.join(ROOT, "lib/api-docs.ts"),
-    "utf8"
-  );
+  // API_DOCS is splatted from child files (frame/signal/core/hook.ts) —
+  // see commit c459038. Read all modules so the key-presence check covers
+  // entries declared in any of them.
+  const apiContent = readAllApiDocsSource();
   const exports = extractNamedExports(
     path.join(ROOT, "lib/entry-webgl.ts")
   ).filter((name) => !TYPE_ONLY_EXPORTS.has(name));

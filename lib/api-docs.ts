@@ -5,7 +5,7 @@
  * AUTO-GENERATED — do not edit by hand.
  * Run: pnpm docs:generate
  * Source: scripts/generate-api-docs.ts
- * Generated: 2026-04-13T03:59:47.335Z
+ * Generated: 2026-04-24T01:17:51.231Z
  */
 
 import type { ComponentDoc, PropDef, UsageExample, PreviewHud } from "./api-docs/types";

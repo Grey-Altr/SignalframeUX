@@ -54,7 +54,7 @@ export const CORE_DOCS: Record<string, ComponentDoc> = {
     "layer": "CORE",
     "version": "v1.6.0",
     "status": "STABLE",
-    "description": "SHARED THEME TOGGLE — USED BY DARKMODETOGGLE AND COMMANDPALETTE. HARD-CUT SWITCH (DU-STYLE) — INSTANT COLOR INVERSION, NO SMOOTH BLEND.",
+    "description": "SHARED THEME TOGGLE — USED BY DARKMODETOGGLE AND COMMANDPALETTE. SEQUENCED SWITCH — COLOR TRANSITIONS FOLLOW THE TOGGLE MOTION TIMING.",
     "importPath": "signalframeux",
     "importName": "toggleTheme",
     "props": [

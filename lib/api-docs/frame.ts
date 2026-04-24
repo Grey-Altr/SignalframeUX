@@ -356,7 +356,7 @@ export const FRAME_DOCS: Record<string, ComponentDoc> = {
     "layer": "FRAME",
     "version": "v1.6.0",
     "status": "STABLE",
-    "description": "SUB-COMPONENT OF SFCARD — RENDERS THE MAIN CARD BODY CONTENT REGION WITH P-4 PADDING.",
+    "description": "SUB-COMPONENT OF SFCARD — RENDERS THE MAIN CARD BODY CONTENT REGION WITH P-[VAR(--SFX-SPACE-4)] PADDING.",
     "importPath": "signalframeux",
     "importName": "SFCardContent",
     "props": [],
@@ -696,7 +696,7 @@ export const FRAME_DOCS: Record<string, ComponentDoc> = {
     "layer": "FRAME",
     "version": "v1.6.0",
     "status": "STABLE",
-    "description": "SUB-COMPONENT OF SFTABLE — DATA CELL WITH CONSISTENT PX-3 PY-2 PADDING.",
+    "description": "SUB-COMPONENT OF SFTABLE — DATA CELL WITH CONSISTENT PX-[VAR(--SFX-SPACE-3)] PY-[VAR(--SFX-SPACE-2)] PADDING.",
     "importPath": "signalframeux",
     "importName": "SFTableCell",
     "props": [],
@@ -1725,7 +1725,7 @@ export const FRAME_DOCS: Record<string, ComponentDoc> = {
     "usage": [
       {
         "label": "EXAMPLE 1",
-        "code": "<SFScrollArea className=\"h-64\">\n  <div className=\"p-4\">{longContent}</div>\n</SFScrollArea>"
+        "code": "<SFScrollArea className=\"h-64\">\n  <div className=\"p-[var(--sfx-space-4)]\">{longContent}</div>\n</SFScrollArea>"
       }
     ],
     "a11y": [
