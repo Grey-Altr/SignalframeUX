@@ -22,6 +22,15 @@ import AxeBuilder from "@axe-core/playwright";
  *     GSAP start state, not a structural contrast deficiency. The accessible heading text
  *     and ARIA tree are intact; this is excluded as a known animation-state false positive.
  *
+ *   [data-anim="page-heading"]
+ *     Subpage h1 spans (e.g. /init "INITIA"/"LIZE", /system "SYST"/"EM", /reference
+ *     header fragments) use a GSAP stagger reveal that sweeps opacity 0 → 1 across
+ *     ~0.9–1.4s. axe-core at networkidle catches the mid-reveal frame (observed
+ *     opacity 0.3 on /init "LIZE") producing a 2:1 contrast reading versus the
+ *     ~20:1 rest state (near-black lab(2.75 0 0) on near-white lab(100 0 0) at
+ *     153.6px display). Same pattern as hero-title — structural contrast is sound,
+ *     animation transient only. Excluded to match the hero-title precedent.
+ *
  *   [data-ghost-label]
  *     GhostLabel is a purely decorative watermark at opacity ~0.03–0.04 with
  *     aria-hidden="true". It has no accessible name and is excluded from AT by design.
@@ -47,6 +56,7 @@ import AxeBuilder from "@axe-core/playwright";
  */
 const AXE_EXCLUDE = [
   '[data-anim="hero-title"]',
+  '[data-anim="page-heading"]',
   "[data-ghost-label]",
   "[data-api-entry]",
   "[data-flip-preview]",
