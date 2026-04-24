@@ -60,27 +60,44 @@ test.describe("@effects runtime CSS variables", () => {
 });
 
 test.describe("@effects WebGL canvas count", () => {
-  test("≤ 2 WebGL canvases on homepage (VL-05 slash moment adds the 2nd)", async ({ page }) => {
-    // Pre-VL-05 the homepage had exactly 1 WebGL canvas (the GLSL hero).
-    // Phase 34 shipped the VL-05 hero magenta slash moment (approved per
-    // project_phase34_planned.md, also the SignalCanvas pixel-sort ring),
-    // bringing the count to 2. Accretion guard kept at ≤2 so any 3rd
-    // canvas (e.g. accidental duplicate SignalMesh on the wrong route)
-    // still triggers.
+  test("≤ 3 WebGL canvases on homepage (KLOROFORM iris + pointcloud + GLSL hero)", async ({ page }) => {
+    // Accretion history:
+    //   1 canvas — pre-VL-05 (GLSL hero only)
+    //   2 canvases — Phase 34 VL-05 hero magenta slash moment shipped
+    //   3 canvases — KLOROFORM T1/T2 port to main: iris-cloud +
+    //                pointcloud-ring (both offscreen-transferred to workers)
+    //                joined the Three.js GLSL hero canvas as the current
+    //                production hero composition (see commits 4f97a8a →
+    //                c500ff1 for the staged entrance).
+    // Guard kept at ≤3 so any 4th canvas (accidental duplicate, wrong-route
+    // mount, stray SignalMesh) still trips. Detection also handles canvases
+    // whose control was transferred to OffscreenCanvas — getContext throws
+    // InvalidStateError on those, which is itself a positive WebGL signal.
     await page.goto("/", { waitUntil: "networkidle" });
     await page.waitForTimeout(500);
 
     const canvasCount = await page.evaluate(() => {
+      // Count WebGL canvases incl. those transferred to OffscreenCanvas.
+      // `getContext` throws InvalidStateError on a transferred canvas — that
+      // error IS a positive WebGL signal (the worker holds the live context).
       const canvases = document.querySelectorAll("canvas");
       let webglCount = 0;
       canvases.forEach((c) => {
-        const ctx = c.getContext("webgl2") || c.getContext("webgl");
-        if (ctx) webglCount++;
+        try {
+          const ctx = c.getContext("webgl2") || c.getContext("webgl");
+          if (ctx) webglCount++;
+        } catch (err) {
+          if (err instanceof DOMException && err.name === "InvalidStateError") {
+            webglCount++;
+          } else {
+            throw err;
+          }
+        }
       });
       return webglCount;
     });
 
-    expect(canvasCount).toBeLessThanOrEqual(2);
+    expect(canvasCount).toBeLessThanOrEqual(3);
   });
 
   test("only one WebGL canvas on builds detail", async ({ page }) => {
@@ -91,8 +108,16 @@ test.describe("@effects WebGL canvas count", () => {
       const canvases = document.querySelectorAll("canvas");
       let webglCount = 0;
       canvases.forEach((c) => {
-        const ctx = c.getContext("webgl2") || c.getContext("webgl");
-        if (ctx) webglCount++;
+        try {
+          const ctx = c.getContext("webgl2") || c.getContext("webgl");
+          if (ctx) webglCount++;
+        } catch (err) {
+          if (err instanceof DOMException && err.name === "InvalidStateError") {
+            webglCount++;
+          } else {
+            throw err;
+          }
+        }
       });
       return webglCount;
     });
