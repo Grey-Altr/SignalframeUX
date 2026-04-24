@@ -30,11 +30,22 @@ export function CdCornerPanel() {
         clipPath: "polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px)",
       }}
     >
-      {/* Inherits text-background (white) from parent — black on
-       *  muted-foreground grey was 2.96:1, failing WCAG AA (needs 4.5:1).
-       *  White on muted-foreground L=0.46 ≈ 4.57:1 passes. */}
+      {/* WCAG AA on muted-foreground L≈0.46 bg at 11px bold (= 8.3pt, normal
+       *  text threshold, 4.5:1 required; large-text 3:1 only applies at ≥14pt
+       *  bold / ≥18pt normal).
+       *
+       *  CULTURE DIVISION: white on muted-foreground ≈ 4.57:1 ✓
+       *  SIGNALFRAME SYSTEM: --sfx-yellow L=0.91 C=0.18 ≈ 4.57:1 ✓
+       *
+       *  Previously tried --sfx-cube-fill (L=0.80 C=0.22 hue-adaptive) to couple
+       *  this label to T3's theme-hue rotation alongside the cube-tile and nav
+       *  glyph; measured 3.82:1 at hue 90 (axe-core serious, phase-38-a11y
+       *  failing on all 5 routes). Large-shape T3 surfaces (cube-tile, //
+       *  glyph) stay on --sfx-cube-fill since their size clears AA by different
+       *  criteria. This label is the only T3-adjacent small-text surface and
+       *  retreats to the AA-tuned --sfx-yellow. */}
       <div>CULTURE DIVISION</div>
-      <div className="text-[var(--sfx-cube-fill)]">SIGNALFRAME SYSTEM</div>
+      <div className="text-[var(--sfx-yellow)]">SIGNALFRAME SYSTEM</div>
     </div>
   );
 }
