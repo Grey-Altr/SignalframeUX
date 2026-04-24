@@ -48,9 +48,13 @@ test.describe("@phase35 /init — full suite", () => {
       // ── Nav-reveal contract (Gap 1 tightened) ───────────────────────────
       test("nav-reveal: hidden on load, visible after scroll", async ({ page }) => {
         // Wave 3 T-03 fix: page.mouse.wheel drives Lenis; window.scrollBy does not.
+        // Wheel delta 1200 matches /reference + /system sibling convention —
+        // /init hero trigger-bottom sits at ~970px on desktop 1440x900 where an
+        // 800 wheel (per CDP→Lenis ratio) lands short of the ScrollTrigger
+        // "bottom top" threshold. Tablet/mobile unchanged; 1200 passes all 3.
         await page.goto("/init", { waitUntil: "domcontentloaded" });
         await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "false", { timeout: 500 });
-        await page.mouse.wheel(0, 800);
+        await page.mouse.wheel(0, 1200);
         await expect(page.locator("body")).toHaveAttribute("data-nav-visible", "true", { timeout: 2000 });
       });
 
