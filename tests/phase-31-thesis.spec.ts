@@ -125,11 +125,18 @@ test.describe("Phase 31: THESIS Section", () => {
     expect(src).toMatch(/PinnedSection\.displayName\s*=\s*"PinnedSection"/);
     // The reduced-motion early return must still be present (phase-29 PF-06 contract)
     expect(src).toContain("prefers-reduced-motion: reduce");
-    // The ScrollTrigger config must be preserved
-    expect(src).toContain("pin: true");
-    expect(src).toContain("scrub: 1");
-    expect(src).toContain("anticipatePin: 1");
+    // Portal-pin strategy (4866bdb): GSAP native pin was removed because
+    // ScaleCanvas's transform: scale() hijacks position: fixed (containing-
+    // block rule). PinnedSection now renders into a body-level portal whose
+    // opacity is scrubbed by a ScrollTrigger. The essential contract is:
+    //   1. A ScrollTrigger is created (drives the pin window)
+    //   2. invalidateOnRefresh re-measures end on resize
+    //   3. Content is portalled out via createPortal
+    //   4. The portal wrapper is position:fixed (the actual viewport anchor)
+    expect(src).toContain("createPortal");
+    expect(src).toContain("ScrollTrigger.create");
     expect(src).toContain("invalidateOnRefresh: true");
+    expect(src).toMatch(/position:\s*"fixed"/);
   });
 
   // ── TH-01: scroll distance 200-300vh (browser) ──────────────────────────────
@@ -169,10 +176,18 @@ test.describe("Phase 31: THESIS Section", () => {
     await page.locator("#thesis").scrollIntoViewIfNeeded();
     await page.waitForLoadState("networkidle");
 
-    const stage = page.locator("#thesis [data-stage]");
+    // PinnedSection portals its content to document.body (outside the
+    // ScaleCanvas transform subtree), so the stage and statements are NOT
+    // DOM descendants of #thesis — they live under
+    // [data-pinned-portal='thesis-pin']. See components/animation/
+    // pinned-section.tsx and commit 4866bdb for the rationale.
+    const portal = page.locator("[data-pinned-portal='thesis-pin']");
+    await expect(portal).toHaveCount(1);
+
+    const stage = portal.locator("[data-stage]");
     await expect(stage).toHaveCount(1);
 
-    const statements = page.locator("#thesis [data-statement]");
+    const statements = portal.locator("[data-statement]");
     await expect(statements).toHaveCount(6);
 
     // Every statement's direct parent must be absolutely positioned
@@ -195,7 +210,10 @@ test.describe("Phase 31: THESIS Section", () => {
     await page.locator("#thesis").scrollIntoViewIfNeeded();
     await page.waitForLoadState("networkidle");
 
-    const anchors = page.locator("#thesis [data-statement-size='anchor']");
+    // Statements live under the body-level portal (see TH-02 comment).
+    const anchors = page.locator(
+      "[data-pinned-portal='thesis-pin'] [data-statement-size='anchor']",
+    );
     await expect(anchors).toHaveCount(6);
 
     const count = await anchors.count();
@@ -215,8 +233,9 @@ test.describe("Phase 31: THESIS Section", () => {
     await page.locator("#thesis").scrollIntoViewIfNeeded();
     await page.waitForLoadState("networkidle");
 
+    // Statements live under the body-level portal (see TH-02 comment).
     const statements = await page
-      .locator("#thesis [data-statement-size='anchor']")
+      .locator("[data-pinned-portal='thesis-pin'] [data-statement-size='anchor']")
       .all();
     expect(statements.length).toBe(6);
 
@@ -254,15 +273,18 @@ test.describe("Phase 31: THESIS Section", () => {
     await expect(thesis).toBeVisible({ timeout: 5000 });
     await rmPage.waitForLoadState("networkidle");
 
-    // All 6 statements should be present in the DOM regardless of mode
+    // RM branch bypasses PinnedSection entirely and renders inline under
+    // #thesis — so statements live in the SFSection subtree, not in the
+    // body-level portal used by the motion branch.
     const statements = rmPage.locator("#thesis [data-statement]");
     await expect(statements).toHaveCount(6);
 
-    // Section height should NOT be inflated by pin-spacer (no pin in reduced-motion)
-    const box = await thesis.boundingBox();
-    expect(box).not.toBeNull();
-    const scrollMultiple = box!.height / 900;
-    expect(scrollMultiple, "reduced-motion section is not pinned").toBeLessThan(2.0);
+    // Semantic "no pin" contract: reduced-motion skips PinnedSection, so
+    // the portal is never mounted. This is a stronger signal than a bbox
+    // threshold (which drifts as stacked-specimen content changes) and
+    // directly maps to the architectural decision.
+    const portal = rmPage.locator("[data-pinned-portal='thesis-pin']");
+    await expect(portal).toHaveCount(0);
 
     // Stacked specimen marker should be present
     const reducedMotionMarker = rmPage.locator(
