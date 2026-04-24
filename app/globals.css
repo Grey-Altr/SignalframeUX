@@ -120,7 +120,7 @@
    Consumers override by declaring --sfx-* in unlayered CSS (beats @layer). */
 :root {
   /* ── Generative Theme Seed ── */
-  --sfx-theme-hue: 60; /* Default Gold. Replaced dynamically by AI during scaffolding. */
+  --sfx-theme-hue: 90; /* Default Chartreuse. Replaced dynamically by AI during scaffolding. */
 
   /* ── Hero particle LCH (consumed by pointcloud-ring + iris-cloud canvases) ──
      Stored as raw L C H values (no oklch() wrapper, no alpha) so per-frame

@@ -55,7 +55,7 @@ const ACCENT_COLORS = [
   "oklch(0.65 0.22 25)",   // Coral
   "oklch(0.55 0.25 290)",  // Violet
   "oklch(0.55 0.25 10)",   // Red
-  "oklch(0.65 0.3 60)",    // Gold
+  "oklch(0.65 0.3 90)",    // Chartreuse
 ];
 
 const SCROLL_THRESHOLD = 60;
@@ -77,7 +77,7 @@ async function triggerLocalWipe(container: HTMLElement, direction: number, onMid
   if (oldWipe) oldWipe.remove();
 
   const s = container.style;
-  const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-primary").trim() || "oklch(0.65 0.3 60)";
+  const currentColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-primary").trim() || "oklch(0.65 0.3 90)";
   const coverColor = getComputedStyle(document.documentElement).getPropertyValue("--sfx-foreground").trim() || "oklch(0.145 0 0)";
   const gradDir = direction > 0 ? "to bottom" : "to top";
 

@@ -108,7 +108,7 @@
   --sfx-card-foreground: oklch(0.145 0 0);
   --sfx-popover: oklch(1 0 0);
   --sfx-popover-foreground: oklch(0.145 0 0);
-  --sfx-primary: oklch(0.65 0.3 60);
+  --sfx-primary: oklch(0.65 0.3 90);
   --sfx-primary-foreground: oklch(0.985 0 0);
   --sfx-secondary: oklch(0.970 0.005 298);
   --sfx-secondary-foreground: oklch(0.205 0 0);
@@ -122,20 +122,20 @@
   --sfx-warning: oklch(0.91 0.18 98);
   --sfx-border: oklch(0.205 0 0);
   --sfx-input: oklch(0.205 0 0);
-  --sfx-ring: oklch(0.65 0.3 60);
+  --sfx-ring: oklch(0.65 0.3 90);
 
   /* ── Sidebar Colors (shadcn compat) ── */
   --sfx-sidebar: oklch(0.985 0 0);
   --sfx-sidebar-foreground: oklch(0.145 0 0);
-  --sfx-sidebar-primary: oklch(0.65 0.3 60);
+  --sfx-sidebar-primary: oklch(0.65 0.3 90);
   --sfx-sidebar-primary-foreground: oklch(0.985 0 0);
   --sfx-sidebar-accent: oklch(0.930 0.005 298);
   --sfx-sidebar-accent-foreground: oklch(0.205 0 0);
   --sfx-sidebar-border: oklch(0.205 0 0);
-  --sfx-sidebar-ring: oklch(0.65 0.3 60);
+  --sfx-sidebar-ring: oklch(0.65 0.3 90);
 
   /* ── Chart Colors ── */
-  --sfx-chart-1: oklch(0.65 0.3 60);
+  --sfx-chart-1: oklch(0.65 0.3 90);
   --sfx-chart-2: oklch(0.91 0.18 98);
   --sfx-chart-3: oklch(0.85 0.25 145);
   --sfx-chart-4: oklch(0.550 0.010 298);
@@ -186,18 +186,18 @@
   --sfx-code-bg: oklch(0.12 0 0);
   --sfx-code-text: oklch(0.6 0.28 145);
   --sfx-code-keyword: oklch(0.7 0.15 25);
-  --sfx-code-const: oklch(0.7 0.18 60);
+  --sfx-code-const: oklch(0.7 0.18 90);
   --sfx-dark-surface: oklch(0.2 0 0);
   --sfx-darker-surface: oklch(0.1 0 0);
   --sfx-darkest-surface: oklch(0.08 0 0);
   --sfx-subtle-border: oklch(0.3 0 0);
   --sfx-dim-text: oklch(0.52 0 0);
   --sfx-muted-text-dark: oklch(0.65 0 0);
-  --sfx-primary-on-dark: oklch(0.78 0.28 60); /* AA-safe magenta for dark surfaces */
+  --sfx-primary-on-dark: oklch(0.78 0.28 90); /* AA-safe magenta for dark surfaces */
 
   /* ── Decorative Preview Tokens ── */
-  --sfx-waveform-bg: oklch(0.25 0.05 60);
-  --sfx-waveform-harmonic: oklch(0.45 0.15 60);
+  --sfx-waveform-bg: oklch(0.25 0.05 90);
+  --sfx-waveform-harmonic: oklch(0.45 0.15 90);
   --sfx-preview-light-bg: oklch(0.97 0 0);
   --sfx-text-shadow-light: oklch(1 0 0 / 0.05);
   --sfx-text-shadow-dark: oklch(0 0 0 / 0.3);
@@ -315,12 +315,12 @@
   --sfx-input: oklch(0.400 0 0);
   --sfx-sidebar: oklch(0.205 0 0);
   --sfx-sidebar-foreground: oklch(0.985 0 0);
-  --sfx-sidebar-primary: oklch(0.65 0.3 60);
+  --sfx-sidebar-primary: oklch(0.65 0.3 90);
   --sfx-sidebar-primary-foreground: oklch(0.985 0 0);
   --sfx-sidebar-accent: oklch(0.269 0 0);
   --sfx-sidebar-accent-foreground: oklch(0.985 0 0);
   --sfx-sidebar-border: oklch(0.400 0 0);
-  --sfx-sidebar-ring: oklch(0.65 0.3 60);
+  --sfx-sidebar-ring: oklch(0.65 0.3 90);
   --sfx-cell-light-bg: oklch(0.145 0 0);
 
   /* ── SF Extension Dark Overrides ── */

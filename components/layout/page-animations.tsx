@@ -219,7 +219,7 @@ async function initHeroAnimations(
     "oklch(0.65 0.22 25)",   // Coral
     "oklch(0.55 0.25 290)",  // Violet
     "oklch(0.55 0.25 10)",   // Red
-    "oklch(0.65 0.3 60)",    // Gold (home)
+    "oklch(0.65 0.3 90)",    // Chartreuse (home)
   ];
   const root = document.documentElement;
   const colorTl = gsap.timeline({ delay: 2.0 + HERO_ENTRANCE_BASE_DELAY });
@@ -579,7 +579,7 @@ function applyBgShift(target: string | null) {
 
   const fg = getComputedStyle(document.documentElement).getPropertyValue('--sfx-foreground').trim() || 'oklch(0.985 0 0)';
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--sfx-background').trim() || 'oklch(0.145 0 0)';
-  const primary = getComputedStyle(document.documentElement).getPropertyValue('--sfx-primary').trim() || 'oklch(0.65 0.3 60)';
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--sfx-primary').trim() || 'oklch(0.65 0.3 90)';
 
   const isDark = document.documentElement.classList.contains("dark");
   const palette: Record<string, string> = isDark
