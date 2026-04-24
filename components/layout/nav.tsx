@@ -305,8 +305,8 @@ const NavCubeLink = memo(function NavCubeLink({
   const cubeBaseClass =
     "group relative flex items-center overflow-hidden no-underline font-mono text-[var(--text-2xs)] font-bold uppercase tracking-[0.08em] transition-all duration-[var(--sfx-duration-slow)] ease-in-out pointer-events-auto";
   const cubePaletteClass = isActive
-    ? "bg-[var(--sfx-yellow)] text-black ring-1 ring-black"
-    : "bg-[var(--sfx-yellow)] text-black hover:bg-[var(--sfx-yellow)]";
+    ? "bg-[var(--sfx-cube-fill)] text-black ring-1 ring-black"
+    : "bg-[var(--sfx-cube-fill)] text-black hover:bg-[var(--sfx-cube-fill)]";
 
   return (
     <div
@@ -596,7 +596,7 @@ const NavSignalGlyph = memo(function NavSignalGlyph({
       onBlur={() => setIsHovered(false)}
       onClick={handleClick}
       className={`group relative flex items-center justify-center bg-transparent transition-colors duration-[var(--sfx-duration-glacial)] ease-in-out ${
-        pinned || isFlashing ? "text-warning" : "text-black dark:text-[var(--sfx-yellow)]"
+        pinned || isFlashing ? "text-warning" : "text-black dark:text-[var(--sfx-primary-on-dark)]"
       }`}
       style={{
         width: `${NAV_UNIT_PX}px`,
