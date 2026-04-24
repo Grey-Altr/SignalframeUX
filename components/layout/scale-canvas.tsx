@@ -111,6 +111,13 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     <>
       <div
         ref={outerRef}
+        // The sibling blocking script (/sf-canvas-sync.js below) mutates
+        // outer.style.height at HTML parse time — before React hydrates —
+        // to preserve CLS. React sees the DOM height prop without a match
+        // in the SSR virtual tree and flags a hydration mismatch. This is
+        // the canonical React escape hatch for intentional pre-hydration
+        // DOM mutation (same pattern used by theme scripts on <html>).
+        suppressHydrationWarning
         style={{ position: "relative", width: "100%", overflow: "hidden" }}
       >
         <div
