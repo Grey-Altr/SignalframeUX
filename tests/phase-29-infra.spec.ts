@@ -96,8 +96,20 @@ test.describe("Phase 29: Infrastructure Hardening", () => {
     expect(guardIndex).toBeGreaterThan(-1);
     expect(stIndex).toBeGreaterThan(-1);
     expect(guardIndex).toBeLessThan(stIndex);
-    // Must use early return pattern
-    expect(src).toMatch(/prefers-reduced-motion[\s\S]{0,100}return/);
+    // Must use an early-return pattern gated by reduced-motion. Accept
+    // either the legacy literal form (matchMedia + return in one block) or
+    // the state-routed form introduced by the portal rewrite (4866bdb):
+    // detection → setReducedMotion(true), gate → `if (reducedMotion) return`.
+    // Both are literal returns guarded by the RM intent — same semantic,
+    // different code layout.
+    const hasLiteralEarlyReturn =
+      /prefers-reduced-motion[\s\S]{0,100}return/.test(src);
+    const hasStateEarlyReturn =
+      /\breducedMotion\b[\s\S]{0,30}\breturn\b/.test(src);
+    expect(
+      hasLiteralEarlyReturn || hasStateEarlyReturn,
+      "PinnedSection must bail out of animation setup when reduced-motion is active",
+    ).toBe(true);
   });
 
   test("PF-06: token-viz.tsx has reduced-motion coverage annotation", () => {
