@@ -318,37 +318,52 @@ test.describe("Phase 32: SIGNAL + PROOF Sections", () => {
     await expect(scene).toHaveCount(1);
   });
 
-  // ── SG-02: SIGNAL section is ~150vh ────────────────────────────────────────
+  // ── SG-02: SIGNAL section is viewport-locked (100vh) ───────────────────────
 
-  test("SG-02: SIGNAL section scroll distance is ~150vh", async ({ page }) => {
+  test("SG-02: SIGNAL section is viewport-locked at 100vh", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Target the inner SignalSection root (data-signal-root) — the SFSection wrapper
-    // may have different intrinsic height behavior
+    // The original 150vh scrub architecture was replaced in commit 8daef99
+    // (rewrite GLSLSignal as Ikeda data field + fix scroll via sticky viewport
+    // lock). Current architecture: the section itself is exactly 100vh tall
+    // and uses `sticky top-0 h-screen` on its inner wrap — no parallax, no
+    // pin, no scrub. ScrollTrigger only fires onEnter to set --sfx-signal-
+    // intensity to 1.0. This assertion ratifies that architecture.
     const signalRoot = page.locator("#signal [data-signal-root]").first();
     await expect(signalRoot).toHaveCount(1);
     const box = await signalRoot.boundingBox();
     expect(box).not.toBeNull();
     const vh = page.viewportSize()!.height;
-    expect(box!.height / vh).toBeGreaterThanOrEqual(1.45);
-    expect(box!.height / vh).toBeLessThanOrEqual(1.55);
+    expect(box!.height / vh, "SIGNAL is viewport-locked (100vh)").toBeGreaterThanOrEqual(0.95);
+    expect(box!.height / vh, "SIGNAL is viewport-locked (100vh)").toBeLessThanOrEqual(1.05);
   });
 
-  // ── SG-03: SIGNAL has minimal or no text (<= 20 chars) ─────────────────────
+  // ── SG-03: SIGNAL FRAME overlay is present (dual-layer contract) ───────────
 
-  test("SG-03: SIGNAL section has minimal/no text content", async ({ page }) => {
+  test("SG-03: SIGNAL FRAME overlay renders headline + data row", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.locator("#signal").scrollIntoViewIfNeeded();
     await page.waitForTimeout(200);
 
-    // Read innerText of the inner SignalSection root (excludes SectionIndicator HUD etc)
+    // CLAUDE.md dual-layer contract is NON-NEGOTIABLE: FRAME must stay
+    // legible regardless of SIGNAL shader state. The pre-8cdb24c design
+    // violated this (shader-only, no fallback legibility layer) — this
+    // test originally asserted "<=20 chars" which directly codified the
+    // violation. Current design adds a FRAME overlay: a display headline
+    // and a single Ikeda-register data row. Assertion updated to verify
+    // the two FRAME overlay elements exist.
     const signalRoot = page.locator("#signal [data-signal-root]").first();
-    const text = (await signalRoot.innerText()).trim();
-    expect(text.length).toBeLessThanOrEqual(20);
+    const frameParts = signalRoot.locator("[data-signal-frame]");
+    // Exactly two FRAME elements: the //SIGNAL// headline and the bottom
+    // data row (FIELD / MODE / DEPTH / LATCH). Asserting the exact count
+    // catches accidental additions that could drift into marketing copy.
+    await expect(frameParts).toHaveCount(2);
+    const headline = signalRoot.locator('h2[aria-label="Signal"]');
+    await expect(headline).toHaveCount(1);
   });
 
   // ── SG-04: --signal-intensity set to 1.0 onEnter (documentElement) ─────────
