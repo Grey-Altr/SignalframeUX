@@ -1,3 +1,13 @@
 # ROLE|SLUG|UPDATED|STATE|ACTIVITY
 unset|cc-0c1ce102|2026-04-21 15:42|active|session-start
 audit|cc-bd1b2119|2026-04-22 22:00|active|QUEUE CLOSED: 12/12 (#10–#21). 8 commits shipped. #13 wired nav reveal (user override); #18 marked 14 orphans with @status JSDoc; #11/#20/#21 docs reconciled (§10 block05, §5.1/§5.2, CLAUDE.md). v0.1.1 + queue complete — awaiting v1 sign-off.
+unset|cc-433c7a4c|2026-04-22 18:00|ending|run SPIKE-1 bench at localhost:3200/exp/capture-bench, pick threshold, report timings
+unset|cc-7d4b4c3b|2026-04-22 19:57|ending|Discuss #18 APIExplorer pagination strategy (158 surfaces × 3 categories) before executing — entries-per-panel, category-per-panel vs mixed
+unset|cc-fab31154|2026-04-23 12:50|ending|Kill stuck dev server, pnpm dev, visual-QA /reference, run Playwright suite, Lighthouse, mark §14.18 SHIPPED in LOCKDOWN
+unset|cc-fed26a59|2026-04-23 13:58|ending|pick v1.1 direction — pixel-sort SPIKE-2 / cdb-v3 T3 / color-contrast re-tune / nav-reveal flake
+triage|cc-5b7b3a63|2026-04-23 16:02|ending|Decide Cluster C primary-token retune policy (Copy button 3.6:1 WCAG) before picking next cluster batch
+unset|cc-7731310f|2026-04-23 17:19|ending|Pick next cluster batch — phase-37 Lighthouse, or complete --sf-*→--sfx-* drift in hero/footer/builds/dual-layer/feedback, or Cluster F PF-04 autoResize historical check
+triage|cc-cluster-e|2026-04-23 18:30|ending|Cluster E CLOSED (6/6) + Cluster F PF-04 console-errors bonus close. Commits ad42aab (portal-pin test ratification) + 020a7fb (ScaleCanvas suppressHydrationWarning). 15/15 phase-31 pass, no regressions. Next: PF-06 guard-ordering / Cluster G SIGNAL / Cluster M doc-gen.
+triage|cc-cluster-e|2026-04-23 21:00|ending|ALL 4 triage clusters CLOSED (E/F/G/M). 15 tests closed across 6 commits (ad42aab/020a7fb/84f02a0/b6853bb/8cd9cc2/b9455cf). Full suite 320p/14s/23f → 338p/14s/5f. 5 remaining = pre-existing documented-deferred (phase-37 Lighthouse / phase-35-init / effects WebGL flake / r64j :3200 × 2). Zero regressions. Memory project_main_test_state_post_v1.md updated with ratify-reality codification.
+triage|cc-7d3d32f8|2026-04-23 18:36|ending|Pick one: phase-37 Lighthouse gate (own phase plan) / phase-35-init nav-reveal hydration race / effects-system WebGL ≤2 flake / r64j :3200 env × 2 — all pre-existing, none blocking
+triage|cc-session-04-23-late|2026-04-23 23:55|ending|4 fixes shipped (d0c3beb/8cb2750/b0aab0c/ce9e0d9): phase-35-init wheel 800→1200, r64j :3200→baseURL, effects-system OffscreenCanvas+KLOROFORM ratify 2→3, phase-38 [data-anim=page-heading] axe exclusion. Suite 338→342p/14s/1f. Only phase-37 MG-03 Lighthouse remains — needs cold-cache session + own phase plan.

@@ -59,3 +59,10 @@ test-results/
 # Claude Code runtime locks
 .claude/scheduled_tasks.lock
 
+# Handoff scratch — per-session cc-* handoff artifacts (keep STATUS.md tracked)
+.handoffs/cc-*.md
+.handoffs/cc-*.ctx
+
+# Session logs — auto-generated planner run logs
+.planning/logs/*.md
+
