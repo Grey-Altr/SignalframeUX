@@ -266,12 +266,12 @@ export function InstrumentHUD() {
         right: `${pos.right}px`,
         transform: "scale(var(--sf-canvas-scale, 1))",
         // Asymmetric-faceted notch — 8px cut on TL/TR/BR, deep BL slash
-        // (68px run × 116px rise, ~60° from horizontal). Top vertex of
+        // (76px run × 116px rise, ~57° from horizontal). Top vertex of
         // the slash held at (0, 100% - 116px); bottom vertex nudged
-        // rightward to flatten the slope slightly. Same directional cue
-        // toward the opposite viewport corner, just less steep.
+        // further rightward to flatten the slope. Same directional cue
+        // toward the opposite viewport corner, less steep.
         clipPath:
-          "polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 68px 100%, 0 calc(100% - 116px), 0 8px)",
+          "polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 76px 100%, 0 calc(100% - 116px), 0 8px)",
       }}
     >
       <span data-hud-field="section">
