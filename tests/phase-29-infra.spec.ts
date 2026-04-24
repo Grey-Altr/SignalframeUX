@@ -50,13 +50,21 @@ test.describe("Phase 29: Infrastructure Hardening", () => {
     expect(src).toMatch(/export\s*\{[^}]*Observer[^}]*\}/);
   });
 
-  // ── PF-04: Lenis autoResize: false (suppresses iOS address bar resize) ───────
-  test("PF-04: lenis-provider.tsx has autoResize: false in Lenis constructor", () => {
+  // ── PF-04: Lenis autoResize: true (accurate scroll limits w/ GSAP pin spacers) ─
+  // Historical note: Phase 29 (2026-04-07, bf3ead5) set this to `false` as the
+  // Lenis 1.3.x substitute for the dropped `ignoreMobileResize` (iOS address-bar
+  // CLS suppression). Phase 30-era detent-scrolling + pin-spacer work (c1fb678)
+  // flipped it to `true` for accurate scroll-limit sync. CLS=0 is held by the
+  // component-layer fixes landed in Phase 35 (TokenViz pre-hydration, ScaleCanvas
+  // outer-height sync) rather than by this flag. Assertion guards against silent
+  // drift back to `false` — if this test fails and the value was changed on
+  // purpose, update the rationale here + verifier memory in the same commit.
+  test("PF-04: lenis-provider.tsx has autoResize: true in Lenis constructor", () => {
     const src = fs.readFileSync(
       path.resolve(ROOT, "components/layout/lenis-provider.tsx"),
       "utf-8"
     );
-    expect(src).toContain("autoResize: false");
+    expect(src).toContain("autoResize: true");
   });
 
   // ── PF-04: homepage loads without JS errors ──────────────────────────────────

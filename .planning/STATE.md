@@ -80,7 +80,7 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Complete (2/2 plans) |
-| 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Not started |
+| 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Complete (2/2 plans) |
 | 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Complete (2/2 plans) |
 | 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
 | 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
