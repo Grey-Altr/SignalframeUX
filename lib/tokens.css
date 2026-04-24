@@ -101,8 +101,11 @@
 /* These are the authoritative values under --sfx-* namespace.
    Consumers override by declaring --sfx-* in unlayered CSS (beats @layer). */
 :root {
-  /* ── Generative Theme Seeds (two-hue model per LOCKDOWN §T3-g) ── */
-  --sfx-cube-hue: 98; /* Drives cube-tile trademark (T3) fill via --sfx-yellow. Independent of primary theme-hue. */
+  /* ── Generative Theme Seeds ── */
+  /* NOTE: --sfx-theme-hue is expected to be declared by the consuming app.
+     Cube-tile (T3) fill follows primary by default; override to a literal
+     hue to decouple the cube-tile trademark from primary. */
+  --sfx-cube-hue: var(--sfx-theme-hue, 350);
 
   /* ── Color Values ── */
   --sfx-background: oklch(1 0 0);

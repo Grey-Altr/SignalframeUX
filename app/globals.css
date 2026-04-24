@@ -119,9 +119,9 @@
 /* These are the authoritative values under --sfx-* namespace.
    Consumers override by declaring --sfx-* in unlayered CSS (beats @layer). */
 :root {
-  /* ── Generative Theme Seeds (two-hue model per LOCKDOWN §T3-g) ── */
+  /* ── Generative Theme Seeds ── */
   --sfx-theme-hue: 90; /* Default Chartreuse. Drives primary slot. */
-  --sfx-cube-hue: 98; /* Default Yellow. Drives cube-tile trademark (T3) fill via --sfx-yellow. Independent of theme-hue so primary rotations don't drag the cube tiles. */
+  --sfx-cube-hue: var(--sfx-theme-hue); /* Cube-tile trademark (T3) fill follows primary by default. Override with a literal hue to decouple. */
 
   /* ── Hero particle LCH (consumed by pointcloud-ring + iris-cloud canvases) ──
      Stored as raw L C H values (no oklch() wrapper, no alpha) so per-frame
