@@ -266,14 +266,12 @@ export function InstrumentHUD() {
         right: `${pos.right}px`,
         transform: "scale(var(--sf-canvas-scale, 1))",
         // Asymmetric-faceted notch — 8px cut on TL/TR/BR, deep BL slash
-        // (58px run × 116px rise, ~63° from horizontal). The steep BL
-        // slash reads as a directional cue pointing inward toward the
-        // opposite viewport corner (mirroring the BR CdCornerPanel's TL
-        // cut), while the three small facets hold the instrument-plate
-        // framing. Same cube-fill surface ties both panels into the
-        // trademark family.
+        // (68px run × 116px rise, ~60° from horizontal). Top vertex of
+        // the slash held at (0, 100% - 116px); bottom vertex nudged
+        // rightward to flatten the slope slightly. Same directional cue
+        // toward the opposite viewport corner, just less steep.
         clipPath:
-          "polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 58px 100%, 0 calc(100% - 116px), 0 8px)",
+          "polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 68px 100%, 0 calc(100% - 116px), 0 8px)",
       }}
     >
       <span data-hud-field="section">
