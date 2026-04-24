@@ -2,10 +2,11 @@
  * Ported from cdb-v3-dossier (components/cdb/cdb-corner-chrome.tsx).
  *
  * The dossier branch had a four-corner chrome strip with hairline bracket
- * ticks and JetBrains Mono labels. We bring the "UMA SYSTEMA UNIVERSALE /
- * De CULTURA DIVISA" label (originally the TL default on the dossier) to
- * the BR corner of the main site so the parent-studio attribution reads as
- * a persistent page-frame affordance.
+ * ticks and JetBrains Mono labels. Label is bilingual: line 1 in Japanese
+ * katakana (ユニバーサルデザインシステム — "universal design system"),
+ * line 2 in English attribution ("BY CULTURE DIVISION"). The bilingual
+ * pairing reads as a trademark stamp and ties the system into the tDR /
+ * Autechre coded-nomenclature register.
  *
  * Only this one corner is ported — the main site already owns the other
  * corners (nav stack + utility row in BL, InstrumentHUD in TR, hero in TL
@@ -40,10 +41,14 @@ export function CdCornerPanel() {
        *  with — the trademark propagation is intentional. If hue rotates
        *  below AA on small text here, fall back to --sfx-yellow (static,
        *  AA-tuned, L=0.91 C=0.18). */}
-      <div>UMA SYSTEMA UNIVERSALE</div>
-      {/* "De" kept in mixed case — normal-case override escapes the
-       *  parent uppercase transform so the lowercase 'e' renders as typed. */}
-      <div><span className="normal-case">De</span> CULTURA DIVISA</div>
+      {/* Japanese katakana — "universal design system". CSS `uppercase` has
+       *  no effect on kana/kanji (no case in Japanese), so the line renders
+       *  as typed. JetBrains Mono doesn't ship Japanese glyphs; the browser
+       *  falls back to the system Japanese font (Hiragino Sans on macOS,
+       *  Noto Sans JP or Yu Gothic on Windows/Linux). Minor metric mismatch
+       *  vs line 2 is intentional — reads as bilingual stamp, not unified run. */}
+      <div lang="ja">ユニバーサルデザインシステム</div>
+      <div>BY CULTURE DIVISION</div>
     </div>
   );
 }
