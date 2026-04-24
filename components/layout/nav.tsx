@@ -98,13 +98,13 @@ const IconCommandGrid = (props: any) => (
 
 /**
  * SIGNAL overlay button glyph — the // brand mark in the same brutalist-flat
- * geometric register as the rest of the nav glyphs. Two parallelograms, 4-unit
- * thick, 45° lean, 4-unit gap, symmetric in the 24x24 viewBox.
+ * geometric register as the rest of the nav glyphs. Two parallelograms, 6-unit
+ * thick, lean-shift 6, 2-unit gap, symmetric in the 24x24 viewBox.
  */
 const IconSignal = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <polygon points="10 2, 14 2, 6 22, 2 22" />
-    <polygon points="18 2, 22 2, 14 22, 10 22" />
+    <polygon points="8 2, 14 2, 8 22, 2 22" />
+    <polygon points="16 2, 22 2, 16 22, 10 22" />
   </svg>
 );
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
