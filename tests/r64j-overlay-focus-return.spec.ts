@@ -12,14 +12,13 @@
  *    (SFCommandDialog) — open and dismiss, assert focus returns to a
  *    sensible element rather than being lost.
  *
- * Assumes dev server is running on http://localhost:3200.
+ * Assumes dev server is running on http://localhost:3000 (playwright.config baseURL).
  */
 import { test, expect } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 
 const ROOT = path.resolve(__dirname, "..");
-const APP_URL = "http://localhost:3200";
 
 function listSFOverlayFiles(): string[] {
   const dir = path.resolve(ROOT, "components/sf");
@@ -61,7 +60,7 @@ test.describe("R-64-j: overlay focus-return", () => {
   test("browser: ? cheatsheet dismisses and focus returns to body", async ({
     page,
   }) => {
-    await page.goto(APP_URL);
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
 
     // Press ? to open
@@ -83,7 +82,7 @@ test.describe("R-64-j: overlay focus-return", () => {
   test("browser: ⌘K palette dismisses and focus does not get lost", async ({
     page,
   }) => {
-    await page.goto(APP_URL);
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
 
     const isMac = process.platform === "darwin";
