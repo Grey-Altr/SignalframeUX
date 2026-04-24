@@ -2,7 +2,7 @@
  * Ported from cdb-v3-dossier (components/cdb/cdb-corner-chrome.tsx).
  *
  * The dossier branch had a four-corner chrome strip with hairline bracket
- * ticks and JetBrains Mono labels. We bring the "CULTURE DIVISION /
+ * ticks and JetBrains Mono labels. We bring the "A CULTURE DIVISION /
  * UNIVERSAL DESIGN SYSTEM" label (originally the TL default on the dossier)
  * to the BR corner of the main site so the parent-studio attribution reads
  * as a persistent page-frame affordance.
@@ -40,7 +40,7 @@ export function CdCornerPanel() {
        *  with — the trademark propagation is intentional. If hue rotates
        *  below AA on small text here, fall back to --sfx-yellow (static,
        *  AA-tuned, L=0.91 C=0.18). */}
-      <div>CULTURE DIVISION</div>
+      <div>A CULTURE DIVISION</div>
       <div>UNIVERSAL DESIGN SYSTEM</div>
     </div>
   );
