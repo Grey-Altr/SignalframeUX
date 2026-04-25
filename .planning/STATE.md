@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: v1.7 milestone complete — all gates closed.
-last_updated: "2026-04-25T07:43:16.552Z"
+last_updated: "2026-04-25T21:27:01.216Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 48
-  completed_phases: 28
-  total_plans: 61
-  completed_plans: 61
-  percent: 100
+  completed_phases: 37
+  total_plans: 70
+  completed_plans: 70
 ---
 
 # STATE — SignalframeUX
@@ -22,14 +21,14 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.7 Tightening, Polish, and Aesthetic Push |
-| Milestone | v1.7 |
+| Current Focus | Awaiting next milestone — v1.7 archived 2026-04-25 |
+| Milestone | (none active) |
 
 ## Current Position
 
-Phase: 50.1
-Plan: Not started
-Status: Executing Phase 47
+Phase: (none active)
+Plan: (none active)
+Status: v1.7 archived; next step `/pde:new-milestone`
 Last activity: 2026-04-25
 
 ## Progress
@@ -192,13 +191,13 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-07)
+See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 47 — Viewport Polish
+**Current focus:** Awaiting next milestone (v1.7 archived 2026-04-25)
 
 ## Session Continuity
 
-Last session: 2026-04-12
-Stopped at: v1.7 milestone complete — all gates closed.
-Resume with: Run /gsd-complete-milestone to archive v1.7 and open next milestone.
+Last session: 2026-04-25
+Stopped at: v1.7 milestone archived — next step `/pde:new-milestone`.
+Resume with: `/clear` then `/pde:new-milestone` to scope the next milestone.
