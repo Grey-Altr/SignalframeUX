@@ -698,7 +698,7 @@ Plans:
   4. Storybook viewport preset menu includes 1440x900 and 1280x800 options
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [ ] 47-01-PLAN.md — Token floor lift + scope ratification
 
 ### Phase 48: Intensity Bridge + Chromatic Setup
 **Goal**: All visual effects are driven by a single --signal-intensity source of truth; Chromatic is installed for visual regression tracking
