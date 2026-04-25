@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
 milestone: v1.8
-milestone_name: Speed of Light
-status: roadmap_complete
-stopped_at: v1.8 roadmap drafted (Phases 57-62). Awaiting /pde:plan-phase 57.
-last_updated: "2026-04-25T22:30:00.000Z"
-last_activity: 2026-04-25
+milestone_name: Build-Order Constraints
+status: "Roadmap drafted; awaiting `/pde:plan-phase 57`"
+stopped_at: Phase 57 context gathered
+last_updated: "2026-04-25T23:46:55.234Z"
+last_activity: 2026-04-25 — ROADMAP.md written, REQUIREMENTS.md traceability populated
 progress:
-  total_phases: 6
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 54
+  completed_phases: 37
+  total_plans: 70
+  completed_plans: 70
 ---
 
 # STATE — SignalframeUX
@@ -224,6 +224,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-25
-Stopped at: v1.8 ROADMAP.md drafted (Phases 57-62), REQUIREMENTS.md traceability populated, STATE.md synced.
+Last session: 2026-04-25T23:46:55.228Z
+Stopped at: Phase 57 context gathered
 Resume with: `/pde:plan-phase 57` to decompose Phase 57 (Diagnosis Pass + Aesthetic-of-Record Lock-in) into plans.
