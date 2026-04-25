@@ -258,11 +258,11 @@
 - [x] **VPT-04**: Storybook viewport presets added for 1440x900 and 1280x800 — RATIFIED 2026-04-25, already shipped at `.storybook/preview.ts:23-34` (`macbook13` 1280×800 + `macbook15` 1440×900)
 
 ### Intensity Bridge
-- [ ] **SIG-01**: `updateSignalDerivedProps(intensity)` function in global-effects.tsx computes per-effect CSS custom properties from `--signal-intensity`
-- [ ] **SIG-02**: VHS scan lines and noise opacity scale with `--signal-intensity` (no longer hardcoded at 0.2 / 0.015)
-- [ ] **SIG-03**: Grain opacity governed by derived property with logarithmic perceptual curve
-- [ ] **SIG-04**: `data-signal-intensity` attribute presets available for per-section intensity overrides
-- [ ] **SIG-05**: `prefers-reduced-motion` suppresses all intensity-driven effects
+- [x] **SIG-01**: `updateSignalDerivedProps(intensity)` function in global-effects.tsx computes per-effect CSS custom properties from `--signal-intensity` — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:23` (exported function with full body deriving 12 CSS custom properties)
+- [x] **SIG-02**: VHS scan lines and noise opacity scale with `--signal-intensity` (no longer hardcoded at 0.2 / 0.015) — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:29` (scanline `0.005 + i * 0.015`) and `:32` (noise `0.0025 + i * 0.0075`)
+- [x] **SIG-03**: Grain opacity governed by derived property with logarithmic perceptual curve — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:36` (`0.03 + 0.05 * Math.log10(1 + i * 9)`)
+- [x] **SIG-04**: `data-signal-intensity` attribute presets available for per-section intensity overrides — RATIFIED 2026-04-25, shipped at `app/globals.css:2269-2271` (`[data-signal-intensity="low|med|high"]` set `--sfx-signal-intensity` to 0.2 / 0.5 / 0.8)
+- [x] **SIG-05**: `prefers-reduced-motion` suppresses all intensity-driven effects — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:24-25` (`const i = prefersReduced ? 0 : intensity` collapses all derived values to 0)
 
 ### Grain + Idle Escalation
 - [ ] **GRN-01**: Grain baseline stays at 0.03-0.05; intensity dial escalates dynamically via SIG-03 curve
@@ -317,7 +317,7 @@
 - [x] **DTM-04**: prefers-reduced-motion renders single static frame or disables entirely; GSAP breathing oscillates intensity between 0.001-0.004 over 8-12s cycles
 
 ### Visual Regression
-- [ ] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies
+- [x] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies — RATIFIED 2026-04-25, shipped at `package.json:125` (`@chromatic-com/storybook ^5.1.1`) + `:142` (`chromatic ^16.2.0`) + `:73` (`chromatic` script). `pnpm build-storybook` exits clean (verified 2026-04-25).
 - [ ] **VRG-02**: Visual baselines captured before Phase 49 (grain changes)
 - [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
 
@@ -349,11 +349,11 @@
 | VPT-02 | Phase 47 | Ratified |
 | VPT-03 | Phase 47 | Obsolete |
 | VPT-04 | Phase 47 | Ratified |
-| SIG-01 | Phase 48 | Pending |
-| SIG-02 | Phase 48 | Pending |
-| SIG-03 | Phase 48 | Pending |
-| SIG-04 | Phase 48 | Pending |
-| SIG-05 | Phase 48 | Pending |
+| SIG-01 | Phase 48 | Ratified |
+| SIG-02 | Phase 48 | Ratified |
+| SIG-03 | Phase 48 | Ratified |
+| SIG-04 | Phase 48 | Ratified |
+| SIG-05 | Phase 48 | Ratified |
 | GRN-01 | Phase 49 | Pending |
 | GRN-02 | Phase 49 | Pending |
 | GRN-03 | Phase 49 | Pending |
@@ -388,7 +388,7 @@
 | SYM-01 | Phase 56 | Pending |
 | SYM-02 | Phase 56 | Pending |
 | SYM-03 | Phase 56 | Pending |
-| VRG-01 | Phase 48 | Pending |
+| VRG-01 | Phase 48 | Ratified |
 | VRG-02 | Phase 49 | Pending |
 | VRG-03 | Phase 56 | Pending |
 | PRF-01 | Phase 56 | Complete |
