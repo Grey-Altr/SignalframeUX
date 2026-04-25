@@ -1,335 +1,224 @@
-# Feature Research — v1.7 Aesthetic Effects and Token Bridge
-
-**Domain:** Design system showcase site — Awwwards SOTD-level aesthetic effects and library consumer DX
-**Milestone:** v1.7 Tightening, Polish, and Aesthetic Push
-**Researched:** 2026-04-11
-**Confidence:** HIGH (existing codebase read directly; substrate effects verified against codrops/MDN; token patterns verified against shadcn/ui docs and Radix Themes source)
-
----
-
-## Context: What v1.7 Is Adding to an Already-Shipped System
-
-SignalframeUX v1.6 shipped as a distributed library. The existing substrate layer includes:
-
-- VHS overlay with 6 CSS layers (scan lines, noise, glitch, chromatic aberration) via `components/animation/vhs-overlay.tsx`
-- Grain at `--sf-grain-opacity: 0.03` via SVG feTurbulence
-- Idle state escalation: 8s timeout triggers grain drift + scan line emphasis
-- `--signal-intensity: 0.5` CSS custom property as a SIGNAL-layer runtime knob
-- `--sf-vhs-crt-opacity: 0.2` and `--sf-vhs-noise-opacity: 0.015` as substrate tuning variables
-- WebGL shaders: GLSLHero, GLSLSignal, ProofShader, SignalMesh
-- `createSignalframeUX()` provider factory with `motionPreference` and `defaultTheme` config
-- Library build pipeline: ESM + CJS, `dist/`, no bundled GSAP or Three.js
-
-v1.7 focus areas: **substrate-intensity effects** (deepening the grain/scan/halftone vocabulary), **token bridge** (letting design system consumers override SF tokens without fighting the cascade), and **polish** (idle state escalation as a design pattern, effect compositing without visual chaos).
-
----
-
-## Research Findings by Domain
-
-### 1. Substrate Effects: How Award-Winning Sites Implement Them
-
-**What Awwwards SOTD winners actually do (verified from Jan–Mar 2026 corpus and codrops case studies):**
-
-Award-winning sites in the DU/TDR/industrial corridor use substrate effects as signal of craft, not as decoration. The pattern is consistent:
-
-- **Grain is almost always SVG `feTurbulence`**, not a repeating PNG texture. Reasons: zero network cost, scales infinitely, animated by changing `baseFrequency` or `seed` attribute over time. `numOctaves` above 3-4 yields diminishing visual returns at significant CPU cost. Most SOTD sites use `numOctaves: 2-3` for performance.
-- **Scan lines are CSS-only** (`repeating-linear-gradient` or pseudo-element with `background-size`). No JavaScript involved in the base effect. GSAP drives the *traveling* bright-scanline element, not the base CRT grid. This is exactly what the existing `vhs-crt` + `vhs-scanline` split already does — the existing architecture matches the best-practice pattern.
-- **Chromatic aberration** is achieved via CSS: `text-shadow` with offset R/B channels, or `filter: url(#aberration-filter)` with an SVG displacement map. The viewport-edge-only version (existing `vhs-aberration--top/bottom`) is the correct SOTD register — full-frame aberration reads as broken, not intentional.
-- **Halftone and moiré** are CSS-only in 2025-2026: `radial-gradient` dot pattern + `background-blend-mode: multiply` + `filter: contrast(N)`. Pure CSS, no JavaScript, no WebGL. Performant because it's a single composited layer. Firefox has known rendering differences from Chromium/WebKit. The `--sf-halftone-dot` token already exists in globals.css — the system anticipated this effect.
-- **VFX-JS** (Codrops Jan 2026) provides WebGL-powered per-element effects but has documented scrolling performance issues and requires wrapping DOM elements as WebGL textures. Not a fit for SF//UX: it adds a runtime dependency and fights with the existing SignalCanvas singleton architecture.
-
-**Grain opacity calibration (verified across SOTD corpus):**
-
-| Opacity Range | Effect | SOTD Appropriateness |
-|--------------|--------|----------------------|
-| 0.01–0.03 | Barely-there texture, passes as intentional | Ideal — DU heritage |
-| 0.03–0.06 | Visible grain, reads as deliberate | Acceptable for activated states |
-| 0.07–0.12 | Reads as "texture," not "intent" | Anti-pattern in industrial corridor |
-| 0.12+ | Decorative distraction | Disqualifying |
-
-The existing `--sf-grain-opacity: 0.03` is at the correct baseline. The `--sf-vhs-noise-opacity: 0.015` burst range (0.015–0.035) is also correct. The v1.7 opportunity is not to increase opacity but to make the effect **parametric** via `--signal-intensity` — grain and scan intensity can scale with the SIGNAL state.
-
----
-
-### 2. Token Bridge: How Design System Consumers Override Tokens
-
-**What the three major references do:**
-
-**shadcn/ui pattern (HIGH confidence — official docs read):**
-- All tokens live at `:root` and `.dark` — flat CSS custom property namespace, no `@layer tokens`.
-- Consumer override: redefine the same variable under a more specific selector. Because CSS specificity, `:root .my-app { --primary: oklch(...); }` overrides `:root { --primary: ... }`.
-- Tailwind v4 consumers use `@theme inline` to re-expose overridden variables to the Tailwind build.
-- **No prefix isolation**. `--primary` in shadcn collides with any `--primary` in the consumer's CSS. The convention is "you adopt our variable names." Consumer owns the namespace entirely since shadcn ships source code, not a library.
-
-**Radix Themes pattern (MEDIUM confidence — official docs read):**
-- Tokens are namespaced by color scale: `--red-1` through `--red-12`, `--accent-1` through `--accent-12`. Semantic mapping happens at component render via `data-accent-color` attribute.
-- Consumer override: load your CSS **after** Radix Themes CSS. Override `--accent-9` (the primary interactive color step) within a scoped selector.
-- Radix exports granular stylesheets: `tokens.css`, `components.css`, `utilities.css` — consumers who need to control cascade order import these individually and interleave their own CSS between them.
-- **Documented limitation**: "changes to the token system are treated as breaking." Token overrides that worked in 3.x may not work in 4.x. This is the cost of deeply semantic token naming.
-
-**Microsoft FAST / enterprise pattern (MEDIUM confidence — GitHub issue):**
-- FAST explicitly added a mechanism to **prefix CSS custom properties** after demand from teams worried about collision. The pattern: `--{prefix}-{token-name}`.
-- This is the most robust isolation pattern for distributed libraries where consumers have their own token systems.
-
-**What this means for SF//UX's token bridge:**
-
-SF//UX currently uses:
-- `--color-*` (Tailwind v4 `@theme` tokens — these are Tailwind's namespace)
-- `--sf-*` (SF-namespaced extension variables — grain, VHS, shadows, surfaces)
-- `--signal-*` (SIGNAL runtime variables — intensity, speed, accent)
-
-The `--sf-*` namespace is already the right pattern. The v1.7 token bridge opportunity is: expose a documented **consumer override surface** that lets an application using `@signalframe/sf` as a library dependency remap `--sf-*` tokens without editing the library's CSS. The mechanism is already there via CSS cascade — the missing piece is documentation and a defined override entry point.
-
-**The three-tier token bridge pattern (synthesized from research):**
-
-```
-Tier 1 (Library-internal, --sf-* prefix):
-  Defined in dist/tokens.css. Not intended to be overridden by consumers.
-  Example: --sf-grain-opacity, --sf-vhs-crt-opacity
-
-Tier 2 (Consumer override surface, no prefix):
-  Defined in dist/tokens.css with a fallback to --sf-* internal defaults.
-  Consumers redefine these at :root or a scoped selector.
-  Example: --sfx-grain, --sfx-scan-speed (new v1.7 tier)
-
-Tier 3 (Runtime, --signal-* prefix):
-  Set at runtime by SignalOverlay or by consumer code.
-  Already implemented: --signal-intensity, --signal-speed, --signal-accent
-```
-
----
-
-### 3. Halftone and Moiré as Web Effects
-
-**Table stakes vs differentiator:**
-
-| Status | Determination | Evidence |
-|--------|--------------|---------|
-| Table stakes | No | Halftone is not expected by default on any design system site. It is an aesthetic choice, not a feature users demand. |
-| Differentiator | Yes, if tied to concept | Sites that win SOTD with halftone use it as a legible print-heritage reference — not as background texture. |
-| Anti-feature | If overused | Full-page halftone overlay reads as decorative. Spot use on specific elements (token swatches as Pantone-dot references, component catalog entries as printed catalog items) is conceptually justified. |
-
-**Implementation options:**
-
-| Technique | Performance | Browser Support | Notes |
-|-----------|------------|-----------------|-------|
-| CSS `radial-gradient` + `contrast()` filter | High — single composited layer | Chrome/Safari: accurate. Firefox: slight differences. | No JS. 3 declarations. The `--sf-halftone-dot` token already exists. |
-| SVG `feTurbulence` + `feColorMatrix` | High — GPU path | All modern browsers | More control over dot shape, angle rotation. Required for CMYK simulation. |
-| WebGL GLSL shader | Highest fidelity | All modern browsers with WebGL | Overkill for overlay use. Justified for full-viewport specimen sections only. |
-| Canvas 2D | Medium — CPU path | All browsers | Avoid unless SVG path not available. |
-
-**Recommendation:** CSS `radial-gradient` technique for any ambient halftone overlay. SVG filter technique if rotation/angle control is needed (e.g., rotated print-angle effect for token specimen sections). No new WebGL scenes for halftone.
-
----
-
-### 4. Idle State Escalation as a Design Pattern
-
-**Who does it well (verified examples):**
-
-- **Linear** (productivity tool, not SOTD-targeted): cursor becomes a crosshair after 30s of no interaction. Very restrained.
-- **Cargo Collective** sites: grain opacity increases slowly from base to ~0.06 after 15-20s. Barely perceptible — "the site breathes."
-- **Detroit Underground** (the design reference): tape degradation metaphor — idle = the machine winding down, exhibiting entropy. Conceptually grounded.
-- **Game UI patterns**: idle state in games is well-studied — the "attract mode" pattern. The system demonstrates its capabilities when no one is driving it.
-
-**The pattern, extracted:**
-
-Idle escalation works when:
-1. The escalation is **perceptible but not alarming** — grain from 0.03 to 0.05, not 0.03 to 0.20.
-2. The escalation is **reversible instantly** on any user interaction — not a takeover.
-3. The escalation is **thematically motivated** — it means something within the system's conceptual frame (SIGNAL layer intensifies when there's no input; the system is generating without direction).
-4. **Reduced-motion users get zero escalation** — this is non-negotiable.
-
-**What SF//UX currently has:** Binary escalation at 8s (grain drift + scan lines). This is functional but mechanical. The v1.7 upgrade is: **graduated escalation** — multiple thresholds (8s, 20s, 45s) with different effect intensities, scaling `--signal-intensity` upward before resetting on interaction.
-
----
-
-### 5. Effect Compositing and Stacking Without Visual Chaos
-
-**The compositing model for fixed-position overlays (verified — webperf.tips and browser compositing docs):**
-
-GPU layer promotion is triggered by: `will-change: transform`, `transform: translate(0)`, `position: fixed` with `z-index`, opacity animations, CSS filters. Multiple independently-promoted layers each consume GPU memory and compositor bandwidth.
-
-**Key finding:** The browser documentation explicitly recommends against speculative layer promotion. "Optimize for layers when they become problematic." The existing VHS overlay uses `pointer-events: none` + high `z-index` — this is correct. The risk in v1.7 is adding substrate effects that each independently trigger layer promotion.
-
-**Stacking order principle (verified from MDN stacking context docs):**
-
-```
-z-index hierarchy for SF//UX effect layers (existing + proposed v1.7):
-  --z-vhs: 99999      VHS overlay wrapper (contains all substrate layers)
-  --z-cursor: 500     Canvas cursor
-  --z-scroll-top: 200 Scroll-to-top
-  --z-overlay: 100    SignalOverlay panel
-  --z-nav: 9999       Navigation
-```
-
-All substrate layers should live **within a single parent wrapper** — one promoted compositor layer for the entire substrate system, not one per effect. The existing VHS overlay already does this correctly (all 6 div layers inside `.vhs-overlay`). v1.7 additions should extend this wrapper, not create sibling wrappers.
-
-**The "one wrapper, many layers" rule:**
-
-Adding a halftone layer as `<div class="vhs-halftone" />` inside the existing `.vhs-overlay` wrapper costs nothing in terms of additional GPU layer promotion — the parent is already promoted. Adding it as a new sibling fixed-position element creates a new stacking context and costs additional GPU memory.
-
-**mix-blend-mode on substrate layers:**
-
-`screen` mode: grain and noise disappear on white backgrounds, intensify on dark. Correct for a predominantly dark-surface design system.
-`multiply` mode: halftone dots visible on light, disappear on dark. Correct for print-heritage halftone effects on light specimen sections.
-`overlay` mode: symmetric — works on both dark and light. Best for chromatic aberration.
-
-Chromium and WebKit diverge in `mix-blend-mode` rendering when multiple blended layers stack. The existing approach (aberration as CSS pseudo-elements with radial gradients, not blended layers) avoids this cross-browser inconsistency correctly.
-
----
-
-## Feature Landscape for v1.7
-
-### Table Stakes
-
-Features consumers of the distributed library expect. Missing these after v1.6's library launch = DX friction.
-
-| Feature | Why Expected | Complexity | Depends On |
-|---------|--------------|------------|------------|
-| Documented consumer token override surface | v1.6 shipped a library. Consumers need to know which tokens they can override and how. Currently undocumented. | LOW — documentation + 1 CSS file | `--sf-*` namespace already exists; needs `dist/tokens.css` override surface defined |
-| `--signal-intensity` wired to substrate layers | The custom property exists but VHS overlay does not read it. Grain and scan opacity should scale with `--signal-intensity`. Currently the overlay and the SIGNAL system are decoupled. | LOW — CSS `calc()` binding | Existing `--sf-grain-opacity`, `--sf-vhs-crt-opacity`, `--sf-vhs-noise-opacity` |
-| `prefers-reduced-motion` on idle escalation | The 8s idle escalation has no reduced-motion guard. It fires via GSAP but uses a manual `window.matchMedia` check — which is correct but only checked once at mount, not at escalation time. | LOW — add guard to escalation trigger | Existing idle timeout logic |
-| `pointer: coarse` skip on VHS overlay | Already implemented in `vhs-overlay.tsx` line 28. Confirm this is still correct and document it as the mobile behavior contract. | LOW — verify only | Existing check at useEffect entry |
-
-### Differentiators
-
-Features that deepen the SIGNAL/FRAME concept and give SF//UX aesthetic separation from generic design systems.
-
-| Feature | Value Proposition | Complexity | Depends On |
-|---------|-------------------|------------|------------|
-| Graduated idle escalation (3-tier: 8s / 20s / 45s) | Binary escalation is mechanical. Graduated thresholds (grain drift → scan emphasis → glitch burst → auto-reset at 60s) make the idle state feel like a living system, not a timer. Conceptually: SIGNAL intensifying without direction. | MEDIUM | Existing 8s idle logic; needs refactor to `useIdleEscalation(thresholds[])` hook |
-| `--signal-intensity` driving all substrate opacity | One knob controls the entire substrate stack: grain, scan lines, noise, chromatic aberration edge width. `calc(var(--sf-grain-opacity) * var(--signal-intensity) * 2)`. Exposes the SIGNAL/FRAME model through a CSS API. | LOW | Existing vars + CSS `calc()`. No JS changes. |
-| Halftone layer (CSS-only) for token specimen sections | Token swatches rendered over a halftone dot pattern = print-heritage Pantone reference. Not an ambient overlay — scoped to specimen sections via `.sf-specimen &`. Conceptually: design tokens as printed artifacts. `--sf-halftone-dot` already exists in globals.css. | LOW-MEDIUM | `--sf-halftone-dot` token; CSS radial-gradient technique; no WebGL |
-| Token bridge: `--sfx-*` consumer override tier | Consumers set `--sfx-grain: 0.02; --sfx-scan-speed: 0.5;` in their application CSS. Library reads `var(--sfx-grain, var(--sf-grain-opacity))`. Application values win. Library defaults as fallback. Zero specificity wars. Documented in MIGRATION.md. | LOW | CSS custom property fallback chain; `dist/tokens.css` needs new tier |
-| Substrate intensity as a composable CSS API | Expose `data-signal-intensity="low|medium|high"` attribute that sets `--signal-intensity` to preset values. Allows section-scoped substrate intensity without JavaScript. FRAME-layer-only sections can carry `data-signal-intensity="0"`. | LOW | `data-signal-intensity` attribute + CSS `[data-signal-intensity="low"] { --signal-intensity: 0.2; }` |
-
-### Anti-Features
-
-Features that would hurt the aesthetic, performance, or conceptual clarity of v1.7.
-
-| Feature | Why Requested | Why It's Wrong | What to Do Instead |
-|---------|---------------|---------------|-------------------|
-| Increasing `--sf-grain-opacity` above 0.05 for "more texture" | "The grain feels subtle, can we push it?" | At 0.06+ the grain reads as texture rather than intent. SOTD jury notes "decorative noise" as a negative signal. The existing 0.03 baseline is calibrated, not timid. | Make the effect **parametric** — let `--signal-intensity` scale it to 0.05 in high-intensity states. Baseline stays 0.03. |
-| Animated grain (changing `baseFrequency` on rAF) | Creates "film grain" feel, trendy | SVG `feTurbulence` repaints the entire filter region on every `seed` change. At 60fps, this is a consistent 16ms paint operation on the main thread — visible on mid-range devices. A 4ms budget violation. | Animate grain **opacity** (GPU-composited) not grain **pattern** (main thread paint). Existing approach is already correct. |
-| Full-page moiré overlay | "Adds depth" | Moiré artifacts from `devicePixelRatio` non-integer scaling cause unintended visible patterns on Windows with UI scaling. Looks broken on ~30% of Windows displays. | Halftone dots at large enough scale (8px+) are below the moiré threshold on all pixel densities. Use halftone, not moiré. |
-| VFX-JS for per-element WebGL effects | Library provides automatic WebGL wrapping | Documented scrolling performance issues. Requires wrapping DOM elements as WebGL textures — fights SignalCanvas singleton architecture. New runtime dependency. | Existing GSAP + CSS techniques cover every substrate effect the site needs. |
-| Multiple independent fixed-position overlay elements | "Each effect should be independently z-indexable" | Each independently-promoted compositor layer costs GPU memory. More importantly: independent wrappers allow z-ordering conflicts between effects that are supposed to be a unified substrate. | All substrate layers inside a single `.vhs-overlay` (or renamed `.sf-substrate`) wrapper. Already the existing model. |
-| Substrate effects on `pointer: coarse` devices | "Mobile should have the full experience" | VHS overlay already skips on `pointer: coarse`. Scan lines and grain overlays on mobile degrade battery and scroll performance on mid-range Android. The SIGNAL layer on mobile is the WebGL scenes — substrate is desktop-only intentionally. | Document this as a feature: SIGNAL layer adapts to device capability. Mobile gets WebGL; desktop gets substrate. |
-| Audio feedback tied to substrate escalation | "The grain should have a sound" | Existing audio layer is deferred to v2+. No consumer demand established. Web Audio API requires user gesture activation on iOS — cannot trigger on idle timeout. | If audio comes in v2+, it enters through the existing SIGNAL runtime (--signal-intensity), not as a substrate-specific hook. |
-
----
+# Feature Research — v1.8 Speed of Light
+
+**Domain:** Brownfield Next.js 16 perf-recovery on a heavy GSAP/WebGL/CSS-effect stack
+**Milestone:** v1.8 Speed of Light
+**Researched:** 2026-04-25
+**Confidence:** HIGH (codebase grounded, current docs verified)
+**Measured gap:** Lighthouse mobile Perf 76 → 100 (24-pt gap). LCP 6.5s → <1.0s. Render-blocking 570ms → 0. Unused JS 119 KiB → 0.
+
+> "Features" here = perf-recovery techniques and their behavioral expectations, not new product features. Categories below feed roadmap phase ordering.
+
+## Verified Codebase Facts (Ground Truth)
+
+These shaped the categorization. Reading them changes what's table-stakes vs anti-feature.
+
+1. **Ghost-label is *legitimately* the LCP candidate, not misdetected.**
+   `components/animation/ghost-label.tsx` renders `clamp(200px, 25vw, 400px)` Anton text already painted at `opacity: 0.03` from first frame (`globals.css:1508-1519`). The previous fix raised it from `opacity: 0` to `0.03` *specifically because Lighthouse excludes opacity:0 from LCP*. Per [web.dev/lcp](https://web.dev/articles/lcp), LCP visible-size = viewport intersection minus clipped overflow. At 200-400px Anton, the ghost-label is the largest visible text element by area.
+2. **The 6.5s timing is the cost of rendering Anton at 400px**, not bad detection. Anton is `font-display: optional` (`app/layout.tsx:46-51`) — on cold-cache mobile, fallback paints fast but the metric still triggers on the *contentful* paint of the rendered Anton glyphs once the font resolves (or on the fallback paint at fallback metrics, whichever the browser picks).
+3. **`/sf-canvas-sync.js` is 200 bytes of correct CLS-prevention code.** Reading `inner.offsetHeight` and writing `outer.style.height` *must* happen synchronously between HTML parse and first paint, or the ScaleCanvas wrapper has no height and CLS goes to 0.65. Render-blocking is by design (`scale-canvas.tsx:135-143`).
+4. **Two render-blocking inline scripts already live in `<head>`** for theme + scale (`layout.tsx:91, 100`). They are 1-2 KB each, compute scale tokens before paint, and exist for the same CLS-prevention reason as `/sf-canvas-sync.js`.
+5. **Three.js + GSAP are already async-split.** `SignalCanvasLazy` and `GlobalEffectsLazy` use `next/dynamic({ ssr: false })`. `gsap-split.ts` only loads ScrollTrigger + SplitText + ScrambleTextPlugin + CustomEase (~35 KB), not the full plugin bundle (~75 KB).
+6. **GSAP is loaded as a peer dep + side-effect-marked module.** `package.json:sideEffects` lists 5 GSAP wrappers — webpack tree-shaking is preserved at the module boundary, but anything imported into the homepage tree is non-shakable.
+7. **There is no Lighthouse CI yet.** `lighthouse@13.1.0` is a devDependency (used for local one-off runs). No `.lighthouserc` file. No GitHub Action. Per-PR enforcement is currently manual.
+8. **No web-vitals reporting in production.** `@vercel/speed-insights` is not installed. There's no `reportWebVitals` export anywhere in `app/`. Real-device telemetry is zero.
+9. **Mobile transformation magnifies LCP cost.** ScaleCanvas applies `transform: scale(vw/1280)` ≈ 0.293 on mobile 375px. The ghost-label's *rendered* viewport size is 25vw × 0.293 ≈ 7.3vw. But the unscaled DOM size is what the browser raster + paint costs scale with — the GPU still rasterizes at 400px before compositing. On low-end Android the rasterization of 200-400px Anton glyphs is the LCP-time tax.
+10. **getQualityTier() is shipped and documented as ship-blocker for new SIGNAL surfaces** (memory `feedback_consume_quality_tier.md`). Available now for first-paint decisions.
+
+## Feature Landscape
+
+### Table Stakes (Required to hit LCP <1.0s on this stack)
+
+Without these, the LCP <1.0s gate cannot be cleared. Each one is grounded in the measured 24-pt gap.
+
+| Feature | Why Required | Complexity | Notes / Dependency |
+|---------|--------------|------------|--------------------|
+| **LCP candidate diagnosis pass** | Confirm via Lighthouse trace + `LargestContentfulPaint` PerformanceObserver in DevTools whether the ghost-label, the THESIS manifesto Anton statement, OR a hero shader canvas frame is the LCP element on cold mobile. The 6.5s timing is too slow for a paint-from-first-frame element — likely the manifesto statement (`clamp(56px, 10vw, 120px)` Anton, `opacity: 0` start state, GSAP scrub reveal). The "ghost-label is LCP candidate" comment in `globals.css:1511` may be stale; the LCP could be the THESIS pinned heading entering at scroll. | LOW (1-2h) | Zero deps. MUST run first — every other phase depends on knowing the right target. Use Chrome DevTools Performance panel + `web-vitals` script in console. |
+| **Anton font preload + character subset** | Anton at 400px is the largest paint. `next/font/local` already self-hosts; missing piece is `preload: true` (default true but verify the variable is consumed before LCP) + a character-subset Anton WOFF2 containing only the headlines/ghost-label glyphs (THESIS, PROOF, INVENTORY, SIGNAL, ACQUISITION + the manifesto strings). Per [Vercel next/font docs](https://vercel.com/blog/nextjs-next-font), local fonts subset to actual chars used. | LOW (3-4h) | No new deps — Anton is already `localFont`. Build a subset .woff2 (use `glyphhanger` or hand-curate) and reference it. |
+| **Switch Anton from `display: optional` → `display: swap` + `size-adjust`** | `optional` blocks Anton from painting if it doesn't arrive within 100ms — on cold mobile that means LCP is the *fallback* paint. With the font self-hosted + preloaded + subset, `swap` lets Anton paint as soon as it lands. CLS risk mitigated by `next/font`'s automatic `size-adjust`/`ascent-override` matching ([next/font docs](https://nextjs.org/docs/app/getting-started/fonts)). The original CLS-fix comment in `layout.tsx:46-51` was correct *for the previous setup* — Anton was self-hosted but un-preloaded, swap caused CLS. With preload + subset, that calculus changes. | MEDIUM (4-6h) | Depends on **subset preload** above. Requires Chromatic baseline re-capture; verify CLS stays 0 with Lighthouse cold-cache run. Document the change reason in CLAUDE.md/STATE.md per `feedback_ratify_reality_bias.md`. |
+| **Inline `/sf-canvas-sync.js` into `<head>` as third inline script** | The file is ~200 bytes. Inlining eliminates the round-trip + parse cost (each render-blocking external script is 50-150ms on mobile 4G even with HTTP/2). Co-locates with `themeScript` and `scaleScript` already inlined at `layout.tsx:91, 100`. Per [Chrome docs on render-blocking](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources), small critical scripts should be inlined. | LOW (1h) | No deps. Verify CLS still 0. Single-file change to `app/layout.tsx` + delete `public/sf-canvas-sync.js`. Update `scale-canvas.tsx` to remove the `<script src="/sf-canvas-sync.js" />` JSX. |
+| **Critical CSS extraction for above-the-fold (ENTRY section)** | One of the 570ms render-blocking is two CSS files. Tailwind v4 CSS-in-JS via `@theme` is loaded as one main CSS file. With `globals.css` at 1500+ lines (token system, `.sf-display`, `.sf-mesh-gradient`, all data-anim selectors, all effect classes), the critical render path includes effect-stack CSS that paints below-the-fold. Extract critical CSS for above-the-fold to inline; defer the rest. Tailwind v4 doesn't ship official critical-extraction; viable tools: `@critters/critters` (next.config experimental.optimizeCss) or hand-pick the ENTRY-section ruleset. | HIGH (12-16h) | Risk: Tailwind v4 `@theme inline` aliasing makes naive critical-extraction tools miss CSS-var resolution. Mitigation: enable Next.js `experimental.optimizeCss: true` first (uses critters), measure delta, then decide whether hand-extraction is worth it. **Aesthetic preservation hard gate** — verify Chromatic. |
+| **Lighthouse CI in GitHub Actions per-PR** | The 24-pt gap exists *because* there's no perf gate on PRs. Without enforcement, perf will regress between v1.8 ship and v1.9. [Lighthouse CI Action](https://github.com/marketplace/actions/lighthouse-ci-action) provides the standard pattern: `.lighthouserc.json` + `assertions` block + Vercel preview URL as target. Performance budgets fail PR builds. | MEDIUM (4-6h) | Depends on Vercel preview deployment URL pattern (already exists). Run on `pull_request` event, target the preview URL, require LCP <1.0s + Perf 100 thresholds. Use 3-run median to reduce variance. |
+| **Real-device telemetry: `@vercel/speed-insights`** | Lighthouse is synthetic — emulates Moto G4 on slow 4G. Real iPhone Safari + mid-tier Android samples are needed because: (a) WebGL behavior diverges (memory `feedback_consume_quality_tier.md`), (b) ScaleCanvas transform interaction with iOS Safari rasterizer is unique, (c) real users hit the 75th-percentile metric Google ranks against. `@vercel/speed-insights` is one drop-in for INP/LCP/CLS at p75. | LOW (2h) | New runtime dep — small (~5 KB). Aligns with Vercel deployment. Consider as differentiator if "no new runtime deps" rule from v1.7 carries forward, but the perf-recovery milestone is precisely the place to add it. |
+
+### Differentiators (Beyond pass — reduce regression risk, improve real-device parity)
+
+These don't move the Lighthouse needle on their own but materially reduce the chance of regression and improve the real-user experience.
+
+| Feature | Value Proposition | Complexity | Notes / Dependency |
+|---------|-------------------|------------|--------------------|
+| **`getQualityTier()` reads at first-paint for ghost-label & ENTRY hero** | The hero shader, ghost-label opacity, and any first-paint effect should consume `getQualityTier()` to decide: low-tier = render ghost-label as `display: none` (ship-blocker memory says low-end parity is non-negotiable), or render at smaller `font-size` cap. Same pattern for ENTRY's GLSL shader: low-tier could fall back to a static dithered SVG painted from CSS `background-image` (zero JS, zero WebGL context). | MEDIUM (8-12h) | Depends on **LCP candidate diagnosis** (above). Reuses existing `getQualityTier()` from v1.7. Aesthetic-preserving by definition because the high-tier render is unchanged. |
+| **Bundle hygiene pass on chunks `3302`, `e9a6067a`, `74c6194b`, `7525`** | 119 KiB unused JS = somewhere components are top-level imported but only used conditionally. Likely culprits given the codebase: (a) `cmdk` + Radix popover/dialog imports in CommandPalette are already lazy via `command-palette-lazy`, but `Footer` or `Nav` may statically import a heavy submodule, (b) `shiki` (4.0.2) docs page imports may leak into root, (c) `react-day-picker` (Calendar) is meant to be lazy but might be referenced from a non-lazy registry index, (d) `vaul` Drawer is dep but only used in mobile detail. Run `ANALYZE=true pnpm build` and inspect the four chunks specifically. | MEDIUM (8-12h) | Depends on bundle analyzer output. May reveal need to add `"sideEffects": false` to additional barrel files OR move imports to dynamic. Per [Next.js package bundling docs](https://nextjs.org/docs/app/guides/package-bundling), `optimizePackageImports` already covers `lucide-react` — extend to `radix-ui`, `cmdk`, `shiki/core` candidates. |
+| **`fetchpriority="high"` on Anton preload `<link>`** | Even with `next/font` preload, manually adding `<link rel="preload" as="font" fetchpriority="high">` for the Anton subset moves it ahead of the CSS download in the priority queue on cold cache. [web.dev/optimize-lcp](https://web.dev/articles/optimize-lcp) lists this as a top-3 LCP intervention. | LOW (1-2h) | Depends on **Anton subset** above. `next/font` may already emit this; verify via DevTools Network panel and only add manually if absent. |
+| **Speculation rules / route prefetch hints** | Next.js 16 supports speculation rules. For the homepage → `/system`/`/init`/`/inventory`/`/reference` navigation pattern, prerender on hover-intent. Doesn't directly affect homepage LCP but improves perceived nav perf which Lighthouse picks up via INP. | LOW (2-3h) | Standard Next.js feature. No deps. |
+| **GSAP `lazy: true` for non-LCP scenes** | GSAP supports `lazy` flag on tweens that defers tween instance creation until first tick. PageAnimations registers many ScrollTriggers at mount — most fire below-the-fold. Mark them `lazy: true` to skip first-tick work during LCP window. | LOW (3-4h) | Verify no GSAP-pinned content depends on first-tick computation. Current `gsap-split.ts` setup is unchanged. |
+| **`content-visibility: auto` on below-fold SFSection wrappers** | Browser skips rendering work for off-screen sections. THESIS/PROOF/INVENTORY/SIGNAL/ACQUISITION all live below ENTRY. `content-visibility: auto` + `contain-intrinsic-size` lets the browser short-circuit layout/paint until they enter the viewport. **Caveat:** ScaleCanvas's `transform: scale` interaction with `contain-intrinsic-size` should be tested — containment may break scroll measurement. | MEDIUM (6-8h) | Depends on tests verifying ScrollTrigger pin distances stay correct. Aesthetic-preserving (only affects render order, not visual). |
+| **Anton fallback metrics override** | If we keep `display: optional` (or even with `swap`), declare a `@font-face` fallback with explicit `size-adjust`/`ascent-override`/`descent-override`/`line-gap-override` matching Anton metrics. `next/font` does this for itself but not for arbitrary fallback chains. Eliminates any residual swap CLS. | MEDIUM (4-6h) | Tooling: [Fontaine](https://github.com/unjs/fontaine) or hand-compute via [Fallback Font Generator](https://github.com/screamingdemonart/fallback-font-generator). |
+
+### Anti-Features (Tempting but bad ROI or aesthetic violation)
+
+These will be proposed during planning. Reject them up-front.
+
+| Feature | Why It Looks Tempting | Why Problematic | Better Alternative |
+|---------|------------------------|-----------------|--------------------|
+| **Disqualify ghost-label as LCP candidate (e.g., `display: none` until scroll, or move to absolute element clipped from viewport)** | Easy "fix" — make the metric forget about it. | (a) The ghost-label is a load-bearing aesthetic element per LOCKDOWN/CLAUDE.md ("DU/TDR aesthetic, ghost-label as structural wayfinding") — hiding it violates aesthetic preservation HARD gate. (b) It will simply re-shift LCP onto the next-largest element (THESIS Anton manifesto) which is *also* opacity-animated — same problem. (c) Per [web.dev/lcp](https://web.dev/articles/lcp), opacity:0 elements are excluded from LCP — so this is "fix by deletion." | Make the element paint faster: subset Anton, preload, switch to `swap`. Treat the candidate as the constraint, not a bug. |
+| **Remove ScaleCanvas transform** | ScaleCanvas is the source of the mobile-LCP magnification effect. Removing it would simplify many things. | The pillarbox-free 1280px design canvas is a structural design decision (memory `project_canvas_frame_vars.md`, locked v1.0). Reversing it is a redesign, not stabilization. v1.8 scope explicitly excludes "ScaleCanvas pillarbox/counter-scale/portal architectural decision" (Track B parked). | Keep ScaleCanvas. Optimize what's *inside* it (font, ghost-label, critical CSS). |
+| **Remove `/sf-canvas-sync.js` entirely (just async-load)** | It's render-blocking; defer it. | It exists for CLS=0. Async/defer means it runs post-paint, the wrapper has no height for one frame, and CLS regresses to 0.65. The original commit message (per `scale-canvas.tsx:135-141`) is explicit. | Inline it (already in Table Stakes). |
+| **Replace GSAP with CSS animations + Web Animations API** | "Reduce JS bundle." | (a) The aesthetic is GSAP-driven (scrub, ScrambleText, SplitText, CustomEase). Replacing it = redesign. (b) GSAP's bundle is already minimal (only the plugins consumed via `gsap-split.ts`). (c) This is a v0.5 → v1.0 conversation, not a v1.8 perf-recovery one. | Tree-shake GSAP plugins (already done). Use `lazy: true` on tweens. |
+| **React Three Fiber for hero shader** | "More idiomatic Three.js." | Explicitly out-of-scope per `PROJECT.md`: "R3F's independent rAF conflicts with GSAP `globalTimeline.timeScale(0)`." The singleton WebGL pattern (`useSignalScene`) is locked. | N/A — keep raw Three.js. |
+| **Server Components for blocks/* sections** | "Reduce client JS." | Most blocks (THESIS, ENTRY, PROOF, SIGNAL, ACQUISITION) are GSAP-driven and require `'use client'`. INVENTORY, ManifestoStatement, GhostLabel are inert renderers that *could* drop the directive — but GhostLabel already has no `'use client'`, so already correct. ManifestoStatement has `'use client'` for `useEffect` resolution of `mobileAnchor` — required. | Audit only — likely a 0-3 KB win. Low priority. |
+| **Service Worker / app-shell caching** | "Subsequent loads instant." | Doesn't affect cold-load Lighthouse, which is what fails. Adds maintenance burden. Vercel CDN already handles repeat loads. | Skip. |
+| **Image-format LCP optimization (AVIF, blurhash)** | Standard LCP advice. | LCP is a *text* element here, not an image. Standard image advice doesn't apply. | Skip. Don't waste a phase on it. |
+| **Aggressive `optimizeCss: true` rollout without measurement** | One-line config win. | Critters can mangle `@layer signalframeux` cascade ordering or `@theme inline` Tailwind aliasing — the v1.7 token bridge architecture depends on those layers staying intact. Saw a [GitHub issue](https://github.com/vercel/next.js/discussions/13646) where critters broke styled-components and CSS-modules layering. | Enable behind a feature flag, run Chromatic baseline diff, only ship if zero visual regressions. |
+| **Dynamic-import the entire `<Footer>` and `<Nav>`** | Reduces initial chunk. | Both are above-the-fold or sticky chrome — dynamic-import causes layout shift (CLS) and delays nav skeleton paint (LCP candidate risk). | Static-import. Lazy only truly off-screen / interaction-gated components (`SFToaster`, `GlobalEffects`, `SignalCanvas` already lazy). |
 
 ## Feature Dependencies
 
 ```
---signal-intensity wired to substrate layers
-    └──requires──> CSS calc() bindings in vhs-overlay.css / globals.css
-    └──enables──> Graduated idle escalation (provides the knob to turn)
-    └──enables──> data-signal-intensity attribute API (section-scoped presets)
-    └──enables──> Token bridge --sfx-* tier (consumers can set --signal-intensity)
+[LCP candidate diagnosis] (LOW, 1-2h)
+    └──must precede──> [Anton subset preload]
+    └──must precede──> [font-display switch]
+    └──must precede──> [getQualityTier first-paint reads]
 
-Graduated idle escalation (3-tier)
-    └──requires──> --signal-intensity wired (otherwise escalation has no effect to escalate)
-    └──requires──> Refactor 8s binary logic to useIdleEscalation(thresholds[]) hook
-    └──requires──> prefers-reduced-motion guard at each threshold, not just at mount
-    └──conflicts──> binary 8s escalation (replace, don't supplement)
+[Anton subset preload]
+    └──unlocks──> [font-display: swap with size-adjust]
+        └──unlocks──> [fetchpriority="high" verification]
 
-Halftone layer (CSS-only)
-    └──requires──> Existing --sf-halftone-dot token (already in globals.css)
-    └──requires──> CSS radial-gradient dot pattern implementation
-    └──requires──> mix-blend-mode: multiply for light specimen sections
-    └──optional──> Single .vhs-halftone div inside existing .vhs-overlay wrapper (add; no new wrapper)
+[Lighthouse CI in GitHub Actions]
+    └──gates──> [all subsequent perf changes — regression-proofs them]
 
-Token bridge --sfx-* consumer override tier
-    └──requires──> dist/tokens.css defines --sfx-* variables with --sf-* fallbacks
-    └──requires──> MIGRATION.md documents which --sfx-* variables are the override surface
-    └──enhances──> createSignalframeUX() config (could accept a tokens config object)
-    └──conflicts──> No conflict — purely additive CSS layer
+[Critical CSS extraction]
+    ⇆──conflicts with──> [Tailwind v4 @theme inline + @layer signalframeux]
+        (mitigated by: enable optimizeCss: true behind Chromatic gate)
 
-data-signal-intensity attribute API
-    └──requires──> --signal-intensity wired (otherwise attribute sets a var nothing reads)
-    └──requires──> CSS rules in globals.css: [data-signal-intensity="low"] { --signal-intensity: 0.2; }
-    └──enables──> FRAME-only sections to explicitly zero out substrate
+[Inline /sf-canvas-sync.js]
+    └──independent of all others──> can ship alongside diagnosis pass
+
+[Bundle hygiene pass]
+    └──depends on──> [ANALYZE=true pnpm build] visualization
+    └──parallel-eligible with──> [LCP candidate diagnosis], [Lighthouse CI]
+
+[@vercel/speed-insights real-device]
+    └──independent──> can ship anytime; ideally early to start collecting data
+
+[content-visibility: auto on SFSection]
+    └──may conflict with──> [ScaleCanvas transform + ScrollTrigger pinning]
+        (mitigated by: full Playwright test suite + manual scroll verification)
 ```
 
----
+### Dependency Notes
 
-## MVP Recommendation for v1.7
+- **LCP candidate diagnosis MUST go first.** The "ghost-label" assumption in the milestone context may be stale; the actual LCP element on cold mobile could be the THESIS manifesto Anton statement (which is opacity:0 → animated, larger DOM size, more glyph rasterization). Every other phase's effort is wasted if it targets the wrong element. **2-hour spike.**
+- **Lighthouse CI MUST land before any other perf change** so we can measure deltas per-PR and prevent regression.
+- **Critical CSS extraction is the highest-risk feature.** Defer until other gains are exhausted; it may not be needed if subset/preload/inline-script land us under 1.0s.
+- **`@vercel/speed-insights` is the lowest-risk diff.** Add early — even if it doesn't move the Lighthouse score, it gives us field data to validate the synthetic improvements once they ship.
 
-**Ship first (tight dependencies, high value-to-effort ratio):**
+## MVP Definition (v1.8 ship)
 
-1. Wire `--signal-intensity` into substrate opacity via CSS `calc()`. Zero JS changes. One CSS change. Unlocks everything else.
-2. Define `data-signal-intensity` attribute presets in globals.css. Zero JS. Five CSS rules.
-3. Define `--sfx-*` consumer override tier in `dist/tokens.css`. Pure CSS. Documents the consumer surface.
-4. Refactor idle escalation to `useIdleEscalation` with 3 thresholds. Medium complexity. Requires `--signal-intensity` wired first.
+### Launch With (Required to clear LCP <1.0s + Perf 100 gates)
 
-**Ship after validation:**
+- [ ] **LCP candidate diagnosis pass** — confirm the actual LCP element on cold mobile via Lighthouse trace + `web-vitals` script. Update `globals.css:1511` comment with finding.
+- [ ] **Anton font subset + `next/font` preload verification** — generate `Anton-Subset.woff2` containing only displayed characters; verify preload `<link>` emits.
+- [ ] **Anton `font-display: swap` migration** — preserve CLS=0 via `next/font` automatic `size-adjust`. Re-baseline Chromatic.
+- [ ] **Inline `/sf-canvas-sync.js`** — third inline script in `<head>`, removes one render-blocking request.
+- [ ] **Lighthouse CI in GitHub Actions** — `.lighthouserc.json` with assertions for Perf 100, LCP <1.0s, CLS=0 against Vercel preview URL.
+- [ ] **Bundle hygiene pass** — close 119 KiB unused-JS gap on chunks `3302/e9a6067a/74c6194b/7525` via `ANALYZE=true` + targeted lazy-imports or `optimizePackageImports` extensions.
+- [ ] **`@vercel/speed-insights` install** — real-device p75 telemetry for INP/LCP/CLS.
 
-5. Halftone CSS layer scoped to specimen sections. Validate visually before adding to substrate wrapper.
-6. Document override surface in MIGRATION.md. Follows after `--sfx-*` tier is finalized.
+### Add If LCP Still > 1.0s After Above (v1.8.1)
 
-**Defer:**
+- [ ] **`getQualityTier()` first-paint reads** — low-tier devices skip ghost-label, fall back to CSS-painted dithered hero, etc.
+- [ ] **`content-visibility: auto` on below-fold SFSection** — skip rasterization of THESIS/PROOF/INVENTORY/SIGNAL/ACQUISITION until in viewport.
+- [ ] **GSAP `lazy: true` audit** — defer non-LCP-window tweens.
+- [ ] **Critical CSS extraction (`experimental.optimizeCss: true`)** — Chromatic-gated rollout.
 
-- Any animated grain pattern change (rAF `baseFrequency` animation) — confirmed anti-pattern.
-- VFX-JS integration — confirmed anti-pattern.
-- Audio layer — unchanged from v1.6 deferral.
+### Future Consideration (v1.9+)
 
----
+- [ ] **Speculation rules for route prefetch** — perceived perf, not synthetic LCP.
+- [ ] **Anton fallback metrics override (Fontaine)** — only if `next/font`'s built-in match isn't sufficient post-swap migration.
+- [ ] **Server Components audit on `components/blocks/`** — small win, no urgency.
 
-## Compositing Architecture Decision
+## Feature Prioritization Matrix
 
-The existing `.vhs-overlay` wrapper containing all substrate layers is the correct architecture. v1.7 adds to it, does not create siblings.
+| Feature | User Value | Implementation Cost | Priority | Phase Hint |
+|---------|------------|---------------------|----------|------------|
+| LCP candidate diagnosis pass | HIGH (gates everything) | LOW (2h) | **P1 — first phase** | Phase A |
+| Lighthouse CI in GitHub Actions | HIGH (regression prevention) | MEDIUM | **P1 — second phase** | Phase B (parallel-OK with A) |
+| Anton subset + preload + swap | HIGH (likely the LCP fix) | LOW-MEDIUM | **P1** | Phase C (after A) |
+| Inline `/sf-canvas-sync.js` | MEDIUM (-150ms render-blocking) | LOW | **P1** | Phase C (parallel) |
+| Bundle hygiene pass (chunks 119 KiB) | MEDIUM (Perf score points) | MEDIUM | **P1** | Phase D |
+| `@vercel/speed-insights` real-device | MEDIUM (validation) | LOW | **P1 (early)** | Phase B |
+| `getQualityTier()` first-paint reads | MEDIUM (real-device parity) | MEDIUM | **P2** | Phase E (only if Phase C insufficient) |
+| `content-visibility: auto` | LOW-MEDIUM (paint cost reduction) | MEDIUM (test risk) | **P2** | Phase E |
+| GSAP `lazy: true` audit | LOW (small TBT win) | LOW | **P2** | Phase E |
+| Critical CSS extraction | MEDIUM (-300ms render-blocking) | HIGH (regression risk) | **P2 — last resort** | Phase F (gated) |
+| `fetchpriority="high"` Anton link | LOW (next/font may already do it) | LOW | **P3 (verify only)** | Folded into Phase C |
+| Speculation rules | LOW (INP only) | LOW | **P3** | Defer to v1.9 |
 
-Proposed layer order inside the wrapper (proposed v1.7 state):
+**Priority key:**
+- P1 = required to ship v1.8 (LCP <1.0s gate)
+- P2 = ship if P1 insufficient; otherwise carry to v1.8.1
+- P3 = defer to v1.9 unless trivial folding into P1 work
 
-```
-.sf-substrate (renamed from .vhs-overlay, same structure)
-  ├── .sf-crt          (CRT scanlines — CSS background, no animation)
-  ├── .sf-scanline     (bright traveling line — GSAP)
-  ├── .sf-scanline--slow (secondary drift — GSAP)
-  ├── .sf-noise        (grain opacity — GSAP flicker)
-  ├── .sf-burst        (rare static burst — GSAP delayedCall)
-  ├── .sf-glitch       (horizontal slice displacement — GSAP)
-  ├── .sf-halftone     [NEW v1.7] (CSS radial-gradient, multiply blend, specimen-scoped via CSS)
-  ├── .sf-aberration--top (chromatic edge, CSS)
-  └── .sf-aberration--bottom (chromatic edge, CSS)
-```
+## Stack-Specific Constraints (Reject Generic Perf Advice)
 
-All layers: `pointer-events: none`, `position: fixed`, `inset: 0`, `z-index: var(--z-vhs)` on the wrapper. Individual layers at `z-index: auto` within the stacking context.
+This list ensures the roadmapper doesn't accept generic perf playbook items that don't apply here.
 
----
-
-## Confidence Assessment
-
-| Area | Confidence | Basis |
-|------|------------|-------|
-| Substrate technique correctness | HIGH | Read existing vhs-overlay.tsx directly; cross-checked with Codrops feTurbulence article and webperf.tips compositing docs |
-| Grain opacity calibration | HIGH | Cross-referenced against SOTD corpus in SYNTH-awwwards-patterns.md; consistent with existing `--sf-grain-opacity: 0.03` value |
-| Halftone CSS technique | HIGH | Frontend Masters official blog confirmed: pure CSS, 3 declarations, no JS/WebGL required |
-| Token bridge patterns | MEDIUM-HIGH | shadcn/ui official docs read; Radix Themes official docs read; FAST GitHub issue for prefix pattern |
-| Idle escalation as design pattern | MEDIUM | No single authoritative source; synthesized from game UI research, Cargo Collective observations, DU design reference; conceptually grounded in SIGNAL/FRAME model |
-| Compositing performance model | HIGH | webperf.tips and MDN stacking context docs read directly; browser recommendation: don't speculatively promote |
-
----
+| Generic Advice | Why It Doesn't Apply Here |
+|----------------|---------------------------|
+| "Optimize images" | LCP element is text. Hero is GLSL shader (no image to optimize). |
+| "Add `loading=\"lazy\"` to images" | Per above — moot. |
+| "Use Next.js Image component" | Already used where applicable. Not the bottleneck. |
+| "Preconnect to third-party domains" | Zero third-party requests in critical path. Self-hosted everything (per v1.6 metadata work). |
+| "Reduce DOM size" | Homepage DOM is moderate (~32 SFSection instances + scaffolding). Not the issue. |
+| "Use a CDN" | Vercel edge already does this. |
+| "Replace GSAP with [smaller lib]" | Aesthetic-locked per CLAUDE.md `DO NOT add new GSAP effects`. GSAP is foundational, not optional. |
+| "Use React Server Components everywhere" | Most blocks need `'use client'` for GSAP. Aspirational only. |
+| "Defer the WebGL canvas" | Already lazy via `SignalCanvasLazy + next/dynamic({ssr:false})`. |
+| "Lazy-load below-fold components" | Already done for SFToaster, GlobalEffects, SignalCanvas, CommandPalette, Calendar, Menubar. |
 
 ## Sources
 
-- SignalframeUX `components/animation/vhs-overlay.tsx` — existing 6-layer substrate implementation (HIGH confidence: direct read)
-- SignalframeUX `app/globals.css` — existing token values including `--sf-grain-opacity: 0.03`, `--sf-halftone-dot`, `--signal-intensity` (HIGH confidence: direct read)
-- SignalframeUX `lib/signalframe-provider.tsx` — existing consumer API: `createSignalframeUX()`, `motionPreference`, `defaultTheme` config (HIGH confidence: direct read)
-- [SVG feTurbulence grain — Codrops](https://tympanus.net/codrops/2019/02/19/svg-filter-effects-creating-texture-with-feturbulence/) — numOctaves performance guidance, baseFrequency calibration (HIGH confidence: official Codrops)
-- [Pure CSS Halftone in 3 Declarations — Frontend Masters Blog](https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/) — CSS radial-gradient technique, Firefox rendering note, no WebGL required (HIGH confidence: official source)
-- [Grainy Gradients — CSS-Tricks](https://css-tricks.com/grainy-gradients/) — mix-blend-mode + SVG grain compositing (HIGH confidence: CSS-Tricks)
-- [GPU Layers and Compositing — webperf.tips](https://webperf.tips/tip/layers-and-compositing/) — layer promotion triggers, GPU memory tradeoff, "optimize when problematic" recommendation (HIGH confidence: official performance guide)
-- [Stacking Context — MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Positioned_layout/Stacking_context) — stacking context triggers, isolation patterns (HIGH confidence: MDN official)
-- [shadcn/ui Theming — official docs](https://ui.shadcn.com/docs/theming) — consumer override via :root redef, @theme inline, dark selector pattern (HIGH confidence: official docs read)
-- [Radix Themes Styling — official docs](https://www.radix-ui.com/themes/docs/overview/styling) — modular CSS imports (tokens.css / components.css / utilities.css), cascade order control (HIGH confidence: official docs read)
-- [FAST CSS prefix mechanism — GitHub Issue #5397](https://github.com/microsoft/fast/issues/5397) — namespace prefix pattern for distributed design system libraries (MEDIUM confidence: GitHub issue, official FAST team)
-- [VFX-JS — Codrops Jan 2026](https://tympanus.net/codrops/2025/01/20/vfx-js-webgl-effects-made-easy/) — documented scrolling performance issues; not suitable for SF//UX architecture (HIGH confidence: direct source)
-- SignalframeUX SYNTH-awwwards-patterns.md — Jan–Mar 2026 SOTD corpus grain/scan calibration evidence (HIGH confidence: prior research corpus)
+**Codebase ground truth (HIGH confidence):**
+- `/Users/greyaltaer/code/projects/SignalframeUX/components/animation/ghost-label.tsx`
+- `/Users/greyaltaer/code/projects/SignalframeUX/components/blocks/manifesto-statement.tsx`
+- `/Users/greyaltaer/code/projects/SignalframeUX/components/blocks/thesis-section.tsx`
+- `/Users/greyaltaer/code/projects/SignalframeUX/components/layout/scale-canvas.tsx`
+- `/Users/greyaltaer/code/projects/SignalframeUX/components/layout/page-animations.tsx:285-312`
+- `/Users/greyaltaer/code/projects/SignalframeUX/app/layout.tsx:23-117`
+- `/Users/greyaltaer/code/projects/SignalframeUX/app/globals.css:1495-1546`
+- `/Users/greyaltaer/code/projects/SignalframeUX/public/sf-canvas-sync.js`
+- `/Users/greyaltaer/code/projects/SignalframeUX/lib/gsap-split.ts`
+- `/Users/greyaltaer/code/projects/SignalframeUX/lib/gsap-core.ts`
+- `/Users/greyaltaer/code/projects/SignalframeUX/next.config.ts`
+- `/Users/greyaltaer/code/projects/SignalframeUX/package.json`
+
+**External (verified — HIGH/MEDIUM confidence):**
+- [Largest Contentful Paint (LCP) — web.dev](https://web.dev/articles/lcp) — opacity:0 exclusion, viewport-intersection size rule (HIGH)
+- [Optimize LCP — web.dev](https://web.dev/articles/optimize-lcp) — fetchpriority, preload, priority hints (HIGH)
+- [Components: Script — Next.js](https://nextjs.org/docs/app/api-reference/components/script) — beforeInteractive, afterInteractive (HIGH)
+- [Optimizing third-party script loading — Chrome for Developers](https://developer.chrome.com/blog/script-component) — measured 1s LCP improvement with Script (MEDIUM)
+- [Eliminate render-blocking resources — Chrome for Developers](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources) — inline-critical pattern (HIGH)
+- [Custom fonts without compromise — Vercel](https://vercel.com/blog/nextjs-next-font) — automatic subset + size-adjust (HIGH)
+- [Getting Started: Font Optimization — Next.js](https://nextjs.org/docs/app/getting-started/fonts) — preload + subset behavior (HIGH)
+- [CSS Font Display: Keep Text Visible — DebugBear](https://www.debugbear.com/blog/ensure-text-remains-visible-during-webfont-load) — swap vs optional tradeoffs (MEDIUM)
+- [How To Fix LCP For Text Elements And H1 Headings — DebugBear](https://www.debugbear.com/docs/largest-contentful-paint-text-h1) — text-element LCP fixes (MEDIUM)
+- [Lighthouse CI Action — GitHub Marketplace](https://github.com/marketplace/actions/lighthouse-ci-action) — per-PR enforcement pattern (HIGH)
+- [GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci/) — assertion config + budgets (HIGH)
+- [Speed Insights Metrics — Vercel](https://vercel.com/docs/speed-insights/metrics) — INP/LCP/CLS p75 (HIGH)
+- [Guides: Package Bundling — Next.js](https://nextjs.org/docs/app/guides/package-bundling) — optimizePackageImports (HIGH)
+- [Guides: Lazy Loading — Next.js](https://nextjs.org/docs/pages/guides/lazy-loading) — next/dynamic (HIGH)
+- [Improve Largest Contentful Paint — CSS-Tricks](https://css-tricks.com/improve-largest-contentful-paint-lcp-on-your-website-with-ease/) — general LCP tactics (MEDIUM)
+- [How CSS Opacity Animations Can Delay LCP — DebugBear](https://www.debugbear.com/blog/opacity-animation-poor-lcp) — opacity:0 → animated reveal anti-pattern (HIGH — confirms ghost-label fix already applied)
+
+**Memory references (project-specific HIGH confidence):**
+- `feedback_consume_quality_tier.md` — getQualityTier mandatory for new SIGNAL surfaces
+- `feedback_ratify_reality_bias.md` — when changing locked decisions, document why and re-baseline
+- `project_phase37_mobile_a11y_architectural.md` — Track B parked, ScaleCanvas architectural decision deferred
+- `project_canvas_frame_vars.md` — ScaleCanvas contract is locked
+- `feedback_raf_loop_no_layout_reads.md` — perf rule for any rAF work added in this milestone
 
 ---
 
-*Feature research for: SignalframeUX v1.7 Aesthetic Effects and Token Bridge*
-*Researched: 2026-04-11*
-*Supersedes: v1.5 FEATURES.md sections on substrate effects only — SOTD features remain canonical in that file*
+*Feature research for: SignalframeUX v1.8 Speed of Light perf-recovery milestone*
+*Researched: 2026-04-25*
+*Confidence: HIGH on codebase facts and table-stakes/anti-feature categorization; MEDIUM on whether critical-CSS extraction will be needed (depends on what subset+preload+inline-script delta yields).*
