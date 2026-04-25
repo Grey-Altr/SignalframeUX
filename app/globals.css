@@ -2417,6 +2417,21 @@ html:not(.dark) .sf-mesh-gradient {
   outline-width: 0 !important;
 }
 
+/* Japanese text renders as silent decoration — kana/kanji glyphs are part of
+   the bilingual stamp aesthetic but should not assert color. Transparent fill
+   keeps the elements in the layout/DOM (so screen readers + reading order are
+   preserved) while letting the substrate pass through the glyph shapes. */
+[lang="ja"] {
+  color: transparent;
+}
+
+/* CdCornerPanel handles its own kana knockout via SVG `<mask>` (see
+   components/layout/cd-corner-panel.tsx) — kana glyphs are punched out of the
+   yellow plaque so dynamic content behind the panel shows through the actual
+   glyph shapes. No CSS rule needed here; the global `[lang="ja"] { color:
+   transparent }` above only applies to remaining HTML kana surfaces (e.g.
+   the hero katakana). */
+
 /* R-60-e: ex-bordered surfaces get a muted fill in borderless mode. Excludes:
  *   - `border-none` / `border-0` / `ring-0` — never carried a border to replace
  *   - elements with an explicit `bg-*` utility — already have their own surface
