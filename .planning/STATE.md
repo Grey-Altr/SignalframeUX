@@ -1,16 +1,16 @@
 ---
 pde_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: v1.7 milestone complete — all gates closed.
-last_updated: "2026-04-25T21:27:01.216Z"
+milestone: v1.8
+milestone_name: Speed of Light
+status: defining_requirements
+stopped_at: v1.8 milestone started — defining requirements.
+last_updated: "2026-04-25T22:00:00.000Z"
 last_activity: 2026-04-25
 progress:
-  total_phases: 48
-  completed_phases: 37
-  total_plans: 70
-  completed_plans: 70
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # STATE — SignalframeUX
@@ -21,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | Awaiting next milestone — v1.7 archived 2026-04-25 |
-| Milestone | (none active) |
+| Current Focus | v1.8 Speed of Light — performance recovery to original CLAUDE.md gate |
+| Milestone | v1.8 Speed of Light |
 
 ## Current Position
 
-Phase: (none active)
-Plan: (none active)
-Status: v1.7 archived; next step `/pde:new-milestone`
-Last activity: 2026-04-25
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-25 — Milestone v1.8 started
 
 ## Progress
 
@@ -199,5 +199,5 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival)
 ## Session Continuity
 
 Last session: 2026-04-25
-Stopped at: v1.7 milestone archived — next step `/pde:new-milestone`.
-Resume with: `/clear` then `/pde:new-milestone` to scope the next milestone.
+Stopped at: v1.8 Speed of Light started — defining requirements.
+Resume with: `/clear` then continue requirements definition or `/pde:plan-phase` once roadmap exists.

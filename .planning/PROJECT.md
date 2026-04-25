@@ -90,7 +90,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
-(See REQUIREMENTS.md for next-milestone requirements — fresh after v1.7 archival)
+(See REQUIREMENTS.md for v1.8 Speed of Light requirements)
 
 ### Out of Scope
 
@@ -100,9 +100,21 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone
+## Current Milestone: v1.8 Speed of Light
 
-(None — v1.7 Tightening, Polish, and Aesthetic Push shipped 2026-04-25; awaiting next milestone)
+**Goal:** Recover the original CLAUDE.md performance contract (Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial) on prod, without sacrificing the locked aesthetic — ghost-label, hero shader, and ScaleCanvas behavior visually identical.
+
+**Target features:**
+- LCP <1.0s on prod homepage (currently 6.5s mobile) via critical-path restructure
+- Render-blocking budget closure (570ms — `/sf-canvas-sync.js` + two CSS files) without CLS regression
+- Unused JS budget closure (119 KiB across chunks `3302`, `e9a6067a`, `74c6194b`, `7525`)
+- Lighthouse CI in pipeline — durable per-PR enforcement
+- Real-device verification — iPhone Safari + mid-tier Android sampling beyond Lighthouse emulation
+
+**Out of scope:**
+- Track B (a11y target-size, ScaleCanvas pillarbox/counter-scale/portal architectural decision) — parked
+- SEO recovery — confirmed prod 100, dev-artifact only
+- Visual or aesthetic changes — restructuring constrained to rendering/loading order
 
 ## Context
 
@@ -219,6 +231,23 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 - **SignalframeUX location:** ~/code/projects/SignalframeUX
 - **Portfolio location:** ~/code/projects/portfolio (to be created)
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/pde:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/pde:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
 
-*Last updated: 2026-04-25 after v1.7 Tightening, Polish, and Aesthetic Push milestone shipped*
+*Last updated: 2026-04-25 — v1.8 Speed of Light started after v1.7 archival*
