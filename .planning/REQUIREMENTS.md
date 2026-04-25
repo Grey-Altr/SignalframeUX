@@ -265,10 +265,10 @@
 - [x] **SIG-05**: `prefers-reduced-motion` suppresses all intensity-driven effects — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:24-25` (`const i = prefersReduced ? 0 : intensity` collapses all derived values to 0)
 
 ### Grain + Idle Escalation
-- [ ] **GRN-01**: Grain baseline stays at 0.03-0.05; intensity dial escalates dynamically via SIG-03 curve
-- [ ] **GRN-02**: Idle escalation refactored to `useIdleEscalation(thresholds[])` with 3 phases (8s grain drift, 20s scan emphasis, 45s glitch burst + auto-reset)
-- [ ] **GRN-03**: Escalation targets use relative offsets (currentValue + delta), not absolute values
-- [ ] **GRN-04**: Chromatic visual baselines captured before grain changes
+- [x] **GRN-01**: Grain baseline stays at 0.03-0.05; intensity dial escalates dynamically via SIG-03 curve — RATIFIED 2026-04-25, shipped at `components/layout/global-effects.tsx:36` (`0.03 + 0.05 * Math.log10(1 + i * 9)` evaluates to 0.03 at i=0 — within spec; same line that ratified SIG-03)
+- [x] **GRN-02**: Idle escalation refactored to `useIdleEscalation(thresholds[])` with 3 phases (8s grain drift, 20s scan emphasis, 45s glitch burst + auto-reset) — OBSOLETE 2026-04-25; hook shipped at `hooks/use-idle-escalation.ts:28` (commit `40e2f0d`) but the 3-phase consumer (`IdleOverlay`) was deliberately deleted in commit `a260238` ("remove heavy SIGNAL effects from GlobalEffects render for performance gate") to ship PRF-02 Lighthouse Performance compliance. Hook is currently library-only; zero consumers. Performance gate supersedes idle-escalation animation per v1.7 launch-gate hierarchy.
+- [x] **GRN-03**: Escalation targets use relative offsets (currentValue + delta), not absolute values — OBSOLETE 2026-04-25; relative-offset pattern was implemented in `IdleOverlay` (commit `40e2f0d`'s scanline `+0.03` delta) but the consumer was removed by `a260238`. Pattern persists in commit history as encoded intent for any future re-wiring; same supersedence as GRN-02.
+- [x] **GRN-04**: Chromatic visual baselines captured before grain changes — OBSOLETE 2026-04-25; temporal gate cannot be satisfied retroactively. Grain code (`global-effects.tsx:36`) predates Chromatic wiring (commits `54db119` + `abe0cfd`). Forward-looking baseline capture remains available via VRG-01's ratified Chromatic infrastructure; within v1.7 lock posture no further grain changes are scoped, so the gate is moot.
 
 ### VHS Enhancement
 - [ ] **VHS-01**: Chromatic aberration (1-2px RGB channel offset) added to VHS overlay, scaled by derived intensity property
@@ -318,7 +318,7 @@
 
 ### Visual Regression
 - [x] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies — RATIFIED 2026-04-25, shipped at `package.json:125` (`@chromatic-com/storybook ^5.1.1`) + `:142` (`chromatic ^16.2.0`) + `:73` (`chromatic` script). `pnpm build-storybook` exits clean (verified 2026-04-25).
-- [ ] **VRG-02**: Visual baselines captured before Phase 49 (grain changes)
+- [x] **VRG-02**: Visual baselines captured before Phase 49 (grain changes) — OBSOLETE 2026-04-25; same temporal-gate impossibility as GRN-04. Forward-looking baseline capture remains available via VRG-01's ratified Chromatic wiring; "before Phase 49" temporal phrasing is unsatisfiable retroactively for already-shipped grain.
 - [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
 
 ### Performance Gates
@@ -354,10 +354,10 @@
 | SIG-03 | Phase 48 | Ratified |
 | SIG-04 | Phase 48 | Ratified |
 | SIG-05 | Phase 48 | Ratified |
-| GRN-01 | Phase 49 | Pending |
-| GRN-02 | Phase 49 | Pending |
-| GRN-03 | Phase 49 | Pending |
-| GRN-04 | Phase 49 | Pending |
+| GRN-01 | Phase 49 | Ratified |
+| GRN-02 | Phase 49 | Obsolete |
+| GRN-03 | Phase 49 | Obsolete |
+| GRN-04 | Phase 49 | Obsolete |
 | VHS-01 | Phase 50 | Pending |
 | VHS-02 | Phase 50 | Pending |
 | VHS-03 | Phase 50 | Pending |
@@ -389,7 +389,7 @@
 | SYM-02 | Phase 56 | Pending |
 | SYM-03 | Phase 56 | Pending |
 | VRG-01 | Phase 48 | Ratified |
-| VRG-02 | Phase 49 | Pending |
+| VRG-02 | Phase 49 | Obsolete |
 | VRG-03 | Phase 56 | Pending |
 | PRF-01 | Phase 56 | Complete |
 | PRF-02 | Phase 56 | Complete |
