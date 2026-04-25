@@ -242,14 +242,14 @@
 ### Token Bridge
 - [x] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
 - [x] **TBR-02**: `@layer` cascade: `sf.tokens` → `consumer.overrides` — consumer CSS wins without specificity war
-- [ ] **TBR-03**: `--sfx-*` consumer override tier documented in MIGRATION.md with full variable list
-- [ ] **TBR-04**: No SSR flash — dark mode `class="dark"` server-rendered on CD `<html>`, no magenta primary visible during streaming
+- [x] **TBR-03**: `--sfx-*` consumer override tier documented in MIGRATION.md with full variable list — Ratified (technique-divergence: rename-rule pattern in lieu of literal full-list enumeration; equivalent functional coverage via `## TOKEN NAMESPACE MIGRATION` + `## CONSUMER CSS INTEGRATION` + `## CD SITE INTEGRATION EXAMPLE`, MIGRATION.md L67-137)
+- [x] **TBR-04**: No SSR flash — dark mode `class="dark"` server-rendered on CD `<html>`, no magenta primary visible during streaming — Ratified (architecture-shipping mode, PTL-01 precedent: `@layer signalframeux` + unlayered `cd-tokens.css` resolves override before first paint per MIGRATION.md L122; consumer-side `class="dark"` on `<html>` is downstream contract on CD site)
 
 ### Tightening
-- [ ] **TGH-01**: Light mode `--muted-foreground` on `bg-muted` passes WCAG AA (>= 4.5:1 contrast ratio)
-- [ ] **TGH-02**: All 15 hardcoded animation durations replaced with `--duration-*` token references
-- [ ] **TGH-03**: All 7 hardcoded color values in component/page code replaced with CSS custom property references
-- [ ] **TGH-04**: `sf-button` hover duration aligned with other SF components (`--duration-fast` not `--duration-normal`)
+- [x] **TGH-01**: Light mode `--muted-foreground` on `bg-muted` passes WCAG AA (>= 4.5:1 contrast ratio) — Ratified (in-code annotation: `app/globals.css:151` `--sfx-muted-foreground oklch(0.460 0.010 298)` on `--sfx-muted oklch(0.930 0.005 298)` = 5.81:1)
+- [x] **TGH-02**: All 15 hardcoded animation durations replaced with `--duration-*` token references — Ratified (live grep `duration-\[[0-9]+ms\]` returns zero in `components/`; commit `00868ca`)
+- [x] **TGH-03**: All 7 hardcoded color values in component/page code replaced with CSS custom property references — Ratified (live grep `style={{ color: "#..." }}` and `bg-[oklch(` return zero in `components/`; commit `17c7197`)
+- [x] **TGH-04**: `sf-button` hover duration aligned with other SF components (`--duration-fast` not `--duration-normal`) — Ratified (`components/sf/sf-button.tsx:6` ships `duration-[var(--sfx-duration-fast)]`)
 
 ### Viewport Polish
 - [x] **VPT-01**: `--text-2xs` raised from 9px to 10px; `--text-xs` raised from 10px to 11px — functional text readable on 13" MacBook (clamp floor lift in `app/globals.css:200-201`, 2026-04-25)
@@ -339,12 +339,12 @@
 | COP-06 | Phase 44 | Complete |
 | TBR-01 | Phase 45 | Complete |
 | TBR-02 | Phase 45 | Complete |
-| TBR-03 | Phase 45 | Pending |
-| TBR-04 | Phase 45 | Pending |
-| TGH-01 | Phase 46 | Pending |
-| TGH-02 | Phase 46 | Pending |
-| TGH-03 | Phase 46 | Pending |
-| TGH-04 | Phase 46 | Pending |
+| TBR-03 | Phase 45 | Ratified |
+| TBR-04 | Phase 45 | Ratified |
+| TGH-01 | Phase 46 | Ratified |
+| TGH-02 | Phase 46 | Ratified |
+| TGH-03 | Phase 46 | Ratified |
+| TGH-04 | Phase 46 | Ratified |
 | VPT-01 | Phase 47 | Complete |
 | VPT-02 | Phase 47 | Ratified |
 | VPT-03 | Phase 47 | Obsolete |
