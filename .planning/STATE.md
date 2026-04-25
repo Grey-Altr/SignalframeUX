@@ -2,12 +2,12 @@
 pde_state_version: 1.0
 milestone: v1.8
 milestone_name: Speed of Light
-status: defining_requirements
-stopped_at: v1.8 milestone started — defining requirements.
-last_updated: "2026-04-25T22:00:00.000Z"
+status: roadmap_complete
+stopped_at: v1.8 roadmap drafted (Phases 57-62). Awaiting /pde:plan-phase 57.
+last_updated: "2026-04-25T22:30:00.000Z"
 last_activity: 2026-04-25
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 57 — Diagnosis Pass + Aesthetic-of-Record Lock-in (next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-25 — Milestone v1.8 started
+Status: Roadmap drafted; awaiting `/pde:plan-phase 57`
+Last activity: 2026-04-25 — ROADMAP.md written, REQUIREMENTS.md traceability populated
 
 ## Progress
 
@@ -41,38 +41,57 @@ v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
-v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-13
+v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
+v1.8: [░░░░░░░░░░]   0% (0/6 phases) Roadmap drafted, Phase 57 next
 ```
 
-## v1.7 Phase Map
+## v1.8 Phase Map
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 44 | Copy Audit Fixes | COP-01, COP-02, COP-03, COP-04, COP-05, COP-06 | Complete |
-| 45 | Token Bridge | TBR-01, TBR-02, TBR-03, TBR-04 | Complete |
-| 46 | Tightening Pass | TGH-01, TGH-02, TGH-03, TGH-04 | Complete |
-| 47 | Viewport Polish | VPT-01, VPT-02, VPT-03, VPT-04 | Complete |
-| 48 | Intensity Bridge + Chromatic Setup | SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, VRG-01 | Complete |
-| 49 | Grain + Idle Escalation + Visual Baseline | GRN-01, GRN-02, GRN-03, GRN-04, VRG-02 | Complete |
-| 50 | VHS Enhancement | VHS-01, VHS-02, VHS-03, VHS-04, VHS-05, VHS-06 | Complete |
-| 50.1 | Datamosh Overlay | DTM-01, DTM-02, DTM-03, DTM-04 | Complete |
-| 51 | Halftone Texture | HLF-01, HLF-02, HLF-03, HLF-04 | Complete |
-| 52 | Circuit Overlay | CIR-01, CIR-02, CIR-03 | Complete |
-| 53 | Mesh Gradient | MSH-01, MSH-02, MSH-03 | Complete |
-| 54 | Particle Field | PTL-01, PTL-02, PTL-03, PTL-04 | Complete |
-| 55 | Glitch Transition | GLT-01, GLT-02, GLT-03 | Complete |
-| 56 | Symbol System + Final Gate | SYM-01, SYM-02, SYM-03, VRG-03, PRF-01, PRF-02, PRF-03, PRF-04 | Complete |
+| 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Not started |
+| 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Not started |
+| 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Not started |
+| 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Not started |
+| 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Not started |
+| 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
+
+**Build-order constraints (encoded in ROADMAP.md):**
+- Phase 57 is HARD prereq for all others.
+- Phase 58 must land BEFORE Phase 59.
+- Phase 60 ⊥ Phase 61 (parallel-safe).
+- Phase 59 expects ≥3 plans per CRT-05 (clean bisect).
+- Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60, not deferred.
+
+## v1.7 Phase Map (archived)
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 44 | Copy Audit Fixes | COP-01..06 | Complete |
+| 45 | Token Bridge | TBR-01..04 | Complete |
+| 46 | Tightening Pass | TGH-01..04 | Complete |
+| 47 | Viewport Polish | VPT-01..04 | Complete |
+| 48 | Intensity Bridge + Chromatic Setup | SIG-01..05, VRG-01 | Complete |
+| 49 | Grain + Idle Escalation + Visual Baseline | GRN-01..04, VRG-02 | Complete |
+| 50 | VHS Enhancement | VHS-01..06 | Complete |
+| 50.1 | Datamosh Overlay | DTM-01..04 | Complete |
+| 51 | Halftone Texture | HLF-01..04 | Complete |
+| 52 | Circuit Overlay | CIR-01..03 | Complete |
+| 53 | Mesh Gradient | MSH-01..03 | Complete |
+| 54 | Particle Field | PTL-01..04 | Complete |
+| 55 | Glitch Transition | GLT-01..03 | Complete |
+| 56 | Symbol System + Final Gate | SYM-01..03, VRG-03, PRF-01..04 | Complete |
 
 ## v1.6 Phase Map (archived)
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 36 | Housekeeping & Carry-Overs | CO-01, CO-02, CO-03, CO-04 | Complete |
-| 37 | Next.js 16 Migration | MG-01, MG-02, MG-03 | Complete |
-| 38 | Test & Quality Hardening | QA-01, QA-02, QA-03 | Complete |
-| 39 | Library Build Pipeline | LIB-01, LIB-02, LIB-03 | Complete |
-| 40 | API Documentation & DX | DOC-01, DOC-02, DOC-03, DOC-04 | Complete |
-| 41 | Distribution & Launch Gate | DIST-01, DIST-02, DIST-03, DIST-04 | Complete |
+| 36 | Housekeeping & Carry-Overs | CO-01..04 | Complete |
+| 37 | Next.js 16 Migration | MG-01..03 | Complete |
+| 38 | Test & Quality Hardening | QA-01..03 | Complete |
+| 39 | Library Build Pipeline | LIB-01..03 | Complete |
+| 40 | API Documentation & DX | DOC-01..04 | Complete |
+| 41 | Distribution & Launch Gate | DIST-01..04 | Complete |
 | 42 | Tracking Reconciliation + peerDep Fix | CO-01-04, LIB-01-03 (gap closure) | Complete |
 | 43 | Production Deploy + Lighthouse Gate | DIST-04 (gap closure) | Complete |
 
@@ -80,14 +99,14 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 28 | Route Infrastructure | RA-01, RA-02, RA-03, RA-04 | Complete (2/2 plans) |
-| 29 | Infrastructure Hardening | PF-04, PF-05, PF-06 | Complete (2/2 plans) |
-| 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01–05, VL-03, VL-07 | Complete (2/2 plans) |
-| 31 | THESIS Section | TH-01–06 | Complete (2/2 plans) |
-| 32 | SIGNAL + PROOF Sections | SG-01–05, PR-01–06 | Complete (2/2 plans) |
-| 33 | INVENTORY + ACQUISITION Sections | IV-01–06, AQ-01–05 | Complete (4/4 plans) |
-| 34 | Visual Language + Subpage Redesign | VL-01, VL-02, VL-04–06, SP-01–05 | Complete (4/4 plans) |
-| 35 | Performance + Launch Gate | PF-01–03, LR-01–04 | Complete (5/5 plans) |
+| 28 | Route Infrastructure | RA-01..04 | Complete |
+| 29 | Infrastructure Hardening | PF-04..06 | Complete |
+| 30 | Homepage Architecture + ENTRY Section | RA-05, EN-01..05, VL-03, VL-07 | Complete |
+| 31 | THESIS Section | TH-01..06 | Complete |
+| 32 | SIGNAL + PROOF Sections | SG-01..05, PR-01..06 | Complete |
+| 33 | INVENTORY + ACQUISITION Sections | IV-01..06, AQ-01..05 | Complete |
+| 34 | Visual Language + Subpage Redesign | VL-01..02, VL-04..06, SP-01..05 | Complete |
+| 35 | Performance + Launch Gate | PF-01..03, LR-01..04 | Complete |
 
 ## Accumulated Context
 
@@ -129,24 +148,23 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 
 ### From v1.4
 
-- **Phase ordering is dependency-forced**: tech debt → tokens → components → detail data → detail views → verification. Do not reorder.
-- **MutationObserver disconnect FIRST**: Detail views dramatically increase mount/unmount frequency. Observer accumulation without disconnect causes WebGL jank. TD-01 MUST precede Phase 25.
-- **ComponentDetail as DOM sibling**: The panel must be rendered after the GSAP Flip grid div, NOT inside it. Child position corrupts Flip state captures during filter animations. See DV-11.
-- **next/dynamic for ComponentDetail**: Bundle gate compliance is non-negotiable. Import all 49 component previews at top-level = bundle balloon. DV-12 is not optional.
-- **shiki/core only**: Use `shiki/core` fine-grained (~50-80 KB async, server-only). Never `shiki/bundle/web` (695 KB gzip) or `shiki/bundle/full` (6.4 MB).
-- **Z-index contract**: Canvas cursor at z-500; detail panel must use `--z-overlay` token; add `[data-modal-open]` CSS rule dropping cursor z-index below panel when open. See SI-04.
-- **lenis.scrollTo only**: Any programmatic scroll from detail view code must use `lenis.scrollTo`. Never `window.scrollTo`. Grep check before Phase 25.
-- **vaul transitive check**: vaul may already be present transitively via Sonner. Check `pnpm-lock.yaml` before Phase 23 begins.
-- **Bundle gate at v1.4 ship**: 100.0 KB gzip shared bundle (50 KB under 150 KB gate)
-- **Lighthouse at v1.4 ship**: 100/100 all categories confirmed against deployed URL
+- Phase ordering is dependency-forced: tech debt → tokens → components → detail data → detail views → verification. Do not reorder.
+- MutationObserver disconnect FIRST: Detail views dramatically increase mount/unmount frequency. Observer accumulation without disconnect causes WebGL jank.
+- ComponentDetail as DOM sibling: The panel must be rendered after the GSAP Flip grid div, NOT inside it. Child position corrupts Flip state captures during filter animations.
+- next/dynamic for ComponentDetail: Bundle gate compliance is non-negotiable. Import all 49 component previews at top-level = bundle balloon.
+- shiki/core only: Use `shiki/core` fine-grained (~50-80 KB async, server-only). Never `shiki/bundle/web` (695 KB gzip) or `shiki/bundle/full` (6.4 MB).
+- Z-index contract: Canvas cursor at z-500; detail panel must use `--z-overlay` token; add `[data-modal-open]` CSS rule dropping cursor z-index below panel when open.
+- lenis.scrollTo only: Any programmatic scroll from detail view code must use `lenis.scrollTo`. Never `window.scrollTo`. Grep check before any scroll-touching phase.
+- Bundle gate at v1.4 ship: 100.0 KB gzip shared bundle (50 KB under 150 KB gate)
+- Lighthouse at v1.4 ship: 100/100 all categories confirmed against deployed URL
 
 ### v1.5 Critical Constraints (Carried Forward)
 
-- **Infrastructure before features**: fonts-ready, overscroll-behavior, Lenis audit, and Observer registration MUST precede any new scroll or WebGL work.
-- **WebGL context limit on mobile**: Safari iOS enforces 2-8 WebGL contexts. SignalCanvas scissor singleton already handles this — do not create additional renderers.
-- **LCP suppression hazard**: Hero heading must NOT use `opacity: 0` as start state. Use `opacity: 0.01` or `clip-path` reveal.
-- **SIGNAL/FRAME ordering**: Always written as SIGNAL/FRAME (signal first), never FRAME/SIGNAL, in all code comments, docs, and UI labels.
-- **Zero new npm packages**: All animation via GSAP ScrollTrigger + Lenis (already in stack). No new runtime dependencies in v1.7.
+- Infrastructure before features: fonts-ready, overscroll-behavior, Lenis audit, and Observer registration MUST precede any new scroll or WebGL work.
+- WebGL context limit on mobile: Safari iOS enforces 2-8 WebGL contexts. SignalCanvas scissor singleton already handles this — do not create additional renderers.
+- LCP suppression hazard: Hero heading must NOT use `opacity: 0` as start state. Use `opacity: 0.01` or `clip-path` reveal.
+- SIGNAL/FRAME ordering: Always written as SIGNAL/FRAME (signal first), never FRAME/SIGNAL, in all code comments, docs, and UI labels.
+- Zero new npm runtime packages: All animation via GSAP ScrollTrigger + Lenis (already in stack).
 
 ### v1.6 Decisions (Carried Forward)
 
@@ -158,46 +176,54 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 - [Phase 41-distribution-launch-gate]: GSAP SSR guard: all module-level registerPlugin() calls wrapped in typeof window check
 - [Phase 42-tracking-reconciliation-peerdep-fix]: next moved from dependencies to peerDependencies with optional:true
 
-### v1.7 Critical Constraints
+### v1.7 Critical Constraints (Carried Forward)
 
-- **Phase 48 is the prerequisite for all effect phases**: intensity bridge (updateSignalDerivedProps) MUST exist before any effect reads derived properties. Phases 49-56 depend on Phase 48.
-- **Phase 49 (grain) MUST precede Phase 50 (VHS)**: grain establishes the visual baseline; VHS layers on top. Coherence review requires both in the correct order.
-- **Phase 50 (VHS) MUST precede Phase 51 (halftone)**: combined review of VHS + halftone is required per HLF-04 before halftone ships.
-- **VRG-01 (Chromatic) lands in Phase 48**: baselines must be capturable before Phase 49 changes grain opacity. Do not defer Chromatic install.
-- **VRG-02 (baselines) lands in Phase 49**: capture before any grain opacity values change; commit the baseline snapshot.
-- **PTL-01 WebGL singleton rule**: particle field MUST use useSignalScene() singleton. Creating a second WebGL context on iOS Safari will cause context loss.
-- **Static grain ceiling**: per research, static grain > 0.07 opacity is an anti-feature (SOTD research flag). Parametric escalation only — never set static grain above 0.07.
-- **PRF-01-04 are launch gate requirements**: they block v1.7 ship. Phase 56 cannot complete until all four pass.
-- **Safari backdrop-filter rule**: no var() references in -webkit-backdrop-filter — literal values only. Applies to VHS-05 and any future backdrop-filter usage.
-- **No new runtime dependencies**: Chromatic is a devDependency; CDSymbol is a local component. Zero new npm runtime packages in v1.7.
+- Phase 48 was prerequisite for all v1.7 effect phases (intensity bridge); pattern transferable: prerequisite phases gate downstream measurement.
+- WebGL singleton rule (PTL-01) absolute on iOS Safari — context creation hard cap 2-8.
+- Static grain ceiling: > 0.07 opacity is anti-feature.
+- PRF-01-04 launch gate requirements (closed in v1.7); v1.8's CIB gate is the durable replacement.
+- Safari backdrop-filter: no var() references in -webkit-backdrop-filter — literal values only.
+- Zero new runtime npm dependencies (Chromatic devDep only).
+
+### v1.8 Critical Constraints
+
+- **Phase 57 is HARD prerequisite for Phases 58-62.** Diagnosis (LCP element identity, per-chunk attribution) gates every optimization commit.
+- **Phase 58 must land before Phase 59** — LHCI gate is non-optional given Phase 59's CLS-protection-touching changes.
+- **Aesthetic preservation is the milestone-wide standing rule** (AES-01..04 documented in Phase 57). No Chromatic re-baseline for perf changes; only documented exception is Anton `optional → swap` in Phase 59 per `feedback_ratify_reality_bias.md`.
+- **CRT-05 split**: Phase 59 ships ≥3 plans (sync-script, Anton subset+swap, Lenis rIC) for clean bisect. Single-PR collapse is a phase failure.
+- **Phase 60 ⊥ Phase 61** (parallel-safe); both depend only on Phase 57.
+- **VRF-04 mid-milestone real-device checkpoint after Phase 60** is non-negotiable per Pitfall #10 — discovering real-device blocker at end is a refactor crisis.
+- **`/sf-canvas-sync.js` is NOT dead code** — inline IIFE in `<body>` tail, never `defer`/`async`, never `next/script strategy="beforeInteractive"` (Pitfalls #2, #8).
+- **PF-04 contract**: Lenis `autoResize: true` is code-of-record. Do not revert under perf pressure.
+- **Single-ticker rule**: any new rAF call site is a violation. Use GSAP ticker or PerformanceObserver only (Pitfall #5).
+- **`experimental.inlineCss: true` is rejected** — breaks `@layer signalframeux` cascade ordering (vercel/next.js#47585; Pitfall #7).
+- **No new runtime npm dependencies in v1.8** — devDep additions limited to `@lhci/cli` + optional `web-vitals` (attribution only).
+- **Stale-chunk guard**: `rm -rf .next/cache .next` before any gating measurement (BND-04).
 
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| 13 phases (44-56) not fewer | Each phase delivers one coherent, verifiable capability; effects are naturally sequential due to visual coherence review dependencies |
-| Phase 44 first (copy audit) | Zero dependencies, zero risk, immediate integrity — clear the slate before any aesthetic work |
-| Phase 45 second (token bridge) | Validates @layer cascade architecture before aesthetic changes; establishing the override pattern is foundational |
-| Phases 46-47 before effects | All tightening and viewport polish must be stable before the visual effect stack is built on top |
-| Phase 48 (intensity bridge) before all effects | Architectural prerequisite — every effect in phases 49-55 reads derived properties from updateSignalDerivedProps |
-| VRG-01 in Phase 48 | Chromatic needs to be installed before baselines can be captured in Phase 49; cannot install and capture in same phase |
-| Phase 49 (grain) before Phase 50 (VHS) | Grain is the visual baseline for all other effects; VHS, halftone, and particles layer on top |
-| Phase 52 (circuit) and 53 (mesh) parallel-eligible | Both depend only on Phase 48; neither depends on the other; can be executed in any order |
-| Phase 54 (particles) late | WebGL, highest complexity, iOS Safari risk — defer until all CSS-only effects are validated |
-| Phase 56 as the launch gate | Consolidates VRG-03, PRF-01-04, and SYM as the final verification boundary; no phase can be declared complete without passing these |
-
-- [Phase 45-token-bridge]: @theme inline aliasing: --color-* utility aliases point to --sfx-* vars so Tailwind classes work without renaming utility class names
-- [Phase 45-token-bridge]: @layer signalframeux wraps :root/.dark in dist only — app globals stay unlayered; consumer CSS wins by loading after the layered dist
+| 6 phases (57-62) — diagnosis, gate, restructure, LCP, bundle, verification | Each phase delivers one coherent, verifiable capability; dependency ordering forces this minimum count |
+| Phase 57 owns AES-01..04 (not a separate phase) | AES-02..04 are standing rules referenced from `AESTHETIC-OF-RECORD.md`, not a phase's own deliverables. Avoids phase proliferation while keeping single-source traceability |
+| Phase 58 LHCI gate before Phase 59 | Phase 59 actively manipulates CLS-protection critical path (HIGH RISK). Without LHCI, regression caught only at end-milestone |
+| Phase 59 ships 3 separate PRs (CRT-05) | Clean bisect if any single change regresses (sync-script vs Anton vs Lenis are independent intervention surfaces) |
+| Phase 60 plan shape contingent on Phase 57 diagnosis | Three intervention paths (THESIS clip-path, ghost-label content-visibility, hero h1 char-reveal); diagnosis picks one |
+| Phase 60 ⊥ Phase 61 parallel-safe | Both depend on Phase 57 audit; if executed in parallel, separate plans within each phase, not interleaved |
+| VRF-04 mid-milestone (post-Phase-60), not phase-end | Pitfall #10: discovering real-device blocker after all phases ship is a refactor crisis |
+| `@lhci/cli` over `launch-gate.ts` extension | LHCI natively supports cold-start variance discipline (warmup×2, numberOfRuns:5, median, threshold buffer); `launch-gate.ts` retained for prod 100/100 manual verification |
+| `useReportWebVitals` (built-in) over `@vercel/speed-insights` | Zero new runtime dep. Self-hosted RUM endpoint via `navigator.sendBeacon` |
+| Inline `/sf-canvas-sync.js` IIFE in `<body>` tail (NOT delete) | Direct read of script content + scale-canvas.tsx confirms it is NOT dead code; STACK.md "delete" recommendation is wrong. Inline preserves CLS=0, removes render-blocking external request |
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival)
+See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 milestone defined)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Awaiting next milestone (v1.7 archived 2026-04-25)
+**Current focus:** v1.8 Speed of Light — performance recovery to original CLAUDE.md gate (Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial)
 
 ## Session Continuity
 
 Last session: 2026-04-25
-Stopped at: v1.8 Speed of Light started — defining requirements.
-Resume with: `/clear` then continue requirements definition or `/pde:plan-phase` once roadmap exists.
+Stopped at: v1.8 ROADMAP.md drafted (Phases 57-62), REQUIREMENTS.md traceability populated, STATE.md synced.
+Resume with: `/pde:plan-phase 57` to decompose Phase 57 (Diagnosis Pass + Aesthetic-of-Record Lock-in) into plans.

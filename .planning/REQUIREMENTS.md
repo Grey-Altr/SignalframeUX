@@ -82,11 +82,64 @@
 
 ## Traceability
 
-(Populated by pde-roadmapper)
+100% coverage: 29 / 29 v1.8 requirements mapped to exactly one phase. No orphans, no duplicates. (Original instruction count of 26 was an undercount; recount of [ ] checkboxes in §Diagnosis through §Aesthetic Preservation yields 29: DGN×3, CIB×5, CRT×5, LCP×3, BND×4, VRF×5, AES×4.)
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
+| DGN-01 | 57 | TBD | Pending |
+| DGN-02 | 57 | TBD | Pending |
+| DGN-03 | 57 | TBD | Pending |
+| AES-01 | 57 | TBD | Pending |
+| AES-02 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
+| AES-03 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
+| AES-04 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
+| CIB-01 | 58 | TBD | Pending |
+| CIB-02 | 58 | TBD | Pending |
+| CIB-03 | 58 | TBD | Pending |
+| CIB-04 | 58 | TBD | Pending |
+| CIB-05 | 58 | TBD | Pending |
+| CRT-01 | 59 | TBD | Pending |
+| CRT-02 | 59 | TBD | Pending |
+| CRT-03 | 59 | TBD | Pending |
+| CRT-04 | 59 | TBD | Pending |
+| CRT-05 | 59 | TBD | Pending |
+| LCP-01 | 60 | TBD | Pending |
+| LCP-02 | 60 | TBD | Pending |
+| LCP-03 | 60 | TBD | Pending |
+| BND-01 | 61 | TBD | Pending |
+| BND-02 | 61 | TBD | Pending |
+| BND-03 | 61 | TBD | Pending |
+| BND-04 | 61 | TBD | Pending |
+| VRF-01 | 62 | TBD | Pending |
+| VRF-02 | 62 | TBD | Pending |
+| VRF-03 | 62 | TBD | Pending |
+| VRF-04 | 62 | TBD | Pending |
+| VRF-05 | 62 | TBD | Pending |
+
+**Cross-cutting note (AES-02, AES-03, AES-04):** These three are standing rules documented inside Phase 57's AES-01 deliverable (`.planning/codebase/AESTHETIC-OF-RECORD.md`). They are mapped to Phase 57 for ownership/traceability, but apply to *every* phase 58-62 as enforcement gates (no Chromatic re-baseline for perf changes; mid-milestone cohort review; per-phase pixel-diff <=0.5%). Phases 58-62 reference them; only Phase 57 produces them.
+
+**Coverage summary by category:**
+
+| Category | Count | Phase |
+|----------|-------|-------|
+| DGN (Diagnosis) | 3 | 57 |
+| AES (Aesthetic Preservation) | 4 | 57 (1 deliverable + 3 standing rules) |
+| CIB (CI Bench) | 5 | 58 |
+| CRT (Critical-Path Restructure) | 5 | 59 |
+| LCP (LCP Repositioning) | 3 | 60 |
+| BND (Bundle Hygiene) | 4 | 61 |
+| VRF (Verification) | 5 | 62 |
+| **Total** | **29** | — |
+
+**Phase-grouped totals:**
+- Phase 57: 7 (DGN×3 + AES×4)
+- Phase 58: 5 (CIB×5)
+- Phase 59: 5 (CRT×5)
+- Phase 60: 3 (LCP×3)
+- Phase 61: 4 (BND×4)
+- Phase 62: 5 (VRF×5)
+- **Total: 29 unique REQ-IDs**, every one mapped exactly once.
 
 ---
 
-*Last updated: 2026-04-25 — v1.8 Speed of Light requirements defined*
+*Last updated: 2026-04-25 — v1.8 Speed of Light requirements defined and traceability populated by pde-roadmapper*

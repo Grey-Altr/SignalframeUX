@@ -10,6 +10,7 @@
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
 - [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
+- [ ] **v1.8 Speed of Light** — Phases 57-62 (active; perf-recovery to original CLAUDE.md gate — Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial)
 
 ## Phases
 
@@ -117,6 +118,20 @@
 - [x] Phase 56: Symbol System + Final Gate (1/1 plans) — completed 2026-04-25
 
 **Audit:** PASSED (50/50 reqs — 40 Ratified, 15 Obsolete, 9 Complete, 0 Pending). See `.planning/milestones/v1.7-MILESTONE-AUDIT.md`.
+
+</details>
+
+<details open>
+<summary>v1.8 Speed of Light (Phases 57-62) — ACTIVE (started 2026-04-25)</summary>
+
+- [ ] Phase 57: Diagnosis Pass + Aesthetic-of-Record Lock-in (0/TBD plans)
+- [ ] Phase 58: Lighthouse CI + Real-Device Telemetry (0/TBD plans)
+- [ ] Phase 59: Critical-Path Restructure (0/≥3 plans — CRT-05 clean-bisect split)
+- [ ] Phase 60: LCP Element Repositioning (0/TBD plans)
+- [ ] Phase 61: Bundle Hygiene (0/TBD plans)
+- [ ] Phase 62: Real-Device Verification + Final Gate (0/TBD plans)
+
+**Goal:** Recover Lighthouse 100/100 mobile, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial on prod without aesthetic drift. 26 requirements across 7 categories (DGN/CIB/CRT/LCP/BND/VRF/AES). 100% mapped, no orphans.
 
 </details>
 
@@ -855,6 +870,84 @@ Plans:
 Plans:
 - [x] 56-01-PLAN.md — Symbol system + final gate ratification
 
+---
+
+### Phase 57: Diagnosis Pass + Aesthetic-of-Record Lock-in
+**Goal**: Establish the measurement and aesthetic ground-truth that every other phase reads from, so optimization decisions in Phases 59-62 target the right element with the right invisibility constraint.
+**Depends on**: Nothing (HARD prerequisite for all other v1.8 phases — diagnosis output gates Phase 60 plan shape; AES-of-record gates aesthetic verification in every phase).
+**Requirements**: DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04
+**Cross-cutting note**: AES-02 (no Chromatic re-baseline for perf changes), AES-03 (mid-milestone cohort review), AES-04 (per-phase pixel-diff <0.5%) are documented inside `AESTHETIC-OF-RECORD.md` as standing rules. They apply to every phase 58-62 but are owned by Phase 57's AES-01 deliverable so traceability is single-source. Phases 58-62 reference them rather than re-deriving.
+**Success Criteria** (what must be TRUE):
+  1. `.planning/codebase/v1.8-lcp-diagnosis.md` exists and documents per-viewport LCP element identity (mobile 360 + desktop 1440) with file:line evidence and Lighthouse trace + `PerformanceObserver` corroboration.
+  2. The same diagnosis doc contains per-chunk owner attribution for `3302`, `e9a6067a`, `74c6194b`, `7525` from a `rm -rf .next && ANALYZE=true pnpm build` clean run.
+  3. `.planning/visual-baselines/v1.8-start/` contains full-page screenshots at desktop 1440x900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference` (5 pages x 4 viewports = 20 baseline images).
+  4. `.planning/codebase/AESTHETIC-OF-RECORD.md` is committed, extracted from shipped code (not re-derived), and codifies the four standing rules (no re-baseline for perf, documented Anton exception, cohort review trigger, per-phase pixel-diff <=0.5%).
+  5. Zero application code changed in this phase — output is documentation + baselines only.
+**Plans**: TBD
+
+### Phase 58: Lighthouse CI + Real-Device Telemetry
+**Goal**: Stand up the durable per-PR enforcement gate and field RUM collection so Phase 59's CLS-protection-touching changes ship under measurement, not luck.
+**Depends on**: Phase 57 (must land BEFORE Phase 59 — gate is non-optional given Phase 59 risk profile).
+**Requirements**: CIB-01, CIB-02, CIB-03, CIB-04, CIB-05
+**Success Criteria** (what must be TRUE):
+  1. Opening a PR against `main` automatically triggers a GitHub Actions run that executes `@lhci/cli@^0.15.1` against the Vercel preview URL via `treosh/lighthouse-ci-action@v12`; failure on threshold blocks merge.
+  2. `.lighthouseci/lighthouserc.json` is committed and asserts cold-start variance discipline: `numberOfRuns: 5`, warmup x2, median assertion, threshold >=97 categories:performance, LCP <=1000ms, CLS <=0, TBT <=200ms.
+  3. `scripts/launch-gate.ts` is unchanged from v1.7 contract and remains available as the manual post-deploy production verification gate at strict 100/100 (the prod gate; LHCI is the preview gate).
+  4. `app/_components/web-vitals.tsx` (or equivalent placement) uses the built-in `next/web-vitals` `useReportWebVitals` hook and ships LCP/CLS/INP/TTFB to a self-hosted endpoint via `navigator.sendBeacon`. No third-party SaaS, no new runtime npm dep.
+  5. Pixel-diff vs `.planning/visual-baselines/v1.8-start/` shows zero visual change (Phase 58 is infrastructure-only).
+**Plans**: TBD
+
+### Phase 59: Critical-Path Restructure
+**Goal**: Eliminate the 570ms render-blocking budget (`/sf-canvas-sync.js` + Anton font waterfall) without breaking the CLS=0 contract, the PF-04 `autoResize: true` contract, or the locked motion-aesthetic.
+**Depends on**: Phase 58 (LHCI gate must be GREEN — Phase 59 actively manipulates CLS-protection critical path; one regression-blind change will silently ship). Phase 57 diagnosis informs which Anton tradeoffs are safe.
+**Requirements**: CRT-01, CRT-02, CRT-03, CRT-04, CRT-05
+**Anticipated plan structure** (per CRT-05 — clean-bisect ship): expect >=3 plans within this phase, each shipped as a separate PR:
+  - Plan A: `/sf-canvas-sync.js` inline + delete (CRT-01)
+  - Plan B: Anton subset + `optional -> swap` migration with tuned fallback descriptors (CRT-02 + CRT-03 — paired because subset enables safe swap)
+  - Plan C: Lenis `requestIdleCallback` deferral (CRT-04)
+**Success Criteria** (what must be TRUE):
+  1. Production build serves no `/sf-canvas-sync.js` external file; `public/sf-canvas-sync.js` is deleted; CLS=0 verified by Playwright test on iPhone-13 viewport hard-reload.
+  2. Anton character-subsetted via build-time `glyphhanger` (ALL-CAPS English glyph set used in app); no runtime dependency added; subset emitted as preload `<link>`.
+  3. Anton `font-display: swap` is live with tuned `size-adjust` + `ascent-override` + `descent-override` + `line-gap-override` against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain; slow-3G hard-reload screen recording shows no measurable layout shift on the ghost-label or THESIS manifesto across the swap event; Chromatic re-baseline documented per `feedback_ratify_reality_bias.md` as the single allowed AES-02 exception.
+  4. Lenis init is wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` inside the existing `useEffect` at `components/animation/lenis-provider.tsx`; PF-04 `autoResize: true` contract is preserved (verified by inspecting committed source); scroll-restoration on hard-reload to deep anchor URLs (e.g. `/inventory#prf-08`) still resolves within <=2 frames.
+  5. CRT-01, CRT-02/03 (paired), CRT-04 each ship as a separate PR for clean bisect; LHCI median-of-5 stays >=97 across each PR; no phase-end pixel-diff regression >0.5% on any of the 20 v1.8-start baseline images (Anton swap exception documented).
+**Plans**: TBD (>=3 expected per CRT-05)
+
+### Phase 60: LCP Element Repositioning
+**Goal**: Close the LCP gap from current measurement to <1.0s on prod homepage mobile by intervening on the element identified in Phase 57 diagnosis, without aesthetic drift.
+**Depends on**: Phase 57 (diagnosis output determines which of three intervention paths Plan-Phase decomposes — plan shape is contingent). Phase 59 (Anton preload + subset must be live or LCP intervention measurement is invalidated by font-swap noise). Parallel-safe with Phase 61 (both depend on Phase 57 audit, neither on the other).
+**Requirements**: LCP-01, LCP-02, LCP-03
+**Success Criteria** (what must be TRUE):
+  1. LHCI median of 5 runs reports LCP <1.0s on prod homepage mobile; the same median run also reports CLS <=0 and Performance >=97 (preview gate threshold).
+  2. The intervention shipped corresponds to one of the three diagnosed paths: (a) THESIS Anton manifesto reveal mechanism `opacity -> clip-path`, OR (b) ghost-label `content-visibility: auto` + `contain-intrinsic-size` (on the leaf element only, never the section wrapper — Anti-Pattern #5), OR (c) hero h1 `clip-path` char-reveal in `page-animations.tsx`. The choice is justified in the plan's RESEARCH.md by Phase 57 diagnosis evidence.
+  3. Pixel-diff vs `.planning/visual-baselines/v1.8-start/` is <0.5% per page; mid-milestone cohort review (AES-03) confirms no "feels different without specific code-change cause" escalation.
+  4. `chrome-devtools` MCP scroll-test confirms motion contract intact (single GSAP ticker, all SIGNAL effects render, reduced-motion still kills timeline).
+**Plans**: TBD
+
+### Phase 61: Bundle Hygiene
+**Goal**: Close the 119 KiB unused-JS budget by attributing each offending chunk to a package owner and applying `optimizePackageImports` + barrel hygiene, without raising the shared JS gate above 102 KB.
+**Depends on**: Phase 57 (per-chunk attribution from DGN-02 is the input — cannot fix unused chunks without ownership map). Parallel-safe with Phase 60.
+**Requirements**: BND-01, BND-02, BND-03, BND-04
+**Success Criteria** (what must be TRUE):
+  1. Initial shared JS <=102 KB on prod confirmed via `ANALYZE=true pnpm build` end-of-build size table (sourced from emitted artifacts, not analyzer intermediate state); the 119 KiB unused JS measured at v1.8 start is reduced by >=80%.
+  2. `next.config.ts` `optimizePackageImports` covers every offending package attributed in DGN-02 — likely `radix-ui`, `cmdk`, `vaul`, `sonner`, `react-day-picker`, `date-fns`, `input-otp`. Each addition is accompanied by an `ANALYZE=true pnpm build` re-run logged in plan RESEARCH.md.
+  3. `components/sf/index.ts` is directive-free (no `'use client'` at the barrel — v1.3 rule maintained); verified by `grep -n "use client" components/sf/index.ts` returning zero matches.
+  4. Stale-chunk guard is documented in plan-phase RESEARCH.md as the standing measurement gate: `rm -rf .next/cache .next` before any gating measurement.
+  5. Zero pixel-diff regression vs `.planning/visual-baselines/v1.8-start/` (bundle hygiene is invisible by construction).
+**Plans**: TBD
+
+### Phase 62: Real-Device Verification + Final Gate
+**Goal**: Confirm Lighthouse-emulation gains hold on real devices and field RUM, then ratify the milestone close.
+**Depends on**: Phases 59, 60, 61 all complete. Mid-milestone real-device checkpoint per VRF-04 fires after Phase 60 ships (not deferred to phase end) — non-negotiable per Pitfall #10.
+**Requirements**: VRF-01, VRF-02, VRF-03, VRF-04, VRF-05
+**Success Criteria** (what must be TRUE):
+  1. WebPageTest JSON (or BrowserStack supplement) for >=3 device profiles (iPhone 13/14 Safari, Galaxy A14 Chrome, mid-tier Android) committed to `.planning/perf-baselines/v1.8/`; each report shows LCP <1.0s and CLS <=0.
+  2. `pnpm tsx scripts/launch-gate.ts` run 5x against prod URL produces median 100/100 across all categories with LCP <1.0s, CLS=0, TTI <1.5s.
+  3. `chrome-devtools` MCP scroll-test confirms motion contract intact end-to-end (single GSAP ticker, every SIGNAL effect renders, `prefers-reduced-motion` still collapses all derived motion).
+  4. Mid-milestone real-device checkpoint after Phase 60 produced a sign-off note in `.planning/perf-baselines/v1.8/MID-MILESTONE-CHECKPOINT.md`; any divergence between mobile-emulation and real-device caught here, not at end.
+  5. Field RUM 75th-percentile LCP <1.0s confirmed via the CIB-05 telemetry endpoint after a >=24h sampling window post-deploy.
+**Plans**: TBD
+
 ## Progress
 
 
@@ -916,3 +1009,22 @@ Plans:
 | 54. Particle Field | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 55. Glitch Transition | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 56. Symbol System + Final Gate | v1.7 | 1/1 | Complete | 2026-04-13 |
+| 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | v1.8 | 0/TBD | Not started | - |
+| 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 0/TBD | Not started | - |
+| 59. Critical-Path Restructure | v1.8 | 0/>=3 | Not started | - |
+| 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
+| 61. Bundle Hygiene | v1.8 | 0/TBD | Not started | - |
+| 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
+
+---
+
+## v1.8 Build-Order Constraints (HARD)
+
+1. **Phase 57 is HARD prerequisite for all other phases.** LCP element identity (DGN-01) and per-chunk owner attribution (DGN-02) must be confirmed before any optimization commits. Phase 60 plan shape is contingent on DGN-01 output.
+2. **Phase 58 MUST land before Phase 59.** Phase 59 touches the CLS-protection contract (HIGH RISK). Without LHCI gate, regressions caught only at end-milestone.
+3. **AES-01 (AESTHETIC-OF-RECORD.md) is documented in Phase 57; AES-02..04 are cross-cutting standing rules** referenced by every subsequent phase rather than mapped to their own phase. Single-source traceability — see Phase 57 cross-cutting note.
+4. **Phase 60 ⊥ Phase 61 (parallel-safe).** Both depend on Phase 57 audit output, neither on the other. If executed in parallel, separate plans within each phase, not interleaved.
+5. **Phase 59 expects >=3 plans per CRT-05** for clean bisect: sync-script PR, Anton (subset+swap) PR, Lenis PR. Plan-phase must not collapse to a single PR.
+6. **Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60**, not deferred to phase end. RUM 75th-percentile sampling (VRF-05) needs >=24h post-deploy → may extend milestone closure timing.
+
+*Last updated: 2026-04-25 — v1.8 Speed of Light roadmap created from research/SUMMARY.md and 26 v1.8 requirements*
