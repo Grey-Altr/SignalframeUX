@@ -808,7 +808,7 @@ Plans:
   4. With prefers-reduced-motion active, a single static frame renders with zero animation
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 54-01-PLAN.md — Particle field ratification (3 Ratified / 1 Obsolete)
 
 ### Phase 55: Glitch Transition
 **Goal**: A CSS-only glitch effect triggers on idle escalation and optionally on page transitions, reading as signal dropout not decoration
