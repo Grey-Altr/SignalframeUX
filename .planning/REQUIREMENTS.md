@@ -285,9 +285,9 @@
 - [x] **HLF-04**: No moiré with grain at combined view — human visual review required — OBSOLETE 2026-04-25; combined-view human visual review process gate cannot be satisfied retroactively. `git log --all --grep "halftone.*review|coherence.*halftone|moir" -i` returns zero process-gate matches against shipping history. Same retroactive-temporal-impossibility precedent as VHS-06 / GRN-04 / VRG-02. Forward-looking visual baseline capture remains available via VRG-01's ratified Chromatic infrastructure; within v1.7 lock posture no further halftone changes are scoped, so the gate is moot.
 
 ### Circuit Overlay
-- [ ] **CIR-01**: SVG circuit pattern at 0.02-0.05 opacity as section background
-- [ ] **CIR-02**: Exclusive with high grain via derived property curve (circuit fades as grain intensifies)
-- [ ] **CIR-03**: `--signal-intensity` governs opacity
+- [x] **CIR-01**: SVG circuit pattern at 0.02-0.05 opacity as section background — RATIFIED 2026-04-25; `app/globals.css:1268-1283` ships `.sf-circuit::after` carrying an embedded SVG (horizontal/vertical traces, right-angle bends, pads/vias) at `background-size: 120px 120px` + `background-repeat: repeat`, gated by `opacity: var(--sfx-circuit-opacity, 0.03)` (fallback hits the 0.02-0.05 spec range exactly). Compositing uses `mix-blend-mode: soft-light` for low-contrast section background insertion. Three live consumers wired at `app/page.tsx:69` (PROOF), `:81` (INVENTORY), `:113` (ACQUISITION) via `className="sf-circuit relative"` on `SFPanel`. Outcome and technique both clean — second clean-spec ratification on this branch (no technique-divergence annotation needed, unlike HLF-01).
+- [x] **CIR-02**: Exclusive with high grain via derived property curve (circuit fades as grain intensifies) — RATIFIED 2026-04-25; `components/layout/global-effects.tsx:43-46` derives `--sfx-circuit-opacity` via the literal monotonic-inverse curve `0.05 * (1 - i)` (comment line 43: "INVERSE of intensity — visible at low, fades at high (mutually exclusive with grain)"). At `i=0`: circuit=0.05, grain=0.03; at `i=1`: circuit=0, grain≈0.08 (logarithmic ceiling from `global-effects.tsx:36`). Mutually exclusive at high intensity per spec wording. Same SIG-02 carry-forward beneficiary pattern that pre-satisfied VHS-01 + HLF-02 — third such beneficiary, predicted by Phase 51 carry-forward intel.
+- [x] **CIR-03**: `--signal-intensity` governs opacity — RATIFIED 2026-04-25; `components/layout/global-effects.tsx:46` writes `--sfx-circuit-opacity` from the intensity-derived value, and `app/globals.css:1281` reads `var(--sfx-circuit-opacity, 0.03)`. Real-time updates verified via the `SignalIntensityBridge` `MutationObserver` at `global-effects.tsx:264-298` — observes `<html>` `style` attribute mutations (set by signal-overlay slider + per-section writers like `proof-section.tsx:68/130/140` + `signal-section.tsx:51`) and re-runs `updateSignalDerivedProps()` on every change. Same observer mechanism that satisfied VHS-01 + HLF-02 in real-time.
 
 ### Mesh Gradient
 - [ ] **MSH-01**: Layered `radial-gradient()` with OKLCH colors at z:-1 behind content
@@ -372,9 +372,9 @@
 | HLF-02 | Phase 51 | Ratified |
 | HLF-03 | Phase 51 | Ratified |
 | HLF-04 | Phase 51 | Obsolete |
-| CIR-01 | Phase 52 | Pending |
-| CIR-02 | Phase 52 | Pending |
-| CIR-03 | Phase 52 | Pending |
+| CIR-01 | Phase 52 | Ratified |
+| CIR-02 | Phase 52 | Ratified |
+| CIR-03 | Phase 52 | Ratified |
 | MSH-01 | Phase 53 | Pending |
 | MSH-02 | Phase 53 | Pending |
 | MSH-03 | Phase 53 | Pending |
