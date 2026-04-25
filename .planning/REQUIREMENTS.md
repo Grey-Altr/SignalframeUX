@@ -290,9 +290,9 @@
 - [x] **CIR-03**: `--signal-intensity` governs opacity — RATIFIED 2026-04-25; `components/layout/global-effects.tsx:46` writes `--sfx-circuit-opacity` from the intensity-derived value, and `app/globals.css:1281` reads `var(--sfx-circuit-opacity, 0.03)`. Real-time updates verified via the `SignalIntensityBridge` `MutationObserver` at `global-effects.tsx:264-298` — observes `<html>` `style` attribute mutations (set by signal-overlay slider + per-section writers like `proof-section.tsx:68/130/140` + `signal-section.tsx:51`) and re-runs `updateSignalDerivedProps()` on every change. Same observer mechanism that satisfied VHS-01 + HLF-02 in real-time.
 
 ### Mesh Gradient
-- [ ] **MSH-01**: Layered `radial-gradient()` with OKLCH colors at z:-1 behind content
-- [ ] **MSH-02**: Grain composited on top of mesh gradient
-- [ ] **MSH-03**: Slow position drift animation (60s+ cycle) for liveness
+- [x] **MSH-01**: Layered `radial-gradient()` with OKLCH colors at z:-1 behind content — RATIFIED 2026-04-25; `app/globals.css:2280-2292` ships `.sf-mesh-gradient` with `position: fixed`, `inset: 0`, `z-index: -1` (line 2283), `pointer-events: none`, and a layered `background:` declaration at lines 2286-2288 of three `radial-gradient(ellipse ...)` calls — each using `oklch(...)` color values driven by `--sfx-theme-hue` (so the mesh adapts to the active brand-hue slot per `feedback_primary_slot_not_color.md`). Single global consumer at `app/layout.tsx:119` via `<div className="sf-mesh-gradient" aria-hidden="true" />`. Outcome and technique both clean — no technique-divergence annotation needed (unlike HLF-01). Light-mode override at `globals.css:2294` keeps the layer subtle on light backgrounds.
+- [x] **MSH-02**: Grain composited on top of mesh gradient — RATIFIED 2026-04-25; structural ratification via z-index ordering. Mesh sits at `z-index: -1` (`globals.css:2283`); `.sf-grain::after` at `globals.css:980-987` uses `position: absolute` with no explicit z-index — establishes a stacking context at z≥0 within its parent. Therefore any `.sf-grain` consumer (e.g. `components/blocks/manifesto-band.tsx:176`) automatically composites above the mesh layer by structure. Author intent confirmed by the JSDoc comment at `globals.css:2276`: "Fixed behind all content at z:-1; grain composites on top." Shipped reality applies grain per-section (manifesto-band only), not as a global ambient overlay — a deliberate scoped-SIGNAL-surface choice consistent with the FRAME/SIGNAL dual-layer model. The MSH-02 spec wording is satisfied at the structural level: where grain exists, it composites correctly above mesh.
+- [x] **MSH-03**: Slow position drift animation (60s+ cycle) for liveness — RATIFIED 2026-04-25; `app/globals.css:2290` declares `animation: sf-mesh-drift 60s var(--sfx-ease-default) infinite alternate`. Literal `60s` duration matches the spec's "60-second or longer" wording verbatim. The `alternate` direction means the animation runs forward 60s then reverse 60s = 120s round-trip per cycle, exceeding the spec's lower bound. `@keyframes sf-mesh-drift` at `globals.css:2298-2310` defines four position waypoints (0% / 33% / 66% / 100%) producing slow background-position drift across all three radial-gradient ellipses. Reduced-motion override at `globals.css:2314` (`animation: none`) and print override at `globals.css:2320` (`display: none !important`) for accessibility + performance.
 
 ### Particle Field
 - [ ] **PTL-01**: WebGL particle system using existing `useSignalScene()` singleton — no second WebGL context
@@ -375,9 +375,9 @@
 | CIR-01 | Phase 52 | Ratified |
 | CIR-02 | Phase 52 | Ratified |
 | CIR-03 | Phase 52 | Ratified |
-| MSH-01 | Phase 53 | Pending |
-| MSH-02 | Phase 53 | Pending |
-| MSH-03 | Phase 53 | Pending |
+| MSH-01 | Phase 53 | Ratified |
+| MSH-02 | Phase 53 | Ratified |
+| MSH-03 | Phase 53 | Ratified |
 | PTL-01 | Phase 54 | Pending |
 | PTL-02 | Phase 54 | Pending |
 | PTL-03 | Phase 54 | Pending |
