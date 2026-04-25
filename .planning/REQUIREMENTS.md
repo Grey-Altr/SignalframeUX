@@ -252,10 +252,10 @@
 - [ ] **TGH-04**: `sf-button` hover duration aligned with other SF components (`--duration-fast` not `--duration-normal`)
 
 ### Viewport Polish
-- [ ] **VPT-01**: `--text-2xs` raised from 9px to 10px; `--text-xs` raised from 10px to 11px — functional text readable on 13" MacBook
-- [ ] **VPT-02**: Inventory grid adds `md:grid-cols-3` intermediate breakpoint between 2-col and 4-col
-- [ ] **VPT-03**: Page header `pt-10` (40px) replaced with `pt-12` (48px) on all 4 subpages — blessed spacing stop
-- [ ] **VPT-04**: Storybook viewport presets added for 1440x900 and 1280x800
+- [x] **VPT-01**: `--text-2xs` raised from 9px to 10px; `--text-xs` raised from 10px to 11px — functional text readable on 13" MacBook (clamp floor lift in `app/globals.css:200-201`, 2026-04-25)
+- [x] **VPT-02**: Inventory grid adds `md:grid-cols-3` intermediate breakpoint between 2-col and 4-col — RATIFIED 2026-04-25, already shipped at `components/blocks/components-explorer.tsx:817` (`grid-cols-2 md:grid-cols-3 lg:grid-cols-4`)
+- [x] **VPT-03**: Page header `pt-10` (40px) replaced with `pt-12` (48px) on all 4 subpages — blessed spacing stop — OBSOLETE 2026-04-25: `pt-10` page-header pattern eliminated by the `<main className="mt-[var(--nav-height)]">` + SFPanel-based hero architecture. No `pt-10` instances remain in any subpage.
+- [x] **VPT-04**: Storybook viewport presets added for 1440x900 and 1280x800 — RATIFIED 2026-04-25, already shipped at `.storybook/preview.ts:23-34` (`macbook13` 1280×800 + `macbook15` 1440×900)
 
 ### Intensity Bridge
 - [ ] **SIG-01**: `updateSignalDerivedProps(intensity)` function in global-effects.tsx computes per-effect CSS custom properties from `--signal-intensity`
@@ -345,10 +345,10 @@
 | TGH-02 | Phase 46 | Pending |
 | TGH-03 | Phase 46 | Pending |
 | TGH-04 | Phase 46 | Pending |
-| VPT-01 | Phase 47 | Pending |
-| VPT-02 | Phase 47 | Pending |
-| VPT-03 | Phase 47 | Pending |
-| VPT-04 | Phase 47 | Pending |
+| VPT-01 | Phase 47 | Complete |
+| VPT-02 | Phase 47 | Ratified |
+| VPT-03 | Phase 47 | Obsolete |
+| VPT-04 | Phase 47 | Ratified |
 | SIG-01 | Phase 48 | Pending |
 | SIG-02 | Phase 48 | Pending |
 | SIG-03 | Phase 48 | Pending |
