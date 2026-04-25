@@ -795,7 +795,7 @@ Plans:
   3. Gradient positions drift on a 60-second or longer animation cycle — the site feels alive without distracting motion
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 53-01-PLAN.md — Mesh gradient clean ratification (3/3)
 
 ### Phase 54: Particle Field
 **Goal**: A WebGL particle system delivers the highest-intensity SIGNAL expression using the existing singleton infrastructure, with verified iOS Safari stability
