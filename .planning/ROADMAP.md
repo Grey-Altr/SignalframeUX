@@ -820,7 +820,7 @@ Plans:
   3. The effect reads as a momentary signal dropout — hard cut, not a smooth animation; artifact of transmission, not UI decoration
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 55-01-PLAN.md — Glitch transition ratification (1 Ratified / 2 Obsolete)
 
 ### Phase 56: Symbol System + Final Gate
 **Goal**: A curated symbol library is deployed as section markers and dividers; all launch gate requirements pass; v1.7 is shippable
