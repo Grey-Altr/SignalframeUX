@@ -53,8 +53,6 @@ export function updateSignalDerivedProps(intensity: number) {
   root.setProperty("--sfx-fx-feedback-decay", String(Math.round((0.88 + i * 0.08 * tm) * 1000) / 1000));
   root.setProperty("--sfx-fx-displace-gain", String(Math.round(i * 0.08 * tm * 1000) / 1000));
   root.setProperty("--sfx-fx-bloom-intensity", String(Math.round(i * 0.6 * tm * 1000) / 1000));
-  root.setProperty("--sfx-fx-glitch-rate", String(Math.round(i * 0.15 * tm * 1000) / 1000));
-  root.setProperty("--sfx-fx-particle-opacity", String(Math.round(i * 0.6 * tm * 1000) / 1000));
 }
 
 /** Magenta crosshair cursor with mix-blend-mode exclusion */
@@ -163,28 +161,6 @@ function ScrollProgress() {
 // bottom-right no longer owns a stray floating button.
 
 /**
- * Idle standby overlay — grain drift + OKLCH color pulse after 8s of no interaction.
- *
- * When idle activates:
- *   1. Captures current --color-primary value from computed styles
- *   2. Parses base lightness from OKLCH string (null-checks: skips pulse if not OKLCH)
- *   3. Registers a GSAP ticker that oscillates lightness +/-5% over a 4-second period
- *   4. Activates sf-grain-animated class on grain overlay (film-grain flicker)
- *   5. Activates sf-idle-overlay--active class (scanline drift)
- *
- * On any interaction (resetIdle):
- *   - GSAP ticker removed immediately
- *   - --color-primary restored to captured base value (instant, no transition)
- *   - Grain drift class removed
- *   - Overlay opacity transition bypassed via transition:none + rAF restore
- *
- * NOTE: ColorCycleFrame also mutates --color-primary via setProperty on wheel events.
- * No conflict: idle requires 8s of full inactivity; any wheel event fires resetIdle
- * which removes the pulse ticker before ColorCycleFrame can fire.
- *
- * Reduced-motion: entire system is suppressed — silent and static.
- */
-/**
  * Document-level interaction feedback — audio tones + haptic micro-vibration.
  *
  * Uses a single pointerover/pointerout/pointerdown listener on document with
@@ -196,10 +172,6 @@ function ScrollProgress() {
  *
  * Skipped on coarse-pointer (touch-only) devices — hover audio is not meaningful
  * when there is no hover state. Haptics still fire on pointerdown via touch.
- *
- * Note on ColorCycleFrame conflict: this component resets on any interaction
- * (via IdleOverlay's resetIdle), removing the idle color ticker before
- * ColorCycleFrame can fire on wheel events — naturally safe.
  */
 function InteractionFeedback() {
   const lastHoveredRef = useRef<Element | null>(null);
