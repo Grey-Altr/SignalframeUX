@@ -279,10 +279,10 @@
 - [x] **VHS-06**: Combined visual review at intensity 0.0 / 0.5 / 1.0 passes human sign-off — OBSOLETE 2026-04-25; process gate cannot be satisfied retroactively. `git log --all --grep "vhs.*review|coherence.*vhs" -i` returns zero matches; the review checkpoint was bypassed during the 5-commit VHS tuning arc (`93fa031` → `f836830` → `05f22ab` → `752075e`) followed immediately by `a260238`'s perf-gate cleanup. Forward-looking visual baseline capture remains available via VRG-01's ratified Chromatic infrastructure; same retroactive-temporal-impossibility as GRN-04 / VRG-02.
 
 ### Halftone Texture
-- [ ] **HLF-01**: CSS-only halftone dot pattern (`radial-gradient` + `filter: contrast()` + `background-blend-mode`)
-- [ ] **HLF-02**: Gated at intensity >= 0.4 via derived property curve
-- [ ] **HLF-03**: Scoped to specimen sections, not ambient overlay
-- [ ] **HLF-04**: No moiré with grain at combined view — human visual review required
+- [x] **HLF-01**: CSS-only halftone dot pattern (`radial-gradient` + `filter: contrast()` + `background-blend-mode`) — RATIFIED 2026-04-25; `app/globals.css:1252-1266` `.sf-halftone::before` ships a CSS-only halftone via `radial-gradient(circle, var(--sfx-halftone-dot) 1px, transparent 1px)` at a 4×4px tile, gated by `opacity: var(--sfx-halftone-opacity, 0)` (the SIG-02 ratified derived property). Compositing uses `mix-blend-mode: multiply` (single-layer overlay) instead of the spec's `background-blend-mode` + `filter: contrast()`; both alternative techniques are redundant given the single dot layer and already-crisp 1px circle edges, and the simpler form avoids a GPU `filter` pass. Outcome (CSS-only halftone dot pattern with intensity-gated opacity) met; implementation simplified for performance — ratify reality per `feedback_ratify_reality_bias.md`. Original feat commit `913fcb1 feat(51): CSS-only halftone texture for specimen sections`.
+- [x] **HLF-02**: Gated at intensity >= 0.4 via derived property curve — RATIFIED 2026-04-25; `components/layout/global-effects.tsx:40-41` derives `--sfx-halftone-opacity` via literal `i < 0.4 ? 0 : (i - 0.4) / 0.6 * 0.15` curve, snapping to zero below the 0.4 threshold and ramping linearly across 0.4–1.0 to a 0.15 ceiling. Exact match to the spec's "gated at intensity >= 0.4 via derived property curve" wording. Same SIG-02 carry-forward pattern that pre-satisfied VHS-01 — pre-existing wiring at `global-effects.tsx:39-57` (per Phase 48 carry-forward intel) supplied this requirement at the consumer level before its own ratification.
+- [x] **HLF-03**: Scoped to specimen sections, not ambient overlay — RATIFIED 2026-04-25; the `.sf-halftone` ambient-overlay class is consumed only by 4 token-specimen blocks: `components/blocks/token-specimens/spacing-specimen.tsx:18`, `motion-specimen.tsx:49`, `color-specimen.tsx:112`, `type-specimen.tsx:27` — each tagged with `data-halftone`. `components/blocks/hero.tsx:21` uses the `--sfx-halftone-dot` token inside an inline `radial-gradient` for one-off decorative texture but does NOT apply the ambient `.sf-halftone` class — confirmed by `grep -rn "sf-halftone" components/ app/` returning only the four specimen consumers + the CSS rule definitions. Zero global / ambient overlay leakage.
+- [x] **HLF-04**: No moiré with grain at combined view — human visual review required — OBSOLETE 2026-04-25; combined-view human visual review process gate cannot be satisfied retroactively. `git log --all --grep "halftone.*review|coherence.*halftone|moir" -i` returns zero process-gate matches against shipping history. Same retroactive-temporal-impossibility precedent as VHS-06 / GRN-04 / VRG-02. Forward-looking visual baseline capture remains available via VRG-01's ratified Chromatic infrastructure; within v1.7 lock posture no further halftone changes are scoped, so the gate is moot.
 
 ### Circuit Overlay
 - [ ] **CIR-01**: SVG circuit pattern at 0.02-0.05 opacity as section background
@@ -368,10 +368,10 @@
 | DTM-02 | Phase 50.1 | Complete |
 | DTM-03 | Phase 50.1 | Complete |
 | DTM-04 | Phase 50.1 | Complete |
-| HLF-01 | Phase 51 | Pending |
-| HLF-02 | Phase 51 | Pending |
-| HLF-03 | Phase 51 | Pending |
-| HLF-04 | Phase 51 | Pending |
+| HLF-01 | Phase 51 | Ratified |
+| HLF-02 | Phase 51 | Ratified |
+| HLF-03 | Phase 51 | Ratified |
+| HLF-04 | Phase 51 | Obsolete |
 | CIR-01 | Phase 52 | Pending |
 | CIR-02 | Phase 52 | Pending |
 | CIR-03 | Phase 52 | Pending |
