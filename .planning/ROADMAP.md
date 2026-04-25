@@ -758,7 +758,7 @@ Plans:
   6. prefers-reduced-motion renders static frame or disables entirely
 **Plans:** 1/1 plans complete
 Plans:
-- [ ] 50.1-01-PLAN.md — DatamoshOverlay component + GlobalEffects mount + visual verification
+- [x] 50.1-01-PLAN.md — Datamosh ratification + feature-lost-to-launch-gate closure
 
 ### Phase 51: Halftone Texture
 **Goal**: A CSS-only halftone dot pattern appears in specimen sections at medium-to-high intensity without moiré artifacts against the grain layer
