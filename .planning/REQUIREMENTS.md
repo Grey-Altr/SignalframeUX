@@ -271,12 +271,12 @@
 - [x] **GRN-04**: Chromatic visual baselines captured before grain changes — OBSOLETE 2026-04-25; temporal gate cannot be satisfied retroactively. Grain code (`global-effects.tsx:36`) predates Chromatic wiring (commits `54db119` + `abe0cfd`). Forward-looking baseline capture remains available via VRG-01's ratified Chromatic infrastructure; within v1.7 lock posture no further grain changes are scoped, so the gate is moot.
 
 ### VHS Enhancement
-- [ ] **VHS-01**: Chromatic aberration (1-2px RGB channel offset) added to VHS overlay, scaled by derived intensity property
-- [ ] **VHS-02**: Horizontal jitter (translateX noise per scan line) added
-- [ ] **VHS-03**: Dropout bands (random horizontal black bars, 1-3px, <5% coverage) added
-- [ ] **VHS-04**: Frame-edge vignette via radial-gradient added
-- [ ] **VHS-05**: Safari `backdrop-filter` uses literal values with `-webkit-` prefix (no `var()` references)
-- [ ] **VHS-06**: Combined visual review at intensity 0.0 / 0.5 / 1.0 passes human sign-off
+- [x] **VHS-01**: Chromatic aberration (1-2px RGB channel offset) added to VHS overlay, scaled by derived intensity property — RATIFIED 2026-04-25; `components/animation/vhs-overlay.tsx:153-178` derives `--sfx-vhs-chromatic-opacity` from `--sfx-vhs-scanline-opacity` (the SIG-02 derived property), gated at intensity > 0.3 then linearly scaled across 0.3–1.0; `app/globals.css:2195-2210` renders red+cyan layers with opposing ±1.5px translateX and `mix-blend-mode: screen`. Reads the Phase 48 derived intensity bridge — pre-satisfied at the consumer wiring level by SIG-02.
+- [x] **VHS-02**: Horizontal jitter (translateX noise per scan line) added — RATIFIED 2026-04-25; `app/globals.css:2213-2225` `.vhs-jitter` runs `sf-vhs-jitter 0.15s steps(4, end) infinite` keyframes stepping translateX through −1.2px / +0.8px / −0.5px / +1px values. `steps(4, end)` produces the discrete tape-dropout register (not smooth animation). JSX layer 8 at `components/animation/vhs-overlay.tsx:230-233`.
+- [x] **VHS-03**: Dropout bands (random horizontal black bars, 1-3px, <5% coverage) added — OBSOLETE 2026-04-25; CSS scaffold ships at `app/globals.css:2230-2246` (`.vhs-dropout` container + `.vhs-dropout--active` toggle + `.vhs-dropout__band` band style at `oklch(0 0 0 / 0.85)`) and JSX container ships at `vhs-overlay.tsx:236`, but the runtime activator was tied to the cut idle-escalation consumer per Phase 49's GRN-02 supersedence chain (`a260238 fix(cleanup): remove heavy SIGNAL effects from GlobalEffects render for performance gate`). The original feat commit `93fa031 feat(50): VHS enhancement — chromatic aberration, jitter, dropout bands, vignette` shipped with band-injection deferred to "idle phase 2+" wiring that never landed. Performance launch gate (PRF-02) supersedes; CSS persists as latent surface area identical to `useIdleEscalation`'s library-only / dead-code residue.
+- [x] **VHS-04**: Frame-edge vignette via radial-gradient added — RATIFIED 2026-04-25; `app/globals.css:2249-2253` `.vhs-vignette` uses `radial-gradient(ellipse at center, transparent 60%, oklch(0 0 0 / 0.15) 100%)`, transparent through the 60% center band and darkening to ≈15% black opacity at the perimeter. JSX layer 10 at `components/animation/vhs-overlay.tsx:239`.
+- [x] **VHS-05**: Safari `backdrop-filter` uses literal values with `-webkit-` prefix (no `var()` references) — RATIFIED 2026-04-25; both `.vhs-scanline` (`app/globals.css:2108-2109`) and `.vhs-scanline--slow` (`app/globals.css:2125-2126`) carry paired `backdrop-filter` / `-webkit-backdrop-filter` declarations with literal `contrast()`/`saturate()`/`brightness()`/`blur()` values. Verified by `grep -nE "backdrop-filter:" app/globals.css | grep "var("` returning zero matches across the file.
+- [x] **VHS-06**: Combined visual review at intensity 0.0 / 0.5 / 1.0 passes human sign-off — OBSOLETE 2026-04-25; process gate cannot be satisfied retroactively. `git log --all --grep "vhs.*review|coherence.*vhs" -i` returns zero matches; the review checkpoint was bypassed during the 5-commit VHS tuning arc (`93fa031` → `f836830` → `05f22ab` → `752075e`) followed immediately by `a260238`'s perf-gate cleanup. Forward-looking visual baseline capture remains available via VRG-01's ratified Chromatic infrastructure; same retroactive-temporal-impossibility as GRN-04 / VRG-02.
 
 ### Halftone Texture
 - [ ] **HLF-01**: CSS-only halftone dot pattern (`radial-gradient` + `filter: contrast()` + `background-blend-mode`)
@@ -358,12 +358,12 @@
 | GRN-02 | Phase 49 | Obsolete |
 | GRN-03 | Phase 49 | Obsolete |
 | GRN-04 | Phase 49 | Obsolete |
-| VHS-01 | Phase 50 | Pending |
-| VHS-02 | Phase 50 | Pending |
-| VHS-03 | Phase 50 | Pending |
-| VHS-04 | Phase 50 | Pending |
-| VHS-05 | Phase 50 | Pending |
-| VHS-06 | Phase 50 | Pending |
+| VHS-01 | Phase 50 | Ratified |
+| VHS-02 | Phase 50 | Ratified |
+| VHS-03 | Phase 50 | Obsolete |
+| VHS-04 | Phase 50 | Ratified |
+| VHS-05 | Phase 50 | Ratified |
+| VHS-06 | Phase 50 | Obsolete |
 | DTM-01 | Phase 50.1 | Complete |
 | DTM-02 | Phase 50.1 | Complete |
 | DTM-03 | Phase 50.1 | Complete |
