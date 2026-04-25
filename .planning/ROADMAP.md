@@ -696,9 +696,9 @@ Plans:
   2. The inventory grid shows 3 columns at md: breakpoint (1024px) — no gap between 2-col and 4-col layouts
   3. All 4 subpages use pt-12 (48px) for page header top padding, not pt-10 (40px)
   4. Storybook viewport preset menu includes 1440x900 and 1280x800 options
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 47-01-PLAN.md — Token floor lift + scope ratification
+- [x] 47-01-PLAN.md — Token floor lift + scope ratification
 
 ### Phase 48: Intensity Bridge + Chromatic Setup
 **Goal**: All visual effects are driven by a single --signal-intensity source of truth; Chromatic is installed for visual regression tracking
@@ -890,7 +890,7 @@ Plans:
 | 44. Copy Audit Fixes | v1.7 | Complete    | 2026-04-11 | - |
 | 45. Token Bridge | 2/2 | Complete   | 2026-04-12 | - |
 | 46. Tightening Pass | v1.7 | 2/2 | Complete   | 2026-04-11 |
-| 47. Viewport Polish | v1.7 | 1/1 | Complete   | 2026-04-11 |
+| 47. Viewport Polish | v1.7 | 1/1 | Complete    | 2026-04-25 |
 | 48. Intensity Bridge + Chromatic Setup | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 49. Grain + Idle Escalation + Visual Baseline | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 50. VHS Enhancement | v1.7 | 1/1 | Complete   | 2026-04-11 |

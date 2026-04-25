@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
-milestone: v1.7
-milestone_name: v1.7 Tightening, Polish, and Aesthetic Push
-status: complete
-stopped_at: v1.7 milestone shipped — all PRF gates passed
-last_updated: "2026-04-13T00:00:00Z"
-last_activity: 2026-04-13 — PRF-01 ✓ A11y/BP/SEO 100/100/100, PRF-02 ✓ Performance 80, PRF-03 ✓ visual coherence sign-off, PRF-04 ✓ bundle gate. v1.7 shipped.
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: v1.7 milestone complete — all gates closed.
+last_updated: "2026-04-25T07:43:16.552Z"
+last_activity: 2026-04-25
 progress:
-  total_phases: 56
-  completed_phases: 56
-  total_plans: 74
-  completed_plans: 74
+  total_phases: 48
+  completed_phases: 28
+  total_plans: 61
+  completed_plans: 61
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -26,9 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 56 (complete — all plans)
-Status: All v1.7 phases and launch gates complete — milestone shipped
-Last activity: 2026-04-13 — Lighthouse re-run verified PRF-01 (A11y/BP/SEO 100/100/100) and PRF-02 (Performance 80). PRF-03 visual coherence sign-off completed. PRF-04 bundle gate remains met (19KB lib / 102KB app).
+Phase: 50.1
+Plan: Not started
+Status: Executing Phase 47
+Last activity: 2026-04-25
 
 ## Progress
 
@@ -184,6 +186,7 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 | Phase 52 (circuit) and 53 (mesh) parallel-eligible | Both depend only on Phase 48; neither depends on the other; can be executed in any order |
 | Phase 54 (particles) late | WebGL, highest complexity, iOS Safari risk — defer until all CSS-only effects are validated |
 | Phase 56 as the launch gate | Consolidates VRG-03, PRF-01-04, and SYM as the final verification boundary; no phase can be declared complete without passing these |
+
 - [Phase 45-token-bridge]: @theme inline aliasing: --color-* utility aliases point to --sfx-* vars so Tailwind classes work without renaming utility class names
 - [Phase 45-token-bridge]: @layer signalframeux wraps :root/.dark in dist only — app globals stay unlayered; consumer CSS wins by loading after the layered dist
 
@@ -192,7 +195,7 @@ v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** v1.7 Tightening, Polish, and Aesthetic Push
+**Current focus:** Phase 47 — Viewport Polish
 
 ## Session Continuity
 
