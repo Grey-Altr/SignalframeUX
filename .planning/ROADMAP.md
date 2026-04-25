@@ -837,7 +837,7 @@ Plans:
   8. Bundle budget maintained: library <= 50KB gzip, app shared chunks <= 150KB gzip
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 56-01-PLAN.md — Symbol system + final gate ratification
 
 ## Progress
 
