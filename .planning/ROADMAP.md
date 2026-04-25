@@ -742,7 +742,7 @@ Plans:
   6. Human visual review at intensity 0.0, 0.5, and 1.0 passes — the effect reads as signal, not glitch art
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 50-01-PLAN.md — VHS ratification + dropout/coherence-review obsolescence closure
 
 ### Phase 50.1: Datamosh Overlay (INSERTED)
 
