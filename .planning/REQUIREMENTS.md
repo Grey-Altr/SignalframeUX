@@ -306,9 +306,9 @@
 - [-] **GLT-03**: Feels like signal dropout, not decoration — OBSOLETE 2026-04-25; **subjective-feel gate, new sub-family of process-gate obsolescence**. The spec wording "feels like signal dropout, not decoration" is a subjective coherence judgment with no measurable artifact, no specified review process, and no captured outcome. Distinct from VHS-06 ("human visual coherence review" — a *review process* gate) and HLF-04 ("combined-view human visual review" — a *review process* gate); GLT-03 names a *feeling outcome* with no review process specified, no rubric, no test artifact. The shipped technique (`steps(1, end)` hard-cut transitions, no smooth interpolation) is consistent with the "transmission artifact" intent — the original commit message says "Hard-cut horizontal slices — transmission artifact aesthetic" — but the requirement clause cannot be satisfied retroactively without either a captured perceptual review or a measurable proxy. **Seventh canonical obsolescence on this branch**, introducing the **subjective-feel gate** sub-family alongside process-review (VHS-06 / HLF-04), retroactive-temporal (GRN-04 / VRG-02), physical-device-test (PTL-03), and dependency-obsolete (GLT-02). Pattern complete: every sub-family of process-gate obsolescence is now represented on the v1.7 branch.
 
 ### Symbol System
-- [ ] **SYM-01**: 20-30 curated modernist SVG symbols from Brando Corp collection
-- [ ] **SYM-02**: `<CDSymbol name="..." size={N} />` React component, <5KB total sprite
-- [ ] **SYM-03**: Used as section markers, list bullets, decorative dividers
+- [x] **SYM-01**: 20-30 curated modernist SVG symbols from Brando Corp collection — RATIFIED 2026-04-25; `public/symbols.svg` ships at 4145 bytes (`wc -c public/symbols.svg`) with 24 symbol ids (`grep -c '<symbol ' public/symbols.svg` returns 24) inside the 20-30 spec range: `crosshair`, `circuit-node`, `signal-wave`, `data-burst`, `grid-cell`, `frequency-bar`, `arrow-right`, `arrow-down`, `chevron`, `caret`, `dot`, `ring`, `pulse`, `diamond`, `line-h`, `line-v`, `dash`, `zigzag`, `hex`, `triangle`, `square`, `plus`, `minus`, `asterisk`. Both spec range and the SYM-02 sprite-size ceiling met.
+- [x] **SYM-02**: `<CDSymbol name="..." size={N} />` React component, <5KB total sprite — RATIFIED 2026-04-25; `components/sf/cd-symbol.tsx:23-35` ships a 13-line `<CDSymbol name size className />` server component (no `'use client'` directive per JSDoc `:4-5`) that renders `<svg width={size} height={size} aria-hidden role="img"><use href={`/symbols.svg#${name}`} /></svg>` at `:25-33`. Zero runtime JS beyond the SVG `<use>` element verified by absent `useState` / `useEffect` / event handlers in the 35-line file. Sprite-size gate met at 4.05 KB < 5 KB per SYM-01 citation.
+- [x] **SYM-03**: Used as section markers, list bullets, decorative dividers — RATIFIED 2026-04-25; 5 distinct live consumer locations exceed the spec floor of 3: `app/page.tsx:56-58` (dash-diamond-dash homepage section flanking) + `:86-88` (dash-crosshair-dash homepage section flanking); `app/builds/page.tsx:91` (crosshair section marker) + `:150` (dash list bullet); `app/builds/[slug]/page.tsx:182-184` / `:233-235` / `:250` / `:264` / `:288` / `:310` (motif/frameSymbol/signalSymbol triplets per build, themed `text-primary`); `components/blocks/acquisition-section.tsx:36` (circuit-node acquisition header); `components/layout/footer.tsx:72` + `:77` (hex + signal-wave footer markers). Design-moment usage verified by themed className overrides (`text-primary` / `text-foreground/30` / `text-foreground/40`) and per-build dynamic motif lookup at `builds/[slug]:182-184` — not placeholder generics.
 
 ### Datamosh Overlay
 - [-] **DTM-01**: DatamoshOverlay component renders fullscreen fragment shader via useSignalScene — no separate WebGL context, registered with SignalCanvas singleton — OBSOLETE 2026-04-25; **fourth canonical "feature-lost-to-launch-gate via consumer-deletion" instance** (after GRN-02/03 + VHS-03), and largest single-phase cluster of this sub-family on the branch (4 reqs vs 2 / 1 prior). Component code persists at `components/animation/datamosh-overlay.tsx:1-326` (`@status reference-template` per lockdown audit commit `b30f9de`); `useSignalScene(containerRef, buildScene)` registration is structurally correct at `:235-238`; SSR-safe lazy wrapper at `components/animation/datamosh-overlay-lazy.tsx:18-28` also `@status reference-template`. Mount in GlobalEffects shipped in commit `313a6d2 feat(50.1-01): Mount DatamoshOverlay in GlobalEffects` then deliberately removed in commit `a260238 fix(cleanup): remove heavy SIGNAL effects from GlobalEffects render for performance gate` (same cleanup that cut IdleOverlay + ParticleField). Verified via `grep -rn "DatamoshOverlay\|DatamoshOverlayLazy" app/ components/blocks/ components/layout/` returning zero matches outside the artifact files themselves. Performance launch gate (PRF-02) supersedes ambient datamosh overlay.
@@ -319,13 +319,13 @@
 ### Visual Regression
 - [x] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies — RATIFIED 2026-04-25, shipped at `package.json:125` (`@chromatic-com/storybook ^5.1.1`) + `:142` (`chromatic ^16.2.0`) + `:73` (`chromatic` script). `pnpm build-storybook` exits clean (verified 2026-04-25).
 - [x] **VRG-02**: Visual baselines captured before Phase 49 (grain changes) — OBSOLETE 2026-04-25; same temporal-gate impossibility as GRN-04. Forward-looking baseline capture remains available via VRG-01's ratified Chromatic wiring; "before Phase 49" temporal phrasing is unsatisfiable retroactively for already-shipped grain.
-- [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
+- [x] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added — RATIFIED 2026-04-25; `find . -name '*.stories.tsx' -not -path './node_modules/*' -not -path './.next/*' -not -path './storybook-static/*' | wc -l` returns 61, exceeding the >=60 spec gate by 1 story. The 61-count includes the `stories/flagship/` subdirectory (12 stories) and v1.7-era effect stories (`stories/vhs-overlay.stories.tsx` among new additions). Gate increment from >=40 → >=60 satisfied.
 
 ### Performance Gates
-- [x] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes
-- [x] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline)
-- [x] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review
-- [x] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks
+- [x] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes — RATIFIED 2026-04-25 (matrix-Complete preserved as Ratified); v1.7 ship signoff at `.planning/PRF-03-SIGNOFF.md:9` dated 2026-04-13 certifies "PRF-01 passed (Lighthouse A11y/BP/SEO = 100/100/100)". Historical PROD evidence at `.planning/phases/43-production-deploy-lighthouse-gate/43-01-SUMMARY.md:49-53` — Vercel PROD 3-run worst: A11y 100/97 (intermittent on GSAP `bgShift` contrast), BP 100, SEO 100. Phase 35 PSI methodology achieved 100/100 per `:74` (PSI vs CLI score divergence documented).
+- [x] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline) — RATIFIED 2026-04-25 (matrix-Complete preserved as Ratified); v1.7 ship signoff at `.planning/PRF-03-SIGNOFF.md:10` dated 2026-04-13 certifies "PRF-02 passed (Lighthouse Performance >= 75; latest 80)". Historical PROD evidence at `.planning/phases/43-production-deploy-lighthouse-gate/43-01-SUMMARY.md:54` — Vercel PROD CLI methodology Performance 92, 17 points above the 75 floor. Methodology note at `:74` documents PSI vs CLI score divergence.
+- [x] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review — RATIFIED 2026-04-25 with thinner-stack annotation (matrix-Complete preserved as Ratified); `.planning/PRF-03-SIGNOFF.md:24-30` dated 2026-04-13 records 7-item checklist `[x]` (text legibility, hierarchy clarity, no moiré/hostile interference, no stutter/jank, no visually-broken moments, mobile coherence, reduced-motion stability) reviewed by "Project owner" in "Local dev + production verification context". The single process-gate on the v1.7 branch with a captured signoff artifact — contrastive case to the six process-gate obsolescences (VHS-06 / HLF-04 / GRN-04 / VRG-02 / PTL-03 / GLT-03), which all obsoleted for lacking captured artifacts. **Thinner-stack annotation per Phase 50.1 carry-forward**: the production stack at intensity 1.0 reviewed in this signoff was already missing 4 ambient overlays vs the original Phase 56 spec assumption — DatamoshOverlay (DTM-01..04 obsolete), IdleOverlay (GRN-02/03 obsolete), ParticleField WebGL flavor (PTL-01 reference-template), VHS-03 dropout activator — all cut by commit `a260238 fix(cleanup): remove heavy SIGNAL effects from GlobalEffects render for performance gate`. The signoff certifies coherence at the shipped surface area, not at the spec-aspirational surface area. Documentation-only annotation under a clean ratification — same shape as HLF-01's technique-divergence-inside-Ratified annotation.
+- [x] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks — RATIFIED 2026-04-25 (matrix-Complete preserved as Ratified); library distributed-package gate at `.planning/phases/41-distribution-launch-gate/41-01-SUMMARY.md:13` ("scripts/verify-bundle-size.ts gzip gate (50 KB budget, 28.3 KB actual)") — 4 entry points totaling 28.3 KB gzip (19.1 KB `index.mjs` + 4.5 KB `animation.mjs` + 2.2 KB `webgl.mjs` + 3.1 KB CSS) per `41-RESEARCH.md:242`, 21.7 KB headroom under the 50 KB ceiling. Site shared-chunk gate at `.planning/phases/35-performance-launch-gate/35-05-SUMMARY.md:19` ("all 5 routes HTTP 200, 102 kB shared JS") — 48 KB headroom under the 150 KB ceiling. Automated enforcement via `scripts/verify-bundle-size.ts` on `prepublishOnly` chain per `41-01-SUMMARY.md:121`.
 
 ### v1.7 Traceability
 
@@ -385,16 +385,16 @@
 | GLT-01 | Phase 55 | Ratified |
 | GLT-02 | Phase 55 | Obsolete |
 | GLT-03 | Phase 55 | Obsolete |
-| SYM-01 | Phase 56 | Pending |
-| SYM-02 | Phase 56 | Pending |
-| SYM-03 | Phase 56 | Pending |
+| SYM-01 | Phase 56 | Ratified |
+| SYM-02 | Phase 56 | Ratified |
+| SYM-03 | Phase 56 | Ratified |
 | VRG-01 | Phase 48 | Ratified |
 | VRG-02 | Phase 49 | Obsolete |
-| VRG-03 | Phase 56 | Pending |
-| PRF-01 | Phase 56 | Complete |
-| PRF-02 | Phase 56 | Complete |
-| PRF-03 | Phase 56 | Complete |
-| PRF-04 | Phase 56 | Complete |
+| VRG-03 | Phase 56 | Ratified |
+| PRF-01 | Phase 56 | Ratified |
+| PRF-02 | Phase 56 | Ratified |
+| PRF-03 | Phase 56 | Ratified |
+| PRF-04 | Phase 56 | Ratified |
 
 ## Out of Scope
 
