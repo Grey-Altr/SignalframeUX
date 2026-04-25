@@ -713,7 +713,7 @@ Plans:
   6. @chromatic-com/storybook and chromatic CLI are installed as devDependencies and pnpm storybook builds without error
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 48-01-PLAN.md — Intensity bridge + Chromatic ratification
 
 ### Phase 49: Grain + Idle Escalation + Visual Baseline
 **Goal**: Grain is parametric (not static), idle escalation is a reusable hook with defined thresholds, and visual baselines are locked before grain changes
