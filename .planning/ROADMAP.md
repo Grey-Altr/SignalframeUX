@@ -727,7 +727,7 @@ Plans:
   5. Idle timer resets correctly on user interaction (mouse, keyboard, scroll) and does not escalate on reduced-motion
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 49-01-PLAN.md — Grain ratification + idle escalation closure
 
 ### Phase 50: VHS Enhancement
 **Goal**: The VHS overlay is a coherent multi-layered effect that reads as signal degradation, not decoration
