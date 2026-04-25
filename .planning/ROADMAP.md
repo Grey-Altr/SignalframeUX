@@ -9,7 +9,7 @@
 - [x] **v1.4 Feature Complete** — Phases 21-27 (shipped 2026-04-08)
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
-- [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13)
+- [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
 
 ## Phases
 
