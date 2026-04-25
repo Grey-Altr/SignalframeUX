@@ -783,7 +783,7 @@ Plans:
   3. Circuit opacity is driven by --signal-intensity custom property and updates in real time when intensity changes
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 52-01-PLAN.md — Circuit overlay clean ratification (3/3)
 
 ### Phase 53: Mesh Gradient
 **Goal**: A layered OKLCH mesh gradient provides atmospheric depth behind content with a slow-breathing drift animation
