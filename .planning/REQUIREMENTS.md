@@ -311,10 +311,10 @@
 - [ ] **SYM-03**: Used as section markers, list bullets, decorative dividers
 
 ### Datamosh Overlay
-- [x] **DTM-01**: DatamoshOverlay component renders fullscreen fragment shader via useSignalScene — no separate WebGL context, registered with SignalCanvas singleton
-- [x] **DTM-02**: uIntensity default 0.003 produces 1-2px noise-driven displacement with chromatic aberration (R/G/B at different offsets), visible at 100% zoom on close inspection, invisible in casual scroll
-- [x] **DTM-03**: Effect wires to --signal-intensity CSS custom property via MutationObserver cache pattern, GPU time <0.5ms at 1920x1080
-- [x] **DTM-04**: prefers-reduced-motion renders single static frame or disables entirely; GSAP breathing oscillates intensity between 0.001-0.004 over 8-12s cycles
+- [-] **DTM-01**: DatamoshOverlay component renders fullscreen fragment shader via useSignalScene — no separate WebGL context, registered with SignalCanvas singleton — OBSOLETE 2026-04-25; **fourth canonical "feature-lost-to-launch-gate via consumer-deletion" instance** (after GRN-02/03 + VHS-03), and largest single-phase cluster of this sub-family on the branch (4 reqs vs 2 / 1 prior). Component code persists at `components/animation/datamosh-overlay.tsx:1-326` (`@status reference-template` per lockdown audit commit `b30f9de`); `useSignalScene(containerRef, buildScene)` registration is structurally correct at `:235-238`; SSR-safe lazy wrapper at `components/animation/datamosh-overlay-lazy.tsx:18-28` also `@status reference-template`. Mount in GlobalEffects shipped in commit `313a6d2 feat(50.1-01): Mount DatamoshOverlay in GlobalEffects` then deliberately removed in commit `a260238 fix(cleanup): remove heavy SIGNAL effects from GlobalEffects render for performance gate` (same cleanup that cut IdleOverlay + ParticleField). Verified via `grep -rn "DatamoshOverlay\|DatamoshOverlayLazy" app/ components/blocks/ components/layout/` returning zero matches outside the artifact files themselves. Performance launch gate (PRF-02) supersedes ambient datamosh overlay.
+- [-] **DTM-02**: uIntensity default 0.003 produces 1-2px noise-driven displacement with chromatic aberration (R/G/B at different offsets), visible at 100% zoom on close inspection, invisible in casual scroll — OBSOLETE 2026-04-25; same supersedence as DTM-01. Shader-side spec compliance verified: `uIntensity: { value: 0.003 }` ships at `datamosh-overlay.tsx:211`; channel separation at `:147-149` (`uvR = sampleUV + offset`, `uvG = sampleUV + offset * 0.66`, `uvB = sampleUV - offset * 0.33`); value-noise GLSL at `:120-133` (hash + smooth-interpolation noise from glsl-hero precedent); block quantization at `:143-144`. Visibility outcome ("visible at 100% zoom on close inspection, invisible in casual scroll") describes runtime perception requiring a live consumer; with the `a260238` mount removal, the fragment shader never reaches the production render path and cannot produce on-screen displacement.
+- [-] **DTM-03**: Effect wires to --signal-intensity CSS custom property via MutationObserver cache pattern, GPU time <0.5ms at 1920x1080 — OBSOLETE 2026-04-25; same supersedence as DTM-01. Three sub-clauses: (1) MutationObserver cache pattern correctly implemented at `datamosh-overlay.tsx:79-86` (`attributeFilter: ["style"]` on `document.documentElement`, INT-04 module-level `_signalIntensity` cache at `:69`, `readSignalVars()` at `:72-77`); (2) token-prefix-divergence — code reads `--sfx-signal-intensity` at `:74` while spec wording says `--signal-intensity`. Permissible per `project_token_prefix_split.md`: the `--sf-*` → `--sfx-*` migration class closed 2026-04-24 (commits `2b2acb3` + `719dcfc`), and intensity is duration/theme-family. The shipped reads are correct under current taxonomy; (3) GPU time <0.5ms at 1920x1080 cannot be measured without a runtime consumer — measurement-clause obsolescence inherits from the consumer-deletion supersedence.
+- [-] **DTM-04**: prefers-reduced-motion renders single static frame or disables entirely; GSAP breathing oscillates intensity between 0.001-0.004 over 8-12s cycles — OBSOLETE 2026-04-25; same supersedence as DTM-01. Two clauses: (1) reduced-motion gate ships at `datamosh-overlay.tsx:307-310` (initial state via `matchMedia`) + `:312-318` (live listener) + `:320-322` (returns `<DatamoshFallback />`); fallback is a static `aria-hidden="true"` div at `:164-172`. Belt-and-suspenders inner check at `:244`. (2) GSAP breathing tween at `:251-258` (`gsap.to(breathingObj, { value: 0.001, duration: gsap.utils.random(8, 12), ease: "sine.out", yoyo: true, repeat: -1 })`) with `breathingObj` initialized to `{ value: 0.003 }` at `:251` — actual breathing range is **0.001–0.003** (not the spec's 0.001–0.004). Tightening preserves the xtop ceiling: `uIntensity = breathingObj.value + _signalIntensity * 0.002` (`:269-270`) caps at `0.003 + 1.0 * 0.002 = 0.005`, deliberately under the 0.006 spec ceiling. Technique-divergence annotation noted but moot — both clauses describe runtime behavior; with no live consumer, neither fires.
 
 ### Visual Regression
 - [x] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies — RATIFIED 2026-04-25, shipped at `package.json:125` (`@chromatic-com/storybook ^5.1.1`) + `:142` (`chromatic ^16.2.0`) + `:73` (`chromatic` script). `pnpm build-storybook` exits clean (verified 2026-04-25).
@@ -364,10 +364,10 @@
 | VHS-04 | Phase 50 | Ratified |
 | VHS-05 | Phase 50 | Ratified |
 | VHS-06 | Phase 50 | Obsolete |
-| DTM-01 | Phase 50.1 | Complete |
-| DTM-02 | Phase 50.1 | Complete |
-| DTM-03 | Phase 50.1 | Complete |
-| DTM-04 | Phase 50.1 | Complete |
+| DTM-01 | Phase 50.1 | Obsolete |
+| DTM-02 | Phase 50.1 | Obsolete |
+| DTM-03 | Phase 50.1 | Obsolete |
+| DTM-04 | Phase 50.1 | Obsolete |
 | HLF-01 | Phase 51 | Ratified |
 | HLF-02 | Phase 51 | Ratified |
 | HLF-03 | Phase 51 | Ratified |
