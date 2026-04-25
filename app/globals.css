@@ -197,8 +197,8 @@
   --sfx-font-display: var(--font-anton), "Impact", sans-serif;
 
   /* ── Type Scale: Industrial Minor Third (1.2) ── */
-  --sfx-text-2xs: clamp(8px, calc(0.625*var(--sf-vw)), 12px);  /* 9px at 1440px — micro labels, copy buttons */
-  --sfx-text-xs: clamp(9px, calc(0.694*var(--sf-vw)), 14px);   /* 10px at 1440px — tag pills, stat labels */
+  --sfx-text-2xs: clamp(10px, calc(0.625*var(--sf-vw)), 12px); /* 10px floor — readable on 1280px MBP — micro labels, copy buttons */
+  --sfx-text-xs: clamp(11px, calc(0.694*var(--sf-vw)), 14px);  /* 11px floor — readable on 1280px MBP — tag pills, stat labels */
   --sfx-text-sm: clamp(10px, calc(0.764*var(--sf-vw)), 16px);  /* 11px at 1440px — nav, footer, grid metadata */
   --sfx-text-base: clamp(11px, calc(0.903*var(--sf-vw)), 18px); /* 13px at 1440px — body copy, descriptions */
   --sfx-text-md: clamp(14px, calc(1.111*var(--sf-vw)), 24px);   /* 16px at 1440px — hero body, prominent copy */
