@@ -771,7 +771,7 @@ Plans:
   4. Human visual review of grain + halftone combined view confirms no moiré pattern at standard viewing distance
 **Plans:** 1 plan
 Plans:
-- [ ] 44-01-PLAN.md — Fix all copy across 6 source files + update Playwright assertions
+- [x] 51-01-PLAN.md — Halftone ratification + moiré-review obsolescence closure
 
 ### Phase 52: Circuit Overlay
 **Goal**: SVG circuit traces appear as section backgrounds at very low opacity, mutually exclusive with high grain
