@@ -42,12 +42,28 @@ const inter = Inter({
 const anton = localFont({
   src: "./fonts/Anton-Regular.woff2",
   variable: "--font-anton",
-  display: "optional",
-  // CLS fix (Wave 3 T-01/T-02): "optional" prevents font-swap layout shift.
-  // Anton is a display-only font (headings/hero). "optional" means the browser
-  // renders with the fallback if Anton isn't cached; on repeat visits (Awwwards
-  // evaluator) Anton loads from cache with zero CLS. "swap" was causing 0.485
-  // CLS on /system because the clamp(80px, 12vw, 160px) heading shifts on swap.
+  display: "swap",
+  // CRT-03 (Phase 59 Plan B): "swap" + tuned descriptors against the
+  // Impact / Helvetica Neue Condensed / Arial Black fallback chain.
+  // The Wave-3 0.485 CLS regression was caused by the system fallback's
+  // metrics being structurally different from Anton (Arial proportional
+  // vs Anton condensed-narrow-tall). With descriptors calibrated below
+  // (MEASURED via scripts/measure-anton-descriptors.mjs against the
+  // subsetted .woff2; cross-verified with Brian Louis Ramirez Fallback
+  // Font Generator formula), the swap is invisible at slow-3G. Slow-3G
+  // hard-reload screen recording is the verification gate
+  // (tests/v1.8-phase59-anton-swap-cls.spec.ts).
+  // AES-02 documented exception per AESTHETIC-OF-RECORD.md Change Log.
+  // CRT-02: Anton-Regular.woff2 is now subsetted (full printable ASCII + TM,
+  // 11.1 KB vs original 58.8 KB, 81% byte reduction).
+  adjustFontFallback: false,
+  fallback: ["Impact", "Helvetica Neue Condensed", "Arial Black", "sans-serif"],
+  declarations: [
+    { prop: "size-adjust",       value: "92.14%" },  // MEASURED Task 4
+    { prop: "ascent-override",   value: "127.66%" }, // MEASURED Task 4
+    { prop: "descent-override",  value: "35.72%" },  // MEASURED Task 4
+    { prop: "line-gap-override", value: "0%" },      // display fonts ship line-gap=0
+  ],
 });
 
 export const metadata: Metadata = {
