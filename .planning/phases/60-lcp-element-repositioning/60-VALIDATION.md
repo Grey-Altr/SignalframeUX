@@ -1,10 +1,11 @@
 ---
 phase: 60
 slug: lcp-element-repositioning
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-04-26
+approved: 2026-04-26
 ---
 
 # Phase 60 — Validation Strategy
@@ -21,7 +22,7 @@ created: 2026-04-26
 | **Framework** | Playwright 1.59.x (existing — no install) |
 | **Config file** | `playwright.config.ts` |
 | **Quick run command** | `npx playwright test tests/v1.8-lcp-candidates.spec.ts --reporter=line` |
-| **Full suite command** | `pnpm test:e2e` (Playwright full) + `pnpm lhci:autorun` (LHCI median-of-5) |
+| **Full suite command** | `pnpm test:e2e` (Playwright full) + `pnpm exec lhci autorun --config=.lighthouseci/lighthouserc.json` (LHCI median-of-5; no `lhci:autorun` script defined in `package.json`) |
 | **Estimated runtime** | ~30s quick · ~6 min full (LHCI dominates) |
 
 ---
@@ -45,7 +46,7 @@ created: 2026-04-26
 | 60-02-01 | 02 | 0 | LCP-02, LCP-03 | — | N/A | grep | `grep -q "containIntrinsicSize" components/animation/ghost-label.tsx` | ✅ | ⬜ pending |
 | 60-02-02 | 02 | 1 | LCP-01, LCP-02 | — | N/A | grep | `grep -qE "content-visibility:\s*auto" components/animation/ghost-label.tsx` | ✅ | ⬜ pending |
 | 60-02-03 | 02 | 1 | AES-01, AES-04 | — | N/A | e2e | `npx playwright test tests/v1.8-baseline-capture.spec.ts` (no `--update-snapshots`) | ✅ | ⬜ pending |
-| 60-02-04 | 02 | 2 | LCP-01 | — | N/A | LHCI | `pnpm lhci:autorun -- --collect.numberOfRuns=5` (assert median LCP <1.0s mobile) | ✅ | ⬜ pending |
+| 60-02-04 | 02 | 2 | LCP-01 | — | N/A | LHCI | `pnpm exec lhci autorun --config=.lighthouseci/lighthouserc.json` (assert median LCP <1.0s mobile per rc.json `numberOfRuns:5` + `largest-contentful-paint <=1000ms`) | ✅ | ⬜ pending |
 | 60-02-05 | 02 | 2 | LCP-01, AES-04 | — | N/A | grep | `grep -q "lcp_ms" .planning/perf-baselines/v1.8/phase-60-mobile-lhci.json` | ❌ W0 | ⬜ pending |
 | 60-02-06 | 02 | 3 | VRF-04 | — | N/A | manual | WebPageTest iPhone 13 Safari LTE median-of-5; result file `.planning/perf-baselines/v1.8/phase-60-realdevice-checkpoint.md` | ❌ W0 | ⬜ pending |
 | 60-02-07 | 02 | 3 | AES-01, AES-03 | — | N/A | manual | chrome-devtools MCP scroll-test all 4 viewports × 5 pages; sign-off in `.planning/phases/60-lcp-element-repositioning/60-AES03-COHORT.md` | ❌ W0 | ⬜ pending |
@@ -84,6 +85,6 @@ created: 2026-04-26
 - [x] Wave 0 covers all MISSING references (5 artifacts to be created)
 - [x] No watch-mode flags
 - [x] Feedback latency <60s for spec checks, <6 min for LHCI gate
-- [ ] `nyquist_compliant: true` set in frontmatter (toggled to true after planner produces task IDs that match this map)
+- [x] `nyquist_compliant: true` set in frontmatter (planner emitted task IDs `60-01-01..03` and `60-02-01..07` matching this map verbatim; pde-plan-checker confirmed PASS on Nyquist Dimension 8)
 
-**Approval:** pending — flips to approved after pde-plan-checker confirms task IDs in PLAN.md match the verification map above.
+**Approval:** approved 2026-04-26 — pde-plan-checker found 0 BLOCKERS, 4 WARNINGS (all surgical, fixed in-place via PF-04 grep addition + P02-06 positive-path proof + LHCI command corrections), 3 INFO. Plans cleared for `/pde:execute-phase 60`.

@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: verifying
-stopped_at: Phase 60 context gathered
-last_updated: "2026-04-26T17:40:52.241Z"
-last_activity: 2026-04-25
+status: ready_to_execute
+stopped_at: Phase 60 PLANNED — auto-chain → execute-phase
+last_updated: "2026-04-26T18:30:00.000Z"
+last_activity: 2026-04-26
 progress:
   total_phases: 54
   completed_phases: 40
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 59
-Plan: Planned (3 plans, 0/3 executed)
-Status: Phase 59 PLANNED with 3 PLAN.md files + RESEARCH.md (877 lines) + VALIDATION.md committed (commits cea63e5 → 501e8f2 → bb20693). Plan-checker iteration 2/3 PASSED — 0 BLOCKERs. Plan A (59-01) — canvas-sync inline + delete (CRT-01); Plan B (59-02) — Anton subset+swap (CRT-02, CRT-03); Plan C (59-03) — Lenis rIC deferral (CRT-04). CRT-05 strict bisect order: A → B → C. Plan B Task 0 blocks PR-open on Phase 58 HUMAN-UAT 1+2 verification. Anton CLS history (Wave 3 0.485 regression) honored — Plan B Wave 0 measures descriptors before layout.tsx edit. Path drift in REQUIREMENTS.md L28 + ROADMAP.md L917 ratified to `components/layout/lenis-provider.tsx`. Auto-chain active → execute-phase next.
-Last activity: 2026-04-25
+Phase: 60
+Plan: Planned (2 plans, 0/2 executed)
+Status: Phase 60 PLANNED with 2 PLAN.md files + RESEARCH.md + VALIDATION.md committed (Phase 59 closure ratified — commits 66ac4ec → 47fe585 → fc3827c → 2227d28 already shipped per `project_phase59_closed.md`; STATE Phase 59 row not yet rolled). Plan-checker iteration 1/3: 0 BLOCKERs, 4 WARNINGs, 3 INFO; warnings fixed in-place (PF-04 autoResize grep added to 60-02-02 verify chain; P02-06 positive-path proof added to 60-02-04 step 5b; VALIDATION.md broken `pnpm lhci:autorun` corrected to `pnpm exec lhci autorun --config=.lighthouseci/lighthouserc.json`). Plan 01 = pre-need LCP candidate analysis spec emitting `.planning/codebase/v1.8-lcp-candidates.json`; Plan 02 = mobile intervention via candidate (b) — `content-visibility: auto` + `containIntrinsicSize: "auto 200px"` on GhostLabel LEAF in `components/animation/ghost-label.tsx` (Anti-Pattern #5 leaf-only discipline encoded as blocking grep). Plan 02 has 4 waves (W0 measure → W1 ship+pixel-diff → W2 LHCI median-of-5 + P02-06 re-run → W3 manual D-07 WebPageTest + D-08 chrome-devtools MCP cohort review). Desktop = monitor-only per D-05. Auto-chain active → execute-phase next.
+Last activity: 2026-04-26
 
 ## Progress
 
@@ -53,7 +53,7 @@ v1.8: [████░░░░░░]  33% (2/6 phases complete; 1 planned) Pha
 | 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Complete (3/3 plans) |
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Complete (2/2 plans, code-side green; 2 HUMAN-UAT items pending) |
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Planned (3 plans, 0/3 executed) |
-| 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Not started |
+| 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Planned (2 plans, 0/2 executed) |
 | 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Not started |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
 
@@ -229,6 +229,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T17:40:52.233Z
-Stopped at: Phase 60 context gathered
-Resume with: `/pde:plan-phase 58` for Lighthouse CI + Real-Device Telemetry (CIB-01..05). Phase 58 must land BEFORE Phase 59 (LHCI gate is non-optional given Phase 59's CLS-protection-touching changes). Phase 60 plan-shape is contingent on `v1.8-lcp-diagnosis.md` §1 — note cross-viewport LCP divergence (mobile = THESIS GhostLabel, desktop = VL-05 `//` overlay) requires per-viewport intervention selection. Phase 61 BND-02 reads §2 chunk attribution (all 4 v1.7 IDs matched + 7 NEW_FINDING chunks > 50KB).
+Last session: 2026-04-26T18:30:00.000Z
+Stopped at: Phase 60 PLANNED — 2 PLAN.md files cleared by plan-checker (0 BLOCKERs); warnings patched in-place
+Resume with: `/pde:execute-phase 60 --auto` (auto-chain already active). Plan 01 emits `.planning/codebase/v1.8-lcp-candidates.json` (standing v1.8 measurement tool). Plan 02 ships candidate (b) = `content-visibility: auto` + `containIntrinsicSize: "auto 200px"` on GhostLabel LEAF in `components/animation/ghost-label.tsx`; Anti-Pattern #5 leaf-only discipline encoded as blocking grep in 60-02-02 verify chain. Wave 0 measures rect before commit; Wave 2 LHCI median-of-5 must report mobile LCP <1000ms; Wave 2 also re-runs Plan 01 spec to positively prove GhostLabel removed from LCP critical path (P02-06). Wave 3 manual gates: D-07 WebPageTest iPhone 13 Safari LTE median-of-5 (`.planning/perf-baselines/v1.8/phase-60-realdevice-checkpoint.md`) + D-08 chrome-devtools MCP scroll-test fresh-eyes pass (`60-AES03-COHORT.md`). Desktop = monitor-only per D-05. D-04 reactive escalation path documented inline at 60-02-04 step 6 (Phase 60 Plan 03 / Phase 60.1 / Phase 62 VRF-04 cleanup based on post-intervention LCP candidate identity).
