@@ -25,7 +25,7 @@
 - [ ] **CRT-01**: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; `public/sf-canvas-sync.js` deleted; CLS=0 verified by Playwright test.
 - [ ] **CRT-02**: Anton font character-subsetted via build-time `glyphhanger` (ALL-CAPS English glyphs used in app). No runtime dependency added.
 - [ ] **CRT-03**: Anton `font-display` migrated `optional` → `swap` with tuned `size-adjust` + `ascent-override` + `descent-override` + `line-gap-override` against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain. Slow-3G hard-reload screen recording is the verification gate. Documented Chromatic re-baseline exception per `feedback_ratify_reality_bias.md`.
-- [ ] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` inside existing `useEffect` at `components/animation/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved.
+- [ ] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` inside existing `useEffect` at `components/layout/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved.
 - [ ] **CRT-05**: CRT-01, CRT-02/03, CRT-04 each shipped as a separate PR for clean bisect.
 
 ## LCP Repositioning (LCP)
