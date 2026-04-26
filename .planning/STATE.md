@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: ready_to_execute
-stopped_at: Phase 61 PLANNED — auto-chain → execute-phase
-last_updated: "2026-04-26T19:30:00.000Z"
+status: human_needed
+stopped_at: Phase 61 EXECUTED, 3/4 BND requirements satisfied; BND-01 + AES-04 strict 0% FAIL — 3 decision points pending in 61-HUMAN-UAT.md
+last_updated: "2026-04-26T21:15:00.000Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 54
   completed_phases: 40
-  total_plans: 78
-  completed_plans: 78
+  total_plans: 81
+  completed_plans: 81
   percent: 100
 ---
 
@@ -28,8 +28,8 @@ progress:
 ## Current Position
 
 Phase: 61
-Plan: Planned (3 plans, 0/3 executed)
-Status: Phase 61 PLANNED with 3 PLAN.md files + 61-RESEARCH.md + 61-VALIDATION.md committed. Plan-checker iteration 1/3: 0 BLOCKERs, 5 WARNINGs (4 reconciled in-place: VALIDATION.md task IDs realigned to PLAN IDs `61-01-00..02`/`61-02-00..02`/`61-03-00..02`; W0 Requirements bullet rephrased to drop the unrealized "sub-spec parsing" deliverable in favor of manual stdout-extraction recorded in 61-03-FINAL-GATE.md; PLAN 01 Task 2 canary command prepended `CI=true` so playwright auto-starts the prod server; PLAN 03 Task 2 acceptance gained REDUCTION% FALSE-PASS GUARD: missing successor chunk defaults `Bf_X = B0_X` rather than treating absence as zero size. W#5 dismissed — `<phase_must_haves>` is already a sibling of `<output>`, not nested.). Plan 01 = eager-path packages (radix-ui + input-otp) with 3 sequential commits + per-package KB delta logged. Plan 02 = lazy-path packages (cmdk + vaul; sonner + react-day-picker) with 2 batched commits; date-fns SKIP rationale documented (already in Next.js 15 default-optimized list). Plan 03 = verification + final gate (BND-01 `Shared by all` <=102 KB AND >=80% of 119 KiB unused-JS reduced from chunk 3302+7525 sums delta; BND-03 verify-only since pre-audit confirmed sf/index.ts is already directive-free; BND-04 stale-chunk guard documented; AES-04 pixel-diff at MAX_DIFF_RATIO=0). Auto-chain active → execute-phase next. NOTE: Phase 60 status row in v1.8 Phase Map is stale (Path A closed 2026-04-26 per `project_phase60_path_a.md` memory + commits 6eb991b/014083c/ed9b246/3873b28/e456233); deferred until Phase 60 SUMMARY ratification, not in Phase 61 scope.
+Plan: Executed (3/3 plans complete; verifier returned human_needed)
+Status: Phase 61 EXECUTED in 3 sequential waves, 16 commits across 3 plans. BND-02 SATISFIED (all 7 packages added, date-fns SKIP justified, −16 KB on `/` First Load JS realized). BND-03 SATISFIED (sf/index.ts directive-free, grep -c "use client" = 0). BND-04 SATISFIED (stale-chunk guard documented across 61-RESEARCH.md + both RESEARCH-LOG headers). **BND-01 BLOCKED** — Shared by all = 103 KB (1 KB over ≤102 KB target); reduction% 0.41% (Scenario A guard-strict) / 42.10% (Scenario B chunk-4335 attribution), both below 80% threshold. **AES-04 strict 0% FAIL** — 20/20 at MAX_DIFF_RATIO=0; max diff 0.343%, ALL under AES-04 standing 0.5% rule. optimizePackageImports lever exhausted; gates honored without loosening (no rounding 103→102, no swapping strict 0% for 0.5%). 3 decision points persisted in 61-HUMAN-UAT.md: (1) Phase 62 BND-01 closure path — splitChunks retuning vs ROADMAP target recalibration vs accept 103 KB as practical floor; (2) AES-04 calibration path — baseline re-capture vs relax to 0.5% standing rule; (3) Phase 59 spec MAX_DIFF_RATIO discrepancy — Phase 59 row B claimed "20/20 PASS at 0%" but spec source uses 0.005, strict 0% gate never validated in this harness. Code-review (61-REVIEW.md) returned issues_found with 3 info-only observations (no critical/warning). Phase 60 row in v1.8 Phase Map remains stale (Path A closed 2026-04-26).
 Last activity: 2026-04-26
 
 ## Progress
@@ -43,7 +43,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [████░░░░░░]  33% (2/6 phases complete; 1 planned) Phases 57+58 COMPLETE; Phase 59 PLANNED (3 plans, 0/3 executed)
+v1.8: [█████░░░░░]  50% (2/6 phases code-complete + 1 human_needed) Phases 57+58 COMPLETE; Phase 61 EXECUTED 3/3 plans, awaiting decisions in 61-HUMAN-UAT.md
 ```
 
 ## v1.8 Phase Map
@@ -229,6 +229,10 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T19:30:00.000Z
-Stopped at: Phase 61 PLANNED — 3 PLAN.md files cleared by plan-checker (0 BLOCKERs, 5 WARNINGs of which 4 reconciled in-place; W#5 dismissed as misread)
-Resume with: `/pde:execute-phase 61 --auto` (auto-chain already active). Plan 01 = eager-path packages: add `"radix-ui"` then `"input-otp"` to `optimizePackageImports` in next.config.ts as 2 sequential commits with stale-chunk-guarded `ANALYZE=true pnpm build` between each; per-package KB delta logged in 61-01-RESEARCH-LOG.md (rows 0/A/B). Plan 02 = lazy-path packages: add `"cmdk" + "vaul"` then `"sonner" + "react-day-picker"` as 2 batched commits; date-fns SKIP rationale documented (already in Next.js 15 default-optimized list). Plan 03 = verification + final gate: BND-03 verify-only since pre-audit confirmed sf/index.ts already directive-free; BND-04 stale-chunk-guard documented in 61-RESEARCH.md §4 + replicated in both RESEARCH-LOG headers; BND-01 final gate asserts "Shared by all" ≤102 KB (Route (app) stdout) AND ≥80% of 119 KiB unused-JS reduced (chunk 3302+7525 sums delta with FALSE-PASS GUARD: missing successor → conservative `Bf_X = B0_X`); AES-04 pixel-diff via cloned `tests/v1.8-phase61-bundle-hygiene.spec.ts` at MAX_DIFF_RATIO=0 against `.planning/visual-baselines/v1.8-start/`. Phase 61 ⊥ Phase 60 (parallel-safe per ROADMAP); Phase 60 row in this STATE.md is stale (closed Path A 2026-04-26) — out of scope for Phase 61 plan-phase.
+Last session: 2026-04-26T21:15:00.000Z
+Stopped at: Phase 61 EXECUTED 3/3 plans (16 commits across 3 sequential waves); verifier returned `human_needed` with 3/4 BND requirements satisfied. BND-02/03/04 PASS; BND-01 + AES-04 strict 0% FAIL. Code-review 3 info-only. Per `feedback_autonomous_forward_motion` — ALL gates honored without loosening (no rounding 103→102, no swapping strict 0% for 0.5%); honest verdicts persisted in 61-VERIFICATION.md + 61-HUMAN-UAT.md (3 decision points pending) + 61-03-FINAL-GATE.md.
+Resume with: User decision on 3 pending items in `61-HUMAN-UAT.md`:
+  1. **BND-01 closure path** — splitChunks retuning (try to pull 1 KB module off shared floor) vs ROADMAP target recalibration (119 KiB budget may have included three.js-route-specific bytes optimizePackageImports cannot reduce) vs **accept 103 KB as practical floor** (Next.js 15 framework runtime 45.8 + react-dom 54.2 + other shared 2.56 = 103 KB).
+  2. **AES-04 calibration path** — re-capture baselines from pre-Phase-61 commit and bisect if 20/20 PASS strict 0% on fresh baselines (=bundle-induced regression), OR **relax to AES-04 standing 0.5% rule** (which would 20/20 PASS per current data; max diff 0.343%).
+  3. **Phase 59 spec MAX_DIFF_RATIO discrepancy** — Phase 59 row B claimed "20/20 PASS at 0%" but spec source uses 0.005. Decide whether this is documentation error vs separate undocumented verification.
+After user resolves: route to `/pde:plan-phase 62` (Real-Device Verification + Final Gate already maps to VRF-01..05; absorbing BND-01 + AES-04 closure into 62 may be the cleanest path) or `/pde:insert-phase 61.1` if a focused intervention is preferred. Phase 60 row in v1.8 Phase Map remains stale (Path A closed 2026-04-26); Phase 60 SUMMARY ratification still deferred.
