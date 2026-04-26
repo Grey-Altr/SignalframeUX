@@ -128,7 +128,7 @@
 - [x] Phase 58: Lighthouse CI + Real-Device Telemetry (0/2 plans) (completed 2026-04-26)
 - [ ] Phase 59: Critical-Path Restructure (0/≥3 plans — CRT-05 clean-bisect split)
 - [ ] Phase 60: LCP Element Repositioning (0/TBD plans)
-- [ ] Phase 61: Bundle Hygiene (0/TBD plans)
+- [ ] Phase 61: Bundle Hygiene (0/3 plans)
 - [ ] Phase 62: Real-Device Verification + Final Gate (0/TBD plans)
 
 **Goal:** Recover Lighthouse 100/100 mobile, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial on prod without aesthetic drift. 26 requirements across 7 categories (DGN/CIB/CRT/LCP/BND/VRF/AES). 100% mapped, no orphans.
@@ -942,7 +942,11 @@ Plans:
   3. `components/sf/index.ts` is directive-free (no `'use client'` at the barrel — v1.3 rule maintained); verified by `grep -n "use client" components/sf/index.ts` returning zero matches.
   4. Stale-chunk guard is documented in plan-phase RESEARCH.md as the standing measurement gate: `rm -rf .next/cache .next` before any gating measurement.
   5. Zero pixel-diff regression vs `.planning/visual-baselines/v1.8-start/` (bundle hygiene is invisible by construction).
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 61-01-PLAN.md — Eager-path packages (radix-ui + input-otp): 2 sequential ANALYZE=true builds, per-package KB delta logged to 61-01-RESEARCH-LOG.md
+- [ ] 61-02-PLAN.md — Lazy-path packages (cmdk + vaul + sonner + react-day-picker): 2 batched ANALYZE=true builds + date-fns SKIP rationale, logged to 61-02-RESEARCH-LOG.md
+- [ ] 61-03-PLAN.md — Verification + final gate: BND-03 directive-free + BND-04 stale-chunk-guard + BND-01 Shared-by-all <=102KB + 119 KiB unused-JS reduction% + AES-04 strict-zero pixel-diff (tests/v1.8-phase61-bundle-hygiene.spec.ts)
 
 ### Phase 62: Real-Device Verification + Final Gate
 **Goal**: Confirm Lighthouse-emulation gains hold on real devices and field RUM, then ratify the milestone close.
@@ -1021,7 +1025,7 @@ Plans:
 | 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 2/2 | Complete    | 2026-04-26 |
 | 59. Critical-Path Restructure | 3/3 | Complete    | 2026-04-26 | - |
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
-| 61. Bundle Hygiene | v1.8 | 0/TBD | Not started | - |
+| 61. Bundle Hygiene | v1.8 | 0/3 | Planned | - |
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
 
 ---

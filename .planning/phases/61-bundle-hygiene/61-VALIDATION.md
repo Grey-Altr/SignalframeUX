@@ -39,16 +39,15 @@ created: 2026-04-26
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 61-01-01 | 01 | 1 | BND-02 (radix-ui) | — | optimizePackageImports includes "radix-ui"; build succeeds | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep '"radix-ui"' next.config.ts` | ✅ | ⬜ pending |
-| 61-01-02 | 01 | 1 | BND-02 (input-otp) | — | optimizePackageImports includes "input-otp"; build succeeds | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep '"input-otp"' next.config.ts` | ✅ | ⬜ pending |
-| 61-01-03 | 01 | 1 | BND-02 (Plan 01 measurement log) | — | RESEARCH.md per-package re-run table populated for builds A+B | static-grep | `grep -E "Build (A\|B)/" .planning/phases/61-bundle-hygiene/61-01-RESEARCH-LOG.md` | ❌ W0 | ⬜ pending |
-| 61-02-01 | 02 | 2 | BND-02 (cmdk + vaul) | — | optimizePackageImports includes "cmdk", "vaul"; build succeeds | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -E '"(cmdk\|vaul)"' next.config.ts` | ✅ | ⬜ pending |
-| 61-02-02 | 02 | 2 | BND-02 (sonner + react-day-picker) | — | optimizePackageImports includes "sonner", "react-day-picker"; build succeeds | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -E '"(sonner\|react-day-picker)"' next.config.ts` | ✅ | ⬜ pending |
-| 61-02-03 | 02 | 2 | BND-02 (Plan 02 measurement log) | — | RESEARCH.md per-batch re-run table populated for builds C+D | static-grep | `grep -E "Build (C\|D)/" .planning/phases/61-bundle-hygiene/61-02-RESEARCH-LOG.md` | ❌ W0 | ⬜ pending |
-| 61-03-01 | 03 | 3 | BND-03 verify | — | sf/index.ts directive-free | static-grep | `grep -n "use client" components/sf/index.ts` exits 1 (zero matches) | ✅ | ⬜ pending |
-| 61-03-02 | 03 | 3 | BND-04 measurement-protocol doc | — | Stale-chunk guard documented in 61-RESEARCH.md (§4) and replicated in each plan's RESEARCH-LOG.md | static-grep | `grep -E "rm -rf \\.next/cache \\.next" .planning/phases/61-bundle-hygiene/61-RESEARCH.md` returns ≥1 match | ✅ | ⬜ pending |
-| 61-03-03 | 03 | 3 | BND-01 final gate | — | "Shared by all" ≤102 KB; ≥80% of 119 KiB unused JS budget reduced | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then assertion via `tests/v1.8-phase61-bundle-hygiene.spec.ts` (parses Route table, asserts shared-JS ≤102 KB) | ❌ W0 | ⬜ pending |
-| 61-03-04 | 03 | 3 | AES-04 (zero pixel-diff) | — | Pixel-diff vs `.planning/visual-baselines/v1.8-start/` MAX_DIFF_RATIO=0 (bundle hygiene is invisible) | visual-diff | `pnpm test tests/v1.8-phase61-bundle-hygiene.spec.ts` (Playwright pixel-diff against v1.8-start baseline frames at 4 viewports × 5 routes) | ❌ W0 | ⬜ pending |
+| 61-01-00 | 01 | 1 | BND-02 (Build 0 baseline + log template) | — | 61-01-RESEARCH-LOG.md exists with row 0 populated (lucide-react-only baseline) | static-grep | `grep -E "^\| 0 *\| lucide-react" .planning/phases/61-bundle-hygiene/61-01-RESEARCH-LOG.md \| grep -v "TBD"` | ❌ W0 | ⬜ pending |
+| 61-01-01 | 01 | 1 | BND-02 (radix-ui) | — | optimizePackageImports includes "radix-ui"; Build A logged | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -F '"radix-ui"' next.config.ts` | ✅ | ⬜ pending |
+| 61-01-02 | 01 | 1 | BND-02 (input-otp) | — | optimizePackageImports includes "input-otp"; Build B logged | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -F '"input-otp"' next.config.ts` | ✅ | ⬜ pending |
+| 61-02-00 | 02 | 2 | BND-02 (Plan 02 log template + date-fns SKIP doc) | — | 61-02-RESEARCH-LOG.md exists with row B carry-over baseline + date-fns SKIP rationale | static-grep | `grep -F "date-fns" .planning/phases/61-bundle-hygiene/61-02-RESEARCH-LOG.md \| grep -i "skip\|default-optimized"` | ❌ W0 | ⬜ pending |
+| 61-02-01 | 02 | 2 | BND-02 (cmdk + vaul) | — | optimizePackageImports includes "cmdk", "vaul"; Build C logged | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -E '"(cmdk\|vaul)"' next.config.ts` | ✅ | ⬜ pending |
+| 61-02-02 | 02 | 2 | BND-02 (sonner + react-day-picker) | — | optimizePackageImports includes "sonner", "react-day-picker"; Build D logged | build-output | `rm -rf .next/cache .next && ANALYZE=true pnpm build` then `grep -E '"(sonner\|react-day-picker)"' next.config.ts` | ✅ | ⬜ pending |
+| 61-03-00 | 03 | 3 | AES-04 (Wave 0 — pixel-diff spec) | — | tests/v1.8-phase61-bundle-hygiene.spec.ts exists with MAX_DIFF_RATIO = 0 | static-grep | `grep -E "MAX_DIFF_RATIO\s*=\s*0\b" tests/v1.8-phase61-bundle-hygiene.spec.ts` | ❌ W0 | ⬜ pending |
+| 61-03-01 | 03 | 3 | BND-03 verify + BND-04 doc gate | — | sf/index.ts directive-free; stale-chunk guard documented in 61-RESEARCH.md, 61-01-RESEARCH-LOG.md, 61-02-RESEARCH-LOG.md | static-grep | `grep -n "use client" components/sf/index.ts` exits 1 AND `grep -E "rm -rf \\.next/cache \\.next" .planning/phases/61-bundle-hygiene/61-{RESEARCH,01-RESEARCH-LOG,02-RESEARCH-LOG}.md` returns ≥3 matches | ✅ | ⬜ pending |
+| 61-03-02 | 03 | 3 | BND-01 final gate + AES-04 pixel-diff (combined) | — | Final "Shared by all" ≤102 KB; reduction_percentage ≥80% (chunk 3302+7525 sum delta); pixel-diff spec exits 0 at MAX_DIFF_RATIO = 0 | build-output + visual-diff | `rm -rf .next/cache .next && ANALYZE=true pnpm build` (gate via Route (app) stdout, recorded manually in 61-03-FINAL-GATE.md) AND `pnpm exec playwright test tests/v1.8-phase61-bundle-hygiene.spec.ts --project=chromium` exits 0 | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -56,9 +55,10 @@ created: 2026-04-26
 
 ## Wave 0 Requirements
 
-- [ ] `tests/v1.8-phase61-bundle-hygiene.spec.ts` — clone of `tests/v1.8-phase59-pixel-diff.spec.ts` with `MAX_DIFF_RATIO = 0` and an additional sub-spec parsing `pnpm build` stdout for "Shared by all ≤102 KB" assertion
-- [ ] `.planning/phases/61-bundle-hygiene/61-01-RESEARCH-LOG.md` — per-build measurement table created in Plan 01 Task 01 (template; populated incrementally per build A, B)
-- [ ] `.planning/phases/61-bundle-hygiene/61-02-RESEARCH-LOG.md` — per-build measurement table created in Plan 02 Task 01 (template; populated per build C, D)
+- [ ] `tests/v1.8-phase61-bundle-hygiene.spec.ts` — clone of `tests/v1.8-phase59-pixel-diff.spec.ts` with `MAX_DIFF_RATIO = 0` (strict — bundle hygiene is invisible by construction). The "Shared by all ≤102 KB" assertion is performed manually in PLAN 03 Task 2 by extracting from `pnpm build` stdout (`/tmp/phase61-build-final.txt`) and recording PASS/FAIL into `61-03-FINAL-GATE.md` — NOT via a programmatic sub-spec assertion. This deliberate split avoids coupling the build invocation to the Playwright test runtime.
+- [ ] `.planning/phases/61-bundle-hygiene/61-01-RESEARCH-LOG.md` — per-build measurement table created in PLAN 01 Task 0 (template populated with row 0 baseline; rows A, B added by Tasks 1, 2)
+- [ ] `.planning/phases/61-bundle-hygiene/61-02-RESEARCH-LOG.md` — per-build measurement table created in PLAN 02 Task 0 (template carries Build B from Plan 01 as starting baseline; rows C, D added by Tasks 1, 2; date-fns SKIP rationale documented)
+- [ ] `.planning/phases/61-bundle-hygiene/61-03-FINAL-GATE.md` — gate scorecard scaffold created in PLAN 03 Task 0 with placeholders for BND-01, BND-03, BND-04, AES-04 verdicts; populated by Tasks 1 and 2
 
 *Existing infrastructure covers everything else: Playwright 1.x already configured, `pixelmatch` + `pngjs` already installed, baselines already present at `.planning/visual-baselines/v1.8-start/`.*
 

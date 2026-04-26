@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
 status: ready_to_execute
-stopped_at: Phase 60 PLANNED — auto-chain → execute-phase
-last_updated: "2026-04-26T18:30:00.000Z"
+stopped_at: Phase 61 PLANNED — auto-chain → execute-phase
+last_updated: "2026-04-26T19:30:00.000Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 54
@@ -27,9 +27,9 @@ progress:
 
 ## Current Position
 
-Phase: 60
-Plan: Planned (2 plans, 0/2 executed)
-Status: Phase 60 PLANNED with 2 PLAN.md files + RESEARCH.md + VALIDATION.md committed (Phase 59 closure ratified — commits 66ac4ec → 47fe585 → fc3827c → 2227d28 already shipped per `project_phase59_closed.md`; STATE Phase 59 row not yet rolled). Plan-checker iteration 1/3: 0 BLOCKERs, 4 WARNINGs, 3 INFO; warnings fixed in-place (PF-04 autoResize grep added to 60-02-02 verify chain; P02-06 positive-path proof added to 60-02-04 step 5b; VALIDATION.md broken `pnpm lhci:autorun` corrected to `pnpm exec lhci autorun --config=.lighthouseci/lighthouserc.json`). Plan 01 = pre-need LCP candidate analysis spec emitting `.planning/codebase/v1.8-lcp-candidates.json`; Plan 02 = mobile intervention via candidate (b) — `content-visibility: auto` + `containIntrinsicSize: "auto 200px"` on GhostLabel LEAF in `components/animation/ghost-label.tsx` (Anti-Pattern #5 leaf-only discipline encoded as blocking grep). Plan 02 has 4 waves (W0 measure → W1 ship+pixel-diff → W2 LHCI median-of-5 + P02-06 re-run → W3 manual D-07 WebPageTest + D-08 chrome-devtools MCP cohort review). Desktop = monitor-only per D-05. Auto-chain active → execute-phase next.
+Phase: 61
+Plan: Planned (3 plans, 0/3 executed)
+Status: Phase 61 PLANNED with 3 PLAN.md files + 61-RESEARCH.md + 61-VALIDATION.md committed. Plan-checker iteration 1/3: 0 BLOCKERs, 5 WARNINGs (4 reconciled in-place: VALIDATION.md task IDs realigned to PLAN IDs `61-01-00..02`/`61-02-00..02`/`61-03-00..02`; W0 Requirements bullet rephrased to drop the unrealized "sub-spec parsing" deliverable in favor of manual stdout-extraction recorded in 61-03-FINAL-GATE.md; PLAN 01 Task 2 canary command prepended `CI=true` so playwright auto-starts the prod server; PLAN 03 Task 2 acceptance gained REDUCTION% FALSE-PASS GUARD: missing successor chunk defaults `Bf_X = B0_X` rather than treating absence as zero size. W#5 dismissed — `<phase_must_haves>` is already a sibling of `<output>`, not nested.). Plan 01 = eager-path packages (radix-ui + input-otp) with 3 sequential commits + per-package KB delta logged. Plan 02 = lazy-path packages (cmdk + vaul; sonner + react-day-picker) with 2 batched commits; date-fns SKIP rationale documented (already in Next.js 15 default-optimized list). Plan 03 = verification + final gate (BND-01 `Shared by all` <=102 KB AND >=80% of 119 KiB unused-JS reduced from chunk 3302+7525 sums delta; BND-03 verify-only since pre-audit confirmed sf/index.ts is already directive-free; BND-04 stale-chunk guard documented; AES-04 pixel-diff at MAX_DIFF_RATIO=0). Auto-chain active → execute-phase next. NOTE: Phase 60 status row in v1.8 Phase Map is stale (Path A closed 2026-04-26 per `project_phase60_path_a.md` memory + commits 6eb991b/014083c/ed9b246/3873b28/e456233); deferred until Phase 60 SUMMARY ratification, not in Phase 61 scope.
 Last activity: 2026-04-26
 
 ## Progress
@@ -54,7 +54,7 @@ v1.8: [████░░░░░░]  33% (2/6 phases complete; 1 planned) Pha
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Complete (2/2 plans, code-side green; 2 HUMAN-UAT items pending) |
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Planned (3 plans, 0/3 executed) |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Planned (2 plans, 0/2 executed) |
-| 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Not started |
+| 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Planned (3 plans, 0/3 executed) |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
 
 **Build-order constraints (encoded in ROADMAP.md):**
@@ -229,6 +229,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T18:30:00.000Z
-Stopped at: Phase 60 PLANNED — 2 PLAN.md files cleared by plan-checker (0 BLOCKERs); warnings patched in-place
-Resume with: `/pde:execute-phase 60 --auto` (auto-chain already active). Plan 01 emits `.planning/codebase/v1.8-lcp-candidates.json` (standing v1.8 measurement tool). Plan 02 ships candidate (b) = `content-visibility: auto` + `containIntrinsicSize: "auto 200px"` on GhostLabel LEAF in `components/animation/ghost-label.tsx`; Anti-Pattern #5 leaf-only discipline encoded as blocking grep in 60-02-02 verify chain. Wave 0 measures rect before commit; Wave 2 LHCI median-of-5 must report mobile LCP <1000ms; Wave 2 also re-runs Plan 01 spec to positively prove GhostLabel removed from LCP critical path (P02-06). Wave 3 manual gates: D-07 WebPageTest iPhone 13 Safari LTE median-of-5 (`.planning/perf-baselines/v1.8/phase-60-realdevice-checkpoint.md`) + D-08 chrome-devtools MCP scroll-test fresh-eyes pass (`60-AES03-COHORT.md`). Desktop = monitor-only per D-05. D-04 reactive escalation path documented inline at 60-02-04 step 6 (Phase 60 Plan 03 / Phase 60.1 / Phase 62 VRF-04 cleanup based on post-intervention LCP candidate identity).
+Last session: 2026-04-26T19:30:00.000Z
+Stopped at: Phase 61 PLANNED — 3 PLAN.md files cleared by plan-checker (0 BLOCKERs, 5 WARNINGs of which 4 reconciled in-place; W#5 dismissed as misread)
+Resume with: `/pde:execute-phase 61 --auto` (auto-chain already active). Plan 01 = eager-path packages: add `"radix-ui"` then `"input-otp"` to `optimizePackageImports` in next.config.ts as 2 sequential commits with stale-chunk-guarded `ANALYZE=true pnpm build` between each; per-package KB delta logged in 61-01-RESEARCH-LOG.md (rows 0/A/B). Plan 02 = lazy-path packages: add `"cmdk" + "vaul"` then `"sonner" + "react-day-picker"` as 2 batched commits; date-fns SKIP rationale documented (already in Next.js 15 default-optimized list). Plan 03 = verification + final gate: BND-03 verify-only since pre-audit confirmed sf/index.ts already directive-free; BND-04 stale-chunk-guard documented in 61-RESEARCH.md §4 + replicated in both RESEARCH-LOG headers; BND-01 final gate asserts "Shared by all" ≤102 KB (Route (app) stdout) AND ≥80% of 119 KiB unused-JS reduced (chunk 3302+7525 sums delta with FALSE-PASS GUARD: missing successor → conservative `Bf_X = B0_X`); AES-04 pixel-diff via cloned `tests/v1.8-phase61-bundle-hygiene.spec.ts` at MAX_DIFF_RATIO=0 against `.planning/visual-baselines/v1.8-start/`. Phase 61 ⊥ Phase 60 (parallel-safe per ROADMAP); Phase 60 row in this STATE.md is stale (closed Path A 2026-04-26) — out of scope for Phase 61 plan-phase.
