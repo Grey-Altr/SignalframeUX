@@ -916,7 +916,10 @@ Plans:
   3. Anton `font-display: swap` is live with tuned `size-adjust` + `ascent-override` + `descent-override` + `line-gap-override` against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain; slow-3G hard-reload screen recording shows no measurable layout shift on the ghost-label or THESIS manifesto across the swap event; Chromatic re-baseline documented per `feedback_ratify_reality_bias.md` as the single allowed AES-02 exception.
   4. Lenis init is wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` inside the existing `useEffect` at `components/animation/lenis-provider.tsx`; PF-04 `autoResize: true` contract is preserved (verified by inspecting committed source); scroll-restoration on hard-reload to deep anchor URLs (e.g. `/inventory#prf-08`) still resolves within <=2 frames.
   5. CRT-01, CRT-02/03 (paired), CRT-04 each ship as a separate PR for clean bisect; LHCI median-of-5 stays >=97 across each PR; no phase-end pixel-diff regression >0.5% on any of the 20 v1.8-start baseline images (Anton swap exception documented).
-**Plans**: TBD (>=3 expected per CRT-05)
+**Plans**: 3 plans
+  - [ ] 59-01-PLAN.md — `/sf-canvas-sync.js` inline + delete (CRT-01) — Wave 1
+  - [ ] 59-02-PLAN.md — Anton subset + `optional → swap` migration with measured descriptors (CRT-02 + CRT-03 paired) — Wave 2
+  - [ ] 59-03-PLAN.md — Lenis `requestIdleCallback` deferral (CRT-04) — Wave 3
 
 ### Phase 60: LCP Element Repositioning
 **Goal**: Close the LCP gap from current measurement to <1.0s on prod homepage mobile by intervening on the element identified in Phase 57 diagnosis, without aesthetic drift.
@@ -1016,7 +1019,7 @@ Plans:
 | 56. Symbol System + Final Gate | v1.7 | 1/1 | Complete | 2026-04-13 |
 | 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | 3/3 | Complete   | 2026-04-26 | - |
 | 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 2/2 | Complete    | 2026-04-26 |
-| 59. Critical-Path Restructure | v1.8 | 0/>=3 | Not started | - |
+| 59. Critical-Path Restructure | v1.8 | 0/3 | Planned | - |
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
 | 61. Bundle Hygiene | v1.8 | 0/TBD | Not started | - |
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
