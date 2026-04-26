@@ -919,7 +919,7 @@ Plans:
 **Plans**: 3 plans
   - [ ] 59-01-PLAN.md — `/sf-canvas-sync.js` inline + delete (CRT-01) — Wave 1
   - [ ] 59-02-PLAN.md — Anton subset + `optional → swap` migration with measured descriptors (CRT-02 + CRT-03 paired) — Wave 2
-  - [ ] 59-03-PLAN.md — Lenis `requestIdleCallback` deferral (CRT-04) — Wave 3
+  - [x] 59-03-PLAN.md — Lenis `requestIdleCallback` deferral (CRT-04) — Wave 3
 
 ### Phase 60: LCP Element Repositioning
 **Goal**: Close the LCP gap from current measurement to <1.0s on prod homepage mobile by intervening on the element identified in Phase 57 diagnosis, without aesthetic drift.
