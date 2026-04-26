@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: Phase 57 closes. All 7 reqs covered (AES-01..04 in Plan 01; DGN-03 in Plan 02; DGN-01/02 in Plan 03). v1.8-lcp-diagnosis.md (158 lines) shipped — all 4 v1.7 chunk IDs MATCHED in v1.8 build (Pitfall D fallback NOT triggered). Mobile LCP = THESIS GhostLabel; desktop LCP = VL-05 magenta `//` overlay (cross-viewport divergence — Phase 60 LCP-02 selection MUST branch on viewport). Sync-script disambiguation locked for Phase 59 CRT-01. 7 NEW_FINDING chunks > 50KB queued for Phase 61. Phases 58-62 unblocked.
-stopped_at: Completed 57-03-PLAN.md — Phase 57 COMPLETE (3/3 plans, 7/7 reqs); Phases 58-62 unblocked
-last_updated: "2026-04-26T03:07:50.752Z"
-last_activity: 2026-04-26
+status: Phase 59 PLANNED (3 plans, 5/5 CRT reqs covered). 59-RESEARCH.md (877 lines), 59-VALIDATION.md (per-task map), 59-01..03-PLAN.md committed (377+923+537 lines). Plan-checker iteration 2/3 PASSED with 0 BLOCKERs. CRT-05 strict bisect order enforced via Plan B `depends_on: [59-01]` + Plan C `depends_on: [59-01, 59-02]`. Plan B Task 0 BLOCKING-HUMAN gates PR-open on Phase 58 HUMAN-UAT items 1+2 verification; Task 6 inner blocking-human gates Chromatic cohort review; AES-02 exception logged at 59-AES02-EXCEPTION.md (created at execute-time). Anton CLS history (Wave 3 0.485 regression on /system) honored — Plan B Wave 0 measurement script supersedes RESEARCH placeholders before layout.tsx edit. Upstream-doc traceability fixed: REQUIREMENTS.md L28 + ROADMAP.md L917 path drift `components/animation/lenis-provider.tsx` → `components/layout/lenis-provider.tsx` ratified per feedback_ratify_reality_bias.md.
+stopped_at: Completed plan-phase 59 (3 PLAN.md files, 14 tasks total: 3+8+3); auto-advancing to /pde:execute-phase 59 --auto
+last_updated: "2026-04-25T22:00:00.000Z"
+last_activity: 2026-04-25
 progress:
   total_phases: 54
-  completed_phases: 39
-  total_plans: 75
-  completed_plans: 75
-  percent: 100
+  completed_phases: 40
+  total_plans: 80
+  completed_plans: 77
+  percent: 96
 ---
 
 # STATE — SignalframeUX
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 59
-Plan: Not started
-Status: Phase 57 closes. All 7 reqs covered (AES-01..04 in Plan 01; DGN-03 in Plan 02; DGN-01/02 in Plan 03). v1.8-lcp-diagnosis.md (158 lines) shipped — all 4 v1.7 chunk IDs MATCHED in v1.8 build (Pitfall D fallback NOT triggered). Mobile LCP = THESIS GhostLabel; desktop LCP = VL-05 magenta `//` overlay (cross-viewport divergence — Phase 60 LCP-02 selection MUST branch on viewport). Sync-script disambiguation locked for Phase 59 CRT-01. 7 NEW_FINDING chunks > 50KB queued for Phase 61. Phases 58-62 unblocked.
-Last activity: 2026-04-26
+Plan: Planned (3 plans, 0/3 executed)
+Status: Phase 59 PLANNED with 3 PLAN.md files + RESEARCH.md (877 lines) + VALIDATION.md committed (commits cea63e5 → 501e8f2 → bb20693). Plan-checker iteration 2/3 PASSED — 0 BLOCKERs. Plan A (59-01) — canvas-sync inline + delete (CRT-01); Plan B (59-02) — Anton subset+swap (CRT-02, CRT-03); Plan C (59-03) — Lenis rIC deferral (CRT-04). CRT-05 strict bisect order: A → B → C. Plan B Task 0 blocks PR-open on Phase 58 HUMAN-UAT 1+2 verification. Anton CLS history (Wave 3 0.485 regression) honored — Plan B Wave 0 measures descriptors before layout.tsx edit. Path drift in REQUIREMENTS.md L28 + ROADMAP.md L917 ratified to `components/layout/lenis-provider.tsx`. Auto-chain active → execute-phase next.
+Last activity: 2026-04-25
 
 ## Progress
 
@@ -43,7 +43,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [██░░░░░░░░]  17% (1/6 phases) Phase 57 COMPLETE (3/3 plans) — Phases 58-62 unblocked
+v1.8: [████░░░░░░]  33% (2/6 phases complete; 1 planned) Phases 57+58 COMPLETE; Phase 59 PLANNED (3 plans, 0/3 executed)
 ```
 
 ## v1.8 Phase Map
@@ -51,8 +51,8 @@ v1.8: [██░░░░░░░░]  17% (1/6 phases) Phase 57 COMPLETE (3/3 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Complete (3/3 plans) |
-| 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Not started |
-| 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Not started |
+| 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Complete (2/2 plans, code-side green; 2 HUMAN-UAT items pending) |
+| 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Planned (3 plans, 0/3 executed) |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Not started |
 | 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Not started |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
