@@ -47,6 +47,12 @@ next-env.d.ts
 # lighthouse advisory audit trails (gitignored per plan 35-03)
 .planning/phases/35-performance-launch-gate/launch-gate-*.json
 
+# LHCI runtime artifacts (assert dry-run + autorun outputs); keep lighthouserc*.json tracked
+.lighthouseci/assertion-results.json
+.lighthouseci/lhr-*.json
+.lighthouseci/lhr-*.html
+.lighthouseci/manifest.json
+
 # vitest coverage output
 /coverage
 storybook-static
