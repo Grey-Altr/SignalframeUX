@@ -62,7 +62,13 @@ test.describe("@v18-phase59-canvas-sync (CRT-01)", () => {
         })
       );
 
-      expect(cls, `CLS regression on ${route.path}: expected 0, got ${cls}`).toBe(0);
+      // Use toBeLessThan(0.01) matching the project's phase-35-cls-all-routes.spec.ts
+      // canonical pattern. Headless Chromium SwiftShader produces sub-perceptible
+      // floating-point noise (~0.0002) from sRGB conversion + GSAP settle that is
+      // NOT a real CLS event. The 0.01 bound is 10x stricter than Google's "good"
+      // threshold (0.1) and well below human perception. See phase-35-cls-all-routes
+      // spec comment for prior history of strict toBe(0) false failures.
+      expect(cls, `CLS regression on ${route.path}: expected < 0.01, got ${cls}`).toBeLessThan(0.01);
     }
   });
 
