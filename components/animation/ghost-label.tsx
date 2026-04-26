@@ -23,11 +23,17 @@ export function GhostLabel({ text, className }: GhostLabelProps) {
         // NEVER on the SFSection wrapper. Removes GhostLabel from the mobile LCP
         // critical-path candidate pool (per Phase 57 DGN-01 mobile-360 = ghost-label).
         contentVisibility: "auto",
-        // RESEARCH §Q1: derived from Task 60-02-01 measurement at mobile-360 viewport
-        // (60-02-wave0-measurements.json: mobile-360 height=81px). Rounded to nearest
-        // 10px per Task 60-02-01 decision rule (commit 73a3aeb). Under-estimate is
-        // safe — GhostLabel is position:absolute and does not contribute to flow.
-        containIntrinsicSize: "auto 80px",
+        // Phase 60 Plan 03 (commit ab95241 follow-up): replaced fixed "auto 80px"
+        // with viewport-responsive height formula. Wave 0 measurements
+        // (60-02-wave0-measurements.json) showed actual rendered height tracks
+        // exactly `22.5 × var(--sf-vw)` across all 4 viewports
+        // (mobile-360: 81/3.6 = 22.5; iphone13-390: 87.75/3.9 = 22.5;
+        //  ipad-834: 187.65/8.34 = 22.5; desktop-1440: 324/14.4 = 22.5).
+        // Single fixed value caused CLS=0.002505 at LHCI viewport (375x667 → actual
+        // height ≈84.4px vs 80px placeholder = 4.4px transition shift). Responsive
+        // formula matches actual rendered height at every breakpoint, eliminating
+        // the content-visibility:auto reflow shift.
+        containIntrinsicSize: "auto calc(22.5 * var(--sf-vw))",
       }}
     >
       {text}
