@@ -2,14 +2,14 @@
 pde_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: "Roadmap drafted; awaiting `/pde:plan-phase 57`"
-stopped_at: Phase 57 context gathered
-last_updated: "2026-04-25T23:46:55.234Z"
-last_activity: 2026-04-25 — ROADMAP.md written, REQUIREMENTS.md traceability populated
+status: "Phase 57 planned (3 plans, 2 waves); ready to execute"
+stopped_at: Phase 57 planned — 3 plans across 2 waves
+last_updated: "2026-04-25T23:59:00.000Z"
+last_activity: 2026-04-25 — Phase 57 planned (3 plans, 2 waves) after research + validation + 1 revision iteration
 progress:
   total_phases: 54
   completed_phases: 37
-  total_plans: 70
+  total_plans: 73
   completed_plans: 70
 ---
 
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 57 — Diagnosis Pass + Aesthetic-of-Record Lock-in (next)
-Plan: —
-Status: Roadmap drafted; awaiting `/pde:plan-phase 57`
-Last activity: 2026-04-25 — ROADMAP.md written, REQUIREMENTS.md traceability populated
+Phase: 57 — Diagnosis Pass + Aesthetic-of-Record Lock-in (planned)
+Plan: 3 plans across 2 waves; Wave 1 = [57-01], Wave 2 = [57-02, 57-03]
+Status: Phase 57 planned (3 plans, 2 waves); ready to execute
+Last activity: 2026-04-25 — Phase 57 planned (3 plans, 2 waves) after research + validation + 1 revision iteration
 
 ## Progress
 
@@ -42,14 +42,14 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [░░░░░░░░░░]   0% (0/6 phases) Roadmap drafted, Phase 57 next
+v1.8: [░░░░░░░░░░]   0% (0/6 phases) Phase 57 planned (3 plans, 2 waves) — ready to execute
 ```
 
 ## v1.8 Phase Map
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Not started |
+| 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Planned (3 plans, 2 waves) |
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Not started |
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Not started |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Not started |
@@ -224,6 +224,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-25T23:46:55.228Z
-Stopped at: Phase 57 context gathered
-Resume with: `/pde:plan-phase 57` to decompose Phase 57 (Diagnosis Pass + Aesthetic-of-Record Lock-in) into plans.
+Last session: 2026-04-25T23:59:00.000Z
+Stopped at: Phase 57 planned — 3 plans across 2 waves (Wave 1: 57-01, Wave 2: 57-02 + 57-03)
+Resume with: `/pde:execute-phase 57` to execute Phase 57. Wave 1 ships AESTHETIC-OF-RECORD.md placeholder; Wave 2 captures the 20 baseline PNGs (autonomous: false — Q3 PNG inspection checkpoint) and runs LCP diagnosis (autonomous: false — D-04 manual treemap extraction).

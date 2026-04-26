@@ -883,7 +883,10 @@ Plans:
   3. `.planning/visual-baselines/v1.8-start/` contains full-page screenshots at desktop 1440x900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference` (5 pages x 4 viewports = 20 baseline images).
   4. `.planning/codebase/AESTHETIC-OF-RECORD.md` is committed, extracted from shipped code (not re-derived), and codifies the four standing rules (no re-baseline for perf, documented Anton exception, cohort review trigger, per-phase pixel-diff <=0.5%).
   5. Zero application code changed in this phase — output is documentation + baselines only.
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 57-01-PLAN.md — AESTHETIC-OF-RECORD.md standing rules + LOCKDOWN.md citation map (AES-01..04)
+  - [ ] 57-02-PLAN.md — Playwright baseline-capture spec + 20 PNGs at .planning/visual-baselines/v1.8-start/ (DGN-03)
+  - [ ] 57-03-PLAN.md — LCP-diagnosis spec + chunk-attribution; v1.8-lcp-diagnosis.md (DGN-01, DGN-02)
 
 ### Phase 58: Lighthouse CI + Real-Device Telemetry
 **Goal**: Stand up the durable per-PR enforcement gate and field RUM collection so Phase 59's CLS-protection-touching changes ship under measurement, not luck.
