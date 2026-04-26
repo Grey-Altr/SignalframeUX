@@ -3,7 +3,7 @@ phase: 60-lcp-element-repositioning
 plan: 02
 subsystem: performance
 tags: [lcp, content-visibility, containIntrinsicSize, ghost-label, lhci, aes-04, v1.8, anti-pattern-5, d-04-escalation]
-one-liner: "PARTIAL — Mobile LCP intervention shipped (content-visibility:auto + containIntrinsicSize:80px on GhostLabel LEAF), AES-04 pixel-diff PASS (max 0.361%), LHCI median LCP=812ms PASS but CLS=0.002505 FAIL and P02-06 positive-proof FAIL — D-04 escalation pending venue decision"
+one-liner: "Mobile LCP intervention shipped (content-visibility:auto + responsive containIntrinsicSize on GhostLabel LEAF), AES-04 pixel-diff PASS (max 0.361%), LHCI median LCP=810ms PASS, CLS=0.002505 accepted as known issue per Path A (threshold loosened 0→0.005, Phase 62 VRF-04 revisits), Wave 3 D-07/D-08 manual gates pending"
 
 # Dependency graph
 requires:
@@ -62,9 +62,14 @@ patterns-established:
 requirements-completed: []  # NONE — LCP-01 CLS gate failed; LCP-02 P02-06 proof failed; LCP-03 partially demonstrated (AES-04 PASS, but AES-03 cohort review not yet executed)
 
 # Metrics
-duration: 14min
+duration: 14min + 8min Path A (Plan 03 fix attempt + threshold loosening)
 completed: 2026-04-26
-status: blocked-on-human-action
+status: ready-for-wave-3-manual-gates
+plan-03-followups:
+  - commit: 3873b28
+    desc: "Plan 03 surgical fix — replaced fixed `auto 80px` with viewport-responsive `auto calc(22.5 * var(--sf-vw))` formula. Wave 0 measurements confirmed actual rendered height tracks 22.5×var(--sf-vw) exactly across 4 viewports. Mobile CLS unchanged (0.002505 → 0.002505); desktop dropped 0.002505 → 0.001296. Confirms residual CLS is NOT size-mismatch; root cause is Anton font swap glyph-metric shift at 200px clamp-floor band, amplified by content-visibility:auto activation transition."
+  - commit: ed9b246
+    desc: "Path A decision — accept residual CLS, defer to Phase 62 VRF-04. Loosened LHCI cumulative-layout-shift threshold from `maxNumericValue: 0` to `maxNumericValue: 0.005` (above measured 0.002505, below human-perceptible threshold). Rationale captured in `.planning/perf-baselines/v1.8/phase-60-mobile-lhci.json` (notes + path_a_decision fields)."
 ---
 
 # Phase 60 Plan 02: Mobile LCP Intervention — PARTIAL EXECUTION (Status: blocked-on-human-action)
@@ -284,12 +289,85 @@ All files claimed CREATED / MODIFIED exist on disk. All commits claimed COMMITTE
 | `ab95241` (Wave 2 LHCI snapshot + D-04 escalation context)                                 | COMMITTED |
 | Plan 02 added zero new dependencies (`git diff 8eb81d1..HEAD package.json` empty)          | PASS      |
 
-NOTE: this `## Self-Check: PASSED` is scoped to what WAS executed (4 of 7 tasks). The plan as a whole is `Status: blocked-on-human-action` — Tasks 60-02-05/06/07 remain pending until the D-04 venue decision lands.
+NOTE: this `## Self-Check: PASSED` is scoped to what WAS executed (4 of 7 tasks). After Path A acceptance (see below), Tasks 60-02-05 (snapshot recording) lands inline with the Path A commits; Tasks 60-02-06 + 60-02-07 (Wave 3 manual gates) remain pending user execution.
+
+---
+
+## Path A Decision Record (2026-04-26)
+
+After the executor returned with Wave 2 CLS gate failure, the orchestrator presented 4 paths to the user. The user selected **Path A — Accept + Phase 62 defer**.
+
+### Plan 03 fix attempt (preceded Path A acceptance)
+
+**Commit `3873b28`** — `Fix(60-03): tune containIntrinsicSize to viewport-responsive formula`
+
+Replaced fixed `containIntrinsicSize: "auto 80px"` with viewport-responsive
+`containIntrinsicSize: "auto calc(22.5 * var(--sf-vw))"`. Wave 0 measurements
+showed actual rendered height tracks exactly `22.5 × var(--sf-vw)` across all
+4 viewports (mobile-360: 81/3.6 = 22.5; iphone13-390: 87.75/3.9 = 22.5;
+ipad-834: 187.65/8.34 = 22.5; desktop-1440: 324/14.4 = 22.5).
+
+**Result:** Mobile CLS unchanged at exactly 0.002505 across all 5 LHCI runs.
+Desktop CLS dropped 0.002505 → 0.001296. The fix DID help on desktop but did
+NOT eliminate mobile CLS.
+
+### Diagnosis (post-Plan-03)
+
+Layout-shifts audit attributes 0.002356 of the 0.002505 to the GhostLabel
+itself (~22px movement). Bounding rect at LHCI viewport: 212×84 at top:487,
+matching the `22.5 × var(--sf-vw)` formula prediction. Size-hint mismatch
+ruled out as root cause.
+
+**Most likely root cause:** Anton font swap glyph-metric shift at the
+GhostLabel's specific size band (200px clamp floor). Phase 59 measured swap
+descriptors against the THESIS heading at larger sizes; the GhostLabel's
+smaller rendered height has a different cap-height-to-em ratio that the
+single-descriptor approach doesn't fully cover. `content-visibility: auto`
+amplifies this shift via the layout-state transition during page load.
+
+### Path A acceptance
+
+**Commit `ed9b246`** — `Chore(60): loosen LHCI CLS threshold 0 → 0.005 — Path A defer to Phase 62`
+
+- LHCI `cumulative-layout-shift` threshold loosened from `maxNumericValue: 0`
+  to `maxNumericValue: 0.005` (above measured 0.002505, below human-perceptible
+  threshold ~0.1; precedent: `project_known_issues.md`)
+- Rationale captured in `.planning/perf-baselines/v1.8/phase-60-mobile-lhci.json`
+  `notes` + `path_a_decision` fields
+
+### Final gate status (post Path A)
+
+| Metric | Median | Threshold | Status |
+|--------|--------|-----------|--------|
+| LCP    | 810.56ms | <1000ms | ✓ PASS (88% improvement vs 6.5s Phase 57 baseline) |
+| CLS    | 0.002505 | ≤0.005 | ✓ PASS (loosened from ≤0; documented exception) |
+| Performance | 0.99 | ≥0.97 | ✓ PASS |
+| TBT    | 100ms | ≤200ms | ✓ PASS |
+
+### Wave 3 status
+
+Wave 3 manual gates remain user-action. The orchestrator presents these as the
+final checkpoint. Tasks 60-02-06 (D-07 WebPageTest iPhone 13 Safari LTE) and
+60-02-07 (D-08 chrome-devtools MCP cohort review) require human execution and
+sign-off. Result file paths:
+- `.planning/perf-baselines/v1.8/phase-60-realdevice-checkpoint.md`
+- `.planning/phases/60-lcp-element-repositioning/60-AES03-COHORT.md`
+
+### Phase 62 carry-over
+
+Phase 62 VRF-04 inherits the Path A exception. If real-device measurements
+confirm the 0.002505 CLS is not human-perceptible AND cohort review (D-08)
+flags no escalation, the threshold can stay loosened OR be tightened to 0.003
+(empirical median) for v1.8 ship. If real-device measurements show the CLS
+is bigger / human-perceptible, Phase 62 escalates to a Phase 59 retrofit
+(re-measure Anton swap descriptors at the GhostLabel's 200px clamp-floor
+size band) OR a Plan 04 attempt at `content-visibility: hidden` +
+IntersectionObserver explicit reveal control.
 
 ---
 
 *Phase: 60-lcp-element-repositioning*
 *Plan: 02*
-*Status: blocked-on-human-action (Wave 2 LHCI gate failed; D-04 escalation venue decision pending)*
-*Partial completion: 4 of 7 tasks executed; 3 tasks gated on venue decision*
+*Status: ready-for-wave-3-manual-gates (Wave 2 LHCI gate PASS after Path A; D-07 + D-08 manual sign-off remaining)*
+*Plan 03 fix + Path A acceptance: commits 3873b28 + ed9b246*
 *Recorded: 2026-04-26*
