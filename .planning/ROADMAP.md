@@ -125,7 +125,7 @@
 <summary>v1.8 Speed of Light (Phases 57-62) — ACTIVE (started 2026-04-25)</summary>
 
 - [x] Phase 57: Diagnosis Pass + Aesthetic-of-Record Lock-in (3/3 plans, complete 2026-04-26)
-- [ ] Phase 58: Lighthouse CI + Real-Device Telemetry (0/TBD plans)
+- [ ] Phase 58: Lighthouse CI + Real-Device Telemetry (0/2 plans)
 - [ ] Phase 59: Critical-Path Restructure (0/≥3 plans — CRT-05 clean-bisect split)
 - [ ] Phase 60: LCP Element Repositioning (0/TBD plans)
 - [ ] Phase 61: Bundle Hygiene (0/TBD plans)
@@ -898,7 +898,9 @@ Plans:
   3. `scripts/launch-gate.ts` is unchanged from v1.7 contract and remains available as the manual post-deploy production verification gate at strict 100/100 (the prod gate; LHCI is the preview gate).
   4. `app/_components/web-vitals.tsx` (or equivalent placement) uses the built-in `next/web-vitals` `useReportWebVitals` hook and ships LCP/CLS/INP/TTFB to a self-hosted endpoint via `navigator.sendBeacon`. No third-party SaaS, no new runtime npm dep.
   5. Pixel-diff vs `.planning/visual-baselines/v1.8-start/` shows zero visual change (Phase 58 is infrastructure-only).
-**Plans**: TBD
+**Plans**: 2 plans
+  - [ ] 58-01-PLAN.md — @lhci/cli devDep + lighthouserc.json (mobile + desktop) (CIB-01, CIB-02) — Wave 1
+  - [ ] 58-02-PLAN.md — GH Actions workflow + web-vitals client + RUM endpoint + layout mount + CIB-04 grep guard (CIB-03, CIB-04, CIB-05) — Wave 2
 
 ### Phase 59: Critical-Path Restructure
 **Goal**: Eliminate the 570ms render-blocking budget (`/sf-canvas-sync.js` + Anton font waterfall) without breaking the CLS=0 contract, the PF-04 `autoResize: true` contract, or the locked motion-aesthetic.
