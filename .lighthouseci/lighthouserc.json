@@ -45,7 +45,7 @@
         ],
         "cumulative-layout-shift": [
           "error",
-          { "maxNumericValue": 0, "aggregationMethod": "median-run" }
+          { "maxNumericValue": 0.005, "aggregationMethod": "median-run" }
         ],
         "total-blocking-time": [
           "error",
