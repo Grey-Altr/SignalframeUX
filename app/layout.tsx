@@ -18,6 +18,7 @@ import { SignalframeProvider } from "@/components/layout/signalframe-config";
 import { SFToasterLazy } from "@/components/sf/sf-toast-lazy";
 import { InstrumentHUD } from "@/components/layout/instrument-hud";
 import { BorderlessProvider } from "@/components/providers/theme-provider";
+import { WebVitals } from "./_components/web-vitals";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -116,6 +117,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden" data-nav-layout="vertical">
+        <WebVitals />
         <div className="sf-mesh-gradient" aria-hidden="true" />
         <a
           href="#main-content"
