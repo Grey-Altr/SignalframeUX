@@ -8,8 +8,8 @@
 
 ## Diagnosis (DGN)
 
-- [ ] **DGN-01**: LCP element identity confirmed per-viewport (mobile + desktop) via Lighthouse trace + `PerformanceObserver({type: 'largest-contentful-paint'})`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`. Resolves Tension 3 from research.
-- [ ] **DGN-02**: Per-chunk owner attribution complete for unused-JS chunks `3302`, `e9a6067a`, `74c6194b`, `7525` via `ANALYZE=true pnpm build`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`.
+- [x] **DGN-01**: LCP element identity confirmed per-viewport (mobile + desktop) via Lighthouse trace + `PerformanceObserver({type: 'largest-contentful-paint'})`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`. Resolves Tension 3 from research.
+- [x] **DGN-02**: Per-chunk owner attribution complete for unused-JS chunks `3302`, `e9a6067a`, `74c6194b`, `7525` via `ANALYZE=true pnpm build`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`.
 - [x] **DGN-03**: Visual-of-record snapshot captured at v1.8 start — full-page screenshots at desktop 1440×900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference`, stored as `.planning/visual-baselines/v1.8-start/`.
 
 ## CI Bench (CIB)
@@ -86,13 +86,13 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| DGN-01 | 57 | TBD | Pending |
-| DGN-02 | 57 | TBD | Pending |
-| DGN-03 | 57 | TBD | Pending |
-| AES-01 | 57 | TBD | Pending |
-| AES-02 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
-| AES-03 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
-| AES-04 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | TBD | Pending |
+| DGN-01 | 57 | 03 | Complete |
+| DGN-02 | 57 | 03 | Complete |
+| DGN-03 | 57 | 02 | Complete |
+| AES-01 | 57 | 01 | Complete |
+| AES-02 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
+| AES-03 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
+| AES-04 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
 | CIB-01 | 58 | TBD | Pending |
 | CIB-02 | 58 | TBD | Pending |
 | CIB-03 | 58 | TBD | Pending |

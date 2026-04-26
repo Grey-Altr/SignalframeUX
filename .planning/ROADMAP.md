@@ -124,7 +124,7 @@
 <details open>
 <summary>v1.8 Speed of Light (Phases 57-62) — ACTIVE (started 2026-04-25)</summary>
 
-- [ ] Phase 57: Diagnosis Pass + Aesthetic-of-Record Lock-in (0/TBD plans)
+- [x] Phase 57: Diagnosis Pass + Aesthetic-of-Record Lock-in (3/3 plans, complete 2026-04-26)
 - [ ] Phase 58: Lighthouse CI + Real-Device Telemetry (0/TBD plans)
 - [ ] Phase 59: Critical-Path Restructure (0/≥3 plans — CRT-05 clean-bisect split)
 - [ ] Phase 60: LCP Element Repositioning (0/TBD plans)
@@ -1012,7 +1012,7 @@ Plans:
 | 54. Particle Field | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 55. Glitch Transition | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 56. Symbol System + Final Gate | v1.7 | 1/1 | Complete | 2026-04-13 |
-| 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | 2/3 | In Progress|  | - |
+| 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | 3/3 | Complete   | 2026-04-26 | - |
 | 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 0/TBD | Not started | - |
 | 59. Critical-Path Restructure | v1.8 | 0/>=3 | Not started | - |
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
