@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Phase 58 — LCP element identity guard.
@@ -23,7 +23,7 @@ import { test, expect } from "@playwright/test";
 
 type LcpInfo = { selector: string; size: number; startTime: number };
 
-async function captureLcp(page: import("@playwright/test").Page): Promise<LcpInfo> {
+async function captureLcp(page: Page): Promise<LcpInfo> {
   // Reuse Phase 57 spec's PerformanceObserver pattern.
   return await page.evaluate(() => {
     return new Promise<LcpInfo>((resolve) => {

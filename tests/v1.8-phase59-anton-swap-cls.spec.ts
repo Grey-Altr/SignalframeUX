@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Phase 59 Plan B (CRT-03) — Slow-3G hard-reload CLS gate + swap-event guard.
@@ -45,7 +45,7 @@ const SLOW_3G = {
   latency: 400, // ms RTT
 } as const;
 
-async function measureCLS(page: import("@playwright/test").Page): Promise<number> {
+async function measureCLS(page: Page): Promise<number> {
   return page.evaluate(
     () =>
       new Promise<number>((resolve) => {
