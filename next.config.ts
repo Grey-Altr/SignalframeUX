@@ -7,7 +7,7 @@ const analyzer = withBundleAnalyzer({
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ["lucide-react", "radix-ui", "input-otp", "cmdk", "vaul"],
+    optimizePackageImports: ["lucide-react", "radix-ui", "input-otp", "cmdk", "vaul", "sonner", "react-day-picker"],
     useCache: true,
   },
   async redirects() {
