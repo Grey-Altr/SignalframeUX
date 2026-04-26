@@ -1,0 +1,30 @@
+[
+  {
+    "viewport": "mobile-360x800",
+    "width": 203.625,
+    "height": 81,
+    "sectionContain": "none",
+    "sectionOverflow": "hidden auto"
+  },
+  {
+    "viewport": "iphone13-390x844",
+    "width": 220.59375,
+    "height": 87.75,
+    "sectionContain": "none",
+    "sectionOverflow": "hidden auto"
+  },
+  {
+    "viewport": "ipad-834x1194",
+    "width": 471.73126220703125,
+    "height": 187.6500244140625,
+    "sectionContain": "none",
+    "sectionOverflow": "hidden auto"
+  },
+  {
+    "viewport": "desktop-1440x900",
+    "width": 814.5,
+    "height": 324,
+    "sectionContain": "none",
+    "sectionOverflow": "hidden auto"
+  }
+]
