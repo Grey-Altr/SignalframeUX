@@ -88,6 +88,10 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ Visual regression infrastructure: Chromatic + 61 Storybook stories — v1.7
 - ✓ Launch gates closed (PRF-01..04); ratification methodology established (40 Ratified, 15 Obsolete, 9 Complete) — v1.7
 
+- ✓ LHCI per-PR gate: `@lhci/cli@^0.15.1` + dual lighthouserc (mobile primary + desktop) wired to GH Actions on `deployment_status:success`; threshold ≥97 perf, LCP ≤1000ms, CLS ≤0, TBT ≤200ms; median-of-5 cold-start variance discipline — v1.8 (Phase 58)
+- ✓ Field RUM client: `next/web-vitals` `useReportWebVitals` + `navigator.sendBeacon` (fetch keepalive fallback) → self-hosted `/api/vitals` Node-runtime sink (2KB cap, JSON-only, URL-stripped, no SaaS); zero new runtime npm dep — v1.8 (Phase 58)
+- ✓ CIB-04 lock enforced: `scripts/launch-gate.ts` byte-identical to merge-base; Playwright `execFileSync` SHA-identity guard — v1.8 (Phase 58)
+
 ### Active
 
 (See REQUIREMENTS.md for v1.8 Speed of Light requirements)
@@ -250,4 +254,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-25 — v1.8 Speed of Light started after v1.7 archival*
+*Last updated: 2026-04-26 — Phase 58 (LHCI gate + field RUM) complete; CIB-01..CIB-05 validated; 2 repo-settings tracked in HUMAN-UAT*
