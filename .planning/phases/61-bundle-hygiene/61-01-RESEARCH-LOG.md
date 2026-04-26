@@ -11,7 +11,7 @@
 | Build | Package added | Shared by all (KB) | / First Load (KB) | /_not-found First Load (KB) | Delta vs Build 0 (KB) | Notes |
 |-------|---------------|--------------------|-------------------|----------------------------|-----------------------|-------|
 | 0     | (baseline — lucide-react only) | 103 | 280 | 103 | 0 | Captured before any 61-01 changes |
-| A     | radix-ui      | TBD | TBD | TBD | TBD | optimizePackageImports: ["lucide-react", "radix-ui"] |
+| A     | radix-ui      | 103 | 264 | 103 | 0 (Shared by all); −16 KB on / | optimizePackageImports: ["lucide-react", "radix-ui"]; tsc --noEmit exit 0; chunk 3302 split out, 7525 −0.5 KB |
 | B     | input-otp     | TBD | TBD | TBD | TBD | optimizePackageImports: ["lucide-react", "radix-ui", "input-otp"] |
 
 ## Build 0 — Baseline (lucide-react only)
@@ -44,7 +44,39 @@ Route (app)                                 Size  First Load JS  Revalidate  Exp
 
 ## Build A — radix-ui added
 
-(populated in Task 2)
+Timestamp: 2026-04-26T20:11Z
+next.config.ts state: `optimizePackageImports: ["lucide-react", "radix-ui"]`
+Build invocation: `rm -rf .next/cache .next && ANALYZE=true pnpm build`
+Stale-chunk guard: APPLIED (BND-04)
+Source: `/tmp/phase61-build-A.txt` Route (app) stdout table
+Type-check: `pnpm exec tsc --noEmit` exit 0 (project has no `typecheck` npm script — Deviation Rule 3 fallback)
+
+Route (app) snapshot (relevant rows):
+```
+Route (app)                                 Size  First Load JS  Revalidate  Expire
+┌ ○ /                                    9.48 kB         264 kB
+├ ○ /_not-found                            144 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/2979-7e3b1be684627f10.js      45.8 kB
+  ├ chunks/5791061e-b51f32ecb5a3272a.js  54.2 kB
+  └ other shared chunks (total)          2.56 kB
+```
+
+**Delta vs Build 0:**
+- Shared by all: 103 KB → 103 KB (0 KB; expected — Radix lives in route-specific chunks, not the shared floor)
+- `/` First Load JS: 280 KB → 264 KB (**−16 KB**, ~5.7% reduction on homepage initial load)
+- `/_not-found` First Load JS: 103 KB → 103 KB (unchanged; confirms shared-floor stability)
+- `/system`: 274 KB → 258 KB (−16 KB)
+- `/inventory`: 282 KB → 267 KB (−15 KB)
+- `/init`: 266 KB → 251 KB (−15 KB)
+- `/reference`: 288 KB → 273 KB (−15 KB)
+
+**Chunk-level changes (.next/static/chunks/):**
+- `chunks/3302-…` 163,174 B (Build 0) → DISAPPEARED (Build A) — Radix barrel rewrite split this chunk into smaller per-sub-package chunks
+- `chunks/7525-bd3c686ad4f95bc2.js` 76,893 B → `chunks/7525-0ad32677ff03b3b4.js` 76,392 B (−501 B; popper cluster largely intact)
+- New chunks observed: `4335-bf50e6d7818b5591.js` 112,290 B (likely contains the surviving Radix sub-modules actually used)
+
+**Interpretation:** The `optimizePackageImports: ["radix-ui"]` transform is working as designed — webpack now imports only the specific Radix sub-packages referenced by the codebase rather than the full meta-package barrel. The route-level First Load JS for every page that consumes Radix (via the sf barrel) drops by ~15-16 KB. Shared-floor (BND-01 metric) is unchanged because Radix was never on the shared floor; this confirms 61-RESEARCH §3 + Risks #4 — the BND-01 ≤102 KB target needs a different lever (date-fns is already default-optimized; Plan 03 final gate may show shared-floor remains 103 KB, in which case the −1 KB delta needed for BND-01 must come from Plan 02 lazy packages or a separate vector).
 
 ## Build B — input-otp added
 
