@@ -92,6 +92,12 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ Field RUM client: `next/web-vitals` `useReportWebVitals` + `navigator.sendBeacon` (fetch keepalive fallback) → self-hosted `/api/vitals` Node-runtime sink (2KB cap, JSON-only, URL-stripped, no SaaS); zero new runtime npm dep — v1.8 (Phase 58)
 - ✓ CIB-04 lock enforced: `scripts/launch-gate.ts` byte-identical to merge-base; Playwright `execFileSync` SHA-identity guard — v1.8 (Phase 58)
 
+- ✓ CRT-01: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; external file deleted; CLS=0 across 5 routes — v1.8 (Phase 59)
+- ✓ CRT-02: Anton subsetted to printable ASCII + TM via fonttools/pyftsubset (58.8KB → 11.1KB / 81% reduction); zero new runtime dep — v1.8 (Phase 59)
+- ✓ CRT-03: Anton `font-display: optional → swap` with MEASURED descriptors (size-adjust 92.14%, ascent 127.66%, descent 35.72%, line-gap 0%) against `Impact, Helvetica Neue Condensed, Arial Black` fallback; slow-3G hard-reload CLS=0 across 5 routes (Wave-3 0.485 regression history exorcised); AES-02 documented exception ratified with 8/8 cohort surface acceptance — v1.8 (Phase 59)
+- ✓ CRT-04: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` + `setTimeout(initLenis, 0)` Safari fallback; PF-04 `autoResize: true` contract preserved verbatim; cleanup cancels pending handle — v1.8 (Phase 59)
+- ✓ CRT-05: three independent atomic commit cohorts staged for sequential PR-shipping (66ac4ec → 47fe585 → fc3827c) — v1.8 (Phase 59)
+
 ### Active
 
 (See REQUIREMENTS.md for v1.8 Speed of Light requirements)
@@ -254,4 +260,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-26 — Phase 58 (LHCI gate + field RUM) complete; CIB-01..CIB-05 validated; 2 repo-settings tracked in HUMAN-UAT*
+*Last updated: 2026-04-26 — Phase 59 (Critical-Path Restructure) complete; CRT-01..CRT-05 validated under v1.8; opentype.js@^1.3.4 devDep ratified (measurement-time only); 4 carry-over LHCI/PR-ship items + 2 Phase-58 repo-settings items tracked in HUMAN-UAT*

@@ -22,11 +22,11 @@
 
 ## Critical-Path Restructure (CRT)
 
-- [ ] **CRT-01**: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; `public/sf-canvas-sync.js` deleted; CLS=0 verified by Playwright test.
-- [ ] **CRT-02**: Anton font character-subsetted via build-time `glyphhanger` (ALL-CAPS English glyphs used in app). No runtime dependency added.
-- [ ] **CRT-03**: Anton `font-display` migrated `optional` → `swap` with tuned `size-adjust` + `ascent-override` + `descent-override` + `line-gap-override` against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain. Slow-3G hard-reload screen recording is the verification gate. Documented Chromatic re-baseline exception per `feedback_ratify_reality_bias.md`.
-- [ ] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` inside existing `useEffect` at `components/layout/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved.
-- [ ] **CRT-05**: CRT-01, CRT-02/03, CRT-04 each shipped as a separate PR for clean bisect.
+- [x] **CRT-01**: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; `public/sf-canvas-sync.js` deleted; CLS=0 verified by Playwright test.
+- [x] **CRT-02**: Anton font character-subsetted via build-time `pyftsubset` (full printable ASCII + TM, 58.8KB → 11.1KB / 81% reduction). No runtime dependency added (opentype.js devDep ratified for measurement only).
+- [x] **CRT-03**: Anton `font-display` migrated `optional` → `swap` with MEASURED descriptors (size-adjust 92.14%, ascent-override 127.66%, descent-override 35.72%, line-gap-override 0%) against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain. Slow-3G hard-reload CLS=0 across 5 routes (Wave-3 0.485 regression history exorcised). AES-02 documented exception ratified at AESTHETIC-OF-RECORD.md Change Log 2026-04-26 with 8/8 cohort surface acceptance.
+- [x] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` with `setTimeout(initLenis, 0)` Safari fallback inside existing `useEffect` at `components/layout/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved verbatim. Cleanup cancels pending handle.
+- [x] **CRT-05**: CRT-01, CRT-02/03, CRT-04 staged as three independent atomic commit cohorts on `chore/v1.7-ratification` ready for sequential PR-shipping; bisect order preserved (66ac4ec → 47fe585 → fc3827c). PR-ship + branch-protection enforcement deferred to user (Phase 58 HUMAN-UAT items 1+2).
 
 ## LCP Repositioning (LCP)
 

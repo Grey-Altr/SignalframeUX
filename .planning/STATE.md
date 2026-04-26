@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: Phase 59 PLANNED (3 plans, 5/5 CRT reqs covered). 59-RESEARCH.md (877 lines), 59-VALIDATION.md (per-task map), 59-01..03-PLAN.md committed (377+923+537 lines). Plan-checker iteration 2/3 PASSED with 0 BLOCKERs. CRT-05 strict bisect order enforced via Plan B `depends_on: [59-01]` + Plan C `depends_on: [59-01, 59-02]`. Plan B Task 0 BLOCKING-HUMAN gates PR-open on Phase 58 HUMAN-UAT items 1+2 verification; Task 6 inner blocking-human gates Chromatic cohort review; AES-02 exception logged at 59-AES02-EXCEPTION.md (created at execute-time). Anton CLS history (Wave 3 0.485 regression on /system) honored — Plan B Wave 0 measurement script supersedes RESEARCH placeholders before layout.tsx edit. Upstream-doc traceability fixed: REQUIREMENTS.md L28 + ROADMAP.md L917 path drift `components/animation/lenis-provider.tsx` → `components/layout/lenis-provider.tsx` ratified per feedback_ratify_reality_bias.md.
-stopped_at: Completed plan-phase 59 (3 PLAN.md files, 14 tasks total: 3+8+3); auto-advancing to /pde:execute-phase 59 --auto
-last_updated: "2026-04-25T22:00:00.000Z"
+status: verifying
+stopped_at: Completed 57-03-PLAN.md — Phase 57 COMPLETE (3/3 plans, 7/7 reqs); Phases 58-62 unblocked
+last_updated: "2026-04-26T06:00:49.035Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 54
   completed_phases: 40
-  total_plans: 80
-  completed_plans: 77
-  percent: 96
+  total_plans: 78
+  completed_plans: 78
 ---
 
 # STATE — SignalframeUX
