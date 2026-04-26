@@ -11,8 +11,9 @@ tags:
   - cib-04
   - cib-05
   - aes-04
-status: partial
-checkpoint_pending: 7
+status: complete
+checkpoint_deferred: 7
+checkpoint_deferred_note: "Task 7 (branch-protection rule on `main` + Vercel GH App `deployments:write` confirmation) is external GitHub UI work; user-deferred 2026-04-26 via 'k' acknowledgment. Code-side of the gate is fully wired and Playwright-verified locally (25/25 specs green). Gate becomes operative the moment the user enables branch protection — no further code changes required. Tracked as a HUMAN-UAT item so /pde:audit-uat surfaces it until done."
 requires:
   - "@lhci/cli@^0.15.1 (Plan 01 — devDep + dual lighthouserc configs)"
   - "next@15.5.x — built-in next/web-vitals hook (zero new runtime npm dep)"
@@ -67,13 +68,13 @@ metrics:
   completed_at: "2026-04-26T03:35:00Z"
 ---
 
-# Phase 58 Plan 02: LHCI Gate + RUM Endpoint Summary (PARTIAL — 6/7)
+# Phase 58 Plan 02: LHCI Gate + RUM Endpoint Summary (6/7 SHIPPED — Task 7 user-deferred)
 
 **One-liner:** Wires the Phase 58 gate end-to-end: a `deployment_status`-triggered GitHub Actions workflow runs LHCI mobile + desktop against every Vercel preview, a self-hosted RUM endpoint at `/api/vitals` receives `useReportWebVitals` beacons (sendBeacon → Node-runtime console.log → `vercel logs`), and four Playwright specs lock down the contract (zero pixel diff vs v1.8-start, LCP element identity unchanged on both viewports, `scripts/launch-gate.ts` byte-identical to merge-base). 6 of 7 tasks shipped autonomously; Task 7 (branch protection rule + Vercel GH App permission verification) is a `checkpoint:human-action gate=blocking` awaiting user action via the GitHub repo Settings UI.
 
 ## Status
 
-**6 / 7 tasks complete — awaiting branch-protection checkpoint.**
+**6 / 7 code-side tasks complete and verified locally. Task 7 (repo settings) user-deferred 2026-04-26 — surfaces in HUMAN-UAT until user actions it manually.**
 
 | # | Task | Commit | Status |
 |---|------|--------|--------|
@@ -83,7 +84,7 @@ metrics:
 | 4 | `<WebVitals />` mount in `app/layout.tsx` | `b0dd913` | green |
 | 5 | `tests/v1.8-phase58-pixel-diff.spec.ts` + web-vitals spec hardening | `9ea4a6d` | green (20/20 pass) |
 | 6 | `tests/v1.8-phase58-lcp-guard.spec.ts` + launch-gate-untouched spec | `7ee6770` | green (3/3 pass) |
-| 7 | Repo settings (Vercel GH App permission + branch protection rule) | — | **CHECKPOINT — awaiting user action** |
+| 7 | Repo settings (Vercel GH App `deployments:write` + branch protection on `main`) | — | **DEFERRED** — external GitHub UI; tracked in HUMAN-UAT |
 
 ## What shipped (Tasks 1-6)
 
