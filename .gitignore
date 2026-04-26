@@ -44,6 +44,9 @@ next-env.d.ts
 # preserve probe screenshots (provenance for AI tool drift audits)
 !.planning/claude-design-probes/**/*.png
 
+# preserve visual baselines (DGN-03 ground truth for AES-04 per-phase pixel-diff)
+!.planning/visual-baselines/**/*.png
+
 # lighthouse advisory audit trails (gitignored per plan 35-03)
 .planning/phases/35-performance-launch-gate/launch-gate-*.json
 

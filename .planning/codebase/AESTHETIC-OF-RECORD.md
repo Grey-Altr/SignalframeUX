@@ -116,14 +116,26 @@ Rendering backend: SwiftShader (headless Chromium software WebGL), per
 `playwright.config.ts:24-26`. Real-GPU visual review is the AES-03 cohort
 review job, NOT the AES-04 pixel-diff gate.
 
-Hero opacity at capture: TBD by Plan 02 Task 3 (one-shot probe of captured
-PNG). If hero `<h1>` chars at `entry-section.tsx:124-129` are at `opacity:
-0.01` (sf-hero-deferred start state per STATE.md D-08), the captured baseline
-shows them as effectively invisible — this is the canonical reduced-motion
-state and is correct.
+**Hero `<h1>` opacity at capture: viewport-dependent (mixed Variant A/B).**
+Inspection of two reference PNGs (per Plan 02 Task 3) confirms:
 
-(This section is finalized by Plan 02 Task 3 after the first baseline-capture
-run.)
+- **Desktop 1440×900 (`home-desktop-1440x900.png`):** Hero `<h1>` "SIGNALFRAME//UX" is **fully revealed** in Anton (Variant A — live first paint). The GSAP `sf-hero-deferred` reveal completes despite `reducedMotion: "reduce"` on this viewport — likely because the desktop reveal timeline is gated on viewport-size or pointer-coarse media-query branches that bypass the reduced-motion fork.
+- **Mobile 360×800 (`home-mobile-360x800.png`):** Hero `<h1>` is **invisible** at the captured frame (Variant B — reduced-motion frozen pre-reveal at `opacity: 0.01`, per STATE.md D-08 / `app/globals.css:1701, 1715`). Header chrome, top-right route-ID badge, and below-hero body Anton render correctly; only the ghost-label `<h1>` sits at start-state opacity.
+- **Tablet/iphone13 viewports:** not visually inspected at this checkpoint; assume mirror of mobile (Variant B) until Plan 03 LCP diagnosis confirms otherwise.
+
+**Phases 58-62 reading these baselines must understand:** AES-04 pixel-diff
+treats desktop captures as live first paint and mobile/sub-tablet captures as
+the reduced-motion frozen pre-reveal state. A pixel-diff that fails on mobile
+because the hero `<h1>` newly appears (or vice-versa) is a reveal-timing
+regression, NOT an aesthetic regression — investigate the GSAP timeline
+gate before re-baselining.
+
+**Both states are canonical for v1.8-start.** Body Anton, layout chrome, color
+slots, trademark primitives (T1 grain field on desktop, T2 nav glyph, T3
+cube-tile box) all render correctly across both. The mixed-variant capture
+is the AES-04 comparison surface for Phases 58-62.
+
+(Finalized by Plan 02 Task 3 after human PNG inspection on 2026-04-26.)
 
 ---
 
@@ -144,3 +156,4 @@ run.)
 | Date       | Change                                                                  | By                  |
 | ---------- | ----------------------------------------------------------------------- | ------------------- |
 | 2026-04-25 | AES-01 deliverable — standing rules + canonical refs codified at v1.8 start | Phase 57, Plan 01 |
+| 2026-04-26 | Captured-state §4 finalized — Variant A/B mixed (desktop revealed, mobile frozen pre-reveal) per DGN-03 baseline inspection | Phase 57, Plan 02 |
