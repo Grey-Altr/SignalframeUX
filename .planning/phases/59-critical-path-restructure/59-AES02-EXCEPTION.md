@@ -36,17 +36,37 @@ investigation.
 
 ## PENDING COHORT REVIEW
 
-Status: **AWAITING USER SIGN-OFF**
+Status: **CLOSED — ACCEPTED 2026-04-26** (see section below)
 
-The executor has:
+The executor had:
 1. Re-captured 20 v1.8-start baselines under post-Anton-swap state (pixel-diff
    20/20 GREEN against new baselines at AES-04 0.5% gate)
 2. Confirmed slow-3G CLS=0 on all 3 test routes/viewports
 3. Preserved forensic pre-swap originals at v1.8-pre-anton-swap/
 
-**Next:** User reviews the pixel-diff outputs and confirms all diffs are
-Anton-attributable. Resume signal: `cohort-accepted: [surface-id-1, ...]`
-
 ---
 
-<!-- COHORT ACCEPTANCE TABLE APPENDED BELOW AFTER USER SIGN-OFF -->
+## Cohort Acceptance — 2026-04-26
+
+**Status:** ACCEPTED by user.
+
+**Accepted surfaces (verbatim from user response):**
+
+| Surface ID | Accepted |
+|------------|---------|
+| `thesis` | yes |
+| `hero-h1` | yes |
+| `ghost-label` | yes |
+| `nav-glyphs` | yes |
+| `wordmark-inventory` | yes |
+| `wordmark-system` | yes |
+| `wordmark-init` | yes |
+| `wordmark-reference` | yes |
+
+**Rejected surfaces:** none
+
+**User response (verbatim):**
+`cohort-accepted: [thesis, hero-h1, ghost-label, nav-glyphs, wordmark-inventory, wordmark-system, wordmark-init, wordmark-reference]; rejected: none`
+
+All 8 accepted surfaces are confirmed Anton consumers. No non-Anton regressions
+detected. AES-02 documented exception ratification is complete.
