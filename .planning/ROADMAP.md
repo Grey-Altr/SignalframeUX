@@ -942,7 +942,7 @@ Plans:
   3. `components/sf/index.ts` is directive-free (no `'use client'` at the barrel — v1.3 rule maintained); verified by `grep -n "use client" components/sf/index.ts` returning zero matches.
   4. Stale-chunk guard is documented in plan-phase RESEARCH.md as the standing measurement gate: `rm -rf .next/cache .next` before any gating measurement.
   5. Zero pixel-diff regression vs `.planning/visual-baselines/v1.8-start/` (bundle hygiene is invisible by construction).
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 Plans:
 - [ ] 61-01-PLAN.md — Eager-path packages (radix-ui + input-otp): 2 sequential ANALYZE=true builds, per-package KB delta logged to 61-01-RESEARCH-LOG.md
 - [ ] 61-02-PLAN.md — Lazy-path packages (cmdk + vaul + sonner + react-day-picker): 2 batched ANALYZE=true builds + date-fns SKIP rationale, logged to 61-02-RESEARCH-LOG.md
@@ -1025,7 +1025,7 @@ Plans:
 | 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 2/2 | Complete    | 2026-04-26 |
 | 59. Critical-Path Restructure | 3/3 | Complete    | 2026-04-26 | - |
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
-| 61. Bundle Hygiene | v1.8 | 0/3 | Planned | - |
+| 61. Bundle Hygiene | 3/3 | Complete   | 2026-04-26 | - |
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
 
 ---
