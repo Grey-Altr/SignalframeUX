@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
 status: verifying
-stopped_at: Completed 57-03-PLAN.md — Phase 57 COMPLETE (3/3 plans, 7/7 reqs); Phases 58-62 unblocked
-last_updated: "2026-04-26T06:00:49.035Z"
+stopped_at: Phase 60 context gathered
+last_updated: "2026-04-26T17:40:52.241Z"
 last_activity: 2026-04-25
 progress:
   total_phases: 54
   completed_phases: 40
   total_plans: 78
   completed_plans: 78
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -228,6 +229,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T01:38:24.407Z
-Stopped at: Completed 57-03-PLAN.md — Phase 57 COMPLETE (3/3 plans, 7/7 reqs); Phases 58-62 unblocked
+Last session: 2026-04-26T17:40:52.233Z
+Stopped at: Phase 60 context gathered
 Resume with: `/pde:plan-phase 58` for Lighthouse CI + Real-Device Telemetry (CIB-01..05). Phase 58 must land BEFORE Phase 59 (LHCI gate is non-optional given Phase 59's CLS-protection-touching changes). Phase 60 plan-shape is contingent on `v1.8-lcp-diagnosis.md` §1 — note cross-viewport LCP divergence (mobile = THESIS GhostLabel, desktop = VL-05 `//` overlay) requires per-viewport intervention selection. Phase 61 BND-02 reads §2 chunk attribution (all 4 v1.7 IDs matched + 7 NEW_FINDING chunks > 50KB).
