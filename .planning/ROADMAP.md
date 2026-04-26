@@ -1012,7 +1012,7 @@ Plans:
 | 54. Particle Field | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 55. Glitch Transition | v1.7 | 1/1 | Complete   | 2026-04-11 |
 | 56. Symbol System + Final Gate | v1.7 | 1/1 | Complete | 2026-04-13 |
-| 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | v1.8 | 0/TBD | Not started | - |
+| 57. Diagnosis Pass + Aesthetic-of-Record Lock-in | 1/3 | In Progress|  | - |
 | 58. Lighthouse CI + Real-Device Telemetry | v1.8 | 0/TBD | Not started | - |
 | 59. Critical-Path Restructure | v1.8 | 0/>=3 | Not started | - |
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |

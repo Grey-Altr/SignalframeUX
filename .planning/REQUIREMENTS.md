@@ -51,10 +51,10 @@
 
 ## Aesthetic Preservation (AES)
 
-- [ ] **AES-01**: `.planning/codebase/AESTHETIC-OF-RECORD.md` created at v1.8 start, extracted from shipped code (lock-in mode per `feedback_lockin_before_execute.md`). Every phase reads from it; no re-derivation per-phase.
-- [ ] **AES-02**: No Chromatic re-baseline for perf changes. Only documented exception: Anton `optional` → `swap` migration in CRT-03.
-- [ ] **AES-03**: Mid-milestone cohort review by external eye after Phase 60 against `.planning/visual-baselines/v1.8-start/`. "Feels different" without specific code-change cause escalates.
-- [ ] **AES-04**: Pixel-diff vs v1.8-start snapshot at every phase end; >0.5% diff flagged for human review.
+- [x] **AES-01**: `.planning/codebase/AESTHETIC-OF-RECORD.md` created at v1.8 start, extracted from shipped code (lock-in mode per `feedback_lockin_before_execute.md`). Every phase reads from it; no re-derivation per-phase.
+- [x] **AES-02**: No Chromatic re-baseline for perf changes. Only documented exception: Anton `optional` → `swap` migration in CRT-03.
+- [x] **AES-03**: Mid-milestone cohort review by external eye after Phase 60 against `.planning/visual-baselines/v1.8-start/`. "Feels different" without specific code-change cause escalates.
+- [x] **AES-04**: Pixel-diff vs v1.8-start snapshot at every phase end; >0.5% diff flagged for human review.
 
 ---
 
