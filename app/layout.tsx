@@ -100,6 +100,17 @@ export default function RootLayout({
   // renders the first frame already scaled. ScaleCanvas's effect keeps running for resize.
   const scaleScript = `(function(){try{var vw=window.innerWidth,vh=window.innerHeight,DW=1280,SHRINK=435,IDLE=800;var s=vw/DW,hs=Math.min(1,vh/SHRINK),cs=Math.min(s,hs),ns=hs;var m=Math.max(0,Math.min(1,(IDLE-vh)/(IDLE-SHRINK)));var r=document.documentElement.style;r.setProperty('--sf-content-scale',String(s));r.setProperty('--sf-canvas-scale',String(cs));r.setProperty('--sf-nav-scale',String(ns));r.setProperty('--sf-nav-morph',String(m));r.setProperty('--sf-hero-shift','0px');r.setProperty('--sf-frame-offset-x','0px');r.setProperty('--sf-frame-bottom-gap','0px')}catch(e){}})()`;
 
+  // Pre-paint canvas-height sync — inlined from public static file per CRT-01 Phase 59.
+  // Mirrors the legacy external IIFE: query [data-sf-canvas], read inner
+  // offsetHeight, multiply by vw/1280 (--sf-content-scale floor), set on outer
+  // parent. Inline so it runs at HTML parse time, after [data-sf-canvas] is in
+  // the DOM via React's streamed body. Mounted in <body> tail (NOT <head>) so
+  // the [data-sf-canvas] div is already streamed by React when the script runs.
+  // Pitfall #2/#8: do NOT migrate to next/script strategy="beforeInteractive"
+  // (runs after first paint, reintroduces 0.485 CLS). Static literal, no user
+  // input interpolated — XSS-impossible by construction.
+  const canvasSyncScript = `(function(){try{var i=document.querySelector('[data-sf-canvas]');if(!i)return;var o=i.parentElement;if(!o)return;var s=window.innerWidth/1280;o.style.height=(i.offsetHeight*s)+'px';}catch(e){}})()`;
+
   return (
     <html
       lang="en"
@@ -151,6 +162,11 @@ export default function RootLayout({
         <PageAnimations />
         <PageTransition />
         <InstrumentHUD />
+        {/* Pre-paint canvas-height sync (CRT-01). Body-tail placement: [data-sf-canvas]
+            must already be streamed by React at this point. Same dangerouslySetInnerHTML
+            pattern as themeScript + scaleScript above — static literal, no user input,
+            XSS-impossible by construction. */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: canvasSyncScript }} />
       </body>
     </html>
   );

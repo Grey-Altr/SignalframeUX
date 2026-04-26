@@ -111,12 +111,13 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
     <>
       <div
         ref={outerRef}
-        // The sibling blocking script (/sf-canvas-sync.js below) mutates
-        // outer.style.height at HTML parse time — before React hydrates —
-        // to preserve CLS. React sees the DOM height prop without a match
-        // in the SSR virtual tree and flags a hydration mismatch. This is
-        // the canonical React escape hatch for intentional pre-hydration
-        // DOM mutation (same pattern used by theme scripts on <html>).
+        // The sibling blocking script (inlined in app/layout.tsx body tail per
+        // CRT-01, Phase 59) mutates outer.style.height at
+        // HTML parse time — before React hydrates — to preserve CLS. React sees
+        // the DOM height prop without a match in the SSR virtual tree and flags
+        // a hydration mismatch. This is the canonical React escape hatch for
+        // intentional pre-hydration DOM mutation (same pattern used by theme
+        // scripts on <html>).
         suppressHydrationWarning
         style={{ position: "relative", width: "100%", overflow: "hidden" }}
       >
@@ -132,15 +133,6 @@ export function ScaleCanvas({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </div>
-      {/* CLS fix: sync outer height to inner*scale before first paint.
-          Loaded as an external blocking script so it runs inline at HTML parse,
-          after inner [data-sf-canvas] is in DOM. Reading offsetHeight forces
-          a layout flush; setting outer.style.height happens pre-paint. The
-          React useEffect above takes over for resize/orientationchange.
-          Blocking placement is intentional — defer/async would run post-paint
-          and reintroduce the rehydration shift. */}
-      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-      <script src="/sf-canvas-sync.js" />
     </>
   );
 }
