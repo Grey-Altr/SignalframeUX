@@ -1,0 +1,76 @@
+{
+  "capturedAt": "2026-04-26T18:41:03.873Z",
+  "runs": 5,
+  "url": "http://localhost:3000/",
+  "device": "mobile",
+  "median": {
+    "lcp_ms": 812.8407500000001,
+    "cls": 0.002505,
+    "performance": 0.99,
+    "tbt_ms": 103.50000000000011,
+    "accessibility": 0.96,
+    "best_practices": 0.96,
+    "seo": 1
+  },
+  "all_lcp_ms": [
+    810.3122500000001,
+    811.8882500000001,
+    812.8407500000001,
+    812.9262499999998,
+    815.4390000000001
+  ],
+  "all_cls": [
+    0.002505,
+    0.002505,
+    0.002505,
+    0.002505,
+    0.002505
+  ],
+  "all_performance": [
+    0.99,
+    0.99,
+    0.99,
+    0.99,
+    0.99
+  ],
+  "all_tbt_ms": [
+    97.49999999999989,
+    99,
+    103.50000000000011,
+    104.5,
+    112.5
+  ],
+  "all_accessibility": [
+    0.96,
+    0.96,
+    0.96,
+    0.96,
+    0.96
+  ],
+  "all_best_practices": [
+    0.96,
+    0.96,
+    0.96,
+    0.96,
+    0.96
+  ],
+  "thresholds": {
+    "lcp_ms_max": 1000,
+    "cls_max": 0,
+    "performance_min": 0.97,
+    "tbt_ms_max": 200,
+    "accessibility_min": 0.97,
+    "best_practices_min": 0.97,
+    "seo_min": 1
+  },
+  "pass_status": {
+    "lcp_01_lcp": true,
+    "lcp_01_cls": false,
+    "lcp_01_performance": true,
+    "accessibility": false,
+    "best_practices": false,
+    "seo": true,
+    "tbt": true
+  },
+  "notes": "LCP gate (LCP-01 primary): PASS at 812ms median (vs 1000ms threshold) — 7.7x improvement vs Phase 57 baseline 6.5s on prod. CLS gate FAIL at 0.002505 median (regressed from 0.0). Layout-shifts audit attributes 0.002356 of the 0.002505 to the GhostLabel transition between content-visibility placeholder (80px) and actual rendered size (~84px on mobile). A11y + Best-Practices both 0.96 (below 0.97 threshold); not yet root-caused (likely pre-existing or unrelated to Plan 02 intervention). Triggers D-04 reactive escalation per plan critical_constraint #3."
+}
