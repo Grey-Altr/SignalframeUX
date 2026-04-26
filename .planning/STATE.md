@@ -3,14 +3,14 @@ pde_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
 status: executing
-stopped_at: "Completed 57-01-PLAN.md — AESTHETIC-OF-RECORD.md shipped (146 lines, 18 LOCKDOWN cites). Wave 2 (57-02 + 57-03) ready."
-last_updated: "2026-04-26T00:49:06.712Z"
-last_activity: 2026-04-26 — Phase 57 Plan 01 executed (5 min); AES-01..04 deliverables committed (dcdb418 + e53bdad)
+stopped_at: Completed 57-02-PLAN.md — DGN-03 baselines shipped (20 PNGs + spec); Plan 03 LCP diagnosis remains
+last_updated: "2026-04-26T01:12:07.275Z"
+last_activity: 2026-04-26 — Phase 57 Plan 02 executed (17 min); commits 4cc245f (PITFALLS hygiene) + 8869f85 (Feat 57-02 atomic — 23 files)
 progress:
   total_phases: 54
   completed_phases: 37
   total_plans: 73
-  completed_plans: 71
+  completed_plans: 72
 ---
 
 # STATE — SignalframeUX
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-Phase: 57 — Diagnosis Pass + Aesthetic-of-Record Lock-in (in progress, 1/3 plans)
-Plan: Wave 1 = [57-01 ✓ shipped]; Wave 2 = [57-02, 57-03] ready
-Status: Plan 01 complete — AES-01..04 ratified; AESTHETIC-OF-RECORD.md shipped at .planning/codebase/ (146 lines, 18 LOCKDOWN cites). Wave 2 not yet started.
-Last activity: 2026-04-26 — Phase 57 Plan 01 executed (5 min); commits dcdb418 (Feat) + e53bdad (docs SUMMARY)
+Phase: 57 — Diagnosis Pass + Aesthetic-of-Record Lock-in (in progress, 2/3 plans)
+Plan: Wave 1 = [57-01 ✓ shipped]; Wave 2 = [57-02 ✓ shipped, 57-03 pending]
+Status: Plans 01 + 02 complete — AESTHETIC-OF-RECORD.md (146 lines, 18 LOCKDOWN cites) + 20 v1.8-start baseline PNGs + reusable Playwright spec shipped. AES-04 pixel-diff comparison surface for Phases 58-62 now exists on disk. Plan 03 (LCP diagnosis) remains.
+Last activity: 2026-04-26 — Phase 57 Plan 02 executed (17 min); commits 4cc245f (PITFALLS hygiene) + 8869f85 (Feat 57-02 atomic — 23 files: spec + 20 PNGs + .gitignore + AESTHETIC-OF-RECORD.md §4 finalized)
 
 ## Progress
 
@@ -42,14 +42,14 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [█░░░░░░░░░]  17% (0/6 phases, 1/3 Phase-57 plans) Phase 57 Wave 1 shipped — Wave 2 (57-02 + 57-03) ready
+v1.8: [██░░░░░░░░]  33% (0/6 phases, 2/3 Phase-57 plans) Phase 57 Plans 01+02 shipped — Plan 03 (LCP diagnosis) remains
 ```
 
 ## v1.8 Phase Map
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | In Progress (1/3 plans — Wave 1 shipped) |
+| 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | In Progress (2/3 plans — Plan 03 LCP diagnosis remains) |
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Not started |
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Not started |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Not started |
@@ -224,6 +224,6 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T00:49:06.712Z
-Stopped at: Completed 57-01-PLAN.md — AESTHETIC-OF-RECORD.md shipped (146 lines, 18 LOCKDOWN cites, dcdb418 + e53bdad)
+Last session: 2026-04-26T01:12:07.271Z
+Stopped at: Completed 57-02-PLAN.md — DGN-03 baselines shipped (20 PNGs + spec); Plan 03 LCP diagnosis remains
 Resume with: `/pde:execute-plan 57` to execute Phase 57 Wave 2. Plan 02 captures 20 baseline PNGs (autonomous: false — Q3 PNG inspection checkpoint) and Plan 03 runs LCP diagnosis (autonomous: false — D-04 manual treemap extraction). Wave-2 plans run in parallel after Wave 1; both depend on Plan 01 only via AESTHETIC-OF-RECORD.md reference.

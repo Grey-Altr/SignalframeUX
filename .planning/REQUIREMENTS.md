@@ -10,7 +10,7 @@
 
 - [ ] **DGN-01**: LCP element identity confirmed per-viewport (mobile + desktop) via Lighthouse trace + `PerformanceObserver({type: 'largest-contentful-paint'})`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`. Resolves Tension 3 from research.
 - [ ] **DGN-02**: Per-chunk owner attribution complete for unused-JS chunks `3302`, `e9a6067a`, `74c6194b`, `7525` via `ANALYZE=true pnpm build`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`.
-- [ ] **DGN-03**: Visual-of-record snapshot captured at v1.8 start — full-page screenshots at desktop 1440×900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference`, stored as `.planning/visual-baselines/v1.8-start/`.
+- [x] **DGN-03**: Visual-of-record snapshot captured at v1.8 start — full-page screenshots at desktop 1440×900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference`, stored as `.planning/visual-baselines/v1.8-start/`.
 
 ## CI Bench (CIB)
 
