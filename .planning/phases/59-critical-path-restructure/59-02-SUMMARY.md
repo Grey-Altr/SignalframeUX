@@ -28,11 +28,11 @@ decisions:
   - "Impact xAvgCharWidth = 1018 (OS/2 table standard value, same UPM 2048 as Anton)"
   - "Slow-3G CLS=0 confirmed via Playwright CDP throttling (400 Kbps / 400ms RTT) on /, /system, / mobile-360"
 metrics:
-  duration: "~90 minutes"
-  completed_date: "2026-04-25"
-  tasks_completed: 6
+  duration: "~120 minutes"
+  completed_date: "2026-04-26"
+  tasks_completed: 8
   tasks_total: 8
-  files_modified: 9
+  files_modified: 11
 ---
 
 # Phase 59 Plan B: Anton Subset + font-display swap Summary
@@ -43,7 +43,7 @@ metrics:
 
 ## Status
 
-**Tasks 1-6 complete. Task 7 BLOCKED at human cohort-review checkpoint (59-02-T6-chromatic-cohort-review). Task 7 (AESTHETIC-OF-RECORD.md Change Log) unblocks after user sign-off.**
+**COMPLETE. All 8 tasks done. AES-02 exception ratified. AESTHETIC-OF-RECORD.md Change Log updated.**
 
 ---
 
@@ -157,24 +157,24 @@ The user bypassed the Task 0 gate with `bypass-uat-gate: acknowledged`. The foll
 
 ---
 
-## Pending: AES-02 Cohort Review Checkpoint
+## AES-02 Cohort Review — ACCEPTED 2026-04-26
 
-**Status:** BLOCKED at Task 6 inner checkpoint `59-02-T6-chromatic-cohort-review`.
+**Status:** COMPLETE. User accepted all 8 eligible surfaces; rejected: none.
 
-**What's needed:** User reviews pixel-diff outputs (pre-swap vs post-swap) from:
-- `.planning/visual-baselines/v1.8-pre-anton-swap/` (before)
-- `.planning/visual-baselines/v1.8-start/` (after)
+**Accepted surfaces (verbatim from user response):**
+`cohort-accepted: [thesis, hero-h1, ghost-label, nav-glyphs, wordmark-inventory, wordmark-system, wordmark-init, wordmark-reference]; rejected: none`
 
-**Eligible surfaces for acceptance (Anton consumers only):**
-- `thesis` — THESIS manifesto text (app/page.tsx)
-- `hero-h1` — SIGNALFRAME//UX wordmark (entry-section)
-- `wordmark-inventory`, `wordmark-system`, `wordmark-init`, `wordmark-reference` — subpage h1s
-- `ghost-label` — section labels (200-400px Anton at 4% opacity)
-- `nav-glyphs` — route IDs in nav + nav-overlay
+All diffs confirmed Anton-attributable. No non-Anton regressions detected.
 
-**Resume signal:** `cohort-accepted: [thesis, hero-h1, ghost-label, nav-glyphs, wordmark-inventory, wordmark-system, wordmark-init, wordmark-reference]; rejected: none`
+**Audit log:** `.planning/phases/59-critical-path-restructure/59-AES02-EXCEPTION.md` §Cohort Acceptance — 2026-04-26:L49 (commit `ce76422`)
 
-After cohort sign-off, Task 7 (AESTHETIC-OF-RECORD.md Change Log) unblocks.
+**AESTHETIC-OF-RECORD.md Change Log updated** at line 160 with AES-02 exception ratification entry (commit `ef9556c`).
+
+---
+
+## Dependency Ratification Note
+
+**opentype.js@^1.3.4 devDep approved by user as v1.8 measurement-time tooling exception.** Used solely by `scripts/measure-anton-descriptors.mjs` for Task 4 descriptor extraction. Not imported into application bundle. Not a runtime dependency.
 
 ---
 
@@ -189,27 +189,28 @@ After cohort sign-off, Task 7 (AESTHETIC-OF-RECORD.md Change Log) unblocks.
 | `4e82e77` | chore(59-02): preserve v1.8-start baselines as v1.8-pre-anton-swap |
 | `2503f9a` | feat(59-02): CRT-03 — Anton font-display optional → swap with measured descriptors |
 | `adcb291` | chore(59-02): re-baseline 20 v1.8-start PNGs (AES-02 documented exception) |
+| `ce76422` | chore(59-02): cohort acceptance audit row — 8 surfaces accepted, rejected: none (2026-04-26) |
+| `ef9556c` | docs(59-02): AESTHETIC-OF-RECORD.md Change Log — ratify Anton swap as AES-02 exception |
 
 ---
 
-## Self-Check
+## Self-Check: PASSED
 
-**Verification commands:**
+| Check | Result |
+|-------|--------|
+| `app/fonts/Anton-Regular.woff2` ≤ 20 KB | PASS (11,140 bytes) |
+| `display: "swap"` in layout.tsx | PASS |
+| `adjustFontFallback: false` in layout.tsx | PASS |
+| `"size-adjust"` descriptor in layout.tsx | PASS |
+| `Impact` fallback chain in layout.tsx | PASS |
+| 20 forensic PNGs at v1.8-pre-anton-swap/ | PASS |
+| 20 re-baselined PNGs at v1.8-start/ | PASS |
+| `AES-02 documented exception ratified` in AESTHETIC-OF-RECORD.md | PASS (line 160) |
+| `v1.8-pre-anton-swap` cited in AESTHETIC-OF-RECORD.md | PASS |
+| `Phase 59, Plan 02` cited in AESTHETIC-OF-RECORD.md | PASS |
+| `59-AES02-EXCEPTION.md` cited in AESTHETIC-OF-RECORD.md | PASS |
+| Cohort acceptance audit row at 59-AES02-EXCEPTION.md:L49 | PASS |
+| opentype.js devDep ratification noted | PASS |
+| Deferred Gate (Phase 58 HUMAN-UAT items 1+2) documented | PASS |
 
-```bash
-# Font size within constraint
-test $(wc -c < app/fonts/Anton-Regular.woff2) -le 20480 && echo "PASS: font <= 20KB"
-
-# layout.tsx has all required fields
-grep -F 'display: "swap"' app/layout.tsx && echo "PASS: display swap"
-grep -F 'adjustFontFallback: false' app/layout.tsx && echo "PASS: adjustFontFallback"
-grep -F '"size-adjust"' app/layout.tsx && echo "PASS: size-adjust"
-grep -F 'Impact' app/layout.tsx && echo "PASS: Impact fallback"
-
-# Baseline counts
-test $(ls .planning/visual-baselines/v1.8-pre-anton-swap/*.png | wc -l) -eq 20 && echo "PASS: 20 forensic PNGs"
-test $(ls .planning/visual-baselines/v1.8-start/*.png | wc -l) -eq 20 && echo "PASS: 20 rebaselined PNGs"
-
-# Screen recordings
-ls test-results/phase59-anton-swap/*.webm | wc -l
-```
+**Slow-3G .webm artifacts:** Local-only forensic artifacts (gitignored per project .gitignore). The committed record is `tests/v1.8-phase59-anton-swap-cls.spec.ts` with `recordVideo: on` and 4/4 passing tests (CLS=0 on all three test routes/viewports).
