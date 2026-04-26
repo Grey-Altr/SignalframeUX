@@ -16,7 +16,7 @@
 | Build | Packages added | Shared by all (KB) | / First Load (KB) | /_not-found First Load (KB) | Delta vs Build B (KB) | Notes |
 |-------|----------------|--------------------|-------------------|----------------------------|-----------------------|-------|
 | B (carry-over from 61-01) | (baseline — lucide-react + radix-ui + input-otp) | 103 | 264 | 103 | 0 | Copied from 61-01-RESEARCH-LOG.md row B; serves as Plan 02 baseline. tsc --noEmit exit 0 at carry-over. |
-| C     | cmdk + vaul    | TBD                | TBD               | TBD                        | TBD                   | optimizePackageImports: [..., "cmdk", "vaul"]; expected ~0 KB delta on Shared by all (lazy packages) |
+| C     | cmdk + vaul    | 103                | 264               | 103                        | 0 (Shared); 0 on /    | optimizePackageImports: ["lucide-react", "radix-ui", "input-otp", "cmdk", "vaul"]; tsc --noEmit exit 0; expected lazy-package no-delta confirmed (61-RESEARCH §Risks #5) |
 | D     | sonner + react-day-picker | TBD     | TBD               | TBD                        | TBD                   | optimizePackageImports: [..., "sonner", "react-day-picker"]; expected ~0 KB delta on Shared by all (lazy packages) |
 
 ## Build B carry-over (baseline reference)
@@ -46,7 +46,35 @@ Route (app)                                 Size  First Load JS  Revalidate  Exp
 
 ## Build C — cmdk + vaul added
 
-(populated in Task 1)
+Timestamp: 2026-04-26T20:23Z
+next.config.ts state: `optimizePackageImports: ["lucide-react", "radix-ui", "input-otp", "cmdk", "vaul"]`
+Build invocation: `rm -rf .next/cache .next && ANALYZE=true pnpm build`
+Stale-chunk guard: APPLIED (BND-04)
+Source: `/tmp/phase61-build-C.txt` Route (app) stdout table
+Type-check: `pnpm exec tsc --noEmit` exit 0 (project has no `typecheck` npm script — same Rule 3 substitution as Plan 01)
+
+Route (app) snapshot (relevant rows):
+```
+Route (app)                                 Size  First Load JS  Revalidate  Expire
+┌ ○ /                                    9.48 kB         264 kB
+├ ○ /_not-found                            144 B         103 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/2979-7e3b1be684627f10.js      45.8 kB
+  ├ chunks/5791061e-b51f32ecb5a3272a.js  54.2 kB
+  └ other shared chunks (total)          2.56 kB
+```
+
+**Delta vs Build B (carry-over baseline):**
+- Shared by all: 103 KB → 103 KB (0 KB; **expected lazy-package no-delta confirmed** per 61-RESEARCH §Risks #5)
+- `/` First Load JS: 264 KB → 264 KB (0 KB at KB-rounding granularity)
+- `/_not-found` First Load JS: 103 KB → 103 KB (unchanged; confirms shared-floor stability)
+- `/system`: 258 KB → 258 KB (0 KB)
+- `/inventory`: 267 KB → 267 KB (0 KB)
+- `/init`: 251 KB → 251 KB (0 KB)
+- `/reference`: 273 KB → 273 KB (0 KB)
+- `/builds`: 254 KB → 254 KB (0 KB)
+
+**Interpretation:** cmdk and vaul are both behind `next/dynamic` wrappers (CommandPaletteLazy and sf-drawer-lazy.tsx respectively). They contribute zero bytes to the homepage's initial First Load JS, so the `optimizePackageImports` transform on these two packages has no measurable effect on the gating "Shared by all" metric or any per-route initial First Load. The transform may still reduce the size of the lazy chunks themselves when they are dynamically imported at user interaction time, but those chunks are NOT in the gating Route (app) stdout table per the BND-01 measurement protocol. **Zero delta is the expected, correct result — NOT a regression** (61-RESEARCH §Risks #5).
 
 ## Build D — sonner + react-day-picker added
 
