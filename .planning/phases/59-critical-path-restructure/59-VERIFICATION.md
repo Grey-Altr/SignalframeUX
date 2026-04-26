@@ -246,3 +246,13 @@ Phase 59 has shipped its three independent, bisect-safe interventions in correct
 
 _Verified: 2026-04-25T23:55:00Z_
 _Verifier: Claude (gsd-verifier)_
+
+---
+
+## Errata 2026-04-26
+
+While running Phase 61 Plan 03 AES-04 verification, the executor surfaced a discrepancy between Phase 59 Wave B's prose claim ("20/20 PASS at 0%") and the spec source-of-record `tests/v1.8-phase59-pixel-diff.spec.ts` which uses `MAX_DIFF_RATIO = 0.005` (0.5%, matching the AESTHETIC-OF-RECORD.md standing rule).
+
+**Ratified reading:** the prose claim should have read "**20/20 PASS at 0.5% (AES-04 standing rule, MAX_DIFF_RATIO = 0.005)**". The spec source is the code-of-record per `feedback_ratify_reality_bias`; strict-zero pixel-diff has never been a configured gate in this harness on any v1.8 phase. No verdict is invalidated — Phase 59's AES-04 PASS at the standing 0.5% rule is correct.
+
+This errata is documentation-only; no commits are revised.

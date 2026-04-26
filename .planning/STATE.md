@@ -1,17 +1,16 @@
 ---
-gsd_state_version: 1.0
+pde_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: human_needed
-stopped_at: Phase 61 EXECUTED, 3/4 BND requirements satisfied; BND-01 + AES-04 strict 0% FAIL — 3 decision points pending in 61-HUMAN-UAT.md
-last_updated: "2026-04-26T21:15:00.000Z"
+status: ready_to_execute
+stopped_at: Phase 61 CLOSED 2026-04-26 with all 4 BND requirements SATISFIED + AES-04 PASS at standing 0.5%; ROADMAP recalibration ≤102→≤105 KB ratified; spec MAX_DIFF_RATIO 0→0.005 re-run 20/20 PASS; Phase 59 errata committed. Phase 62 next (VRF-01..05 Real-Device Verification + Final Gate).
+last_updated: "2026-04-26T21:35:00.000Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 54
-  completed_phases: 40
-  total_plans: 81
-  completed_plans: 81
-  percent: 100
+  completed_phases: 42
+  total_plans: 83
+  completed_plans: 83
 ---
 
 # STATE — SignalframeUX
@@ -27,9 +26,9 @@ progress:
 
 ## Current Position
 
-Phase: 61
-Plan: Executed (3/3 plans complete; verifier returned human_needed)
-Status: Phase 61 EXECUTED in 3 sequential waves, 16 commits across 3 plans. BND-02 SATISFIED (all 7 packages added, date-fns SKIP justified, −16 KB on `/` First Load JS realized). BND-03 SATISFIED (sf/index.ts directive-free, grep -c "use client" = 0). BND-04 SATISFIED (stale-chunk guard documented across 61-RESEARCH.md + both RESEARCH-LOG headers). **BND-01 BLOCKED** — Shared by all = 103 KB (1 KB over ≤102 KB target); reduction% 0.41% (Scenario A guard-strict) / 42.10% (Scenario B chunk-4335 attribution), both below 80% threshold. **AES-04 strict 0% FAIL** — 20/20 at MAX_DIFF_RATIO=0; max diff 0.343%, ALL under AES-04 standing 0.5% rule. optimizePackageImports lever exhausted; gates honored without loosening (no rounding 103→102, no swapping strict 0% for 0.5%). 3 decision points persisted in 61-HUMAN-UAT.md: (1) Phase 62 BND-01 closure path — splitChunks retuning vs ROADMAP target recalibration vs accept 103 KB as practical floor; (2) AES-04 calibration path — baseline re-capture vs relax to 0.5% standing rule; (3) Phase 59 spec MAX_DIFF_RATIO discrepancy — Phase 59 row B claimed "20/20 PASS at 0%" but spec source uses 0.005, strict 0% gate never validated in this harness. Code-review (61-REVIEW.md) returned issues_found with 3 info-only observations (no critical/warning). Phase 60 row in v1.8 Phase Map remains stale (Path A closed 2026-04-26).
+Phase: 62 (next — Real-Device Verification + Final Gate, VRF-01..05)
+Plan: Phase 61 CLOSED (3/3 plans complete; verifier ratified to passed 2026-04-26 after user approved all 3 HUMAN-UAT defaults)
+Status: Phase 61 CLOSED 2026-04-26 with all 4 BND requirements SATISFIED + AES-04 PASS at standing 0.5%. **BND-01 SATISFIED** — Shared by all = 103 KB observed, ≤105 KB recalibrated target (footnote: Next.js 15 framework runtime ~45.8 KB + react-dom ~54.2 KB + other shared 2.56 KB = 103 KB practical floor unreachable by `optimizePackageImports`; original 102 KB target was set against pre-Next.js-15-framework-floor baseline). **BND-02 SATISFIED** — all 7 packages added (radix-ui, input-otp, cmdk, vaul, sonner, react-day-picker; date-fns SKIP justified per 61-RESEARCH §1); realized −16 KB on `/` First Load JS (5.7%) and −15-16 KB on all Radix-consuming routes. **BND-03 SATISFIED** — sf/index.ts directive-free. **BND-04 SATISFIED** — stale-chunk guard documented across 61-RESEARCH.md + both RESEARCH-LOG headers. **AES-04 PASS** — 20/20 at MAX_DIFF_RATIO=0.005 (re-run 2026-04-26 in 24.1s; max diff 0.343%); spec recalibrated from strict 0 to AES-04 standing 0.5% rule (matches AESTHETIC-OF-RECORD.md and Phase 59 prior art). Phase 59 documentation errata committed ratifying spec source-of-record. 16 plan commits + 4 close-out commits = 20 commits total. Phase 62 next (mid-milestone real-device checkpoint per VRF-04 fires after Phase 60 closes; Phase 60 SUMMARY ratification still deferred).
 Last activity: 2026-04-26
 
 ## Progress
@@ -43,7 +42,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [█████░░░░░]  50% (2/6 phases code-complete + 1 human_needed) Phases 57+58 COMPLETE; Phase 61 EXECUTED 3/3 plans, awaiting decisions in 61-HUMAN-UAT.md
+v1.8: [█████░░░░░]  50% (3/6 phases COMPLETE) Phases 57+58+61 COMPLETE; Phases 59 + 60 PLANNED (Phase 60 Path A closed 2026-04-26, SUMMARY ratification still deferred); Phase 62 next
 ```
 
 ## v1.8 Phase Map
@@ -54,7 +53,7 @@ v1.8: [█████░░░░░]  50% (2/6 phases code-complete + 1 human_
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Complete (2/2 plans, code-side green; 2 HUMAN-UAT items pending) |
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Planned (3 plans, 0/3 executed) |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Planned (2 plans, 0/2 executed) |
-| 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Planned (3 plans, 0/3 executed) |
+| 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Complete (3/3 plans, all 4 BND + AES-04 SATISFIED post-recalibration) |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
 
 **Build-order constraints (encoded in ROADMAP.md):**

@@ -1,8 +1,10 @@
 ---
 phase: 61-bundle-hygiene
 verified: 2026-04-26T21:05:00Z
-status: human_needed
-score: 3/4 BND requirements satisfied (BND-02, BND-03, BND-04 PASS; BND-01 FAIL); AES-04 strict 0% gate FAIL
+ratified: 2026-04-26T21:30:00Z
+status: passed
+score: 4/4 BND requirements satisfied (BND-01 SATISFIED post-recalibration ≤105 KB target with 103 KB observed; BND-02, BND-03, BND-04 PASS); AES-04 PASS at standing 0.5% rule (20/20 PASS at MAX_DIFF_RATIO=0.005 re-run 2026-04-26)
+ratification_note: "Status flipped human_needed → passed 2026-04-26T21:30:00Z after user approved all 3 HUMAN-UAT defaults. See 61-HUMAN-UAT.md (resolved) and 61-03-FINAL-GATE.md §6 Closure Ratification."
 must_have_results:
   plan_61_01:
     - id: "next.config.ts contains radix-ui + input-otp"

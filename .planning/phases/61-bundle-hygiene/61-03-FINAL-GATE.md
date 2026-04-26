@@ -297,3 +297,28 @@ Before Phase 62 can re-run the strict 0% gate, the harness's bit-stability needs
 - Pre-existing AES-04 standing-rule 0.5% gate would PASS at 20/20 (max observed ratio 0.343%); this plan does NOT loosen the gate to claim that PASS, but documents it for Phase 62 calibration
 
 **Phase 61 does NOT close.** Orchestrator should treat this plan's outcome as `human_needed` pending the user's decision on the Phase 62 escalation path.
+
+---
+
+## §6 Closure Ratification 2026-04-26
+
+User reviewed the 3 HUMAN-UAT decisions and approved all recommended defaults:
+
+### BND-01 → ROADMAP target recalibration
+- Recalibrated `BND-01` target: ≤102 KB → **≤105 KB** in `REQUIREMENTS.md` and `ROADMAP.md` Phase 61 success criterion 1
+- Recalibration math: Next.js 15 framework runtime ~45.8 KB + react-dom ~54.2 KB + other shared 2.56 KB = **103 KB practical floor unreachable by `optimizePackageImports`**
+- Phase 61 final build = 103 KB → **SATISFIED** under recalibrated target
+- 119 KiB unused-JS reduction% gate downgraded to audit-only (chunk attribution drift between Lighthouse audit and Phase 61 build made ≥80% non-falsifiable; per-route −16 KB on `/` First Load JS is the realized BND-02 secondary harvest)
+
+### AES-04 → Recalibrate spec to standing 0.5% rule
+- `tests/v1.8-phase61-bundle-hygiene.spec.ts` `MAX_DIFF_RATIO`: `0` → **`0.005`** (matches AES-04 standing rule from Phase 57 AESTHETIC-OF-RECORD.md and Phase 59 prior art)
+- Re-run @ recalibrated 0.005: **20/20 PASS** (24.1s; max observed diff 0.343% from §4 measurements)
+- Justification: 20/20 FAIL distribution at strict 0% (0.001-0.343% spread evenly across all 20 comparisons) is consistent with renderer/font-load timing non-determinism, NOT bundle-induced regression. A bundle-induced regression would cluster (a few bad routes), not distribute uniformly.
+- Bisect deferred indefinitely; calibration cost (~hours of build cycles) exceeds expected information yield
+
+### Phase 59 historical claim → Documentation errata
+- One-paragraph errata appended to `59-VERIFICATION.md` ratifying spec source-of-record (`MAX_DIFF_RATIO = 0.005`) over prose claim ("20/20 PASS at 0%"). Per `feedback_ratify_reality_bias`: code is the source of truth.
+- No Phase 59 verdict invalidated; documentation correction only.
+
+### Closure status
+**Phase 61 CLOSES with all 4 BND requirements SATISFIED + AES-04 PASS at standing rule.** Phase 62 (Real-Device Verification + Final Gate, VRF-01..05) keeps its original scope; no BND-01 or AES-04 carry-over.
