@@ -1,0 +1,96 @@
+{
+  "capturedAt": "2026-04-27T19:18:25Z",
+  "tool": "scripts/launch-gate-vrf02.ts (via @lhci/cli + lighthouserc.json)",
+  "url": "https://signalframeux.vercel.app/",
+  "runs": 5,
+  "config_source": ".lighthouseci/lighthouserc.json (Phase 58 CIB-03/04 standing rule)",
+  "per_run": [
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp_ms": 589,
+      "cls": 0.0042,
+      "tbt_ms": 40,
+      "tti_ms": 887,
+      "fetchTime": "2026-04-27T19:15:10.565Z"
+    },
+    {
+      "performance": 100,
+      "accessibility": 96,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp_ms": 694,
+      "cls": 0.0042,
+      "tbt_ms": 34,
+      "tti_ms": 907,
+      "fetchTime": "2026-04-27T19:15:25.930Z"
+    },
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp_ms": 657,
+      "cls": 0.0042,
+      "tbt_ms": 41,
+      "tti_ms": 952,
+      "fetchTime": "2026-04-27T19:15:40.782Z"
+    },
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp_ms": 669,
+      "cls": 0.0042,
+      "tbt_ms": 30,
+      "tti_ms": 901,
+      "fetchTime": "2026-04-27T19:15:55.679Z"
+    },
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100,
+      "lcp_ms": 553,
+      "cls": 0.0042,
+      "tbt_ms": 40,
+      "tti_ms": 934,
+      "fetchTime": "2026-04-27T19:16:11.066Z"
+    }
+  ],
+  "median": {
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 96,
+    "seo": 100,
+    "lcp_ms": 657,
+    "cls": 0.0042,
+    "tbt_ms": 40,
+    "tti_ms": 907
+  },
+  "thresholds_lhci_standing": {
+    "perf_min": 0.97,
+    "a11y_min": 0.97,
+    "bp_min": 0.97,
+    "seo_min": 1.0,
+    "lcp_max_ms": 1000,
+    "cls_max": 0.005,
+    "tbt_max_ms": 200,
+    "notes": "Phase 58 LHCI rc + Phase 60 Path A. CLS-zero loosened to 0.005 (Phase 60 path_a_decision)."
+  },
+  "thresholds_plan62_d05_strict": {
+    "category_min": 100,
+    "lcp_ms_max": 1000,
+    "cls_max": 0,
+    "tti_ms_max": 1500,
+    "notes": "Plan 62-02 D-05 stricter than LHCI standing rule. Calibration decision pending."
+  },
+  "verdict_lhci": "FAIL",
+  "verdict_plan_strict": "FAIL",
+  "failing_assertions_lhci": [
+    "bp < 0.97"
+  ]
+}
