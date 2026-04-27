@@ -4,7 +4,7 @@ milestone: v1.8
 milestone_name: Build-Order Constraints
 status: executing
 stopped_at: "Phase 62 plans ready; auto-chain paused at first human-action gate (WPT API key required, plus chrome-devtools MCP + 24h RUM window blockers downstream). 3 plans + CONTEXT + RESEARCH + VALIDATION all committed. User decision needed: provide WPT API key + run external services in a deliberate session, OR defer Phase 62 to a scheduled milestone-close session."
-last_updated: "2026-04-27T16:25:07.585Z"
+last_updated: "2026-04-27T18:00:00.000Z"
 last_activity: 2026-04-27 -- Phase 62 execution started
 progress:
   total_phases: 54
@@ -43,7 +43,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [█████░░░░░]  50% (3/6 phases COMPLETE) Phases 57+58+61 COMPLETE; Phases 59 + 60 PLANNED (Phase 60 Path A closed 2026-04-26, SUMMARY ratification still deferred); Phase 62 next
+v1.8: [████████░░]  83% (5/6 phases COMPLETE) Phases 57+58+59+60+61 COMPLETE (Phase 60 ratified 2026-04-27 in Plan 62-03 W2b spot-check); Phase 62 in progress
 ```
 
 ## v1.8 Phase Map
@@ -52,8 +52,8 @@ v1.8: [█████░░░░░]  50% (3/6 phases COMPLETE) Phases 57+58+6
 |-------|------|--------------|--------|
 | 57 | Diagnosis Pass + Aesthetic-of-Record Lock-in | DGN-01, DGN-02, DGN-03, AES-01, AES-02, AES-03, AES-04 | Complete (3/3 plans) |
 | 58 | Lighthouse CI + Real-Device Telemetry | CIB-01, CIB-02, CIB-03, CIB-04, CIB-05 | Complete (2/2 plans, code-side green; 2 HUMAN-UAT items pending) |
-| 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Planned (3 plans, 0/3 executed) |
-| 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Planned (2 plans, 0/2 executed) |
+| 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Complete (3/3 plans, AES-02 exception ratified) |
+| 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Complete (2/2 plans, ratified 2026-04-27 via 62-03 W2b spot-check) |
 | 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Complete (3/3 plans, all 4 BND + AES-04 SATISFIED post-recalibration) |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
 
@@ -237,4 +237,4 @@ Resume with: User decision on 3 pending items in `61-HUMAN-UAT.md`:
   2. **AES-04 calibration path** — re-capture baselines from pre-Phase-61 commit and bisect if 20/20 PASS strict 0% on fresh baselines (=bundle-induced regression), OR **relax to AES-04 standing 0.5% rule** (which would 20/20 PASS per current data; max diff 0.343%).
   3. **Phase 59 spec MAX_DIFF_RATIO discrepancy** — Phase 59 row B claimed "20/20 PASS at 0%" but spec source uses 0.005. Decide whether this is documentation error vs separate undocumented verification.
 
-After user resolves: route to `/pde:plan-phase 62` (Real-Device Verification + Final Gate already maps to VRF-01..05; absorbing BND-01 + AES-04 closure into 62 may be the cleanest path) or `/pde:insert-phase 61.1` if a focused intervention is preferred. Phase 60 row in v1.8 Phase Map remains stale (Path A closed 2026-04-26); Phase 60 SUMMARY ratification still deferred.
+After user resolves: route to `/pde:plan-phase 62` (Real-Device Verification + Final Gate already maps to VRF-01..05; absorbing BND-01 + AES-04 closure into 62 may be the cleanest path) or `/pde:insert-phase 61.1` if a focused intervention is preferred. Phase 60 row ratified 2026-04-27 in Plan 62-03 W2b (3-claim spot-check: LCP=810ms / MAX_DIFF_RATIO=0.005 / autoResize:true all concordant).
