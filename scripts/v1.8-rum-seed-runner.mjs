@@ -17,7 +17,8 @@
  * mixed-labelling decision is auditable.
  *
  * Command-spawn discipline: this script does NOT spawn child processes; it
- * uses the playwright-core library directly. No execFile/execFileSync surface.
+ * uses the @playwright/test library's chromium export directly. No
+ * execFile/execFileSync surface.
  *
  * PII discipline: no user agents, no IPs, no client identifiers persisted —
  * only counts and route lists. Beacons themselves are sanitized server-side
@@ -28,7 +29,7 @@
  *   PROD_URL=https://example.com pnpm tsx scripts/v1.8-rum-seed-runner.mjs
  *   VISITS_PER_ROUTE=10 pnpm tsx scripts/v1.8-rum-seed-runner.mjs
  */
-import { chromium } from "playwright-core";
+import { chromium } from "@playwright/test";
 import { writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
