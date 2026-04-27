@@ -969,7 +969,9 @@ Plans:
   1. WebPageTest JSON for >=3 device profiles (iPhone 13/14 Safari, Galaxy A14 Chrome, mid-tier Android) committed to `.planning/perf-baselines/v1.8/`; each report shows LCP <1.0s.
   2. Plan 62-01 W0a→W2a re-run end-to-end (script-driven, deterministic) on the active prod URL; outputs reconcile with Phase 62 synthetic numbers within Pitfall #10 escalation thresholds.
   3. VRF-04 mid-milestone real-vs-synthetic synthesis doc rendered (`.planning/perf-baselines/v1.8/MID-MILESTONE-CHECKPOINT.md` or successor) with explicit thresholds for "emulation passes / real-device fails" divergence.
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 63-01-PLAN.md — VRF-01 + VRF-04: 3-profile WPT real-device matrix harvest + MID-MILESTONE-CHECKPOINT.md synthesis (mirrors deferred 62-01)
 
 ### Phase 64: Bisect Protection + 3-PR Ship Sequence
 **Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. This activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
