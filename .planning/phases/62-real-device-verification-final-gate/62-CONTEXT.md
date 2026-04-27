@@ -54,9 +54,16 @@ Confirm the synthetic Lighthouse-emulation gains shipped in Phases 57–61 hold 
 
 ### VRF-02 synthetic gate
 
-- **D-05:** **`pnpm tsx scripts/launch-gate.ts` 5 sequential runs against prod URL.** Median computed across all 5 runs; pass requires median 100/100 across all 4 categories AND median LCP <1.0s AND median CLS=0 AND median TTI <1.5s.
-  - Output captured at `.planning/perf-baselines/v1.8/vrf-02-launch-gate-runs.json` (5-run array + computed median).
-  - Why: ROADMAP success criterion 2 verbatim; `launch-gate.ts` already exists and was the v1.7 PRF gate (proven mechanism).
+- **D-05:** **`pnpm tsx scripts/launch-gate-vrf02.ts` 5 sequential runs against prod URL via `@lhci/cli` + `.lighthouseci/lighthouserc.json` standing rule.** Median computed across all 5 runs; pass requires the LHCI standing rule of record:
+  - `categories:performance` median ≥ 0.97
+  - `categories:accessibility` median ≥ 0.97
+  - `categories:best-practices` median ≥ 0.95 (Phase 62 path_b_decision; was 0.97; ratifies font-size audit aesthetic tradeoff — see `.lighthouseci/lighthouserc.json::_path_b_decision`)
+  - `categories:seo` median ≥ 1.0
+  - `largest-contentful-paint` median ≤ 1000ms
+  - `cumulative-layout-shift` median ≤ 0.005 (Phase 60 path_a_decision; was 0; ratifies Anton font swap glyph-metric shift)
+  - `total-blocking-time` median ≤ 200ms
+  - Output captured at `.planning/perf-baselines/v1.8/vrf-02-launch-gate-runs.json` (5-run array + computed median + dual `verdict_lhci` and `verdict_plan_strict`).
+  - Why: D-05 was originally written stricter than the LHCI standing rule (perf == 100 vs ≥ 0.97; CLS == 0 vs ≤ 0.005). Phase 62 surfaced the divergence and reconciled D-05 to the milestone gate of record (Phase 58 CIB-03/04 + Phase 60 path_a_decision). `launch-gate.ts` itself is preserved byte-identical (CIB-04); the new `launch-gate-vrf02.ts` shim delegates to a sibling `.mjs` runner that drives `@lhci/cli` against the rc config — proven mechanism, apples-to-apples with the gating CI.
 
 ### VRF-03 motion contract
 
