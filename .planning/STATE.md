@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: executing
-stopped_at: "Phase 62 plans ready; auto-chain paused at first human-action gate (WPT API key required, plus chrome-devtools MCP + 24h RUM window blockers downstream). 3 plans + CONTEXT + RESEARCH + VALIDATION all committed. User decision needed: provide WPT API key + run external services in a deliberate session, OR defer Phase 62 to a scheduled milestone-close session."
-last_updated: "2026-04-27T18:00:00.000Z"
-last_activity: 2026-04-27 -- Phase 62 execution started
+status: ready-for-milestone-close
+stopped_at: "Phase 62 closed feature-complete-with-deferrals 2026-04-27. 3 of 6 VRF gates PASS at production-confirmed level (VRF-02 post-path_b, VRF-03, AES-04); 3 of 6 DEFERRED with explicit v1.9 carve-outs (VRF-01 needs WPT API key; VRF-04 depends on VRF-01; VRF-05 needs fresh prod deploy with /api/vitals route). Plan 62-01 deferred to v1.9; Plans 62-02 + 62-03 complete with SUMMARY files. Close-out artifacts shipped (62-FINAL-GATE.md + 62-VERIFICATION.md + .planning/milestones/v1.8/MILESTONE-SUMMARY.md). Two new path decisions ratified: path_b (LHCI bp 0.97→0.95 — font-size aesthetic tradeoff) + path_a recap (LHCI cls 0→0.005 — Anton swap shift). v1.8 ready for /pde:complete-milestone v1.8 (literal version arg per feedback_pde_milestone_complete_help_arg.md)."
+last_updated: "2026-04-27T19:55:00.000Z"
+last_activity: 2026-04-27 -- Phase 62 close-out shipped; v1.8 ready for milestone-close
 progress:
   total_phases: 54
-  completed_phases: 42
+  completed_phases: 43
   total_plans: 86
-  completed_plans: 83
-  percent: 97
+  completed_plans: 85
+  percent: 99
 ---
 
 # STATE — SignalframeUX
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 62 (Real-Device Verification + Final Gate) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 62
-Last activity: 2026-04-27 -- Phase 62 execution started
+Phase: 62 (Real-Device Verification + Final Gate) — CLOSED-WITH-DEFERRALS
+Plan: 3 of 3 (62-01 deferred to v1.9; 62-02 + 62-03 complete)
+Status: v1.8 ready for /pde:complete-milestone v1.8 (literal version arg)
+Last activity: 2026-04-27 -- Phase 62 close-out shipped (8 commits this session)
 
 ## Progress
 
@@ -43,7 +43,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [████████░░]  83% (5/6 phases COMPLETE) Phases 57+58+59+60+61 COMPLETE (Phase 60 ratified 2026-04-27 in Plan 62-03 W2b spot-check); Phase 62 in progress
+v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-complete-with-deferrals 2026-04-27; ready for /pde:complete-milestone v1.8)
 ```
 
 ## v1.8 Phase Map
@@ -55,7 +55,7 @@ v1.8: [████████░░]  83% (5/6 phases COMPLETE) Phases 57+58+5
 | 59 | Critical-Path Restructure | CRT-01, CRT-02, CRT-03, CRT-04, CRT-05 | Complete (3/3 plans, AES-02 exception ratified) |
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Complete (2/2 plans, ratified 2026-04-27 via 62-03 W2b spot-check) |
 | 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Complete (3/3 plans, all 4 BND + AES-04 SATISFIED post-recalibration) |
-| 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Not started |
+| 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Closed-with-deferrals 2026-04-27 (3 PASS: VRF-02 post-path_b, VRF-03, AES-04; 3 DEFERRED to v1.9: VRF-01, VRF-04, VRF-05) |
 
 **Build-order constraints (encoded in ROADMAP.md):**
 
