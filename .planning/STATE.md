@@ -1,16 +1,17 @@
 ---
-pde_state_version: 1.0
+gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: ready_to_execute
-stopped_at: Phase 61 CLOSED 2026-04-26 with all 4 BND requirements SATISFIED + AES-04 PASS at standing 0.5%; ROADMAP recalibration ≤102→≤105 KB ratified; spec MAX_DIFF_RATIO 0→0.005 re-run 20/20 PASS; Phase 59 errata committed. Phase 62 next (VRF-01..05 Real-Device Verification + Final Gate).
-last_updated: "2026-04-26T21:35:00.000Z"
+status: "Phase 61 CLOSED 2026-04-26 with all 4 BND requirements SATISFIED + AES-04 PASS at standing 0.5%. **BND-01 SATISFIED** — Shared by all = 103 KB observed, ≤105 KB recalibrated target (footnote: Next.js 15 framework runtime ~45.8 KB + react-dom ~54.2 KB + other shared 2.56 KB = 103 KB practical floor unreachable by `optimizePackageImports`; original 102 KB target was set against pre-Next.js-15-framework-floor baseline). **BND-02 SATISFIED** — all 7 packages added (radix-ui, input-otp, cmdk, vaul, sonner, react-day-picker; date-fns SKIP justified per 61-RESEARCH §1); realized −16 KB on `/` First Load JS (5.7%) and −15-16 KB on all Radix-consuming routes. **BND-03 SATISFIED** — sf/index.ts directive-free. **BND-04 SATISFIED** — stale-chunk guard documented across 61-RESEARCH.md + both RESEARCH-LOG headers. **AES-04 PASS** — 20/20 at MAX_DIFF_RATIO=0.005 (re-run 2026-04-26 in 24.1s; max diff 0.343%); spec recalibrated from strict 0 to AES-04 standing 0.5% rule (matches AESTHETIC-OF-RECORD.md and Phase 59 prior art). Phase 59 documentation errata committed ratifying spec source-of-record. 16 plan commits + 4 close-out commits = 20 commits total. Phase 62 next (mid-milestone real-device checkpoint per VRF-04 fires after Phase 60 closes; Phase 60 SUMMARY ratification still deferred)."
+stopped_at: Phase 62 context gathered
+last_updated: "2026-04-27T15:26:32.768Z"
 last_activity: 2026-04-26
 progress:
   total_phases: 54
   completed_phases: 42
   total_plans: 83
   completed_plans: 83
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -228,10 +229,12 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-26T21:15:00.000Z
-Stopped at: Phase 61 EXECUTED 3/3 plans (16 commits across 3 sequential waves); verifier returned `human_needed` with 3/4 BND requirements satisfied. BND-02/03/04 PASS; BND-01 + AES-04 strict 0% FAIL. Code-review 3 info-only. Per `feedback_autonomous_forward_motion` — ALL gates honored without loosening (no rounding 103→102, no swapping strict 0% for 0.5%); honest verdicts persisted in 61-VERIFICATION.md + 61-HUMAN-UAT.md (3 decision points pending) + 61-03-FINAL-GATE.md.
+Last session: 2026-04-27T15:26:32.761Z
+Stopped at: Phase 62 context gathered
 Resume with: User decision on 3 pending items in `61-HUMAN-UAT.md`:
+
   1. **BND-01 closure path** — splitChunks retuning (try to pull 1 KB module off shared floor) vs ROADMAP target recalibration (119 KiB budget may have included three.js-route-specific bytes optimizePackageImports cannot reduce) vs **accept 103 KB as practical floor** (Next.js 15 framework runtime 45.8 + react-dom 54.2 + other shared 2.56 = 103 KB).
   2. **AES-04 calibration path** — re-capture baselines from pre-Phase-61 commit and bisect if 20/20 PASS strict 0% on fresh baselines (=bundle-induced regression), OR **relax to AES-04 standing 0.5% rule** (which would 20/20 PASS per current data; max diff 0.343%).
   3. **Phase 59 spec MAX_DIFF_RATIO discrepancy** — Phase 59 row B claimed "20/20 PASS at 0%" but spec source uses 0.005. Decide whether this is documentation error vs separate undocumented verification.
+
 After user resolves: route to `/pde:plan-phase 62` (Real-Device Verification + Final Gate already maps to VRF-01..05; absorbing BND-01 + AES-04 closure into 62 may be the cleanest path) or `/pde:insert-phase 61.1` if a focused intervention is preferred. Phase 60 row in v1.8 Phase Map remains stale (Path A closed 2026-04-26); Phase 60 SUMMARY ratification still deferred.
