@@ -26,7 +26,7 @@
 - [x] **CRT-02**: Anton font character-subsetted via build-time `pyftsubset` (full printable ASCII + TM, 58.8KB → 11.1KB / 81% reduction). No runtime dependency added (opentype.js devDep ratified for measurement only).
 - [x] **CRT-03**: Anton `font-display` migrated `optional` → `swap` with MEASURED descriptors (size-adjust 92.14%, ascent-override 127.66%, descent-override 35.72%, line-gap-override 0%) against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain. Slow-3G hard-reload CLS=0 across 5 routes (Wave-3 0.485 regression history exorcised). AES-02 documented exception ratified at AESTHETIC-OF-RECORD.md Change Log 2026-04-26 with 8/8 cohort surface acceptance.
 - [x] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` with `setTimeout(initLenis, 0)` Safari fallback inside existing `useEffect` at `components/layout/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved verbatim. Cleanup cancels pending handle.
-- [x] **CRT-05**: CRT-01, CRT-02/03, CRT-04 staged as three independent atomic commit cohorts on `chore/v1.7-ratification` ready for sequential PR-shipping; bisect order preserved (66ac4ec → 47fe585 → fc3827c). PR-ship + branch-protection enforcement deferred to user (Phase 58 HUMAN-UAT items 1+2).
+- [ ] **CRT-05**: CRT-01, CRT-02/03, CRT-04 staged as three independent atomic commit cohorts on `chore/v1.7-ratification` ready for sequential PR-shipping; bisect order preserved (66ac4ec → 47fe585 → fc3827c). 3-PR ship sequence reassigned to **Phase 64** (gap closure 2026-04-27) — activator is Phase 58 D-10 HUMAN-UAT items 1+2 (Vercel `deployments:write` + branch-protection `audit` required check). Code-side staging remains complete; checkbox reset because `/pde:audit-milestone v1.8` classified CRT-05 as PARTIAL (commits exist; ship not executed).
 
 ## LCP Repositioning (LCP)
 
@@ -102,7 +102,7 @@
 | CRT-02 | 59 | TBD | Pending |
 | CRT-03 | 59 | TBD | Pending |
 | CRT-04 | 59 | TBD | Pending |
-| CRT-05 | 59 | TBD | Pending |
+| CRT-05 | 64 (gap closure 2026-04-27 — code-side staged at 59; 3-PR ship moved to 64) | TBD | Pending |
 | LCP-01 | 60 | TBD | Pending |
 | LCP-02 | 60 | TBD | Pending |
 | LCP-03 | 60 | TBD | Pending |
@@ -110,11 +110,11 @@
 | BND-02 | 61 | 2026-04-26 | Validated |
 | BND-03 | 61 | 2026-04-26 | Validated |
 | BND-04 | 61 | 2026-04-26 | Validated |
-| VRF-01 | 62 | TBD | Pending |
+| VRF-01 | 63 (gap closure 2026-04-27 — moved from 62; deferred for WPT API key) | TBD | Pending |
 | VRF-02 | 62 | TBD | Pending |
 | VRF-03 | 62 | TBD | Pending |
-| VRF-04 | 62 | TBD | Pending |
-| VRF-05 | 62 | TBD | Pending |
+| VRF-04 | 63 (gap closure 2026-04-27 — moved from 62; cascade from VRF-01) | TBD | Pending |
+| VRF-05 | 65 (gap closure 2026-04-27 — moved from 62; architectural — fresh prod deploy required) | TBD | Pending |
 
 **Cross-cutting note (AES-02, AES-03, AES-04):** These three are standing rules documented inside Phase 57's AES-01 deliverable (`.planning/codebase/AESTHETIC-OF-RECORD.md`). They are mapped to Phase 57 for ownership/traceability, but apply to *every* phase 58-62 as enforcement gates (no Chromatic re-baseline for perf changes; mid-milestone cohort review; per-phase pixel-diff <=0.5%). Phases 58-62 reference them; only Phase 57 produces them.
 
@@ -125,21 +125,24 @@
 | DGN (Diagnosis) | 3 | 57 |
 | AES (Aesthetic Preservation) | 4 | 57 (1 deliverable + 3 standing rules) |
 | CIB (CI Bench) | 5 | 58 |
-| CRT (Critical-Path Restructure) | 5 | 59 |
+| CRT (Critical-Path Restructure) | 5 | 59 (CRT-01..04) + 64 (CRT-05) |
 | LCP (LCP Repositioning) | 3 | 60 |
 | BND (Bundle Hygiene) | 4 | 61 |
-| VRF (Verification) | 5 | 62 |
+| VRF (Verification) | 5 | 62 (VRF-02, VRF-03) + 63 (VRF-01, VRF-04) + 65 (VRF-05) |
 | **Total** | **29** | — |
 
-**Phase-grouped totals:**
+**Phase-grouped totals (post-gap-closure 2026-04-27):**
 - Phase 57: 7 (DGN×3 + AES×4)
 - Phase 58: 5 (CIB×5)
-- Phase 59: 5 (CRT×5)
+- Phase 59: 4 (CRT-01..CRT-04 — code-side complete)
 - Phase 60: 3 (LCP×3)
 - Phase 61: 4 (BND×4)
-- Phase 62: 5 (VRF×5)
+- Phase 62: 2 (VRF-02, VRF-03 — synthetic + motion contract verification)
+- Phase 63: 2 (VRF-01, VRF-04 — WPT real-device + synthesis) — *gap closure, added 2026-04-27*
+- Phase 64: 1 (CRT-05 — 3-PR bisect ship sequence + Phase 58 D-10 carry-overs) — *gap closure, added 2026-04-27*
+- Phase 65: 1 (VRF-05 — field RUM p75 LCP ≥24h) — *gap closure, added 2026-04-27*
 - **Total: 29 unique REQ-IDs**, every one mapped exactly once.
 
 ---
 
-*Last updated: 2026-04-25 — v1.8 Speed of Light requirements defined and traceability populated by pde-roadmapper*
+*Last updated: 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original requirements: 2026-04-25 by pde-roadmapper.*

@@ -10,7 +10,7 @@
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
 - [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
-- [ ] **v1.8 Speed of Light** — Phases 57-62 (active; perf-recovery to original CLAUDE.md gate — Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial)
+- [ ] **v1.8 Speed of Light** — Phases 57-65 (active; perf-recovery to original CLAUDE.md gate — Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial; Phases 63-65 added 2026-04-27 to close v1.8-MILESTONE-AUDIT gaps before milestone close)
 
 ## Phases
 
@@ -960,6 +960,41 @@ Plans:
   5. Field RUM 75th-percentile LCP <1.0s confirmed via the CIB-05 telemetry endpoint after a >=24h sampling window post-deploy.
 **Plans**: TBD
 
+### Phase 63: WPT Real-Device Verification
+**Goal**: Close VRF-01 + VRF-04 by harvesting the 3-profile WebPageTest matrix and rendering the mid-milestone real-vs-synthetic synthesis. Independent of branch-merge chain — gated only by external WPT API key provisioning.
+**Depends on**: Nothing in-repo. External: WPT API key at `~/.wpt-api-key` (chmod 600). Parallel-safe with Phases 64 + 65.
+**Requirements**: VRF-01, VRF-04
+**Gap Closure**: Closes audit gaps VRF-01 (deferred — external resource) + VRF-04 (deferred — cascade from VRF-01) per `.planning/v1.8-MILESTONE-AUDIT.md` §2.
+**Success Criteria** (what must be TRUE):
+  1. WebPageTest JSON for >=3 device profiles (iPhone 13/14 Safari, Galaxy A14 Chrome, mid-tier Android) committed to `.planning/perf-baselines/v1.8/`; each report shows LCP <1.0s.
+  2. Plan 62-01 W0a→W2a re-run end-to-end (script-driven, deterministic) on the active prod URL; outputs reconcile with Phase 62 synthetic numbers within Pitfall #10 escalation thresholds.
+  3. VRF-04 mid-milestone real-vs-synthetic synthesis doc rendered (`.planning/perf-baselines/v1.8/MID-MILESTONE-CHECKPOINT.md` or successor) with explicit thresholds for "emulation passes / real-device fails" divergence.
+**Plans**: TBD
+
+### Phase 64: Bisect Protection + 3-PR Ship Sequence
+**Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. This activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
+**Depends on**: Phase 58 code-side (LHCI workflow already shipped). User-action: GitHub repo-settings UI + Vercel GitHub App permissions.
+**Requirements**: CRT-05 (+ Phase 58 D-10 HUMAN-UAT items 1+2 retroactively activated)
+**Gap Closure**: Closes audit gap CRT-05 (partial — commits exist; ship not executed) + tech-debt items in §tech_debt phase 58 per `.planning/v1.8-MILESTONE-AUDIT.md`.
+**Success Criteria** (what must be TRUE):
+  1. Vercel GitHub App `deployments:write` permission granted on this repo (verified by LHCI workflow firing on PR open with green deployment_status hook).
+  2. Branch protection on `main` requires the `audit` check before merge (verified by attempting to merge a PR with no `audit` run; GitHub blocks).
+  3. Three PRs opened from `chore/v1.7-ratification` and merged in bisect order: 59-01 (66ac4ec) → 59-02 (47fe585) → 59-03 (fc3827c). Each PR's LHCI run passes ≥0.97 categories:performance, LCP ≤1000ms, CLS ≤0.005 (path_a ratified), bp ≥0.95 (path_b ratified).
+  4. After all three merge, `chore/v1.7-ratification` is fully reflected on `main` and the v1.8 commit chain is bisect-protected for future regressions.
+**Plans**: TBD
+
+### Phase 65: Field RUM Telemetry Activation
+**Goal**: Close VRF-05 by deploying the CIB-05 `/api/vitals` route to public prod (which 15-day-old prod alias predates), seeding ≥100 sessions via `scripts/v1.8-rum-seed-runner.mjs`, and aggregating field-RUM p75 LCP within the Hobby-tier 1h log retention window.
+**Depends on**: Phase 64 (must complete — `chore/v1.7-ratification` must be on `main` so `/api/vitals` route ships in fresh deploy).
+**Requirements**: VRF-05
+**Gap Closure**: Closes audit gap VRF-05 (deferred — architectural; public prod predates `/api/vitals` route) per `.planning/v1.8-MILESTONE-AUDIT.md` §2 and v1.9-unblock recipe in `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json::v1_9_unblock_recipe`.
+**Success Criteria** (what must be TRUE):
+  1. Fresh prod deploy from `main` confirmed; `/api/vitals` returns 200 (not 404) on the deployed alias.
+  2. `scripts/v1.8-rum-seed-runner.mjs` drives ≥100 sessions against the deployed alias (smoke-tested 15/15 ok in 80s; pipeline mechanically verified at Phase 62 close).
+  3. `scripts/v1.8-rum-aggregate.ts` runs *within the Hobby-tier 1h log retention window* and produces a real p75 LCP < 1000ms.
+  4. `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json` committed with real (non-synthetic) p75 LCP, replacing the `_v1_9_unblock_recipe`-only stub.
+**Plans**: TBD
+
 ## Progress
 
 
@@ -1027,6 +1062,9 @@ Plans:
 | 60. LCP Element Repositioning | v1.8 | 0/TBD | Not started | - |
 | 61. Bundle Hygiene | 3/3 | Complete    | 2026-04-26 | - |
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
+| 63. WPT Real-Device Verification | v1.8 | 0/TBD | Not started | - |
+| 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 0/TBD | Not started | - |
+| 65. Field RUM Telemetry Activation | v1.8 | 0/TBD | Not started | - |
 
 ---
 
@@ -1038,5 +1076,6 @@ Plans:
 4. **Phase 60 ⊥ Phase 61 (parallel-safe).** Both depend on Phase 57 audit output, neither on the other. If executed in parallel, separate plans within each phase, not interleaved.
 5. **Phase 59 expects >=3 plans per CRT-05** for clean bisect: sync-script PR, Anton (subset+swap) PR, Lenis PR. Plan-phase must not collapse to a single PR.
 6. **Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60**, not deferred to phase end. RUM 75th-percentile sampling (VRF-05) needs >=24h post-deploy → may extend milestone closure timing.
+7. **Gap-closure dependency chain (Phases 63-65, added 2026-04-27).** Phase 63 (WPT) is independent — runs anytime once `~/.wpt-api-key` is provisioned. Phase 64 (Bisect Protection + 3-PR Ship) MUST precede Phase 65 because Phase 65 (Field RUM) requires `chore/v1.7-ratification` to be merged to `main` so the CIB-05 `/api/vitals` route ships in the fresh prod deploy. Phases 63 ⊥ 64 (parallel-safe). Phase 64 → Phase 65 (strict order).
 
-*Last updated: 2026-04-25 — v1.8 Speed of Light roadmap created from research/SUMMARY.md and 26 v1.8 requirements*
+*Last updated: 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original roadmap: 2026-04-25 from research/SUMMARY.md and 26 v1.8 requirements (later recounted to 29).*
