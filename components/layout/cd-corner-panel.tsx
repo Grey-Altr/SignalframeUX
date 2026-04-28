@@ -1,3 +1,5 @@
+import { WORDMARK_PATH_D } from "@/lib/wordmark-path";
+
 /**
  * Ported from cdb-v3-dossier (components/cdb/cdb-corner-chrome.tsx).
  *
@@ -9,9 +11,11 @@
  *
  * Implementation: the outer div handles fixed positioning + the corner-notch
  * clipPath. Inside, an SVG renders the masked yellow rect (kana shapes punched
- * out) and the visible English overlay. `による` in line 2 stays in the visible
- * text run with `fill="transparent"` so layout/spacing matches the original
- * bilingual reading order, but only the mask actually punches the glyph.
+ * out) and the visible English overlay. The English overlay is now a static
+ * <path> (Phase 63.1 Plan 03 Path A — eliminates JetBrains Mono font-swap
+ * wait that was making this element the LCP candidate at the swap moment on
+ * iPhone 14 Pro 4G). Path data lives in lib/wordmark-path.ts; regenerate via
+ * scripts/vectorize-wordmark.mjs.
  */
 export function CdCornerPanel() {
   return (
@@ -73,21 +77,13 @@ export function CdCornerPanel() {
           fill="var(--sfx-cube-fill)"
           mask="url(#cd-corner-kana-knockout)"
         />
-        {/* English overlay — `による` stays in the run as transparent fill so
-            its glyph slot keeps the same x-advance as the original bilingual
-            reading order, but the visual hole comes from the mask only. */}
-        <text
-          x="192"
-          y="33"
-          textAnchor="end"
-          fontFamily="'JetBrains Mono', monospace"
-          fontSize="11"
-          fontWeight="700"
-          letterSpacing="1.76"
-          fill="black"
-        >
-          CULTURE DIVISION <tspan fill="transparent">による</tspan>
-        </text>
+        {/* English overlay — pre-vectorized to a static <path> so paint
+            doesn't wait for JetBrains Mono font swap (Phase 63.1 Plan 03
+            Path A; LCP candidate-shift fix). The original <text> with
+            text-anchor="end" at x=192 included a transparent <tspan>による</tspan>
+            for layout spacing; that offset is baked into the path's
+            x-positioning (kana_offset=23.32 in the vectorizer). */}
+        <path d={WORDMARK_PATH_D} fill="black" />
       </svg>
     </div>
   );
