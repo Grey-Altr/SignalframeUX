@@ -9,6 +9,14 @@
     "review_gate": "Revert to 0 if Phase 59 retrofit (re-measure Anton descriptors at GhostLabel size band) restores CLS=0. Until then, 0.005 is the standing rule.",
     "ratified_to_main_via": "Phase 64 PR #2 (ship/59-02) — inline restoration during Path A gate-fix"
   },
+  "_seo_omission_note": {
+    "decided": "2026-04-28",
+    "audit": "categories:seo",
+    "action": "removed from preview-LHCI assert block",
+    "rationale": "Vercel preview deployments ship `x-robots-tag: noindex` header to prevent search-engine indexing of throwaway preview URLs. Lighthouse's SEO category penalizes this with a deterministic ~0.63 score regardless of actual SEO health (canonical tags, meta description, heading structure, etc. are all correct on the page itself). Gating on this in preview-CI produces a structural false-failure with no actionable signal. Production SEO is gated by the launch-gate.ts harness against the live domain (no NOINDEX header), where SEO scores reflect real SEO health.",
+    "scope": "preview-LHCI only — production SEO gating preserved via tools/launch-gate.ts",
+    "review_gate": "Re-add if Vercel ever exposes a per-deployment override for preview NOINDEX behavior, OR if a per-environment LHCI config split is introduced (preview-rc + prod-rc)."
+  },
   "_path_b_decision": {
     "decided": "2026-04-27",
     "audit": "categories:best-practices",
@@ -55,10 +63,6 @@
         "categories:best-practices": [
           "error",
           { "minScore": 0.95, "aggregationMethod": "median-run" }
-        ],
-        "categories:seo": [
-          "error",
-          { "minScore": 1.0, "aggregationMethod": "median-run" }
         ],
         "largest-contentful-paint": [
           "error",
