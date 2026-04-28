@@ -1,0 +1,70 @@
+name: Lighthouse
+
+# Trigger lock (T-CI-01 mitigation):
+#   ONLY the `deployment_status` event below — never the fork-PR variant.
+#   Vercel fires this event automatically when its preview deployment succeeds.
+#   Vercel GitHub App must have `deployments: write` permission on this repo
+#   (verify via: GitHub -> repo -> Settings -> GitHub Apps -> Vercel -> Permissions).
+#
+# Workflow-injection note: the only `${{ ... }}` interpolations on this workflow
+# are `github.event.deployment_status.state`, `.environment`, and `.target_url`.
+# State/environment are constrained enums emitted by the Vercel deployment
+# integration; target_url is the Vercel preview URL Vercel itself published.
+# These flow into YAML inputs of the lighthouse-ci action (NOT into any
+# `run:` shell). No untrusted user-authored text reaches a shell here.
+on: deployment_status
+
+permissions:
+  contents: read
+  # No `pull-requests: write` — temporaryPublicStorage prints the report URL
+  # to the workflow log; we do NOT post inline PR comments in v0.1
+  # (OQ-02 lock: zero secret setup).
+
+jobs:
+  audit:
+    name: audit
+    # Filter for Vercel preview success only — skip pending/failure/inactive states.
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.environment, 'Preview')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15  # 5 mobile + 5 desktop runs + setup overhead (~10-12 min typical)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Warmup discipline: LHCI runs `numberOfRuns` (5) PER URL listed.
+      # Listing the target_url ONCE per emulation = 5 measured runs total
+      # per emulation (10 total mobile + desktop). CDN warmth is provided
+      # by the Vercel deployment lifecycle itself — by the time
+      # `deployment_status.state == 'success'` fires, the preview URL has
+      # already been hit by Vercel's own readiness probe, so the edge is
+      # warm before LHCI's first run. No URL-duplication needed.
+      - name: Lighthouse — mobile
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ github.event.deployment_status.target_url }}
+          configPath: .lighthouseci/lighthouserc.json
+          temporaryPublicStorage: true
+
+      - name: Lighthouse — desktop
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ github.event.deployment_status.target_url }}
+          configPath: .lighthouseci/lighthouserc.desktop.json
+          temporaryPublicStorage: true

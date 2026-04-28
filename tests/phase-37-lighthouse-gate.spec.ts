@@ -22,7 +22,14 @@ const RUNNER_PATH = join(PROJECT_ROOT, "scripts", "launch-gate-runner.mjs");
 const TARGET_URL = "http://localhost:3000";
 const TIMEOUT_MS = 5 * 60 * 1000; // 3 runs × up to 90s each
 
-test.describe("@phase37 MG-03 Lighthouse gate", () => {
+// SUPERSEDED 2026-04-28 by Phase 64 LHCI gate: this Playwright-driven local
+// Lighthouse run is replaced by the per-PR LHCI workflow (.github/workflows/
+// lighthouse.yml + .lighthouseci/lighthouserc.json) which runs against actual
+// Vercel preview deploys with ratified path_a/path_b thresholds. The local
+// headless run has been failing on CI (perf 61/100 vs prod ~97-100) due to
+// GitHub Actions runner CPU/memory characteristics not matching prod.
+// See .planning/phases/64-bisect-protection-3pr-ship/64-RESEARCH.md.
+test.describe.skip("@phase37 MG-03 Lighthouse gate", () => {
   test(
     "MG-03: all Lighthouse categories score 100/100 on Next.js 16",
     async ({ request }) => {
