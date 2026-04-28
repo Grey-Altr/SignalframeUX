@@ -993,15 +993,16 @@ Plans:
 - [x] 63.1-03-lcp-fast-path-PLAN.md — hoist CdCornerPanel to direct <body> child + WPT re-run + Pitfall #10 ratio re-check + cohort sign-off (Wave 3; PR #3 of 3; phase terminal)
 
 ### Phase 64: Bisect Protection + 3-PR Ship Sequence
-**Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. This activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
+**Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. Also absorbs **`63.1-COHORT.md §7` carry-over #1** (Pitfall #10 synthetic baseline recalibration / D-09 successor) so the 3-PR ship does not land against a FAILing test gate. Activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
 **Depends on**: Phase 58 code-side (LHCI workflow already shipped). User-action: GitHub repo-settings UI + Vercel GitHub App permissions.
-**Requirements**: CRT-05 (+ Phase 58 D-10 HUMAN-UAT items 1+2 retroactively activated)
-**Gap Closure**: Closes audit gap CRT-05 (partial — commits exist; ship not executed) + tech-debt items in §tech_debt phase 58 per `.planning/v1.8-MILESTONE-AUDIT.md`.
+**Requirements**: CRT-05 (+ Phase 58 D-10 HUMAN-UAT items 1+2 retroactively activated; + `63.1-COHORT.md §7` carry-over #1 / Pitfall #10 synthetic baseline recalibration)
+**Gap Closure**: Closes audit gap CRT-05 (partial — commits exist; ship not executed) + tech-debt items in §tech_debt phase 58 + audit rev-3 expansion item #1 (Pitfall #10 recalibration) per `.planning/v1.8-MILESTONE-AUDIT.md` and `.planning/phases/63.1-lcp-fast-path-remediation/63.1-COHORT.md §7`. Carry-overs #2 (Next.js framework chunk 2979), #3 (iPhone 14 Pro 4G LCP variance), #4 (Anton swap timing for ghost-label) explicitly **DEFER to v1.9** per audit `§9 carry-overs` items 6/7, 8, 9 — Phase 64 stays narrow on ship + #1 only (`project_overdue_lockin_mode.md` lock-in posture).
 **Success Criteria** (what must be TRUE):
   1. Vercel GitHub App `deployments:write` permission granted on this repo (verified by LHCI workflow firing on PR open with green deployment_status hook).
   2. Branch protection on `main` requires the `audit` check before merge (verified by attempting to merge a PR with no `audit` run; GitHub blocks).
   3. Three PRs opened from `chore/v1.7-ratification` and merged in bisect order: 59-01 (66ac4ec) → 59-02 (47fe585) → 59-03 (fc3827c). Each PR's LHCI run passes ≥0.97 categories:performance, LCP ≤1000ms, CLS ≤0.005 (path_a ratified), bp ≥0.95 (path_b ratified).
   4. After all three merge, `chore/v1.7-ratification` is fully reflected on `main` and the v1.8 commit chain is bisect-protected for future regressions.
+  5. `tests/v1.8-phase63-1-pitfall-10.spec.ts` no longer FAILs at 2.37×: synthetic baseline replaced with a real-device-predictive anchor (Vercel Speed Insights P75 or Catchpoint daily monitor candidate) so the Pitfall #10 ratio gate <1.3 either passes OR is explicitly recalibrated via a `_path_decision` block. Resolution must complete before PR #3 merges to avoid landing a FAILing gate on `main`.
 **Plans**: TBD
 
 ### Phase 65: Field RUM Telemetry Activation
@@ -1099,4 +1100,4 @@ Plans:
 6. **Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60**, not deferred to phase end. RUM 75th-percentile sampling (VRF-05) needs >=24h post-deploy → may extend milestone closure timing.
 7. **Gap-closure dependency chain (Phases 63-65, added 2026-04-27).** Phase 63 (WPT) is independent — runs anytime once `~/.wpt-api-key` is provisioned. Phase 64 (Bisect Protection + 3-PR Ship) MUST precede Phase 65 because Phase 65 (Field RUM) requires `chore/v1.7-ratification` to be merged to `main` so the CIB-05 `/api/vitals` route ships in the fresh prod deploy. Phases 63 ⊥ 64 (parallel-safe). Phase 64 → Phase 65 (strict order).
 
-*Last updated: 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original roadmap: 2026-04-25 from research/SUMMARY.md and 26 v1.8 requirements (later recounted to 29).*
+*Last updated: 2026-04-28 — `/pde:plan-milestone-gaps` rev-3 amended Phase 64 scope to absorb `63.1-COHORT.md §7` carry-over #1 (Pitfall #10 synthetic baseline recalibration / D-09 successor); carry-overs #2/#3/#4 explicitly deferred to v1.9 (Option C lock-in posture). 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original roadmap: 2026-04-25 from research/SUMMARY.md and 26 v1.8 requirements (later recounted to 29).*
