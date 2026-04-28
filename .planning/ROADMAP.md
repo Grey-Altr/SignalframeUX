@@ -986,9 +986,9 @@ Plans:
   5. 63.1-COHORT.md signed-off (D-11) — chrome-devtools MCP scroll-test confirms wordmark glyph trademark primitive preserved.
   6. Three atomic commit cohorts on chore/v1.7-ratification ready to ship as 3 sequential PRs (D-01 strict-bisect; D-02 strict-serial wave order).
   7. Pitfall #2/#5/#7/#8 guards remain green; D-05 (no new runtime deps) honored.
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 Plans:
-- [ ] 63.1-01-bundle-reduction-PLAN.md — extend optimizePackageImports + route-level code-split below-fold homepage sections (Wave 1; PR #1 of 3)
+- [x] 63.1-01-bundle-reduction-PLAN.md — extend optimizePackageImports + route-level code-split below-fold homepage sections (Wave 1; PR #1 of 3)
 - [ ] 63.1-02-js-deferral-PLAN.md — wrap useGSAP callback bodies in 4 section files with CRT-04 rIC fallback (Wave 2; PR #2 of 3)
 - [ ] 63.1-03-lcp-fast-path-PLAN.md — hoist CdCornerPanel to direct <body> child + WPT re-run + Pitfall #10 ratio re-check + cohort sign-off (Wave 3; PR #3 of 3; phase terminal)
 

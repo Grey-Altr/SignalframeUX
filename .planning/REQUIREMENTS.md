@@ -30,7 +30,7 @@
 
 ## LCP Repositioning (LCP)
 
-- [ ] **LCP-01**: LCP <1.0s on prod homepage mobile, verified via LHCI median of 5 runs.
+- [x] **LCP-01**: LCP <1.0s on prod homepage mobile, verified via LHCI median of 5 runs.
 - [ ] **LCP-02**: LCP candidate intervention shipped per DGN-01 diagnosis output. One of: (a) THESIS Anton manifesto reveal mechanism `opacity` → `clip-path`; (b) ghost-label `content-visibility: auto` + `contain-intrinsic-size` (on element only, NOT section wrapper); (c) hero h1 clip-path char-reveal in `page-animations.tsx`. Phase-60 plan finalizes which after DGN-01.
 - [ ] **LCP-03**: Visual baseline diff <0.5% per page after LCP intervention; cohort review escalates if "feels different" without specific code change as cause.
 

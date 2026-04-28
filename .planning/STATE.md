@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
 status: executing
-stopped_at: Phase 63.1 context gathered (--auto, single-pass)
-last_updated: "2026-04-28T07:12:43.446Z"
-last_activity: 2026-04-28 -- Phase 63.1 planning complete
+stopped_at: Completed Phase 63.1 Plan 01 — Bundle Reduction
+last_updated: "2026-04-28T07:34:25.886Z"
+last_activity: 2026-04-28
 progress:
   total_phases: 58
   completed_phases: 43
   total_plans: 90
-  completed_plans: 86
-  percent: 96
+  completed_plans: 87
+  percent: 97
 ---
 
 # STATE — SignalframeUX
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 63 (WPT Real-Device Verification) — EXECUTING
-Plan: 1 of 1
+Phase: 63.1 (lcp-fast-path-remediation) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-04-28 -- Phase 63.1 planning complete
+Last activity: 2026-04-28
 
 ## Progress
 
@@ -220,6 +220,10 @@ v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-com
 | LCP candidate diverges across viewports (mobile vs desktop) | Mobile = THESIS GhostLabel (4% opacity wayfinding glyph, ghost-label.tsx:11-23); desktop = VL-05 magenta `//` overlay (entry-section.tsx:208). Phase 60 LCP-02 selection MUST branch on viewport — single-intervention shipping picks one viewport, regresses the other. |
 | All 4 v1.7 named chunk IDs MATCHED in v1.8 build | Pitfall D fallback NOT triggered. Chunk IDs 3302, e9a6067a, 74c6194b, 7525 all preserved across v1.7→v1.8 webpack output. Phase 61 BND-02 work targets known IDs without rediscovery. |
 
+- [Phase 63.1]: D-04 ratified: chunk 3302 dissolved in Phase 61; stable IDs now 4335/e9a6067a/74c6194b/7525 (feedback_ratify_reality_bias)
+- [Phase 63.1]: optimizePackageImports additions rejected for Plan 01: any new entry reshuffles splitChunks graph non-additively; bundle reduction delegated to Plans 02+03
+- [Phase 63.1]: next/dynamic ssr:true confirmed partial-split only (Next.js #61066): App Router Server Component dynamic imports do not emit separate JS chunks; structure preserved for Plan 02 rIC work
+
 ### Roadmap Evolution
 
 - Phase 63.1 inserted after Phase 63: LCP Fast-Path Remediation (URGENT) — addresses real-device LCP FAIL on all 3 profiles found by Phase 63 Plan 01 (Catchpoint/WPT synthesis); Pitfall #10 TRIGGER on LCP (real÷synthetic = 2.95×) and TTI (6.0×). Wordmark `<text>` element is the unambiguous LCP candidate across all viewports per `63-MID-MILESTONE-CHECKPOINT.md` §3.
@@ -229,12 +233,12 @@ v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-com
 See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 milestone defined)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 63 — WPT Real-Device Verification
+**Current focus:** Phase 63.1 — lcp-fast-path-remediation
 
 ## Session Continuity
 
-Last session: 2026-04-28T06:24:58.552Z
-Stopped at: Phase 63.1 context gathered (--auto, single-pass)
+Last session: 2026-04-28T07:34:25.880Z
+Stopped at: Completed Phase 63.1 Plan 01 — Bundle Reduction
 Resume with: User decision on 3 pending items in `61-HUMAN-UAT.md`:
 
   1. **BND-01 closure path** — splitChunks retuning (try to pull 1 KB module off shared floor) vs ROADMAP target recalibration (119 KiB budget may have included three.js-route-specific bytes optimizePackageImports cannot reduce) vs **accept 103 KB as practical floor** (Next.js 15 framework runtime 45.8 + react-dom 54.2 + other shared 2.56 = 103 KB).
