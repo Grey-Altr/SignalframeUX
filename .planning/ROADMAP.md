@@ -975,13 +975,22 @@ Plans:
 
 ### Phase 63.1: LCP Fast-Path Remediation (INSERTED)
 
-**Goal:** [Urgent work - to be planned]
-**Requirements**: TBD
-**Depends on:** Phase 63
-**Plans:** 0 plans
-
+**Goal:** Close v1.8 milestone LCP gap on real devices: all 3 canonical profiles (iPhone 14 Pro / 4G, Moto G Power / 3G Fast, Moto G Stylus / 4G) measure LCP <1000 ms post-fix; Pitfall #10 ratios fall back under thresholds (real÷synthetic LCP <1.3, TTI <1.5). Restore the original CLAUDE.md performance gate as a structural truth on real hardware, not just synthetic emulation.
+**Requirements**: LCP-01 (de-facto, decimal-inserted phase has no formal REQ-IDs)
+**Depends on:** Phase 63 (synthesis FAIL verdict + Pitfall #10 TRIGGER motivates this phase)
+**Success Criteria** (what must be TRUE):
+  1. All 3 vrf-01-*-post-63.1.json files committed at .planning/perf-baselines/v1.8/, each median LCP <1000 ms (D-07).
+  2. tests/v1.8-phase63-1-pitfall-10.spec.ts green: real÷synthetic LCP <1.3 + TTI <1.5 across 3 profiles (D-09).
+  3. Homepage / First Load JS <200 KB (CLAUDE.md target); 4 v1.7 chunk IDs (3302, e9a6067a, 74c6194b, 7525) preserved (D-04 lock).
+  4. AES-04 visual diff <0.5% per page across 5 routes × 4 viewports; D-12 wordmark fidelity <0.1% diff on data-cd-corner-panel (4 viewports).
+  5. 63.1-COHORT.md signed-off (D-11) — chrome-devtools MCP scroll-test confirms wordmark glyph trademark primitive preserved.
+  6. Three atomic commit cohorts on chore/v1.7-ratification ready to ship as 3 sequential PRs (D-01 strict-bisect; D-02 strict-serial wave order).
+  7. Pitfall #2/#5/#7/#8 guards remain green; D-05 (no new runtime deps) honored.
+**Plans:** 3 plans
 Plans:
-- [ ] TBD (run /gsd-plan-phase 63.1 to break down)
+- [ ] 63.1-01-bundle-reduction-PLAN.md — extend optimizePackageImports + route-level code-split below-fold homepage sections (Wave 1; PR #1 of 3)
+- [ ] 63.1-02-js-deferral-PLAN.md — wrap useGSAP callback bodies in 4 section files with CRT-04 rIC fallback (Wave 2; PR #2 of 3)
+- [ ] 63.1-03-lcp-fast-path-PLAN.md — hoist CdCornerPanel to direct <body> child + WPT re-run + Pitfall #10 ratio re-check + cohort sign-off (Wave 3; PR #3 of 3; phase terminal)
 
 ### Phase 64: Bisect Protection + 3-PR Ship Sequence
 **Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. This activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
