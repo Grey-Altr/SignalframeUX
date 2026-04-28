@@ -329,6 +329,7 @@ to a 8-PR cleanup cycle in Phase 64's scope.
 | `pnpm-lock.yaml` will conflict on every cherry-pick due to lockfile churn. | Run `pnpm install` after cherry-pick to regenerate the lockfile, then `git add pnpm-lock.yaml --force` and amend. Standard pnpm post-cherry-pick hygiene. |
 | The Phase 58 RUM telemetry (`46dae75` etc.) changes `app/layout.tsx` (CIB-05 mount). If that lands in Cohort 3 via a later PR, it conflicts with Cohort 1's `66ac4ec` `app/layout.tsx` changes. | Phase 58 RUM is NOT in any 59-XX cohort. It's deferred per Option D2. The conflict resolution lives in the Phase 58 ship PR (after CRT-05), not in 59-XX. |
 | Phase 63.1's CdCornerPanel hoist (`7458de9`) changes `app/layout.tsx`. | Same as above — Phase 63.1 is fully deferred per §5i. |
+| **DISCOVERED 2026-04-28 post-PR-1-open**: `tests/v1.8-phase59-pixel-diff.spec.ts` (cherry-picked via `fefeda2`) imports `pngjs` + `pixelmatch`, but those devDeps were added in deferred commit `9ea4a6d` (§5d Phase 58 RUM). CI failed on PR #1 with `Cannot find module 'pngjs'`. | Resolved on `ship/59-01` via fix commit `4d3f84b` adding the 4 devDeps (`@types/pixelmatch`, `@types/pngjs`, `pixelmatch`, `pngjs`) directly to `package.json`. **Lesson for future audits: trace transitive npm-dep edges from cherry-picked spec files, not just file-level cohort partitioning.** |
 
 ---
 
