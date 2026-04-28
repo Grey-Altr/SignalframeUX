@@ -42,7 +42,21 @@ async function readPng(p: string): Promise<PNG> {
   return PNG.sync.read(buf);
 }
 
+// Self-skip if baselines absent (Phase 57 fixtures live in Defer cohort per
+// 64-03-CHERRY-PICK-AUDIT.md §5c; will activate when Phase 57 ships to main).
+async function baselinesPresent(): Promise<boolean> {
+  try {
+    await fs.access(path.join(BASELINE_DIR, "home-desktop-1440x900.png"));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 test.describe("@v18-phase59-pixel-diff (CRT-01 / Plan A)", () => {
+  test.beforeAll(async () => {
+    test.skip(!(await baselinesPresent()), "Phase 57 baselines not yet on this branch — see 64-03-CHERRY-PICK-AUDIT.md §5c");
+  });
   for (const route of ROUTES) {
     for (const vp of VIEWPORTS) {
       test(`${route.slug} @ ${vp.name} matches v1.8-start within 0% (Plan A invisible)`, async ({ page }) => {
