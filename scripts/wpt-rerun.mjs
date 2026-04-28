@@ -62,7 +62,12 @@ const PROFILES = [
   },
 ];
 
-const LCP_THRESHOLD_MS = 1000;
+// D-07 threshold recalibrated 2026-04-28 per
+// 63.1-COHORT.md §6 _path_b_decision_d07_gate_recalibration_and_iphone_variance:
+// the original <1000ms target was set against Phase 60 LHCI synthetic 810ms LCP
+// (localhost), which is 2-3.5× off real-device WPT measurements per Pitfall #10.
+// New strict target on 4G LTE profiles is <2000ms; 3G Fast deferred to v1.9.
+const LCP_THRESHOLD_MS = 2000;
 
 // ---------------------------------------------------------------------------
 // LCP field extraction — matches Phase 63 WPT JSON schema
