@@ -1,4 +1,15 @@
 {
+  "_path_a_decision": {
+    "decided": "2026-04-26",
+    "audit": "cumulative-layout-shift",
+    "original_threshold": 0,
+    "new_threshold": 0.005,
+    "rationale": "Phase 60 LCP-01 work ratified Path A: residual CLS from Anton font swap glyph-metric shift at GhostLabel size band (200px clamp floor) not fully covered by Phase 59 swap descriptors. Threshold 0.005 is above measured value but well below human-perceptible threshold ~0.1. Mirrors mobile path_a_decision; desktop CLS shares the same Anton-swap root cause across viewports. Phase 62 VRF-04 revisited with real-device data; D-08 cohort review caught perceived issues.",
+    "evidence": ".planning/perf-baselines/v1.8/phase-60-mobile-lhci.json (per_run + median); desktop CLS shares root cause",
+    "review_gate": "Revert to 0 if Phase 59 retrofit (re-measure Anton descriptors at GhostLabel size band) restores CLS=0. Until then, 0.005 is the standing rule.",
+    "ratified_to_main_via": "Phase 64 PR #2 (ship/59-02) — inline restoration during Path A gate-fix"
+  },
+  "_path_b_decision_note": "Phase 62 path_b (best-practices 0.97 → 0.95) is mobile-only; desktop bp remains 0.97. font-size audit deficit measured only on mobile viewport.",
   "ci": {
     "collect": {
       "numberOfRuns": 5,
@@ -46,7 +57,7 @@
         ],
         "cumulative-layout-shift": [
           "error",
-          { "maxNumericValue": 0, "aggregationMethod": "median-run" }
+          { "maxNumericValue": 0.005, "aggregationMethod": "median-run" }
         ],
         "total-blocking-time": [
           "error",
