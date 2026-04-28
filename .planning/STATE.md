@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
 status: executing
-stopped_at: Completed Phase 63.1 Plan 01 — Bundle Reduction
-last_updated: "2026-04-28T07:34:25.886Z"
+stopped_at: Completed Phase 63.1 Plan 02 — JS Deferral (rIC wrap)
+last_updated: "2026-04-28T07:45:10.699Z"
 last_activity: 2026-04-28
 progress:
   total_phases: 58
   completed_phases: 43
   total_plans: 90
-  completed_plans: 87
-  percent: 97
+  completed_plans: 88
+  percent: 98
 ---
 
 # STATE — SignalframeUX
@@ -28,7 +28,7 @@ progress:
 ## Current Position
 
 Phase: 63.1 (lcp-fast-path-remediation) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-28
 
@@ -223,6 +223,7 @@ v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-com
 - [Phase 63.1]: D-04 ratified: chunk 3302 dissolved in Phase 61; stable IDs now 4335/e9a6067a/74c6194b/7525 (feedback_ratify_reality_bias)
 - [Phase 63.1]: optimizePackageImports additions rejected for Plan 01: any new entry reshuffles splitChunks graph non-additively; bundle reduction delegated to Plans 02+03
 - [Phase 63.1]: next/dynamic ssr:true confirmed partial-split only (Next.js #61066): App Router Server Component dynamic imports do not emit separate JS chunks; structure preserved for Plan 02 rIC work
+- [Phase 63.1]: CRT-04 rIC pattern applied to 4 section useGSAP callbacks: thesis/signal/proof/inventory deferred to idle; hook stays synchronous; single-ticker + no-polyfill invariants preserved
 
 ### Roadmap Evolution
 
@@ -237,8 +238,8 @@ See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 mileston
 
 ## Session Continuity
 
-Last session: 2026-04-28T07:34:25.880Z
-Stopped at: Completed Phase 63.1 Plan 01 — Bundle Reduction
+Last session: 2026-04-28T07:45:10.693Z
+Stopped at: Completed Phase 63.1 Plan 02 — JS Deferral (rIC wrap)
 Resume with: User decision on 3 pending items in `61-HUMAN-UAT.md`:
 
   1. **BND-01 closure path** — splitChunks retuning (try to pull 1 KB module off shared floor) vs ROADMAP target recalibration (119 KiB budget may have included three.js-route-specific bytes optimizePackageImports cannot reduce) vs **accept 103 KB as practical floor** (Next.js 15 framework runtime 45.8 + react-dom 54.2 + other shared 2.56 = 103 KB).
