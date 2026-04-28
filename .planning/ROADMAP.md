@@ -1003,10 +1003,10 @@ Plans:
   3. Three PRs opened from `chore/v1.7-ratification` and merged in bisect order: 59-01 (66ac4ec) → 59-02 (47fe585) → 59-03 (fc3827c). Each PR's LHCI run passes ≥0.97 categories:performance, LCP ≤1000ms, CLS ≤0.005 (path_a ratified), bp ≥0.95 (path_b ratified).
   4. After all three merge, `chore/v1.7-ratification` is fully reflected on `main` and the v1.8 commit chain is bisect-protected for future regressions.
   5. `tests/v1.8-phase63-1-pitfall-10.spec.ts` no longer FAILs at 2.37×: synthetic baseline replaced with a real-device-predictive anchor (Vercel Speed Insights P75 or Catchpoint daily monitor candidate) so the Pitfall #10 ratio gate <1.3 either passes OR is explicitly recalibrated via a `_path_decision` block. Resolution must complete before PR #3 merges to avoid landing a FAILing gate on `main`.
-**Plans:** 3 plans (Wave 1: 64-01 + 64-02 parallel-safe; Wave 2: 64-03 sequential 3-PR ship)
+**Plans:** 1/3 plans executed
 Plans:
 - [ ] 64-01-PLAN.md — Gate Activation (Vercel `deployments:write` + branch-protection `audit` required check + e2e gate proof)
-- [ ] 64-02-PLAN.md — Pitfall #10 Recalibration (D-09 successor — `_path_c_decision` 810→657 / 1.3→3.5 + 3G Fast skip)
+- [x] 64-02-PLAN.md — Pitfall #10 Recalibration (D-09 successor — `_path_c_decision` 810→657 / 1.3→3.5 + 3G Fast skip)
 - [ ] 64-03-PLAN.md — 3-PR Sequential Ship (cherry-pick audit + ship/59-01 → ship/59-02 → ship/59-03 with LHCI green per merge)
 
 ### Phase 65: Field RUM Telemetry Activation
@@ -1089,7 +1089,7 @@ Plans:
 | 61. Bundle Hygiene | 3/3 | Complete    | 2026-04-26 | - |
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
 | 63. WPT Real-Device Verification | v1.8 | 0/TBD | Not started | - |
-| 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 0/TBD | Not started | - |
+| 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 1/3 | In Progress|  |
 | 65. Field RUM Telemetry Activation | v1.8 | 0/TBD | Not started | - |
 
 ---
