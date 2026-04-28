@@ -1,7 +1,12 @@
 // Phase 63.1 Plan 01 Wave 0 — bundle budget gate per CONTEXT.md D-04 + CLAUDE.md target.
 // Asserts the homepage (/) First Load JS chunk sum < 200 KB (gzip) after pnpm build.
-// Reads .next/build-manifest.json pages["/"] array — same source used by Next.js
-// Route (app) table output. Skips gracefully if build artifacts are not present.
+// Uses .next/app-build-manifest.json pages["/page"] for App Router builds (Next 15).
+// Falls back to build-manifest.json pages["/"] for Pages Router format.
+// Skips gracefully if build artifacts are not present.
+//
+// Measurement methodology: reads each chunk file, gzip-compresses in memory, sums bytes.
+// This matches the "First Load JS" column in Next.js Route (app) build output — which
+// reports the compressed transfer size that users actually download.
 
 import { test, expect } from "@playwright/test";
 import { readFileSync, existsSync } from "node:fs";
@@ -11,32 +16,45 @@ import { gzipSync } from "node:zlib";
 const BUDGET_BYTES = 200 * 1024; // 200 KB gzip — CLAUDE.md Hard Constraint
 
 test("Phase 63.1 Plan 01 — homepage First Load JS < 200 KB", () => {
-  const manifestPath = join(process.cwd(), ".next", "build-manifest.json");
+  const nextDir = join(process.cwd(), ".next");
+  const appManifestPath = join(nextDir, "app-build-manifest.json");
+  const pagesManifestPath = join(nextDir, "build-manifest.json");
 
-  if (!existsSync(manifestPath)) {
+  if (!existsSync(appManifestPath) && !existsSync(pagesManifestPath)) {
     test.skip(true, "Build artifacts not present — run pnpm build first");
     return;
   }
 
-  const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+  let pageChunks: string[] = [];
 
-  // build-manifest.json pages["/"] contains relative paths like
-  // "static/chunks/foo-abc123.js" (relative to .next/).
-  const pageChunks: string[] = manifest.pages?.["/"] ?? [];
+  // App Router (Next 15): .next/app-build-manifest.json, key "/page"
+  if (existsSync(appManifestPath)) {
+    const appManifest = JSON.parse(readFileSync(appManifestPath, "utf-8"));
+    const appPages = appManifest.pages ?? {};
+    // "/page" is the homepage in App Router manifest; fall back to "/"
+    pageChunks = appPages["/page"] ?? appPages["/"] ?? [];
+  }
+
+  // Fallback: Pages Router — build-manifest.json pages["/"]
+  if (pageChunks.length === 0 && existsSync(pagesManifestPath)) {
+    const manifest = JSON.parse(readFileSync(pagesManifestPath, "utf-8"));
+    pageChunks = manifest.pages?.["/"] ?? [];
+  }
 
   if (pageChunks.length === 0) {
-    // App Router may use rootLayout / rsc instead of pages["/"]. Try the
-    // app-routes shape used by Next 15 App Router builds.
-    test.skip(true, 'pages["/"] entry not found in build-manifest.json — check build output format');
+    test.skip(
+      true,
+      'Homepage chunk list not found in app-build-manifest.json ("/page") or ' +
+      'build-manifest.json ("/".) — check Next.js manifest structure for this build.'
+    );
     return;
   }
 
-  const nextDir = join(process.cwd(), ".next");
   let totalGzipBytes = 0;
   const breakdown: Array<{ file: string; gzipKB: string }> = [];
 
   for (const relPath of pageChunks) {
-    // Paths in build-manifest are relative to .next/ directory.
+    // Paths are relative to .next/ directory.
     const absPath = join(nextDir, relPath);
     if (!existsSync(absPath)) continue;
 
@@ -60,6 +78,7 @@ test("Phase 63.1 Plan 01 — homepage First Load JS < 200 KB", () => {
 
   expect(totalGzipBytes, `Homepage First Load JS is ${totalKB} KB — budget is 200 KB. ` +
     `Run ANALYZE=true pnpm build and inspect .next/analyze/client.html to identify ` +
-    `oversized chunks. Plan 01 Task 2 (next/dynamic split) should close the gap.`
+    `oversized chunks. Plan 02 (JS deferral) and Plan 03 (LCP fast-path) provide ` +
+    `additional reduction headroom beyond Plan 01.`
   ).toBeLessThan(BUDGET_BYTES);
 });
