@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: Build-Order Constraints
-status: ready-for-milestone-close
-stopped_at: "Phase 62 closed feature-complete-with-deferrals 2026-04-27. 3 of 6 VRF gates PASS at production-confirmed level (VRF-02 post-path_b, VRF-03, AES-04); 3 of 6 DEFERRED with explicit v1.9 carve-outs (VRF-01 needs WPT API key; VRF-04 depends on VRF-01; VRF-05 needs fresh prod deploy with /api/vitals route). Plan 62-01 deferred to v1.9; Plans 62-02 + 62-03 complete with SUMMARY files. Close-out artifacts shipped (62-FINAL-GATE.md + 62-VERIFICATION.md + .planning/milestones/v1.8/MILESTONE-SUMMARY.md). Two new path decisions ratified: path_b (LHCI bp 0.97→0.95 — font-size aesthetic tradeoff) + path_a recap (LHCI cls 0→0.005 — Anton swap shift). v1.8 ready for /pde:complete-milestone v1.8 (literal version arg per feedback_pde_milestone_complete_help_arg.md)."
-last_updated: "2026-04-27T19:55:00.000Z"
-last_activity: 2026-04-27 -- Phase 62 close-out shipped; v1.8 ready for milestone-close
+status: executing
+stopped_at: "Phase 62 plans ready; auto-chain paused at first human-action gate (WPT API key required, plus chrome-devtools MCP + 24h RUM window blockers downstream). 3 plans + CONTEXT + RESEARCH + VALIDATION all committed. User decision needed: provide WPT API key + run external services in a deliberate session, OR defer Phase 62 to a scheduled milestone-close session."
+last_updated: "2026-04-27T21:40:36.273Z"
+last_activity: 2026-04-27 -- Phase 63 execution started
 progress:
-  total_phases: 54
+  total_phases: 57
   completed_phases: 43
-  total_plans: 86
-  completed_plans: 85
+  total_plans: 87
+  completed_plans: 86
   percent: 99
 ---
 
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 62 (Real-Device Verification + Final Gate) — CLOSED-WITH-DEFERRALS
-Plan: 3 of 3 (62-01 deferred to v1.9; 62-02 + 62-03 complete)
-Status: v1.8 ready for /pde:complete-milestone v1.8 (literal version arg)
-Last activity: 2026-04-27 -- Phase 62 close-out shipped (8 commits this session)
+Phase: 63 (WPT Real-Device Verification) — EXECUTING
+Plan: 1 of 1
+Status: Executing Phase 63
+Last activity: 2026-04-27 -- Phase 63 execution started
 
 ## Progress
 
@@ -220,12 +220,16 @@ v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-com
 | LCP candidate diverges across viewports (mobile vs desktop) | Mobile = THESIS GhostLabel (4% opacity wayfinding glyph, ghost-label.tsx:11-23); desktop = VL-05 magenta `//` overlay (entry-section.tsx:208). Phase 60 LCP-02 selection MUST branch on viewport — single-intervention shipping picks one viewport, regresses the other. |
 | All 4 v1.7 named chunk IDs MATCHED in v1.8 build | Pitfall D fallback NOT triggered. Chunk IDs 3302, e9a6067a, 74c6194b, 7525 all preserved across v1.7→v1.8 webpack output. Phase 61 BND-02 work targets known IDs without rediscovery. |
 
+### Roadmap Evolution
+
+- Phase 63.1 inserted after Phase 63: LCP Fast-Path Remediation (URGENT) — addresses real-device LCP FAIL on all 3 profiles found by Phase 63 Plan 01 (Catchpoint/WPT synthesis); Pitfall #10 TRIGGER on LCP (real÷synthetic = 2.95×) and TTI (6.0×). Wordmark `<text>` element is the unambiguous LCP candidate across all viewports per `63-MID-MILESTONE-CHECKPOINT.md` §3.
+
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 milestone defined)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 62 — Real-Device Verification + Final Gate
+**Current focus:** Phase 63 — WPT Real-Device Verification
 
 ## Session Continuity
 

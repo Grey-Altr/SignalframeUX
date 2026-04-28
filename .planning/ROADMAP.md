@@ -973,6 +973,16 @@ Plans:
 Plans:
 - [ ] 63-01-PLAN.md — VRF-01 + VRF-04: 3-profile WPT real-device matrix harvest + MID-MILESTONE-CHECKPOINT.md synthesis (mirrors deferred 62-01)
 
+### Phase 63.1: LCP Fast-Path Remediation (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 63
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 63.1 to break down)
+
 ### Phase 64: Bisect Protection + 3-PR Ship Sequence
 **Goal**: Close CRT-05 + Phase 58 D-10 carry-overs by activating the per-PR LHCI gate (Vercel `deployments:write` + branch-protection `audit` required check) and then merging Phase 59's three pre-staged commit cohorts (66ac4ec / 47fe585 / fc3827c) as ordered PRs from `chore/v1.7-ratification`. This activates the bisect-protection benefit that was degraded to advisory-only at Phase 59 close.
 **Depends on**: Phase 58 code-side (LHCI workflow already shipped). User-action: GitHub repo-settings UI + Vercel GitHub App permissions.
