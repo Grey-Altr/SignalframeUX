@@ -44,3 +44,19 @@ jobs:
         run: pnpm exec playwright test
         env:
           CI: true
+
+      # Phase 64 PR #4 Path N bootstrap: upload Playwright snapshot directories
+      # after the test run (whether pass or fail) so chromium-linux baselines
+      # written-on-first-run can be retrieved and committed. Once Linux baselines
+      # are committed, this step is no longer required for that purpose but is
+      # kept for future cross-platform baseline generation.
+      - name: Upload Playwright snapshots (bootstrap)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-snapshots-${{ github.run_id }}
+          path: |
+            tests/**/*-snapshots/**
+            test-results/**
+          retention-days: 7
+          if-no-files-found: ignore
