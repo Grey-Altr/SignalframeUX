@@ -1,12 +1,46 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Footer } from "@/components/layout/footer";
 import { SFPanel, SFSection } from "@/components/sf";
+// EntrySection is statically imported — above-the-fold LCP context.
+// Pitfall #3 forbids lazy-mounting elements above the LCP boundary;
+// lazy-mounting the LCP candidate defers its JS chunk but keeps SSR HTML
+// only if ssr:true is set — however even with ssr:true a dynamic-import
+// boundary on the LCP element risks LCP de-qualification on slower devices.
+// Per .planning/codebase/v1.8-lcp-diagnosis.md DGN-01: mobile LCP =
+// GhostLabel (inside ThesisSection's SFSection wrapper) and desktop LCP =
+// VL-05 magenta // span (inside EntrySection). EntrySection MUST be static.
 import { EntrySection } from "@/components/blocks/entry-section";
-import { ProofSection } from "@/components/blocks/proof-section";
-import { ThesisSection } from "@/components/blocks/thesis-section";
-import { SignalSection } from "@/components/blocks/signal-section";
-import { InventorySection } from "@/components/blocks/inventory-section";
-import { AcquisitionSection } from "@/components/blocks/acquisition-section";
+// Below-fold sections — route-level code-split per Phase 63.1 Plan 01 Task 2.
+// ssr: true MANDATORY: keeps SSR HTML in initial response so:
+//   (a) GhostLabel + mobile LCP candidate remain paintable from HTML;
+//   (b) Phase 60 LCP-02 candidate b (content-visibility on ghost-label) stays applicable;
+//   (c) SEO crawlers see section content.
+//   (d) @layer signalframeux cascade is NOT broken — next/dynamic with ssr:true
+//       does not emit per-component CSS chunks in App Router (Next 15 verified).
+// JS chunks lazy-load post-paint via Next 15 dynamic-import chunk graph.
+// Named-export pattern: .then((m) => ({ default: m.X })) required because
+// next/dynamic expects a default export; all 5 sections use named exports.
+const ProofSection = dynamic(
+  () => import("@/components/blocks/proof-section").then((m) => ({ default: m.ProofSection })),
+  { ssr: true }
+);
+const ThesisSection = dynamic(
+  () => import("@/components/blocks/thesis-section").then((m) => ({ default: m.ThesisSection })),
+  { ssr: true }
+);
+const SignalSection = dynamic(
+  () => import("@/components/blocks/signal-section").then((m) => ({ default: m.SignalSection })),
+  { ssr: true }
+);
+const InventorySection = dynamic(
+  () => import("@/components/blocks/inventory-section").then((m) => ({ default: m.InventorySection })),
+  { ssr: true }
+);
+const AcquisitionSection = dynamic(
+  () => import("@/components/blocks/acquisition-section").then((m) => ({ default: m.AcquisitionSection })),
+  { ssr: true }
+);
 import { GhostLabel } from "@/components/animation/ghost-label";
 import { CDSymbol } from "@/components/sf/cd-symbol";
 

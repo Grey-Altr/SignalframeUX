@@ -18,6 +18,7 @@ import { SignalframeProvider } from "@/components/layout/signalframe-config";
 import { SFToasterLazy } from "@/components/sf/sf-toast-lazy";
 import { InstrumentHUD } from "@/components/layout/instrument-hud";
 import { BorderlessProvider } from "@/components/providers/theme-provider";
+import { WebVitals } from "./_components/web-vitals";
 import "./globals.css";
 
 const electrolize = Electrolize({
@@ -143,6 +144,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="antialiased overflow-x-hidden" data-nav-layout="vertical">
+        <WebVitals />
         <div className="sf-mesh-gradient" aria-hidden="true" />
         <a
           href="#main-content"
@@ -150,6 +152,30 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        {/* Phase 63.1 Plan 03 Task 1 — LCP fast-path: CdCornerPanel hoisted out of
+            the client-provider tree (TooltipProvider → LenisProvider → SignalframeProvider
+            → BorderlessProvider) to be a direct <body> child BEFORE any client provider
+            opens. Rationale: cd-corner-panel.tsx is a pure Server Component (zero
+            'use client', zero hooks, zero state); it was previously inside the hydration
+            tree, which made Chrome's LCP detector wait for ~700 ms of blocking JS parse
+            before scoring its paint (synthesis §2 finding 2; commit 26f5bca). Hoisting
+            to outside the hydration boundary paints the wordmark at HTML-parse time,
+            before blocking JS resolves.
+            - Z-stacking preserved: z-[var(--sfx-z-nav,40)] composes with <Nav /> whether
+              they are siblings under different providers or both <body> children.
+            - dark class scope preserved: themeScript writes to <html>; ancestor unchanged.
+            - --sf-frame-bottom-gap / --sf-frame-offset-x preserved: scaleScript writes to
+              <html>.style; cascades to all descendants regardless of mount position.
+            - var(--sfx-cube-fill) binding preserved (CSS custom property; theme-hue cube fill).
+            - SVG mask kana-knockout preserved verbatim (component file is unchanged).
+            - D-12 trademark fidelity gate: tests/v1.8-phase63-1-wordmark-hoist.spec.ts
+              verifies <0.1% pixel diff on [data-cd-corner-panel] across 4 viewports.
+            - Candidate A (Server Component carve-out) per RESEARCH §Plan 03 trade-off
+              matrix; Candidate B (SVG-as-static-asset) rejected — D-12 BLOCK (loses
+              var(--sfx-cube-fill) binding + kana mask see-through); Candidate C
+              (pre-hydration inline-SVG injection) reserved as escalation fallback only.
+        */}
+        <CdCornerPanel />
         <TooltipProvider>
           <LenisProvider>
             <FrameNavigation />
@@ -163,9 +189,8 @@ export default function RootLayout({
                   Homepage uses [data-entry-section]; subpages use [data-nav-reveal-trigger].
                   On no-match, useNavReveal falls back to nav-visible (safe default). */}
               <NavRevealMount targetSelector="[data-entry-section], [data-nav-reveal-trigger]" />
-              {/* CULTURE DIVISION / SIGNALFRAME SYSTEM corner panel — ported
-                  from cdb-v3-dossier, anchored bottom-right. */}
-              <CdCornerPanel />
+              {/* CdCornerPanel removed from this position — hoisted to direct <body>
+                  child above TooltipProvider. See Phase 63.1 Plan 03 Task 1 comment. */}
             </BorderlessProvider>
             </SignalframeProvider>
           </LenisProvider>

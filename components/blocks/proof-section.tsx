@@ -125,7 +125,8 @@ export function ProofSection() {
       if (!section) return;
 
       // AC-6: Reduced-motion early return — render static split, no animation
-      // prefers-reduced-motion guard: no rAF loop, no pointermove, no ScrollTrigger
+      // prefers-reduced-motion guard MUST remain synchronous and BEFORE rIC
+      // scheduling (D-06): users with reduced-motion should never schedule work.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         section.style.setProperty("--sfx-signal-intensity", "0.5");
         if (skeletonRef.current) {
@@ -134,146 +135,182 @@ export function ProofSection() {
         return;
       }
 
-      // Default state — high intensity (SIGNAL dominant)
-      _targetIntensity = 0.8;
-      _currentIntensity = 0.8;
-      section.style.setProperty("--sfx-signal-intensity", "0.8");
+      // CRT-04 (Phase 63.1 Plan 02): defer the heavy GSAP/observer setup to
+      // idle time so first paint is not blocked. The useGSAP hook itself stays
+      // synchronous (it must — React hook rules); only the ScrollTrigger +
+      // IntersectionObserver construction is scheduled via rIC + setTimeout(0)
+      // fallback. Single-ticker rule preserved: gsap.ticker remains the only
+      // rAF source — rIC only schedules WHEN the work runs, not what runs inside
+      // it (the existing module-level rAF loop in startLerpLoop is pre-existing
+      // and not introduced by this change). See lenis-provider.tsx:28-68 (CRT-04).
+      let ricHandle: number | undefined;
+      let cleanup: (() => void) | undefined;
 
-      // ── Pointer handler — desktop + touch via Pointer Events API ──────────
-      // PR-05: pointermove fires for both mouse and touch-drag (Pointer Events API)
-      const handlePointerMove = (e: PointerEvent) => {
-        _targetIntensity = Math.max(
-          0,
-          Math.min(1, e.clientX / window.innerWidth),
-        );
-      };
-      const handlePointerLeave = () => {
-        // Behavior 5: on pointerleave, drift back to SIGNAL default (1.0)
-        _targetIntensity = 1.0;
-      };
+      const initAnimations = () => {
+        ricHandle = undefined;
 
-      // ── Gyroscope handler (attached after iOS permission grant) ───────────
-      let gyroAttached = false;
-      const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
-        // AC-12: clampGamma maps ±60° to 0..1 range
-        _targetIntensity = clampGamma(e.gamma);
-      };
-      const attachGyro = () => {
-        if (gyroAttached) return;
-        gyroAttached = true;
-        window.addEventListener("deviceorientation", handleDeviceOrientation, {
+        // Default state — high intensity (SIGNAL dominant)
+        _targetIntensity = 0.8;
+        _currentIntensity = 0.8;
+        section.style.setProperty("--sfx-signal-intensity", "0.8");
+
+        // ── Pointer handler — desktop + touch via Pointer Events API ──────────
+        // PR-05: pointermove fires for both mouse and touch-drag (Pointer Events API)
+        const handlePointerMove = (e: PointerEvent) => {
+          _targetIntensity = Math.max(
+            0,
+            Math.min(1, e.clientX / window.innerWidth),
+          );
+        };
+        const handlePointerLeave = () => {
+          // Behavior 5: on pointerleave, drift back to SIGNAL default (1.0)
+          _targetIntensity = 1.0;
+        };
+
+        // ── Gyroscope handler (attached after iOS permission grant) ───────────
+        let gyroAttached = false;
+        const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
+          // AC-12: clampGamma maps ±60° to 0..1 range
+          _targetIntensity = clampGamma(e.gamma);
+        };
+        const attachGyro = () => {
+          if (gyroAttached) return;
+          gyroAttached = true;
+          window.addEventListener("deviceorientation", handleDeviceOrientation, {
+            passive: true,
+          });
+        };
+
+        // ── First-touch permission gate (one-shot, silent) ────────────────────
+        // AC-11: { once: true } ensures this fires exactly once
+        // No instruction overlay rendered regardless of grant/deny outcome
+        let gyroPermissionRequested = false;
+        const onFirstTouch = async () => {
+          if (gyroPermissionRequested) return;
+          gyroPermissionRequested = true;
+          const granted = await requestGyroPermission();
+          if (granted) attachGyro();
+        };
+
+        section.addEventListener("touchstart", onFirstTouch, {
+          once: true,
           passive: true,
         });
-      };
 
-      // ── First-touch permission gate (one-shot, silent) ────────────────────
-      // AC-11: { once: true } ensures this fires exactly once
-      // No instruction overlay rendered regardless of grant/deny outcome
-      let gyroPermissionRequested = false;
-      const onFirstTouch = async () => {
-        if (gyroPermissionRequested) return;
-        gyroPermissionRequested = true;
-        const granted = await requestGyroPermission();
-        if (granted) attachGyro();
-      };
+        const activatePointerListener = () => {
+          section.addEventListener("pointermove", handlePointerMove, {
+            passive: true,
+          });
+          section.addEventListener("pointerleave", handlePointerLeave, {
+            passive: true,
+          });
+        };
+        const deactivatePointerListener = () => {
+          section.removeEventListener("pointermove", handlePointerMove);
+          section.removeEventListener("pointerleave", handlePointerLeave);
+        };
 
-      section.addEventListener("touchstart", onFirstTouch, {
-        once: true,
-        passive: true,
-      });
-
-      const activatePointerListener = () => {
-        section.addEventListener("pointermove", handlePointerMove, {
-          passive: true,
-        });
-        section.addEventListener("pointerleave", handlePointerLeave, {
-          passive: true,
-        });
-      };
-      const deactivatePointerListener = () => {
-        section.removeEventListener("pointermove", handlePointerMove);
-        section.removeEventListener("pointerleave", handlePointerLeave);
-      };
-
-      // ── ScrollTrigger lifecycle — AC-10: NO pin, NO scrub ─────────────────
-      //
-      // ScrollTrigger is kept for AC-10 compliance (must have onEnter/onLeave/
-      // onEnterBack/onLeaveBack). However, when Lenis is active alongside GSAP's
-      // pin system, ScrollTrigger may compute PROOF's start/end positions based
-      // on pre-pin layout, putting them out of sync with the native DOM. The
-      // IntersectionObserver below provides a reliable native visibility gate
-      // that is immune to coordinate mismatches.
-      const trigger = ScrollTrigger.create({
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        invalidateOnRefresh: true,
-        onEnter: () => {
-          activatePointerListener();
-          startLerpLoop(section, skeletonRef.current);
-        },
-        onLeave: () => {
-          deactivatePointerListener();
-          stopLerpLoop();
-          // Restore default SIGNAL state on leave
-          section.style.setProperty("--sfx-signal-intensity", "1.0");
-          if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
-        },
-        onEnterBack: () => {
-          activatePointerListener();
-          startLerpLoop(section, skeletonRef.current);
-        },
-        onLeaveBack: () => {
-          deactivatePointerListener();
-          stopLerpLoop();
-          section.style.setProperty("--sfx-signal-intensity", "1.0");
-          if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
-        },
-      });
-
-      // Zero-range trap diagnostic (RESEARCH pitfall 1 adaptation)
-      console.debug(
-        "[PROOF ST] start:",
-        trigger.start,
-        "end:",
-        trigger.end,
-      );
-
-      // ── IntersectionObserver — reliable native visibility gate ────────────
-      //
-      // When GSAP's pin system inflates the DOM, ScrollTrigger positions may be
-      // stale until a refresh. IntersectionObserver uses native layout geometry
-      // and is always accurate. It mirrors the onEnter/onLeave activate/deactivate
-      // pattern, ensuring the rAF loop and pointer listeners are active exactly
-      // when the section is visible in the viewport.
-      const intersectionObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
+        // ── ScrollTrigger lifecycle — AC-10: NO pin, NO scrub ─────────────────
+        //
+        // ScrollTrigger is kept for AC-10 compliance (must have onEnter/onLeave/
+        // onEnterBack/onLeaveBack). However, when Lenis is active alongside GSAP's
+        // pin system, ScrollTrigger may compute PROOF's start/end positions based
+        // on pre-pin layout, putting them out of sync with the native DOM. The
+        // IntersectionObserver below provides a reliable native visibility gate
+        // that is immune to coordinate mismatches.
+        const trigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          invalidateOnRefresh: true,
+          onEnter: () => {
             activatePointerListener();
             startLerpLoop(section, skeletonRef.current);
-          } else {
+          },
+          onLeave: () => {
+            deactivatePointerListener();
+            stopLerpLoop();
+            // Restore default SIGNAL state on leave
+            section.style.setProperty("--sfx-signal-intensity", "1.0");
+            if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
+          },
+          onEnterBack: () => {
+            activatePointerListener();
+            startLerpLoop(section, skeletonRef.current);
+          },
+          onLeaveBack: () => {
             deactivatePointerListener();
             stopLerpLoop();
             section.style.setProperty("--sfx-signal-intensity", "1.0");
             if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
+          },
+        });
+
+        // Zero-range trap diagnostic (RESEARCH pitfall 1 adaptation)
+        console.debug(
+          "[PROOF ST] start:",
+          trigger.start,
+          "end:",
+          trigger.end,
+        );
+
+        // ── IntersectionObserver — reliable native visibility gate ────────────
+        //
+        // When GSAP's pin system inflates the DOM, ScrollTrigger positions may be
+        // stale until a refresh. IntersectionObserver uses native layout geometry
+        // and is always accurate. It mirrors the onEnter/onLeave activate/deactivate
+        // pattern, ensuring the rAF loop and pointer listeners are active exactly
+        // when the section is visible in the viewport.
+        const intersectionObserver = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              activatePointerListener();
+              startLerpLoop(section, skeletonRef.current);
+            } else {
+              deactivatePointerListener();
+              stopLerpLoop();
+              section.style.setProperty("--sfx-signal-intensity", "1.0");
+              if (skeletonRef.current) skeletonRef.current.style.opacity = "0";
+            }
+          },
+          { threshold: 0.01 }, // fire when >=1% of section is visible
+        );
+        intersectionObserver.observe(section);
+
+        cleanup = () => {
+          intersectionObserver.disconnect();
+          deactivatePointerListener();
+          stopLerpLoop();
+          if (gyroAttached) {
+            window.removeEventListener(
+              "deviceorientation",
+              handleDeviceOrientation,
+            );
           }
-        },
-        { threshold: 0.01 }, // fire when >=1% of section is visible
-      );
-      intersectionObserver.observe(section);
+          section.removeEventListener("touchstart", onFirstTouch);
+          trigger.kill();
+        };
+      };
+
+      // Schedule: rIC if available (Chrome/FF; Safari 17+ behind flag),
+      // else setTimeout(0) — both yield to the next idle/macrotask.
+      type IdleCb = (cb: IdleRequestCallback, opts?: { timeout: number }) => number;
+      const ric = (window as Window & { requestIdleCallback?: IdleCb })
+        .requestIdleCallback;
+      ricHandle = ric
+        ? ric(initAnimations, { timeout: 100 })
+        : (setTimeout(initAnimations, 0) as unknown as number);
 
       return () => {
-        intersectionObserver.disconnect();
-        deactivatePointerListener();
-        stopLerpLoop();
-        if (gyroAttached) {
-          window.removeEventListener(
-            "deviceorientation",
-            handleDeviceOrientation,
-          );
+        // Cancel pending rIC/setTimeout if init has not fired yet (fast unmounts).
+        const cancelRic = (
+          window as Window & { cancelIdleCallback?: (h: number) => void }
+        ).cancelIdleCallback;
+        if (ricHandle !== undefined) {
+          if (cancelRic) cancelRic(ricHandle);
+          else clearTimeout(ricHandle);
         }
-        section.removeEventListener("touchstart", onFirstTouch);
-        trigger.kill();
+        if (cleanup) cleanup();
       };
     },
     { scope: sectionRef, dependencies: [] },

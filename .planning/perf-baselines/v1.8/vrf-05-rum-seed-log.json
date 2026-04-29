@@ -1,0 +1,128 @@
+{
+  "capturedAt": "2026-04-27T19:40:57.568Z",
+  "startedAt": "2026-04-27T19:40:10.176Z",
+  "finishedAt": "2026-04-27T19:40:57.568Z",
+  "prod_url": "https://signalframeux.vercel.app",
+  "routes": [
+    "/",
+    "/system",
+    "/init",
+    "/inventory",
+    "/reference"
+  ],
+  "viewports": [
+    {
+      "name": "mobile-iphone13",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "mobile-android",
+      "width": 360,
+      "height": 800
+    },
+    {
+      "name": "desktop-chrome",
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "visits_per_route_per_viewport": 1,
+  "expected_sessions": 15,
+  "actual_sessions": 15,
+  "successful_sessions": 15,
+  "failed_sessions": 0,
+  "note": "Synthetic seed for VRF-05 RUM aggregation. Each successful session triggers web-vitals beacons (LCP, CLS, INP, TTFB, FCP) via navigator.sendBeacon to /api/vitals -> console.log -> Vercel logs. Aggregator MUST label sample_source as \"synthetic-seeded\" or \"mixed\".",
+  "sessions": [
+    {
+      "idx": 1,
+      "route": "/",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 2,
+      "route": "/",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 3,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 4,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 5,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 6,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 7,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 8,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 9,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 10,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 11,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 12,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 13,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 14,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 15,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    }
+  ]
+}

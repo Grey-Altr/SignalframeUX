@@ -135,6 +135,63 @@
 
 ---
 
+## Milestone: v1.7 — Tightening, Polish, and Aesthetic Push
+
+**Shipped:** 2026-04-25 (code-shipped 2026-04-13; doc-ratified through bulk audit campaign)
+**Phases:** 14 (44, 45, 46, 47, 48, 49, 50, 50.1, 51, 52, 53, 54, 55, 56) | **Plans:** 16 | **Sessions:** multi-session campaign over 13 days, 370 commits
+
+### What Was Built
+
+- **Token bridge** — `--sfx-*` namespace + `@theme inline` Tailwind aliasing + `@layer signalframeux` consumer-override architecture (`scripts/wrap-tokens-layer.ts` build pipeline, `cd-tokens.css` reference). No SSR magenta flash.
+- **Intensity bridge** — `updateSignalDerivedProps(intensity)` in `components/layout/global-effects.tsx` derives 12 CSS custom properties from `--sfx-signal-intensity`. Curves: linear (scanline/noise/VHS), logarithmic (grain), inverse (circuit), threshold (halftone). `MutationObserver`-driven real-time sync via `SignalIntensityBridge`.
+- **Effect stack** — grain (perceptual log curve), VHS (chromatic aberration + steps(4) jitter + vignette + Safari literal `-webkit-backdrop-filter`), halftone (`mix-blend-mode: multiply` with threshold gate), circuit (inverse intensity, mutually exclusive with grain), mesh gradient (fixed z:-1, theme-hue-driven OKLCH ellipses, 60s alternate drift), particle field (`useSignalScene` singleton WebGL + `ParticleFieldHQ` Canvas2D consumer chain via `getQualityTier`), glitch transition (`.sf-signal-dropout` 250ms `steps(1)` hard-cut, 11 clip-path waypoints).
+- **Symbol system** — `public/symbols.svg` with 24 symbols at 4145 bytes; site-wide SVG sprite consumption.
+- **Tightening pass** — 15 hardcoded animation durations + 7 hardcoded color values replaced with `--sfx-*` tokens; light-mode WCAG AA verified (5.81:1 muted-foreground); `sf-button` hover aligned to `--sfx-duration-fast`.
+- **Viewport polish** — text-2xs/text-xs clamp floors lifted to 10px/11px; Storybook MacBook 13/15 viewport presets.
+- **Visual regression infrastructure** — `@chromatic-com/storybook` + `chromatic` CLI; 61 Storybook stories.
+
+### What Worked
+
+- **Lean ratification methodology** — for late-milestone phases that already shipped as feat commits, a single grep-then-classify pass per requirement (file:line evidence + Ratified/Obsolete/Genuine-gap verdict) reproduced milestone-completion confidence in minutes per phase rather than re-spawning full per-phase verifiers. Single-doc audit (`v1.7-MILESTONE-AUDIT.md`) replaced 14 individual VERIFICATION.md files.
+- **Sub-family taxonomy of process-gate obsolescence** — six distinct mechanisms surfaced (process-review, retroactive-temporal, physical-device-test, feature-lost-to-launch-gate, dependency-obsolete-via-launch-gate, subjective-feel) — reusable framework for future audits to classify why a requirement can or cannot retroactively-ratify.
+- **Carry-forward derived properties** — Phase 48's `updateSignalDerivedProps` central derivation meant phases 49-55 could ratify against the same code line for multiple requirements (SIG-02 → VHS-01, HLF-02, CIR-02). The architectural prerequisite paid back compound interest across the campaign.
+- **Reference-template artifact retention** — when `a260238` cut idle-overlay/datamosh/WebGL-particle mounts to clear PRF-02 launch gate, the source files were marked `@status reference-template` rather than deleted. Future re-mount via cheaper consumers remains an option.
+- **Audit-before-planning gate (memory-rule)** — 2-min grep audit before spawning planners caught Phase 47/48 already-shipped state, preventing duplicate-work plans.
+
+### What Was Inefficient
+
+- **Doc-lag accumulating across milestones** — REQUIREMENTS.md still carries 15 stale `[ ]` checkboxes from v1.5 era despite the traceability table marking them Complete. The `phase complete` CLI updates ROADMAP/STATE but not body checkboxes — same v1.0 lesson, four milestones later, still not solved at the tooling level.
+- **MILESTONES.md auto-generated entries are useless without one-liner frontmatter** — CLI emitted "(none recorded)" because SUMMARY.md frontmatter omits `one_liner:` field. Manual augmentation required for every milestone archive.
+- **Process-gate clauses in spec set rate-limit clean ratification** — phases with subjective-feel / human-visual-review clauses (VHS-06, HLF-04, GLT-03) couldn't retroactively ratify. Future spec authoring should distinguish *measurable artifact* from *review process* up front; review-process clauses need a captured-output companion (`PRF-03-SIGNOFF.md` was the contrastive case that proved this).
+- **`a260238` consumer-cut left dead derives** — three `--sfx-fx-*` derivations in `global-effects.tsx` now have no consumer. Tech debt deferred but enumerable.
+- **Workflow file conflict** — `complete-milestone.md` step 7 and step 11 give contradictory guidance (reorganize ROADMAP vs reorganize-AND-delete). Project precedent (6 prior milestones) overrides; ROADMAP.md preserved with `<details>` grouping.
+
+### Patterns Established
+
+- **`--sfx-*` namespace contract** — every theme/color/duration/spacing token uses `--sfx-` prefix; `--sf-*` reserved for sizing/canvas/nav-state. Prefix drift silently no-ops values.
+- **Consumer-override via unlayered CSS** — `dist/signalframeux.css` wraps :root/.dark in `@layer signalframeux`; consumer CSS (`cd-tokens.css`) ships unlayered and wins before first paint. No SSR flash regardless of consumer's class-toggle timing.
+- **`@theme inline` aliasing** — Tailwind utility aliases reference `--sfx-*` vars at runtime so consumers don't migrate utility class names.
+- **Quality-tier consumption ship-blocker** — every new SIGNAL surface MUST read `getQualityTier()` and step down DPR + iteration count. Mobile/low-end parity is non-negotiable.
+- **rAF loops are read-only against layout/style** — cache inputs via ResizeObserver + MutationObserver; never call `getBoundingClientRect()` or `getComputedStyle()` inside the ticker.
+- **R-64 panel keyboard model** — any SFPanel with grid↔detail swap must store trigger-id ref, mount focusable detail container, restore focus on swap-back. Row unmount loses focus otherwise.
+- **Reference-template marker** — primitives without live consumers get `@status reference-template` JSDoc rather than deletion; preserves architectural reasoning for re-mount.
+
+### Key Lessons
+
+1. **When code lags traceability, ratify reality** — don't reflexively revert to the older documented value when shipping code is working. Three-question test: (a) is the code working in production? (b) does the doc disagree with code? (c) is the doc the older signal? If yes/yes/yes → ratify code, update doc.
+2. **Process gates without captured artifacts can't retroactively ratify** — design specs should include either a measurable proxy or a captured-output companion. PRF-03-SIGNOFF.md is the working pattern; six v1.7 process-gates without it became OBSOLETE.
+3. **Architectural prerequisites compound** — Phase 48's intensity bridge derived 12 properties consumed by phases 49-55. One well-placed central function paid back across half the milestone.
+4. **Audit before planning, not after execution** — 2-min grep audit catches phases that have already shipped as feat commits, preventing duplicate-work plans. Lesson formalized into `feedback_audit_before_planning.md`.
+5. **Performance launch gate is the architecture forcing function** — `a260238` cut three feature-complete WebGL/heavy effects to clear PRF-02 Lighthouse Performance. Pattern: ship the architecture, then cut consumers if perf budget breaks. Reference-template marker preserves the un-mounted artifact.
+
+### Cost Observations
+
+- Model mix: predominantly opus orchestrator + sonnet executor across multi-session campaign; ratification phases (47-56) ran lean — pure documentation, zero source mutations across 10 phases.
+- Sessions: multi-session over 13 days; final week (2026-04-21 → 2026-04-25) was the bulk ratification campaign (per project memory `project_v17_ratification.md`).
+- Notable: zero source-code mutations across phases 48-56 ratification (all 10 phases were Docs(NN-NN) commits citing shipped code with file:line evidence).
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -144,6 +201,7 @@
 | v1.0 | 1 | 5 | First autonomous milestone — full discuss→plan→execute pipeline |
 | v1.1 | 1 | 4 | Infrastructure-first phasing, parallel execution, executor memory accumulation |
 | v1.2 | 1 | 6 | All infrastructure — discuss skipped for all phases, 3 parallel wave executions |
+| v1.7 | multi-session over 13 days | 14 | Lean-ratification campaign — single-doc audit replaces per-phase verifiers; six process-gate sub-families catalogued |
 
 ### Cumulative Quality
 
@@ -152,6 +210,7 @@
 | v1.0 | 75+ grep checks | 5/5 phases | 12 (audit: 0 blockers, orphaned primitives, [data-cursor] gap) |
 | v1.1 | 45+ must-have checks | 0/4 phases (partial) | 5 (2 partial reqs: INT-03 unused, INT-04 one-sided bridge) |
 | v1.2 | 30+ must-have checks | 0/6 phases (partial — no test runner) | 6 (all non-blocking: observer disconnect, NaN guard, Lenis race) |
+| v1.7 | 50 reqs grep-audited (40R/15O/9C/0P) | n/a — ratification model | 4 (3 dead-derive slots + 1 cosmetic checkbox set) |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -159,3 +218,6 @@
 2. Pre-existing errors compound across phases — fix them first
 3. Requirements need explicit consumer/integration tasks — creation ≠ deployment
 4. Executor memory accumulates useful patterns by Phase 3+ — reduces auto-fix overhead
+5. Doc-lag is structural, not accidental — `phase complete` CLI updates ROADMAP/STATE but not REQUIREMENTS body checkboxes; expect doc-lag and use lean ratification at milestone close (v1.7-formalized)
+6. Architectural prerequisites compound — central derivation (Phase 48 intensity bridge) pays back across all dependent phases (v1.7-formalized)
+7. Performance launch gate is the architecture forcing function — ship architecture, cut consumers if needed, mark `@status reference-template` for re-mount (v1.7-formalized)

@@ -1,402 +1,243 @@
-# Technology Stack
+# Technology Stack — v1.8 Speed of Light
 
-**Project:** SignalframeUX v1.7 — Substrate Effects + Token Bridge
-**Researched:** 2026-04-11
-**Scope:** NEW capabilities only — substrate-intensity effects (grain enhancement, halftone, mesh gradient, VHS/scanline, glitch), token bridge for CD consumer site, viewport polish, visual regression testing
-**Confidence:** HIGH for CSS techniques (cross-verified against MDN, Frontend Masters, CSS-Tricks). MEDIUM for Chromatic (current version from npm registry). HIGH for Houdini Paint API exclusion (verified against Can I Use data).
+**Project:** SignalframeUX v1.8 — Performance Recovery
+**Researched:** 2026-04-25
+**Scope:** Brownfield perf recovery (LCP, render-blocking, bundle hygiene). Closes the gap between current prod (Lighthouse mobile Perf 76, LCP 6.5s) and the original CLAUDE.md gate (100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial).
+**Confidence:** HIGH
 
----
-
-## Context: What This Covers
-
-Additive stack document for the v1.7 milestone. Validated v1.6 baseline (DO NOT re-research):
-- Next.js 16, TypeScript 5.8, Tailwind CSS v4, GSAP 3.12, Lenis, Three.js
-- 54 SF components, OKLCH color space, WebGL singleton renderer
-- VHS overlay (CSS pseudo-elements), grain (SVG feTurbulence), idle animation
-- tsup library build, Storybook 10, Playwright tests
-
-This document covers only what needs to change or be added.
+> Existing stack is fixed — no framework swaps, no GSAP/Lenis/Three replacements, no new runtime deps. Almost all gap closure is **configuration + critical-path restructure**, not new packages. Prior milestone STACK.md (v1.7) is superseded by this document for v1.8 scope only.
 
 ---
 
-## Recommended Stack Additions
+## State of the Existing Stack (verified 2026-04-25)
 
-### One New Dev Dependency: Chromatic
+| Capability | Already Installed | Source of Truth |
+|---|---|---|
+| Next.js | `15.5.14` | `node_modules/next/package.json`. Peer says ≥15.3; production tip is 15.5.x. Migration to 16.x rolled back per Phase 37 STATE entry. |
+| `next/font/google` | yes — Inter, Electrolize, JetBrains_Mono with `display: swap` | `app/layout.tsx:23-40` |
+| `next/font/local` | yes — Anton with `display: optional` | `app/layout.tsx:42-51`. Comment confirms "swap was causing 0.485 CLS" — `optional` is intentional and locked. |
+| `@next/bundle-analyzer` | `^16.2.2` devDep, wired via `ANALYZE=true pnpm build` | `next.config.ts:2-6`. **No additional bundle tooling needed.** |
+| `lighthouse` (CLI engine) | `^13.1.0` devDep | What's missing is **CI orchestration + assertions**, not the engine. |
+| `next/web-vitals` | ships with Next.js | Built-in `useReportWebVitals` reports LCP/CLS/INP/FCP/TTFB without external dep. |
+| Single-ticker rule | enforced — GSAP `globalTimeline` drives WebGL via `useSignalScene` | Memory: `feedback_raf_loop_no_layout_reads.md`, `feedback_consume_quality_tier.md` |
+| `optimizePackageImports` | `["lucide-react"]` only | `next.config.ts:10`. Working; can expand in v1.8. |
 
-| Package | Version | Purpose | Why |
-|---------|---------|---------|-----|
-| `@chromatic-com/storybook` | `^5.1.1` | Visual regression testing via Storybook 10 addon | First-party Storybook addon, zero-config setup, integrates directly into the existing Storybook 10 instance. Captures per-story screenshots and flags visual diffs on every CI run. Critical for substrate effects — grain, halftone, mesh gradient are pixel-level outputs where diffing catches regressions invisible to unit tests. |
-| `chromatic` CLI | `^16.2.0` | CI upload + baseline management | Companion CLI to the addon. Needed for `npx chromatic --project-token=<token>` in CI. Peer to the addon — install both. |
+**Implication:** v1.8 stack additions are tightly bounded — at most **two devDep families** (LHCI orchestration; optional `web-vitals` for attribution debugging) plus configuration changes that use already-installed primitives.
 
-**Install:**
+---
+
+## Recommended Stack
+
+### Core Technologies (no changes — keep all)
+
+| Technology | Version | Status | Notes for v1.8 |
+|---|---|---|---|
+| Next.js | `15.5.14` | **Keep, do not upgrade** | Next 16.x rollback is recent (Phase 37). Upgrading mid-perf-recovery would confound measurement. Re-evaluate in v1.9. |
+| Tailwind CSS v4 | `^4.2.2` | **Keep** | `@theme inline` token bridge from v1.7 is the source of truth; Tailwind v4 `--*` vars already drive utilities. |
+| GSAP | `^3.14.2` | **Keep** | Single-ticker discipline already enforced. Ships in shared bundle; necessary on first paint. |
+| Lenis | `^1.1.20` | **Keep** | `autoResize: true` per `feedback_pf04_autoresize_contract.md` (PF-04 contract). Do not touch. |
+| Three.js | `^0.183.2` | **Keep** | Already in async chunk (102 KB initial baseline). Confirmed via v1.1 validation. |
+
+### Supporting Libraries (devDep additions only)
+
+| Library | Recommended Version | Purpose | Closes which Phase-37 gap |
+|---|---|---|---|
+| `@lhci/cli` | `^0.15.1` (npm verified 2025-06-25) | Lighthouse CI runner — orchestrates the existing `lighthouse@13.1.0` engine for per-PR enforcement | **Lighthouse CI gate — durable per-PR enforcement.** Without LHCI, the only enforcement was a manual phase gate. With LHCI, every PR fails on Perf <100, LCP >1.0s, CLS >0. Replaces the v1.7 manual launch-gate dance. |
+| `web-vitals` | `^5.2.0` (npm verified 2026-04-25) | Real-user metric collection with **attribution build** for LCP-element diagnosis | **LCP element identification under real conditions.** Lighthouse mobile emulation flags `#thesis > span.sf-display`, but real devices may differ. The attribution build (1.5 KB extra brotli) returns `lcpEntry.element`, `lcpResourceEntry`, `loadTime` breakdown — necessary for confirming the ScaleCanvas `transform: scale()` artifact theory. **Optional** — built-in `next/web-vitals` covers the baseline; add `web-vitals` only if attribution is needed. |
+| (none else) | — | — | **No need** for `next/script` install (built-in), `@vercel/speed-insights`, `@vercel/analytics`, image-optimization libs, perf-monitoring SaaS. See "What NOT to Use." |
+
+### Development Tools (configuration, not packages)
+
+| Tool | Purpose | Notes |
+|---|---|---|
+| `lighthouserc.json` | Declarative LHCI assertion config — runs against prod URL or `next start` localhost | New file at repo root. Asserts `categories:performance >= 1`, `largest-contentful-paint <= 1000`, `cumulative-layout-shift <= 0`, `total-blocking-time <= 200`, `unused-javascript <= 50000`. |
+| `.github/workflows/lhci.yml` | GitHub Action wiring — runs `lhci autorun` on PR | Use `treosh/lighthouse-ci-action@v12` (canonical wrapper) or call `@lhci/cli` directly. Mobile preset only — desktop is already 100. |
+| `app/_components/web-vitals.tsx` | Tiny `'use client'` component using built-in `useReportWebVitals` from `next/web-vitals` | No `web-vitals` npm import needed for baseline. Logs to `console` in dev, `navigator.sendBeacon()` to a logging endpoint in prod. **Real-device telemetry without a third-party SaaS.** |
+| `next/dynamic` (already used) | Audit `InstrumentHUD`, `CheatsheetOverlay`, `SFToasterLazy`, `GlobalEffectsLazy`, `SignalCanvasLazy`, `PageTransition` for actual lazy boundaries | The `*Lazy` names suggest correctness; the 119 KiB unused-JS metric implies one is leaking. Verify via `ANALYZE=true pnpm build`. |
+| `next/script` | **Specifically NOT for `sf-canvas-sync.js`.** | The 280-byte IIFE in `public/sf-canvas-sync.js` is no longer referenced from `app/layout.tsx` — the inline `scaleScript` literal at `layout.tsx:100` superseded it. Confirm with grep; if dead, delete the file (removes one render-blocking resource for free). |
+
+---
+
+## Installation
+
 ```bash
-npm install -D @chromatic-com/storybook chromatic
+# DevDeps only — zero runtime additions
+pnpm add -D @lhci/cli@^0.15.1
+
+# Optional — only if next/web-vitals (built-in) is insufficient for attribution
+pnpm add -D web-vitals@^5.2.0
 ```
 
-**Configuration:** Zero-config. Run `npx storybook@latest add @chromaui/addon-visual-tests` to wire the addon into `.storybook/main.ts` automatically. A `chromatic.config.json` file is optional — only needed for viewport overrides or multi-browser configuration.
-
-**No other new runtime or dev dependencies are required for this milestone.** All eight aesthetic effects are achievable with existing CSS primitives, SVG filters, and the installed GSAP/Three.js stack.
+> All other "additions" are configuration files (`lighthouserc.json`, `.github/workflows/lhci.yml`, `app/_components/web-vitals.tsx`) and edits to existing files (`next.config.ts`, `app/layout.tsx`).
 
 ---
 
-## Substrate Effects: CSS Technique Decisions
+## Configuration Changes — the actual v1.8 work
 
-### The Central Question: CSS Houdini Paint Worklets vs SVG feTurbulence
+These are **not** new packages — they are the levers that close measured Phase 37 gaps using existing primitives.
 
-**Verdict: SVG feTurbulence wins. Houdini Paint API is excluded.**
+### Gap 1 — LCP 6.5s on `section#thesis > span.sf-display`
 
-CSS Paint API (Houdini) browser support as of April 2026 (verified against Can I Use):
-- Chrome/Edge/Opera: Yes (v65+)
-- Safari: Disabled by default in all versions. Can be enabled in Develop > Experimental Features — not available for general users.
-- Firefox: No support across all versions (v2–v152).
-- Global usage: ~76% (Chromium-only)
+**Root cause hypothesis (HIGH confidence):** `ScaleCanvas` applies `transform: scale(vw/1280)` to a wrapper containing the entire page. Mobile Lighthouse's LCP heuristic picks the largest paint within the viewport — the ghost-label spans 200–400px font-size × 25vw clamp, which is the largest element after scale. Compounded by `display: optional` Anton (the CLS-correct choice from Wave 3) — on cold cache, the fallback renders, fails to swap to Anton, but the LCP timestamp still measures the final paint.
 
-At the quality bar this project targets (Lighthouse 100/100, WCAG AA, production-grade), a technique absent in Firefox and requiring an opt-in flag in Safari is not viable as a primary implementation path. The polyfill (GoogleChromeLabs/css-paint-polyfill) ships JS to every browser, violating the CSS-first constraint. **Houdini is excluded for all eight effects.**
+**Levers (no new packages):**
 
-SVG feTurbulence is implemented in all browsers, requires no JavaScript, and is already used in the codebase for grain. The approach for this milestone is: extend the existing SVG filter pattern, not introduce a new rendering API.
+1. **Reduce Anton's effective LCP weight without breaking the `optional` CLS fix.**
+   - `next/font/local` does not auto-subset locals — manually subset Anton-Regular.woff2 to glyphs actually used (the project uses ALL CAPS English manifesto; aggressive subset is safe). One-time build step via `glyphhanger` or pre-built subset, no runtime dep.
+   - Confirm `<link rel="preload" as="font" type="font/woff2" crossorigin>` is being emitted. Default for `next/font/local` when `preload: true` (which is the default).
+   - Verify `adjustFontFallback` is not overridden to `false` (default for local fonts is `'Arial'` — keep default).
 
----
+2. **Demote ghost-label out of the LCP candidate set.**
+   - `components/animation/ghost-label.tsx:11-23` renders a `<span>` with `aria-hidden="true"` and 3-5% opacity. Lighthouse picks it because `aria-hidden` + low opacity does NOT exclude from LCP — only `display:none`, `visibility:hidden`, or `opacity:0` (zero) do.
+   - **Option A (preferred):** add `content-visibility: auto` + `contain-intrinsic-size` to ghost-label CSS. Defers paint cost until in-view; LCP no longer fires on it.
+   - **Option B (fallback):** start ghost-label at `opacity: 0` (excluded from LCP per spec), GSAP-tween to 0.03–0.05 in `requestAnimationFrame` after `'load'`. One-line change + ScrollTrigger entry.
+   - Both preserve the "visually identical" aesthetic constraint.
 
-### Effect-by-Effect Implementation Decisions
+3. **Hero shader / above-fold LCP candidate.**
+   - The hero `SIGNALFRAME//UX` wordmark (per v1.5 EN-01..05) should be the *intended* LCP. Add `fetchpriority="high"` to the wordmark and verify the GLSL shader canvas does not race it.
+   - The shader canvas is `data-sf-canvas` and goes through `ScaleCanvas`. The CSS rule `[data-sf-canvas]{transform:scale(var(--sf-canvas-scale))}` runs after the inline `scaleScript` (`layout.tsx:100`) — first paint is already scaled.
 
-#### Effect 1: Grain (Enhancement of Existing)
+### Gap 2 — Render-blocking 570ms (`/sf-canvas-sync.js` + 2 CSS files)
 
-The existing `feTurbulence` grain is correct. Enhancement means exposing `--signal-intensity` as a typed `@property` to drive `baseFrequency` and `opacity` in a composited overlay, rather than hardcoding values.
+**Root cause:** Phase 37 noted three render-blocking resources. Inspecting current `app/layout.tsx`:
+- The two inline `<script>` blocks (`themeScript`, `scaleScript`) are blocking by design — they must run before first paint to prevent FOUC and CLS. Both static literals, ~150 bytes each. **Do not move.**
+- `public/sf-canvas-sync.js` is referenced as render-blocking external `/sf-canvas-sync.js` in milestone context, but `grep` of `app/layout.tsx` and `app/` shows no `<script src="/sf-canvas-sync.js">` in the current tree. The inline `scaleScript` superseded it.
 
-**Technique:**
-```css
-@property --grain-intensity {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 0.4;
-}
-```
+**Levers:**
 
-SVG filter stays as-is (`feTurbulence type="fractalNoise"`). The `--grain-intensity` property drives the `opacity` of the `::after` pseudo-element carrying the filter. Keep `numOctaves` at 3–4 max — above that the performance cost exceeds the visual gain (verified: Frontend Masters).
+1. **Delete `public/sf-canvas-sync.js`** — confirm with `grep -r 'sf-canvas-sync' app components lib public` (expected empty). If empty, delete the file. **One render-blocking request removed for free, zero behavior change.**
+2. **CSS critical-path** — Tailwind v4 `@theme inline` already inlines tokens. The two render-blocking CSS files are likely `globals.css` (main token+layer file) and a page-level CSS chunk. Next.js 15 already inlines critical CSS for static routes — verify via `view-source:` on prod. If a `<link rel="stylesheet">` is still loading late, the cause is usually a non-static page or a `'use client'` component pulling an extra chunk. Audit with `ANALYZE=true pnpm build`.
 
-**Why `@property` not raw custom property:** A typed `@property` with `syntax: '<number>'` enables CSS `transition` on the value directly, giving GSAP a single numeric handle to tween via `gsap.to(el, { "--grain-intensity": 0.8 })`. Without `@property`, the browser cannot interpolate custom properties — GSAP's CSS plugin handles it via inline style mutation, but transitions won't fire from CSS alone.
+### Gap 3 — Unused JS 119 KiB across chunks `3302`, `e9a6067a`, `74c6194b`, `7525`
 
-Browser support for `@property`: Chrome 85+, Firefox 128+, Safari 16.4+. All modern browsers. Safe to use without fallback.
+**Root cause:** likely vendor splits (radix-ui, sonner, vaul, gsap, react-day-picker, cmdk, shiki) being pulled into shared chunk via barrel re-exports or eager imports.
 
-#### Effect 2: Halftone
+**Levers (configuration, no packages):**
 
-**Technique: Pure CSS — radial-gradient + filter: contrast() + background-blend-mode**
+1. **Expand `optimizePackageImports`** in `next.config.ts:10` from `["lucide-react"]` to:
+   ```ts
+   optimizePackageImports: [
+     "lucide-react",
+     "radix-ui",         // 33-component umbrella
+     "sonner",
+     "vaul",
+     "cmdk",
+     "react-day-picker",
+     "date-fns",
+     "input-otp",
+   ]
+   ```
+   Phase-gate: re-run `ANALYZE=true pnpm build` after each addition.
 
-No SVG filters required. Three declarations per element:
+2. **Audit `*Lazy.tsx` wrappers** in `components/layout/`: `GlobalEffectsLazy`, `SignalCanvasLazy`, `SFToasterLazy`. Confirm each uses `next/dynamic({ ssr: false })` and that the underlying heavy module is **not** transitively imported by any page or layout.
 
-```css
-.sf-halftone {
-  /* Layer 1: repeating dot grid */
-  background:
-    radial-gradient(circle, black 40%, transparent 40%) 0 0 / 6px 6px,
-    /* Layer 2: size-variation map (linear or radial gradient) */
-    linear-gradient(to bottom, white, black);
-  background-blend-mode: multiply;
-  filter: contrast(16);
-}
-```
+3. **Shiki** (`^4.0.2`) — already a v1.4 critical constraint ("`shiki/core` only — never `shiki/bundle/web` 695 KB or `shiki/bundle/full` 6.4 MB"). Re-verify import path hasn't drifted in `inventory/` detail views.
 
-The `filter: contrast()` at high values (12–20) pushes all pixels to binary black/white, posterizing the blended gradient into discrete dots that vary in apparent size. A contrast value of 2–3× the blur value in pixels works well for smooth edges if chaining `contrast(80) blur(2px) contrast(5)`.
+### Gap 4 — Main-thread work 2.4s (script-eval 1.0s, other 0.6s, style+layout 0.4s)
 
-This technique is pure CSS, no SVG, no JS, and is a single GPU compositing pass. Performance is acceptable — the `filter` does trigger an offscreen render, but it is not animated at runtime so it fires once per paint.
-
-**Moiré control:** Use consistent `background-size` across layers and avoid rotating the dot grid unless intentional. Staggered rows (offset by `50% 50%`) reduce moiré risk.
-
-#### Effect 3: Mesh Gradient
-
-**Technique: Multiple `radial-gradient()` layers via CSS `background` shorthand + `mix-blend-mode`**
-
-True CSS mesh gradients (as in Figma's mesh tool) do not exist natively. The closest pure-CSS approximation is layering 4–6 radial gradients at different positions, sizes, and OKLCH colors:
-
-```css
-.sf-mesh-gradient {
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 30%, oklch(0.6 0.2 270 / 0.6), transparent),
-    radial-gradient(ellipse 60% 80% at 80% 70%, oklch(0.5 0.25 190 / 0.5), transparent),
-    radial-gradient(ellipse 100% 100% at 50% 50%, oklch(0.15 0.05 240), transparent);
-  background-blend-mode: screen;
-}
-```
-
-Each gradient is GPU-rendered by the compositor — no pixel-by-pixel JS computation. This is significantly faster than canvas-based mesh gradient libraries. The alpha channel handles blending.
-
-**OKLCH advantage:** This project already uses OKLCH. Mesh gradient colors defined in OKLCH interpolate perceptually in the `color-interpolation-method: oklch` space (supported in all major browsers as of 2025, ~91% global coverage). Use `in oklch` in the gradient syntax for correct perceptual blending:
-
-```css
-background: radial-gradient(in oklch, oklch(0.6 0.2 270), transparent);
-```
-
-#### Effect 4: VHS/Scanline (Enhancement of Existing)
-
-The existing VHS overlay uses CSS pseudo-elements. Enhancement means adding a moving phosphor scanline on top of the static line pattern.
-
-**Technique: `::before` for animated scanline + `::after` for static scanline grid (both already in use pattern)**
-
-```css
-.sf-vhs::before {
-  /* Moving scanline */
-  background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.08) 51%);
-  background-size: 100% 4px;
-  animation: scanline-sweep 8s linear infinite;
-  opacity: var(--vhs-intensity, 0.4);
-}
-
-@keyframes scanline-sweep {
-  from { transform: translateY(-100%); }
-  to   { transform: translateY(100vh); }
-}
-```
-
-The animation uses `transform: translateY` — composited on the GPU, does not trigger layout or paint. Keep opacity under 0.15 for the static grid (above this the stripes become distracting at the DU aesthetic level).
-
-**`--signal-intensity` tie-in:** Drive `--vhs-intensity` from the parent `--signal-intensity` token using `calc()`:
-
-```css
---vhs-intensity: calc(var(--signal-intensity, 0.4) * 0.7);
-```
-
-#### Effect 5: Glitch
-
-**Technique: Pure CSS — `clip-path: inset()` + `@keyframes` + pseudo-elements for chromatic aberration**
-
-No JS, no canvas, no SVG:
-
-```css
-.sf-glitch::before,
-.sf-glitch::after {
-  content: attr(data-text); /* duplicate text via data attribute */
-  position: absolute;
-  inset: 0;
-}
-
-.sf-glitch::before {
-  clip-path: inset(20% 0 60% 0);
-  animation: glitch-top 3s steps(1) infinite;
-  color: oklch(0.7 0.3 200); /* cyan shift */
-  mix-blend-mode: screen;
-}
-
-.sf-glitch::after {
-  clip-path: inset(60% 0 20% 0);
-  animation: glitch-bottom 2.7s steps(1) infinite;
-  color: oklch(0.7 0.3 350); /* magenta shift */
-  mix-blend-mode: screen;
-}
-
-@keyframes glitch-top {
-  0%, 90%, 100% { clip-path: inset(20% 0 60% 0); transform: translate(0); }
-  92% { clip-path: inset(15% 0 65% 0); transform: translate(-3px, 0); }
-  95% { clip-path: inset(25% 0 55% 0); transform: translate(3px, 0); }
-}
-```
-
-`steps(1)` timing function is the correct choice — it creates the discrete, robotic glitch jumps rather than smooth interpolation. `clip-path` is GPU-composited. The `mix-blend-mode: screen` on the color-shifted pseudo-elements produces chromatic aberration without double-rendering the full element.
-
-**Performance note:** `clip-path` on pseudo-elements with `mix-blend-mode` creates new compositing layers. Fine at idle/hover trigger. Do not animate continuously on large full-viewport elements — gate with `animation-play-state` and only activate on `[data-glitch-active]` attribute.
-
-#### Effect 6: Moiré (Bonus/Related to Halftone)
-
-Moiré is a natural consequence of two overlapping repeating patterns at slightly different frequencies. Intentional moiré as an aesthetic effect:
-
-```css
-.sf-moire {
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 3px, oklch(0.3 0 0 / 0.3) 3px, oklch(0.3 0 0 / 0.3) 4px),
-    repeating-linear-gradient(1.5deg, transparent, transparent 3px, oklch(0.3 0 0 / 0.3) 3px, oklch(0.3 0 0 / 0.3) 4px);
-}
-```
-
-The slight angle difference (0deg vs 1.5deg) between the two `repeating-linear-gradient` layers generates the interference pattern. Adjusting the degree difference controls moiré density. This is pure CSS, one paint pass, no animation overhead.
-
----
-
-### Stacking Multiple Effects
-
-**Compositing strategy:** Each effect is implemented as a separate pseudo-element layer or wrapper element, not as combined filters on a single element. This avoids the exponential GPU cost of stacked `backdrop-filter` and `filter` properties on the same element.
-
-Structure per component:
-```
-[data-substrate] container          ← isolation: isolate
-  ├── .sf-content                   ← actual content
-  ├── .sf-grain-overlay ::after     ← SVG feTurbulence grain
-  ├── .sf-scanline-overlay ::before ← VHS scanline animation
-  └── .sf-halftone-overlay          ← contrast() + radial-gradient
-```
-
-Using `isolation: isolate` on the container confines `mix-blend-mode` blending to within the component's stacking context, preventing bleed-through to parent page elements. This is the same pattern already used in the FRAME/SIGNAL layer separation demo.
-
-**What NOT to stack:** Do not apply `backdrop-filter` to multiple nested elements simultaneously. Each `backdrop-filter` requires a separate offscreen render pass — nesting them doubles memory per level. Instead, apply a single `backdrop-filter` at the topmost overlay layer if blur is needed.
-
----
-
-## Token Bridge: CSS @layer Cascade Pattern
-
-### Purpose
-
-Consumer sites (cdOS, CD-Operator, CD consumer site) import the SF design system tokens and need to override or extend them without specificity conflicts. The `@layer` cascade provides the mechanism.
-
-### Architecture
-
-The SF system ships tokens in a named layer. Consumer sites declare their override layer after:
-
-```css
-/* In SF system CSS (shipped in the library) */
-@layer sf.tokens {
-  :root {
-    --color-background: oklch(0.1 0.02 250);
-    --color-foreground: oklch(0.97 0.005 250);
-    --color-primary: oklch(0.65 0.22 200);
-    --signal-intensity: 0.4;
-    /* ... all SF tokens */
-  }
-}
-
-@layer sf.components {
-  /* SF component styles reference @layer sf.tokens values */
-}
-```
-
-```css
-/* In consumer site CSS */
-@layer sf.tokens, sf.components, consumer.overrides;
-
-@layer consumer.overrides {
-  :root {
-    --color-primary: oklch(0.7 0.25 150); /* consumer brand override */
-    --signal-intensity: 0.6;              /* higher intensity for this context */
-  }
-}
-```
-
-Layer order in the cascade: later layers win. By declaring `consumer.overrides` after `sf.components`, the consumer layer's specificity is always higher regardless of selector complexity. This eliminates the `!important` arms race.
-
-**Why this pattern:** @layer is fully supported in all modern browsers since 2022 (Chrome 99+, Firefox 97+, Safari 15.4+). It is the browser-native mechanism for design system layering without the runtime overhead of CSS-in-JS theming systems.
-
-### @property for Typed Token Animation
-
-Tokens that need to animate (e.g., `--signal-intensity` driving grain opacity, VHS strength) MUST be registered as typed `@property` declarations:
-
-```css
-@property --signal-intensity {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 0;
-}
-
-@property --color-primary {
-  syntax: '<color>';
-  inherits: true;
-  initial-value: oklch(0.65 0.22 200);
-}
-```
-
-Typed `@property` enables:
-1. CSS `transition` and `animation` on custom properties (browser-native, no GSAP required for simple fades)
-2. GSAP tween targets (GSAP reads typed properties via `getComputedStyle` and mutates via `style.setProperty`)
-3. Type safety — invalid values fall back to `initial-value` rather than silently breaking
-
-Register all animatable tokens this way. Non-animatable tokens (breakpoints, font family names) do not need `@property`.
-
-### No Style Dictionary Needed
-
-For this milestone, the token bridge does not require Style Dictionary or any additional tooling. The `@layer` cascade pattern is sufficient for CSS-to-CSS bridging. Style Dictionary becomes relevant only if tokens need to be output to non-CSS targets (iOS, Android, JSON). This project's consumer sites are web-only. Decision: no new tooling.
-
----
-
-## Visual Regression Testing: Chromatic Integration
-
-### How It Integrates with Storybook 10
-
-The existing Storybook 10 instance already has stories for SF components. Chromatic reads those stories, captures screenshots, and establishes baselines. No story modifications are needed for the initial setup.
-
-**Setup sequence:**
-1. `npm install -D @chromatic-com/storybook chromatic`
-2. `npx storybook@latest add @chromaui/addon-visual-tests` — auto-wires the addon into `.storybook/main.ts`
-3. Create a Chromatic project at chromatic.com, get project token
-4. Add to CI: `npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN`
-5. First run establishes baselines; subsequent runs flag regressions
-
-**Stories needed for substrate effects:** Each effect variant needs a dedicated story at controlled `--signal-intensity` values (0, 0.5, 1.0) to give Chromatic a stable baseline. Animated effects (glitch, VHS scanline sweep) need `chromatic: { pauseAnimationAtEnd: true }` in story parameters to freeze the frame before screenshotting.
-
-```typescript
-// Example story parameter for animated effects
-export const GlitchActive: Story = {
-  parameters: {
-    chromatic: { pauseAnimationAtEnd: true },
-  },
-};
-```
-
-### Performance Measurement for Stacked CSS Effects
-
-Chromatic captures rendering correctness, not performance. For performance measurement of stacked CSS effects, use the existing Lighthouse CI pipeline. The key metric is whether stacked substrate effects push the Composite + Paint timeline over budget.
-
-**Measurement approach:** Chrome DevTools Performance panel → record a frame in the substrate-heavy section → inspect the "Rendering" swimlane. Target: Composite + Paint under 4ms per frame at 60fps on a mid-range device (simulated via 4x CPU throttle in DevTools).
-
-If a substrate effect exceeds budget: reduce `numOctaves` on feTurbulence (3 is the safe limit), reduce the number of simultaneously visible layered effects, or gate effect activation with `IntersectionObserver` (same pattern as the existing WebGL scene visibility gate).
-
----
-
-## What NOT to Add
-
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| CSS Houdini Paint API (worklets) | Safari disabled by default, Firefox no support (verified Can I Use). ~24% of users cannot see Houdini effects without polyfill JS. The polyfill violates CSS-first constraint. | SVG feTurbulence + CSS filter (existing + extensions) |
-| CSS `animation-timeline: scroll()` | Already excluded in v1.5 STACK.md — Firefox support absent as of April 2026 | GSAP ScrollTrigger |
-| Canvas-based mesh gradient libraries (e.g., `meshgradient.js`) | Adds a JS runtime dependency for an effect achievable with 5 CSS declarations. Violates CSS-first constraint. Blocks SSR. | Layered `radial-gradient()` in CSS |
-| Style Dictionary | Token bridge for this milestone is CSS-to-CSS only. Style Dictionary is needed only for multi-platform token output (iOS, Android). Over-engineering for web-only consumers. | `@layer` cascade + `@property` |
-| `playwright-visual-comparisons` | Playwright already installed for E2E tests — adding visual regression to it creates a duplicate testing concern (functional test vs visual diff are different jobs). Chromatic via Storybook is the purpose-built tool for component-level visual regression. | Chromatic + Storybook |
-| `motion` / `framer-motion` for substrate animation | Second animation system. All animation already runs through GSAP. `--signal-intensity` animation is handled by GSAP tweening a typed `@property`. | GSAP (existing) + `@property` |
-| `backdrop-filter: blur()` on substrate overlays | Each `backdrop-filter` triggers an independent offscreen render pass. Stacking multiple `backdrop-filter` elements causes exponential GPU cost. Substrate effects are overlay-based, not blur-based. | `mix-blend-mode` + `opacity` compositing |
-| CSS `filter()` function | Not cross-browser — only Safari shipped it in 2015, no other browser followed. | Apply `filter` to the element, not to individual gradient images |
-
----
-
-## Bundle Impact
-
-**Zero new runtime JS.** All eight substrate effects are pure CSS (+ SVG filter markup). The `@property` declarations and `@layer` structures are CSS, not JS. GSAP already in the bundle handles any `--signal-intensity` tweening.
-
-| Change | Bundle Impact | Strategy |
-|--------|--------------|----------|
-| `@chromatic-com/storybook` | Dev-only — zero production bundle impact | `devDependencies` only |
-| `chromatic` CLI | Dev-only — CI usage only | `devDependencies` only |
-| SVG filter definitions for grain | ~200–400 bytes inline SVG per effect | Inline in component template, not an image request |
-| `@property` declarations | Bytes in CSS only — negligible | Add to `globals.css` token block |
-| `@layer` cascade structure | Bytes in CSS only — negligible | Restructure existing token block in `globals.css` |
-
-**Projected bundle after v1.7:** No change from v1.6 baseline. Lighthouse 100/100 maintained.
+**Levers:**
+1. `optimizePackageImports` reduction (Gap 3) directly drops script-eval cost.
+2. `updateSignalDerivedProps` MutationObserver from v1.7 (Phase 48) keeps ticker overhead at zero. Verify no new `getComputedStyle` regressions in v1.8 work — per memory `feedback_raf_loop_no_layout_reads.md`.
+3. `getQualityTier()` continues gating any new SIGNAL surface — but v1.8 is perf-recovery, no new surfaces.
 
 ---
 
 ## Alternatives Considered
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| Grain texture | SVG `feTurbulence` (extend existing) | CSS Houdini Paint API | Safari/Firefox support missing — affects ~24% of users. Polyfill requires JS. |
-| Halftone | Pure CSS `radial-gradient` + `filter: contrast()` | SVG halftone filter or canvas | CSS achieves identical effect in 3 declarations. No new rendering context required. |
-| Mesh gradient | Layered `radial-gradient()` in CSS | `meshgradient.js`, canvas-based | Library adds JS runtime for what CSS achieves natively. Blocks RSC server render. |
-| Glitch animation | `clip-path: inset()` + `@keyframes` | GSAP timeline driving clip-path | Pure CSS is zero JS, fires from CSS class toggle. GSAP adds overhead for an effect that doesn't need JS orchestration. Use GSAP only if glitch needs to be scroll-synced. |
-| Token bridge | `@layer` cascade + `@property` | Style Dictionary | Style Dictionary is for multi-platform token output. Web-only consumers need CSS-to-CSS layering only. |
-| Visual regression | Chromatic (`@chromatic-com/storybook` 5.1.1) | Playwright visual comparisons | Chromatic is purpose-built for Storybook story-level visual diff. Playwright visual testing at page level has higher false-positive rate for animated components. |
+| Recommended | Alternative | When Alternative Makes Sense |
+|---|---|---|
+| `@lhci/cli` (devDep) for CI gate | `@vercel/speed-insights` (runtime SaaS) | If you need RUM with no infra effort and accept a third-party request + dashboard fee. v1.8 hard constraint is zero new runtime deps, so `@lhci/cli` wins. Reconsider for v1.9 if real-user trends matter. |
+| `next/web-vitals` (built-in) for client telemetry | `web-vitals@5.2.0` package directly | Use `web-vitals` directly **only if** you need the attribution build (`web-vitals/attribution`) for LCP-element diagnosis. Built-in `useReportWebVitals` returns `entries[]` which is enough for 90% of cases. |
+| Subset Anton via `glyphhanger` (build script) | Switch Anton → `next/font/google` (Anton is on Google Fonts) | Google Fonts version doesn't ship with the optimal subset for ALL-CAPS English-only manifesto. Build-time subset is one-shot and predictable. |
+| Configuration-only LCP fix (Gap 1 levers) | Switch ScaleCanvas approach to native `min(vw, 1280px)` containers | Architectural change; explicitly Out of Scope per milestone context (Track B parked). |
+| Keep Next.js `15.5.14` | Next.js 16.x | Next 16 was attempted (Phase 37) and rolled back. Mid-perf-recovery is wrong moment to retry. Belongs in v1.9. |
+| Real-device sampling: WebPageTest free tier + manual iPhone Safari/Android | BrowserStack (paid) | Free WPT runs covers iPhone 15 Pro / Moto G Power profiles; combined with manual local devices, sufficient for v1.8 verification. BrowserStack adds cost without proportional benefit at this scope. |
+
+---
+
+## What NOT to Use
+
+| Avoid | Why | Use Instead |
+|---|---|---|
+| `@vercel/speed-insights` | Runtime SaaS dep adds its own beacon overhead and a third-party request to the critical path. Conflicts with zero-new-runtime-dep contract. Duplicates LCP measurement we can do for free. | `next/web-vitals` (built-in) → custom endpoint via `navigator.sendBeacon` |
+| `@vercel/analytics` | Same critique — runtime weight, third-party request, paid retention. Not needed for LCP recovery; the gap is *measurement* not *retention*. | `useReportWebVitals` to a self-hosted log endpoint |
+| `next/image` for new image optimization | Project doesn't have an image-LCP problem — LCP is on a `<span>` text node. Adding image-optimization machinery is premature. | Keep current `<img>` / SVG usage. Re-evaluate if any image becomes the LCP element after Gap 1 fixes. |
+| `react-three-fiber` (already excluded) | Independent rAF conflicts with GSAP `globalTimeline.timeScale(0)` reduced-motion contract. | Raw Three.js via `useSignalScene` singleton |
+| `partytown` / `next/script strategy="worker"` | `worker` strategy is "experimental, App Router unsupported" per `next/script` docs (verified 2026-04-23). The two inline scripts in `layout.tsx` are static literals, not third-party — moving them to a worker provides no benefit and breaks FOUC/CLS prevention. | Keep inline blocking scripts. They are <500 bytes combined. |
+| `next/script strategy="beforeInteractive"` for `sf-canvas-sync.js` | The script is dead code (superseded by inline `scaleScript`). Wrapping a dead file in `next/script` is the wrong fix. | Delete `public/sf-canvas-sync.js`. |
+| `lighthouse-ci-action@v9` or earlier | Older versions of the official GitHub Action don't support Lighthouse 13.x assertions. | `treosh/lighthouse-ci-action@v12` (current, supports `@lhci/cli@0.15.x`) |
+| Adding `web-vitals` to `dependencies` (runtime) | Violates zero-runtime-dep rule. | DevDep only. Use `next/web-vitals` (built-in) for prod telemetry; pull `web-vitals/attribution` only in dev/staging via dynamic import. |
+| New CSS-in-JS perf tools (Linaria, vanilla-extract) | Tailwind v4 `@theme inline` is already source of truth; competing tool inflates bundle and breaks `--sfx-*` consumer overrides. | Tailwind v4 only. |
+| Custom RUM dashboard | Out of scope for v1.8. | Plain `navigator.sendBeacon` to an in-house API route or external collector — upgrade in v2.x. |
+| Premature Edge runtime conversion | Routes are already mostly static (Phase 37 confirmed `headers()` removal). Edge gives nothing extra here. | Keep static-by-default. |
+| PPR (Partial Prerendering) | Stable in Next 16, experimental in 15.x. Pinning Next 15 means PPR is incremental work. Static homepage already has the fastest possible TTFB on Vercel. | Skip PPR for v1.8. Consider when Next 16 upgrade lands in v1.9. |
+| Cache Components (Next 16 only) | Out of reach on Next 15.5. | Defer to v1.9 with Next 16 upgrade. |
+
+---
+
+## Stack Patterns by Variant
+
+**If web-vitals attribution confirms LCP element is `#thesis > span.sf-display`:**
+- Apply Gap 1 levers (ghost-label demotion + Anton subset). Likely closes 5+ seconds of LCP single-handedly.
+
+**If web-vitals attribution shows LCP is the hero shader canvas or wordmark:**
+- Gap 1 levers do not apply. Audit `SignalCanvasLazy` mount timing — `ssr: false` may delay first paint of the canvas.
+- Add `fetchpriority="high"` to the hero wordmark.
+- Confirm GLSL shader compiles synchronously on first frame, not deferred.
+
+**If `ANALYZE=true pnpm build` shows shared chunk >150 KB after `optimizePackageImports`:**
+- Audit barrel re-exports in `components/sf/index.ts` — even with `'use client'` discipline, `radix-ui` umbrella imports can leak.
+- Convert any `import { X } from "radix-ui"` to direct `radix-ui/dialog` style sub-paths where supported.
+
+**If LHCI mobile run is still <100 after all configuration changes:**
+- The remaining gap is architectural (ScaleCanvas + ghost-label-as-LCP) — exactly Track B (parked). Open a v1.9 spike, do not extend v1.8.
+
+---
+
+## Version Compatibility
+
+| Package A | Compatible With | Notes |
+|---|---|---|
+| `@lhci/cli@^0.15.1` | `lighthouse@^13.1.0` (already installed) | LHCI 0.15.x bundles or wraps Lighthouse ≥10. Project's `lighthouse@13.1.0` is the engine; LHCI orchestrates. |
+| `web-vitals@^5.2.0` | `next@15.5.14`, React 19 | v5 is current (verified 2026-04-25). Includes attribution build. ESM-only — Next 15 handles. |
+| `@next/bundle-analyzer@^16.2.2` | `next@15.5.14` | Already installed. `@next/bundle-analyzer@16.x` works against `next@15.x` — major version is just a versioning convention, not a hard dep boundary. |
+| `next/font/local` `display: optional` | Anton local font, Phase 35 CLS fix | **Do not change to `swap`.** Documented at `app/layout.tsx:46-50` — `swap` caused 0.485 CLS on `/system`. `optional` is the locked v1.5 decision. |
+| `optimizePackageImports` | Next 15 + 16 | Stable since Next 13.5. |
+| `treosh/lighthouse-ci-action@v12` | LHCI 0.15.x | Current generation; v9 and below are unmaintained. |
+
+---
+
+## DevDep vs Runtime Boundary (explicit per quality gate)
+
+| Package | Type | Justification |
+|---|---|---|
+| `@lhci/cli@^0.15.1` | **devDep** | CI-only tool. Runs in GitHub Actions, never ships to users. |
+| `web-vitals@^5.2.0` | **devDep** (optional) | Used only via `'use client'` component dynamically imported in dev/staging for attribution debugging. Production telemetry uses built-in `next/web-vitals` which bundles its own minimal collector. If included in prod runtime, must remain ≤4 KB and gated to non-critical paths. |
+| `@next/bundle-analyzer@^16.2.2` | **devDep** (already) | Build-time only. |
+| `lighthouse@^13.1.0` | **devDep** (already) | CLI engine; never imported into app code. |
+
+**Zero new runtime npm dependencies.** Preserves v1.7 contract.
 
 ---
 
 ## Sources
 
-- Can I Use — CSS Painting API: https://caniuse.com/css-paint-api — Firefox 0%, Safari disabled by default. (HIGH confidence — verified directly)
-- MDN — @property: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@property — browser support, syntax (HIGH confidence — official docs)
-- MDN — CSS Cascade Layers: https://developer.mozilla.org/en-US/docs/Web/CSS/@layer (HIGH confidence — official docs)
-- Frontend Masters — "Pure CSS Halftone Effect in 3 Declarations": https://frontendmasters.com/blog/pure-css-halftone-effect-in-3-declarations/ — `radial-gradient` + `filter: contrast()` technique (HIGH confidence — verified technique)
-- Frontend Masters — "Grainy Gradients": https://frontendmasters.com/blog/grainy-gradients/ — feTurbulence + feDisplacementMap, numOctaves 3–4 performance limit (HIGH confidence — verified technique)
-- CSS { in Real Life } — "CSS Halftone Patterns": https://css-irl.info/css-halftone-patterns/ — `mask-image` variation technique (MEDIUM confidence — editorial, consistent with MDN gradient spec)
-- Josh W. Comeau — "Color Shifting": https://www.joshwcomeau.com/animation/color-shifting/ — OKLCH + @property animation technique (HIGH confidence — author is well-known, consistent with MDN spec)
-- Codrops — CSS Glitch Effect: https://tympanus.net/codrops/2017/12/21/css-glitch-effect/ — clip-path + pseudo-element glitch pattern (MEDIUM confidence — older article, technique is stable CSS)
-- utilitybend — "Revisiting SVG filters": https://utilitybend.com/blog/revisiting-svg-filters-my-forgotten-powerhouse-for-duotones-noise-and-other-effects/ — feTurbulence remains valid vs CSS alternatives (MEDIUM confidence — editorial)
-- npm registry — `@chromatic-com/storybook` version 5.1.1, `chromatic` version 16.2.0 (HIGH confidence — live registry query)
-- Chromatic docs: https://www.chromatic.com/docs/quickstart/ — setup, `pauseAnimationAtEnd` story parameter (MEDIUM confidence — official docs)
-- Go Make Things — "Public and private CSS cascade layers in a design system": https://gomakethings.com/public-and-private-css-cascade-layers-in-a-design-system/ — @layer design system pattern (MEDIUM confidence — editorial, consistent with spec)
+- `npm view @lhci/cli` (verified 2026-04-25): `0.15.1`, last modified 2025-06-25 — **HIGH**
+- `npm view web-vitals` (verified 2026-04-25): `5.2.0`, last modified 2026-04-25 — **HIGH**
+- `npm view @next/bundle-analyzer` (verified 2026-04-25): `16.2.4`, last modified 2026-04-22 — **HIGH**
+- `npm view lighthouse` (verified 2026-04-25): `13.1.0`, last modified 2026-04-06 — **HIGH**
+- `node_modules/next/package.json`: actual installed Next is `15.5.14` — **HIGH**
+- Next.js docs `app/getting-started/fonts` (lastUpdated 2026-04-23): `next/font/local` `display: optional` semantics, `adjustFontFallback`, `preload: true` default — **HIGH**
+- Next.js docs `app/api-reference/components/font` (lastUpdated 2026-04-23): full props matrix incl. `adjustFontFallback`, `declarations`, `axes` — **HIGH**
+- Next.js docs `app/api-reference/components/script` (lastUpdated 2026-04-23): `worker` strategy is experimental + App Router unsupported — **HIGH**
+- Next.js docs `app/api-reference/functions/use-report-web-vitals` (lastUpdated 2026-04-23): built-in hook returns LCP/CLS/INP/FCP/TTFB — **HIGH**
+- GitHub `GoogleChrome/web-vitals` (verified 2026-04-25): v5 current, attribution build available — **HIGH**
+- Project files `app/layout.tsx`, `next.config.ts`, `package.json`, `public/sf-canvas-sync.js`, `components/animation/ghost-label.tsx` — **HIGH** (read directly)
+- Project memory `feedback_pf04_autoresize_contract.md`, `feedback_consume_quality_tier.md`, `feedback_raf_loop_no_layout_reads.md`, `project_phase37_mobile_a11y_architectural.md` — **HIGH**
+- `treosh/lighthouse-ci-action@v12`: ecosystem-canonical wrapper — **MEDIUM** (not directly version-verified this session)
 
 ---
 
-*Stack research for: SignalframeUX v1.7 Substrate Effects + Token Bridge milestone*
-*Researched: 2026-04-11*
+*Stack research for: SignalframeUX v1.8 Speed of Light — performance recovery to original CLAUDE.md gate*
+*Researched: 2026-04-25*
+*Supersedes: v1.7 STACK.md for v1.8 scope only; v1.7 effects-stack research remains accurate for prior milestone.*

@@ -197,8 +197,8 @@
   --sfx-font-display: var(--font-anton), "Impact", sans-serif;
 
   /* ── Type Scale: Industrial Minor Third (1.2) ── */
-  --sfx-text-2xs: clamp(8px, calc(0.625*var(--sf-vw)), 12px);  /* 9px at 1440px — micro labels, copy buttons */
-  --sfx-text-xs: clamp(9px, calc(0.694*var(--sf-vw)), 14px);   /* 10px at 1440px — tag pills, stat labels */
+  --sfx-text-2xs: clamp(10px, calc(0.625*var(--sf-vw)), 12px); /* 10px floor — readable on 1280px MBP — micro labels, copy buttons */
+  --sfx-text-xs: clamp(11px, calc(0.694*var(--sf-vw)), 14px);  /* 11px floor — readable on 1280px MBP — tag pills, stat labels */
   --sfx-text-sm: clamp(10px, calc(0.764*var(--sf-vw)), 16px);  /* 11px at 1440px — nav, footer, grid metadata */
   --sfx-text-base: clamp(11px, calc(0.903*var(--sf-vw)), 18px); /* 13px at 1440px — body copy, descriptions */
   --sfx-text-md: clamp(14px, calc(1.111*var(--sf-vw)), 24px);   /* 16px at 1440px — hero body, prominent copy */
@@ -278,8 +278,6 @@
   --sfx-fx-feedback-decay: 0.88;
   --sfx-fx-displace-gain: 0;
   --sfx-fx-bloom-intensity: 0;
-  --sfx-fx-glitch-rate: 0;
-  --sfx-fx-particle-opacity: 0;
   --sfx-audio-bass: 0;
   --sfx-audio-mid: 0;
   --sfx-audio-high: 0;
@@ -2416,6 +2414,21 @@ html:not(.dark) .sf-mesh-gradient {
 [data-borderless="true"] *:not(:focus-visible) {
   outline-width: 0 !important;
 }
+
+/* Japanese text renders as silent decoration — kana/kanji glyphs are part of
+   the bilingual stamp aesthetic but should not assert color. Transparent fill
+   keeps the elements in the layout/DOM (so screen readers + reading order are
+   preserved) while letting the substrate pass through the glyph shapes. */
+[lang="ja"] {
+  color: transparent;
+}
+
+/* CdCornerPanel handles its own kana knockout via SVG `<mask>` (see
+   components/layout/cd-corner-panel.tsx) — kana glyphs are punched out of the
+   yellow plaque so dynamic content behind the panel shows through the actual
+   glyph shapes. No CSS rule needed here; the global `[lang="ja"] { color:
+   transparent }` above only applies to remaining HTML kana surfaces (e.g.
+   the hero katakana). */
 
 /* R-60-e: ex-bordered surfaces get a muted fill in borderless mode. Excludes:
  *   - `border-none` / `border-0` / `ring-0` — never carried a border to replace
