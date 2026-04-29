@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.8
-milestone_name: Build-Order Constraints
-status: executing
-stopped_at: "Phase 63.1 CLOSED with deferrals — Path A wordmark vectorization shipped + D-07 recalibrated <2000ms strict 4G + Pitfall #10 ratio recalibration + 3G Fast + framework chunk routed to Phase 64."
-last_updated: "2026-04-28T19:27:41.976Z"
-last_activity: 2026-04-28 -- Phase 64 planning complete
+milestone_name: Speed of Light + Build-Order Constraints
+status: shipped
+stopped_at: "v1.8 SHIPPED 2026-04-29 — PR #4 (chore/v1.7-ratification → main, 226 commits) MERGED 22:39:56Z. Tag v1.8 created. 26/29 reqs satisfied; VRF-01/04/05 deferred to v1.9 with closure conditions queued (path_h/i/k/l + Phase 63 WPT + Phase 65 RUM)."
+last_updated: "2026-04-29T23:15:13.795Z"
+last_activity: 2026-04-29
 progress:
-  total_phases: 58
-  completed_phases: 44
-  total_plans: 93
-  completed_plans: 89
-  percent: 96
+  total_phases: 10
+  completed_phases: 8
+  total_plans: 19
+  completed_plans: 19
+  percent: 80
 ---
 
 # STATE — SignalframeUX
@@ -30,7 +30,7 @@ progress:
 Phase: 63.1 (lcp-fast-path-remediation) — EXECUTING
 Plan: 3 of 3
 Status: Ready to execute
-Last activity: 2026-04-28 -- Phase 64 planning complete
+Last activity: 2026-04-29
 
 ## Progress
 
