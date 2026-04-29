@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 (full clone) required so `git merge-base HEAD main`
+          # in tests/v1.8-phase58-launch-gate-untouched.spec.ts can resolve.
+          # Default fetch-depth: 1 only checks out the PR head with no main ref.
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3

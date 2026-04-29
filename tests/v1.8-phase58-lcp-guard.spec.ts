@@ -42,12 +42,14 @@ async function captureLcp(page: Page): Promise<LcpInfo> {
         }
       });
       obs.observe({ type: "largest-contentful-paint", buffered: true });
-      // Resolve on idle — LCP candidate stabilizes by load+1s.
+      // Resolve on idle — LCP candidate stabilizes by load+1s on dev machines,
+      // but CI Linux Chromium with cold-start build artifacts can take 3-4s.
+      // 5000ms accommodates CI latency without changing test semantics.
       setTimeout(() => {
         obs.disconnect();
         if (last) resolve(last);
         else resolve({ selector: "(no-lcp-captured)", size: 0, startTime: 0 });
-      }, 1500);
+      }, 5000);
     });
   });
 }
@@ -63,7 +65,7 @@ test.describe("@v18-phase58-lcp-guard (CIB-05 perturbation check)", () => {
 
     const lcp = await captureLcp(page);
     // Guard against vacuous pass: PerformanceObserver-timeout fallback.
-    expect(lcp.selector, "LCP capture timed out (no entries observed in 1500ms)").not.toBe("(no-lcp-captured)");
+    expect(lcp.selector, "LCP capture timed out (no entries observed in 5000ms)").not.toBe("(no-lcp-captured)");
     // Phase 57 baseline classes: assert presence of structural classes that
     // uniquely identify the GhostLabel — sf-display + pointer-events-none + top-1/2.
     // Selector string is the dot-joined raw className — Tailwind arbitrary
@@ -83,7 +85,7 @@ test.describe("@v18-phase58-lcp-guard (CIB-05 perturbation check)", () => {
 
     const lcp = await captureLcp(page);
     // Guard against vacuous pass: PerformanceObserver-timeout fallback.
-    expect(lcp.selector, "LCP capture timed out (no entries observed in 1500ms)").not.toBe("(no-lcp-captured)");
+    expect(lcp.selector, "LCP capture timed out (no entries observed in 5000ms)").not.toBe("(no-lcp-captured)");
     // Phase 57 baseline classes for VL-05 overlay span. Plain substring matches —
     // Tailwind arbitrary brackets ([0.08em], [-0.12em]) appear LITERALLY in the
     // dot-joined className string.
