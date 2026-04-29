@@ -32,11 +32,11 @@ export function Footer() {
                 DOCS
               </p>
               <ul className="space-y-0 text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><Link href="/init" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Getting Started</Link></li>
-                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Components</Link></li>
-                <li><Link href="/system" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Tokens</Link></li>
-                <li><Link href="/builds" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Builds</Link></li>
-                <li><Link href="/reference" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">API Reference</Link></li>
+                <li><Link href="/init" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">Getting Started</Link></li>
+                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">Components</Link></li>
+                <li><Link href="/system" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">Tokens</Link></li>
+                <li><Link href="/builds" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">Builds</Link></li>
+                <li><Link href="/reference" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">API Reference</Link></li>
               </ul>
             </div>
 
@@ -45,8 +45,8 @@ export function Footer() {
                 RESOURCES
               </p>
               <ul className="space-y-0 text-[var(--text-sm)] font-mono uppercase tracking-wider text-muted-foreground">
-                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">GitHub<span className="sr-only"> (opens in new tab)</span></a></li>
-                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-2)] inline-block">Registry</Link></li>
+                <li><a href="https://github.com/signalframeux" target="_blank" rel="noopener noreferrer" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">GitHub<span className="sr-only"> (opens in new tab)</span></a></li>
+                <li><Link href="/inventory" className="sf-link-draw hover:text-foreground py-[var(--sfx-space-3)] inline-flex items-center min-h-12">Registry</Link></li>
               </ul>
             </div>
 
