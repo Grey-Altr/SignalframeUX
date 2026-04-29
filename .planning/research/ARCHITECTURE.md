@@ -1,564 +1,562 @@
-# Architecture Patterns — v1.7 Aesthetic Effects Integration
+# Architecture Research — v1.8 Speed of Light
 
-**Domain:** SIGNAL layer compositing architecture for 8 visual effects
-**Researched:** 2026-04-11
-**Confidence:** HIGH — all findings based on direct codebase audit (globals.css, vhs-overlay.tsx, global-effects.tsx, signal-canvas.tsx, signal-overlay.tsx, tokens.css, aesthetic-prototypes.md, analyst-brief-v2.md)
+**Domain:** LCP/Lighthouse-100 perf recovery for shipped Next.js 15 App Router site (SignalframeUX portfolio)
+**Researched:** 2026-04-25
+**Mode:** Project research — integration architecture (NOT ecosystem survey)
+**Confidence:** HIGH for codebase-specific integration points (file paths, contracts), MEDIUM for Next.js 15 critical-path patterns (verified against current docs), LOW where Lighthouse CI runner choice is open
+
+> Scope discipline: this document does NOT re-investigate framework choices, animation stack, or aesthetic contracts. Those are locked. It only addresses HOW perf-recovery interventions slot into the existing rendering / cascade / ticker chain without breaching the locked contracts.
+
+## Existing Architecture (Reference, Not Re-Researched)
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  CRITICAL PATH (current — Phase 37 measured)                         │
+├──────────────────────────────────────────────────────────────────────┤
+│  HTML stream                                                         │
+│    ├─ inline themeScript        (<script>, ~250B, blocking)          │
+│    ├─ inline scaleScript        (<script>, ~600B, blocking)          │
+│    ├─ Tailwind+app CSS          (render-blocking, ~570ms total)      │
+│    └─ /sf-canvas-sync.js        (external sync, BLOCKING by design)  │
+│         └─ writes outer.style.height pre-paint → CLS=0               │
+│  React hydration                                                     │
+│    ├─ LenisProvider.useEffect   (Lenis init + GSAP ticker hook)      │
+│    ├─ ScaleCanvas.useEffect     (rAF debounced applyScale)           │
+│    ├─ GlobalEffectsLazy         (next/dynamic ssr:false)             │
+│    └─ SignalCanvasLazy          (next/dynamic ssr:false, Three.js)   │
+│  GSAP ticker starts → drives:                                        │
+│    ├─ Lenis.raf(time*1000)                                           │
+│    ├─ ScrollTrigger.update                                           │
+│    └─ All SIGNAL surfaces (single rAF rule)                          │
+│  First SIGNAL frame (currently visible LCP @ 6.5s mobile)            │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+| Locked contract | File-of-record | What perf work MUST NOT break |
+|-----------------|----------------|-------------------------------|
+| Single GSAP ticker | `lib/gsap-core.ts:8-13` | No new rAF loops; `getQualityTier()` mandatory for new SIGNAL |
+| WebGL singleton | `components/layout/signal-canvas-lazy.tsx`, `lib/signal-canvas.ts` | Max 1 SignalCanvas instance (iOS Safari context limit) |
+| `@layer signalframeux` cascade | `app/globals.css`, `dist/signalframeux.css` | Consumer (unlayered) wins; no flash, no SSR magenta |
+| `--sfx-*` vs `--sf-*` prefix split | `app/globals.css`, `components/layout/scale-canvas.tsx:75-81` | Color/duration → `--sfx-*`; sizing/canvas/nav-state → `--sf-*` |
+| Reduced-motion kill switch | `lib/gsap-core.ts`, `components/layout/lenis-provider.tsx:18-21` | All derived motion collapses to 0 with one timeScale flip |
+| Pre-hydration scale write | `app/layout.tsx:91-100` (themeScript + scaleScript inline) | First paint must already be scaled → CLS=0 |
+| Hole-in-the-donut SSR | `components/layout/signalframe-config.tsx` | Children stay Server Components |
+
+## Phase 37 Measured Gaps (HARD, drive intervention scope)
+
+| Gap | Current | Target | Root cause hypothesis |
+|-----|---------|--------|------------------------|
+| LCP (mobile, prod) | 6.5s | <1.0s | Ghost-label `span.sf-display` picked as LCP element after ScaleCanvas transform-box pulls below-fold elements into viewport calc |
+| Render-blocking | 570ms total | <200ms | Two CSS files + `/sf-canvas-sync.js` fetch on critical path |
+| Unused JS | 119 KiB across 4 chunks (`3302`, `e9a6067a`, `74c6194b`, `7525`) | <30 KiB | Unattributed; needs `@next/bundle-analyzer` audit |
+| Main-thread block | 2.4s | <1.5s TTI | Hydration + GSAP ticker registration + Lenis init front-loaded |
+
+## Integration Architecture (Question-by-Question)
 
 ---
 
-## Existing Layer Model (Verified)
+### Q1. `/sf-canvas-sync.js` repositioning
 
-Before designing the integration architecture, the actual layer stack in production must be understood. This is what currently renders in z-index order:
-
-```
-z: -1         SignalCanvas fixed canvas (WebGL scenes via scissor/viewport)
-z: 1          #bg-shift-wrapper (section background colors)
-z: 10         Page content (blocks, typography, SF components)
-z: 100        .sf-idle-overlay (scan line drift, fixed, pointer-events: none)
-z: 200        .sf-scroll-top button
-z: 300        .sf-progress bar
-z: 500        CanvasCursor canvas (crosshair + particle trail, Canvas 2D)
-z: 9999       Nav
-z: 99999      .vhs-overlay (the entire VHS layer stack)
+**Current contract** (`public/sf-canvas-sync.js`, 1 line minified):
+```js
+// Reads inner [data-sf-canvas].offsetHeight, multiplies by vw/1280, writes outer.style.height
+// Render-blocking; runs at HTML parse, after React-emitted DOM exists, before first paint.
+// Required: prevents the post-hydration height jump that ScaleCanvas's useEffect would create.
 ```
 
-The VHS overlay occupies `--z-vhs: 99999`, sitting above everything including nav. It is the topmost element in the compositing order. This is intentional — it must read as a physical substrate applied over the entire display.
+The script is **already redundant with `app/layout.tsx:100`** — the inline `scaleScript` in `<head>` already writes `--sf-content-scale`, `--sf-canvas-scale`, `--sf-nav-scale`, `--sf-frame-offset-x`, and `--sf-frame-bottom-gap` before paint. The external `/sf-canvas-sync.js` exists ONLY to set `outer.style.height = inner.offsetHeight * scale` — which the inline script CANNOT do because at `<head>` parse time the body doesn't exist yet.
 
-### VHS Overlay Internal Layer Structure (7 sub-layers)
+**Integration options (ranked):**
 
-All inside `.vhs-overlay` (fixed, inset: 0, `filter: blur(0.8px) brightness(1.08) contrast(1.04)`):
+| Option | Mechanism | Pros | Cons | Recommendation |
+|--------|-----------|------|------|----------------|
+| **A. Static aspect-ratio CSS (RECOMMENDED)** | Move outer height calc to pure CSS using `aspect-ratio` + `width: 100%` so outer height = `inner.height * (vw/1280)` resolves at first style recalc, no JS needed | Eliminates `/sf-canvas-sync.js` entirely; CLS=0 by construction | Requires authoring inner content with predictable intrinsic height OR explicit per-page wrapper height | Phase 1 of v1.8 — biggest single critical-path win |
+| **B. Inline as `<script>` in layout.tsx body** | Move the 1-line IIFE inline as a sibling of `<ScaleCanvas>{children}</ScaleCanvas>` rendered into the body via the existing inline-script pattern | Removes the network roundtrip; still runs pre-paint | Still synchronous JS in critical path; inline injection increases HTML payload by ~200B per request (no caching) | Acceptable fallback if (A) blocked |
+| **C. `next/script` strategy="beforeInteractive"** | Wrap with `<Script src="/sf-canvas-sync.js" strategy="beforeInteractive" />` in App Router | Automatic deduplication, SRI possible | App Router `next/script` `beforeInteractive` strategy has documented limitations — only runs reliably from root layout, must be in `<head>`, NOT body. Won't see `[data-sf-canvas]` because it sits in `<body>`. **Will not work for this use case.** | Reject |
+| **D. Server-compute via Vercel headers + cookie** | Use `next/headers` viewport hint + cookie persistence to inline computed scale | Eliminates JS for repeat visitors | Forces dynamic rendering (already removed in Phase 37 to fix SEO); breaks "all routes static" contract | Reject — directly conflicts with Phase 37 fix |
 
-| Sub-layer | Element | Technique | Current Opacity |
-|-----------|---------|-----------|----------------|
-| CRT lines | `.vhs-crt` | `repeating-linear-gradient` 4px period | `var(--sf-vhs-crt-opacity)` = **0.2** (hardcoded token) |
-| Scanline fast | `.vhs-scanline` | `::before` 1px magenta glow line, `::after` backdrop-filter | GSAP: `y: 100vh` over 28s |
-| Scanline slow | `.vhs-scanline--slow` | Same structure, 1px, no glow | GSAP: `y: 100vh` over 84s |
-| Noise | `.vhs-noise` | Inline SVG feTurbulence, baseFrequency 0.85 | `var(--sf-vhs-noise-opacity)` = **0.015** (hardcoded token) |
-| Burst | `.vhs-burst` | Inline SVG feTurbulence, baseFrequency 1.2 | GSAP: 0 → 0.015–0.035 every 12–25s |
-| Glitch | `.vhs-glitch` | Linear gradient, `mix-blend-mode: difference` | GSAP: 0 → clip-path slices every 25–50s |
-| Aberration | `.vhs-aberration--top/bottom` | 140px gradient strips at edges | ~0.12 max at edges |
+**Concrete recommendation for v1.8:** Option (A). Refactor `ScaleCanvas` so outer's height is determined by a CSS `aspect-ratio` derived from a build-time-known design height per route (homepage = 6 panels × 100vh + 2 pinned spans documented in the codebase), eliminating the runtime `inner.offsetHeight` read entirely. Files touched: `components/layout/scale-canvas.tsx:72`, `app/globals.css` (new `[data-sf-canvas-outer]` rule), delete `public/sf-canvas-sync.js`. This closes the **render-blocking 570ms** gap by removing a render-blocking external request.
 
-### Grain Layer
+**CLS protection invariant:** the inline `scaleScript` in `app/layout.tsx:100` MUST remain — it sets `--sf-content-scale` which the CSS rule `[data-sf-canvas]{transform:scale(var(--sf-content-scale))}` reads on first paint. Removing it reintroduces CLS 0.65 (the Wave 3 T-01/T-02 finding documented in the Anton-font comment block).
 
-`.sf-grain::after` — `position: absolute` pseudo-element, `background: url("/grain.svg") repeat`, `mix-blend-mode: multiply`, `opacity: var(--sf-grain-opacity)` = **0.03** (hardcoded token).
-
-Animated variant: `.sf-grain-animated::after` — same grain with `@keyframes sf-grain-drift` (0.8s steps(4) infinite), triggered by idle state.
-
-### Signal Intensity — Current State
-
-`--signal-intensity: 0.5` is the single dial. It is read by:
-- WebGL shader uniforms (`uIntensity`) in GLSLHero, ProofShader, SignalMesh
-- `SignalOverlay` panel displays its value
-- `InstrumentHUD` shows `SIG:0.5`
-
-**Critical finding (verified, not assumed):** `--signal-intensity` does NOT govern the VHS overlay. `--sf-vhs-crt-opacity` (0.2) and `--sf-vhs-noise-opacity` (0.015) are hardcoded tokens in `lib/tokens.css:145-148` and `globals.css:164-165`. There is no CSS calc() expression linking them to `--signal-intensity`. VHS runs at full token values regardless of what the intensity dial is set to.
-
-This is the core architectural inconsistency the analyst identified. The system claims a single dial governs the aesthetic register, but VHS is exempt from that dial.
+**Sources:**
+- Next.js 15 App Router Script docs (Context7-verified): `beforeInteractive` only fires from root layout, executes before any Next.js code
+- Repository file: `app/layout.tsx:91-100`, `public/sf-canvas-sync.js`, `components/layout/scale-canvas.tsx:42-83`
 
 ---
 
-## The Compositing Question: Separate Z-Layers vs. Single Composite
+### Q2. Ghost-label LCP repositioning
 
-The downstream consumer question was "separate z-layers, single composite layer, or something else?" The answer is the system already uses separate z-layers and that architecture is the correct one to extend — with one refinement.
+**Current state** (`components/animation/ghost-label.tsx`):
+```tsx
+<span
+  data-anim="ghost-label"
+  className="sf-display pointer-events-none select-none absolute leading-none"
+  style={{ fontSize: "clamp(200px, calc(25*var(--sf-vw)), 400px)" }}
+>{text}</span>
+```
+- Renders inside `app/page.tsx:50` THESIS section
+- Anton font (~50KB woff2, `display: optional` per `app/layout.tsx:42-51`)
+- Class `sf-display` carries the Anton font binding
+- Positioned absolute at `top-1/2 -translate-y-1/2`, color `text-foreground/[0.04]` (4% opacity but Lighthouse counts ANY paint as LCP)
 
-**Recommendation: Stratified z-layer model with two compositing groups.**
+**Why it wins LCP**: Lighthouse picks the largest in-viewport text/image at FCP. After ScaleCanvas applies `transform: scale(0.x)` to `[data-sf-canvas]`, the THESIS section's translate math places the ghost-label glyphs in the mobile viewport's first frame because the GLSL hero is `ssr: false` and renders blank initially — ghost-label is the first paintable text in the LCP candidate set.
 
-Do not collapse effects into a single composite layer. CSS `filter` on a wrapper compositor-promotes all children, which prevents children from using `mix-blend-mode` relative to content below. The existing VHS overlay cannot use `mix-blend-mode: difference` on its glitch layer while also blending against page content — the outer `filter` creates an isolated compositing context. This is already an accepted constraint in the current code. Accept it; do not fight it.
+**Two-track strategy** (one or both per phase):
 
-Instead, define two compositing groups with different compositing semantics:
+**Track A — Force ghost-label to paint instantly:**
 
-**Group A — Substrate effects (sit above content, multiply/overlay blend):**
-- Grain overlay (CSS pseudo-element)
-- CRT scanlines (CSS)
-- VHS enhancements (extensions of the existing `.vhs-overlay`)
-- Halftone texture (new, CSS SVG filter)
-- Circuit overlay (new, CSS)
+| Intervention | File | Mechanism | Closes |
+|--------------|------|-----------|--------|
+| **Anton preload** | `app/layout.tsx` `<head>` | `<link rel="preload" href="/fonts/Anton-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" fetchPriority="high">` | LCP 6.5s → expected ~3s mobile (font fetch parallelized) |
+| **`size-adjust` + `ascent-override`** | `app/layout.tsx:42-51` localFont options | Add `adjustFontFallback: { ascentOverride, descentOverride, sizeAdjust }` to match Anton metrics; eliminates fallback shift entirely so `display: swap` becomes safe | Allows changing `display: optional` → `display: swap` without CLS, which makes Anton paint on first visit (currently first-visit users get fallback per `optional` policy) |
+| **`fetchPriority="high"` on the font link** | layout.tsx | Already supported by Next.js localFont — inspect emitted `<link>` and ensure the preload tag carries it | Bumps font fetch ahead of CSS (Chrome 102+) |
 
-All Group A effects are composited inside the existing `.vhs-overlay` container (z: 99999) or at the `.sf-grain` level. They apply globally to all content beneath them.
+**Track B — Push another element into LCP candidate position:**
 
-**Group B — Generative background (sit beneath content, render as world-space):**
-- Mesh gradient / organic color field (new, CSS or WebGL)
-- Particle field (new, WebGL — adds to SignalCanvas)
-- WebGL shaders already in place (GLSLHero, GLSLSignal, ProofShader, SignalMesh)
+| Intervention | File | Mechanism | Trade-off |
+|--------------|------|-----------|-----------|
+| **Hero `<h1>` LCP candidate** | `components/blocks/entry-section.tsx:122-133` | The h1 already exists with `sf-hero-deferred` class on each char. Lighthouse currently doesn't pick it because `opacity: 0.01` is below LCP threshold. Move opacity reveal earlier (instant first frame, then GSAP reveals chars within) | Conflicts with current "char-by-char reveal" animation — needs page-animations.tsx coordination |
+| **Add explicit `width`/`height` to GhostLabel** | ghost-label.tsx | `width` + `height` attributes hint Lighthouse for stable LCP detection | Cosmetic; doesn't change which element wins |
+| **`content-visibility: auto`** on THESIS section | app/page.tsx:42-60 wrapper | Skips render until in-viewport; ghost-label drops out of FCP candidate set | RISK: `content-visibility: auto` interacts badly with GSAP ScrollTrigger pin/scrub — verify behavior on `pinned-section.tsx` first |
 
-Group B effects are composited at z: -1 (the SignalCanvas canvas) or as `position: fixed; z-index: -1` CSS elements behind the content layer.
+**ScaleCanvas transform-box behavior**: The inner `[data-sf-canvas]` has `transform-origin: top left` (`scale-canvas.tsx:128`). LCP candidate detection uses transformed bounding boxes, so a scale of 0.3 on mobile means the THESIS ghost-label's translated position lands in the visible 0–100vh band even though pre-transform it sits at e.g. y=2400px. **`transform-box: fill-box`** would not help — the issue is the cascade of section heights × content scale, not the box reference.
 
-**Group C — Event-driven overlays (fire on trigger, then recede):**
-- Glitch transition (new, positioned on top of content, then opacity: 0)
-- Symbol system / CD glyphs (new, decorative, positioned)
+**LCP suppression hazard (carry-forward from v1.5)**: `feedback_visual_verification.md` and STATE.md v1.5 carry-forward both flag: "Hero heading must NOT use `opacity: 0` as start state. Use `opacity: 0.01` or `clip-path` reveal." This applies to any reveal pattern in v1.8. The hero `<h1>` already follows this — verify no regressions when changing reveal timing.
 
-Group C effects live at the existing `--z-overlay` (100) level and are activated by the idle escalation system or specific events.
+**Concrete recommendation for v1.8:** Run BOTH tracks. Track A is mechanical (3 files, near-zero risk). Track B (h1 elevation to LCP) is the durable fix — pair with a small `page-animations.tsx` change so the h1 paints at opacity 1 immediately, with chars revealing via `clip-path` instead of opacity.
+
+**Files touched:**
+- `app/layout.tsx` (Anton preload + adjustFontFallback)
+- `components/animation/ghost-label.tsx` (potential `content-visibility` + width/height)
+- `components/blocks/entry-section.tsx:122-133` (h1 reveal mechanism)
+- `components/layout/page-animations.tsx` (char-reveal timeline change)
+
+**Sources:**
+- web.dev/lcp 2025 guidance, Next.js 15 localFont docs (Context7-verified)
+- Repo: `app/layout.tsx:42-51`, `components/animation/ghost-label.tsx:13-22`
 
 ---
 
-## The Intensity Problem — Why Linear Scaling Fails
+### Q3. Bundle topology — surfacing 119 KiB unused
 
-The analyst identified this clearly and it is borne out by the codebase. A linear 0–1 dial cannot govern 8 heterogeneous effects coherently because each effect has a different perceptual threshold:
+`@next/bundle-analyzer@16.2.2` is **already installed and wired** (`next.config.ts:2-6`). Activated via `ANALYZE=true pnpm build`. STATE.md v1.3 carry-forward already mandates running this after every P1 component.
 
-| Effect | Perceptual threshold | Linear behavior at 1.0 | Actual need |
-|--------|---------------------|------------------------|-------------|
-| CRT scan lines | Visible at ~5% opacity | 0.2 opacity at 1.0 is strong | Logarithmic: loud fast, quiet long tail |
-| Grain | "Film texture" → "noise interference" at ~0.12 | 0.12 is already at the limit | Hard ceiling, not linear |
-| Chromatic aberration | Atmospheric at 1–2px, broken at 5px+ | Unbounded linear → visual break | Clamped: max 3px regardless of intensity |
-| Glitch timing | Rare (25–50s interval) is diegetic; frequent (3s) is broken | Linear frequency → visual chaos | Threshold-gated: only fires above 0.7 |
-| Halftone | Texture at 10–15%, pattern foreground at 30% | Linear → occlude content | Hard ceiling at 15%, off below 0.4 |
-| Particle field | Subtle at 2k particles, busy at 10k | Linear particle count → mud | Stepped: 0-0.4 off, 0.4-0.7 sparse, 0.7-1.0 dense |
-| Mesh gradient | Always atmospheric; safe to scale linearly | No collision | Linear opacity OK |
-| Circuit overlay | Invisible behind grain above 0.08 | Layer occluded → wasted | Must be exclusive with high grain |
+**Per-chunk attribution workflow:**
 
-### Solution: Perceptual Intensity Curves
-
-Instead of each effect reading `--signal-intensity` directly, route intensity through per-effect derived custom properties that encode the correct perceptual mapping. These are computed once (by a small JS function in `global-effects.tsx` on intensity change) and written to `:root`.
-
-This is the "intensity bridge" pattern. The SignalOverlay already writes to `:root`. Extend this pattern.
-
-**New derived custom properties (computed from `--signal-intensity`):**
-
-```css
-/* These are COMPUTED values, not authored by designers.
-   They are set by updateSignalDerivedProps() in global-effects.tsx. */
---signal-grain-opacity:       /* 0–0.10, logarithmic, ceiling at 0.10 */
---signal-vhs-crt-opacity:     /* 0.05–0.22, replaces hardcoded --sf-vhs-crt-opacity */
---signal-vhs-noise-opacity:   /* 0.005–0.025, replaces hardcoded --sf-vhs-noise-opacity */
---signal-halftone-opacity:    /* 0–0.12, off below intensity 0.4, ceiling at 0.12 */
---signal-circuit-opacity:     /* 0–0.04, off above intensity 0.6 (grain occlusion) */
---signal-aberration-px:       /* 0–3px, clamped, feeds CSS transforms */
---signal-mesh-gradient:       /* 0–1, linear, safe for this effect */
+```
+1. ANALYZE=true pnpm build
+   → emits .next/analyze/{client,server,edge}.html
+2. For each unused chunk in {3302, e9a6067a, 74c6194b, 7525}:
+   a. Open client.html, locate chunk by name
+   b. Inspect contained modules (treemap)
+   c. Cross-reference module path against importer graph
+3. Per-route attribution:
+   pnpm next build --debug 2>&1 | grep -A 5 "Page                "
+   → maps chunks to routes
 ```
 
-**The mapping function lives in `global-effects.tsx`** (the file that already orchestrates GlobalEffects). It fires on every `--signal-intensity` change via a MutationObserver on `document.documentElement` style attribute (the same observer pattern the WebGL scenes use via `getSignalVars()` in the singleton).
+**Probable owners** (LOW confidence — needs analyzer run to confirm):
 
-```typescript
-// In global-effects.tsx — new function, called from a useEffect
-function updateSignalDerivedProps(intensity: number): void {
-  const root = document.documentElement;
+| Chunk hash | Likely owner | Reasoning |
+|------------|-------------|-----------|
+| `3302` (largest unused) | `radix-ui` umbrella import | `radix-ui@1.4.3` is the single-package umbrella; tree-shaking depends on per-primitive subpath imports. If any SF wrapper imports `from "radix-ui"` instead of `from "radix-ui/react-X"`, the entire bundle ships |
+| `e9a6067a` | `cmdk` (CommandPalette) | `command-palette-lazy.tsx` exists but if any non-lazy route imports CommandPalette directly, the lazy boundary leaks |
+| `74c6194b` | `shiki` core | `shiki@4.0.2`, used by code blocks in `/inventory`. If imported in shared layout, leaks to homepage. Verify via `grep -r "from \"shiki\"" components/ app/` |
+| `7525` | `date-fns` | `date-fns@4.1.0` only used by `react-day-picker` (Calendar). Calendar is `next/dynamic ssr:false` per STATE.md v1.3 — verify no leak |
 
-  // Grain: logarithmic, ceiling at 0.10
-  const grain = Math.min(0.10, 0.03 + (intensity ** 0.6) * 0.07);
-  root.style.setProperty("--signal-grain-opacity", grain.toFixed(4));
+**Tree-shaking failure detection:**
 
-  // VHS CRT lines: replace hardcoded token
-  const crt = 0.05 + intensity * 0.17;
-  root.style.setProperty("--signal-vhs-crt-opacity", crt.toFixed(4));
+```bash
+# Existing tooling (already shipped in scripts/):
+pnpm tsx scripts/verify-tree-shake.ts   # consumer-import probe
+pnpm tsx scripts/verify-bundle-size.ts  # asserts gzip budget
 
-  // VHS noise: replace hardcoded token
-  const noise = 0.005 + intensity * 0.02;
-  root.style.setProperty("--signal-vhs-noise-opacity", noise.toFixed(4));
+# Add for v1.8:
+pnpm tsx scripts/audit-chunk-attribution.ts  # NEW — maps chunks → first-importing route
+```
 
-  // Halftone: off below 0.4, max 0.12
-  const halftone = intensity < 0.4 ? 0 : Math.min(0.12, (intensity - 0.4) * 0.20);
-  root.style.setProperty("--signal-halftone-opacity", halftone.toFixed(4));
+**Code-split candidates beyond Calendar/Menubar:**
 
-  // Circuit: off above 0.6 (grain occlusion)
-  const circuit = intensity > 0.6 ? 0 : Math.min(0.04, intensity * 0.067);
-  root.style.setProperty("--signal-circuit-opacity", circuit.toFixed(4));
+| Component | File | Current loading | Split mechanism |
+|-----------|------|-----------------|-----------------|
+| `SignalOverlay` (Shift+S debug) | `components/animation/signal-overlay.tsx` | Already wrapped via `signal-overlay-lazy.tsx` — VERIFY barrel doesn't leak | Confirm lazy |
+| `CommandPalette` | `components/layout/command-palette.tsx` | `command-palette-lazy.tsx` exists | Verify import path everywhere uses `-lazy` |
+| `InstrumentHUD` | `components/layout/instrument-hud.tsx` | Mounted in layout.tsx:151 — eager | Move behind a Shift+I gate; lazy import on activation |
+| `CheatsheetOverlay` | `components/layout/cheatsheet-overlay.tsx` | layout.tsx:130 — eager | Same pattern as InstrumentHUD |
+| `ProofShader`, `SignalMesh`, `TokenViz`, `ParticleFieldHQ` | `components/animation/*-lazy.tsx` | Already lazy | Verify scene-by-scene split (currently bundled in WebGL umbrella?) |
 
-  // Aberration: clamped at 3px
-  const aberration = Math.min(3, intensity * 3);
-  root.style.setProperty("--signal-aberration-px", `${aberration.toFixed(1)}px`);
+**Storybook leak check** (from question 5 — relevant here too):
+```bash
+# Storybook stories should NOT ship in main bundle. Verify:
+grep -r "\.stories\." components/ | grep -v node_modules
+# If stories import from app/ or components/sf/ via paths Webpack/Turbopack picks up
+# at build time, they leak. pnpm build-storybook is separate; main `pnpm build` should
+# emit zero story bytes.
+```
+
+**Concrete recommendation for v1.8:** Phase 1 of v1.8 is `ANALYZE=true pnpm build` + write `scripts/audit-chunk-attribution.ts`. No optimization work begins until ownership is mapped. This avoids the v1.7 anti-pattern where effects shipped before measurement.
+
+**Files touched:**
+- `scripts/audit-chunk-attribution.ts` (NEW)
+- Potentially `components/sf/index.ts` (barrel export hygiene)
+- Per-component lazy boundary fixes (TBD by analyzer output)
+
+**Closes:** Unused JS budget 119 KiB → target <30 KiB
+
+---
+
+### Q4. GSAP ticker / Lenis on critical path
+
+**Current sequence** (`components/layout/lenis-provider.tsx:17-63`):
+```
+hydrate → useEffect runs →
+  matchMedia('(prefers-reduced-motion: reduce)') check (skip if reduced) →
+  new Lenis({ ... }) →
+  gsap.ticker.add(tickerCallback) →
+  gsap.ticker.lagSmoothing(0)
+```
+
+GSAP ticker is the **single rAF loop rule** — adding deferred imports must not introduce a second ticker. `lib/gsap-core.ts:8-13` registers plugins at module top-level; SSR guard via `"use client"` directive per Phase 41 (`feedback_pde_not_gsd.md` cross-ref via STATE.md).
+
+**Hydration deferral options:**
+
+| Option | Mechanism | TTI impact | Risk |
+|--------|-----------|-----------|------|
+| **A. `requestIdleCallback` wrap inside useEffect** | Defer Lenis init by 1-2 frames using `requestIdleCallback(initLenis, { timeout: 100 })` | Saves ~200ms TTI by yielding to first paint | Lenis scroll-restoration race (already documented as minor tech debt) — defer makes the race window slightly larger, not fundamentally different |
+| **B. Defer `gsap.ticker.lagSmoothing(0)` only** | Move the lagSmoothing call to first scroll/interaction event | Minor TTI win | Marginal; not worth complexity |
+| **C. `next/dynamic` with `ssr: false` for LenisProvider** | Wrap LenisProvider via dynamic import in layout.tsx | Removes Lenis JS from initial HTML payload | Children of LenisProvider become Client Components — RISK: violates hole-in-the-donut SSR contract |
+| **D. Intersection-based ScrollTrigger init** | Currently `ScrollTrigger.update` is wired immediately. Defer until first scroll | Saves ScrollTrigger.refresh cost on hydrate | Breaks scroll-restoration on reload |
+
+**Concrete recommendation for v1.8:** Option (A). Wrap the Lenis instantiation block in `lenis-provider.tsx:23-44` with `requestIdleCallback`. Keep the matchMedia check synchronous (cheap). Files touched: `components/layout/lenis-provider.tsx:17-63` only.
+
+**SSR plugin guard sanity check**: Phase 41 already wrapped `gsap.registerPlugin()` in `typeof window` checks. Verify this is honored in:
+- `lib/gsap-core.ts` ✓ (file is `"use client"`)
+- `lib/gsap-split.ts`, `lib/gsap-flip.ts`, `lib/gsap-draw.ts`, `lib/gsap-plugins.ts` — verify all carry `"use client"` or window guards.
+
+**Lenis scroll-restoration race**: The v1.2 minor tech debt entry (PROJECT.md "Lenis vs window.scrollTo race on scroll restoration (rAF mitigates)") becomes more visible if Lenis init is deferred. Mitigation: ensure the deferral is bounded (`{ timeout: 100 }` so even if browser is busy, Lenis comes up within 100ms).
+
+**Closes:** Main-thread block 2.4s → target <1.5s
+
+---
+
+### Q5. CSS render-blocking budget
+
+**Current emitted CSS** (estimate from build output structure):
+
+| File | Source | Likely size | Render-blocking? |
+|------|--------|-------------|------------------|
+| `_next/static/css/[hash].css` | Tailwind v4 emit from `app/globals.css` | ~80-120KB | YES |
+| `_next/static/css/[hash].css` | Component CSS modules / `@theme inline` derivatives | ~20-40KB | YES |
+| `dist/signalframeux.css` | Library build output (consumer-side only) | N/A | Not loaded by app — separate `pnpm build:lib` artifact |
+
+The v1.7 contract (`app/globals.css`) has `@theme inline` aliasing `--color-*` → `--sfx-*` and `@layer signalframeux` wrapping is in `dist/` only — app globals are unlayered. This means:
+
+- App CSS is fully unlayered → ships at standard cascade weight, not deferrable via layer order tricks
+- `--sfx-*` derivations in `app/globals.css` (12 derived properties from `updateSignalDerivedProps`) are CSS variables — cheap, no critical-CSS extraction needed for them
+
+**Critical CSS inlining options:**
+
+| Option | Mechanism | Win | Risk |
+|--------|-----------|-----|------|
+| **A. Next.js 15 native critical CSS (default behavior)** | Next.js 15 already inlines critical CSS for App Router by default | Already on | None — verify it's actually firing via `view-source` of prod HTML |
+| **B. Manual above-the-fold CSS extraction** | Extract `entry-section.tsx` + nav + scale-canvas styles into inline `<style>` in layout.tsx | ~100ms FCP | Maintenance burden; styles drift |
+| **C. Split `app/globals.css` into critical + deferred** | Create `app/globals-critical.css` (tokens, layout primitives, hero-relevant utilities) + defer the rest via `<link rel="stylesheet" media="print" onload="this.media='all'">` | ~150ms FCP | Tailwind v4 `@theme` block must stay in critical (it defines all CSS vars); risks splitting `@layer` cascade |
+| **D. Move `.sf-mesh-gradient`, `.sf-circuit`, halftone, VHS classes to lazy CSS** | These v1.7 effects ship CSS even when off-route | ~30-60KB CSS savings | Requires per-route CSS loading — not currently architected |
+
+**Concrete recommendation for v1.8:** Verify (A) is firing via prod HTML inspection. If yes, attribute the 570ms to (A1) Anton font fetch + (A2) `/sf-canvas-sync.js` — already addressed in Q1 and Q2. Defer (C)/(D) to a v1.9 if (A1+A2+Q1) doesn't recover the budget.
+
+**Storybook story leak check**:
+```bash
+# 61 stories per v1.7 ship — verify isolation:
+grep -r "import.*\.stories" components/ app/ --include="*.tsx" --include="*.ts"
+# Expected: zero hits in app/ or components/ outside of .stories. files
+```
+`pnpm build-storybook` is a separate command (`package.json:scripts:build-storybook`) — main `next build` should not include stories. Verify via analyzer chunk inspection (Q3).
+
+**`@layer signalframeux` cascade**: Distinction matters for Q3 not Q5 — the layer wrapper is in `dist/signalframeux.css` (consumer library distribution), NOT in the app's emitted CSS. App `globals.css` is unlayered by design. This is correct and shouldn't change.
+
+**Closes:** Render-blocking 570ms → target <200ms (combined with Q1 `/sf-canvas-sync.js` removal)
+
+---
+
+### Q6. Lighthouse CI integration
+
+**Current state** (`scripts/launch-gate.ts`, 110 lines):
+- Runs `lighthouse@13.1.0` against a URL
+- 3 runs, takes worst score per category
+- Writes audit JSON to `.planning/phases/35-performance-launch-gate/`
+- **Advisory only** — comment at line 6: "It is NOT wired into CI"
+- Invoked manually: `pnpm tsx scripts/launch-gate.ts --url <prod-or-preview>`
+
+**CI workflow** (`.github/workflows/ci.yml`, 41 lines):
+- Runs lint, vitest, Playwright on `push:main` + PR
+- **No Lighthouse step**
+
+**Integration architecture options:**
+
+| Option | Runner | Trigger | Pros | Cons |
+|--------|--------|---------|------|------|
+| **A. `treosh/lighthouse-ci-action@v12` against Vercel preview URL** | GitHub Action | PR opened/updated → wait for Vercel preview → run LH | True end-to-end; matches prod build; PR comment integration | Requires Vercel deployment hook; preview URL discovery via Vercel API or `actions/github-script` |
+| **B. `lhci autorun` against `next start` in CI** | `@lhci/cli` Docker | Every PR | No external dep on Vercel | CI runs LH on GitHub-hosted runner — known to be 30-50% slower than emulated mobile target, leading to false fails. Existing `launch-gate.ts` already mitigates via "worst of 3" pattern — this would inherit but at cost |
+| **C. Hybrid — `launch-gate.ts` upgraded + GH Action calls it** | Existing script + new workflow | PR + `workflow_dispatch` | Reuses existing tooling; minimum drift | Need to teach the script to fetch Vercel preview URL via `vercel.json` or env var |
+
+**Budget enforcement** (`.lighthouseci/lighthouserc.json` standard format, RECOMMENDED with Option A or C):
+
+```json
+{
+  "ci": {
+    "collect": {
+      "url": ["${LHCI_PREVIEW_URL}"],
+      "numberOfRuns": 3,
+      "settings": { "preset": "desktop" }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 1.0 }],
+        "categories:accessibility": ["error", { "minScore": 1.0 }],
+        "categories:best-practices": ["error", { "minScore": 1.0 }],
+        "categories:seo": ["error", { "minScore": 1.0 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 1000 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0 }],
+        "interactive": ["error", { "maxNumericValue": 1500 }]
+      }
+    },
+    "upload": { "target": "temporary-public-storage" }
+  }
 }
 ```
 
-**Each effect's CSS reads its derived property, not `--signal-intensity` directly.** This is the critical boundary. `--signal-intensity` is a user-facing control. `--signal-grain-opacity` is an implementation detail of the grain effect. They are decoupled.
+**Real-device vs Lighthouse emulation tension**:
+
+The Lighthouse mobile preset emulates throttled CPU (4× slowdown) + 3G network. This is PROVABLY different from real iPhone Safari and mid-tier Android. v1.8 wants both.
+
+| Stream | Tool | Cadence | Owner |
+|--------|------|---------|-------|
+| **Lighthouse emulation** | `lhci` in CI (Option A/C) | Every PR | Automated gate |
+| **Real-device sampling** | `chrome-devtools` MCP + manual iPhone Safari + BrowserStack/SauceLabs run | Per phase + pre-ship | Manual (per `feedback_visual_verification.md`) |
+
+The split is already implied by STATE.md feedback entries. v1.8 should formalize: CI gates emulation (PR-blocking), real-device verification gates ship (milestone-blocking, NOT per-PR).
+
+**Concrete recommendation for v1.8:** Option C. Wire `launch-gate.ts` into a new `.github/workflows/lighthouse.yml` that runs on PR + waits for Vercel preview deployment. Add `.lighthouseci/lighthouserc.json` with above thresholds. Leave existing manual `pnpm tsx scripts/launch-gate.ts` path intact. PR comment integration via `treosh/lighthouse-ci-action@v12` ↳ comment posting.
+
+**Files touched:**
+- `.github/workflows/lighthouse.yml` (NEW)
+- `.lighthouseci/lighthouserc.json` (NEW)
+- `scripts/launch-gate.ts` (minor — accept LHCI_BUILD_CONTEXT env)
+- `package.json:scripts` — add `lhci:autorun`
+
+**Closes:** Durable per-PR enforcement (acceptance criterion from PROJECT.md v1.8)
 
 ---
 
-## Component Boundaries
+### Q7. Build order / phase dependency analysis
 
-### Modified Components
-
-**`lib/tokens.css`** (MODIFY)
-- Remove hardcoded values for `--sf-vhs-crt-opacity` and `--sf-vhs-noise-opacity`
-- Replace with derived property references: `var(--signal-vhs-crt-opacity, 0.2)` and `var(--signal-vhs-noise-opacity, 0.015)`
-- The fallback values preserve existing behavior when derived props have not been initialized yet (SSR, reduced motion)
-- The grain token `--sf-grain-opacity` similarly becomes the fallback for `--signal-grain-opacity`
-
-**`components/animation/vhs-overlay.tsx`** (MODIFY)
-- No structural changes; the layer architecture stays identical
-- CSS classes `.vhs-crt` and `.vhs-noise` already read from the tokens, so once tokens.css is updated the VHS overlay responds to intensity automatically
-- No JS changes required in the component itself
-
-**`app/globals.css`** (MODIFY)
-- `.vhs-crt { opacity: var(--signal-vhs-crt-opacity, 0.2); }` — change token reference
-- `.vhs-noise { opacity: var(--signal-vhs-noise-opacity, 0.015); }` — change token reference
-- `.sf-grain::after { opacity: var(--signal-grain-opacity, 0.03); }` — change token reference
-- `.sf-grain-animated::after { opacity: var(--signal-grain-opacity, 0.03); }` — same
-- Add new `.sf-halftone` utility class reading `var(--signal-halftone-opacity, 0)`
-- Add new `.sf-circuit-overlay` utility class reading `var(--signal-circuit-opacity, 0)`
-
-**`components/animation/signal-overlay.tsx`** (MODIFY — small)
-- The `handleIntensity()` function currently writes only `--signal-intensity`
-- Extend it to also call `updateSignalDerivedProps(value / 100)` after writing the base value
-- OR: the MutationObserver in global-effects.tsx picks up the `:root` style mutation and fires `updateSignalDerivedProps()` automatically — no changes needed in signal-overlay.tsx
-- Recommend the MutationObserver approach (zero coupling between SignalOverlay and the derived props function)
-
-**`components/layout/global-effects.tsx`** (MODIFY)
-- Add `useEffect` that registers a MutationObserver on `document.documentElement` watching the `style` attribute
-- On mutation, read `--signal-intensity` from computed style and call `updateSignalDerivedProps()`
-- Fire `updateSignalDerivedProps()` once on mount with the default value (0.5) to initialize derived props
-- This observer is the same pattern as `getSignalVars()` in signal-canvas.tsx — one more observer for the CSS layer (separate from the WebGL uniform observer)
-- The idle escalation recalibration also lives here: after the aesthetic push raises grain baseline, the Phase 2 idle escalation tween must target `--signal-grain-opacity` (not `--sf-grain-opacity`) and must tween to a value above the baseline set by the intensity curve, not below it
-
-**`lib/signal-canvas.tsx`** (MODIFY — minor)
-- The existing `getSignalVars()` / `getState()` pattern is unchanged
-- Add `updateSignalDerivedProps` export so it can be called from the singleton's MutationObserver as well, ensuring WebGL scenes and CSS effects are derived from the same single source of truth
-- Alternative: keep the CSS derived props entirely in global-effects.tsx (simpler, avoids coupling signal-canvas to CSS concerns) — this is the recommended approach
-
-### New Components
-
-**`components/animation/grain-overlay.tsx`** (NEW)
-- Wraps the grain texture as a standalone component (not just a CSS utility class)
-- Props: `opacity?: number` (overrides derived prop for local use), `animated?: boolean`
-- Reads `--signal-grain-opacity` from CSS (no JS state)
-- Used in Storybook story with controls
-- Renders a `<div className="sf-grain" aria-hidden="true" />` with the derived token
-- This is a thin wrapper for Storybook discoverability; the actual effect is CSS
-
-**`components/animation/halftone-texture.tsx`** (NEW)
-- CSS SVG filter technique: `feTurbulence` + `feComponentTransfer` (or `feBlend` + threshold)
-- `position: absolute; inset: 0; pointer-events: none; z-index: var(--z-above-bg)`
-- `opacity: var(--signal-halftone-opacity, 0)` — reads derived property, invisible by default
-- Groups A substrate: always present in DOM, opacity drives presence
-- Must be CSS-first: no JS animation, no WebGL
-- Performance note: SVG `feTurbulence` is CPU-composited in many browsers; do not apply at full-page coverage at high resolution — use a tiled background-image SVG pattern instead (same technique as grain)
-
-**`components/animation/mesh-gradient.tsx`** (NEW — CSS implementation)
-- `position: fixed; inset: 0; z-index: -1; pointer-events: none`
-- CSS `background: radial-gradient(...)` with slow CSS animation (`@keyframes`)
-- NOT WebGL — keeps particle field as the only new WebGL addition
-- Opacity governed by `var(--signal-mesh-gradient, 0)`
-- Sits at z: -1, same as SignalCanvas canvas — they must not conflict visually; the mesh gradient appears behind WebGL content by rendering order (WebGL canvas draws on top via alpha compositing)
-- Alternative for the WebGL-required particle field interaction: mesh gradient is CSS, particle field is WebGL — they coexist at the same z-level but the canvas is on top due to DOM order
-
-**`components/animation/particle-field.tsx`** (NEW — WebGL, extends SignalCanvas)
-- Uses `useSignalScene()` hook to register with the singleton renderer
-- Does NOT create a new WebGL context
-- `BufferGeometry` with `PointsMaterial` (not a shader from scratch)
-- Particle count stepped: `intensity < 0.4 → 0 particles, 0.4–0.7 → 2000, 0.7–1.0 → 5000`
-- Full 10,000 particles is too expensive on non-M1 hardware (analyst finding)
-- IntersectionObserver gating inherited from `useSignalScene()` — if particle container is not in viewport, zero GPU cost
-- Reduced-motion: `if (reducedMotion) { return static particle positions, no animation loop }` — must be explicit, not speed-throttled
-- Registers as a single scene entry; participates in the existing scissor/viewport render loop
-- This is the one new WebGL scene addition
-
-**`components/animation/circuit-overlay.tsx`** (NEW — CSS)
-- Low-opacity SVG circuit diagram pattern as CSS `background-image`
-- `opacity: var(--signal-circuit-opacity, 0)` — reads derived property
-- Designed to be exclusive with high grain (the derived prop mapping ensures circuit goes to 0 above intensity 0.6)
-- `position: fixed; inset: 0; z-index: var(--z-above-bg); pointer-events: none`
-
-**`components/animation/glitch-transition.tsx`** (NEW — GSAP)
-- Event-triggered overlay, not ambient
-- Extends the existing `.vhs-glitch` technique already in `vhs-overlay.tsx` (GSAP clip-path slices)
-- Exposed as an imperative trigger function: `triggerGlitch(element?: HTMLElement)` — called by idle escalation Phase 4 and potentially by other interaction points
-- Renders a fixed overlay that is normally `opacity: 0; pointer-events: none`
-- Fires a 100–300ms GSAP timeline on trigger, then returns to hidden
-- Respects `prefers-reduced-motion` (guard in the trigger function before GSAP fires)
-
-**`components/animation/cd-symbol-system.tsx`** (NEW — CSS/SVG)
-- Decorative glyph system for diegetic layering
-- CSS-only: SVG sprites positioned via CSS, opacity driven by scroll position or idle state
-- Not wired to `--signal-intensity` directly — wired to idle escalation class (`.sf-idle-3`)
-
-### Unchanged Components
-
-- `lib/signal-canvas.tsx` — singleton architecture unchanged
-- `hooks/use-signal-scene.ts` — particle field uses this hook as-is
-- `components/animation/vhs-overlay.tsx` — no structural changes; CSS token change is sufficient
-- `components/animation/signal-overlay.tsx` — unchanged if MutationObserver approach is used
-
----
-
-## Data Flow
-
-### Intensity Change → All 8 Effects
+Suggested phase boundaries derived from dependency analysis. Each phase has a hard prerequisite — reordering breaks the chain.
 
 ```
-User moves SignalOverlay slider (or SignalSection sets intensity to 1.0 on scroll)
-    ↓
-signal-overlay.tsx: document.documentElement.style.setProperty("--signal-intensity", value)
-    ↓
-MutationObserver in global-effects.tsx fires (watching documentElement.style)
-    ↓
-updateSignalDerivedProps(intensity):
-    → writes --signal-grain-opacity      (logarithmic curve)
-    → writes --signal-vhs-crt-opacity    (linear, replaces hardcoded token)
-    → writes --signal-vhs-noise-opacity  (linear, replaces hardcoded token)
-    → writes --signal-halftone-opacity   (gated: off below 0.4)
-    → writes --signal-circuit-opacity    (inverted: off above 0.6)
-    → writes --signal-aberration-px      (clamped: max 3px)
-    → writes --signal-mesh-gradient      (linear, safe)
-    ↓
-CSS reads derived props immediately (next paint):
-    .vhs-crt → opacity: var(--signal-vhs-crt-opacity)     [VHS CRT lines]
-    .vhs-noise → opacity: var(--signal-vhs-noise-opacity)  [VHS noise]
-    .sf-grain::after → opacity: var(--signal-grain-opacity) [grain substrate]
-    .sf-halftone → opacity: var(--signal-halftone-opacity) [halftone texture]
-    .sf-circuit-overlay → opacity: var(--signal-circuit-opacity) [circuit]
-    ↓
-MutationObserver in signal-canvas.tsx (existing) also fires:
-    → getState().signalVars = { intensity, speed, accent }
-    ↓
-WebGL ticker reads cached signal vars (next GSAP ticker frame):
-    → shader uIntensity uniforms update
-    → ParticleField steps particle count (0 / 2000 / 5000) based on thresholds
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 57 — Bundle Audit (HARD PREREQUISITE)                      │
+│   ANALYZE=true pnpm build → attribute 119 KiB                    │
+│   Write scripts/audit-chunk-attribution.ts                       │
+│   Output: per-chunk owner map → informs Phases 60, 61            │
+│   Closes: nothing yet (measurement only)                         │
+│   Risk: low                                                      │
+└──────────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 58 — Lighthouse CI Install (HARD PREREQUISITE)             │
+│   .github/workflows/lighthouse.yml + .lighthouseci/lighthouserc  │
+│   Wire to Vercel preview URL                                     │
+│   Establish baseline: capture current scores into CI history     │
+│   Closes: durable per-PR enforcement                             │
+│   Risk: low — additive, no code changes                          │
+│   ⚠ MUST land before Phase 59-62 to gate regressions             │
+└──────────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 59 — Critical Path Restructure (Q1 + Q5 + Q4)              │
+│   /sf-canvas-sync.js → CSS aspect-ratio (Option A)               │
+│   Anton preload + adjustFontFallback (Q2 Track A)                │
+│   Lenis init via requestIdleCallback (Q4)                        │
+│   Closes: render-blocking 570ms → <200ms; main-thread 2.4 → 1.5  │
+│   Risk: HIGH — touches CLS-protection contract; full LH run req  │
+│   ⚠ DEPENDS ON Phase 58 (need CI gate live before regressing)   │
+└──────────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 60 — LCP Element Repositioning (Q2 Track B)                │
+│   Hero h1 elevated to LCP candidate via clip-path char-reveal    │
+│   ghost-label optional content-visibility                        │
+│   Closes: LCP 6.5s → <1.0s                                       │
+│   Risk: HIGH — hero is signature aesthetic, single most-viewed   │
+│   ⚠ DEPENDS ON Phase 59 (font preload must be live)              │
+└──────────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 61 — Bundle Optimization (Q3 — informed by Phase 57)       │
+│   Per-chunk fixes per audit: radix subpath imports, command-     │
+│   palette barrel hygiene, InstrumentHUD/Cheatsheet lazy          │
+│   Closes: unused JS 119 KiB → <30 KiB                            │
+│   Risk: medium — must verify lazy boundaries don't leak via SF   │
+│   barrel export contract                                         │
+│   ⚠ DEPENDS ON Phase 57 (per-chunk attribution required)         │
+└──────────────────────────────────────────────────────────────────┘
+                           ↓
+┌──────────────────────────────────────────────────────────────────┐
+│ Phase 62 — Real-Device Verification + Final Gate                 │
+│   iPhone Safari (real) + mid-tier Android (real) sampling        │
+│   chrome-devtools MCP scroll-test (per feedback_visual_*)        │
+│   launch-gate.ts 3× run against prod URL                         │
+│   Closes: real-device verification (acceptance criterion)        │
+│   Risk: low (measurement) — but blocks ship if devices regress   │
+│   ⚠ DEPENDS ON Phases 59, 60, 61 all complete                    │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-### Idle Escalation → Effects
+**Phase dependency rationale:**
 
-```
-IdleOverlay in global-effects.tsx (existing): setTimeout chain
-    ↓
-8s:   Phase 1 → grain drift + scan line overlay (existing, unchanged)
-30s:  Phase 2 → tween --signal-grain-opacity upward
-              (must tween to value ABOVE the baseline set by current intensity)
-              Safe formula: target = min(0.10, currentGrainOpacity + 0.04)
-60s:  Phase 3 → adds .sf-idle-3 class → CSS shows cd-symbol glyphs
-120s: Phase 4 → triggerGlitch() on the glitch-transition overlay
-              (reduced-motion guard inside triggerGlitch — JS-level, not CSS-only)
-```
+- **57 → 58**: Independent — could parallelize, but sequencing keeps audit signal clean (CI baseline reflects the ANALYZED state).
+- **58 → 59**: HARD. Lighthouse CI must be live before Phase 59 because Phase 59 actively manipulates the critical path (`/sf-canvas-sync.js` removal is the single most regression-risky change in v1.8). Without CI, a regression silently ships.
+- **59 → 60**: HARD. Anton preload (in Phase 59) is a precondition for h1-as-LCP (Phase 60) — if the font isn't preloaded, h1 won't paint fast enough to win LCP.
+- **57 → 61**: HARD. Cannot fix unused chunks without knowing which chunks own which modules.
+- **All → 62**: HARD. Real-device verification only meaningful after all three intervention phases ship.
 
-### SSR / Token Bridge Cascade Order
+**Parallelizable**: Phase 57 and 58 can run concurrently (independent measurement/CI work).
 
-```
-Server render:
-    CSS custom property defaults (tokens.css :root block) apply:
-        --signal-intensity: 0.5  (token default)
-        --sf-vhs-crt-opacity: 0.2  (still exists as fallback)
-        --sf-vhs-noise-opacity: 0.015 (still exists as fallback)
-        --signal-grain-opacity: not yet set → fallback var(--sf-grain-opacity, 0.03)
-    ↓
-Client hydration:
-    global-effects.tsx mounts → useEffect fires → updateSignalDerivedProps(0.5)
-    → derived props written to :root
-    → CSS var() references now resolve to computed values
-    → VHS opacity changes from fallback 0.2 to computed 0.14 (at intensity 0.5)
-```
-
-**SSR behavior:** During SSR and the hydration window, effects fall back to their hardcoded token values (VHS at 0.2, grain at 0.03). After hydration, they jump to the intensity-derived values. At intensity 0.5, the difference is small (grain stays near 0.03, VHS changes slightly). This is acceptable — it is a perceptually minor transition, not a flash.
-
-If intensity needs to be SSR-correct (grain at the right value from first paint), move the default value into the `:root` CSS block as `--signal-grain-opacity: 0.04` (the computed value for intensity 0.5). This eliminates the post-hydration adjustment for the default case.
+**Highest-risk phase**: Phase 59. The `/sf-canvas-sync.js` removal touches the CLS-protection contract documented in `app/layout.tsx:91-100` and `components/layout/scale-canvas.tsx:135-144`. Mitigation: Phase 58 gate must be passing GREEN before Phase 59 lands; one-feature-at-a-time PRs (3 separate PRs for Q1, Q2-A, Q4) so any regression is bisectable.
 
 ---
 
-## Build Order
+## Summary Matrix — Intervention → Gap Closure
 
-Dependencies determine sequence. This is not negotiable.
-
-### Phase 1 — Intensity Bridge (prerequisite for everything)
-
-**What:** `updateSignalDerivedProps()` in `global-effects.tsx` + token.css/globals.css to reference derived props.
-
-**Why first:** Every subsequent effect must consume derived properties, not raw `--signal-intensity`. If this foundation is absent, effects added later will not be coherently governed. The analyst identified this as P0.
-
-**Deliverables:**
-- `updateSignalDerivedProps()` function in `global-effects.tsx`
-- MutationObserver registered on mount in `GlobalEffects` useEffect
-- `lib/tokens.css`: `--sf-vhs-crt-opacity` and `--sf-vhs-noise-opacity` replaced with derived var() references
-- `app/globals.css`: `.vhs-crt`, `.vhs-noise`, `.sf-grain::after` opacity references updated
-- VHS now scales with intensity at zero new component count
-
-**Acceptance:** At intensity 0.0, VHS CRT lines drop to ~0.05 opacity (not 0.2). At intensity 1.0, they reach 0.22. Grain drops to near-zero at intensity 0.0.
+| Intervention | Phase | Closes (Phase 37 measured gap) | Files |
+|--------------|-------|--------------------------------|-------|
+| Bundle attribution audit | 57 | (measurement → informs 61) | `scripts/audit-chunk-attribution.ts` (NEW) |
+| Lighthouse CI workflow | 58 | (gate → blocks regression in 59-61) | `.github/workflows/lighthouse.yml`, `.lighthouseci/lighthouserc.json` (NEW) |
+| `/sf-canvas-sync.js` → CSS aspect-ratio | 59 | render-blocking 570ms (~80ms) | `components/layout/scale-canvas.tsx`, `app/globals.css`, delete `public/sf-canvas-sync.js` |
+| Anton font preload + adjustFontFallback | 59 | LCP (~2s) + render-blocking (~150ms) | `app/layout.tsx:42-51` |
+| Lenis init via requestIdleCallback | 59 | main-thread 2.4s (~200ms) | `components/layout/lenis-provider.tsx:17-63` |
+| Hero h1 → LCP candidate | 60 | LCP (final ~3s to land <1.0s) | `components/blocks/entry-section.tsx:122-133`, `components/layout/page-animations.tsx` |
+| Per-chunk lazy boundary fixes | 61 | unused JS 119 KiB | TBD by Phase 57 audit (likely `components/sf/index.ts` barrel + radix imports + InstrumentHUD/Cheatsheet) |
+| Real-device sampling | 62 | (verification only) | None — process change |
 
 ---
 
-### Phase 2 — Grain Elevated Baseline + Idle Escalation Recalibration
+## Architecture Anti-Patterns to Avoid (v1.8-Specific)
 
-**Depends on:** Phase 1 (derived props exist)
+### Anti-Pattern 1: Removing the inline `scaleScript` in `app/layout.tsx:91-100`
 
-**What:** Raise grain baseline by adjusting the `updateSignalDerivedProps` curve. The default intensity 0.5 now yields `--signal-grain-opacity ≈ 0.06–0.08` rather than the current 0.03. Recalibrate Phase 2 idle escalation tween to target `currentValue + 0.04` instead of a hardcoded 0.08 (which would reduce grain if baseline is already 0.08).
+**What people might do**: "It's a render-blocking inline script — let's defer it." Move to `next/script strategy="afterInteractive"`.
+**Why wrong**: The script writes `--sf-content-scale` BEFORE first paint. Deferring it reintroduces CLS 0.65 (Wave 3 T-01/T-02 finding, documented at `app/layout.tsx:93-99`).
+**Do instead**: The inline script is the CLS-protection contract. `/sf-canvas-sync.js` (the EXTERNAL script) is the redundant one targeted for removal.
 
-**Why this order:** Grain is the lowest-risk effect and the thematic foundation. All other overlay effects (halftone, circuit) must be evaluated against a visible grain layer to detect moiré and occlusion.
+### Anti-Pattern 2: `next/dynamic ssr:false` on LenisProvider
 
-**Acceptance:** Grain visibly readable as film texture at default intensity. Idle Phase 2 escalation increases grain visibly (upward direction confirmed).
+**What people might do**: Wrap LenisProvider in dynamic import to remove Lenis from initial JS payload.
+**Why wrong**: LenisProvider has children that propagate down via context. `ssr:false` forces children into the Client Component tree, breaking the hole-in-the-donut SSR contract (PROJECT.md v1.2 key decision).
+**Do instead**: `requestIdleCallback`-deferred init INSIDE LenisProvider's `useEffect`. Children stay Server-Component-eligible.
 
----
+### Anti-Pattern 3: Adding a second rAF loop for "deferred" measurement
 
-### Phase 3 — VHS Enhancement (existing component, CSS-only changes)
+**What people might do**: Spawn a separate rAF loop to measure FPS or perf metrics outside the GSAP ticker.
+**Why wrong**: Violates the single-ticker rule. R3F was rejected in v1.1 specifically for this reason.
+**Do instead**: All perf measurement hooks via `gsap.ticker.add()` callbacks, OR use `PerformanceObserver` + one-shot `requestAnimationFrame`s (not loops).
 
-**Depends on:** Phase 1 (VHS now intensity-governed)
+### Anti-Pattern 4: Splitting `app/globals.css` into critical + deferred without preserving `@theme`
 
-**What:** Tune VHS layer opacities now that they respond to intensity. The hardcoded values (0.2 CRT, 0.015 noise) were tuned in isolation. Re-tune the curve endpoints in `updateSignalDerivedProps`. May also involve adjusting GSAP timing on scanline travel, burst frequency, glitch frequency — these remain GSAP-controlled, not intensity-derived (timing is aesthetic, not parametric).
+**What people might do**: Extract atomic Tailwind utilities into critical, defer the rest.
+**Why wrong**: Tailwind v4 `@theme inline` block defines all CSS variables. If `@theme` lands in deferred CSS, the first-paint cascade has zero `--sfx-*` values → SSR magenta flash (the exact v1.7 hazard FND-01 was designed to prevent).
+**Do instead**: Keep `@theme` and all `--sfx-*` definitions in critical. Defer only effect classes (`.sf-mesh-gradient`, `.sf-circuit`, halftone) — these are display-only and degrade gracefully.
 
-**Why before halftone:** VHS + grain stacking must be visually resolved before adding halftone, because VHS and halftone have independent texture frequencies that can create moiré. Evaluate VHS + grain at multiple intensities before halftone is introduced.
+### Anti-Pattern 5: `content-visibility: auto` on a section containing a ScrollTrigger pin
 
-**Acceptance:** Manual visual QA at intensity 0.0, 0.5, 1.0 with only grain and VHS active. No moiré artifacts, no "visually broken" territory at 1.0.
-
----
-
-### Phase 4 — Halftone Texture
-
-**Depends on:** Phases 2 and 3 (visual baseline established)
-
-**What:** `components/animation/halftone-texture.tsx` (new component). SVG tiled background-image pattern (not `feTurbulence` at full-page — too expensive on non-M1 hardware). Opacity from `--signal-halftone-opacity` (zero below intensity 0.4).
-
-**Why this position:** Halftone is the highest moiré risk (grain + halftone = interference pattern if frequencies collide). Must be evaluated against the existing grain layer. The gate between phases 2/3 and phase 4 is the combined visual coherence review the analyst requires.
-
-**Acceptance:** Halftone visible as atmospheric dot texture at intensity 0.6+, invisible below 0.4. No moiré with grain (validated by visual review). No scroll jank on non-M1 hardware (test on Intel MacBook or equivalent).
+**What people might do**: Apply `content-visibility: auto` to THESIS to skip rendering.
+**Why wrong**: ScrollTrigger pin/scrub measures element heights. `content-visibility: auto` reports zero height when off-screen, breaking pin calculations (visible regression: PinnedSection scroll math goes haywire).
+**Do instead**: Apply `content-visibility: auto` only to leaf elements that don't participate in scroll math. Verify against `components/animation/pinned-section.tsx` consumers.
 
 ---
 
-### Phase 5 — Circuit Overlay
+## Integration Points — File-by-File
 
-**Depends on:** Phase 2 (grain level established, circuit must be exclusive with high grain)
+### Files MODIFIED (existing)
 
-**What:** `components/animation/circuit-overlay.tsx`. Low-opacity SVG circuit pattern. Reads `--signal-circuit-opacity` which is 0 above intensity 0.6 (automatically exclusive with elevated grain).
+| File | Phase | Change |
+|------|-------|--------|
+| `app/layout.tsx` | 59 | Add Anton `<link rel="preload">` + adjustFontFallback options |
+| `app/globals.css` | 59 | Add `[data-sf-canvas-outer]` aspect-ratio rule |
+| `components/layout/scale-canvas.tsx` | 59 | Remove `<script src="/sf-canvas-sync.js" />` line; refactor outer height to CSS |
+| `components/layout/lenis-provider.tsx` | 59 | Wrap Lenis init in requestIdleCallback |
+| `components/blocks/entry-section.tsx` | 60 | h1 reveal mechanism: opacity → clip-path |
+| `components/layout/page-animations.tsx` | 60 | Char-reveal timeline target switch (opacity → clip-path) |
+| `components/animation/ghost-label.tsx` | 60 | (Optional) explicit width/height for LCP detection stability |
+| `components/sf/index.ts` | 61 | Barrel hygiene per audit |
+| `next.config.ts` | (none) | No changes — bundle analyzer already wired |
+| `package.json` | 58 | Add `lhci:autorun` script |
 
-**Why here:** Circuit is a subtle background texture that only works when grain is low. The derived property mapping handles this automatically once Phase 1 is in place. The component itself is simple — the complexity is in Phase 1.
+### Files CREATED (new)
 
-**Acceptance:** Circuit visible at intensity 0.0–0.5, invisible above 0.6. Invisible behind elevated grain (confirmed by visual review at intensity 0.5).
+| File | Phase | Purpose |
+|------|-------|---------|
+| `.github/workflows/lighthouse.yml` | 58 | LHCI workflow against Vercel preview |
+| `.lighthouseci/lighthouserc.json` | 58 | Budget assertions |
+| `scripts/audit-chunk-attribution.ts` | 57 | Per-chunk owner attribution from analyzer output |
 
----
+### Files DELETED
 
-### Phase 6 — Mesh Gradient (CSS)
-
-**Depends on:** None (purely CSS, no signal routing needed beyond `--signal-mesh-gradient`)
-
-**What:** `components/animation/mesh-gradient.tsx`. CSS `radial-gradient` background with slow animation. Fixed position, z: -1. Does not use WebGL.
-
-**Why defer:** Low risk, low dependency. Deferring until phase 6 prevents it from polluting the visual evaluation of grain/VHS/halftone stacking decisions.
-
-**Acceptance:** Atmospheric color field visible at default intensity. Does not compete visually with WebGL shader scenes above it.
-
----
-
-### Phase 7 — Particle Field (WebGL)
-
-**Depends on:** Phase 1 (intensity mapping), confirmed WebGL context availability
-
-**What:** `components/animation/particle-field.tsx`. Uses `useSignalScene()`. `PointsMaterial` with `BufferGeometry`. Stepped particle count (0 / 2000 / 5000). Gated by `IntersectionObserver` from the hook.
-
-**Why last among ambient effects:** WebGL addition has the highest risk (GPU memory, context limits, mobile compatibility). Build confidence that all CSS effects are stable before adding WebGL complexity.
-
-**Acceptance:** Particles visible at intensity 0.5+ (2000 points). No second WebGL context created. No frame drops on Intel MacBook at 2000 particles. Reduced-motion: static particle positions, animation loop stopped.
+| File | Phase | Reason |
+|------|-------|--------|
+| `public/sf-canvas-sync.js` | 59 | Replaced by CSS aspect-ratio |
 
 ---
 
-### Phase 8 — Glitch Transition + CD Symbol System
+## Confidence Assessment
 
-**Depends on:** Phases 1 (intensity bridge) and idle escalation recalibration (Phase 2)
-
-**What:** `glitch-transition.tsx` as imperative trigger component, `cd-symbol-system.tsx` as CSS/SVG decorative layer. Wire both into idle escalation phases 3 and 4.
-
-**Acceptance:** Glitch fires on idle Phase 4 (120s). Symbols visible on idle Phase 3 (60s). Both suppressed by `prefers-reduced-motion` at JS level.
-
----
-
-### Phase 9 — SignalOverlay Panel Extension
-
-**Depends on:** All ambient effects in place
-
-**What:** Extend the `SignalOverlay` (Shift+S) panel to expose per-effect toggles or show the derived property values as read-only readouts. This is a UX convenience — operators can inspect what the intensity dial is producing.
-
-**Acceptance:** Panel shows derived property values. Optional: per-effect toggle checkboxes to disable individual effects for debugging.
-
----
-
-## Integration Points Table
-
-| File | Change Type | What Changes | Integrates With |
-|------|-------------|--------------|-----------------|
-| `lib/tokens.css` | MODIFY | `--sf-vhs-crt-opacity` → `var(--signal-vhs-crt-opacity, 0.2)` fallback | `globals.css`, `vhs-overlay.tsx` (via CSS) |
-| `lib/tokens.css` | MODIFY | `--sf-vhs-noise-opacity` → `var(--signal-vhs-noise-opacity, 0.015)` fallback | Same |
-| `app/globals.css` | MODIFY | `.vhs-crt`, `.vhs-noise` opacity token references | `lib/tokens.css` |
-| `app/globals.css` | MODIFY | `.sf-grain::after` opacity → `var(--signal-grain-opacity, 0.03)` | `lib/tokens.css` |
-| `app/globals.css` | ADD | `.sf-halftone` utility class | `HalftoneTexture` component |
-| `app/globals.css` | ADD | `.sf-circuit-overlay` utility class | `CircuitOverlay` component |
-| `components/layout/global-effects.tsx` | MODIFY | Add `updateSignalDerivedProps()` + MutationObserver | All CSS-driven effects |
-| `components/layout/global-effects.tsx` | MODIFY | Idle escalation Phase 2 tween target recalibration | `--signal-grain-opacity` |
-| `components/layout/global-effects.tsx` | MODIFY | Idle Phase 3 → trigger CD symbol visibility | `cd-symbol-system.tsx` |
-| `components/layout/global-effects.tsx` | MODIFY | Idle Phase 4 → call `triggerGlitch()` | `glitch-transition.tsx` |
-| `components/animation/vhs-overlay.tsx` | UNCHANGED | CSS token change is sufficient | — |
-| `components/animation/signal-overlay.tsx` | UNCHANGED | MutationObserver in global-effects catches the write | — |
-| `components/animation/grain-overlay.tsx` | NEW | Storybook wrapper for grain utility | `app/globals.css` |
-| `components/animation/halftone-texture.tsx` | NEW | CSS SVG pattern overlay | `app/globals.css`, `--signal-halftone-opacity` |
-| `components/animation/mesh-gradient.tsx` | NEW | CSS radial-gradient background | `--signal-mesh-gradient` |
-| `components/animation/particle-field.tsx` | NEW | WebGL points scene via useSignalScene | `lib/signal-canvas.tsx`, `hooks/use-signal-scene.ts` |
-| `components/animation/circuit-overlay.tsx` | NEW | CSS SVG background texture | `--signal-circuit-opacity` |
-| `components/animation/glitch-transition.tsx` | NEW | GSAP clip-path imperative trigger | `global-effects.tsx` idle Phase 4 |
-| `components/animation/cd-symbol-system.tsx` | NEW | CSS/SVG decorative glyphs | `global-effects.tsx` idle Phase 3 |
-
----
-
-## Anti-Patterns to Avoid
-
-### Anti-Pattern 1: Each New Effect Reading `--signal-intensity` Directly
-
-**What goes wrong:** Grain at 0.12, halftone at 30%, and chromatic aberration at 5px all activate simultaneously at intensity 1.0. The moiré between grain and halftone appears. Aberration enters "visually broken" territory. The compound effect exceeds the engineered-imperfection register.
-
-**Instead:** Each effect reads its own derived custom property (`--signal-grain-opacity`, `--signal-halftone-opacity`, etc.) computed by `updateSignalDerivedProps()`. The mapping function encodes perceptual curves and inter-effect exclusions.
-
----
-
-### Anti-Pattern 2: Adding a Second WebGL Renderer for the Particle Field
-
-**What goes wrong:** iOS Safari enforces a WebGL context limit. Two concurrent WebGLRenderer instances on one page is a known GPU context pressure point. The singleton was designed specifically to prevent this.
-
-**Instead:** `particle-field.tsx` uses `useSignalScene()` exactly as GLSLHero and SignalMesh do. It registers as a scene entry in the existing singleton. One renderer, N scenes via scissor/viewport split.
-
----
-
-### Anti-Pattern 3: Idle Escalation Phase 2 Tweening to a Hardcoded Grain Value
-
-**What goes wrong:** The current idle Phase 2 tween targets `--sf-grain-opacity: 0.08`. After the aesthetic push raises the baseline to 0.08 (at default intensity 0.5), this tween reduces grain rather than intensifying it. The idle escalation runs in the wrong direction.
-
-**Instead:** The Phase 2 tween target is `currentValue + 0.04`, where `currentValue` is `parseFloat(getComputedStyle(root).getPropertyValue("--signal-grain-opacity"))`. The escalation always produces an increase regardless of the current baseline.
-
----
-
-### Anti-Pattern 4: CSS `filter` Wrapper on Individual New Effects
-
-**What goes wrong:** Wrapping a new overlay in `filter: blur() brightness()` creates an isolated compositing context. Children of that element cannot `mix-blend-mode` against content below the wrapper — blend modes are isolated within the compositing group.
-
-**Instead:** New effects that need `mix-blend-mode` (grain uses `multiply`, glitch uses `difference`) must not be inside a parent with `filter`. The VHS overlay's outer `filter: blur(0.8px) brightness(1.08) contrast(1.04)` already creates one such isolated group — this is intentional and accepted. New effects that must blend against page content belong outside the VHS overlay container. New effects that only need to blend within the VHS stack belong inside it.
-
----
-
-### Anti-Pattern 5: Halftone via Full-Page `feTurbulence` Filter
-
-**What goes wrong:** An SVG filter with `feTurbulence` applied as a CSS `filter` property at full-page dimensions is CPU-composited in most browsers. At viewport resolution, this produces visible scroll jank on non-M1 hardware. The analyst correctly flagged this.
-
-**Instead:** Implement halftone as a CSS `background-image: url("data:image/svg+xml,...")` with a small repeating tile (same pattern as grain). The SVG tile is rasterized once and tiled at compositor level — GPU-accelerated. The tile size (6–10px dot period) is small enough that the SVG is trivially small.
-
----
-
-### Anti-Pattern 6: Particle Field Active at Full Viewport with No Intersection Gate
-
-**What goes wrong:** If the particle field container element is full-screen and always in the viewport, `IntersectionObserver` never sets it invisible. The WebGL scene renders every GSAP ticker frame indefinitely, adding constant GPU load.
-
-**Instead:** Place the particle field container on a specific page section, not as a fixed full-screen overlay. When that section scrolls out of view, IntersectionObserver gates the render loop off. If a full-screen ambient effect is truly needed, implement it as the CSS mesh gradient instead.
-
----
-
-## Stacking Coherence at Intensity 1.0 — Expected Output
-
-With the perceptual curve architecture in place, intensity 1.0 should produce:
-
-| Effect | Value at 1.0 | Visual result |
-|--------|-------------|---------------|
-| Grain | 0.10 (capped) | Heavy film texture, sub-threshold for noise interference |
-| VHS CRT lines | 0.22 | Strong horizontal lines, clearly legible |
-| VHS noise | 0.025 | Visible analog texture |
-| Halftone | 0.12 (max) | Atmospheric dot pattern, not foreground |
-| Circuit | 0 (off above 0.6) | Invisible — grain has precedence |
-| Aberration | 3px (clamped) | Atmospheric, at the aesthetic limit |
-| Mesh gradient | 1.0 (linear) | Full color field behind content |
-| Particles | 5000 (stepped) | Dense, atmospheric — not mud |
-
-At 1.0, grain and halftone do not produce moiré because halftone's tile size (6px dots) and grain's baseFrequency (0.65) are at different spatial frequencies. The circuit is explicitly off. The glitch aberration is clamped at 3px. The compound effect reads as "maximum signal" rather than "broken display."
+| Area | Confidence | Source |
+|------|------------|--------|
+| Existing critical-path topology | HIGH | Direct read of `app/layout.tsx`, `components/layout/scale-canvas.tsx`, `components/layout/lenis-provider.tsx`, `public/sf-canvas-sync.js` |
+| `@next/bundle-analyzer` capabilities | HIGH | Context7-verified Next.js docs + already wired in `next.config.ts` |
+| Next.js 15 App Router `next/script` `beforeInteractive` constraints | MEDIUM | Documented constraint that it only fires from root layout — verified in Next.js 15 docs |
+| Lighthouse mobile emulation vs real device disparity | MEDIUM | Web.dev field-vs-lab guidance; corroborated by `feedback_visual_verification.md` memory entry |
+| Per-chunk owner hypotheses (`3302`/`e9a6067a`/etc.) | LOW | Educated guesses pending actual analyzer run; flagged in Phase 57 |
+| `content-visibility` × ScrollTrigger pin interaction | LOW | Theoretical based on how each system measures layout; needs spike if pursued |
+| `requestIdleCallback` Lenis-deferral race window size | MEDIUM | Existing v1.2 carry-forward says rAF "mitigates"; deferring widens but bounded by `{ timeout: 100 }` |
+| Anton `adjustFontFallback` metrics | MEDIUM | Next.js localFont supports it; exact override values need a one-shot calibration run |
 
 ---
 
 ## Sources
 
-- Direct codebase audit (all findings verified):
-  - `app/globals.css:163-165` — hardcoded VHS opacity tokens
-  - `lib/tokens.css:145-153` — `--sf-vhs-crt-opacity: 0.2`, `--sf-vhs-noise-opacity: 0.015`
-  - `components/animation/vhs-overlay.tsx` — full 7-layer structure, GSAP timing
-  - `components/layout/global-effects.tsx` — idle system, `IDLE_TIMEOUT = 8000`
-  - `components/animation/signal-overlay.tsx` — `handleIntensity()` writes only base var
-  - `lib/signal-canvas.tsx` — singleton architecture, `getState()`, scissor/viewport pattern
-  - `hooks/use-signal-scene.ts` — `IntersectionObserver` gating, scene registration API
-  - `lib/color-resolve.ts` — `resolveColorToken()` — 1x1 canvas probe pattern
-  - `.planning/v1.7-prep/aesthetic-prototypes.md` — per-effect feasibility, existing VHS layer audit
-  - `.planning/ANL-analyst-brief-v2.md` — critical findings on intensity boundary behavior, stacking coherence, idle escalation direction, performance headroom
+**Repository (HIGH confidence — direct file reads):**
+- `app/layout.tsx:42-155` — root layout, themeScript, scaleScript, font definitions, mount order
+- `components/layout/scale-canvas.tsx:1-146` — ScaleCanvas component + sf-canvas-sync.js script tag
+- `public/sf-canvas-sync.js` — full content (1 line, 175 bytes)
+- `components/layout/lenis-provider.tsx:1-66` — Lenis + GSAP ticker wiring
+- `components/animation/ghost-label.tsx:1-23` — current LCP element
+- `components/blocks/entry-section.tsx:1-213` — hero h1 char-reveal architecture
+- `next.config.ts:1-25` — bundle analyzer already wired
+- `scripts/launch-gate.ts:1-110` — existing manual Lighthouse runner
+- `.github/workflows/ci.yml:1-41` — current CI (no LH step)
+- `lib/gsap-core.ts:1-13` — single-ticker source of record
+- `package.json` — dep tree, scripts, peerDeps
+- `.planning/PROJECT.md` — v1.8 milestone goal + acceptance criteria
+- `.planning/STATE.md` — v1.5 LCP suppression hazard + carry-forward constraints
+
+**Memory (HIGH confidence — verified user instructions):**
+- `feedback_consume_quality_tier.md` — `getQualityTier()` mandatory for new SIGNAL surfaces
+- `feedback_raf_loop_no_layout_reads.md` — single-ticker rule
+- `feedback_visual_verification.md` — chrome-devtools MCP scroll-test before claiming done
+- `project_pf04_autoresize_contract.md` — Lenis `autoResize: true` is code-of-record
+- `project_phase37_mobile_a11y_architectural.md` — Phase 37 measured gaps (LCP 6.5s, perf 76)
+
+**External (MEDIUM confidence — Context7/web docs):**
+- Next.js 15 App Router docs: Script strategies, localFont, bundle analyzer integration
+- web.dev/lcp 2025: LCP candidate detection + transform-box behavior
+- web.dev/cls: `display: optional` vs `swap` interaction with `adjustFontFallback`
+- Lighthouse CI docs: `lighthouserc.json` budget format, treosh/lighthouse-ci-action
+
+---
+
+*Architecture research for: SignalframeUX v1.8 Speed of Light — perf recovery integration*
+*Researched: 2026-04-25*
+*Downstream: roadmapper consumes this for phase boundaries (suggested 57-62) and per-phase RESEARCH.md generation*

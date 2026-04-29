@@ -1,0 +1,48 @@
+{
+  "capturedAt": "2026-04-26T19:00:38.497Z",
+  "runs": 5,
+  "url": "http://localhost:3000/",
+  "device": "mobile",
+  "median": {
+    "lcp_ms": 810.5590000000001,
+    "cls": 0.002505,
+    "performance": 0.99,
+    "tbt_ms": 100
+  },
+  "all_lcp_ms": [
+    810.0675000000005,
+    810.3932500000001,
+    810.5590000000001,
+    810.8109999999999,
+    814.3585000000003
+  ],
+  "all_cls": [
+    0.002505,
+    0.002505,
+    0.002505,
+    0.002505,
+    0.002505
+  ],
+  "all_performance": [
+    0.99,
+    0.99,
+    0.99,
+    0.99,
+    0.99
+  ],
+  "thresholds": {
+    "lcp_ms_max": 1000,
+    "cls_max": 0.005,
+    "performance_min": 0.97,
+    "tbt_ms_max": 200,
+    "cls_max_original": 0
+  },
+  "notes": "Plan 03 (commit 3873b28) responsive containIntrinsicSize formula DID match actual rendered height per breakpoint but did not eliminate mobile CLS. Layout-shifts audit attributes 0.002356 to GhostLabel itself (~22px movement). Root cause: Anton font swap glyph-metric shift at GhostLabel size band (200px clamp floor) not fully covered by Phase 59 swap descriptors (which were measured against THESIS heading at larger sizes). content-visibility:auto amplifies this transition. Path A accepted (per user direction): LHCI CLS threshold loosened from 0 to 0.005 with explicit Phase 60 rationale. Phase 62 VRF-04 revisits with real-device data + cohort review (D-08) catches perceived issues.",
+  "path_a_decision": {
+    "decided": "2026-04-26",
+    "original_threshold": 0,
+    "new_threshold": 0.005,
+    "escalation": "Phase 62 VRF-04",
+    "cohort_review": "D-08 chrome-devtools MCP scroll-test fresh-eyes pass"
+  }
+}

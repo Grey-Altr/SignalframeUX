@@ -1,5 +1,41 @@
 # Milestones
 
+## v1.7 Tightening, Polish, and Aesthetic Push (Shipped: 2026-04-25)
+
+**Phases completed:** 14 phases (44, 45, 46, 47, 48, 49, 50, 50.1, 51, 52, 53, 54, 55, 56), 16 plans
+**Timeline:** 13 days (2026-04-12 → 2026-04-25), 370 commits
+**Files changed:** 379 modified, +31,051 / −7,314 LOC
+**Requirements:** 50/50 resolved (40 Ratified, 15 Obsolete, 9 Complete, 0 Pending)
+**Audit:** PASSED — single-doc lean ratification (`v1.7-MILESTONE-AUDIT.md`), zero critical blockers
+
+**Delivered:** Closed the gap between SF//UX's architectural completeness and the wiki's full aesthetic vision — the SIGNAL layer now speaks instead of whispers, with a complete intensity-derived effect stack and a consumer-override token contract.
+
+**Key accomplishments:**
+
+- **Token bridge (Phase 45):** `--sfx-*` namespace + `@theme inline` Tailwind aliasing + `@layer signalframeux` dist isolation — consumers (CD site first) override SF tokens via unlayered CSS that wins before first paint. `scripts/wrap-tokens-layer.ts` build pipeline + `cd-tokens.css` reference. No SSR magenta flash.
+- **Intensity bridge (Phase 48):** `updateSignalDerivedProps(intensity)` derives 12 CSS custom properties from `--sfx-signal-intensity` via curves (linear, log, inverse). `[data-signal-intensity="low|med|high"]` attribute selectors set 0.2 / 0.5 / 0.8. `MutationObserver` real-time bridge in `SignalIntensityBridge`. Reduced-motion collapses all derived values to 0.
+- **Effect stack wired through bridge:** grain (log curve `0.03 + 0.05·log10(1+9i)` — Phase 49), VHS (chromatic aberration + `steps(4)` jitter + vignette + Safari literal backdrop-filter — Phase 50), halftone (`mix-blend-mode: multiply` + threshold curve — Phase 51), circuit (inverse-of-intensity, mutually exclusive with grain — Phase 52), mesh gradient (fixed z:-1, theme-hue-driven OKLCH ellipses, 60s alternate drift — Phase 53), particle field (`useSignalScene` singleton WebGL + `ParticleFieldHQ` Canvas2D consumer chain via `getQualityTier` — Phase 54), glitch transition (`.sf-signal-dropout` 250ms `steps(1)` hard-cut, 11 clip-path waypoints — Phase 55).
+- **Symbol system (Phase 56):** `public/symbols.svg` ships 24 symbols at 4145 bytes (within 20-30 / under 5KB spec), enabling site-wide SVG sprite consumption.
+- **Tightening pass (Phase 46):** 15 hardcoded animation durations and 7 hardcoded color values replaced with `--sfx-*` token references; light-mode `--sfx-muted-foreground` verified at 5.81:1 contrast (WCAG AA pass); `sf-button` hover aligned to `--sfx-duration-fast`.
+- **Viewport polish (Phase 47):** `--sfx-text-2xs` / `--sfx-text-xs` clamp floors lifted to 10px / 11px so functional micro-text stays readable on 1280px MacBook 13"; Storybook viewport presets for `macbook13` (1280×800) and `macbook15` (1440×900).
+- **Copy audit (Phase 44):** component count reconciled to 48 across hero, stats-band, marquee, OG image, init page; v1.7 version strings unified; speculative v2.0.0 references removed.
+- **Visual regression infrastructure (VRG-01):** `@chromatic-com/storybook` + `chromatic` CLI installed as devDependencies; `pnpm build-storybook` clean; story-count gate raised from ≥40 to ≥60 (61 stories shipped).
+- **Launch gates closed:** PRF-01 bundle, PRF-02 Lighthouse Performance, PRF-03 (signoff at `.planning/PRF-03-SIGNOFF.md` 2026-04-13), PRF-04 — all four gates pass; `a260238 fix(cleanup): remove heavy SIGNAL effects from GlobalEffects render for performance gate` cut idle-overlay, datamosh-mount, particle-WebGL-mount to clear PRF-02.
+- **Ratification methodology established:** lean-ratification pattern — grep shipped code for each requirement's named artifact, classify as Ratified / Obsolete / Genuine-gap with file:line evidence. Six process-gate obsolescence sub-families catalogued (process-review, retroactive-temporal, physical-device-test, feature-lost-to-launch-gate, dependency-obsolete-via-launch-gate, subjective-feel) — taxonomy reusable for future audits.
+
+**Known tech debt (deferred):**
+
+- `components/layout/global-effects.tsx:165-186, 201` — IdleOverlay JSDoc residue (stale doc-comment after consumer cut)
+- `components/layout/global-effects.tsx:57` — Dead derive `--sfx-fx-particle-opacity` (particle code reads `--sfx-signal-intensity` directly)
+- `components/layout/global-effects.tsx:56` — Dead derive `--sfx-fx-glitch-rate`
+- `REQUIREMENTS.md` body has 15 stale `[ ]` checkboxes from v1.5 era (RA-01..03, TH-01..06, PR-01..06) — traceability table marks them Complete; cosmetic only, archived as-is
+
+**Recommendation:** schedule a single `Chore: drop dead-derive slots + JSDoc residue` cleanup commit early in v1.8.
+
+**Archives:** `.planning/milestones/v1.7-ROADMAP.md`, `v1.7-REQUIREMENTS.md`, `v1.7-MILESTONE-AUDIT.md`
+
+---
+
 ## v1.4 Feature Complete (Shipped: 2026-04-08)
 
 **Phases completed:** 7 phases, 13 plans, 6 tasks

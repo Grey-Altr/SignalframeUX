@@ -80,7 +80,7 @@ export const DarkModeToggle = memo(function DarkModeToggle() {
         onClick={toggle}
         tabIndex={renderPhase > 0 ? 0 : -1}
         aria-hidden={renderPhase === 0 ? true : undefined}
-        className="relative w-[4.5rem] h-8 border-2 border-muted-foreground bg-transparent shrink-0 cursor-pointer overflow-hidden"
+        className="relative w-[4.5rem] h-8 border-2 border-muted-foreground bg-muted shrink-0 cursor-pointer overflow-hidden"
         aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={dark}
         style={{

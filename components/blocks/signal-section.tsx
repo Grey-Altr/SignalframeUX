@@ -38,45 +38,81 @@ export function SignalSection() {
       const section = sectionRef.current;
       if (!section) return;
 
+      // Synchronous reduced-motion guard MUST stay outside rIC: users with
+      // prefers-reduced-motion should never schedule any work.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const trigger = ScrollTrigger.create({
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        invalidateOnRefresh: true,
-        onEnter: () => {
-          // Set global --signal-intensity to 1.0 when SIGNAL enters viewport.
-          // PROOF's section-scoped value still wins inside PROOF's subtree (CSS cascade).
-          document.documentElement.style.setProperty("--sfx-signal-intensity", "1.0");
-        },
-        // No onLeave — intensity persists at 1.0 as handoff to ACQUISITION.
-      });
+      // CRT-04 (Phase 63.1 Plan 02): defer the heavy GSAP setup to idle time
+      // so first paint is not blocked. The useGSAP hook itself stays synchronous
+      // (it must — React hook rules); only the ScrollTrigger construction
+      // is scheduled via rIC + setTimeout(0) fallback. Single-ticker rule preserved
+      // because gsap.ticker remains the only rAF source — rIC only schedules WHEN
+      // the work runs, not what runs inside it. See components/layout/lenis-provider.tsx
+      // lines 28-68 for the canonical reference pattern (CRT-04).
+      let ricHandle: number | undefined;
+      let cleanup: (() => void) | undefined;
 
-      // FRAME overlay reveal — honors the dual-layer model (CLAUDE.md): FRAME
-      // runs through SIGNAL, staying legible regardless of shader state. Entry
-      // is a staggered cascade matching the INVENTORY cadence (40ms) so the
-      // whole homepage shares a single entrance language.
-      const frame = frameRef.current;
-      if (frame) {
-        const parts = frame.querySelectorAll<HTMLElement>("[data-signal-frame]");
-        gsap.from(parts, {
-          opacity: 0,
-          y: 16,
-          duration: 0.55,
-          stagger: 0.04,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 70%",
-            toggleActions: "play none none reverse",
+      const initAnimations = () => {
+        ricHandle = undefined;
+        const trigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          invalidateOnRefresh: true,
+          onEnter: () => {
+            // Set global --signal-intensity to 1.0 when SIGNAL enters viewport.
+            // PROOF's section-scoped value still wins inside PROOF's subtree (CSS cascade).
+            document.documentElement.style.setProperty("--sfx-signal-intensity", "1.0");
           },
+          // No onLeave — intensity persists at 1.0 as handoff to ACQUISITION.
         });
-      }
 
-      console.debug("[SIGNAL ST]", "start:", trigger.start, "end:", trigger.end);
+        // FRAME overlay reveal — honors the dual-layer model (CLAUDE.md): FRAME
+        // runs through SIGNAL, staying legible regardless of shader state. Entry
+        // is a staggered cascade matching the INVENTORY cadence (40ms) so the
+        // whole homepage shares a single entrance language.
+        const frame = frameRef.current;
+        if (frame) {
+          const parts = frame.querySelectorAll<HTMLElement>("[data-signal-frame]");
+          gsap.from(parts, {
+            opacity: 0,
+            y: 16,
+            duration: 0.55,
+            stagger: 0.04,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          });
+        }
 
-      return () => { trigger.kill(); };
+        console.debug("[SIGNAL ST]", "start:", trigger.start, "end:", trigger.end);
+
+        cleanup = () => { trigger.kill(); };
+      };
+
+      // Schedule: rIC if available (Chrome/FF; Safari 17+ behind flag),
+      // else setTimeout(0) — both yield to the next idle/macrotask.
+      type IdleCb = (cb: IdleRequestCallback, opts?: { timeout: number }) => number;
+      const ric = (window as Window & { requestIdleCallback?: IdleCb })
+        .requestIdleCallback;
+      ricHandle = ric
+        ? ric(initAnimations, { timeout: 100 })
+        : (setTimeout(initAnimations, 0) as unknown as number);
+
+      return () => {
+        // Cancel pending rIC/setTimeout if init has not fired yet (fast unmounts).
+        const cancelRic = (
+          window as Window & { cancelIdleCallback?: (h: number) => void }
+        ).cancelIdleCallback;
+        if (ricHandle !== undefined) {
+          if (cancelRic) cancelRic(ricHandle);
+          else clearTimeout(ricHandle);
+        }
+        if (cleanup) cleanup();
+      };
     },
     { scope: sectionRef, dependencies: [] },
   );

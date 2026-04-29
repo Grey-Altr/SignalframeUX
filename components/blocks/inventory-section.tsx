@@ -82,23 +82,58 @@ export function InventorySection() {
     () => {
       const section = sectionRef.current;
       if (!section) return;
+
+      // Synchronous reduced-motion guard MUST stay outside rIC: users with
+      // prefers-reduced-motion should never schedule any work (D-06).
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      const rows = section.querySelectorAll<HTMLElement>("[data-inventory-row]");
-      if (rows.length === 0) return;
+      // CRT-04 (Phase 63.1 Plan 02): defer the heavy GSAP setup to idle time
+      // so first paint is not blocked. The useGSAP hook itself stays synchronous
+      // (it must — React hook rules); only the stagger animation construction
+      // is scheduled via rIC + setTimeout(0) fallback. Single-ticker rule preserved
+      // because gsap.ticker remains the only rAF source — rIC only schedules WHEN
+      // the work runs, not what runs inside it. See components/layout/lenis-provider.tsx
+      // lines 28-68 for the canonical reference pattern (CRT-04).
+      let ricHandle: number | undefined;
 
-      gsap.from(rows, {
-        opacity: 0,
-        x: -24,
-        duration: 0.45,
-        stagger: 0.04,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
+      const initAnimations = () => {
+        ricHandle = undefined;
+        const rows = section.querySelectorAll<HTMLElement>("[data-inventory-row]");
+        if (rows.length === 0) return;
+
+        gsap.from(rows, {
+          opacity: 0,
+          x: -24,
+          duration: 0.45,
+          stagger: 0.04,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 70%",
+            toggleActions: "play none none reverse",
+          },
+        });
+      };
+
+      // Schedule: rIC if available (Chrome/FF; Safari 17+ behind flag),
+      // else setTimeout(0) — both yield to the next idle/macrotask.
+      type IdleCb = (cb: IdleRequestCallback, opts?: { timeout: number }) => number;
+      const ric = (window as Window & { requestIdleCallback?: IdleCb })
+        .requestIdleCallback;
+      ricHandle = ric
+        ? ric(initAnimations, { timeout: 100 })
+        : (setTimeout(initAnimations, 0) as unknown as number);
+
+      return () => {
+        // Cancel pending rIC/setTimeout if init has not fired yet (fast unmounts).
+        const cancelRic = (
+          window as Window & { cancelIdleCallback?: (h: number) => void }
+        ).cancelIdleCallback;
+        if (ricHandle !== undefined) {
+          if (cancelRic) cancelRic(ricHandle);
+          else clearTimeout(ricHandle);
+        }
+      };
     },
     { scope: sectionRef, dependencies: [] },
   );

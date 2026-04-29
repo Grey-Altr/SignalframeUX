@@ -1,411 +1,148 @@
-# Requirements — v1.5 Redesign
+# Requirements — v1.8 Speed of Light
 
-## Route Architecture
+**Goal:** Recover the original CLAUDE.md performance contract (Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial) on prod, without sacrificing the locked aesthetic.
 
-- [ ] **RA-01**: `/components` route renamed to `/inventory` with redirect from old path
-- [ ] **RA-02**: `/tokens` route renamed to `/system` with redirect from old path
-- [ ] **RA-03**: `/start` route renamed to `/init` with redirect from old path
-- [x] **RA-04**: All internal links, nav items, and footer links updated to new route names
-- [x] **RA-05**: Homepage `page.tsx` restructured with 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION)
-
-## ENTRY Section
-
-- [x] **EN-01**: GLSL hero shader fills 100vh — not contained in a padded section, IS the viewport
-- [x] **EN-02**: `SIGNALFRAME//UX` rendered at 120px+ (Anton or current display font) centered on shader
-- [x] **EN-03**: Single subtitle line only — no paragraph, no description, no scroll indicator
-- [x] **EN-04**: No visible navigation on initial viewport — nav reveals on scroll (sticky after ENTRY)
-- [x] **EN-05**: Shader parameters respond to mouse position on ENTRY section (subtle, not overwhelming)
-
-## THESIS Section
-
-- [ ] **TH-01**: Scroll-driven typographic layout spanning 200–300vh of scroll distance
-- [ ] **TH-02**: Manifesto phrases placed individually across viewport via GSAP ScrollTrigger pin/scrub — not flowing paragraph text
-- [ ] **TH-03**: At least 3 type moments at 80px+ that dominate their scroll frame
-- [ ] **TH-04**: Negative space between phrases is intentional design material (minimum 30vh gaps between key statements)
-- [ ] **TH-05**: Content includes SIGNAL/FRAME thesis, Enhanced Flat Design position, and cybernetic biophilia concept — as statements, not explanations
-- [ ] **TH-06**: prefers-reduced-motion: instant placement of all text, no scroll-driven animation
-
-## PROOF Section
-
-- [ ] **PR-01**: Full-viewport interactive demonstration of SIGNAL/FRAME layer separation
-- [ ] **PR-02**: Mouse/pointer position controls SIGNAL layer intensity in real-time (no overlay panel needed)
-- [ ] **PR-03**: Visual separation of SIGNAL and FRAME layers — user can see the generative expression separate from the deterministic structure
-- [ ] **PR-04**: Stats (component count, bundle size, Lighthouse score, etc.) integrated as data points within the interactive section, not as a separate band
-- [ ] **PR-05**: Touch support — tap and drag on mobile produces the same SIGNAL/FRAME separation effect
-- [ ] **PR-06**: prefers-reduced-motion: static split view showing both layers side-by-side
-
-## INVENTORY Section
-
-- [x] **IV-01**: Component catalog uses coded nomenclature: `SF//BTN-001`, `SF//CRD-002`, etc.
-- [x] **IV-02**: Each catalog entry displays layer tag (`[//SIGNAL]` / `[FRAME]`), pattern tier (`A` / `B` / `C`), and component name
-- [x] **IV-03**: Monospaced type for catalog entries — dense, systematic, not card-based
-- [x] **IV-04**: Click/tap expands existing ComponentDetail panel (Phase 25 feature preserved)
-- [x] **IV-05**: Homepage INVENTORY section shows 12-item subset; `/inventory` page shows full catalog
-- [x] **IV-06**: Filter by layer, pattern, and category functional on `/inventory` page (existing filter logic preserved)
-
-## SIGNAL Section
-
-- [x] **SG-01**: Full-viewport generative WebGL scene (SignalMesh or new shader) at maximum SIGNAL intensity
-- [x] **SG-02**: 150vh scroll distance with slow parallax — atmospheric breathing section
-- [x] **SG-03**: Minimal or no text — pure visual/generative experience
-- [x] **SG-04**: SIGNAL parameters animated by scroll position (intensity ramps up as user scrolls through)
-- [x] **SG-05**: prefers-reduced-motion: static frame of the generative output, no animation
-
-## ACQUISITION Section
-
-- [x] **AQ-01**: CLI command `npx signalframeux init` displayed prominently in monospaced type with copy-to-clipboard
-- [x] **AQ-02**: Key system stats (component count, bundle size, Lighthouse scores) as monospaced data points
-- [x] **AQ-03**: Links to `/init` (full guide) and `/inventory` (full catalog)
-- [x] **AQ-04**: Section height ≤ 50vh — sharp and short, no padding inflation
-- [x] **AQ-05**: No "Get Started" button energy — technical instrument presentation
-
-## Visual Language
-
-- [x] **VL-01**: Ghost labels scaled to 200px+ — architectural elements, not background decoration
-- [x] **VL-02**: Display type moments at 120px+ in at least 3 locations across the site
-- [x] **VL-03**: CircuitDivider replaced or removed — section transitions use hard cuts or scroll-driven reveals
-- [x] **VL-04**: Negative space audit: minimum 40% of viewport is intentional void in key sections
-- [x] **VL-05**: Magenta accent used in ≤ 5 moments per page — fewer instances, bigger impact
-- [x] **VL-06**: Section indicators redesigned as system readout HUD (monospaced, coded, data-dense)
-- [x] **VL-07**: MarqueeBand removed or redesigned to fit the new information hierarchy
-
-## Subpage Redesign
-
-- [x] **SP-01**: `/system` (tokens) — token groups presented as specimen-style visual diagrams, not tables
-- [x] **SP-02**: `/system` — spacing scale, type scale, color palette, motion tokens each get designed visual sections
-- [x] **SP-03**: `/init` — getting started reframed as system initialization; sharp, technical, minimal prose
-- [x] **SP-04**: `/reference` — API docs styled as technical schematics; monospaced, dense layout
-- [x] **SP-05**: All subpages share the redesigned nav (hidden on initial viewport, sticky on scroll) and footer
-
-## Performance
-
-- [x] **PF-01**: Shared JS bundle remains under 150 KB gzip after all redesign changes
-- [x] **PF-02**: Lighthouse 100/100 on all four categories against deployed URL
-- [x] **PF-03**: LCP < 1.0s on homepage (ENTRY section)
-- [x] **PF-04**: CLS = 0 — scroll-driven animations must not cause layout shift
-- [x] **PF-05**: No new animation libraries — all motion via GSAP ScrollTrigger (already in stack)
-- [x] **PF-06**: prefers-reduced-motion fully functional across all new sections
-
-## Launch Readiness
-
-- [x] **LR-01**: Awwwards submission package prepared (project description, technologies, screenshots)
-- [x] **LR-02**: Open Graph / social meta tags updated for redesigned site (title, description, preview image)
-- [x] **LR-03**: Vercel production deployment live with no console errors
-- [x] **LR-04**: Mobile responsive across all new sections (tested at 375px, 768px, 1440px)
+**Constraint:** Aesthetic preservation is a hard constraint. Restructuring is permitted; visual change is not (one documented exception: Anton `optional` → `swap` font-display migration in CRT-03).
 
 ---
 
-## Traceability
+## Diagnosis (DGN)
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| RA-01 | Phase 28 | Complete |
-| RA-02 | Phase 28 | Complete |
-| RA-03 | Phase 28 | Complete |
-| RA-04 | Phase 28 | Complete |
-| PF-04 | Phase 29 | Complete |
-| PF-05 | Phase 29 | Complete |
-| PF-06 | Phase 29 | Complete |
-| RA-05 | Phase 30 | Complete |
-| EN-01 | Phase 30 | Complete |
-| EN-02 | Phase 30 | Complete |
-| EN-03 | Phase 30 | Complete |
-| EN-04 | Phase 30 | Complete |
-| EN-05 | Phase 30 | Complete |
-| VL-03 | Phase 30 | Complete |
-| VL-07 | Phase 30 | Complete |
-| TH-01 | Phase 31 | Complete |
-| TH-02 | Phase 31 | Complete |
-| TH-03 | Phase 31 | Complete |
-| TH-04 | Phase 31 | Complete |
-| TH-05 | Phase 31 | Complete |
-| TH-06 | Phase 31 | Complete |
-| SG-01 | Phase 32 | Complete |
-| SG-02 | Phase 32 | Complete |
-| SG-03 | Phase 32 | Complete |
-| SG-04 | Phase 32 | Complete |
-| SG-05 | Phase 32 | Complete |
-| PR-01 | Phase 32 | Complete |
-| PR-02 | Phase 32 | Complete |
-| PR-03 | Phase 32 | Complete |
-| PR-04 | Phase 32 | Complete |
-| PR-05 | Phase 32 | Complete |
-| PR-06 | Phase 32 | Complete |
-| IV-01 | Phase 33 | Complete |
-| IV-02 | Phase 33 | Complete |
-| IV-03 | Phase 33 | Complete |
-| IV-04 | Phase 33 | Complete |
-| IV-05 | Phase 33 | Complete |
-| IV-06 | Phase 33 | Complete |
-| AQ-01 | Phase 33 | Complete |
-| AQ-02 | Phase 33 | Complete |
-| AQ-03 | Phase 33 | Complete |
-| AQ-04 | Phase 33 | Complete |
-| AQ-05 | Phase 33 | Complete |
-| VL-01 | Phase 34 | Complete |
-| VL-02 | Phase 34 | Complete |
-| VL-04 | Phase 34 | Complete |
-| VL-05 | Phase 34 | Complete |
-| VL-06 | Phase 34 | Complete |
-| SP-01 | Phase 34 | Complete |
-| SP-02 | Phase 34 | Complete |
-| SP-03 | Phase 34 | Complete |
-| SP-04 | Phase 34 | Complete |
-| SP-05 | Phase 34 | Complete |
-| PF-01 | Phase 35 | Complete |
-| PF-02 | Phase 35 | Complete |
-| PF-03 | Phase 35 | Complete |
-| LR-01 | Phase 35 | Complete |
-| LR-02 | Phase 35 | Complete |
-| LR-03 | Phase 35 | Complete |
-| LR-04 | Phase 35 | Complete |
+- [x] **DGN-01**: LCP element identity confirmed per-viewport (mobile + desktop) via Lighthouse trace + `PerformanceObserver({type: 'largest-contentful-paint'})`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`. Resolves Tension 3 from research.
+- [x] **DGN-02**: Per-chunk owner attribution complete for unused-JS chunks `3302`, `e9a6067a`, `74c6194b`, `7525` via `ANALYZE=true pnpm build`. Output committed to `.planning/codebase/v1.8-lcp-diagnosis.md`.
+- [x] **DGN-03**: Visual-of-record snapshot captured at v1.8 start — full-page screenshots at desktop 1440×900 / iPhone-13 / iPad / mobile-360 of homepage + `/system` + `/init` + `/inventory` + `/reference`, stored as `.planning/visual-baselines/v1.8-start/`.
 
-### v1.6 API-Ready Traceability
+## CI Bench (CIB)
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| CO-01 | Phase 36 → Phase 42 | Complete |
-| CO-02 | Phase 36 → Phase 42 | Complete |
-| CO-03 | Phase 36 → Phase 42 | Complete |
-| CO-04 | Phase 36 → Phase 42 | Complete |
-| MG-01 | Phase 37 | Complete |
-| MG-02 | Phase 37 | Complete |
-| MG-03 | Phase 37 | Complete |
-| QA-01 | Phase 38 | Complete |
-| QA-02 | Phase 38 | Complete |
-| QA-03 | Phase 38 | Complete |
-| LIB-01 | Phase 39 → Phase 42 | Complete |
-| LIB-02 | Phase 39 → Phase 42 | Complete |
-| LIB-03 | Phase 39 → Phase 42 | Complete |
-| DOC-01 | Phase 40 | Complete |
-| DOC-02 | Phase 40 | Complete |
-| DOC-03 | Phase 40 | Complete |
-| DOC-04 | Phase 40 | Complete |
-| DIST-01 | Phase 41 | Complete |
-| DIST-02 | Phase 41 | Complete |
-| DIST-03 | Phase 41 | Complete |
-| DIST-04 | Phase 41 → Phase 43 | Complete |
+- [ ] **CIB-01**: `@lhci/cli@^0.15.1` installed as devDep.
+- [ ] **CIB-02**: `.lighthouseci/lighthouserc.json` written with cold-start variance discipline — `numberOfRuns: 5`, warmup×2, median assertion, threshold ≥97 categories:performance, LCP ≤1000ms, CLS ≤0, TBT ≤200ms.
+- [ ] **CIB-03**: `.github/workflows/lighthouse.yml` runs LHCI on PR against Vercel preview URLs via `treosh/lighthouse-ci-action@v12`. Failure blocks merge.
+- [ ] **CIB-04**: `scripts/launch-gate.ts` retained for manual post-deploy production verification at strict 100/100 (gate is preview ≥97, prod 100/100).
+- [ ] **CIB-05**: `app/_components/web-vitals.tsx` using built-in `next/web-vitals` `useReportWebVitals` reports LCP/CLS/INP/TTFB to telemetry endpoint. No third-party SaaS.
+
+## Critical-Path Restructure (CRT)
+
+- [x] **CRT-01**: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; `public/sf-canvas-sync.js` deleted; CLS=0 verified by Playwright test.
+- [x] **CRT-02**: Anton font character-subsetted via build-time `pyftsubset` (full printable ASCII + TM, 58.8KB → 11.1KB / 81% reduction). No runtime dependency added (opentype.js devDep ratified for measurement only).
+- [x] **CRT-03**: Anton `font-display` migrated `optional` → `swap` with MEASURED descriptors (size-adjust 92.14%, ascent-override 127.66%, descent-override 35.72%, line-gap-override 0%) against `Impact, Helvetica Neue Condensed, Arial Black` fallback chain. Slow-3G hard-reload CLS=0 across 5 routes (Wave-3 0.485 regression history exorcised). AES-02 documented exception ratified at AESTHETIC-OF-RECORD.md Change Log 2026-04-26 with 8/8 cohort surface acceptance.
+- [x] **CRT-04**: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` with `setTimeout(initLenis, 0)` Safari fallback inside existing `useEffect` at `components/layout/lenis-provider.tsx`. PF-04 `autoResize: true` contract preserved verbatim. Cleanup cancels pending handle.
+- [ ] **CRT-05**: CRT-01, CRT-02/03, CRT-04 staged as three independent atomic commit cohorts on `chore/v1.7-ratification` ready for sequential PR-shipping; bisect order preserved (66ac4ec → 47fe585 → fc3827c). 3-PR ship sequence reassigned to **Phase 64** (gap closure 2026-04-27) — activator is Phase 58 D-10 HUMAN-UAT items 1+2 (Vercel `deployments:write` + branch-protection `audit` required check). Code-side staging remains complete; checkbox reset because `/pde:audit-milestone v1.8` classified CRT-05 as PARTIAL (commits exist; ship not executed).
+
+## LCP Repositioning (LCP)
+
+- [x] **LCP-01**: LCP <1.0s on prod homepage mobile, verified via LHCI median of 5 runs.
+- [ ] **LCP-02**: LCP candidate intervention shipped per DGN-01 diagnosis output. One of: (a) THESIS Anton manifesto reveal mechanism `opacity` → `clip-path`; (b) ghost-label `content-visibility: auto` + `contain-intrinsic-size` (on element only, NOT section wrapper); (c) hero h1 clip-path char-reveal in `page-animations.tsx`. Phase-60 plan finalizes which after DGN-01.
+- [ ] **LCP-03**: Visual baseline diff <0.5% per page after LCP intervention; cohort review escalates if "feels different" without specific code change as cause.
+
+## Bundle Hygiene (BND)
+
+- [x] **BND-01**: Initial shared JS ≤105 KB on prod (recalibrated 2026-04-26 from ≤102 KB after Phase 61 closure — Next.js 15 framework runtime ~45.8 KB + react-dom ~54.2 KB + other shared ~2.56 KB = 103 KB practical floor that `optimizePackageImports` cannot reduce; original 102 KB target was set against pre-Next.js-15-framework-floor baseline). Phase 61 final build = 103 KB → SATISFIED. 119 KiB unused-JS reduction% target also recalibrated as audit-only (chunk attribution drift between Lighthouse audit time and Phase 61 build time made the strict ≥80% gate non-falsifiable; per-route harvest of −16 KB on `/` First Load JS is the realized BND-02 secondary).
+- [ ] **BND-02**: `next.config.ts` `optimizePackageImports` expanded to cover all attributed offending packages from DGN-02 — likely `radix-ui`, `cmdk`, `vaul`, `sonner`, `react-day-picker`, `date-fns`, `input-otp`. `ANALYZE=true pnpm build` re-run after each addition.
+- [ ] **BND-03**: `components/sf/index.ts` barrel directive-free (existing v1.3 rule maintained — `'use client'` in barrel inflates bundle silently).
+- [ ] **BND-04**: Stale-chunk guard documented in plan-phase RESEARCH.md (`rm -rf .next/cache .next` before any gating measurement).
+
+## Verification (VRF)
+
+- [ ] **VRF-01**: WebPageTest free tier (or BrowserStack supplement) JSON for ≥3 device profiles (iPhone 13/14 Safari, Galaxy A14 Chrome, mid-tier Android) committed to `.planning/perf-baselines/v1.8/`.
+- [ ] **VRF-02**: `pnpm tsx scripts/launch-gate.ts` run 5× against prod URL — median 100/100, LCP <1.0s, CLS=0, TTI <1.5s.
+- [ ] **VRF-03**: `chrome-devtools` MCP scroll-test confirms motion contract intact (single GSAP ticker, all SIGNAL effects render, reduced-motion still kills timeline).
+- [ ] **VRF-04**: Mid-milestone real-device checkpoint after Phase 60 (not deferred to end). Catches mobile-emulation-pass / real-device-fail divergence early (Pitfall #10).
+- [ ] **VRF-05**: Field RUM 75th-percentile LCP <1.0s post-deploy (~24h sampling window via CIB-05 telemetry endpoint).
+
+## Aesthetic Preservation (AES)
+
+- [x] **AES-01**: `.planning/codebase/AESTHETIC-OF-RECORD.md` created at v1.8 start, extracted from shipped code (lock-in mode per `feedback_lockin_before_execute.md`). Every phase reads from it; no re-derivation per-phase.
+- [x] **AES-02**: No Chromatic re-baseline for perf changes. Only documented exception: Anton `optional` → `swap` migration in CRT-03.
+- [x] **AES-03**: Mid-milestone cohort review by external eye after Phase 60 against `.planning/visual-baselines/v1.8-start/`. "Feels different" without specific code-change cause escalates.
+- [x] **AES-04**: Pixel-diff vs v1.8-start snapshot at every phase end; >0.5% diff flagged for human review.
 
 ---
 
-## Future Requirements (Deferred)
+## Future Requirements (v1.8.1 / v1.9)
 
-- Audio layer (Web Audio API) — deferred to v2+
-- Haptic layer (Vibration API) — deferred to v2+
-- Registry namespace strategy — deferred to v2+
-
-## v1.6 API-Ready
-
-### Housekeeping & Carry-Overs (Phase 36)
-- [x] **CO-01**: Lighthouse Best Practices = 100 and SEO = 100 on signalframeux.vercel.app (3-run worst score)
-- [x] **CO-02**: T-06 font-mono test path fixed — reads `components/blocks/api-explorer.tsx` not `app/reference/page.tsx`
-- [x] **CO-03**: ESLint config wired with `eslint-config-next` preset, `pnpm lint` passes clean
-- [x] **CO-04**: Toolchain currency verified — Vercel CLI at 50.42.0+, ROADMAP.md stale entries corrected
-
-### Next.js 16 Migration (Phase 37)
-- [x] **MG-01**: Next.js upgraded to ^16.x.x, app builds and starts without errors
-- [x] **MG-02**: All 18 Playwright E2E tests pass on Next 16 with zero regressions
-- [x] **MG-03**: Lighthouse scores >= Phase 36 baseline (100/100 all categories maintained)
-
-### Test & Quality Hardening (Phase 38)
-- [x] **QA-01**: Vitest configured with coverage; SF component utility functions have unit tests
-- [x] **QA-02**: axe-core integrated into Playwright suite — every route passes WCAG AA audit
-- [x] **QA-03**: Pre-commit hooks run `pnpm lint` + `tsc --noEmit`; blocked commits fail visibly
-
-### Library Build Pipeline (Phase 39)
-- [x] **LIB-01**: `package.json` exports field mapping SF components, tokens CSS, and utilities
-- [x] **LIB-02**: `pnpm build:lib` produces ESM + CJS output via tsup in `dist/` with `.d.ts` declarations
-- [x] **LIB-03**: Consumer importing `@signalframe/sf` does NOT bundle GSAP or Three.js (tree-shaking verified)
-
-### API Documentation & DX (Phase 40)
-- [x] **DOC-01**: All exported SF components have JSDoc with description, props table, and usage example
-- [x] **DOC-02**: README.md covers installation, quick start, token system, and FRAME/SIGNAL model
-- [x] **DOC-03**: Storybook runs locally with stories for all SF-wrapped components
-- [x] **DOC-04**: `/reference` route reflects actual exported API (not stale internal-only components)
-
-### Distribution & Launch Gate (Phase 41)
-- [x] **DIST-01**: `npm publish --dry-run` succeeds with correct package contents
-- [x] **DIST-02**: Fresh Next.js 16 app installs SFUX, renders 3+ SF components — builds without errors
-- [x] **DIST-03**: CHANGELOG.md and semver version strategy documented
-- [x] **DIST-04**: Lighthouse 100/100 all categories on deployed site after all v1.6 changes
-
-## v1.7 Tightening, Polish, and Aesthetic Push
-
-### Copy & Content Integrity
-- [x] **COP-01**: Component count reconciled to single accurate number across all pages (stats-band, hero, OG image, manifesto-band, init page)
-- [x] **COP-02**: Version string consistent across hero and OG image — matches current release
-- [x] **COP-03**: "FRAMEWORK-AGNOSTIC" replaced with accurate React/Next.js claim on /init
-- [x] **COP-04**: "SHIP FASTER" replaced with specific claim in marquee-band
-- [x] **COP-05**: "and growing" filler removed from hero and homepage meta
-- [x] **COP-06**: Playwright test assertions updated to match new copy strings (phase-35-metadata.spec.ts)
-
-### Token Bridge
-- [x] **TBR-01**: CD site imports `signalframeux/signalframeux.css` + `cd-tokens.css` override layer; existing pages render identically
-- [x] **TBR-02**: `@layer` cascade: `sf.tokens` → `consumer.overrides` — consumer CSS wins without specificity war
-- [ ] **TBR-03**: `--sfx-*` consumer override tier documented in MIGRATION.md with full variable list
-- [ ] **TBR-04**: No SSR flash — dark mode `class="dark"` server-rendered on CD `<html>`, no magenta primary visible during streaming
-
-### Tightening
-- [ ] **TGH-01**: Light mode `--muted-foreground` on `bg-muted` passes WCAG AA (>= 4.5:1 contrast ratio)
-- [ ] **TGH-02**: All 15 hardcoded animation durations replaced with `--duration-*` token references
-- [ ] **TGH-03**: All 7 hardcoded color values in component/page code replaced with CSS custom property references
-- [ ] **TGH-04**: `sf-button` hover duration aligned with other SF components (`--duration-fast` not `--duration-normal`)
-
-### Viewport Polish
-- [ ] **VPT-01**: `--text-2xs` raised from 9px to 10px; `--text-xs` raised from 10px to 11px — functional text readable on 13" MacBook
-- [ ] **VPT-02**: Inventory grid adds `md:grid-cols-3` intermediate breakpoint between 2-col and 4-col
-- [ ] **VPT-03**: Page header `pt-10` (40px) replaced with `pt-12` (48px) on all 4 subpages — blessed spacing stop
-- [ ] **VPT-04**: Storybook viewport presets added for 1440x900 and 1280x800
-
-### Intensity Bridge
-- [ ] **SIG-01**: `updateSignalDerivedProps(intensity)` function in global-effects.tsx computes per-effect CSS custom properties from `--signal-intensity`
-- [ ] **SIG-02**: VHS scan lines and noise opacity scale with `--signal-intensity` (no longer hardcoded at 0.2 / 0.015)
-- [ ] **SIG-03**: Grain opacity governed by derived property with logarithmic perceptual curve
-- [ ] **SIG-04**: `data-signal-intensity` attribute presets available for per-section intensity overrides
-- [ ] **SIG-05**: `prefers-reduced-motion` suppresses all intensity-driven effects
-
-### Grain + Idle Escalation
-- [ ] **GRN-01**: Grain baseline stays at 0.03-0.05; intensity dial escalates dynamically via SIG-03 curve
-- [ ] **GRN-02**: Idle escalation refactored to `useIdleEscalation(thresholds[])` with 3 phases (8s grain drift, 20s scan emphasis, 45s glitch burst + auto-reset)
-- [ ] **GRN-03**: Escalation targets use relative offsets (currentValue + delta), not absolute values
-- [ ] **GRN-04**: Chromatic visual baselines captured before grain changes
-
-### VHS Enhancement
-- [ ] **VHS-01**: Chromatic aberration (1-2px RGB channel offset) added to VHS overlay, scaled by derived intensity property
-- [ ] **VHS-02**: Horizontal jitter (translateX noise per scan line) added
-- [ ] **VHS-03**: Dropout bands (random horizontal black bars, 1-3px, <5% coverage) added
-- [ ] **VHS-04**: Frame-edge vignette via radial-gradient added
-- [ ] **VHS-05**: Safari `backdrop-filter` uses literal values with `-webkit-` prefix (no `var()` references)
-- [ ] **VHS-06**: Combined visual review at intensity 0.0 / 0.5 / 1.0 passes human sign-off
-
-### Halftone Texture
-- [ ] **HLF-01**: CSS-only halftone dot pattern (`radial-gradient` + `filter: contrast()` + `background-blend-mode`)
-- [ ] **HLF-02**: Gated at intensity >= 0.4 via derived property curve
-- [ ] **HLF-03**: Scoped to specimen sections, not ambient overlay
-- [ ] **HLF-04**: No moiré with grain at combined view — human visual review required
-
-### Circuit Overlay
-- [ ] **CIR-01**: SVG circuit pattern at 0.02-0.05 opacity as section background
-- [ ] **CIR-02**: Exclusive with high grain via derived property curve (circuit fades as grain intensifies)
-- [ ] **CIR-03**: `--signal-intensity` governs opacity
-
-### Mesh Gradient
-- [ ] **MSH-01**: Layered `radial-gradient()` with OKLCH colors at z:-1 behind content
-- [ ] **MSH-02**: Grain composited on top of mesh gradient
-- [ ] **MSH-03**: Slow position drift animation (60s+ cycle) for liveness
-
-### Particle Field
-- [ ] **PTL-01**: WebGL particle system using existing `useSignalScene()` singleton — no second WebGL context
-- [ ] **PTL-02**: Stepped particle count (0 / 2000 / 5000) based on device capability
-- [ ] **PTL-03**: Physical iOS Safari device test passes (no context loss, no black canvas)
-- [ ] **PTL-04**: `prefers-reduced-motion`: static single-frame render
-
-### Glitch Transition
-- [ ] **GLT-01**: CSS `clip-path: inset()` + `@keyframes steps(1)` glitch effect, <300ms duration
-- [ ] **GLT-02**: Triggered by idle escalation Phase 3 (45s) and optionally on page transitions
-- [ ] **GLT-03**: Feels like signal dropout, not decoration
-
-### Symbol System
-- [ ] **SYM-01**: 20-30 curated modernist SVG symbols from Brando Corp collection
-- [ ] **SYM-02**: `<CDSymbol name="..." size={N} />` React component, <5KB total sprite
-- [ ] **SYM-03**: Used as section markers, list bullets, decorative dividers
-
-### Datamosh Overlay
-- [x] **DTM-01**: DatamoshOverlay component renders fullscreen fragment shader via useSignalScene — no separate WebGL context, registered with SignalCanvas singleton
-- [x] **DTM-02**: uIntensity default 0.003 produces 1-2px noise-driven displacement with chromatic aberration (R/G/B at different offsets), visible at 100% zoom on close inspection, invisible in casual scroll
-- [x] **DTM-03**: Effect wires to --signal-intensity CSS custom property via MutationObserver cache pattern, GPU time <0.5ms at 1920x1080
-- [x] **DTM-04**: prefers-reduced-motion renders single static frame or disables entirely; GSAP breathing oscillates intensity between 0.001-0.004 over 8-12s cycles
-
-### Visual Regression
-- [ ] **VRG-01**: Chromatic installed (`@chromatic-com/storybook` + `chromatic` CLI) as devDependencies
-- [ ] **VRG-02**: Visual baselines captured before Phase 49 (grain changes)
-- [ ] **VRG-03**: Storybook story count gate updated from >= 40 to >= 60 after new effect stories added
-
-### Performance Gates
-- [x] **PRF-01**: Lighthouse A11y/BP/SEO remain 100/100/100 after all v1.7 changes
-- [x] **PRF-02**: Lighthouse Performance does not regress below 75 (from 78 baseline)
-- [x] **PRF-03**: Combined stacked effects at intensity 1.0 pass human visual coherence review
-- [x] **PRF-04**: Bundle budget maintained: 50KB gzip library, 150KB gzip app shared chunks
-
-### v1.7 Traceability
-
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| COP-01 | Phase 44 | Complete |
-| COP-02 | Phase 44 | Complete |
-| COP-03 | Phase 44 | Complete |
-| COP-04 | Phase 44 | Complete |
-| COP-05 | Phase 44 | Complete |
-| COP-06 | Phase 44 | Complete |
-| TBR-01 | Phase 45 | Complete |
-| TBR-02 | Phase 45 | Complete |
-| TBR-03 | Phase 45 | Pending |
-| TBR-04 | Phase 45 | Pending |
-| TGH-01 | Phase 46 | Pending |
-| TGH-02 | Phase 46 | Pending |
-| TGH-03 | Phase 46 | Pending |
-| TGH-04 | Phase 46 | Pending |
-| VPT-01 | Phase 47 | Pending |
-| VPT-02 | Phase 47 | Pending |
-| VPT-03 | Phase 47 | Pending |
-| VPT-04 | Phase 47 | Pending |
-| SIG-01 | Phase 48 | Pending |
-| SIG-02 | Phase 48 | Pending |
-| SIG-03 | Phase 48 | Pending |
-| SIG-04 | Phase 48 | Pending |
-| SIG-05 | Phase 48 | Pending |
-| GRN-01 | Phase 49 | Pending |
-| GRN-02 | Phase 49 | Pending |
-| GRN-03 | Phase 49 | Pending |
-| GRN-04 | Phase 49 | Pending |
-| VHS-01 | Phase 50 | Pending |
-| VHS-02 | Phase 50 | Pending |
-| VHS-03 | Phase 50 | Pending |
-| VHS-04 | Phase 50 | Pending |
-| VHS-05 | Phase 50 | Pending |
-| VHS-06 | Phase 50 | Pending |
-| DTM-01 | Phase 50.1 | Complete |
-| DTM-02 | Phase 50.1 | Complete |
-| DTM-03 | Phase 50.1 | Complete |
-| DTM-04 | Phase 50.1 | Complete |
-| HLF-01 | Phase 51 | Pending |
-| HLF-02 | Phase 51 | Pending |
-| HLF-03 | Phase 51 | Pending |
-| HLF-04 | Phase 51 | Pending |
-| CIR-01 | Phase 52 | Pending |
-| CIR-02 | Phase 52 | Pending |
-| CIR-03 | Phase 52 | Pending |
-| MSH-01 | Phase 53 | Pending |
-| MSH-02 | Phase 53 | Pending |
-| MSH-03 | Phase 53 | Pending |
-| PTL-01 | Phase 54 | Pending |
-| PTL-02 | Phase 54 | Pending |
-| PTL-03 | Phase 54 | Pending |
-| PTL-04 | Phase 54 | Pending |
-| GLT-01 | Phase 55 | Pending |
-| GLT-02 | Phase 55 | Pending |
-| GLT-03 | Phase 55 | Pending |
-| SYM-01 | Phase 56 | Pending |
-| SYM-02 | Phase 56 | Pending |
-| SYM-03 | Phase 56 | Pending |
-| VRG-01 | Phase 48 | Pending |
-| VRG-02 | Phase 49 | Pending |
-| VRG-03 | Phase 56 | Pending |
-| PRF-01 | Phase 56 | Complete |
-| PRF-02 | Phase 56 | Complete |
-| PRF-03 | Phase 56 | Complete |
-| PRF-04 | Phase 56 | Complete |
+- Critical CSS extraction via manual hand-pick (only if v1.8 MVP doesn't close gap; `experimental.inlineCss` rejected — breaks `@layer signalframeux`).
+- Speculation rules / route prefetch hints (INP-only optimization; not LCP).
+- Anton fallback override via Fontaine (alternative to hand-tuned descriptors if calibration proves brittle).
+- Server Components audit on `components/blocks/` (<3KB win; defer until v1.8 measurements show it matters).
+- Next.js 16 retry, PPR, Cache Components (rolled back in Phase 37; revisit after v1.8 stabilizes).
+- Track B (a11y target-size) — ScaleCanvas pillarbox/counter-scale/portal architectural decision. Parked for v1.9.
 
 ## Out of Scope
 
-- React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
-- ScrollSmoother — excluded; Lenis integration validated at Lighthouse 100/100, migration risk unjustified
-- New animation libraries — GSAP + Lenis handle everything
-- Glassmorphism — anti-feature per DU/TDR aesthetic
-- Rounded corners — zero border-radius everywhere (existing constraint)
-- CSS Houdini Paint API — excluded; Safari disabled, Firefox zero support (~24% users affected)
-- VFX-JS — excluded; scrolling lag conflicts with SignalCanvas singleton
-- Static grain above 0.07 — anti-feature per SOTD research; parametric escalation instead
-- Diegetic design rewrite (Tier 2) — deferred to v1.8
-- Environmental depth (Tier 3) — deferred to v1.8+
-- CI/CD pipeline — deferred; manual quality gates continue for v1.7
+- **Visual or aesthetic changes** — restructuring constrained to rendering/loading order. Ghost-label, hero shader, ScaleCanvas behavior visually identical (one documented exception: Anton font-display via tuned descriptors, where the *intent* is invisibility).
+- **SEO recovery** — Phase 37 confirmed prod SEO 100; dev-artifact only.
+- **Track B / a11y target-size** — parked; needs ScaleCanvas architectural decision.
+- **Stack swaps** — Next.js 15.5.14 / Tailwind v4 / GSAP / Lenis / Three.js all locked at v1.7 versions.
+- **`@vercel/speed-insights` / `@vercel/analytics`** — third-party runtime weight contradicts LCP <1.0s goal.
+- **`partytown` / `next/script strategy="worker"`** — App Router unsupported.
+- **`react-three-fiber`** — independent rAF conflicts with `globalTimeline.timeScale(0)`.
+- **`experimental.inlineCss: true`** — breaks `@layer signalframeux` (vercel/next.js#47585).
+- **Component additions** — v1.8 is performance-only; no new SF components.
+- **New runtime dependencies** — devDep additions limited to `@lhci/cli` + optional `web-vitals` (attribution only).
+
+## Traceability
+
+100% coverage: 29 / 29 v1.8 requirements mapped to exactly one phase. No orphans, no duplicates. (Original instruction count of 26 was an undercount; recount of [ ] checkboxes in §Diagnosis through §Aesthetic Preservation yields 29: DGN×3, CIB×5, CRT×5, LCP×3, BND×4, VRF×5, AES×4.)
+
+| REQ-ID | Phase | Plan | Status |
+|--------|-------|------|--------|
+| DGN-01 | 57 | 03 | Complete |
+| DGN-02 | 57 | 03 | Complete |
+| DGN-03 | 57 | 02 | Complete |
+| AES-01 | 57 | 01 | Complete |
+| AES-02 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
+| AES-03 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
+| AES-04 | 57 (standing rule, applies to all phases via AESTHETIC-OF-RECORD.md) | 01 | Complete |
+| CIB-01 | 58 | TBD | Pending |
+| CIB-02 | 58 | TBD | Pending |
+| CIB-03 | 58 | TBD | Pending |
+| CIB-04 | 58 | TBD | Pending |
+| CIB-05 | 58 | TBD | Pending |
+| CRT-01 | 59 | TBD | Pending |
+| CRT-02 | 59 | TBD | Pending |
+| CRT-03 | 59 | TBD | Pending |
+| CRT-04 | 59 | TBD | Pending |
+| CRT-05 | 64 (gap closure 2026-04-27 — code-side staged at 59; 3-PR ship moved to 64) | TBD | Pending |
+| LCP-01 | 60 | TBD | Pending |
+| LCP-02 | 60 | TBD | Pending |
+| LCP-03 | 60 | TBD | Pending |
+| BND-01 | 61 | 2026-04-26 | Validated (recalibrated ≤105 KB; 103 KB observed) |
+| BND-02 | 61 | 2026-04-26 | Validated |
+| BND-03 | 61 | 2026-04-26 | Validated |
+| BND-04 | 61 | 2026-04-26 | Validated |
+| VRF-01 | 63 (gap closure 2026-04-27 — moved from 62; deferred for WPT API key) | TBD | Pending |
+| VRF-02 | 62 | TBD | Pending |
+| VRF-03 | 62 | TBD | Pending |
+| VRF-04 | 63 (gap closure 2026-04-27 — moved from 62; cascade from VRF-01) | TBD | Pending |
+| VRF-05 | 65 (gap closure 2026-04-27 — moved from 62; architectural — fresh prod deploy required) | TBD | Pending |
+
+**Cross-cutting note (AES-02, AES-03, AES-04):** These three are standing rules documented inside Phase 57's AES-01 deliverable (`.planning/codebase/AESTHETIC-OF-RECORD.md`). They are mapped to Phase 57 for ownership/traceability, but apply to *every* phase 58-62 as enforcement gates (no Chromatic re-baseline for perf changes; mid-milestone cohort review; per-phase pixel-diff <=0.5%). Phases 58-62 reference them; only Phase 57 produces them.
+
+**Coverage summary by category:**
+
+| Category | Count | Phase |
+|----------|-------|-------|
+| DGN (Diagnosis) | 3 | 57 |
+| AES (Aesthetic Preservation) | 4 | 57 (1 deliverable + 3 standing rules) |
+| CIB (CI Bench) | 5 | 58 |
+| CRT (Critical-Path Restructure) | 5 | 59 (CRT-01..04) + 64 (CRT-05) |
+| LCP (LCP Repositioning) | 3 | 60 |
+| BND (Bundle Hygiene) | 4 | 61 |
+| VRF (Verification) | 5 | 62 (VRF-02, VRF-03) + 63 (VRF-01, VRF-04) + 65 (VRF-05) |
+| **Total** | **29** | — |
+
+**Phase-grouped totals (post-gap-closure 2026-04-27):**
+- Phase 57: 7 (DGN×3 + AES×4)
+- Phase 58: 5 (CIB×5)
+- Phase 59: 4 (CRT-01..CRT-04 — code-side complete)
+- Phase 60: 3 (LCP×3)
+- Phase 61: 4 (BND×4)
+- Phase 62: 2 (VRF-02, VRF-03 — synthetic + motion contract verification)
+- Phase 63: 2 (VRF-01, VRF-04 — WPT real-device + synthesis) — *gap closure, added 2026-04-27*
+- Phase 64: 1 (CRT-05 — 3-PR bisect ship sequence + Phase 58 D-10 carry-overs) — *gap closure, added 2026-04-27*
+- Phase 65: 1 (VRF-05 — field RUM p75 LCP ≥24h) — *gap closure, added 2026-04-27*
+- **Total: 29 unique REQ-IDs**, every one mapped exactly once.
+
+---
+
+*Last updated: 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original requirements: 2026-04-25 by pde-roadmapper.*

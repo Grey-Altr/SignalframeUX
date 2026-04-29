@@ -1,0 +1,35 @@
+{
+  "capturedAt": "2026-04-27T19:46:11Z",
+  "status": "DEFERRED",
+  "verdict": "DEFERRED",
+  "reason": "VRF-05 requires the /api/vitals RUM sink endpoint to be live on the public production URL. Phase 58 CIB-05 added this route in code but the current public prod deployment (https://signalframeux.vercel.app, age 15d, deploy id dpl_FJGbMAJokFtuoSYj2smEsStjDEWo) predates that work. POST to /api/vitals returns HTTP 404 at the public alias; the deployment-specific URL is protection-gated (HTTP 401). Even a fresh deploy alone is insufficient — Hobby tier 1h log retention requires the synthetic-seed → aggregate cycle to complete inside a single 1h window, which means a deliberate close-out session with: (1) fresh prod deploy from current branch (or main once merged), (2) immediate playwright synthetic-seed run, (3) immediate vercel logs aggregation, (4) verdict capture. None of those steps are appropriate to take autonomously inside this verification pass.",
+  "evidence": {
+    "api_vitals_route_in_code": "app/api/vitals/route.ts:38 (export async function POST)",
+    "public_alias_404": {
+      "method": "POST",
+      "url": "https://signalframeux.vercel.app/api/vitals",
+      "status": 404
+    },
+    "deployment_url_401": {
+      "method": "POST",
+      "url": "https://signalframeux-grey-altrs-projects.vercel.app/api/vitals",
+      "status": 401
+    },
+    "seeder_smoke_test": ".planning/perf-baselines/v1.8/vrf-05-rum-seed-log.json (15/15 ok in 80s; pipeline mechanically works)",
+    "aggregator_branch_scope_finding": "vercel logs CLI scopes by current git branch (chore/v1.7-ratification has no production deploys); aggregator script must either accept --deployment-url or be invoked from the branch that the prod deploy was built from"
+  },
+  "thresholds": {
+    "p75_lcp_ms_max": 1000,
+    "sample_count_min": 100,
+    "notes": "Plan 03 W1a contract preserved verbatim; thresholds re-applied on v1.9 follow-up."
+  },
+  "sample_source": "deferred",
+  "v1_9_unblock_recipe": [
+    "1. Merge chore/v1.7-ratification (or successor) to main; trigger fresh Vercel prod deploy that includes app/api/vitals/route.ts.",
+    "2. Confirm: curl -X POST https://signalframeux.vercel.app/api/vitals -H content-type:application/json -d {valid-payload} returns HTTP 200 (not 404).",
+    "3. Run scripts/v1.8-rum-seed-runner.mjs (or v1.9 successor) within the deploy_window for >=100 LCP samples.",
+    "4. Within the same 1h log-retention window: SINCE=70m pnpm tsx scripts/v1.8-rum-aggregate.ts (the aggregator script accepts --since override; consider extending it to accept --deployment-url for branch-scoped log queries).",
+    "5. Verify: jq -e .verdict==\"PASS\" .planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json && commit.",
+    "6. Optional: schedule a recurring synthetic-seed cron via Vercel Cron + a beacon-emitting endpoint to keep RUM samples flowing without manual seeder runs."
+  ]
+}

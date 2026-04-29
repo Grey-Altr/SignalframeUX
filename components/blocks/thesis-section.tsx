@@ -75,66 +75,101 @@ export function ThesisSection() {
 
   useGSAP(
     () => {
+      // Synchronous reduced-motion guard MUST stay outside rIC: users with
+      // prefers-reduced-motion should never schedule any work.
       if (reducedMotion) return;
-      const stage = stageRef.current;
-      const pinned = pinnedRef.current;
-      if (!stage || !pinned) return;
 
-      const spans = stage.querySelectorAll<HTMLSpanElement>("[data-statement]");
-      if (spans.length === 0) return;
+      // CRT-04 (Phase 63.1 Plan 02): defer the heavy GSAP setup to idle time
+      // so first paint is not blocked. The useGSAP hook itself stays synchronous
+      // (it must — React hook rules); only the timeline/ScrollTrigger construction
+      // is scheduled via rIC + setTimeout(0) fallback. Single-ticker rule preserved
+      // because gsap.ticker remains the only rAF source — rIC only schedules WHEN
+      // the work runs, not what runs inside it. See components/layout/lenis-provider.tsx
+      // lines 28-68 for the canonical reference pattern (CRT-04).
+      let ricHandle: number | undefined;
 
-      // Seed every statement's initial state so the first render of the
-      // scrubbed timeline has all spans hidden.
-      gsap.set(spans, { opacity: 0, yPercent: 20 });
+      const initAnimations = () => {
+        ricHandle = undefined;
+        const stage = stageRef.current;
+        const pinned = pinnedRef.current;
+        if (!stage || !pinned) return;
 
-      const tl = gsap.timeline({ paused: true });
+        const spans = stage.querySelectorAll<HTMLSpanElement>("[data-statement]");
+        if (spans.length === 0) return;
 
-      // Each statement gets its own 1.0-unit slice: 0.35 enter → 0.3 hold →
-      // 0.35 exit. Absolute position offsets (not ">" chaining) guarantee the
-      // order is deterministic even if tween registration is reordered.
-      spans.forEach((span, i) => {
-        const enterStart = i * TIMELINE_UNIT;
-        const exitStart = enterStart + ENTER_DURATION + HOLD_DURATION;
-        tl.to(
-          span,
-          {
-            opacity: 1,
-            yPercent: 0,
-            duration: ENTER_DURATION,
-            ease: "sf-snap",
-          },
-          enterStart,
-        ).to(
-          span,
-          {
-            opacity: 0,
-            yPercent: -20,
-            duration: EXIT_DURATION,
-            ease: "power1.out",
-          },
-          exitStart,
-        );
-      });
+        // Seed every statement's initial state so the first render of the
+        // scrubbed timeline has all spans hidden.
+        gsap.set(spans, { opacity: 0, yPercent: 20 });
 
-      // Trigger is the PinnedSection's main-flow spacer (exposed via
-      // pinnedRef). The spacer lives inside ScaleCanvas and has the correct
-      // document position for the pin's scroll-start; the actual pinned
-      // element lives in #pin-portal (outside ScaleCanvas) to escape the
-      // transformed-ancestor containing-block issue. Using the spacer as the
-      // trigger means start/end align exactly with the pin window — no
-      // pinnedContainer adjustment required.
-      ScrollTrigger.create({
-        trigger: pinned,
-        start: "top top",
-        // Explicit +=Npx end is mandatory: "bottom bottom" on a calc(100*var(--sf-vh))-tall
-        // trigger resolves to the SAME scroll position as "top top" (zero
-        // range), and scrub would never advance. Match the outer PinnedSection's
-        // pin distance so the inner scrub spans the full pin window.
-        end: () => `+=${scrollDistance * window.innerHeight}`,
-        scrub: 1,
-        animation: tl,
-        invalidateOnRefresh: true,
-      });
+        const tl = gsap.timeline({ paused: true });
+
+        // Each statement gets its own 1.0-unit slice: 0.35 enter → 0.3 hold →
+        // 0.35 exit. Absolute position offsets (not ">" chaining) guarantee the
+        // order is deterministic even if tween registration is reordered.
+        spans.forEach((span, i) => {
+          const enterStart = i * TIMELINE_UNIT;
+          const exitStart = enterStart + ENTER_DURATION + HOLD_DURATION;
+          tl.to(
+            span,
+            {
+              opacity: 1,
+              yPercent: 0,
+              duration: ENTER_DURATION,
+              ease: "sf-snap",
+            },
+            enterStart,
+          ).to(
+            span,
+            {
+              opacity: 0,
+              yPercent: -20,
+              duration: EXIT_DURATION,
+              ease: "power1.out",
+            },
+            exitStart,
+          );
+        });
+
+        // Trigger is the PinnedSection's main-flow spacer (exposed via
+        // pinnedRef). The spacer lives inside ScaleCanvas and has the correct
+        // document position for the pin's scroll-start; the actual pinned
+        // element lives in #pin-portal (outside ScaleCanvas) to escape the
+        // transformed-ancestor containing-block issue. Using the spacer as the
+        // trigger means start/end align exactly with the pin window — no
+        // pinnedContainer adjustment required.
+        ScrollTrigger.create({
+          trigger: pinned,
+          start: "top top",
+          // Explicit +=Npx end is mandatory: "bottom bottom" on a calc(100*var(--sf-vh))-tall
+          // trigger resolves to the SAME scroll position as "top top" (zero
+          // range), and scrub would never advance. Match the outer PinnedSection's
+          // pin distance so the inner scrub spans the full pin window.
+          end: () => `+=${scrollDistance * window.innerHeight}`,
+          scrub: 1,
+          animation: tl,
+          invalidateOnRefresh: true,
+        });
+      };
+
+      // Schedule: rIC if available (Chrome/FF; Safari 17+ behind flag),
+      // else setTimeout(0) — both yield to the next idle/macrotask.
+      type IdleCb = (cb: IdleRequestCallback, opts?: { timeout: number }) => number;
+      const ric = (window as Window & { requestIdleCallback?: IdleCb })
+        .requestIdleCallback;
+      ricHandle = ric
+        ? ric(initAnimations, { timeout: 100 })
+        : (setTimeout(initAnimations, 0) as unknown as number);
+
+      return () => {
+        // Cancel pending rIC/setTimeout if init has not fired yet (fast unmounts).
+        const cancelRic = (
+          window as Window & { cancelIdleCallback?: (h: number) => void }
+        ).cancelIdleCallback;
+        if (ricHandle !== undefined) {
+          if (cancelRic) cancelRic(ricHandle);
+          else clearTimeout(ricHandle);
+        }
+      };
     },
     { scope: stageRef, dependencies: [reducedMotion, scrollDistance, stageMounted] },
   );

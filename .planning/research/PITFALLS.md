@@ -1,332 +1,445 @@
-# Domain Pitfalls — v1.7 Aesthetic Effects + Token Bridge
+# Domain Pitfalls — v1.8 Speed of Light
 
-**Domain:** Adding layered CSS visual effects (grain, VHS, halftone, glitch, particles, mesh gradient), a design token bridge, and copy audit to an existing Next.js 15.3 + GSAP + Three.js production site.
-**Researched:** 2026-04-11
-**Milestone scope:** v1.7 — CSS-first effects, `--signal-intensity` wiring, token bridge for CD site, copy audit, Storybook story additions.
-**Confidence:** HIGH (WebGL context limits, GSAP CSS conflicts — verified against official GSAP docs and browser bug trackers) / HIGH (backdrop-filter Safari issues — verified against MDN browser compat data and active bug reports) / HIGH (SSR flash / token cascade — verified against Next.js discussions and next-themes patterns) / MEDIUM (feTurbulence CPU compositing — confirmed for Chrome, Firefox recently improved but GPU path is conditional) / MEDIUM (Lighthouse sensitivity to CSS effects — derived from Chromium rendering architecture documentation) / LOW (combined-effect moiré and GPU budget — no automated benchmark exists; based on analyst brief + rendering model)
+**Domain:** Retrofitting LCP <1.0s + Lighthouse 100/100 into a built Next.js 15.3 site with locked GSAP-singleton-ticker, WebGL-singleton, ScaleCanvas transform model, `@layer signalframeux` cascade, intensity-bridge effect stack, and Chromatic visual baselines.
+**Researched:** 2026-04-25
+**Milestone scope:** v1.8 — render-blocking budget closure (570 ms), unused-JS budget closure (119 KiB), LCP recovery from 6.5 s mobile to <1.0 s, Lighthouse CI in pipeline, real-device verification — without changing pixels or violating motion/a11y/CLS contracts.
+**Confidence:** HIGH on font-swap CLS, WebGL singleton, GSAP-ticker conflicts, RSC streaming flash (carries forward from v1.7) / HIGH on Lighthouse variance + warm-up requirement (verified GoogleChrome/lighthouse docs) / HIGH on Next.js 15 `experimental.inlineCss` cascade-layer breakage (verified GitHub issue #47585) / MEDIUM on `requestIdleCallback` Safari status (rolling out via Experimental Features 2024+; treat as polyfill-required) / MEDIUM on Lighthouse mobile transform-scaled LCP candidate misdetection (issue #16203 documents NO_LCP on transform-translated headings; ScaleCanvas extrapolation directional-not-numeric).
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Token Bridge Flash of Wrong Color During RSC Streaming
+### Pitfall 1: Font-Display Strategy Trades CLS for LCP — Anton 200–400 px Magnifies Both
 
 **What goes wrong:**
-`signalframeux.css` sets `--color-primary` to magenta in `:root`. When CD imports `signalframeux/signalframeux.css` followed by `cd-tokens.css` in `app/layout.tsx`, any RSC chunk that streams before the override CSS fully resolves will receive the magenta primary color for that render frame. This produces a magenta flash on the CD homepage — a client-visible regression on the production front door.
+The current LCP candidate is `span.sf-display` (Anton, clamp 200–400 px). The two viable `font-display` choices each break a different contract:
 
-A separate flash window exists for dark mode: SF//UX's `:root` block is light mode (off-white background, dark text). CD is dark-only. If CD's `<html>` does not have `class="dark"` synchronously server-rendered, SF//UX components will render in light mode until the dark class is applied. Client-side ThemeProviders apply the class after hydration, creating a visible flash of white.
+- `font-display: swap` — fallback paints immediately (LCP wins), then swap fires when Anton arrives. At 200–400 px, even a 1 % metric mismatch between the system fallback and Anton produces a multi-pixel layout shift — and the ghost-label is often the only large element on the screen, so its CLS contribution dominates the page CLS score. CLS=0 contract violated.
+- `font-display: optional` — gives the font 100 ms to load; after that the fallback locks in for the page lifetime and Anton **never paints** for that visit. The locked aesthetic is lost. Chromatic baselines (61 stories captured against Anton) regress for any visit where the font misses the 100 ms window.
+- `font-display: block` (Lighthouse default penalty) — invisible text > 100 ms hurts LCP. NO_LCP is also possible if no other candidate exists.
 
 **Why it happens:**
-Next.js App Router streams RSC chunks as they resolve. The layout's CSS imports are not guaranteed to block all streaming boundaries. The browser processes the import chain sequentially, but streaming can deliver a component's HTML before the cascade has settled to the override values. `next-themes` and similar libraries apply the dark class via a client-side script, which runs after the initial paint.
+The system fallback for a display face like Anton (condensed, narrow caps, tall ascent) is structurally different from Arial / Helvetica / system-ui (proportional, normal ascent). At body size the metric difference is sub-pixel. At 200–400 px the same percentage shift becomes 4–12 px of vertical motion. Whichever direction CLS engineers optimise toward bites the other CWV.
 
-**Consequences:**
-Magenta flash on first load in production. White background flash if dark class is not server-rendered. Both are visible to real users; neither is caught by local Lighthouse testing (Lighthouse simulates a clean load but doesn't capture visual flash windows at the millisecond level).
+**How to avoid:**
+- Use `next/font/local` for Anton (self-hosted, no third-party CDN race) with **explicit `size-adjust`, `ascent-override`, `descent-override`, `line-gap-override`** computed against a chosen system fallback. Tools: Brian Louis Ramirez Fallback Font Generator or `@nuxtjs/fontaine`-style automatic descriptor tuning.
+- Pick the fallback metrics deliberately: `Impact, "Helvetica Neue Condensed", Arial Black, sans-serif` produces a closer baseline for Anton than `system-ui`.
+- Once metrics are tuned, `font-display: swap` becomes safe — the swap is invisible because the boxes match. This is the only configuration that wins both LCP and CLS for a 200–400 px display face.
+- Verify with `Layout Shift Regions` in Chrome DevTools Performance panel and a slow-3G hard-reload screen recording. If a recording shows the ghost-label moving on swap, the override descriptors are not tuned.
+- Capture Chromatic baselines **after** the override descriptors are tuned, so the swap state matches the production state. Re-baseline if descriptors are subsequently re-tuned.
 
-**Prevention:**
-- Inline the critical CD token overrides (`--color-primary`, `--color-background`, `--color-foreground`) as a `<style>` block in the `<head>` before the SF//UX import, so they are present before any HTML streams.
-- Server-render `class="dark"` on `<html>` unconditionally — not via a client ThemeProvider. In CD's `app/layout.tsx`, hardcode `<html className="dark">` since CD is dark-only. Never delegate this to a client component.
-- Document in CD's `app/layout.tsx` import comment: "Must import from `signalframeux/signalframeux.css` (dist artifact), never from source, to avoid PostCSS reprocessing SF//UX's `@theme` blocks through CD's Tailwind instance."
-- Test by throttling network to Slow 3G in Chrome DevTools, then hard-reload CD's homepage. If there is a flash, it is visible at this speed.
+**Warning signs:**
+- `font-display: swap` ships and CLS jumps from 0.00 to 0.05+ on the homepage (visible in Lighthouse trace and field RUM).
+- `font-display: optional` ships and a fraction of mobile field visits report missing custom font (compare RUM screenshots vs. baseline).
+- Chromatic shows the ghost-label position moved by 1–10 px between baselines and current run after a font-strategy change.
 
-**Detection warning signs:**
-- Magenta visible for < 200ms on first load in production (not seen in local dev due to hot module cache).
-- White page flash before dark mode applies on first load.
-- `next-themes` in use on CD — nearly always means the dark class is applied client-side.
-
-**Phase to address:** Phase 0 (token bridge import chain). Must be resolved before any Phase 1 component swaps. Retrofit is painful because every subsequent phase tests against a broken base.
+**Phase to address:** Early (pre-LCP-recovery) phase — font strategy is foundational; every subsequent LCP measurement is invalidated by a later font tweak.
 
 ---
 
-### Pitfall 2: CSS `backdrop-filter` Requires `-webkit-` Prefix on Safari and Cannot Use CSS Variables
+### Pitfall 2: Removing `/sf-canvas-sync.js` From Critical Path Reintroduces CLS
 
 **What goes wrong:**
-As of Safari 18 (2025), `backdrop-filter` still requires the `-webkit-` prefix to work reliably. Additionally — and this is the less-known issue — CSS custom properties (`var(--token)`) cannot be used as values inside `backdrop-filter` on Safari. Writing `backdrop-filter: blur(var(--sf-blur-amount))` is valid CSS but silently fails in Safari; the property is ignored entirely. This affects the VHSOverlay and any glassmorphism-adjacent effects built with token-driven blur values.
+`/sf-canvas-sync.js` is render-blocking **by design** (commit f6225b4). It writes `--sf-canvas-scale`, `--sf-frame-offset-x`, `--sf-frame-bottom-gap` to `<html>` before first paint. ScaleCanvas geometry depends on these values being set before any `transform: scale()` is computed; without them the canvas paints once at `scale(1)`, then re-paints at `scale(vw/1280)` when the script lands. That second paint is a full-page reflow and a guaranteed CLS spike.
 
-A second rendering bug in Safari 18: when `background-color` and `backdrop-filter: blur()` are combined, the element renders completely white instead of the intended frosted effect. This affects components using semi-transparent backgrounds with blur.
+The naive Lighthouse fix — "eliminate render-blocking resources" — adds `defer` or `async` to the sync script, which silently reintroduces the bug it was created to fix.
 
 **Why it happens:**
-Safari's implementation of `backdrop-filter` lags the spec. The variable resolution bug is a WebKit limitation — custom properties are resolved at computed-value time, but `backdrop-filter` parsing in WebKit does not accept the resolved value from a variable reference. This is a known open MDN compatibility bug (issue #25914).
+Lighthouse's "render-blocking resources" audit doesn't know that this particular script is computing geometry that the very-first paint depends on. The audit fires green if you defer the script, even though the runtime CLS regresses. A drive-by performance optimization based purely on Lighthouse audit text leads directly to this regression.
 
-**Consequences:**
-VHS effects with token-driven opacity or blur values silently degrade to no-effect on all iOS Safari and macOS Safari. This is > 20% of traffic for most design-forward audiences. The effect appears to work in Chrome DevTools mobile simulation (Chrome resolves the variable correctly) and fails only on real Safari.
+**How to avoid:**
+- **Never** `defer` or `async` `/sf-canvas-sync.js` without simultaneously changing how `--sf-canvas-scale` is set on the very first paint. Acceptable migration paths:
+  1. Inline the script body in `<head>` as a tiny synchronous `<script>` (eliminates the network request AND eliminates the render-blocking penalty — Lighthouse counts inline scripts under HTML parse, not as a separate blocking resource).
+  2. Compute the values server-side from the `User-Agent` viewport hint (Vercel/Edge runtime) and emit them as inline `<style>` on `<html>`. Defers JS evaluation to post-paint.
+  3. Default `--sf-canvas-scale: 1` and `--sf-frame-bottom-gap: 0` in `globals.css`, and only adjust on resize / mobile via `defer`-able JS — accepts that desktop paints at scale 1 first paint (no shift because already 1280 = 1280) but mobile would still shift on first paint. Rejected unless mobile traffic is gated by media-query CSS.
+- Add a `phase-XX-cls-sync.spec.ts` Playwright test that hard-reloads the homepage on iPhone-13 viewport, asserts CLS = 0 from `PerformanceObserver({type: 'layout-shift'})`. This test must be in the pipeline before the sync-script optimization phase begins.
 
-**Prevention:**
-- Always write `backdrop-filter` values as literals, not `var()` references. If a token governs the value, compute the literal at build time or use a PostCSS plugin to inline the value.
-- Always write both `-webkit-backdrop-filter` and `backdrop-filter` properties, in that order.
-- Test specifically on Safari for Mac (not Chrome) and on a real iOS device (not Simulator — iOS Simulator uses the macOS rendering engine, which may differ from device behavior).
-- For semi-transparent backgrounds with blur, test the combination of `background-color: rgba(...)` + `backdrop-filter` on Safari 18 specifically. If white rendering occurs, switch to `background-color: transparent` with the blur applied to a pseudo-element.
+**Warning signs:**
+- Lighthouse "Reduce render-blocking resources" green, but CLS regresses from 0.00 to 0.05+ on the same audit run.
+- Visual: hard-reload on a throttled mobile shows ScaleCanvas content "snapping" smaller after first paint.
+- ResizeObserver-driven nav reveal fires twice on first paint instead of once.
 
-**Detection warning signs:**
-- Blur effect visible in Chrome, absent in Safari.
-- Component renders correctly in Chrome DevTools iOS emulation but fails on real iPhone Safari.
-- No console error — the property is silently ignored.
-
-**Phase to address:** Any phase adding or modifying `backdrop-filter` usage (VHSOverlay enhancement phases). Add a Safari-specific smoke test to the manual verification checklist before each such phase ships.
+**Phase to address:** The same phase that touches `/sf-canvas-sync.js` — never split critical-path work from CLS regression testing.
 
 ---
 
-### Pitfall 3: GSAP CSS Transition Conflict on Effect-Animated Elements
+### Pitfall 3: Hero Shader Lazy-Loaded → Blank Canvas at First Paint Suppresses LCP
 
 **What goes wrong:**
-If a CSS transition is applied to an element that GSAP also animates (e.g., tweening `--sf-grain-opacity` on an element that has `transition: opacity 0.3s ease`), the browser enters a loop: every GSAP `requestAnimationFrame` tick sets a new interpolated value, the CSS transition intercepts it and starts animating toward that value, then the next tick sets another new value and the transition starts over. The result is the element never reaches its target value — it lags indefinitely. With `--sf-grain-opacity` governed by both `--signal-intensity` CSS expressions and GSAP idle escalation tweens, this conflict is likely to occur on any element that also has hover transitions.
+The hero GLSL shader (FBM noise + grid + Bayer dither) is heavy. A common LCP-recovery instinct is to mount the SignalCanvas on `IntersectionObserver` or after `requestIdleCallback`. The result: at first paint, the hero `<canvas>` element exists but is blank (no `getContext('webgl')` call yet, or the Three.js bundle hasn't loaded). Lighthouse's LCP detector either:
+
+1. Picks the blank canvas as the LCP candidate (largest visible rect = blank canvas), records a paint event, scores LCP at the canvas first-pixel time — which is delayed by the lazy-mount **plus** the WebGL compile/upload — making LCP **worse**, not better.
+2. Falls through to `span.sf-display` as the LCP candidate (already covered by Pitfall 1).
+3. Returns `NO_LCP` if neither qualifies in time (lighthouse #15021, #16934).
+
+This is the documented "LCP suppression hazard" already captured in the v1.5 carry-forward (`opacity: 0` start state on hero heading was the original instance — the same trap exists for the canvas).
 
 **Why it happens:**
-The idle escalation system (Phase 2 grain tween, Phase 4 VHS glitch timing) uses GSAP to tween CSS custom properties. SF//UX components typically include CSS transitions for hover states. If both target the same property on the same element (even indirectly through `calc()` expressions), the conflict is silent but produces incorrect animation behavior.
+LCP is "largest contentful paint of an element that's been **rendered**." A blank canvas counts as a rendered element with the canvas's painted pixel rect. The optimization pattern "defer until idle" is correct for non-LCP elements but inverts for the LCP candidate itself.
 
-**Consequences:**
-Idle escalation effects lag or fail to reach their target intensity. Hover transitions on components conflict with GSAP-driven effect tweens. The idle system's 4-phase timing sequence breaks: Phase 2 may start before Phase 1 reaches its target, compounding into a cascade failure of the escalation sequence.
+**How to avoid:**
+- Hero shader fast-path requirement is already in the contract (sub-500 ms first motion). Reinforce: the SignalCanvas WebGL context creation and first `gl.drawArrays()` must run before the LCP detection window closes (~2.5 s on slow-mobile).
+- For the LCP-candidate element specifically: render with `opacity: 0.01` or `clip-path` reveal, **never `display: none`, `visibility: hidden`, or `opacity: 0`**. Lighthouse de-qualifies elements with effective opacity 0 from LCP candidacy.
+- If the shader must be deferred, render a same-aspect, same-color-mean static placeholder (data-URI 1×1 colored rect scaled by CSS, OR a pre-rendered first-frame WebP) that **is** the LCP candidate. The shader takes over post-LCP without changing the paint geometry.
+- Test by recording a Lighthouse trace and inspecting "Largest Contentful Paint" details. The element selector must match the intended candidate (`span.sf-display` or `picture.hero-poster`), never `canvas#signalcanvas` if the canvas paints blank.
 
-**Prevention:**
-- Establish a rule: if GSAP owns an animation for an element or custom property, remove all CSS transitions from that property on that element. This must be enforced as a code review criterion.
-- For the idle escalation system, scope GSAP tweens to CSS custom properties on `:root` (e.g., tweening `--sf-grain-opacity` at the `:root` level) rather than targeting component elements directly. `:root` custom property tweens do not conflict with component-level CSS transitions.
-- Audit all effect components (`GrainOverlay`, `VHSOverlay`) for CSS transitions on the same properties that GSAP idle escalation tweens.
+**Warning signs:**
+- Lighthouse trace LCP element = `canvas` with timing > 1.0 s.
+- Lighthouse "Largest Contentful Paint element" panel shows a blank thumbnail.
+- LCP got worse after a "lazy hero" change despite a smaller initial bundle.
 
-**Detection warning signs:**
-- Effect intensity "wobbles" rather than reaching a clean target value during idle escalation.
-- Hover interaction on a component causes an effect overlay to stutter.
-- Animation duration feels "doubled" — property takes twice as long to settle as specified.
-
-**Phase to address:** Before any idle escalation GSAP implementation (currently Phase 3 escalation work). Audit and remove conflicting CSS transitions before writing the tween code.
+**Phase to address:** Any phase that touches hero shader mount timing OR introduces lazy-loading. The LCP element identity must be a deliberate output of the phase, not a discovery after the fact.
 
 ---
 
-### Pitfall 4: WebGL Context Limit on iOS Safari Breaks Particle Field
+### Pitfall 4: Adding a Second WebGL Canvas (Particle / OG / Effect Preview) Crashes iOS Safari
 
 **What goes wrong:**
-iOS Safari has a hard limit on simultaneous WebGL contexts per page (documented behavior: 2–8 contexts depending on device generation and available GPU memory). The existing SignalframeUX implementation runs 4 WebGL scenes (GLSLHero, GLSLSignal, ProofShader, SignalMesh) through a singleton `WebGLRenderer`. Adding a particle field (effect 5) that requires its own WebGL canvas — rather than sharing the singleton renderer — creates a second WebGL context. On lower-end iOS devices, this exceeds the safe limit.
+This pitfall carries forward from v1.1, v1.5, v1.7 — and is at heightened risk in v1.8 because performance-recovery work often spawns "isolate this effect into its own canvas to make it cheaper to defer/lazy-load." Each `<canvas>` with a distinct `WebGLRenderingContext` counts against iOS Safari's hard 2–8 context cap. The system already runs near the safe limit (singleton `SignalCanvas` shares one context across multiple scenes via render targets).
 
-When the limit is exceeded, iOS Safari issues a "WebGL: context lost" error to one or more canvases. This is not a graceful degradation — the WebGL scene goes black and the `webglcontextlost` event fires. The user sees a blank or partially blank page section.
+A v1.8 pitfall pattern: "let's lazy-load the particle field as a separate canvas component so we can `next/dynamic` it independently of the main hero." The dynamic split looks like a bundle win, but it's a singleton violation that crashes lower-end iPhones in the field even though Lighthouse passes.
 
 **Why it happens:**
-Each `<canvas>` element with a distinct `WebGLRenderingContext` counts toward the device's context limit. The singleton renderer pattern avoids this by sharing one context across multiple scenes via render targets. A particle field built with its own canvas and context (common Three.js BufferGeometry pattern) breaks the singleton architecture.
+Bundle-splitting incentives push toward "one component, one canvas, one chunk" which is the opposite of singleton WebGL architecture. Lighthouse runs on Chrome, not Safari, so iOS context-loss never appears in the score. iOS Simulator does not enforce GPU memory limits the way hardware does.
 
-Context loss is also triggered by: backgrounding Safari (iOS 17+ bug, webkit.org/b/261331), exceeding GPU memory budget, and switching tabs when 2+ pages are using WebGL simultaneously.
+**How to avoid:**
+- Hard rule (already in CLAUDE.md / memory): **max one `<canvas>` with WebGL context across the entire site.** Any new effect routes through `useSignalScene()` as an additional render pass on the singleton.
+- Code-search gate before any phase ships: `grep -rn 'getContext.*webgl\|getContext.*experimental-webgl\|new THREE.WebGLRenderer' --include='*.tsx' --include='*.ts' src/` — must return ≤ 1 active call site.
+- For OG-image / preview / sprite-sheet generation: do it at build time (`/api/og`, `next/og`, or static generation), never in a runtime `<canvas>`.
+- Real-device test on a physical iPhone XR/11/12/13 before any phase that adds or splits a WebGL boundary ships. iOS Simulator is insufficient.
 
-**Consequences:**
-Particle field goes black on iPhone XR/11/12/13 (the most common devices in the target audience). Existing WebGL scenes may also lose context if the OS reclaims GPU resources. No console error in production builds (context loss is handled silently by many WebGL frameworks unless explicit `webglcontextlost` listeners are registered).
+**Warning signs:**
+- Bundle analyzer shows a new chunk containing `three`, `WebGLRenderer`, `ShaderMaterial`, or `getContext`.
+- Real-device iPhone Safari console: `WebGL: context lost` or `Error: Out of memory`.
+- Hero canvas goes black after navigating between pages on iOS (eviction of older context when new one created).
 
-**Prevention:**
-- Do not create a separate WebGL canvas for the particle field. Implement it within the existing singleton `WebGLRenderer` as an additional scene or render pass, using IntersectionObserver to gate its rendering (same pattern as existing scenes).
-- If a separate canvas is unavoidable, implement `webglcontextlost` and `webglcontextrestored` event handlers on every WebGL canvas to gracefully show a fallback and attempt restoration.
-- Test on physical iOS devices, not Simulator. The Simulator does not enforce the same GPU memory limits as hardware.
-- Alternatively, implement the particle field as a CSS-only solution (radial gradients, `@keyframes`, `box-shadow` sprite sheets) to eliminate WebGL context dependency entirely — this also satisfies the "CSS-first" constraint stated in the milestone.
-
-**Detection warning signs:**
-- "WebGL: context lost" in Safari console on iOS.
-- Black canvas element visible in DOM with correct dimensions.
-- Inconsistent behavior between Chrome iOS and Safari iOS on the same device.
-
-**Phase to address:** Particle field implementation phase (effect 5). Architecture decision (singleton vs separate canvas) must be made before any WebGL particle code is written. Retrofitting context management is expensive.
+**Phase to address:** Any phase that splits / lazy-loads a WebGL surface, or adds a new canvas-based feature. Architectural review must precede implementation.
 
 ---
 
-### Pitfall 5: Idle Escalation Tweens Run in the Wrong Direction After Grain Baseline Raise
+### Pitfall 5: New rAF Loop For Perf Metrics / Idle-Defer Violates Single-Ticker Rule
 
 **What goes wrong:**
-The idle escalation system's Phase 2 tweens `--sf-grain-opacity` toward `0.08` (the escalation target). This assumes the resting baseline grain is `0.03`. After the aesthetic push raises the baseline to `0.08–0.12`, the Phase 2 escalation target (`0.08`) is at or below the new baseline. The tween fires, reaches `0.08`, and then the property stays at `0.08` — which is either no change or a reduction from the `0.12` baseline. The idle system runs, consumes its timing cycle, but produces no perceivable effect or produces the wrong direction of change (grain dims during idle instead of intensifying).
+v1.8 is likely to want:
+
+- A perf metrics reporter (e.g., the `web-vitals` package, or a custom ticker that probes `performance.now()`).
+- An idle-defer mechanism for non-critical work (`requestIdleCallback` polyfill, or a `setTimeout(work, 0)` queue).
+- A "wait for first paint" gate for hero-shader fast-path.
+
+If any of these introduce their own `requestAnimationFrame` loop, the single-ticker contract breaks. Worse, when the user enables `prefers-reduced-motion`, the GSAP `globalTimeline.timeScale(0)` halts GSAP's rAF — but a sidecar rAF keeps running, producing motion that should be paused. This is exactly why React Three Fiber was excluded (PROJECT.md, Out of Scope).
 
 **Why it happens:**
-The idle escalation thresholds (`0.03` baseline, `0.08` Phase 2 target) were specified against the pre-v1.7 grain system. The aesthetic push changes the baseline without recalibrating the escalation targets. The audit notes this risk explicitly, but it is easy to implement the grain raise in isolation without auditing the escalation code.
+- The `web-vitals` package itself is **safe**: it uses `PerformanceObserver` (declarative, off-main-thread) for LCP/CLS/FID/INP, not rAF. Verified against GoogleChrome/web-vitals.
+- The risk is **wrappers around `web-vitals`** that add custom timing — e.g., a developer-written "report metrics every 5s" loop using `setInterval` or `requestAnimationFrame`.
+- `requestIdleCallback` is supported in Chrome/Firefox but is a **late-rolling experimental flag in Safari** (enable-via-DevTools as of late 2024). Most polyfills implement `requestIdleCallback` as `setTimeout` with a priority queue — this is a sidecar timer that can race GSAP's `gsap.ticker` scheduling and produce motion artifacts under `prefers-reduced-motion`.
 
-**Consequences:**
-The idle escalation system silently fails to produce the intended atmospheric intensification. A 4-phase escalation sequence does nothing visible at Phase 2. At Phase 4, VHS glitch effects may still fire (if they are not grain-dependent), creating an inconsistency where heavy effects appear but the grain foundation does not build toward them.
+**How to avoid:**
+- Use `web-vitals` directly via its `onLCP`, `onCLS`, `onINP`, `onFCP`, `onTTFB` hooks. These are PerformanceObserver-based and do not start a ticker.
+- Call each metric hook **once** per page load (the package warns against multiple registrations — each creates a new PerformanceObserver and registers listeners for the page lifetime).
+- For deferred work, use `gsap.ticker.add(callback, false)` with `lagSmoothing` already handled — this routes deferred work through the same rAF loop GSAP owns. If GSAP is paused (reduced-motion), the deferred work pauses too, which is the correct behavior.
+- If `requestIdleCallback` is needed, polyfill behind a feature check with `gsap.delayedCall(0, work)` as the fallback rather than `setTimeout(work, 0)`. This routes through the GSAP ticker.
+- Code-search gate: `grep -rn 'requestAnimationFrame\|new RAFLoop\|setInterval' --include='*.tsx' --include='*.ts' src/` — every match must be on an exception allowlist (Lenis raf, GSAP ticker — and only these).
 
-**Prevention:**
-- Before implementing any grain baseline change, document the new escalation target values for all 4 phases and update the constants in a single commit.
-- The escalation thresholds must be defined as offsets from the current baseline, not absolute values: `IDLE_PHASE_2_GRAIN = currentBaseline * 1.5`, not `IDLE_PHASE_2_GRAIN = 0.08`.
-- After raising the grain baseline, run the idle escalation sequence end-to-end on the homepage and verify grain visibly increases at each phase.
+**Warning signs:**
+- Bundle includes `web-vitals` AND a custom rAF loop wrapper.
+- Reduced-motion test: user has `prefers-reduced-motion: reduce`, motion continues despite `gsap.globalTimeline.timeScale(0)`.
+- Two rAF callbacks visible in Chrome DevTools Performance panel "Animation Frame Fired" events per frame instead of one.
 
-**Detection warning signs:**
-- Idle escalation timer fires (visible in GSAP DevTools) but no visual change occurs.
-- Console logging `--sf-grain-opacity` during idle shows it tweening to a value equal to or less than the current computed value.
-- Phase 4 VHS glitch fires but grain has not built toward it.
+**Phase to address:** The phase that introduces metric reporting. Architectural review of any new rAF call site.
 
-**Phase to address:** Grain baseline raise phase. The escalation recalibration must be in the same PR as the baseline change — not a follow-up.
+---
+
+### Pitfall 6: Lighthouse CI on Vercel Preview Deploys — Cold-Start Variance Kills Reproducibility
+
+**What goes wrong:**
+Vercel preview deploys are spun up on demand. The first request to a freshly-deployed preview hits a cold edge cache, cold lambda (if any SSR/RSC remains), and an un-warmed CDN. Lighthouse runs immediately after deploy on the first request. Result: LCP variance ±300 ms run-to-run, occasional NO_LCP, score variance ±10 points cold vs ±3 points warm. A single-run pipeline pass is luck, and a single-run pipeline fail is also luck — engineers will start ignoring the gate as flaky.
+
+This pattern is known: GoogleChrome/lighthouse `docs/variability.md` documents that simulated throttling minimises variance, but external factors (network/server load, cold cache, neighbour resource contention) still produce 5–10 point swings.
+
+**Why it happens:**
+Lighthouse measures wall-clock time. Cold edges add 50–500 ms TTFB. Cold lambda routes for any non-static path add another 200–2000 ms. Lighthouse fires LCP-detection windows in real wall-clock; the cold start eats into those windows.
+
+**How to avoid:**
+- Lighthouse-CI configuration must include:
+  1. **Warmup request:** `curl --silent --output /dev/null https://preview-url.vercel.app/` × 2 before the Lighthouse run (or `curl-runnings` step). This warms edge cache and any lambda routes.
+  2. **Multiple runs (≥ 3, ideally 5):** `numberOfRuns: 5` in `lighthouserc.js`. Lighthouse-CI auto-medians.
+  3. **Median assertion only:** never gate on a single-run minimum. Use `assertions.categories:performance.aggregationMethod: median-run`.
+  4. **Loosen CI thresholds 2–3 points below production target:** if production target is Lighthouse 100, gate at ≥ 97 in CI (production verification stays at 100). This absorbs run-to-run noise without ignoring real regressions.
+  5. **Stable Chrome version:** pin `--chrome-flags="--no-sandbox"` and the Chrome image SHA in CI. A Chrome auto-upgrade can change Lighthouse scoring across runs.
+- Production verification (real Lighthouse 100/100) runs on the deployed `signalframeux.com` URL, post-deploy, also with warmup + multiple runs. Vercel preview gate is a leading indicator; production gate is the contract.
+
+**Warning signs:**
+- LHCI run-to-run variance > 5 points on the same commit.
+- "First run flaky, second run passes" pattern emerges in CI logs.
+- Engineers begin pushing "rerun CI" on perf gate failures without code changes.
+
+**Phase to address:** The phase that introduces Lighthouse CI itself (likely an early infrastructure phase). Variance mitigation must ship with the gate, not be tacked on after engineers complain.
+
+---
+
+### Pitfall 7: Critical CSS Inlining Breaks `@layer signalframeux` Order — Consumer Overrides Lose
+
+**What goes wrong:**
+Next.js 15 ships `experimental.inlineCss: true`. When enabled, all stylesheet `<link>` tags are replaced with inline `<style>` tags in `<head>`. The order is preserved at the file level, but the **CSS Cascade Layers** (`@layer signalframeux`) ordering is fragile:
+
+- v1.7 architecture uses `@layer signalframeux { :root, .dark { ... } }` in the dist artifact, with consumer (CD site) CSS unlayered. The consumer wins because **unlayered CSS beats any layered CSS, regardless of source order.** This is the consumer-override architecture.
+- When critical CSS is inlined, multiple chunked CSS files are concatenated into one or more `<style>` blocks. If the concatenation order interleaves layered + unlayered rules in unexpected ways, consumer overrides can lose their precedence.
+- Reported issue (vercel/next.js#47585): "App router CSS handling is incompatible with CSS Cascade Layers — no way to guarantee that CSS that defines layers can be loaded before any usage of the CSS layers." This is open and impacts critical-CSS extraction.
+
+**Why it happens:**
+Cascade layers are scoped by their first declaration. If `@layer signalframeux` is first declared in chunk A and consumer overrides land in chunk B, but the inlining concatenates them with chunk B first, the layer is implicitly created from chunk B's `@layer signalframeux { ... }` reference — which makes consumer overrides also layered, which makes them lose to anything else unlayered. The result is `--sfx-primary` flashing magenta or whatever value is unlayered in some other file.
+
+**How to avoid:**
+- Do **not** enable `experimental.inlineCss` on the SF//UX site without verifying every story in Chromatic post-enable. The flag is documented as not production-ready by the Next.js team.
+- If LCP recovery requires critical CSS inlining, prefer **manual extraction**: identify the ~5 KB of critical CSS (root vars, `@layer signalframeux` declaration block, layout primitives, ScaleCanvas geometry rules), inline that manually as a `<style>` in `<head>` via `app/layout.tsx`, and keep the rest as link-loaded — but `<link rel="preload" as="style"> + <link rel="stylesheet" media="print" onload="this.media='all'">` pattern.
+- Whatever path is chosen, the test gate is: "consumer CSS file imported as `app/cd-overrides.css` must override a `--sfx-*` token, verified visually in Chromatic, in production prerender." If this test passes after the change, layer order is intact.
+
+**Warning signs:**
+- After an inline-CSS change: magenta flash returns on first paint (consumer override lost).
+- Chromatic shows token values shifted across all stories (`--sfx-primary` / `--sfx-foreground` / `--sfx-background` regressions in tandem).
+- DevTools "Computed" panel shows a `--sfx-*` value coming from `signalframeux.css` instead of consumer override CSS.
+
+**Phase to address:** Any phase that touches CSS delivery strategy. Cascade-layer integrity test must be part of phase definition-of-done, not added after.
+
+---
+
+### Pitfall 8: `next/script strategy="beforeInteractive"` Order Drift Triggers CLS On Arrival
+
+**What goes wrong:**
+`next/script` with `strategy="beforeInteractive"` renders the script tag before Next.js hydrates the page. The contract: the script lands before any client-side JS, but **not** before first paint. If `/sf-canvas-sync.js` is migrated to `next/script` with `strategy="beforeInteractive"` (a common "modernize the script tag" instinct), the script runs *after* the first frame — which produces the CLS bug Pitfall 2 describes.
+
+The pitfall is similar to Pitfall 2 but specific to the migration path. A drive-by "use the framework primitive instead of a raw `<script>` tag" change silently regresses CLS even though the code looks more idiomatic.
+
+**Why it happens:**
+`next/script` strategies (`beforeInteractive`, `afterInteractive`, `lazyOnload`, `worker`) are documented relative to hydration, not relative to first paint. None of them guarantee "before any visible paint." For sync-before-paint behavior, the script must be a raw `<script>` tag in `<head>` (or inlined).
+
+**How to avoid:**
+- Keep `/sf-canvas-sync.js` as a raw `<script>` tag in `app/layout.tsx`'s `<head>`, OR inline its contents directly. Do not migrate to `next/script`.
+- If `next/script` is needed for any other script (analytics, heatmap, etc.), audit which strategy lands when relative to first paint, and never put pre-paint geometry computation behind `next/script`.
+
+**Warning signs:**
+- `next/script` import appearing in `app/layout.tsx` or near the root layout.
+- CLS regression appearing simultaneously with a "modernize script tags" PR.
+
+**Phase to address:** Any phase that refactors how scripts are loaded. Code review checklist item.
+
+---
+
+### Pitfall 9: ScaleCanvas Transform-Scaled LCP Candidate Misdetection On Mobile
+
+**What goes wrong:**
+ScaleCanvas wraps content at 1280 px logical width and applies `transform: scale(vw/1280)` on mobile to fit-to-viewport. Lighthouse's LCP detector measures element bounding rects in the *post-transform* coordinate space — so a 1280 × 800 logical hero on a 390 px iPhone-13 viewport is reported as 390 × 244 visible. This usually works fine, but two failure modes exist:
+
+1. **Wrong candidate:** A non-hero element that is unaffected by the transform (e.g., a `position: fixed` overlay outside ScaleCanvas) becomes the largest visible rect because its 100 % viewport width beats the scaled hero's effective rect. Lighthouse picks the overlay as LCP, scoring its paint time (which may be later than the hero's).
+2. **NO_LCP:** If the hero has `transform: scale(0.x)` applied as part of a scroll animation that starts at scale < 1 and grows toward 1, Lighthouse may de-qualify it from LCP candidacy until the transform settles. On mobile the scale never reaches 1, so the hero never qualifies. NO_LCP is reported (issue #15021, #16934 are documented variants).
+
+**Why it happens:**
+Lighthouse follows the LCP spec, which uses element rendered geometry. Transform-scaled elements get their effective rendered rect, not their pre-transform layout rect. The combination of "ScaleCanvas always applies a transform on mobile" + "Lighthouse sees the post-transform rect" produces non-obvious LCP candidate selection.
+
+**How to avoid:**
+- Verify LCP candidate identity per-viewport in Lighthouse traces: run audit on iPhone-13 viewport, inspect "Largest Contentful Paint element" panel. Confirm it's the intended element (`span.sf-display` or hero canvas / poster).
+- If a non-hero element is winning LCP on mobile, either (a) the hero element needs a higher-priority load (preload its font, ensure shader fast-path), or (b) the non-hero LCP candidate needs `loading="lazy"` / move below the fold to disqualify it.
+- Do NOT add `content-visibility: auto` to ScaleCanvas containers as a perf optimization. `content-visibility: auto` interacts with `transform-origin` math in non-obvious ways (browser may compute layout origin from the containment box, breaking the `vw/1280` ratio). Out of scope: `inverse-scaling` / counter-scaling experiments — that's Track B territory.
+- Real-device check: if Lighthouse mobile says `NO_LCP` but the page visually renders fine, the LCP candidate is a transform-disqualified element. Pick a non-transformed candidate (`<img>` poster, `<span>` heading) as the deliberate LCP target.
+
+**Warning signs:**
+- Lighthouse mobile LCP element selector ≠ Lighthouse desktop LCP element selector for the same page.
+- `NO_LCP` errors on mobile only.
+- LCP element panel shows a fixed-position chrome element (nav, footer, overlay) instead of hero content.
+
+**Phase to address:** First LCP measurement phase. Identify the *intended* mobile LCP candidate up-front; every subsequent optimization is targeted at that specific element.
+
+---
+
+### Pitfall 10: Mobile Emulation Score Passes, Real Mid-Tier Android Underperforms
+
+**What goes wrong:**
+Lighthouse default mobile emulation = "Moto G4" (2016 device, 4× CPU throttle, 1.6 Mbps Slow 4G). It's conservative for high-end mobile but **optimistic** for current low-end / mid-tier Android shipping in 2026. Real mid-tier Android (e.g., Samsung Galaxy A14, A24 — high-volume devices in target audiences):
+
+- 4× CPU throttle in Lighthouse approximates Moto G4's CPU; A14's CPU is similar but the **GPU is slower** for shader compilation.
+- Lighthouse simulated network throttling does not simulate variable mobile network conditions, packet loss, or wake-from-sleep radio cost.
+- Lighthouse does not enforce iOS Safari context limits, mobile GPU memory pressure, or mid-tier thermal throttling (the 5th heavy WebGL frame on a hot phone takes 4× the first frame's time).
+
+Result: Lighthouse 100/100 on emulated mobile, real-device A14 reports LCP 2.5s, scroll jank, visible WebGL stutter. The contract is technically met, but the field experience fails.
+
+**Why it happens:**
+Lighthouse is a synthetic tool optimized for cross-run consistency, not for "this is what real users experience." Field RUM (real user monitoring) drift from Lighthouse is documented (Google Search Central thread #101405680: PSI Lighthouse always higher than field data on bad pages; or sometimes lower — the gap varies).
+
+**How to avoid:**
+- Real-device verification is **mandatory** for this milestone (already in scope per PROJECT.md). Sample at minimum:
+  1. iPhone 13 / 14 Safari (high-end mobile, dominant in design-conscious audiences).
+  2. Samsung Galaxy A14 / A24 Chrome (mid-tier Android).
+  3. (Optional) iPhone XR Safari (oldest in-support iOS).
+- Real-device platforms: BrowserStack and WebPageTest both work. WebPageTest's "Test from a real device" with location selection gives reliable LCP/CLS numbers. BrowserStack adds login complexity and billing.
+- Field RUM: ship `web-vitals` with `onLCP/onCLS/onINP` reporting to a lightweight endpoint (Vercel Analytics, Cloudflare Analytics, or a simple POST to `/api/vitals`). Field 75th-percentile is the contract for production users; Lighthouse 100/100 is the gate for synthetic verification.
+- Critical: the milestone definition-of-done **must include real-device numbers**, not just Lighthouse CI. A passing Lighthouse score with no real-device data is "looks done but isn't."
+
+**Warning signs:**
+- Lighthouse passes 100, RUM reports LCP > 2.5 s on 25th percentile mobile.
+- WebPageTest real-device mobile LCP > Lighthouse simulated mobile LCP by > 1 s.
+- "It works on my phone" emerges as the verification standard (single-device anecdote).
+
+**Phase to address:** Final-gate / verification phase, but real-device sampling should occur **at least once mid-milestone** — not just at the end. Discovering a real-device blocker after all phases ship is a refactor crisis.
 
 ---
 
 ## Moderate Pitfalls
 
-### Pitfall 6: Grain + Halftone Moiré at High `--signal-intensity`
+### Pitfall 11: `font-display: swap` Without Preconnect / Preload Adds Network Latency To LCP
 
 **What goes wrong:**
-Grain texture (noise at `0.12` opacity) composited with halftone (dot-grid at any coverage) produces a moiré interference pattern — a visible secondary pattern that neither effect intends. This occurs because both effects are frequency-based textures rendered at similar spatial frequencies on screen. The moiré is most visible at medium intensity values and at specific screen resolutions where the dot pitch of the halftone aligns with the pixel-level noise of the grain.
-
-**Why it happens:**
-Moiré is a physical consequence of combining two periodic or quasi-periodic patterns. feTurbulence grain is not strictly periodic, but at lower `numOctaves` values, it has characteristic frequencies. Halftone dot patterns are periodic. When their frequencies are close enough, the beat frequency (the moiré) becomes visible.
-
-**Consequences:**
-A vibrating, pulsing visual artifact that reads as a rendering error rather than intentional texture. Most visible in screenshots and screen recordings (which may alias the moiré differently than direct screen viewing). Will not be caught by per-effect Lighthouse testing. Cannot be detected by automated visual regression unless a baseline is captured at full-stack intensity.
+Even with size-adjust descriptors tuned (Pitfall 1), `font-display: swap` only helps if the font arrives before the LCP detection window closes. On slow 3G the Anton font file (60–120 KB woff2) can take 800+ ms after HTML parse to fetch. If the font is referenced via `@font-face` inside a CSS file, the browser doesn't know to fetch it until CSS parses, which is after HTML parses, which adds a waterfall.
 
 **Prevention:**
-- Test grain + halftone together at `--signal-intensity: 0.5` and `1.0` before shipping both effects. This must be a deliberate human visual review step.
-- Mitigate by ensuring the halftone dot frequency is at least 2x or 0.5x the grain's characteristic frequency (different enough that the moiré beat frequency is below perceptual threshold).
-- If moiré is unavoidable, offset by rotating the halftone pattern 45°, which shifts the moiré out of the most sensitive diagonal axis.
-- Apply the halftone at a different z-index layer with a `mix-blend-mode` that is less additive than the grain's `multiply` mode.
+- `next/font/local` automatically generates `<link rel="preload">` for self-hosted fonts. Use it.
+- If using a raw `@font-face` declaration, add `<link rel="preload" href="/fonts/Anton.woff2" as="font" type="font/woff2" crossorigin>` in `<head>` of `app/layout.tsx`.
+- Verify in Lighthouse "Avoid chained critical requests" — Anton should appear at depth 1, not depth 2 or 3.
 
-**Detection warning signs:**
-- Zooming in on the combined effect in a browser reveals a secondary grid or wave pattern.
-- The effect looks correct in isolation but "fizzes" or "hums" when both are active.
-- Screenshots at 2x pixel density show a different moiré pattern than 1x (a hallmark of aliasing-induced moiré, not perceptual moiré).
-
-**Phase to address:** Halftone implementation phase AND grain baseline raise phase must each include a combined-effect visual review step with the other effect active.
+**Phase to address:** Same phase as Pitfall 1 (font strategy).
 
 ---
 
-### Pitfall 7: VHS Opacity Tokens Hardcoded — Intensity 0 Is Not a Clean State
+### Pitfall 12: `web-vitals` Reporter Posts To `/api/*` On Every Page Load — Adds Lambda Cold Start To Bad Path
 
 **What goes wrong:**
-`--sf-vhs-crt-opacity: 0.2` and `--sf-vhs-noise-opacity: 0.015` are hardcoded token values. They are not `calc()` expressions of `--signal-intensity`. This means VHS scan lines run at 20% opacity even when `--signal-intensity` is 0. The stated system behavior — "intensity governs the entire aesthetic register" — is violated. Turning the intensity dial to 0 suppresses all new effects (grain, halftone, glitch, particles) but leaves VHS active.
-
-**Consequences:**
-Intensity 0 is not a clean state. This is observable in any integration context where CD sets a low initial intensity for component explorer or documentation pages. The VHS "imperfection" aesthetic persists even in lowest-intensity states.
+Shipping `web-vitals` with a POST-to-server reporter means every page load fires `navigator.sendBeacon('/api/vitals', json)`. If `/api/vitals` is a Vercel function (not edge), each call may cold-start a lambda. The beacon is fire-and-forget so user-perceived perf is not affected — but lambda cost and (more importantly) the Vercel observability data shows an N+1 cold-start pattern that masks real perf issues.
 
 **Prevention:**
-Rewrite VHS opacity tokens as CSS `calc()` expressions: `--sf-vhs-crt-opacity: calc(0.2 * var(--signal-intensity))`. This makes the token value proportional to intensity without requiring JavaScript. Apply the same to `--sf-vhs-noise-opacity`. Verify that at intensity 0, both overlays are invisible; at intensity 0.5, they are at their prior baseline; at intensity 1.0, they are at maximum.
+- Use Vercel Analytics directly (`@vercel/analytics`) or Vercel Speed Insights — both ship `web-vitals` under the hood and route to Vercel's edge endpoint, no lambda cold-start per request.
+- If a custom endpoint is needed, deploy as Edge Runtime function (`export const runtime = 'edge'`), not Node serverless function.
+- Verify post-deploy: `/api/vitals` invocations should not show in lambda cold-start metrics.
 
-**Detection warning signs:**
-- Setting `--signal-intensity: 0` in browser DevTools on the SF//UX homepage — VHS scan lines remain visible.
-- CD component library pages (which may want minimal intensity) still show VHS texture.
-
-**Phase to address:** VHSOverlay audit/wiring phase. This is a small CSS token change that unlocks correct system-wide behavior.
+**Phase to address:** Phase that adds field RUM reporting.
 
 ---
 
-### Pitfall 8: `feTurbulence` Halftone Is CPU-Composited on Many Browser/Hardware Combinations
+### Pitfall 13: Bundle Analyzer Stale Chunks Mislead "We Hit The Budget" Conclusion
 
 **What goes wrong:**
-The halftone effect uses an SVG `feTurbulence` + `feComponentTransfer` filter pipeline. In Chrome, the GPU filter path is only triggered for elements already in a composited layer (canvas, WebGL, video, 3D CSS transforms). SVG filters applied to regular DOM elements (`<div>`, pseudo-elements) remain on the CPU compositor. Firefox accelerated SVG filter rendering in Firefox 132 (2024), but Chrome's SVG filter path has remained CPU-bound for non-composited sources.
-
-At the `< 2ms` paint time benchmark, halftone is within budget on modern hardware. On a 2019 Intel MacBook Pro or Windows integrated GPU, feTurbulence at full-page coverage can produce 8–15ms paint times — visible scroll jank at 60fps.
-
-**Consequences:**
-Scroll jank on mid-range hardware during the halftone phase. Lighthouse Performance on simulated Moto G4 may flag this (Lighthouse simulates a throttled CPU, which stresses CPU-composited effects more than GPU ones). Production Performance score may drop 2–4 points depending on filter area.
+`ANALYZE=true pnpm build` keeps `.next/cache` for incremental builds. After multiple iterations of "remove import → re-run analyzer," the chunk visualization shows ghost chunks from earlier builds. Engineers conclude the bundle is X KB when it's actually X + (stale Y) KB. Conversely, a "win" reported by analyzer may be the cache reusing an older smaller chunk.
 
 **Prevention:**
-- Constrain the halftone SVG filter `filterUnits` region to the smallest area required. A full-page `x="0" y="0" width="100%" height="100%"` filter is maximally expensive. If the halftone is used as a section texture rather than a page overlay, scope the filter region to the section height.
-- Avoid animating `feTurbulence` attributes (especially `baseFrequency` or `seed`) — each animation frame recomputes the turbulence function across the entire filter region on the CPU.
-- Test on a MacBook with integrated graphics (Intel UHD 620 or equivalent) or a mid-range Android device before committing the halftone effect at full-page scale.
-- Consider a CSS `background-image: url("data:image/svg+xml,...")` pattern with a pre-rendered static noise texture instead of a live `feTurbulence` computation, where the texture is generated once at build time.
+- Before any bundle measurement that gates a phase: `rm -rf .next/cache .next` and rebuild fresh.
+- Cross-verify with `pnpm build`'s end-of-build size table (from Next.js itself) — that table is sourced from the actual emitted artifacts, not the analyzer's intermediate state.
+- For CI bundle gate, use `next-bundle-analyzer` in headless mode with a clean working tree, OR use `bundlesize` / `size-limit` packages that diff against a baseline JSON, OR run `pnpm dlx -y @next/bundle-analyzer` against a clean build.
 
-**Detection warning signs:**
-- Chrome DevTools Performance panel shows "Update Layer Tree" or "Paint" events > 8ms during scroll.
-- "Recalculate Style" events that normally take 0.1ms suddenly take 2–4ms when halftone is active.
-- Scroll performance is noticeably worse at `--signal-intensity: 1.0` vs `0.3`.
-
-**Phase to address:** Halftone implementation phase. Test on non-M1 hardware before the phase is marked complete.
+**Phase to address:** Bundle-gate phase. Add the clean-build step to the gate definition explicitly.
 
 ---
 
-### Pitfall 9: Copy Fix Breaks `phase-35-metadata.spec.ts` Assertions Silently Without CI
+### Pitfall 14: "Easy Wins" Drift — Optimizing FCP/TBT/CLS While LCP Stays Bad
 
 **What goes wrong:**
-`phase-35-metadata.spec.ts` lines 35–36 assert:
-```
-expect(src).toContain("v1.5");
-expect(src).toContain("REDESIGN");
-```
-The copy audit Hard Flag 2 requires fixing `opengraph-image.tsx:64` from `v1.5 -- REDESIGN` to the current version string. When this fix is applied, both assertions fail. With no CI/CD pipeline, the only enforcement is running `phase-35-metadata.spec.ts` explicitly. A developer who applies the copy fix and runs only visual or component tests (not metadata tests) will have a green local run with a broken assertion sitting silently in the test file.
+Lighthouse Performance category weighting (current Lighthouse 12+):
+- LCP: 25%
+- TBT: 30%
+- CLS: 25%
+- FCP: 10%
+- SI: 10%
 
-**Why it happens:**
-No CI enforces "run all 26 spec files after every commit." Developers run the tests that feel relevant to their change. Copy fixes do not feel like they would break metadata tests. The connection between `opengraph-image.tsx` (a visual template) and `phase-35-metadata.spec.ts` (a metadata validator) is non-obvious.
-
-**Consequences:**
-Broken test assertions committed to the repository. The metadata spec becomes misleading — it reports passing state for an old version string. Future developers see a passing test and assume the metadata is correct.
+Engineers see "TBT is the heaviest weight" and optimize TBT first. TBT is also "easy" — defer scripts, code-split, etc. — and produces visible perf improvements. Meanwhile LCP stays at 6.5 s (current state) because the actual root cause (font / shader / canvas-sync waterfall) requires deeper architectural change. The team ships 5 phases of TBT/FCP wins, perf score moves from 76 → 88 (still not 100), and the milestone goal (LCP < 1.0 s) is unmet.
 
 **Prevention:**
-- Create a file:line mapping before Phase 1: for every file touched by the copy audit, list which spec files assert against those files' content. This mapping must exist as a checklist before Phase 1 execution begins.
-- Apply the copy fix and the spec update in the same commit. Never commit a copy change without simultaneously checking for spec assertions against that content.
-- After Phase 1, run all 26 spec files end-to-end, not a subset.
+- Milestone success criteria are **per-metric**, not aggregate score. Document explicitly: "LCP < 1.0 s on prod homepage" is a separate gate from "Performance 100." Treat them as parallel constraints.
+- Roadmap phase ordering: LCP-targeted phases (font strategy, hero shader fast-path, canvas-sync inlining) are sequenced **first**. Easy wins (tree-shake unused JS, defer non-critical scripts) come after LCP root-cause is addressed, OR in parallel with explicit no-regression-on-LCP gates.
+- Mid-milestone checkpoint: if LCP hasn't moved by 50% of the phases, escalate to "LCP-only swarm" (drop in-flight phases, focus all engineering on LCP). Don't drift into TBT optimisation as a substitute.
 
-**Detection warning signs:**
-- Phase 1 copy changes committed without a corresponding spec file update.
-- Running `phase-35-metadata.spec.ts` in isolation after Phase 1 shows failures that weren't present before the phase.
-
-**Phase to address:** Phase 1 (copy audit). The file:line cross-reference must exist before Phase 1 begins, not after.
+**Phase to address:** Roadmap structure decision (informs phase ordering).
 
 ---
 
-### Pitfall 10: Storybook Stories Visually Change Without Code Changes When Grain Baseline Is Raised
+### Pitfall 15: Aesthetic-Preservation Drift Compounds Into Cohort-Jury Rejection
 
 **What goes wrong:**
-All 52 existing Storybook stories import `globals.css` via `.storybook/preview.ts`. When `--sf-grain-opacity` is raised from `0.03` to `0.12`, every story renders with 4x more visible grain — a significant visual change — without any story code changing. A developer reviewing stories during the aesthetic tightening phase sees changed visuals and cannot determine whether the change is intentional (the grain raise is working correctly) or an unintentional regression (a different change caused the grain to increase).
+Each individual perf-driven aesthetic change is "barely visible." Examples:
+- Anton fallback descriptors slightly off → ghost-label kerning shifts 1 %.
+- Hero shader poster falls back at 60 % opacity instead of intended 100 % → first-frame is 5 % lighter than design.
+- VHS scan-line opacity reduced 0.02 to fit a paint-time budget → vignette feels less "tense."
+- Particle count halved on tier-low devices → density profile changes subtly.
 
-Without Chromatic or Playwright screenshot baselines captured before the grain baseline change, there is no automated way to distinguish intentional from unintentional visual changes in stories.
+Each change passes Chromatic if baselines were re-captured per-change ("approve this change as the new baseline"). Cumulatively, the system has drifted away from the locked aesthetic. SOTD jury / portfolio review reports "feels generic" without identifying which change broke it.
 
-**Consequences:**
-The visual regression safety net in Storybook is effectively disabled for aesthetic token changes. The `phase-40-03-storybook.spec.ts` gate only validates that stories compile and that story count `>= 40` — it does not validate visual output. A story can look completely different before and after the aesthetic push while the gate passes.
+This is the highest-priority pitfall for v1.8 because it's the **only** one that can't be detected by any automated gate.
 
 **Prevention:**
-- Capture Playwright screenshots of the full story list at the current grain `0.03` baseline, stored as `.planning/visual-baselines/`, before the grain baseline change. This gives a diff anchor for Phase 1.
-- After the grain raise, review all 52 story thumbnails against the baseline images and explicitly approve each visual change.
-- Update the Storybook story count gate from `>= 40` to `>= 52` (current count) so story deletions cannot pass silently.
-- Copy audit changes to component text (e.g., `SFButton` default label changes) must cross-reference Storybook story default args — the copy audit currently only cross-references page files.
+- Hard rule: **no perf change re-baselines Chromatic**. If a perf change forces a Chromatic regression, the perf change is wrong; find another path. Re-baselining is reserved for deliberate aesthetic decisions, never for perf side-effects.
+- Establish a "design-of-record" snapshot at v1.8 start: full-page screenshots at desktop / iPhone-13 / iPad / 1440×900 of homepage + 4 subpages, stored as `.planning/visual-baselines/v1.8-start/`. Every phase end: pixel-diff against this snapshot. Any diff > 0.5 % flagged for human review.
+- Cohort review at mid-milestone: external eye (designer collaborator, peer Awwwards submitter) reviews current state vs. v1.8-start snapshot. If "feels different" without specific code change as cause, escalate.
+- Lock-in mode (memory: `feedback_lockin_before_execute.md`) — extract aesthetic contract from shipped code into a single canonical doc at v1.8 start. Every phase reads from it. No re-derivation per-phase.
 
-**Detection warning signs:**
-- All stories look "dirtier" or "noisier" simultaneously after a CSS token change — this is correct behavior but indistinguishable from a regression without a baseline.
-- The `>= 40` story count gate passes but story thumbnails have changed.
+**Warning signs:**
+- "Just approve the new Chromatic baseline" emerges as a phase pattern.
+- Designer feedback shifts from "ship it" to "something feels off" without specific points.
+- Phase-end visual diffs are consistently > 0 even on "perf-only" phases.
 
-**Phase to address:** Before Phase 1 (grain baseline raise). Baseline capture must precede the first grain token change.
+**Phase to address:** Every phase. This is a milestone-wide standing rule, not a single-phase gate.
 
 ---
 
 ## Minor Pitfalls
 
-### Pitfall 11: `mix-blend-mode: multiply` Makes Grain Invisible on Light Sections
+### Pitfall 16: `prefers-reduced-motion` Path Gets Deferred Until After First Interaction
 
 **What goes wrong:**
-Grain overlay uses `mix-blend-mode: multiply`. Multiply blending on a white or near-white surface produces no visible grain (white × any color = white). SF//UX's `data-bg-shift` scroll effect produces white or light sections as the user scrolls. At `--signal-intensity: 0.12`, grain is invisible on these sections while dark sections show grain at full opacity. The grain system fails to provide a consistent substrate texture across all sections.
+A perf-driven pattern: "set up SIGNAL effects on first scroll / first pointer move to delay setup cost from LCP window." If `prefers-reduced-motion` users never scroll (or arrive at a static state), the alternative-design reduced-motion path **never initialises**. Reduced-motion users see broken or partial effects instead of the curated alternative experience.
 
 **Prevention:**
-Switch grain overlay to `mix-blend-mode: overlay`, which works on both light and dark backgrounds. Audit bgShift sections before setting 0.12 as the grain baseline to confirm the intended effect is visible on all section backgrounds.
+- Reduced-motion path setup runs at component mount, not on interaction. The setup itself should be cheap (no WebGL compile, no heavy texture upload) — that's the point of having an alternative design rather than a degradation.
+- Test by setting `prefers-reduced-motion: reduce` in DevTools rendering panel, hard-reloading the page, **not interacting**, and verifying every effect is in its intended reduced-motion state.
 
-**Phase to address:** Grain baseline raise phase.
+**Phase to address:** Phase that introduces interaction-deferred effect setup.
 
 ---
 
-### Pitfall 12: Particle Field Must Fully Stop RAF Loop Under `prefers-reduced-motion`
+### Pitfall 17: WCAG AA Contrast Mid-Tune From Perf Change (Reduced Effect Opacity → Lower Contrast)
 
 **What goes wrong:**
-The standard `prefers-reduced-motion` mitigation for animated effects is to slow the animation to near-zero rather than stop it. For a Three.js particle field, "near-zero speed" still runs the `requestAnimationFrame` loop every frame, consuming GPU time and triggering repaints. The correct implementation is to cancel the RAF loop entirely and render a single static frame of particle positions.
-
-The existing WebGL scenes have explicit reduced-motion guards; the particle field spec does not yet document its reduced-motion behavior. This is likely to be omitted in implementation.
+Performance work may reduce overlay opacity (grain, VHS, halftone) on low-quality tier devices via `getQualityTier()`. If the reduced-opacity rule applies to a section where text contrast was tuned against the full-opacity overlay, the text suddenly fails AA contrast on those devices. Light-mode `--sfx-muted-foreground` is currently 5.81:1 against tuned background — easy to lose if grain opacity drops without re-checking.
 
 **Prevention:**
-In the particle field implementation spec, explicitly require: "Under `prefers-reduced-motion: reduce`, cancel the rAF loop via `cancelAnimationFrame()`. Render one static frame at initialization. Register a `matchMedia` listener to restart/stop the loop if the preference changes dynamically."
+- Any `getQualityTier()` step-down rule that affects opacity, blur, or layered filter values must include a contrast re-check on the affected text. Use Chrome DevTools Lighthouse Accessibility audit in low-tier mode.
+- Lock floor contrast: `--sfx-muted-foreground` AA ratio against `--sfx-background` must hold across all four quality tiers. Add an axe-core test that runs in low-tier configuration.
 
-**Phase to address:** Particle field implementation phase. Include in the acceptance criteria for that phase.
+**Phase to address:** Any phase that adjusts effect intensity by quality tier.
 
 ---
 
-### Pitfall 13: `will-change` Abuse Causes Compositor Layer Explosion on Mobile
+### Pitfall 18: `loading="lazy"` On Above-The-Fold Image Disqualifies It From LCP
 
 **What goes wrong:**
-`will-change: transform` or `will-change: opacity` applied to multiple layered effect elements simultaneously creates a compositor layer for each element. Each compositor layer consumes additional GPU memory — the texture must be uploaded and stored. On mobile devices, GPU memory is shared with system RAM (typically 1–2GB total on older iPhones). With 8 effect layers simultaneously active and each promoted to a compositor layer, GPU memory pressure can trigger browser crashes on lower-end devices.
-
-The pattern that causes this: a developer adds `will-change: transform` to GrainOverlay, VHSOverlay, HalftoneTexture, and MeshGradient to "improve performance," when those effects are already compositor-thread operations by nature of their CSS properties.
+Reflexive pattern: add `loading="lazy"` to all `<img>` for "perf." Lighthouse penalizes lazy-loaded above-the-fold images by not counting them as LCP candidates (similar to opacity-0 disqualification). If a hero poster image is the intended LCP candidate (Pitfall 3 mitigation), `loading="lazy"` on it removes it from candidacy.
 
 **Prevention:**
-- Apply `will-change` only to elements that will actually animate (change in value over time), and remove it after animation ends.
-- Effect overlays that are static (grain doesn't animate, scan lines scroll at a fixed pace) should never have `will-change`.
-- For the idle escalation GSAP tweens, set `will-change` at tween start and clear it at tween complete:
-  ```typescript
-  gsap.set(element, { willChange: "opacity" });
-  gsap.to(element, { opacity: 1, onComplete: () => gsap.set(element, { willChange: "auto" }) });
-  ```
+- Above-the-fold images: `loading="eager"` (or omitted, which defaults to eager) AND `fetchpriority="high"`. Use Next.js `Image` component with `priority` prop, which sets both.
+- Below-the-fold images: `loading="lazy"`. Standard pattern.
 
-**Phase to address:** Any phase adding effects with animation. Establish this rule before the first effect is implemented.
+**Phase to address:** Any phase that audits image loading attributes.
 
 ---
 
-### Pitfall 14: VHS Effect Storybook Stories Clip at Canvas Boundary
+### Pitfall 19: Lighthouse CLI Headless vs. Real Browser WebGL Differs
 
 **What goes wrong:**
-VHSOverlay uses `position: fixed; inset: 0`, which positions the overlay relative to the browser viewport. In Storybook's canvas, fixed-position elements render relative to the canvas element's frame, not the browser viewport. Scan lines appear to clip at story canvas boundaries rather than covering a full simulated screen. The story renders misleadingly — it looks like the effect has a bug, when the effect is correct in production.
+Lighthouse CLI runs Chrome headless. Headless Chrome's WebGL behavior differs from headed Chrome: software rendering by default (SwiftShader), no real GPU. Heavy WebGL scenes that compile/upload fine in real Chrome may take 200–800 ms longer in headless, occasionally fail compile entirely. This was already noted in v1.3 minor tech debt: "Lighthouse CLI headless not representative with WebGL."
 
 **Prevention:**
-Add a Storybook decorator for effect overlay stories that wraps the canvas in a `position: relative; overflow: hidden; height: 600px` container. Change `VHSOverlay` from `position: fixed` to `position: absolute` within this decorator context, or create a separate story variant (`VHSOverlay.Contained`) specifically for Storybook demonstration.
+- Lighthouse CI verification uses Lighthouse-CI in headed mode with `--chrome-flags="--use-gl=angle --enable-features=Vulkan"` to enable hardware-ish rendering, OR runs against a real-browser CI service (BrowserStack / Lambdatest).
+- Production verification (the source of truth for the contract) uses PageSpeed Insights against the live URL — that runs Chrome with real GPU on Google's infrastructure.
 
-**Phase to address:** Effect Storybook story implementation phase. Include in the story template for each fixed-position effect.
+**Phase to address:** Lighthouse CI infrastructure phase.
+
+---
+
+### Pitfall 20: Cache-Busting Token Bridge File Renames Break Consumer Override Order
+
+**What goes wrong:**
+Production builds emit `signalframeux.css` with a content hash (`signalframeux-abc123.css`) for cache-busting. Consumer (CD site) imports `signalframeux/dist/signalframeux.css` — which is fine, the package resolution handles the hash internally. But if a perf optimization introduces explicit hash-aware paths (`<link href="/_next/static/css/signalframeux-abc123.css">`), the consumer override import order is now hash-coupled. Hash changes on every release; consumer site has no way to re-pin its override order without a coordinated release.
+
+**Prevention:**
+- Keep the package import shape (`import 'signalframeux/signalframeux.css'`) — never expose hashed paths to consumers. Next.js handles hashing internally.
+- If critical CSS is inlined for SF//UX site itself, that's local — doesn't affect consumers.
+
+**Phase to address:** Distribution-build phase (if v1.8 touches the dist pipeline).
 
 ---
 
@@ -334,22 +447,134 @@ Add a Storybook decorator for effect overlay stories that wraps the canvas in a 
 
 | Phase Topic | Likely Pitfall | Mitigation |
 |---|---|---|
-| Phase 0: Token bridge import | SSR color flash (magenta primary, white background) | Inline critical token overrides; server-render `class="dark"` unconditionally |
-| Phase 1: Copy audit | `phase-35-metadata.spec.ts` silent breakage | File:line cross-reference checklist; atomic commit with spec update |
-| Phase 1: Copy audit | Storybook story text drift | Cross-reference copy changes against story default args |
-| Grain baseline raise | Idle escalation runs in wrong direction | Recalibrate all 4 escalation targets before changing baseline |
-| Grain baseline raise | Invisible grain on light bgShift sections | Switch blend mode to `overlay`; audit all section backgrounds |
-| Grain baseline raise | All 52 stories visually change silently | Capture Playwright screenshot baselines before the change |
-| VHSOverlay wiring | `var()` references in `backdrop-filter` fail on Safari | Use literals; `-webkit-backdrop-filter` prefix required |
-| VHSOverlay wiring | VHS runs at full opacity at intensity 0 | Rewrite tokens as `calc(value * var(--signal-intensity))` |
-| Halftone implementation | CPU compositing scroll jank on non-M1 hardware | Constrain filter region; test on Intel GPU; avoid animating feTurbulence |
-| Halftone + Grain combined | Moiré interference pattern | Combined human visual review at intensity 0.5 and 1.0; adjust frequency gap |
-| Particle field | WebGL context limit on iOS Safari | Integrate into singleton renderer; implement context loss handlers |
-| Particle field | RAF loop runs under `prefers-reduced-motion` | Cancel RAF loop; render single static frame |
-| GSAP idle escalation | CSS transition conflict with tweened properties | Remove CSS transitions from GSAP-owned properties; tween at `:root` level |
-| Any effect with animation | `will-change` applied to static overlays | Apply only at tween start; clear at tween complete |
-| Combined effects at 1.0 | No combined budget; no automated detection | Manual visual review gate: all 8 effects simultaneously at intensity 1.0 before phase sign-off |
-| Storybook effect stories | Fixed-position effects clip at story canvas | Story decorator with `position: relative; overflow: hidden` wrapper |
+| Font strategy / LCP candidate selection | swap CLS / optional missing-font / Anton 200–400 px magnification | `next/font/local` with tuned size-adjust + ascent-override; preload; hard-reload screen recording verification |
+| `/sf-canvas-sync.js` optimization | CLS regression on defer/async | Inline in `<head>` instead of deferring; CLS Playwright test in pipeline before phase ships |
+| Hero shader fast-path / lazy-mount | LCP suppression via blank canvas | Reserve LCP candidate as `span.sf-display` or static poster; canvas takes over post-LCP |
+| Bundle splitting / code-split | Second WebGL canvas violation | grep-gate for new `getContext('webgl')` call sites; real-iPhone test before merge |
+| Metric reporting (web-vitals or custom) | New rAF loop violating single-ticker | Verified `web-vitals` package uses PerformanceObserver; gate against custom rAF loops; use `gsap.ticker.add` for deferred work |
+| Lighthouse CI introduction | Cold-start variance, single-run flake | Warmup requests + `numberOfRuns: 5` + median assertion + threshold 2–3pts below prod target |
+| Critical CSS inlining (`experimental.inlineCss`) | `@layer signalframeux` order break / consumer override loss | Don't enable the experimental flag without Chromatic re-verification; prefer manual critical-CSS extraction |
+| `next/script` migration of canvas-sync | Drift to non-pre-paint scheduling → CLS | Keep raw `<script>` in `<head>`; do not migrate canvas-sync to `next/script` |
+| ScaleCanvas / mobile LCP candidate verification | Wrong candidate selection / NO_LCP | Identify intended mobile LCP candidate up-front; verify in Lighthouse trace per-viewport |
+| Real-device verification | Mobile emulation pass, real-device fail | iPhone 13 Safari + Galaxy A14 Chrome at minimum; mid-milestone real-device sampling, not end-only |
+| Quality-tier opacity step-down | WCAG AA contrast regression | Axe-core test in low-tier configuration; lock muted-foreground 5.81:1 floor |
+| Bundle measurement | Stale chunk cache misleading numbers | `rm -rf .next/cache .next` before any gating measurement |
+| Phase ordering | LCP stays bad, easy wins drift | Per-metric milestone gates (LCP <1.0 s separate from Performance 100); LCP-targeted phases first |
+| Aesthetic preservation | Cumulative drift, cohort-jury rejection | No Chromatic re-baselining for perf changes; visual-of-record snapshot at start; mid-milestone external review |
+| Reduced-motion path | Setup deferred to interaction → never initialises | Mount-time setup for reduced-motion path; scroll-free verification |
+| Above-the-fold image lazy | LCP candidate disqualified | `priority` prop on Next `Image`; lazy only below-the-fold |
+
+---
+
+## Technical Debt Patterns
+
+| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
+|---|---|---|---|
+| `experimental.inlineCss: true` (Next.js flag) | Eliminate CSS render-blocking, instant LCP win | Cascade-layer order breakage, undocumented flag, Next team explicitly says not production-ready | Never — use manual critical-CSS extraction |
+| Re-baseline Chromatic on a perf-driven visual diff | Phase ships green | Cumulative aesthetic drift, cohort-jury rejection, locked aesthetic compromised | Never |
+| Single-run Lighthouse-CI gate | Faster CI runs, simpler config | Run-to-run variance produces flaky failures, gate gets ignored, real regressions slip past | Never — minimum 3 runs with median |
+| Defer `/sf-canvas-sync.js` for "render-blocking" win | Lighthouse audit goes green | CLS regresses from 0.00 to 0.05+, contract broken | Never — inline instead |
+| `loading="lazy"` blanket on all images | Perf intuition match | Above-the-fold LCP candidate disqualified | Below-the-fold only |
+| Custom rAF loop for perf metrics | Direct timing control | Single-ticker rule violated, reduced-motion path broken | Never — use `web-vitals` PerformanceObserver hooks |
+| Skip real-device verification, trust Lighthouse CI | Faster milestone sign-off | Field LCP > 2.5 s on mid-tier devices, jury rejection on Awwwards submission | Never for v1.8 — milestone scope explicitly requires real-device |
+| `font-display: optional` for guaranteed CLS=0 | CLS easy to hit | Anton silently missing on slow connections — locked aesthetic compromised | Acceptable only if size-adjust descriptors are also tuned (which makes `swap` viable) — `optional` then becomes redundant |
+| Ship perf changes without `pnpm build` clean rebuild | Fast iteration | Stale-chunk bundle measurements, false "we hit budget" conclusions | Never for budget-gating measurements |
+
+---
+
+## Integration Gotchas
+
+| Integration | Common Mistake | Correct Approach |
+|---|---|---|
+| `next/font/local` for Anton | Default `display: 'auto'` — undefined fallback metrics | Explicit `display: 'swap'` + `adjustFontFallback` (Next 13.4+) OR manual `size-adjust`/`ascent-override` descriptors |
+| `web-vitals` package | Multiple `onLCP()` registrations across components | Single registration in `app/layout.tsx` or root provider, never per-component |
+| Vercel Analytics / Speed Insights | Custom `/api/vitals` endpoint duplicating effort | Use `@vercel/analytics` or `@vercel/speed-insights` directly — same `web-vitals` under the hood, edge-routed |
+| Lighthouse CI on Vercel | Run against deploy preview without warmup | `lhci collect --warm-runs=2` before scoring runs |
+| Chromatic against perf changes | Re-baseline on every diff | Read-only verification for perf phases; baselines only update on intentional aesthetic changes |
+| Lighthouse-CI assertion config | `minScore: 1.0` (require perfect) | `minScore: 0.97` in CI, real-Lighthouse 100 against prod URL post-deploy |
+| WebPageTest real-device | Login complexity, manual run | Use the API + scripted recipe per release, store JSON results in `.planning/perf-baselines/v1.8/` |
+| BrowserStack | Treated as Lighthouse replacement | Treat as supplement — for visual / interaction testing on real devices, not for perf scoring |
+
+---
+
+## Performance Traps
+
+| Trap | Symptoms | Prevention | When It Breaks |
+|---|---|---|---|
+| Anton at 200–400 px swap-CLS | CLS 0.05+ on mobile homepage | size-adjust + ascent-override descriptors | Any swap event without metric matching |
+| Blank-canvas LCP suppression | LCP element = `canvas`, time > 1.0 s | LCP candidate is text or static image, never blank canvas | Lazy-mount of hero canvas without poster |
+| Second WebGL context | iOS Safari "context lost" black screen | Singleton `useSignalScene()` for all WebGL surfaces | Adding a particle / preview / OG canvas separate from singleton |
+| Sidecar rAF loop | Reduced-motion users see motion despite `timeScale(0)` | All deferred work via `gsap.ticker.add` or `gsap.delayedCall` | Any `setTimeout`/`setInterval`/`requestAnimationFrame` outside Lenis or GSAP |
+| Cold-start Lighthouse variance | ±10 point swings, flaky CI | Warmup + 5 runs + median + 3-pt CI threshold buffer | Any single-run gate config |
+| Inlined CSS layer reorder | Magenta flash, all `--sfx-*` shifted | Manual critical-CSS extraction; no `experimental.inlineCss` | Enabling Next.js inline-CSS flag |
+| `next/script` for canvas-sync | CLS regression on first paint | Raw `<script>` in `<head>` only | Migrating canvas-sync to next/script |
+| Aesthetic drift via re-baseline | "Feels generic" without identifiable cause | No re-baseline for perf phases; visual-of-record snapshot | Approving Chromatic diffs as "fine" without scrutiny |
+| Mobile-emulation-only verification | LH 100 with real-device LCP > 2.5 s | Real iPhone + mid-tier Android sampling | Skipping real-device for phase sign-off |
+| Stale `.next` chunks in analyzer | False bundle-budget conclusions | Clean rebuild before any gating measurement | Any measurement after iterative builds |
+
+---
+
+## "Looks Done But Isn't" Checklist
+
+- [ ] **LCP < 1.0 s declared:** Verify on real iPhone 13 Safari AND real Galaxy A14 Chrome — not just Lighthouse emulation. Field RUM 75th percentile also < 1.0 s.
+- [ ] **Lighthouse 100/100 declared:** Run ≥ 5 runs against prod URL, median is 100. Single-run 100 is luck.
+- [ ] **CLS = 0 declared:** Hard-reload on slow-3G iPhone-13 viewport in screen recording. No visible motion of ghost-label, no layout snap on canvas-sync. CLS = 0.000 in trace, not 0.001 ("close enough").
+- [ ] **Render-blocking budget closed:** Lighthouse "Reduce render-blocking resources" reports 0 ms — and CLS regression test passes (Pitfall 2 trap).
+- [ ] **Unused JS budget closed:** Bundle analyzer (clean rebuild) shows < 200 KB initial. Identified chunks (`3302`, `e9a6067a`, `74c6194b`, `7525`) accounted for or eliminated.
+- [ ] **Lighthouse CI gate green on PR:** Median of 5 runs ≥ 97 in CI. Cold-start variance documented as expected. No "rerun CI" pattern in last 5 PRs.
+- [ ] **Aesthetic preservation verified:** Visual-of-record snapshot pixel-diff < 0.5 % per page. Cohort review (external eye) confirms no "feels generic" drift.
+- [ ] **WCAG AA holds across quality tiers:** axe-core passes in low-tier configuration. `--sfx-muted-foreground` ≥ 5.81:1 against `--sfx-background` in all tier states.
+- [ ] **Reduced-motion path mounts at load:** Setting `prefers-reduced-motion: reduce` and hard-reloading without interaction shows intended alternative design fully initialised.
+- [ ] **Single-ticker rule maintained:** `grep -rn 'requestAnimationFrame\|setInterval' src/` returns only Lenis raf and GSAP ticker call sites.
+- [ ] **WebGL singleton maintained:** `grep -rn 'getContext.*webgl' src/` returns ≤ 1 match.
+- [ ] **Real-device verification logged:** WebPageTest or BrowserStack JSON reports in `.planning/perf-baselines/v1.8/` for at least 3 device profiles.
+- [ ] **Track B not accidentally addressed:** ScaleCanvas pillarbox / counter-scale architectural decision still parked. No commits modifying ScaleCanvas geometry math.
+- [ ] **Chromatic stories pass without re-baselining:** All 61 stories green against pre-v1.8 baseline. If any phase required re-baseline, that's a phase failure not a phase sign-off.
+
+---
+
+## Recovery Strategies
+
+| Pitfall | Recovery Cost | Recovery Steps |
+|---|---|---|
+| Anton swap CLS regression | LOW | Tune size-adjust/ascent-override descriptors; re-test; if still regressing, switch to `optional` and re-baseline Chromatic deliberately (one-time) |
+| Canvas-sync defer reintroduces CLS | LOW | Revert defer; inline script in `<head>`; verify CLS = 0 |
+| Blank-canvas LCP suppression | MEDIUM | Add static poster (data-URI 1×1 colored rect or pre-rendered first-frame WebP); shader takes over post-LCP |
+| Second WebGL context shipped, iOS context-loss | MEDIUM-HIGH | Migrate new effect to singleton `useSignalScene()`; if architecture forces separate canvas, implement `webglcontextlost`/`webglcontextrestored` handlers; real-device re-test |
+| Single-ticker rule violated | LOW-MEDIUM | grep for new rAF call site; route through `gsap.ticker.add` or remove |
+| Lighthouse CI flakiness | LOW | Add warmup + median + threshold buffer; revisit pipeline config |
+| `experimental.inlineCss` cascade-layer break | MEDIUM | Disable the flag; revert to manual critical-CSS inlining; verify `--sfx-*` overrides via consumer-import test |
+| Wrong LCP candidate on mobile | MEDIUM | Identify actual candidate in Lighthouse trace; either preload-prioritise the intended candidate or disqualify the wrong one (lazy / off-screen) |
+| Real-device perf gap discovered late | HIGH | Mid-milestone add real-device sampling; if discovered at end, phase added or milestone slips — not negotiable, the contract requires real-device |
+| Aesthetic drift discovered post-ship | HIGH | Re-derive aesthetic-of-record from pre-v1.8 commit; re-Chromatic; identify drift-introducing PRs and revert / re-implement; jury submission held until clean |
+| WCAG AA regression from quality-tier opacity step-down | LOW | Re-tune opacity to preserve contrast floor; OR pair tier step-down with foreground-color compensation |
+
+---
+
+## Pitfall-to-Phase Mapping
+
+| Pitfall | Prevention Phase | Verification |
+|---|---|---|
+| Font strategy CLS / LCP tradeoff (#1) | Early infrastructure phase (font setup) | size-adjust descriptors tuned; slow-3G hard-reload screen recording; LCP < 1.0 s on Anton element |
+| Canvas-sync defer regression (#2) | Same phase that touches sync script | CLS Playwright test in pipeline; CLS = 0 on iPhone-13 viewport |
+| Blank-canvas LCP suppression (#3) | Hero shader / LCP candidate phase | Lighthouse trace LCP element matches intended target (text or static poster, never blank canvas) |
+| Second WebGL context (#4) | Any phase splitting WebGL surfaces | grep gate ≤ 1 `getContext('webgl')`; real-iPhone test |
+| Sidecar rAF / single-ticker violation (#5) | Metric reporting phase | grep gate; reduced-motion test confirms motion stops |
+| Lighthouse CI variance (#6) | Lighthouse CI infrastructure phase | Median of 5 runs ≥ 97; ≤ 3 point variance run-to-run |
+| Critical CSS layer order break (#7) | Any CSS delivery phase | Consumer-override Chromatic test passes |
+| `next/script` canvas-sync drift (#8) | Code-review checklist (any phase) | grep gate against `next/script` for canvas-sync |
+| Mobile LCP candidate misdetection (#9) | First LCP measurement phase | Lighthouse trace per-viewport confirms intended candidate |
+| Real-device verification gap (#10) | Mid-milestone + final-gate phase | WebPageTest/BrowserStack reports for 3+ device profiles |
+| Font-preload missing (#11) | Font strategy phase | Lighthouse "Avoid chained critical requests" depth ≤ 1 |
+| `web-vitals` lambda cold-start (#12) | Field RUM phase | Endpoint runtime is edge, not Node serverless |
+| Bundle analyzer stale chunks (#13) | Bundle-gate phase | Clean-build step in gate definition |
+| Easy-wins drift (#14) | Roadmap structure decision | Per-metric gates; LCP-targeted phases sequenced first |
+| Aesthetic preservation drift (#15) | Every phase (milestone-wide rule) | No re-baseline for perf phases; visual-of-record snapshot diff |
+| Reduced-motion deferred setup (#16) | Any interaction-deferred effect phase | Mount-time setup; no-interaction reduced-motion test |
+| WCAG AA tier step-down (#17) | Any quality-tier rule phase | axe-core in low-tier; muted-foreground 5.81:1 floor |
+| Lazy above-the-fold image (#18) | Image audit phase | `priority` on hero image; LCP candidate verification |
+| Headless Chrome WebGL gap (#19) | Lighthouse CI infrastructure phase | Headed Chrome OR PageSpeed Insights against prod URL for source-of-truth |
+| Hashed token-bridge import path (#20) | Distribution-build phase | Consumer import shape unchanged (no exposed hash paths) |
 
 ---
 
@@ -357,31 +582,56 @@ Add a Storybook decorator for effect overlay stories that wraps the canvas in a 
 
 | Finding | Confidence | Basis |
 |---|---|---|
-| Safari `backdrop-filter` + `var()` failure | HIGH | MDN browser compat data issue #25914; active bug tracker entries 2024-2025 |
-| Safari `backdrop-filter` `-webkit-` prefix required | HIGH | MDN compat data; multiple production reports 2024-2025 |
-| WebGL context loss on iOS Safari | HIGH | webkit.org/b/261331; webkit.org/b/262628; confirmed on iOS 17 and 18 |
-| GSAP + CSS transition conflict | HIGH | Official GSAP documentation "Common Mistakes" |
-| SSR flash of wrong color via RSC streaming | HIGH | Next.js discussions/53063; well-documented next-themes pattern |
-| Idle escalation direction failure after baseline raise | HIGH | Directly derived from analyst brief v2 round 3 findings; mathematical certainty |
-| Copy audit → metadata spec silent breakage | HIGH | Directly derived from analyst brief v2 round 4; specific line numbers confirmed |
-| feTurbulence CPU compositing | MEDIUM | Chrome rendering architecture docs; Firefox recently accelerated but Chrome GPU path requires composited source |
-| Grain + halftone moiré | MEDIUM | Physical rendering model; no automated benchmark; requires human visual confirmation |
-| Storybook story visual drift from token changes | MEDIUM | Derived from analyst brief; standard Storybook behavior |
-| Particle field WebGL singleton requirement | MEDIUM | Three.js/react-three-fiber community; iOS context limit documented but exact number varies by device |
-| `will-change` abuse on mobile | MEDIUM | Smashing Magazine rendering docs; GSAP motion library guidance |
+| Anton swap CLS at 200–400 px, size-adjust as mitigation | HIGH | DebugBear, web.dev font best practices, fontfyi swap/optional analysis (current 2025/2026 guidance) |
+| `/sf-canvas-sync.js` defer reintroduces CLS | HIGH | Project-specific (commit f6225b4 contract); architectural certainty |
+| Blank-canvas LCP suppression hazard | HIGH | Project carry-forward (v1.5 STATE.md); Lighthouse `NO_LCP` issue confirmed in #15021, #16934 |
+| WebGL singleton iOS context limit | HIGH | Carries forward HIGH confidence from v1.7 PITFALLS.md (webkit.org/b/261331, b/262628); reinforced by current memory rules |
+| Single-ticker rule + web-vitals safety | HIGH | GoogleChrome/web-vitals docs — uses PerformanceObserver, not rAF; project-specific single-ticker contract |
+| Lighthouse CI cold-start variance | HIGH | GoogleChrome/lighthouse `docs/variability.md`; DebugBear analysis of throttling variance |
+| `experimental.inlineCss` cascade-layer break | HIGH | vercel/next.js#47585 (open issue, App Router incompatible with cascade layers); Next.js team explicitly says experimental flag not production-ready |
+| `next/script beforeInteractive` order drift | MEDIUM | Documented relative to hydration not first paint; logical extension of Pitfall 2 |
+| Mobile LCP candidate misdetection on transform-scaled | MEDIUM | Lighthouse #16203 (NO_LCP on mobile only with transformed elements); ScaleCanvas extrapolation is directional, not exact-numeric |
+| Mobile emulation vs real-device gap | HIGH | Lighthouse `docs/throttling.md` documents simulated throttling minimises variance, not field accuracy; Google Search Central #101405680 documents PSI vs field gap |
+| Real-device verification mandatory | HIGH | Milestone scope (PROJECT.md) explicitly requires real-device |
+| Font preload chain depth | HIGH | Lighthouse "Avoid chained critical requests" audit semantics |
+| `web-vitals` lambda cold-start | MEDIUM | Vercel function model; logical extension of cold-start patterns |
+| Bundle analyzer stale chunks | HIGH | `.next/cache` behavior; webpack analyzer reuse semantics |
+| Easy-wins drift / metric weighting | HIGH | Lighthouse 12+ scoring weights documented |
+| Aesthetic preservation drift | HIGH | Project memory (`feedback_aesthetic_direction`, `feedback_lockin_before_execute`); v1.7 PITFALLS pattern |
+| Reduced-motion mount-time path | MEDIUM | Memory rule (`feedback_consume_quality_tier`); architectural extension |
+| WCAG AA at quality-tier step-down | MEDIUM | Memory rule (`feedback_t3_text_contrast_floor`); compositional risk |
+| Lazy above-the-fold disqualification | HIGH | Lighthouse LCP element rules documented |
+| Headless Chrome WebGL software rendering | MEDIUM | v1.3 STATE.md acknowledges; SwiftShader fallback documented in Chromium |
+| `requestIdleCallback` Safari status | MEDIUM | LambdaTest/MDN compat data; rolling out via Experimental Features 2024+; treat as polyfill-required |
 
 ---
 
 ## Sources
 
-- [GSAP Common Mistakes — Official Documentation](https://gsap.com/resources/mistakes/)
-- [MDN: backdrop-filter `var()` CSS variables not supported in Safari 18 — Issue #25914](https://github.com/mdn/browser-compat-data/issues/25914)
-- [WebKit Bug 261331: WebGL context lost when backgrounding Safari iOS 17](https://bugs.webkit.org/show_bug.cgi?id=261331)
-- [WebKit Bug 262628: WebGL context lost — iOS 17 Safari](https://bugs.webkit.org/show_bug.cgi?id=262628)
-- [Next.js Discussion #53063: Implementing dark mode with App Router + RSC](https://github.com/vercel/next.js/discussions/53063)
-- [Chrome Rendering Architecture: Image Filters and GPU compositing path conditions](https://www.chromium.org/developers/design-documents/image-filters/)
-- [Mozilla dev-platform: Intent to ship WebRender accelerated SVG filter graphs (Firefox 132)](https://groups.google.com/a/mozilla.org/g/dev-platform/c/-M0HVkCWjx0)
-- [Smashing Magazine: GPU Animation Doing It Right — compositor layer memory on mobile](https://www.smashingmagazine.com/2016/12/gpu-animation-doing-it-right/)
-- [Motion.dev: Web Animation Performance Tier List — `will-change` guidance](https://motion.dev/magazine/web-animation-performance-tier-list)
-- [react-three-fiber Discussion #2457: Too many active WebGL contexts on Safari](https://github.com/pmndrs/react-three-fiber/discussions/2457)
-- [ANL-analyst-brief-v2.md: Rounds 2, 3, 4, 5, 6 — project-specific risk analysis](file://.planning/ANL-analyst-brief-v2.md)
+- [GoogleChrome/lighthouse — Throttling docs](https://github.com/GoogleChrome/lighthouse/blob/main/docs/throttling.md)
+- [GoogleChrome/lighthouse — Variability docs](https://github.com/GoogleChrome/lighthouse/blob/main/docs/variability.md)
+- [GoogleChrome/lighthouse — NO_LCP mobile issue #16203](https://github.com/GoogleChrome/lighthouse/issues/16203)
+- [GoogleChrome/lighthouse — NO_LCP only on mobile #15021](https://github.com/GoogleChrome/lighthouse/issues/15021)
+- [GoogleChrome/lighthouse — NO_LCP despite full render #16934](https://github.com/googlechrome/lighthouse/issues/16934)
+- [GoogleChrome/lighthouse — LCP interesting cases #10527](https://github.com/GoogleChrome/lighthouse/issues/10527)
+- [GoogleChrome/web-vitals — package source / API](https://github.com/googlechrome/web-vitals)
+- [vercel/next.js — App router CSS handling incompatible with cascade layers #47585](https://github.com/vercel/next.js/issues/47585)
+- [vercel/next.js — Add support for critical CSS inlining with App Router #59989](https://github.com/vercel/next.js/discussions/59989)
+- [vercel/next.js — `experimental.inlineCss` config docs](https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss)
+- [DebugBear — Fixing Layout Shifts Caused by Web Fonts](https://www.debugbear.com/blog/web-font-layout-shift)
+- [DebugBear — Lighthouse Score Discrepancies](https://www.debugbear.com/blog/lighthouse-score-discrepancies)
+- [DebugBear — Simulated Throttling In Lighthouse And On PageSpeed Insights](https://www.debugbear.com/blog/simulated-throttling)
+- [web.dev — Best practices for fonts](https://web.dev/articles/font-best-practices)
+- [Brian Louis Ramirez — Fallback Font Generator (size-adjust + ascent-override)](https://screenspan.net/fallback)
+- [GSAP — gsap.updateRoot() docs](https://gsap.com/docs/v3/GSAP/gsap.updateRoot)
+- [GSAP forums — GSAP and Google Core Web Vitals](https://gsap.com/community/forums/topic/24495-gsap-and-google-core-web-vitals/)
+- [WebKit Bug 261331 — WebGL context lost backgrounding Safari iOS 17](https://bugs.webkit.org/show_bug.cgi?id=261331)
+- [WebKit Bug 262628 — WebGL context lost iOS 17 Safari](https://bugs.webkit.org/show_bug.cgi?id=262628)
+- [Trys Mudford — Fixing Next.js's CSS order using cascade layers](https://www.trysmudford.com/blog/next-js-css-order/)
+- [Loke.dev — The Next.js CSS Bug That Drove Me Crazy](https://loke.dev/blog/nextjs-css-resolution-order-bug)
+- [pladaria/requestidlecallback-polyfill](https://github.com/pladaria/requestidlecallback-polyfill)
+- [LambdaTest — Browser Compatibility of requestIdleCallback on Safari](https://www.lambdatest.com/web-technologies/requestidlecallback-safari)
+- [Project carry-forward: `.planning/research/PITFALLS.md` (v1.7) — WebGL singleton, GSAP-CSS-transition conflict, RSC streaming flash patterns]
+- [Project memory: `feedback_aesthetic_direction.md`, `feedback_lockin_before_execute.md`, `feedback_consume_quality_tier.md`, `feedback_raf_loop_no_layout_reads.md`, `feedback_t3_text_contrast_floor.md`]
+- [Project STATE.md — v1.5 LCP suppression hazard carry-forward; v1.6 GSAP SSR guard; v1.7 single-ticker rule]
+- [Project commit f6225b4 — `/sf-canvas-sync.js` render-blocking by design]

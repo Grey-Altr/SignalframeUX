@@ -64,9 +64,43 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ Full 49-item registry with corrected meta.pattern values (35 A, 2 B, 12 C) — v1.3
 - ✓ 102 KB shared JS bundle (under 150 KB gate) after 16 new components — v1.3
 
+- ✓ Homepage 6-section architecture (ENTRY → THESIS → PROOF → INVENTORY → SIGNAL → ACQUISITION) with route renames (/components→/inventory, /tokens→/system, /start→/init) — v1.5
+- ✓ Hero shader fills 100vh with SIGNALFRAME//UX wordmark and mouse-responsive parameters — v1.5
+- ✓ Scroll-driven THESIS section, interactive PROOF demonstration, INVENTORY catalog with coded nomenclature — v1.5
+- ✓ Subpages redesigned (`/system` specimen-style, `/init` system-initialization framing, `/reference` schematic) — v1.5
+- ✓ Lighthouse 100/100 confirmed against deployed URL, LCP < 1.0s, CLS = 0, < 150 KB shared JS — v1.5
+- ✓ Awwwards submission package + OG/social meta tags + Vercel production deployment — v1.5
+
+- ✓ Housekeeping & carry-overs (CO-01..04) shipped — v1.6
+- ✓ Next.js 16 migration with all routes static (headers() removed from layout) — v1.6
+- ✓ Test & quality hardening: vitest 4.x with passWithNoTests, axe-core no color-transition sampling — v1.6
+- ✓ Library build pipeline + tracking reconciliation (next moved to peerDependencies optional:true) — v1.6
+- ✓ API documentation & DX expanded — v1.6
+- ✓ Distribution & launch gate (DIST-01..04) + Production Deploy + Lighthouse Gate — v1.6
+
+- ✓ Token bridge: `--sfx-*` namespace + `@theme inline` Tailwind aliasing + `@layer signalframeux` consumer-override architecture; no SSR magenta flash — v1.7
+- ✓ Intensity bridge: `updateSignalDerivedProps(intensity)` derives 12 CSS custom properties via curves; MutationObserver real-time sync — v1.7
+- ✓ Effect stack wired through bridge: grain (log curve), VHS (chromatic + jitter + vignette), halftone (multiply blend), circuit (inverse intensity), mesh gradient (theme-hue OKLCH), particle field (singleton WebGL + Canvas2D HQ), glitch transition (steps(1) hard-cut) — v1.7
+- ✓ Symbol system: `public/symbols.svg` with 24 symbols at 4145 bytes — v1.7
+- ✓ Tightening pass: 15 hardcoded durations + 7 hardcoded colors replaced with `--sfx-*` tokens; light-mode WCAG AA verified (5.81:1) — v1.7
+- ✓ Viewport polish: text-2xs/text-xs clamp floors lifted to 10px/11px; Storybook MacBook 13/15 viewport presets — v1.7
+- ✓ Copy audit: component count reconciled to 48; v1.7 version strings unified — v1.7
+- ✓ Visual regression infrastructure: Chromatic + 61 Storybook stories — v1.7
+- ✓ Launch gates closed (PRF-01..04); ratification methodology established (40 Ratified, 15 Obsolete, 9 Complete) — v1.7
+
+- ✓ LHCI per-PR gate: `@lhci/cli@^0.15.1` + dual lighthouserc (mobile primary + desktop) wired to GH Actions on `deployment_status:success`; threshold ≥97 perf, LCP ≤1000ms, CLS ≤0, TBT ≤200ms; median-of-5 cold-start variance discipline — v1.8 (Phase 58)
+- ✓ Field RUM client: `next/web-vitals` `useReportWebVitals` + `navigator.sendBeacon` (fetch keepalive fallback) → self-hosted `/api/vitals` Node-runtime sink (2KB cap, JSON-only, URL-stripped, no SaaS); zero new runtime npm dep — v1.8 (Phase 58)
+- ✓ CIB-04 lock enforced: `scripts/launch-gate.ts` byte-identical to merge-base; Playwright `execFileSync` SHA-identity guard — v1.8 (Phase 58)
+
+- ✓ CRT-01: `/sf-canvas-sync.js` inlined as `<body>` tail IIFE in `app/layout.tsx`; external file deleted; CLS=0 across 5 routes — v1.8 (Phase 59)
+- ✓ CRT-02: Anton subsetted to printable ASCII + TM via fonttools/pyftsubset (58.8KB → 11.1KB / 81% reduction); zero new runtime dep — v1.8 (Phase 59)
+- ✓ CRT-03: Anton `font-display: optional → swap` with MEASURED descriptors (size-adjust 92.14%, ascent 127.66%, descent 35.72%, line-gap 0%) against `Impact, Helvetica Neue Condensed, Arial Black` fallback; slow-3G hard-reload CLS=0 across 5 routes (Wave-3 0.485 regression history exorcised); AES-02 documented exception ratified with 8/8 cohort surface acceptance — v1.8 (Phase 59)
+- ✓ CRT-04: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` + `setTimeout(initLenis, 0)` Safari fallback; PF-04 `autoResize: true` contract preserved verbatim; cleanup cancels pending handle — v1.8 (Phase 59)
+- ✓ CRT-05: three independent atomic commit cohorts staged for sequential PR-shipping (66ac4ec → 47fe585 → fc3827c) — v1.8 (Phase 59)
+
 ### Active
 
-(See REQUIREMENTS.md for v1.5 Redesign requirements)
+(See REQUIREMENTS.md for v1.8 Speed of Light requirements)
 
 ### Out of Scope
 
@@ -76,20 +110,21 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.7 Tightening, Polish, and Aesthetic Push
+## Current Milestone: v1.8 Speed of Light
 
-**Goal:** Close the gap between SF//UX's architectural completeness and the wiki's full aesthetic vision — make the SIGNAL layer speak, not whisper.
+**Goal:** Recover the original CLAUDE.md performance contract (Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial) on prod, without sacrificing the locked aesthetic — ghost-label, hero shader, and ScaleCanvas behavior visually identical.
 
 **Target features:**
-- Copy audit fixes: reconcile component count contradiction, fix stale version, correct false claims
-- SF//UX token bridge: CD site becomes first consumer (~30 lines CSS override)
-- Tightening pass: light mode contrast fix, 15 hardcoded durations → tokens, 7 hardcoded colors → tokens
-- Viewport polish: 9px functional text → 10px floor, 1280-1440px breakpoint gaps
-- Grain overlay: raise --sf-grain-opacity from 0.03 to 0.08-0.12, wire to --signal-intensity
-- VHS enhancement: chromatic aberration, jitter, dropout bands, vignette
-- Remaining effects: halftone, mesh gradient, particle field, glitch, circuit, symbol system
-- Idle state escalation: phased timer (8s→30s→60s→120s)
-- All effects wired to --signal-intensity CSS custom property
+- LCP <1.0s on prod homepage (currently 6.5s mobile) via critical-path restructure
+- Render-blocking budget closure (570ms — `/sf-canvas-sync.js` + two CSS files) without CLS regression
+- Unused JS budget closure (119 KiB across chunks `3302`, `e9a6067a`, `74c6194b`, `7525`)
+- Lighthouse CI in pipeline — durable per-PR enforcement
+- Real-device verification — iPhone Safari + mid-tier Android sampling beyond Lighthouse emulation
+
+**Out of scope:**
+- Track B (a11y target-size, ScaleCanvas pillarbox/counter-scale/portal architectural decision) — parked
+- SEO recovery — confirmed prod 100, dev-artifact only
+- Visual or aesthetic changes — restructuring constrained to rendering/loading order
 
 ## Context
 
@@ -140,6 +175,22 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - Duplicate TOAST name in ComponentsExplorer (indices 010 and 022, cosmetic)
 - Phase 19 human validation deferred (NavigationMenu flyout, keyboard nav, Stepper connectors)
 
+**Shipped v1.7 Tightening, Polish, and Aesthetic Push** (2026-04-25):
+- 379 files modified, +31,051 / −7,314 LOC across 14 phases (44–56), 16 plans, 370 commits, 13 days
+- Token bridge: `--sfx-*` namespace + `@theme inline` + `@layer signalframeux` consumer-override architecture
+- Intensity bridge: `updateSignalDerivedProps(intensity)` derives 12 CSS custom properties via curves; MutationObserver real-time sync
+- Effect stack: grain (log curve), VHS (chromatic + jitter + vignette), halftone (multiply blend), circuit (inverse intensity), mesh gradient (theme-hue OKLCH), particle field (singleton WebGL + Canvas2D HQ), glitch transition (steps(1) hard-cut)
+- Symbol system: `public/symbols.svg` with 24 symbols at 4145 bytes
+- Tightening: 15 hardcoded durations + 7 hardcoded colors → tokens; light-mode WCAG AA (5.81:1)
+- Viewport: text-2xs/text-xs floor lift to 10px/11px; Storybook MacBook 13/15 viewport presets
+- Audit: 50/50 reqs (40 Ratified, 15 Obsolete, 9 Complete, 0 Pending) — single-doc lean ratification
+
+**Minor tech debt (v1.7, non-blocking):**
+- IdleOverlay JSDoc residue at `components/layout/global-effects.tsx:165-186, 201`
+- Dead derive `--sfx-fx-particle-opacity` at `global-effects.tsx:57` (consumer reads `--sfx-signal-intensity` directly)
+- Dead derive `--sfx-fx-glitch-rate` at `global-effects.tsx:56`
+- 15 stale `[ ]` checkboxes in REQUIREMENTS.md from v1.5 era (cosmetic; traceability table marks Complete)
+
 ## Key Decisions
 
 | Decision | Milestone | Outcome |
@@ -164,6 +215,14 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 | Sonner with unstyled:true for SFToast | v1.3 | ✓ Good — full DU/TDR aesthetic control, no !important battles |
 | SFToggleGroup imports Radix directly (not through ui/ base) | v1.3 | ✓ Good — avoids variant→intent CVA remapping conflict |
 | CSS animation for NavigationMenu flyout (not GSAP) | v1.3 | ✓ Good — FRAME component, Radix provides built-in data-motion |
+| `--sfx-*` namespace + `@layer signalframeux` for consumer overrides | v1.7 | ✓ Good — unlayered consumer CSS wins before first paint, no SSR flash |
+| `@theme inline` Tailwind aliasing instead of utility-class renames | v1.7 | ✓ Good — Tailwind utilities reference `--sfx-*` vars at runtime, no `text-foreground`→`text-sfx-foreground` migration |
+| `updateSignalDerivedProps(intensity)` central derivation | v1.7 | ✓ Good — 12 effect properties driven by single source via curves; reduced-motion collapses all to 0 |
+| `MutationObserver` real-time bridge over per-frame `getComputedStyle` | v1.7 | ✓ Good — observers re-run only on `<html>` style mutations; zero ticker overhead |
+| Curve choice per effect (log / linear / inverse) tuned per perception | v1.7 | ✓ Good — grain log (perceptual), VHS linear (photometric), circuit inverse (mutual exclusion with grain) |
+| Cut idle-overlay + datamosh + WebGL particle mounts to clear PRF-02 | v1.7 | ⚠️ Revisit — three obsolescence sub-families originated here; reference templates retained for future re-mount via cheaper consumers |
+| Lean ratification methodology (grep-then-classify) | v1.7 | ✓ Good — 14 phases audited via single doc, file:line evidence; reusable taxonomy of process-gate sub-families |
+| `getQualityTier()` consumption mandatory for new SIGNAL surfaces | v1.7 | ✓ Good — `ParticleFieldHQ` Canvas2D path validates the rule; mobile/low-end parity ship-blocker per memory |
 
 ## Constraints
 
@@ -182,6 +241,23 @@ SignalframeUX is the design system for Culture Division. It powers the portfolio
 - **SignalframeUX location:** ~/code/projects/SignalframeUX
 - **Portfolio location:** ~/code/projects/portfolio (to be created)
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/pde:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/pde:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
 
-*Last updated: 2026-04-07 after v1.5 Redesign milestone started*
+*Last updated: 2026-04-26 — Phase 59 (Critical-Path Restructure) complete; CRT-01..CRT-05 validated under v1.8; opentype.js@^1.3.4 devDep ratified (measurement-time only); 4 carry-over LHCI/PR-ship items + 2 Phase-58 repo-settings items tracked in HUMAN-UAT*

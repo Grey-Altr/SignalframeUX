@@ -1,0 +1,83 @@
+[
+  {
+    "viewport": "mobile-360x800",
+    "fontState": "warm",
+    "qualityTier": 2,
+    "candidates": [
+      {
+        "selector": "span.sf-display.pointer-events-none.select-none.absolute.leading-none.-left-[calc(3*var(--sf-vw))].top-1/2.-translate-y-1/2.text-foreground/[0.04]",
+        "elementSize": 26100,
+        "startTime": 172,
+        "resourceUrl": "",
+        "isLcp": true
+      }
+    ],
+    "capturedAt": "2026-04-26T18:41:12.549Z"
+  },
+  {
+    "viewport": "iphone13-390x844",
+    "fontState": "warm",
+    "qualityTier": 2,
+    "candidates": [
+      {
+        "selector": "text",
+        "elementSize": 2534,
+        "startTime": 52,
+        "resourceUrl": "",
+        "isLcp": false
+      },
+      {
+        "selector": "span.sf-display.pointer-events-none.select-none.absolute.leading-none.-left-[calc(3*var(--sf-vw))].top-1/2.-translate-y-1/2.text-foreground/[0.04]",
+        "elementSize": 30632,
+        "startTime": 64,
+        "resourceUrl": "",
+        "isLcp": true
+      }
+    ],
+    "capturedAt": "2026-04-26T18:41:14.265Z"
+  },
+  {
+    "viewport": "ipad-834x1194",
+    "fontState": "warm",
+    "qualityTier": 1,
+    "candidates": [
+      {
+        "selector": "text",
+        "elementSize": 2534,
+        "startTime": 64,
+        "resourceUrl": "",
+        "isLcp": false
+      },
+      {
+        "selector": "span.relative.top-[0.08em].pr-[0.28em].tracking-[-0.12em].text-[1.28em]",
+        "elementSize": 18747,
+        "startTime": 76,
+        "resourceUrl": "",
+        "isLcp": true
+      }
+    ],
+    "capturedAt": "2026-04-26T18:41:16.010Z"
+  },
+  {
+    "viewport": "desktop-1440x900",
+    "fontState": "warm",
+    "qualityTier": 1,
+    "candidates": [
+      {
+        "selector": "text",
+        "elementSize": 2534,
+        "startTime": 68,
+        "resourceUrl": "",
+        "isLcp": false
+      },
+      {
+        "selector": "span.relative.top-[0.08em].pr-[0.28em].tracking-[-0.12em].text-[1.28em]",
+        "elementSize": 55890,
+        "startTime": 84,
+        "resourceUrl": "",
+        "isLcp": true
+      }
+    ],
+    "capturedAt": "2026-04-26T18:41:17.723Z"
+  }
+]

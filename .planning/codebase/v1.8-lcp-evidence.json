@@ -1,0 +1,38 @@
+[
+  {
+    "viewport": "mobile-360x800",
+    "fontState": "cold",
+    "startTime": 180,
+    "selector": "span.sf-display.pointer-events-none.select-none.absolute.leading-none.-left-[calc(3*var(--sf-vw))].top-1/2.-translate-y-1/2.text-foreground/[0.04]",
+    "elementSize": 28459,
+    "resourceUrl": "",
+    "capturedAt": "2026-04-26T01:25:14.888Z"
+  },
+  {
+    "viewport": "mobile-360x800",
+    "fontState": "warm",
+    "startTime": 68,
+    "selector": "span.sf-display.pointer-events-none.select-none.absolute.leading-none.-left-[calc(3*var(--sf-vw))].top-1/2.-translate-y-1/2.text-foreground/[0.04]",
+    "elementSize": 28459,
+    "resourceUrl": "",
+    "capturedAt": "2026-04-26T01:25:15.124Z"
+  },
+  {
+    "viewport": "desktop-1440x900",
+    "fontState": "cold",
+    "startTime": 92,
+    "selector": "span.relative.top-[0.08em].pr-[0.28em].tracking-[-0.12em].text-[1.28em]",
+    "elementSize": 61560,
+    "resourceUrl": "",
+    "capturedAt": "2026-04-26T01:25:17.794Z"
+  },
+  {
+    "viewport": "desktop-1440x900",
+    "fontState": "warm",
+    "startTime": 116,
+    "selector": "span.relative.top-[0.08em].pr-[0.28em].tracking-[-0.12em].text-[1.28em]",
+    "elementSize": 61560,
+    "resourceUrl": "",
+    "capturedAt": "2026-04-26T01:25:18.078Z"
+  }
+]

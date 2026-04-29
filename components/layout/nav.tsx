@@ -107,6 +107,21 @@ const IconSignal = (props: any) => (
     <polygon points="16 2, 22 2, 16 22, 10 22" />
   </svg>
 );
+
+/**
+ * Scroll-to-top glyph — two MAX-chunk chevron BANDS pointing up. Full-width
+ * (x=0..24), 9-unit vertical thickness (~8.31 perpendicular), 1-unit inter-band
+ * gap. Slope 5/12 (22.6°) — borderline-flat but still reads as chevron, max
+ * thickness while keeping the V-cut notch at inner-apex visible.
+ *   Chev 1: apex (12, 0), outer-bot (0|24, 5), inner-apex (12, 9), inner-bot (0|24, 14)
+ *   Chev 2: apex (12, 10), outer-bot (0|24, 15), inner-apex (12, 19), inner-bot (0|24, 24)
+ */
+const IconChevronsUp = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M0 5 L12 0 L24 5 L24 14 L12 9 L0 14 Z" />
+    <path d="M0 15 L12 10 L24 15 L24 24 L12 19 L0 24 Z" />
+  </svg>
+);
 import { DarkModeToggle } from "@/components/layout/dark-mode-toggle";
 import { BorderlessToggle } from "@/components/layout/borderless-toggle";
 
@@ -180,7 +195,7 @@ function NavScrollToTop() {
         if (lenis) lenis.scrollTo(0);
         else window.scrollTo({ top: 0, behavior: "auto" });
       }}
-      className="flex items-center justify-center w-8 h-8 border-2 border-muted-foreground bg-transparent text-muted-foreground text-[var(--text-md)] font-bold hover:text-primary hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
+      className="flex items-center justify-center w-8 h-8 border-2 border-muted-foreground bg-transparent text-muted-foreground hover:text-primary hover:border-primary transition-colors duration-[var(--sfx-duration-fast)]"
       style={{
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
@@ -188,7 +203,7 @@ function NavScrollToTop() {
           "opacity var(--sfx-duration-normal) var(--sfx-ease-default), background-color var(--sfx-duration-fast) var(--sfx-ease-default), color var(--sfx-duration-fast) var(--sfx-ease-default), border-color var(--sfx-duration-fast) var(--sfx-ease-default)",
       }}
     >
-      ↑
+      <IconChevronsUp width={NAV_GLYPH_PX} height={NAV_GLYPH_PX} aria-hidden />
     </button>
   );
 }

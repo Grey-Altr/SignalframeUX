@@ -1,5 +1,4 @@
-import { test, expect } from "@playwright/test";
-import type { Page } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Phase 59 Plan B (CRT-03) — Slow-3G hard-reload CLS gate + swap-event guard.
