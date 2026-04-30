@@ -1,3 +1,41 @@
+// @path_decision: WMK-01
+//   _wmk_01_decision:
+//     decided: "2026-04-30"
+//     audit: "wordmark-hoist:maxDiffPixelRatio"
+//     original_threshold: 0.001
+//     new_threshold: 0.001  (RETAINED — Path A)
+//     rationale: |
+//       The wordmark `[data-cd-corner-panel]` is one of three system-wide
+//       trademark primitives (T1 pixel-sort, T2 nav glyph, T3 cube-tile box per
+//       feedback_trademark_primitives.md). D-12 was set at 10× stricter than
+//       AES-04 for exactly this reason — trademark fidelity drift is a BLOCK,
+//       not a tolerance. Playwright's default per-platform snapshot routing
+//       (`{name}-{projectName}-{platform}.png`) means there is NO cross-platform
+//       pixel comparison happening: each test compares only against its own
+//       platform baseline. The 8 baselines on disk (4 viewports × 2 platforms)
+//       are committed at commit 68131f6 (chromium-linux via Path N bootstrap
+//       from CI artifact, chromium-darwin via local capture at commit 34d8d4c
+//       post-vectorization). Both platform sets show 0% historical pre/post-
+//       hoist pixel diff. Loosening to AES-04's 0.5% would weaken the trademark
+//       guard 5× without measurable cross-platform variance to justify it —
+//       reality has already chosen per-platform baselines (per feedback_ratify_
+//       reality_bias.md); the threshold should ratify that reality, not loosen
+//       against it. The phrase "5× tolerance widening" in WMK-01 implies cross-
+//       platform comparison; the actual mechanism is per-platform routing, so
+//       that framing is reframed here as "retain per-platform 0.1%."
+//     evidence:
+//       - "tests/v1.8-phase63-1-wordmark-hoist.spec.ts-snapshots/ (8 PNGs at 200×40 RGB)"
+//       - ".planning/phases/63.1-lcp-fast-path-remediation/63.1-03-SUMMARY.md (D-12 0% diff post-vectorization)"
+//       - "git commit 68131f6 (chromium-linux Path N bootstrap from CI run 25136077631)"
+//       - "git commit 34d8d4c (chromium-darwin re-baseline post wordmark vectorization)"
+//     review_gate: |
+//       Loosen to 0.005 ONLY if observed CI variance exceeds 0.001 on n≥3
+//       same-code re-runs (no source change between runs, fresh CI environment).
+//       Re-evaluate during BND-05/06/07 phase if barrel reshape changes
+//       wordmark rendering path.
+//     scope: "wordmark-hoist:maxDiffPixelRatio per-platform"
+//     ratified_to_main_via: "Phase 69 (this commit)"
+//
 // Phase 63.1 Plan 03 Wave 0 — D-12 wordmark glyph fidelity spec.
 //
 // Playwright visual diff of [data-cd-corner-panel] across 4 viewports on homepage.
