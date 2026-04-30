@@ -30,3 +30,20 @@ window_start: 2026-04-30T17:12:36Z
 retention_window_minutes: 60 (Hobby tier — Path A)
 expiry_estimate: 2026-04-30T18:12:36Z
 note: "Aggregator (Task 5) MUST run before expiry_estimate. Seeder (Task 4) targets ~3min wall-clock; total cycle (seed + 30s settle + aggregate) projected to complete at ~T+5-6min, leaving ~54min slack before retention rolls."
+
+## Synthetic Seed (Plan 02 Task 4)
+
+executed: true
+seeder_started_at: 2026-04-30T17:13:00.856Z
+seeder_finished_at: 2026-04-30T17:18:18.917Z
+seeder_wall_clock_seconds: 318
+expected_sessions: 105
+successful_sessions: 105
+failed_sessions: 0
+estimated_beacons: 525
+viewports_covered: [mobile-iphone13, mobile-android, desktop-chrome]
+routes_covered: [/, /system, /init, /inventory, /reference]
+visits_per_route: 7
+settle_seconds_after: 30
+seed_log_path: .planning/perf-baselines/v1.8/vrf-05-rum-seed-log.json
+ios_cohort_seeded_count: 35 (7 visits × 5 routes × 1 mobile-iphone13 viewport — Mobile/15E148 build family)
