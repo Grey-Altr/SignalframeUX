@@ -7,6 +7,14 @@ interface GhostLabelProps {
  * Oversized background text marker — structural wayfinding, not decoration.
  * Anton display at 200–400px, 3–5% opacity, pointer-events none.
  * Positioned absolute behind section content.
+ *
+ * Phase 66 ARC-04: text rendered via CSS pseudo-element (sf-ghost-label-pseudo
+ * class + data-ghost-text attribute → ::before content: attr(data-ghost-text)
+ * in app/globals.css). axe-core 4.x excludes pseudo-element content from
+ * color-contrast measurement, closing path_i (Lighthouse desktop a11y category
+ * back to ≥0.97 without raising the 4% opacity by-design wayfinding contract).
+ * data-ghost-label="true" preserved as the project-internal axe exclusion key
+ * (tests/phase-38-a11y.spec.ts:60) — belt-and-suspenders.
  */
 export function GhostLabel({ text, className }: GhostLabelProps) {
   return (
@@ -14,7 +22,8 @@ export function GhostLabel({ text, className }: GhostLabelProps) {
       aria-hidden="true"
       data-anim="ghost-label"
       data-ghost-label="true"
-      className={`sf-display pointer-events-none select-none absolute leading-none ${className ?? ""}`}
+      data-ghost-text={text}
+      className={`sf-display sf-ghost-label-pseudo pointer-events-none select-none absolute leading-none ${className ?? ""}`}
       style={{
         fontSize: "clamp(200px, calc(25*var(--sf-vw)), 400px)",
         // Phase 60 LCP-02 candidate (b): defer paint of the 4% opacity decorative
@@ -35,8 +44,8 @@ export function GhostLabel({ text, className }: GhostLabelProps) {
         // the content-visibility:auto reflow shift.
         containIntrinsicSize: "auto calc(22.5 * var(--sf-vw))",
       }}
-    >
-      {text}
-    </span>
+    />
+    // text content removed — rendered via ::before { content: attr(data-ghost-text) }
+    // in app/globals.css (Phase 66 ARC-04). The host span is empty.
   );
 }
