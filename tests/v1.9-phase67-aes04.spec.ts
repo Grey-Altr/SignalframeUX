@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { PNG } from "pngjs";
@@ -72,7 +73,7 @@ async function readPng(p: string): Promise<PNG> {
 }
 
 async function captureAndDiff(
-  page: import("@playwright/test").Page,
+  page: Page,
   routePath: string,
   routeSlug: string,
   vpName: string,
