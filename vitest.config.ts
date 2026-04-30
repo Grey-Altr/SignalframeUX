@@ -8,7 +8,7 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, '.'),
     },
-    include: ['lib/**/*.test.ts'],
+    include: ['lib/**/*.test.ts', 'scripts/**/*.spec.ts'],
     exclude: ['node_modules', '.next', 'tests/**'],
     passWithNoTests: true,
     coverage: {
