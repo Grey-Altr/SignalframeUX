@@ -24,9 +24,9 @@
 
 ## Bundle Hygiene Continuation (BND)
 
-- [ ] **BND-05**: Bundle barrel-optimization phase ratifies breaking the D-04 chunk-id lock — D-04 chunk-id stability constraint relaxed for one phase only, then re-locked at new chunk IDs documented in updated `v1.8-lcp-diagnosis.md` successor doc.
-- [ ] **BND-06**: Homepage `/` First Load JS ≤200 KB — back toward CLAUDE.md target. Path: `optimizePackageImports` audit + `components/sf/index.ts` barrel reshape + dead code elimination on shipped-but-unconsumed surfaces. Stale-chunk guard (BND-04 carry-forward) before measurement.
-- [ ] **BND-07**: New chunk-ID baseline locked + spec ratification block — new stable IDs documented in successor to `v1.8-lcp-diagnosis.md`; LHCI bundle threshold re-tightened from path_k 260 KB toward 200 KB; `_path_k_decision` retired or replaced.
+- [x] **BND-05**: Validated (2026-04-30) — see `.planning/codebase/v1.9-bundle-reshape.md` (Phase 67 Plan 01). D-04 chunk-id lock deliberately broken via `@/components/sf` to `optimizePackageImports` + barrel DCE (SFScrollArea + SFNavigationMenu* removed); re-locked at new chunk IDs documented in successor doc; `next.config.ts` D-04 lock comment rewritten to reflect Phase 67 unlock + new lock state.
+- [x] **BND-06**: Validated (2026-04-30) — see `.planning/phases/67-bundle-barrel-optimization-d-04-unlock/67-02-FINAL-GATE.md`. Homepage `/` First Load JS = 187.6 KB gzip (12.4 KB UNDER 200 KB CLAUDE.md hard target); 27.5% reduction from 258.9 KB. Vector 1 (optimizePackageImports + DCE) delivered the win solo; Vectors 2 + 3 properly skipped at D-02 floor.
+- [x] **BND-07**: Validated (2026-04-30) — see `.planning/phases/67-bundle-barrel-optimization-d-04-unlock/67-02-FINAL-GATE.md`. New stable chunk-ID baseline locked in `v1.9-bundle-reshape.md` §2a/2b/3/4/5; D-06 outcome ladder Branch A executed — `_path_k_decision` retired entirely; `BUDGET_BYTES = 200 * 1024` restored in `tests/v1.8-phase63-1-bundle-budget.spec.ts`. LHCI thresholds unchanged per VALIDATION.md §LHCI Threshold Analysis (no LHCI threshold directly measures bundle size; bundle-budget spec is the gate).
 
 ## Test Infrastructure (TST)
 
@@ -76,9 +76,9 @@
 | ARC-02 | 66 | 01,02,03 | Validated (2026-04-30) |
 | ARC-03 | 66 | 03 | Validated-via-surrogate (2026-04-30; prod-LHCI re-run deferred via _path_m_decision) |
 | ARC-04 | 66 | 02,03 | Validated-via-surrogate (2026-04-30; prod-LHCI re-run deferred via _path_m_decision) |
-| BND-05 | 67 | TBD | Pending |
-| BND-06 | 67 | TBD | Pending |
-| BND-07 | 67 | TBD | Pending |
+| BND-05 | 67 | 01 | Validated (2026-04-30; D-04 lock deliberately broken + re-locked via v1.9-bundle-reshape.md) |
+| BND-06 | 67 | 02 | Validated (2026-04-30; 187.6 KB ≤ 200 KB hard target; -71.3 KB / 27.5% reduction) |
+| BND-07 | 67 | 01,02 | Validated (2026-04-30; chunk-ID lock doc + path_k retired + BUDGET_BYTES restored) |
 | TST-01 | 68 | 01 | Validated (2026-04-30) |
 | TST-02 | 68 | 01 | Validated (2026-04-30) |
 | WMK-01 | 69 | TBD | Pending |

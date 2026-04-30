@@ -1170,7 +1170,7 @@ Plans:
 | 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 1/3 | In Progress|  |
 | 65. Field RUM Telemetry Activation | v1.8 | DEFERRED | Migrated to v1.9 Phase 70 | — |
 | 66. ScaleCanvas Track B Architectural Decision | v1.9 | 3/3 | Complete    | 2026-04-30 |
-| 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 2/2 | Complete   | 2026-04-30 |
+| 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 2/2 | Complete    | 2026-04-30 |
 | 68. lcp-guard Structural Refactor | v1.9 | 1/1 | Complete    | 2026-04-30 |
 | 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 1/1 | Complete    | 2026-04-30 |
 | 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 4/4 | Complete    | 2026-04-30 |
