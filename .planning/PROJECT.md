@@ -117,7 +117,7 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
-(v1.8 Speed of Light shipped 2026-04-29. v1.9 milestone TBD — see CONTINUE-HERE.md for 5 carry-over backlog items.)
+(See REQUIREMENTS.md for v1.9 Architectural Lock requirements)
 
 ### Out of Scope
 
@@ -126,6 +126,36 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - CMS integration — MDX + JSON for content
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
+
+## Current Milestone: v1.9 Architectural Lock
+
+**Goal:** Discharge the v1.8 path_decision IOUs at architectural root before any external consumer ships against SignalframeUX. Close out the parked Track B decision and bring path_h/i/k/l from "ratified loosening" to "underlying fix." End with a system clean enough that the first external consumer (Culture Division portfolio site) ships against it without inheriting v1.8's path_decision pile.
+
+**Target features:**
+
+- ScaleCanvas Track B architectural decision — pillarbox vs counter-scale vs portal pick; closes path_h (mobile a11y target-size on post-transform rect) + path_i (GhostLabel color-contrast) at root; restores native 24px AA target-size on mobile without aesthetic regression
+- Bundle barrel-optimization (D-04 unlock) — deliberate barrel/import-graph reshuffle that breaks the D-04 chunk-id lock then re-locks new chunk IDs; closes path_k (homepage bundle 200→260 KB → back toward ≤200 KB target)
+- lcp-guard structural refactor — live PerformanceObserver → STRUCTURAL DOM-query test (className assertion against Phase 57 baselines); closes path_l (Chrome LCP API `.element=null` on content-visibility:auto surface)
+- Wordmark cross-platform pixel-diff alignment — D-12 0.1% → AES-04 0.5% alignment OR explicit per-platform tolerance; resolves the open question from Path N bootstrap
+- VRF-01/04/05 closure — real-device verification matrix completion (24h+ field RUM via Phase 58 `/api/vitals` route + iPhone 14 Pro variance reduction + Moto G Power 3G Fast retest after framework chunk investigation); cleans v1.8 deferred reqs
+
+**Out of scope:**
+
+- New components / tokens / aesthetic surfaces (CLAUDE.md stabilization scope still applies)
+- Localization / JFM toggles (planned post-feature-complete)
+- Petrol/steel-blue color swatch (parked 2026-04-25, awaiting confirmed hex + slot)
+- cdb-v3-dossier T3-T7 plates (separate worktree track)
+- exp/pixel-sort-transitions SPIKE-2 (separate experimental branch)
+- Stack swaps (Next.js 15.5 / Tailwind v4 / GSAP / Lenis / Three.js all locked at v1.7+v1.8 versions)
+- New runtime npm dependencies (devDeps only if needed)
+
+**Standing rules carry forward from v1.8:**
+
+- Aesthetic preservation hard constraint — `.planning/codebase/AESTHETIC-OF-RECORD.md` remains the single read-once standing-rules surface; no Chromatic re-baseline for architectural changes
+- `_path_X_decision` annotation pattern — for any new ratified loosening; pattern is for DOCUMENTED tradeoffs, not silent threshold drift
+- Single-ticker rule — any new rAF call site is a violation; use GSAP ticker or PerformanceObserver only
+- PF-04 contract — Lenis `autoResize: true` is code-of-record; do not revert under perf pressure
+- `experimental.inlineCss: true` rejected — breaks `@layer signalframeux` cascade ordering
 
 ## Context
 
@@ -302,4 +332,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-29 after v1.8 Speed of Light milestone complete (PR #4 merged 22:39:56Z, commit 2a825cf, 226 commits, 9 phases, 5 days)*
+*Last updated: 2026-04-29 after v1.8 archive + v1.9 Architectural Lock milestone defined (5 phases: 66-70)*

@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.8
-milestone_name: Speed of Light
-status: complete
+milestone: v1.9
+milestone_name: Architectural Lock
+status: planning
 last_updated: "2026-04-30T00:09:43.499Z"
-last_activity: 2026-04-29 -- v1.8 milestone archived
+last_activity: 2026-04-29 -- v1.9 milestone defined
 progress:
-  total_phases: 9
-  completed_phases: 9
-  total_plans: 23
-  completed_plans: 23
-  percent: 100
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # STATE — SignalframeUX
@@ -21,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | Planning next milestone (v1.9 TBD) |
-| Milestone | v1.8 Speed of Light — SHIPPED 2026-04-29 |
+| Current Focus | v1.9 Architectural Lock — IOU discharge + Track B closure before consumer integration |
+| Milestone | v1.9 Architectural Lock |
 
 ## Current Position
 
-Phase: — (between milestones)
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.8 archived; v1.9 not yet started
-Last activity: 2026-04-29 -- v1.8 Speed of Light milestone archived (PR #4 merged 22:39:56Z, commit 2a825cf)
+Status: Defining requirements
+Last activity: 2026-04-29 — v1.9 Architectural Lock milestone started (5 phases: 66-70)
 
 ## Progress
 
@@ -43,6 +43,7 @@ v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE —
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
 v1.8: [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
+v1.9: [░░░░░░░░░░] 0% (0/5 phases) — Architectural Lock — defining requirements
 ```
 
 ## v1.8 Phase Map
