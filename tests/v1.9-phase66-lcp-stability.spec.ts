@@ -30,7 +30,7 @@ import path from "node:path";
  * absolute-URL pattern.
  */
 
-const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3001";
+const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3000";
 
 type LcpEntry = {
   size: number;

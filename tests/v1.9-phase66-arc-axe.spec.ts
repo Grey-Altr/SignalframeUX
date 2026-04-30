@@ -31,15 +31,13 @@ import AxeBuilder from "@axe-core/playwright";
  * MUST run against `pnpm build && pnpm start` (production), to match the LHCI
  * measurement target and to avoid dev-mode injected text-overlays / probes.
  *
- * URL handling: per Plan 01/02 SUMMARY worktree-leakage discipline (Deviation 1),
- * playwright.config.ts hardcodes `baseURL: "http://localhost:3000"` and stale
- * servers from other worktrees often occupy that port. Use `CAPTURE_BASE_URL`
- * env override (default `http://localhost:3001`) and absolute `goto` calls so
- * the spec works regardless of port collisions. Pattern matches
- * tests/v1.9-phase66-pillarbox-transform.spec.ts + lcp-stability.spec.ts.
+ * URL handling: playwright.config.ts hardcodes `baseURL: "http://localhost:3000"`
+ * and CI's webServer boots on :3000. Default ABS_BASE matches CI + local default.
+ * Worktree users with port collisions can override via
+ * CAPTURE_BASE_URL=http://localhost:3001 (or any other port).
  */
 
-const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3001";
+const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3000";
 
 test.describe("@v1.9-phase66 ARC direct axe rules", () => {
   test.use({ colorScheme: "light" });
