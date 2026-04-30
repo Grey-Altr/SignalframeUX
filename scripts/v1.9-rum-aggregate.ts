@@ -44,10 +44,19 @@ import { execFileSync } from "node:child_process";
 
 export interface VercelLogLine {
   timestamp: number;
-  path: string;
+  // CLI 50.43.0 emits `requestPath` (not `path`); Drains schema emits `path`.
+  // Plan 02 Task 5 finding (2026-04-30): the v1.8 schema assumption was a
+  // pre-shipping artifact; live CLI 50.43.0 output uses `requestPath`. Type
+  // widened to accept both. Reader picks whichever is non-empty.
+  path?: string;
+  requestPath?: string;
   message: string;
   // v1.9 widens userAgent to allow array shape (Vercel Drains schema) in
   // addition to string shape (vercel logs --json CLI flatten).
+  // CLI 50.43.0 NOTE: this field is absent from `vercel logs --json` output
+  // entirely; cohort attribution from CLI is therefore impossible. Drains
+  // exports do include it. Aggregator gracefully degrades when UA missing
+  // (mobile/desktop split + iOS cohort both go to "" → unknown).
   proxy?: { userAgent?: string | string[]; region?: string };
 }
 
@@ -179,8 +188,13 @@ export function buildVercelLogsArgv(opts: {
     opts.environment,
     "--query",
     opts.query ?? "rum",
+    // CLI 50.43.0 semantics: `--limit 0` returns ZERO results (NOT unlimited).
+    // Plan 02 Task 5 finding (2026-04-30): isolated via flag-by-flag probe.
+    // 5000 is the empirically-tested ceiling that works on Hobby; sufficient
+    // for Phase 70 seed cycle (105 sessions × ~5 beacons = ~525 LCP-eligible
+    // beacons + ambient traffic). Override via opts.limit if needed.
     "--limit",
-    opts.limit ?? "0",
+    opts.limit ?? "5000",
     "--no-follow",
   ];
 }
@@ -393,8 +407,12 @@ if (isScriptMain()) {
     .map((line) => JSON.parse(line) as VercelLogLine);
 
   // 3. Inner-payload filter + cohort attribution.
+  // CLI 50.43.0 emits `requestPath`; Drains schema emits `path`. Plan 02
+  // Task 5 finding (2026-04-30): live CLI does not produce a `path` field at
+  // all, so the v1.8 filter (e.path === "/api/vitals") was matching zero
+  // envelopes against real CLI output. Reader picks whichever field is set.
   const samples: SampleWithViewport[] = envelopes
-    .filter((e) => e.path === "/api/vitals")
+    .filter((e) => (e.requestPath ?? e.path) === "/api/vitals")
     .map((e): SampleWithViewport | null => {
       try {
         const inner: unknown = JSON.parse(e.message);
