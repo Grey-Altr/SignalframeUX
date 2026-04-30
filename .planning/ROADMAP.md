@@ -10,7 +10,8 @@
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
 - [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
-- [ ] **v1.8 Speed of Light** — Phases 57-65 (active; perf-recovery to original CLAUDE.md gate — Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial; Phases 63-65 added 2026-04-27 to close v1.8-MILESTONE-AUDIT gaps before milestone close)
+- [x] **v1.8 Speed of Light** — Phases 57-65 (shipped 2026-04-29; PR #4 merged commit 2a825cf; 26/29 reqs satisfied with VRF-01/04/05 deferred to v1.9; 8 LHCI + 2 test-spec path_decisions ratified to main as standing rules)
+- [ ] **v1.9 Architectural Lock** — Phases 66-70 (active; IOU discharge of v1.8 path_h/i/k/l + ScaleCanvas Track B architectural decision + v1.8 verification closure — 14 reqs, lock-in posture before Culture Division portfolio integration)
 
 ## Phases
 
@@ -1019,7 +1020,82 @@ Plans:
   2. `scripts/v1.8-rum-seed-runner.mjs` drives ≥100 sessions against the deployed alias (smoke-tested 15/15 ok in 80s; pipeline mechanically verified at Phase 62 close).
   3. `scripts/v1.8-rum-aggregate.ts` runs *within the Hobby-tier 1h log retention window* and produces a real p75 LCP < 1000ms.
   4. `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json` committed with real (non-synthetic) p75 LCP, replacing the `_v1_9_unblock_recipe`-only stub.
-**Plans**: TBD
+**Plans**: DEFERRED to v1.9 Phase 70 (VRF-05 closure migrated forward at v1.8 archive — see v1.8-MILESTONE-SUMMARY.md)
+
+---
+
+### Phase 66: ScaleCanvas Track B Architectural Decision
+**Goal**: Pick and ship a Track B mechanism (pillarbox / counter-scale / portal) that retires the ScaleCanvas `transform: matrix(0.39,…)` post-transform a11y problem at architectural root. Closes path_h (mobile a11y target-size) + path_i (GhostLabel color-contrast) without aesthetic regression on desktop or tablet.
+**Depends on**: Nothing in v1.9. v1.8 path_decisions provide the constraint set.
+**Requirements**: ARC-01, ARC-02, ARC-03, ARC-04
+**Risk**: HIGH — ScaleCanvas is a load-bearing architectural primitive. Visual change risk on mobile. Aesthetic preservation gate (AES-04 carry-forward, ≤0.5% pixel-diff at desktop and tablet) is non-negotiable; mobile gets cohort review for "feels different" escalation.
+**Success Criteria** (what must be TRUE):
+  1. `.planning/codebase/scale-canvas-track-b-decision.md` committed with one-of-three mechanism selected (pillarbox / counter-scale / portal), 6-pillar visual audit verdict (PASS), and file:line evidence for every claim about current ScaleCanvas behavior.
+  2. ScaleCanvas no longer applies `transform: matrix(0.39,...)` below the chosen breakpoint (or applies counter-scale to a11y-relevant descendants); desktop + tablet AES-04 pixel-diff vs `.planning/visual-baselines/v1.8-start/` ≤0.5%.
+  3. Lighthouse mobile a11y category ≥0.97 on prod homepage; `path_h` ratification block removed from `.lighthouseci/lighthouserc.json`; new threshold tighter than path_h's 0.96.
+  4. Lighthouse desktop a11y category ≥0.97 on prod homepage; `path_i` ratification block removed; GhostLabel no longer surfaced to axe-core (suppression mechanism documented).
+  5. Mid-phase mobile cohort review against `.planning/visual-baselines/v1.9-pre/` baseline (captured at phase start) — no "feels different without specific code-change cause" escalation.
+**Plans**: TBD (expect 2-3 plans — mechanism selection / implementation / verification)
+
+### Phase 67: Bundle Barrel-Optimization (D-04 Unlock)
+**Goal**: Deliberately break the D-04 chunk-id stability lock for one phase, reshape the barrel/import graph + dead-code-eliminate shipped-but-unconsumed surfaces, then re-lock at new chunk IDs. Closes path_k (homepage bundle 200→260 KB) by attacking the underlying constraint.
+**Depends on**: Nothing in v1.9. Parallel-safe with Phases 68, 69, 70. **NOT parallel-safe with Phase 66** (architectural change conflicts with bundle reshape — sequential or distinct-PR-window required).
+**Requirements**: BND-05, BND-06, BND-07
+**Risk**: MEDIUM — touches `next.config.ts` + chunk-graph; chunk-id changes cascade through any downstream caches but are scoped to this phase's deliberate window.
+**Success Criteria** (what must be TRUE):
+  1. `next.config.ts` `optimizePackageImports` audit complete; barrel reshape (e.g., `components/sf/index.ts` re-export pattern) committed with chunk-id delta documented in successor to `v1.8-lcp-diagnosis.md` (`v1.9-bundle-reshape.md`).
+  2. Stale-chunk guard honored (`rm -rf .next/cache .next` before all gating measurements per BND-04 standing rule).
+  3. Homepage `/` First Load JS ≤200 KB on prod build (CLAUDE.md target restored).
+  4. New stable chunk-ID baseline locked + recorded in `v1.9-bundle-reshape.md`; `_path_k_decision` annotation block in `tests/v1.8-phase63-1-bundle-budget.spec.ts` (or successor) replaced with new threshold or retired entirely.
+  5. AES-04 pixel-diff vs `.planning/visual-baselines/v1.8-start/` ≤0.5% per page (bundle changes must be visually invisible).
+**Plans**: TBD (expect 2 plans — reshape / re-lock+gate)
+
+### Phase 68: lcp-guard Structural Refactor
+**Goal**: Replace the live PerformanceObserver-based lcp-guard test with a STRUCTURAL DOM-query test that's deterministic regardless of Chrome's `entry.element=null` quirk on `content-visibility:auto` surfaces. Closes path_l.
+**Depends on**: Nothing. Parallel-safe with all other v1.9 phases.
+**Requirements**: TST-01, TST-02
+**Risk**: LOW — single test file rewrite; no source mutations.
+**Success Criteria** (what must be TRUE):
+  1. `tests/lcp-guard.spec.ts` (or current path) rewritten as STRUCTURAL test — DOM query for the LCP candidate element (mobile=GhostLabel LEAF, desktop=hero `<h1>`/wordmark `<path>`) + className + computed-style assertions against Phase 57 baselines. NO `new PerformanceObserver(...)`. Test runs deterministic on `content-visibility:auto` surfaces.
+  2. `_path_l_decision` `test.fixme` annotation removed; lcp-guard test green on `main` and on PRs that touch GhostLabel / hero / wordmark surfaces (verified via PR with intentional regression).
+  3. AES-04 pixel-diff unchanged (no source mutation).
+**Plans**: TBD (expect 1 plan)
+
+### Phase 69: Wordmark Cross-Platform Pixel-Diff Alignment
+**Goal**: Decide and ratify the cross-platform wordmark pixel-diff threshold (D-12 0.1% retain OR loosen to AES-04 0.5%); harmonize the spec gate accordingly so chromium-darwin and chromium-linux baselines pass under unified or per-platform tolerance.
+**Depends on**: Nothing. Parallel-safe with all other v1.9 phases.
+**Requirements**: WMK-01, WMK-02
+**Risk**: LOW — spec/threshold adjustment + (optionally) regenerate baselines.
+**Success Criteria** (what must be TRUE):
+  1. Decision recorded in `_path_decision` annotation block at the wordmark spec test file: either (a) D-12 0.1% retained with documented rationale for separate darwin + linux baseline files, OR (b) loosened to AES-04 0.5% alignment with documented 5× tolerance widening.
+  2. `tests/v1.8-phase63-1-wordmark-hoist.spec.ts` (or successor) reflects WMK-01 decision; chromium-darwin + chromium-linux baselines pass under chosen tolerance on first CI run.
+  3. AES-04 pixel-diff unchanged (no source mutation).
+**Plans**: TBD (expect 1 plan)
+
+### Phase 70: v1.8 Verification Closure (VRF-01/04/05)
+**Goal**: Close v1.8's deferred VRF-01/04/05 via 24h+ field RUM accumulation on `/api/vitals` (post-PR-#4 fresh prod deploy already in place), iPhone 14 Pro variance reduction (n>10 sampling), and Moto G Power 3G Fast retest after framework chunk investigation.
+**Depends on**: Nothing structurally — wall-clock-bound only on field RUM accumulation. Parallel-safe with all other v1.9 phases (start day 1 to absorb 24h sampling window).
+**Requirements**: VRF-06, VRF-07, VRF-08
+**Risk**: LOW — measurement only; no source changes unless framework chunk investigation surfaces a fix.
+**Success Criteria** (what must be TRUE):
+  1. Field RUM ≥100 sessions captured via Phase 58 `/api/vitals` endpoint over ≥24h sampling window; aggregation script writes `.planning/perf-baselines/v1.9/rum-p75-lcp.json` with p75 LCP <1.0s.
+  2. iPhone 14 Pro 4G LTE LCP variance reduced — either (a) WPT n>10 sampling shows median <2000ms strict 4G LTE Throttled with p75 also <2000ms, OR (b) RUM-based VRF-06 sub-cohort filter for iOS shows median <2000ms strict.
+  3. Moto G Power 3G Fast LCP retest produces either (a) median <2000ms after framework chunk investigation surfaces a fix (e.g., App Router config tweak), OR (b) explicit `_path_decision` block formally moving 3G Fast to "supported but not gated" tier.
+  4. `.planning/perf-baselines/v1.9/` directory committed with all VRF-06/07/08 evidence; v1.8 deferred reqs marked Validated in PROJECT.md.
+**Plans**: TBD (expect 2-3 plans — RUM aggregation / iOS variance / 3G Fast investigation)
+
+---
+
+## v1.9 Build-Order Constraints (HARD)
+
+1. **Phase 66 ⊥ 68 ⊥ 69 ⊥ 70 (parallel-safe).** Architectural / test-refactor / wordmark-threshold / verification-closure are independent intervention surfaces.
+2. **Phase 67 NOT parallel-safe with Phase 66.** Both touch the rendered output and chunk graph; bundle reshape during architectural transform change makes regression attribution ambiguous. Sequence: 66 ships, then 67 — OR 67 ships first and 66 starts after 67 settles.
+3. **Phase 70 starts on day 1.** Field RUM 24h+ accumulation is wall-clock-bound; cannot be compressed. Triggering Phase 58 `/api/vitals` traffic at v1.9 kickoff absorbs the window in parallel to other phases.
+4. **Aesthetic preservation hard standing rule (carries forward from v1.8 AES-01..04).** AESTHETIC-OF-RECORD.md is the single read-once source. Phase 66's mobile change escalates to cohort review per AES-03; desktop + tablet must be pixel-identical (AES-04 ≤0.5%). Phase 67 + 68 + 69 + 70 must be visually invisible.
+5. **No new runtime npm dependencies.** devDeps allowed when measurement-time only (precedent: `opentype.js` v1.8). Stack swaps blocked.
+6. **`_path_X_decision` annotation pattern is the only sanctioned way to ratify a gate-loosening.** v1.9 phases close path_h/i/k/l from the v1.8 ratification list; do NOT introduce new path_decisions unless absolutely necessary, and if so, document via the standard block (decided/audit/original/new/rationale/evidence/review_gate).
+7. **Single-ticker rule (carries forward from v1.8).** Any new rAF call site is a violation. Use GSAP ticker or PerformanceObserver only.
+8. **PF-04 contract (carries forward from v1.8).** Lenis `autoResize: true` is code-of-record. Phase 66 architectural changes MUST NOT touch lenis-provider.tsx scrolling contract.
 
 ## Progress
 
@@ -1090,18 +1166,15 @@ Plans:
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
 | 63. WPT Real-Device Verification | v1.8 | 0/TBD | Not started | - |
 | 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 1/3 | In Progress|  |
-| 65. Field RUM Telemetry Activation | v1.8 | 0/TBD | Not started | - |
+| 65. Field RUM Telemetry Activation | v1.8 | DEFERRED | Migrated to v1.9 Phase 70 | — |
+| 66. ScaleCanvas Track B Architectural Decision | v1.9 | 0/TBD | Not started | — |
+| 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 0/TBD | Not started | — |
+| 68. lcp-guard Structural Refactor | v1.9 | 0/TBD | Not started | — |
+| 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 0/TBD | Not started | — |
+| 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 0/TBD | Not started | — |
 
 ---
 
-## v1.8 Build-Order Constraints (HARD)
+> **v1.8 Build-Order Constraints (archived):** see `.planning/milestones/v1.8-ROADMAP.md` for the historical Phase 57-65 dependency chain and gap-closure rationale (Phases 63-65 added 2026-04-27 by `/pde:plan-milestone-gaps`; Phase 65 migrated forward to v1.9 Phase 70 at archive). All v1.8 standing rules (AES-01..04, single-ticker, PF-04, no-runtime-dep) carry forward into v1.9 — see "v1.9 Build-Order Constraints (HARD)" above.
 
-1. **Phase 57 is HARD prerequisite for all other phases.** LCP element identity (DGN-01) and per-chunk owner attribution (DGN-02) must be confirmed before any optimization commits. Phase 60 plan shape is contingent on DGN-01 output.
-2. **Phase 58 MUST land before Phase 59.** Phase 59 touches the CLS-protection contract (HIGH RISK). Without LHCI gate, regressions caught only at end-milestone.
-3. **AES-01 (AESTHETIC-OF-RECORD.md) is documented in Phase 57; AES-02..04 are cross-cutting standing rules** referenced by every subsequent phase rather than mapped to their own phase. Single-source traceability — see Phase 57 cross-cutting note.
-4. **Phase 60 ⊥ Phase 61 (parallel-safe).** Both depend on Phase 57 audit output, neither on the other. If executed in parallel, separate plans within each phase, not interleaved.
-5. **Phase 59 expects >=3 plans per CRT-05** for clean bisect: sync-script PR, Anton (subset+swap) PR, Lenis PR. Plan-phase must not collapse to a single PR.
-6. **Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60**, not deferred to phase end. RUM 75th-percentile sampling (VRF-05) needs >=24h post-deploy → may extend milestone closure timing.
-7. **Gap-closure dependency chain (Phases 63-65, added 2026-04-27).** Phase 63 (WPT) is independent — runs anytime once `~/.wpt-api-key` is provisioned. Phase 64 (Bisect Protection + 3-PR Ship) MUST precede Phase 65 because Phase 65 (Field RUM) requires `chore/v1.7-ratification` to be merged to `main` so the CIB-05 `/api/vitals` route ships in the fresh prod deploy. Phases 63 ⊥ 64 (parallel-safe). Phase 64 → Phase 65 (strict order).
-
-*Last updated: 2026-04-28 — `/pde:plan-milestone-gaps` rev-3 amended Phase 64 scope to absorb `63.1-COHORT.md §7` carry-over #1 (Pitfall #10 synthetic baseline recalibration / D-09 successor); carry-overs #2/#3/#4 explicitly deferred to v1.9 (Option C lock-in posture). 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original roadmap: 2026-04-25 from research/SUMMARY.md and 26 v1.8 requirements (later recounted to 29).*
+*Last updated: 2026-04-29 — v1.8 Speed of Light archived; v1.9 Architectural Lock kicked off with Phases 66-70 (14 reqs across ARC×4 / BND×3 / TST×2 / WMK×2 / VRF×3); IOU-discharge posture per `project_overdue_lockin_mode.md`. v1.8 archived ROADMAP at `.planning/milestones/v1.8-ROADMAP.md`.*
