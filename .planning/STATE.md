@@ -27,9 +27,9 @@ progress:
 
 ## Current Position
 
-Phase: 68
-Plan: Not started
-Status: Executing Phase 67
+Phase: —
+Plan: —
+Status: v1.9 feature-complete (5/5 phases shipped 2026-04-30); awaiting `/pde:complete-milestone v1.9`
 Last activity: 2026-04-30
 
 ## Progress
@@ -44,7 +44,7 @@ v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE —
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
 v1.8: [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
-v1.9: [░░░░░░░░░░] 0% (0/5 phases) — Architectural Lock — defining requirements
+v1.9: [██████████] 100% (5/5 phases / 11 plans) — feature-complete 2026-04-30; awaiting milestone close
 ```
 
 ## v1.8 Phase Map

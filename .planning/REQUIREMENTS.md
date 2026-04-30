@@ -35,8 +35,8 @@
 
 ## Wordmark Cross-Platform Threshold (WMK)
 
-- [ ] **WMK-01**: D-12 wordmark pixel-diff threshold decided — either retain 0.1% strict (and document why darwin/linux baselines need separate snapshot files) OR loosen to AES-04 0.5% alignment (and document the 5× tolerance widening). Decision recorded in `_path_decision` annotation block.
-- [ ] **WMK-02**: Wordmark spec test gate harmonized with chosen threshold — `tests/v1.8-phase63-1-wordmark-hoist.spec.ts` (or successor) reflects WMK-01 decision; chromium-darwin and chromium-linux baselines pass under unified or per-platform tolerance.
+- [x] **WMK-01** Validated (2026-04-30) — see `tests/v1.8-phase63-1-wordmark-hoist.spec.ts:1-37` (`_wmk_01_decision` 7-field block) + `.planning/phases/69-wordmark-cross-platform-pixel-diff-alignment/69-VERIFICATION.md`. Path A retained: `maxDiffPixelRatio: 0.001` per-platform. Rationale documents per-platform routing reframe (Playwright's `{name}-{projectName}-{platform}.png` template means each test compares only against its own-platform baseline; "5× tolerance widening" reframed as "retain per-platform 0.1%"). Original: D-12 wordmark pixel-diff threshold decided — either retain 0.1% strict (and document why darwin/linux baselines need separate snapshot files) OR loosen to AES-04 0.5% alignment (and document the 5× tolerance widening). Decision recorded in `_path_decision` annotation block.
+- [x] **WMK-02** Validated (2026-04-30) — see `tests/v1.8-phase63-1-wordmark-hoist.spec.ts:109` + `.planning/phases/69-wordmark-cross-platform-pixel-diff-alignment/69-VERIFICATION.md`. `maxDiffPixelRatio: 0.001` retained semantically agreeing with `new_threshold: 0.001`. Local darwin self-pass 5/5 in 3.3s; CI run 25184610878 against headSha c2f9d73 reports `conclusion=success` on ubuntu-latest (chromium-linux baselines exercised). Original: Wordmark spec test gate harmonized with chosen threshold — `tests/v1.8-phase63-1-wordmark-hoist.spec.ts` (or successor) reflects WMK-01 decision; chromium-darwin and chromium-linux baselines pass under unified or per-platform tolerance.
 
 ## v1.8 Verification Closure (VRF — continuing from v1.8 VRF-01..05)
 
@@ -81,8 +81,8 @@
 | BND-07 | 67 | 01,02 | Validated (2026-04-30; chunk-ID lock doc + path_k retired + BUDGET_BYTES restored) |
 | TST-01 | 68 | 01 | Validated (2026-04-30) |
 | TST-02 | 68 | 01 | Validated (2026-04-30) |
-| WMK-01 | 69 | TBD | Pending |
-| WMK-02 | 69 | TBD | Pending |
+| WMK-01 | 69 | 01 | Validated (2026-04-30; Path A retained — per-platform 0.001 routing reframe) |
+| WMK-02 | 69 | 01 | Validated (2026-04-30; CI run 25184610878 success on ubuntu-latest, local darwin 5/5) |
 | VRF-06 | 70 | 02 | Validated (2026-04-30; p75 LCP=264ms, n=800, synthetic-seeded) |
 | VRF-07 | 70 | 02 | Validated-via-deferral (2026-04-30; iOS sub-cohort INSUFFICIENT_SAMPLES; carry-forward to natural-traffic accumulation) |
 | VRF-08 | 70 | 03 | Validated-via-path_b (2026-04-30; 3G Fast moved to "supported but not gated" tier; review_gate post-Phase-67) |

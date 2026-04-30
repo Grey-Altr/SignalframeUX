@@ -11,7 +11,7 @@
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
 - [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
 - [x] **v1.8 Speed of Light** — Phases 57-65 (shipped 2026-04-29; PR #4 merged commit 2a825cf; 26/29 reqs satisfied with VRF-01/04/05 deferred to v1.9; 8 LHCI + 2 test-spec path_decisions ratified to main as standing rules)
-- [ ] **v1.9 Architectural Lock** — Phases 66-70 (active; IOU discharge of v1.8 path_h/i/k/l + ScaleCanvas Track B architectural decision + v1.8 verification closure — 14 reqs, lock-in posture before Culture Division portfolio integration)
+- [x] **v1.9 Architectural Lock** — Phases 66-70 (feature-complete 2026-04-30; 14/14 reqs Validated — 4 ARC + 3 BND + 2 TST + 2 WMK + 3 VRF; IOU-discharge of v1.8 path_h/i/k/l + ScaleCanvas Track B + v1.8 verification closure; awaiting `/pde:complete-milestone v1.9`)
 
 ## Phases
 
