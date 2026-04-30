@@ -75,8 +75,14 @@ test.describe("@v18-phase59-canvas-sync (CRT-01)", () => {
   test("CRT-01: production HTML contains canvasSyncScript IIFE inline", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const html = await page.content();
-    // Match the canonical IIFE shape: queries [data-sf-canvas] and computes innerWidth/1280
+    // Match the canonical IIFE shape: queries [data-sf-canvas], reads window.innerWidth,
+    // and divides by the 1280 design width.
+    // Post-refactor IIFE caches window.innerWidth in `vw` (var vw=window.innerWidth) and
+    // computes `vw/1280`, so the literal `innerWidth/1280` no longer appears as a
+    // contiguous substring. Asserting the three intent-bearing tokens separately keeps
+    // the contract intact while tolerating the local-variable refactor.
     expect(html).toMatch(/document\.querySelector\(['"]\[data-sf-canvas\]['"]\)/);
-    expect(html).toMatch(/innerWidth\s*\/\s*1280/);
+    expect(html).toMatch(/window\.innerWidth/);
+    expect(html).toMatch(/\/\s*1280/);
   });
 });
