@@ -30,8 +30,8 @@
 
 ## Test Infrastructure (TST)
 
-- [ ] **TST-01**: `lcp-guard.spec.ts` rewritten as STRUCTURAL test — DOM query for the LCP candidate element (GhostLabel LEAF, hero h1, or wordmark `<path>`) + className assertion against Phase 57 baselines. NO live PerformanceObserver. Test runs deterministic regardless of Chrome's `entry.element=null` quirk on `content-visibility:auto` surfaces.
-- [ ] **TST-02**: `path_l_decision` `test.fixme` annotation removed; lcp-guard test green on main + on PRs that touch GhostLabel / hero / wordmark surfaces.
+- [x] **TST-01** Validated (2026-04-30) — see `tests/v1.8-phase58-lcp-guard.spec.ts` (structural DOM test; PerformanceObserver removed; closes path_l). Original: `lcp-guard.spec.ts` rewritten as STRUCTURAL test — DOM query for the LCP candidate element (GhostLabel LEAF, hero h1, or wordmark `<path>`) + className assertion against Phase 57 baselines. NO live PerformanceObserver. Test runs deterministic regardless of Chrome's `entry.element=null` quirk on `content-visibility:auto` surfaces.
+- [x] **TST-02** Validated (2026-04-30) — `_path_l_decision` test.fixme removed; spec runs deterministic on content-visibility:auto surfaces. Original: `path_l_decision` `test.fixme` annotation removed; lcp-guard test green on main + on PRs that touch GhostLabel / hero / wordmark surfaces.
 
 ## Wordmark Cross-Platform Threshold (WMK)
 
@@ -79,8 +79,8 @@
 | BND-05 | 67 | TBD | Pending |
 | BND-06 | 67 | TBD | Pending |
 | BND-07 | 67 | TBD | Pending |
-| TST-01 | 68 | TBD | Pending |
-| TST-02 | 68 | TBD | Pending |
+| TST-01 | 68 | 01 | Validated (2026-04-30) |
+| TST-02 | 68 | 01 | Validated (2026-04-30) |
 | WMK-01 | 69 | TBD | Pending |
 | WMK-02 | 69 | TBD | Pending |
 | VRF-06 | 70 | 02 | Validated (2026-04-30; p75 LCP=264ms, n=800, synthetic-seeded) |
