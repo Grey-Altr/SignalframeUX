@@ -1167,7 +1167,7 @@ Plans:
 | 63. WPT Real-Device Verification | v1.8 | 0/TBD | Not started | - |
 | 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 1/3 | In Progress|  |
 | 65. Field RUM Telemetry Activation | v1.8 | DEFERRED | Migrated to v1.9 Phase 70 | — |
-| 66. ScaleCanvas Track B Architectural Decision | v1.9 | 1/3 | In Progress|  |
+| 66. ScaleCanvas Track B Architectural Decision | v1.9 | 2/3 | In Progress|  |
 | 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 0/TBD | Not started | — |
 | 68. lcp-guard Structural Refactor | v1.9 | 0/TBD | Not started | — |
 | 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 0/TBD | Not started | — |
