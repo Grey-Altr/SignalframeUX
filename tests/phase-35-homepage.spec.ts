@@ -49,9 +49,15 @@ test.describe("@phase35 homepage / — Agent 1", () => {
       });
 
       // ── GhostLabel THESIS location lock ─────────────────────────────────
+      // Phase 66 ARC-04 moved the GhostLabel text from direct HTML content to a
+      // ::before pseudo-element (axe-core color-contrast fix). Playwright's
+      // `hasText` does not see pseudo-element content, so the prior selector
+      // (filter hasText "THESIS") finds zero sections. Anchor on the section's
+      // data-section attribute (set in app/page.tsx:80 — `data-section="thesis"`)
+      // which is the stable structural identifier.
       test("GhostLabel: locked to THESIS section", async ({ page }) => {
         await page.goto("/");
-        const thesisSection = page.locator("section").filter({ hasText: "THESIS" }).first();
+        const thesisSection = page.locator('section[data-section="thesis"]');
         await expect(thesisSection).toBeVisible();
         const ghostLabel = thesisSection.locator('[data-ghost-label="true"]');
         await expect(ghostLabel).toHaveCount(1);
