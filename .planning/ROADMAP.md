@@ -1059,7 +1059,8 @@ Plans:
   1. `tests/lcp-guard.spec.ts` (or current path) rewritten as STRUCTURAL test — DOM query for the LCP candidate element (mobile=GhostLabel LEAF, desktop=hero `<h1>`/wordmark `<path>`) + className + computed-style assertions against Phase 57 baselines. NO `new PerformanceObserver(...)`. Test runs deterministic on `content-visibility:auto` surfaces.
   2. `_path_l_decision` `test.fixme` annotation removed; lcp-guard test green on `main` and on PRs that touch GhostLabel / hero / wordmark surfaces (verified via PR with intentional regression).
   3. AES-04 pixel-diff unchanged (no source mutation).
-**Plans**: TBD (expect 1 plan)
+**Plans**: 1 plan
+- [ ] 68-01-PLAN.md — Rewrite tests/v1.8-phase58-lcp-guard.spec.ts as structural DOM test; remove _path_l_decision test.fixme
 
 ### Phase 69: Wordmark Cross-Platform Pixel-Diff Alignment
 **Goal**: Decide and ratify the cross-platform wordmark pixel-diff threshold (D-12 0.1% retain OR loosen to AES-04 0.5%); harmonize the spec gate accordingly so chromium-darwin and chromium-linux baselines pass under unified or per-platform tolerance.
