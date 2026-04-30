@@ -72,10 +72,10 @@
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| ARC-01 | 66 | TBD | Pending |
-| ARC-02 | 66 | TBD | Pending |
-| ARC-03 | 66 | TBD | Pending |
-| ARC-04 | 66 | TBD | Pending |
+| ARC-01 | 66 | 01 | Validated (2026-04-30) |
+| ARC-02 | 66 | 01,02,03 | Validated (2026-04-30) |
+| ARC-03 | 66 | 03 | Validated-via-surrogate (2026-04-30; prod-LHCI re-run deferred via _path_m_decision) |
+| ARC-04 | 66 | 02,03 | Validated-via-surrogate (2026-04-30; prod-LHCI re-run deferred via _path_m_decision) |
 | BND-05 | 67 | TBD | Pending |
 | BND-06 | 67 | TBD | Pending |
 | BND-07 | 67 | TBD | Pending |
