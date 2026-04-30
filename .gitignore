@@ -68,6 +68,10 @@ test-results/
 # Claude Code runtime locks
 .claude/scheduled_tasks.lock
 
+# PDE agent worktrees — ephemeral isolated copies, never tracked
+# (build tools should not scan them either; see app/globals.css source allowlist)
+.claude/worktrees/
+
 # Handoff scratch — per-session cc-* handoff artifacts (keep STATUS.md tracked)
 .handoffs/cc-*.md
 .handoffs/cc-*.ctx
