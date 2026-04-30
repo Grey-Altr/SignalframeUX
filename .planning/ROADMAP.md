@@ -1071,7 +1071,8 @@ Plans:
   1. Decision recorded in `_path_decision` annotation block at the wordmark spec test file: either (a) D-12 0.1% retained with documented rationale for separate darwin + linux baseline files, OR (b) loosened to AES-04 0.5% alignment with documented 5× tolerance widening.
   2. `tests/v1.8-phase63-1-wordmark-hoist.spec.ts` (or successor) reflects WMK-01 decision; chromium-darwin + chromium-linux baselines pass under chosen tolerance on first CI run.
   3. AES-04 pixel-diff unchanged (no source mutation).
-**Plans**: TBD (expect 1 plan)
+**Plans**: 1 plan
+- [ ] 69-01-PLAN.md — Author _wmk_01_decision block + verify cross-platform threshold via local darwin self-pass + first ubuntu-latest CI green
 
 ### Phase 70: v1.8 Verification Closure (VRF-01/04/05)
 **Goal**: Close v1.8's deferred VRF-01/04/05 via 24h+ field RUM accumulation on `/api/vitals` (post-PR-#4 fresh prod deploy already in place), iPhone 14 Pro variance reduction (n>10 sampling), and Moto G Power 3G Fast retest after framework chunk investigation.
@@ -1171,7 +1172,7 @@ Plans:
 | 66. ScaleCanvas Track B Architectural Decision | v1.9 | 3/3 | Complete    | 2026-04-30 |
 | 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 0/TBD | Not started | — |
 | 68. lcp-guard Structural Refactor | v1.9 | 1/1 | Complete    | 2026-04-30 |
-| 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 0/TBD | Not started | — |
+| 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 0/1 | Planned    | — |
 | 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 4/4 | Complete    | 2026-04-30 |
 
 ---
