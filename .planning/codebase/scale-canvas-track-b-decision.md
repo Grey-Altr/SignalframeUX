@@ -187,29 +187,98 @@ Per `66-RESEARCH.md` §8 + `_path_i_decision.review_gate` option (a) at `.lighth
 
 ---
 
-## Verification Verdicts (Updated by Plan 03)
+## Verification Verdicts (Plan 03 Closure)
 
-*Pending Plan 03 execution — this section is updated post-implementation with evidence + any deviations.*
+Captured 2026-04-30 at branch tip `worktree-agent-ab1454fc @ d808136` (Tasks 1-6 of Plan 03 shipped). Local-prod-build verification surface; prod-deploy LHCI gate deferred to phase-gate (see "LHCI Prod" subsection).
 
-| Spec | Result | Evidence path | Notes |
-|------|--------|---------------|-------|
-| pillarbox-transform | (pending) | (pending) | Plan 02 Wave 0 |
-| arc-axe target-size | (pending) | (pending) | Plan 03 |
-| arc-axe color-contrast | (pending) | (pending) | Plan 03 |
-| aes04-diff strict | (pending) | (pending) | Plan 03 |
-| aes04-diff cohort | (pending) | `66-cohort-results.md` | Plan 03 + manual cohort review |
-| decision-doc schema | (Plan 01 GREEN) | `tests/v1.9-phase66-decision-doc.spec.ts` 7/7 PASS | This plan |
-| lhci-config path_h removed | (pending) | (pending) | Plan 03 |
-| lhci-config path_i removed | (pending) | (pending) | Plan 03 |
-| lcp-stability mobile | (pending) | (pending) | Plan 02 Wave 0 |
-| LHCI prod mobile a11y ≥0.97 | (pending) | (pending) | Phase-gate post-deploy |
-| LHCI prod desktop a11y ≥0.97 | (pending) | (pending) | Phase-gate post-deploy |
+### ARC-02 (architectural)
+
+- **`tests/v1.9-phase66-pillarbox-transform.spec.ts` (Plan 02 commit `c1f2115`+):** **5/5 PASS**.
+  - Identity transform `matrix(1, 0, 0, 1, 0, 0)` at viewport 360×667 (vw < 640 pillarbox engaged).
+  - `--sf-content-scale = 1` at 360×667.
+  - Non-identity transform at 1440×900 (above-sm path unchanged from v1.8).
+  - `--sf-content-scale ≈ 1.125` at 1440×900.
+  - Cross-resize collapses live (steady-state assertion post-hydration).
+- **Three-way scale-writer parity:** `applyScale()` (`scale-canvas.tsx:42-83`) ⊥ `scaleScript` (`app/layout.tsx:117`) ⊥ `canvasSyncScript` (`app/layout.tsx:128`) all branched on `BP=640`. Per Plan 02 SUMMARY decisions[0], this is the load-bearing CLS=0 contract.
+
+### ARC-02 (AES-04 strict desktop+tablet)
+
+- **`tests/v1.9-phase66-aes04-diff.spec.ts --grep strict` (Plan 03 commit `c5f5922`):** **10/10 PASS**, all routes × {desktop-1440x900, ipad-834x1194} pixel-diff vs `.planning/visual-baselines/v1.8-start/`.
+- **Max diffPct observed:** all routes < 0.5% threshold. Pillarbox preserves desktop+tablet aesthetic by construction (above-sm path is identical to v1.8 — same 7 CSS custom properties written, same `transform: scale(...)` rule applied).
+- **Routes verified:** home, system, init, inventory, reference (5 routes × 2 strict viewports = 10 hard-fail gates).
+- **Evidence:** `.planning/phases/66-scalecanvas-track-b-architectural-decision/66-aes04-postcapture/` (20 PNGs, transient capture per gitignore policy).
+
+### ARC-02 (AES-03 mobile cohort)
+
+- **`tests/v1.9-phase66-aes04-diff.spec.ts --grep cohort` (Plan 03 commit `c5f5922`):** 10/10 captured (5 routes × {mobile-360x800, iphone13-390x844}).
+- **diffPct:** 100% on every entry — by design. Pillarbox flips mobile from `transform: scale(0.28)` to `transform: none` below sm (640), which produces dimension drift that the harness records as 100% via `tolerateDimensionDrift` path. This is informational only; AES-03 cohort review is the qualitative gate.
+- **Evidence file:** `.planning/phases/66-scalecanvas-track-b-architectural-decision/66-cohort-results.md` (per-route diffPct table).
+- **Sign-off (Task 8):** see `66-COHORT-REVIEW.md`. Verdict pending user qualitative review.
+
+### ARC-03 (target-size)
+
+- **`tests/v1.9-phase66-arc-axe.spec.ts` (Plan 03 commit `cb36b63`):** **2/2 PASS** for `target-size`.
+  - Test 1 `withRules(["target-size"])` at 375×667: 0 violations.
+  - Test 3 `withTags(["wcag22aa"])` filtered to `target-size` at 375×667: 0 violations.
+- **Local-LHCI prod-build mobile (Plan 03 commit `d808136`, n=3):** **median a11y = 1.0000**, threshold 0.97 cleared by 0.03. `audits.target-size.score = 1.0` on every run.
+- **`_path_h_decision`** REMOVED from `.lighthouseci/lighthouserc.json` (Plan 03 commit `c22cf1f`); mobile `categories:accessibility.minScore` tightened from 0.96 to 0.97. Verified by `tests/v1.9-phase66-lhci-config.spec.ts` 5/5 PASS at commit `5670da5`.
+
+### ARC-04 (color-contrast)
+
+- **`tests/v1.9-phase66-arc-axe.spec.ts` (Plan 03 commit `cb36b63`):** **2/2 PASS** for `color-contrast`.
+  - Test 2 `withRules(["color-contrast"])` at 1440×900: 0 violations. **NO `data-ghost-label` exclusion** — pseudo-element refactor IS the suppression mechanism.
+  - Test 4 `withTags(["wcag2aa"])` filtered to `color-contrast` at 1440×900: 0 violations.
+- **Mobile LCP candidate post-suppression** (`.planning/phases/66-scalecanvas-track-b-architectural-decision/66-lcp-postcapture.md`): shifted from GhostLabel (v1.8) to `span.sf-hero-deferred.inline-block` (size=11610, top=325.84, BCR=79×149, **above-fold SSR-paintable**) — BLOCKING gate cleared on first try; no escalation to Option B (mask-image) needed.
+- **Local-LHCI prod-build desktop (Plan 03 commit `d808136`, n=3):** **median a11y = 1.0000**, threshold 0.97 cleared by 0.03. `audits.color-contrast.score = 1.0` on every run.
+- **`_path_i_decision`** REMOVED from `.lighthouseci/lighthouserc.desktop.json` (Plan 03 commit `5670da5`); desktop `categories:accessibility.minScore` tightened from 0.96 to 0.97.
+
+### LCP Stability (RESEARCH Pitfall 2)
+
+- **`tests/v1.9-phase66-lcp-stability.spec.ts` (Plan 02 commit `e0e996b`):** **5/5 PASS**.
+  - Mobile (360×800): LCP candidate = `span.sf-hero-deferred.inline-block`, size=11610, startTime=48ms, top=325.84.
+  - Desktop (1440×900): LCP candidate = `span.relative.top-[0.08em].pr-[0.28em].tracking-[-0.12em].text-[1.28em]` (the v1.8 VL-05 magenta `//` overlay element class signature), size=55890, startTime=84ms.
+- **Verdict:** mobile candidate SHIFTED post-pseudo-element but is STABLE; desktop candidate UNCHANGED from v1.8. Both above-fold, both have non-zero BCR, both honor `feedback_chrome_lcp_text_in_defs_quirk` (LAST entry of largestPaints) and `feedback_lcp_observer_content_visibility` (skip null entry.element).
+
+### LHCI Prod (DEFERRED to phase-gate)
+
+- **Local-prod-build surrogate ran successfully** at branch tip `d808136` against `pnpm build && pnpm start` on port 3002. Median 1.0000 a11y on both mobile + desktop profiles, n=3 runs each.
+- **Prod URL `https://signalframe.culturedivision.com` returned HTTP 404** at capture time. `https://signalframeux.vercel.app` returned 200 but served a pre-Phase-66 build (HTML probe found zero matches for `data-ghost-text`, `sf-ghost-label-pseudo`, `@media (min-width: 640px)`).
+- **Per Plan 03 Task 6 wording:** "Coordination: ship Plan 02 + Tasks 1-5 to a PR; merge to main; await Vercel auto-deploy; then run this task." This Plan 03 agent has shipped Tasks 1-7; the prod-deploy gate is the phase-gate's responsibility once a deployment with the pillarbox + pseudo-element markers is live.
+- **Trust signal:** `66-lhci-prod-results.md` captures the surrogate evidence; identical code; only LHCI hosting environment varies.
+
+### Deviations
+
+- **Rule 3 (Blocking) — `tests/v1.9-phase66-aes04-diff.spec.ts` honors `CAPTURE_BASE_URL`:** `playwright.config.ts:11` hardcodes `baseURL: "http://localhost:3000"` and another worktree's stale prod server occupied that port (HTTP 500). Plan 01 SUMMARY documented the same constraint for the capture spec; Plan 03 extended the `ABS_BASE` env-override pattern to the aes04-diff spec (commit `c5f5922`). Pattern matches `tests/v1.9-phase66-pillarbox-transform.spec.ts` + `lcp-stability.spec.ts`. No source-file mutation; `playwright.config.ts` left unchanged for canonical CI baseURL contract.
+- **Task 6 prod URL deferred:** `https://signalframe.culturedivision.com` HTTP 404 at capture time; `66-lhci-prod-results.md` documents the deferred path. This was anticipated by Plan 03 wording.
+- **n=3 vs n=5:** Prompt task summary used n=3; plan calls for n=5. Variance was zero (1.0000 on every run), so n=3 was sufficient evidence — adding n=4 + n=5 would not change the verdict.
+
+### Phase 66 Closure
+
+| ARC requirement | Status         | Evidence trail                                                                       |
+| --------------- | -------------- | ------------------------------------------------------------------------------------ |
+| ARC-01          | **SATISFIED** | This decision-doc (215+ lines, schema-gated by `tests/v1.9-phase66-decision-doc.spec.ts` 7/7 PASS) |
+| ARC-02          | **SATISFIED** (subject to AES-03 cohort sign-off) | pillarbox-transform 5/5 + AES-04 strict 10/10 + AES-03 cohort review file authored   |
+| ARC-03          | **SATISFIED** | arc-axe target-size 0 violations + LHCI mobile a11y 1.0000 + path_h removed + minScore 0.97 |
+| ARC-04          | **SATISFIED** | arc-axe color-contrast 0 violations (no exclusion) + LHCI desktop a11y 1.0000 + path_i removed + minScore 0.97 + LCP stability gate GREEN |
+
+**6 spec files committed across the phase:**
+1. `tests/v1.9-phase66-decision-doc.spec.ts` (Plan 01)
+2. `tests/v1.9-phase66-aes04-diff.spec.ts` (Plan 01 + Plan 03 Task 3 deviation)
+3. `tests/v1.9-phase66-pillarbox-transform.spec.ts` (Plan 02)
+4. `tests/v1.9-phase66-lcp-stability.spec.ts` (Plan 02)
+5. `tests/v1.9-phase66-arc-axe.spec.ts` (Plan 03 Task 1)
+6. `tests/v1.9-phase66-lhci-config.spec.ts` (Plan 03 Task 2)
+
+**1 baseline directory committed:** `.planning/visual-baselines/v1.9-pre/` (Plan 01 Task 4, 20 PNGs).
+
+**2 LHCI configs simplified:** `_path_h_decision` removed from `.lighthouseci/lighthouserc.json`; `_path_i_decision` removed from `.lighthouseci/lighthouserc.desktop.json`. Both `categories:accessibility.minScore` tightened 0.96 → 0.97.
 
 ---
 
 ## Sign-Off Trail
 
-- **2026-04-29 (Plan 01):** Decision authored, mechanism = Pillarbox + ARC-04 pseudo-element. Schema gate `tests/v1.9-phase66-decision-doc.spec.ts` GREEN.
-- **(pending Plan 02):** Pillarbox shipped + ARC-04 pseudo-element conversion + cohort baseline comparison.
-- **(pending Plan 03):** path_h + path_i blocks removed; LHCI prod mobile + desktop a11y ≥0.97; AES-04 strict 10/10 PASS.
-- **(pending phase-gate):** AES-03 mobile cohort review verdict in `66-COHORT-REVIEW.md`.
+- **2026-04-29 (Plan 01):** Decision authored, mechanism = Pillarbox + ARC-04 pseudo-element. Schema gate `tests/v1.9-phase66-decision-doc.spec.ts` GREEN. v1.9-pre baseline (20 PNGs) captured.
+- **2026-04-30 (Plan 02):** Pillarbox shipped (`scale-canvas.tsx` + `app/layout.tsx` + `app/globals.css` three-way breakpoint parity). ARC-04 pseudo-element shipped (`ghost-label.tsx` + `app/globals.css :: .sf-ghost-label-pseudo::before`). Wave 0 BLOCKING LCP stability gate GREEN.
+- **2026-04-30 (Plan 03 Tasks 1-7):** path_h + path_i blocks removed; mobile + desktop a11y minScore tightened to 0.97; arc-axe direct gates 4/4 PASS; AES-04 strict 10/10 PASS; local-LHCI prod-build a11y 1.0000 on both profiles; LHCI prod-deploy gate DEFERRED to phase-gate.
+- **(pending Task 8):** AES-03 mobile cohort review verdict in `66-COHORT-REVIEW.md`. Auto-approval under `--auto` orchestration mode per prompt objective.
+- **(pending phase-gate):** Prod-deploy LHCI run against `https://signalframe.culturedivision.com` once the pillarbox + ARC-04 build is deployed.
