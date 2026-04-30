@@ -23,3 +23,10 @@ smoke_test_response_body: {"ok":true}
 smoke_test_timestamp: 2026-04-30T17:12:01Z
 smoke_test_method: POST /api/vitals
 worktree_link_note: ".vercel/{project.json,README.txt} replicated from parent repo (worktree was unlinked); CLI now resolves project context correctly."
+
+## Window Anchor (Plan 02 Task 3)
+
+window_start: 2026-04-30T17:12:36Z
+retention_window_minutes: 60 (Hobby tier — Path A)
+expiry_estimate: 2026-04-30T18:12:36Z
+note: "Aggregator (Task 5) MUST run before expiry_estimate. Seeder (Task 4) targets ~3min wall-clock; total cycle (seed + 30s settle + aggregate) projected to complete at ~T+5-6min, leaving ~54min slack before retention rolls."
