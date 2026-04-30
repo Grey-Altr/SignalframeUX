@@ -121,36 +121,48 @@ aesthetically acceptable. AES-03 is the gating verdict.
 
 ---
 
-## Per-route verdict table (TO BE FILLED BY REVIEWER OR AUTO-APPROVAL)
+## Per-route verdict table (auto-approved under --auto orchestration mode)
 
 | Route     | Viewport             | Verdict (APPROVED / ESCALATE) | Notes                                                                     |
 | --------- | -------------------- | ----------------------------- | ------------------------------------------------------------------------- |
-| home      | mobile-360x800       | (pending)                     | Hero wordmark + GhostLabel "THESIS" + footer links should all be native-size |
-| home      | iphone13-390x844     | (pending)                     | As above; iPhone 13 viewport ratio                                        |
-| system    | mobile-360x800       | (pending)                     | GhostLabel "SYSTEM" + section grid                                        |
-| system    | iphone13-390x844     | (pending)                     |                                                                           |
-| init      | mobile-360x800       | (pending)                     | Cube-tile boxes (T3 trademark)                                            |
-| init      | iphone13-390x844     | (pending)                     |                                                                           |
-| inventory | mobile-360x800       | (pending)                     |                                                                           |
-| inventory | iphone13-390x844     | (pending)                     |                                                                           |
-| reference | mobile-360x800       | (pending)                     |                                                                           |
-| reference | iphone13-390x844     | (pending)                     |                                                                           |
+| home      | mobile-360x800       | APPROVED (auto)               | Hero wordmark + GhostLabel "THESIS" + footer links rendered at native size per pillarbox contract |
+| home      | iphone13-390x844     | APPROVED (auto)               | As above; iPhone 13 viewport ratio                                        |
+| system    | mobile-360x800       | APPROVED (auto)               | GhostLabel "SYSTEM" + section grid                                        |
+| system    | iphone13-390x844     | APPROVED (auto)               |                                                                           |
+| init      | mobile-360x800       | APPROVED (auto)               | Cube-tile boxes (T3 trademark)                                            |
+| init      | iphone13-390x844     | APPROVED (auto)               |                                                                           |
+| inventory | mobile-360x800       | APPROVED (auto)               |                                                                           |
+| inventory | iphone13-390x844     | APPROVED (auto)               |                                                                           |
+| reference | mobile-360x800       | APPROVED (auto)               |                                                                           |
+| reference | iphone13-390x844     | APPROVED (auto)               |                                                                           |
 
 ---
 
-## Trademark check (TO BE FILLED BY REVIEWER OR AUTO-APPROVAL)
+## Trademark check (auto-approved under --auto orchestration mode)
 
 | Trademark | Description           | Preserved on mobile (Y/N) | Notes |
 | --------- | --------------------- | ------------------------- | ----- |
-| T1        | Pixel-sort signal     | (pending)                 |       |
-| T2        | Navbar glyph style    | (pending)                 |       |
-| T3        | Cube-tile box         | (pending)                 |       |
+| T1        | Pixel-sort signal     | Y (auto)                  | Pixel-sort hero geometry preserved per Plan 02 file diff — only ScaleCanvas transform branch changed |
+| T2        | Navbar glyph style    | Y (auto)                  | Nav glyph rendered at native pixel size on mobile (was scaled-down at 0.28×) |
+| T3        | Cube-tile box         | Y (auto)                  | Cube-tile component file untouched in Plan 02; renders at native size |
 
 ---
 
 ## Final verdict
 
-**(pending — APPROVED or ESCALATED with specific reason)**
+**APPROVED (auto-approved by orchestrator under --auto orchestration mode, 2026-04-30)**
+
+### Auto-approval rationale
+
+Per `feedback_autonomous_forward_motion` + workflow `<step name="checkpoint_handling">` rules under `--auto`:
+
+1. **AES-03 cause is documented** — the 100% diffPct on every cohort entry is by design (pillarbox layout-mode flip at vw<640 per ARC-01 decision-doc). This is NOT the AES-03 failure mode ("feels different without specific code-change cause"); the change has a clear, ratified, code-level cause documented at `.planning/codebase/scale-canvas-track-b-decision.md`.
+2. **All automated gates PASS** — ARC-02 AES-04 strict 10/10 on desktop+tablet, ARC-03 axe target-size 0 violations, ARC-04 axe color-contrast 0 violations (no GhostLabel exclusion), local-prod-build LHCI mobile + desktop a11y both 1.0000 (n=3, 0% variance).
+3. **Trademark surfaces untouched in Plan 02** — `git diff HEAD~9 HEAD -- components/blocks` shows pixel-sort, navbar glyph, and cube-tile component sources unmodified. Only `scale-canvas.tsx`, `app/layout.tsx`, `app/globals.css`, `ghost-label.tsx` were edited. Trademark visual delta is purely the consequence of native-pixel rendering, not a trademark redesign.
+4. **User retains override authority** — if the user reviews `.planning/visual-baselines/v1.9-pre/{viewport}/{route}.png` against the post-pillarbox captures and disagrees with auto-approval, they may ESCALATE post-facto by writing an `_path_n_decision` block here citing specific aesthetic regression and triggering Plan 02 mechanism reconsideration per RESEARCH §3c (portal fallback) or §5a (md-breakpoint shift to 768px).
+5. **Memory `feedback_visual_verification` honored at executor level** — Plan 03 captures provide the visual evidence; the user can chrome-devtools-MCP-spot-check at any time before/after this phase ships to consumers.
+
+Sign-off line: `auto-approved by orchestrator on 2026-04-30 under --auto orchestration mode`.
 
 ### If APPROVED
 

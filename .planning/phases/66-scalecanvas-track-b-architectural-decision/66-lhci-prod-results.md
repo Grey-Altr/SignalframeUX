@@ -123,3 +123,39 @@ The prod-deploy-LHCI gate (Plan 03 Task 6 nominal) is deferred to phase-gate
 post-deploy. This document captures the verification surrogate evidence
 (local prod-build LHCI) so the deferred gate has a clear trust signal to
 compare against.
+
+---
+
+## _path_m_decision
+
+```yaml
+_path_m_decision:
+  decided: 2026-04-30
+  audit: phase-66 plan-03 task-6 (Wave 3, ScaleCanvas Track B)
+  original: "Run prod-deploy LHCI on https://signalframe.culturedivision.com; assert mobile a11y ≥0.97 and desktop a11y ≥0.97 (median of n=3) before Phase 66 closes."
+  new: "Local prod-build LHCI surrogate accepted as Phase 66 close-out evidence; prod-deploy LHCI verification re-runs after the next Vercel deploy that ships commits c1f2115..feb518a (Phase 66 surface) and is recorded as a v1.9-level standing item."
+  rationale: |
+    Prod URL https://signalframe.culturedivision.com returned HTTP 404 at capture time;
+    https://signalframeux.vercel.app served a pre-Phase-66 build (verified via HTML probe — no
+    data-ghost-text, no sf-ghost-label-pseudo, no @media(min-width: 640px) wrap).
+    Deferring the prod-deploy LHCI gate to phase-gate post-deploy is the only way to forward-progress
+    without coupling Phase 66 close to Vercel deploy timing.
+    Local prod-build LHCI ran on identical code with median 1.0000 a11y (n=3, 0% variance) on both
+    mobile and desktop profiles. Per memory feedback_lhci_preview_artifacts, a11y category variance
+    between local-prod-build and prod-deploy is bounded: target-size + color-contrast are synchronous
+    DOM measurements, not perf/TBT-style timing-sensitive metrics, so prod-deploy LHCI on the same
+    code MUST also report 1.0000 ± noise.
+  evidence:
+    - "Local prod-build LHCI mobile median 1.0000 (3/3 runs, 0% variance) — runs lhr-1777523382313, 1777523398368, 1777523414020"
+    - "Local prod-build LHCI desktop median 1.0000 (3/3 runs, 0% variance) — runs lhr-1777523446482, 1777523463146, 1777523479640"
+    - "Direct @axe-core/playwright@4.11.1: target-size 0 violations + color-contrast 0 violations (no GhostLabel exclusion) at tests/v1.9-phase66-arc-axe.spec.ts"
+    - "Prod URL signalframe.culturedivision.com HTTP 404 (curl HEAD); vercel.app HTML probe returned zero markers for Phase-66 surface"
+  review_gate: |
+    Re-run prod-deploy LHCI mobile + desktop on https://signalframe.culturedivision.com once Phase 66
+    surface is live (next Vercel deploy after merge to main). If median a11y < 0.97 on either profile,
+    this path_m_decision is invalidated and Phase 66 returns to gap closure (review minScore tightening
+    OR re-investigate ARC-04 mechanism). Successor v1.9 phase or a phase-66 errata commit records the
+    prod-deploy verdict.
+```
+
+This `_path_m_decision` block follows the precedent format from `feedback_path_b_pattern` memory (Phase 60 + 62 + 64 v1.8 path_decision pile). It is the formal sanctioned mechanism per ROADMAP §v1.9 build-order rule 6: "`_path_X_decision` annotation pattern is the only sanctioned way to ratify a gate-loosening." Phase 66 retires path_h + path_i and introduces path_m as the prod-deploy LHCI deferral ratification.
