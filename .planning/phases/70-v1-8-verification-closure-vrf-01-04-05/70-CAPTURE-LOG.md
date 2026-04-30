@@ -81,3 +81,18 @@ retry_count: 0
 margin_under_threshold_ms: 736 (264 vs 1000 ceiling)
 margin_over_sample_min: 700 (800 vs 100 floor)
 note: "VRF-06 PASS achieved on first aggregator run (post-drift-fix). Sample volume 8× over minimum; p75 latency 73.6% under ceiling. Result is conservative — synthetic seeder uses Playwright Chromium which lacks JIT/networking realism of real iOS Safari, so real iOS cohort would likely measure higher. VRF-07 sub-cohort verdict (Task 7) carries that caveat explicitly."
+
+## VRF-07 iOS Cohort Verdict (Plan 02 Task 7)
+
+ios_count: 0
+ios_count_lcp: 0
+ios_median_lcp_ms: null
+ios_p75_lcp_ms: null
+threshold_median_ms: 2000
+threshold_count_min: 10
+verdict: INSUFFICIENT_SAMPLES
+note: "Verdict driven by data-source limitation, not by absent iOS traffic. The seeder DID emit 35 sessions with iPhone 14 Pro UA (Mobile/15E148) — but Vercel CLI 50.43.0 \`vercel logs --json\` does not expose \`proxy.userAgent\` (verified 2026-04-30). Cohort attribution is impossible without UA. Aggregator gracefully degraded all samples to empty UA. Per plan: INSUFFICIENT_SAMPLES is an acceptable verdict; deferred to natural-traffic accumulation OR Drains-export pipeline (which retains UA) OR Pro tier upgrade. Not a phase failure per RESEARCH §490."
+recovery_paths:
+  - "Drains export — Vercel team-tier feature emits full envelope schema including proxy.userAgent. Out of scope for Phase 70; addressed in v1.9 telemetry roadmap if observability is reprioritized."
+  - "Pro tier upgrade — natural 24h sampling window + full schema. Costs \$20/mo; user-discretion path-b-pro from Task 1."
+  - "Embed UA into beacon payload — modify app/api/vitals POST handler to forward request UA into the inner RUM JSON; aggregator could then extract from inner.url-adjacent field. OUT OF PLAN 02 SCOPE (would touch app/ runtime; defer to Plan 04 closure or Phase 71)."
