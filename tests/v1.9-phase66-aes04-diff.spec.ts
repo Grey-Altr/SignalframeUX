@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import { existsSync } from "node:fs";
@@ -99,7 +99,7 @@ type ViewportSpec = { name: string; width: number; height: number };
  * mode; cohort caller wraps + tolerates.
  */
 async function captureAndDiff(
-  page: import("@playwright/test").Page,
+  page: Page,
   route: RouteSpec,
   vp: ViewportSpec,
   baselineDir: string,
