@@ -46,6 +46,11 @@ const VIEWPORTS = [
   { name: "mobile-360x800", width: 360, height: 800 },
 ] as const;
 
+// playwright.config.ts hardcodes baseURL=http://localhost:3000 but other
+// worktrees may occupy that port; honor CAPTURE_BASE_URL env override (default :3000)
+// via absolute goto. Pattern matches v1.9-phase66-aes04-diff.spec.ts.
+const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3000";
+
 const BASELINE_DIR = path.resolve(process.cwd(), ".planning/visual-baselines/v1.8-start");
 const MAX_DIFF_RATIO = 0.005; // AES-04 standing rule (AESTHETIC-OF-RECORD.md §pixel-diff). Per-vector cadence enforced via D-08; route coverage per D-09 + v1.8-start superset.
 
@@ -60,7 +65,7 @@ test.describe("@v1.9-phase67-bundle-reshape (BND-05 / AES-04)", () => {
       test(`${route.slug} @ ${vp.name} matches v1.8-start within 0.5% (AES-04 standing rule)`, async ({ page }) => {
         await page.setViewportSize({ width: vp.width, height: vp.height });
         await page.emulateMedia({ reducedMotion: "reduce" });
-        await page.goto(route.path, { waitUntil: "networkidle" });
+        await page.goto(`${ABS_BASE}${route.path}`, { waitUntil: "networkidle" });
         await page.evaluate(() => document.fonts.load('700 100px "Anton"'));
         await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(100);
