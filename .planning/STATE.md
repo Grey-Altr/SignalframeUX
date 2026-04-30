@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.8
-milestone_name: Verification Closure
+milestone: v1.9
+milestone_name: Architectural Lock
 status: executing
-stopped_at: "v1.8 milestone complete (PR #4 merged 22:39:56Z, commit 2a825cf, 226 commits, 9 phases, 5 days)"
-last_updated: "2026-04-30T03:33:45.062Z"
-last_activity: 2026-04-30 -- Phase 66 planning complete
+stopped_at: "v1.9 kickoff — Phase 66 executing wave 1 (Plan 01: decision doc + v1.9-pre baseline)"
+last_updated: "2026-04-30T03:36:35.388Z"
+last_activity: 2026-04-30 -- Phase 66 execution started
 progress:
   total_phases: 63
   completed_phases: 44
-  total_plans: 93
+  total_plans: 96
   completed_plans: 90
-  percent: 97
+  percent: 94
 ---
 
 # STATE — SignalframeUX
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-04-30 -- Phase 66 planning complete
+Phase: 66 (ScaleCanvas Track B Architectural Decision) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 66
+Last activity: 2026-04-30 -- Phase 66 execution started
 
 ## Progress
 
@@ -237,7 +237,7 @@ v1.9: [░░░░░░░░░░] 0% (0/5 phases) — Architectural Lock �
 See: .planning/PROJECT.md (updated 2026-04-29 after v1.8 archival)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Planning next milestone (v1.9 TBD)
+**Current focus:** Phase 66 — ScaleCanvas Track B Architectural Decision
 
 ## Session Continuity
 
