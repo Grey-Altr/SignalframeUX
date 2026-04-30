@@ -1,4 +1,4 @@
-import { test, expect, type Locator } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 
 /**
  * Phase 58 — LCP element identity guard (CIB-05 perturbation check).
@@ -58,7 +58,7 @@ const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
  * structural query runs against the same paint state the LCP candidate was
  * captured under in `.planning/codebase/v1.8-lcp-diagnosis.md`.
  */
-async function settlePaintState(page: import("@playwright/test").Page): Promise<void> {
+async function settlePaintState(page: Page): Promise<void> {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/", { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.load('700 100px "Anton"'));
