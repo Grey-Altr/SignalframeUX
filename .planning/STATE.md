@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.8
-milestone_name: Build-Order Constraints
-status: executing
-stopped_at: "Phase 63.1 CLOSED with deferrals — Path A wordmark vectorization shipped + D-07 recalibrated <2000ms strict 4G + Pitfall #10 ratio recalibration + 3G Fast + framework chunk routed to Phase 64."
-last_updated: "2026-04-28T19:27:41.976Z"
-last_activity: 2026-04-28 -- Phase 64 planning complete
+milestone_name: Speed of Light
+status: complete
+last_updated: "2026-04-30T00:09:43.499Z"
+last_activity: 2026-04-29 -- v1.8 milestone archived
 progress:
-  total_phases: 58
-  completed_phases: 44
-  total_plans: 93
-  completed_plans: 89
-  percent: 96
+  total_phases: 9
+  completed_phases: 9
+  total_plans: 23
+  completed_plans: 23
+  percent: 100
 ---
 
 # STATE — SignalframeUX
@@ -22,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.8 Speed of Light — performance recovery to original CLAUDE.md gate |
-| Milestone | v1.8 Speed of Light |
+| Current Focus | Planning next milestone (v1.9 TBD) |
+| Milestone | v1.8 Speed of Light — SHIPPED 2026-04-29 |
 
 ## Current Position
 
-Phase: 63.1 (lcp-fast-path-remediation) — EXECUTING
-Plan: 3 of 3
-Status: Ready to execute
-Last activity: 2026-04-28 -- Phase 64 planning complete
+Phase: — (between milestones)
+Plan: —
+Status: v1.8 archived; v1.9 not yet started
+Last activity: 2026-04-29 -- v1.8 Speed of Light milestone archived (PR #4 merged 22:39:56Z, commit 2a825cf)
 
 ## Progress
 
@@ -43,7 +42,7 @@ v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE —
 v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
 v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-complete-with-deferrals 2026-04-27; ready for /pde:complete-milestone v1.8)
+v1.8: [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
 ```
 
 ## v1.8 Phase Map
@@ -233,35 +232,35 @@ v1.8: [██████████] 100% (6/6 phases — Phase 62 feature-com
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-25 after v1.7 archival, v1.8 milestone defined)
+See: .planning/PROJECT.md (updated 2026-04-29 after v1.8 archival)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 63.1 — lcp-fast-path-remediation
+**Current focus:** Planning next milestone (v1.9 TBD)
 
 ## Session Continuity
 
-Last session: 2026-04-28T17:30:00.000Z
-Stopped at: Phase 63.1 CLOSED with deferrals — Path A wordmark vectorization shipped + D-07 recalibrated <2000ms strict 4G + Pitfall #10 ratio recalibration + 3G Fast + framework chunk routed to Phase 64.
+Last session: 2026-04-29 -- v1.8 Speed of Light archived
+Stopped at: v1.8 milestone complete (PR #4 merged 22:39:56Z, commit 2a825cf, 226 commits, 9 phases, 5 days)
 
-**Phase 63.1 close-out summary:**
+**v1.9 carry-over backlog (from v1.8 path_decisions + deferred reqs):**
 
-- Plans 01 (bundle reduction) + 02 (JS deferral / CRT-04 rIC) + 03 (CdCornerPanel hoist + Path A wordmark vectorization) shipped on `chore/v1.7-ratification`.
-- Path A: visible English `<text>` → static `<path>` (commit `34d8d4c`); D-12 fidelity 5/5 PASS at <0.1%.
-- Real-device WPT (3 profiles, n=3 each via Catchpoint Starter Path B GUI):
-  - iPhone 14 Pro 4G LTE: median 2104ms / best 1560ms (FAIL strict by 5% — variance per `_path_b_decision`)
-  - Moto G Stylus 4G LTE: 1728ms (PASS strict <2000ms with 272ms headroom)
-  - Moto G Power 3G Fast: 3605ms (DEFERRED to v1.9)
-- Diagnosis revealed Next.js App Router framework chunk (chunk 2979, ~56 KB gzipped) consumes 1867ms TBT on Moto G Power 3G Fast — intrinsic to App Router runtime, not application code.
-- D-07 gate recalibrated <1000ms → <2000ms strict 4G via `_path_b_decision_d07_gate_recalibration_and_iphone_variance` in 63.1-COHORT.md §6 (precedent: Phase 60 / 62 path_X_decision blocks per `feedback_path_b_pattern.md`).
-- Pitfall #10 ratio gate (D-09) STILL FAILs (real÷synthetic 2.37× vs threshold 1.3) because the synthetic 810ms baseline was a localhost Phase 60 LHCI measurement; real 4G LTE Throttled TTFB alone is 730ms.
+1. **VRF-01** — WPT real-device verification: 2 of 3 device profiles deferred (iPhone 14 Pro 4G LTE variance 2104ms; Moto G Power 3G Fast 3605ms — Next.js App Router framework chunk ~56 KB gzipped consumes 1867ms TBT, intrinsic to runtime)
+2. **VRF-04** — Mid-milestone real-device synthesis: cascade from VRF-01; D-09 ratio gate fail (real÷synthetic 2.37× vs 1.3× threshold); synthetic baseline recalibration needed
+3. **VRF-05** — Field RUM telemetry (p75 LCP <1.0s post-deploy ≥24h): activator = fresh prod deploy + 100 sessions; 6-step `v1_9_unblock_recipe` documented at `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json`
+4. **path_h close** — ScaleCanvas mobile breakpoint exception (`transform: none` below `sm`)
+5. **path_i close** — GhostLabel low-contrast suppression mechanism (color: transparent + mask-image OR CSS pseudo-element)
+6. **path_k close** — Bundle reduction phase allowed to break D-04 chunk-id lock (re-locks new chunk IDs)
+7. **path_l close** — lcp-guard refactor (live PerformanceObserver → STRUCTURAL DOM-query test)
+8. **Wordmark Linux/darwin pixel-diff** — D-12 0.1% may need 0.5% AES-04 alignment
 
-**Deferred to Phase 64 (delta from original CRT-05 / 3-PR ship scope):**
+**Active separate tracks (per memory, not v1.8/v1.9):**
 
-1. Pitfall #10 synthetic baseline recalibration (D-09 successor)
-2. Next.js App Router framework chunk size investigation (chunk 2979)
-3. iPhone 14 Pro 4G LCP variance reduction (n>3 sampling or RUM-based measurement)
-4. Anton font load discipline (ghost-label paint timing, 211-513ms FCP→LCP gap on slow runs)
+- `cdb-v3-dossier` (separate worktree at `/Users/greyaltaer/code/projects/SignalframeUX-v3`) — T3-T7 plates pending
+- `exp/pixel-sort-transitions` — SPIKE-2 awaits (kernel extraction → shader prototype). Unpin condition fired with v1.0 lock.
 
-**Resume:** `/pde:plan-phase 64` to absorb the 4 deferred scope items into Phase 64's 3-PR ship structure, OR `/pde:complete-milestone v1.8` if accepting 63.1 as the v1.8 close (v1.9 owns 3G Fast + framework deeper work).
+**Cleanup queue (pre-v1.9 hygiene):**
 
-**Phase 63.1 commits:** 4f904f0 / 3e647da / e732acc / a7aa024 (Plan 01) · 4a9adf6 / 700653f / 5a05c43 (Plan 02) · 51f3c33 / 7458de9 / ad869ae / 34d8d4c (Plan 03 + Path A).
+- Worktree removal: `.claude/worktrees/agent-pr4-merge`, `agent-a2067e28`, `agent-ac998ae6`, `agent-a61d9fac`, `agent-a363e836`, `agent-a6dc4e43` (all PR-merged or session-stale)
+- `.planning/CONTINUE-HERE.md` consumed; remove or archive
+
+**Resume:** `/clear` then `/pde:new-milestone` to start v1.9.

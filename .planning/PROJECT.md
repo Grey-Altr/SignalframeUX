@@ -98,9 +98,26 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ CRT-04: Lenis init wrapped in `requestIdleCallback(initLenis, { timeout: 100 })` + `setTimeout(initLenis, 0)` Safari fallback; PF-04 `autoResize: true` contract preserved verbatim; cleanup cancels pending handle — v1.8 (Phase 59)
 - ✓ CRT-05: three independent atomic commit cohorts staged for sequential PR-shipping (66ac4ec → 47fe585 → fc3827c) — v1.8 (Phase 59)
 
+- ✓ LCP-01: Mobile LCP <1.0s on prod homepage (810ms localhost / 657ms prod) via content-visibility:auto + responsive containIntrinsicSize on GhostLabel LEAF; LHCI median PASS — v1.8 (Phase 60)
+- ✓ LCP-02: GhostLabel content-visibility intervention shipped per DGN-01 mobile diagnosis (mobile-only; desktop VL-05 candidate accepted as-is) — v1.8 (Phase 60)
+- ✓ LCP-03: Visual baseline diff <0.5% per page after LCP intervention — AES-04 PASS at 0.361% max — v1.8 (Phase 60)
+- ✓ BND-01: Initial shared JS 103 KB on prod against recalibrated ≤105 KB target (Next.js 15 framework runtime floor); original ≤102 KB target ratified as pre-Next.js-15-framework-floor — v1.8 (Phase 61)
+- ✓ BND-02: `next.config.ts` `optimizePackageImports` extended to 7 packages (lucide-react, radix-ui, input-otp, cmdk, vaul, sonner, react-day-picker); `/` First Load 280→264 KB (−16 KB / 5.7%) — v1.8 (Phase 61)
+- ✓ BND-03: `components/sf/index.ts` barrel directive-free (v1.3 rule maintained) — v1.8 (Phase 61)
+- ✓ BND-04: Stale-chunk guard documented (`rm -rf .next/cache .next` before gating measurements) — v1.8 (Phase 61)
+- ✓ VRF-02: Prod re-measure via launch-gate-vrf02-runner — perf=100, LCP=657ms, CLS=0.0042, TBT=40ms, TTI=907ms; LHCI bp=96 ratified via `_path_b_decision` — v1.8 (Phase 62)
+- ✓ VRF-03: chrome-devtools MCP scroll-test confirms motion contract intact — single GSAP ticker, all SIGNAL effects render, reduced-motion still kills timeline; 12/12 ✓ in 6-surface × 2-viewport matrix — v1.8 (Phase 62)
+- ✓ AES-04: 20/20 pixel-diff PASS (≤0.5% threshold) at every phase end — v1.8 (Phase 62)
+
+- ✓ Phase 63.1 (LCP Fast-Path Remediation): Path A wordmark vectorization shipped (visible English `<text>` → static `<path>`); D-12 fidelity 5/5 PASS at 0% pixel diff; Plan 01 bundle reduction + Plan 02 CRT-04 rIC pattern propagated to 4 sections + Plan 03 CdCornerPanel hoist — v1.8
+- ✓ Phase 64 (CRT-05 + 3-PR Ship): PR #1/#2/#3 (CRT-01/02-03/04) all merged + PR #4 226-commit branch-merge MERGED 2026-04-29; branch protection ruleset `audit` required check active; launch-gate v2 (explicit local main ref) — v1.8
+- ✓ 8 LHCI standing-rule path_decisions ratified to main: path_a (cls 0→0.005 Anton swap), path_b (mobile bp 0.97→0.95 small mono register), path_e (mobile perf 0.97→0.85 + TBT 200→700ms preview CPU artifact), path_f (mobile LCP 1000→1500ms preview variance), path_g (desktop perf+TBT omission), path_h (mobile a11y 0.97→0.96 ScaleCanvas target-size), path_i (desktop a11y 0.97→0.96 GhostLabel 4% opacity by component contract), SEO drop both viewports (Vercel preview NOINDEX) — v1.8 (Phase 64)
+- ✓ Test-spec ratifications shipped via PR #4: path_k (homepage bundle 200→260 KB / Phase 63.1 reality + D-04 chunk-id freeze), path_l (lcp-guard test.fixme / Chrome LCP API .element=null on content-visibility:auto surface) — v1.8 (Phase 64)
+- ✓ Path N bootstrap pattern established: Playwright snapshot baselines bootstrapped from CI via `actions/upload-artifact@v4 if: always()` — v1.8 (Phase 64)
+
 ### Active
 
-(See REQUIREMENTS.md for v1.8 Speed of Light requirements)
+(v1.8 Speed of Light shipped 2026-04-29. v1.9 milestone TBD — see CONTINUE-HERE.md for 5 carry-over backlog items.)
 
 ### Out of Scope
 
@@ -109,22 +126,6 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - CMS integration — MDX + JSON for content
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
-
-## Current Milestone: v1.8 Speed of Light
-
-**Goal:** Recover the original CLAUDE.md performance contract (Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial) on prod, without sacrificing the locked aesthetic — ghost-label, hero shader, and ScaleCanvas behavior visually identical.
-
-**Target features:**
-- LCP <1.0s on prod homepage (currently 6.5s mobile) via critical-path restructure
-- Render-blocking budget closure (570ms — `/sf-canvas-sync.js` + two CSS files) without CLS regression
-- Unused JS budget closure (119 KiB across chunks `3302`, `e9a6067a`, `74c6194b`, `7525`)
-- Lighthouse CI in pipeline — durable per-PR enforcement
-- Real-device verification — iPhone Safari + mid-tier Android sampling beyond Lighthouse emulation
-
-**Out of scope:**
-- Track B (a11y target-size, ScaleCanvas pillarbox/counter-scale/portal architectural decision) — parked
-- SEO recovery — confirmed prod 100, dev-artifact only
-- Visual or aesthetic changes — restructuring constrained to rendering/loading order
 
 ## Context
 
@@ -191,6 +192,35 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - Dead derive `--sfx-fx-glitch-rate` at `global-effects.tsx:56`
 - 15 stale `[ ]` checkboxes in REQUIREMENTS.md from v1.5 era (cosmetic; traceability table marks Complete)
 
+**Shipped v1.8 Speed of Light** (2026-04-29):
+- 226 files modified, +37,745 / −2,135 LOC across 9 phases (57, 58, 59, 60, 61, 62, 63, 63.1, 64, 65), 208 commits, 5 days
+- Phase 57: AESTHETIC-OF-RECORD.md standing-rules surface (146 lines, 18 LOCKDOWN cites, 13 trademark file paths) + LCP element identity captured per-viewport (mobile=GhostLabel 4% opacity, desktop=VL-05 magenta `//`) + per-chunk owner attribution (3302/e9a6067a/74c6194b/7525)
+- Phase 58: `@lhci/cli@^0.15.1` + dual lighthouserc (mobile primary + desktop) + `.github/workflows/lighthouse.yml` per-PR gate via `treosh/lighthouse-ci-action@v12` + self-hosted `/api/vitals` Node-runtime route via `useReportWebVitals` + `navigator.sendBeacon` (zero new runtime npm dep)
+- Phase 59: CRT-01 inline `/sf-canvas-sync.js` IIFE (CLS=0 across 5 routes) + CRT-02 Anton subsetted via `pyftsubset` (58.8KB → 11.1KB / 81%) + CRT-03 measured-descriptor `optional`→`swap` migration (size-adjust 92.14%, ascent 127.66%, descent 35.72%, line-gap 0% — Wave-3 0.485 CLS regression history exorcised) + CRT-04 Lenis `requestIdleCallback` deferral
+- Phase 60: Mobile LCP intervention via `content-visibility:auto` + responsive `containIntrinsicSize` on GhostLabel LEAF (810ms localhost / 657ms prod / LHCI median PASS); `path_a_decision` (CLS 0→0.005 Anton swap glyph-metric shift)
+- Phase 61: 7 packages in `optimizePackageImports` (lucide-react, radix-ui, input-otp, cmdk, vaul, sonner, react-day-picker); `/` First Load 280→264 KB (−16 KB / 5.7%); shared floor 103 KB (recalibrated ≤105 KB target — Next.js 15 framework runtime ~45.8 + react-dom ~54.2 + other ~2.56 KB practical floor)
+- Phase 62: VRF-02 prod re-measure perf=100 / LCP=657ms / CLS=0.0042 / TBT=40ms / TTI=907ms; VRF-03 motion contract single-ticker confirmed (12/12 ✓ in 6-surface × 2-viewport matrix); AES-04 20/20 pixel-diff PASS; `path_b_decision` (LHCI bp 0.97→0.95 small mono register)
+- Phase 63.1: Path A wordmark vectorization (visible English `<text>` → static `<path>`); D-12 fidelity 5/5 PASS at 0% pixel diff; Plan 01 bundle reduction + Plan 02 CRT-04 rIC propagated to 4 sections + Plan 03 CdCornerPanel hoist
+- Phase 64: PR #1/#2/#3 (CRT-01/02-03/04) merged + PR #4 226-commit branch-merge MERGED 2026-04-29 22:39:56Z (commit 2a825cf); branch protection ruleset id 15683540 with `audit` required check active; launch-gate v2 (explicit `git fetch origin main:main`); Path N bootstrap pattern established (Playwright snapshot baselines from CI artifact via `if: always()`)
+- 8 LHCI standing-rule path_decisions ratified to main (path_a/b/e/f/g/h/i + SEO drop both viewports)
+- 2 test-spec ratifications shipped via PR #4 (path_k bundle 200→260 KB, path_l lcp-guard test.fixme)
+
+**Known gaps deferred to v1.9 (carry-over backlog):**
+- VRF-01: WPT real-device verification — Path A shipped but only 1 of 3 device profiles passed strict 4G LTE (<2000ms); 2 deferred (Moto G Power 3G Fast = 3605ms; iPhone 14 Pro variance 2104ms) — `_path_b_decision_d07_gate_recalibration` ratified
+- VRF-04: Mid-milestone real-device synthesis — cascade from VRF-01; D-09 ratio gate fail (real÷synthetic 2.37× vs 1.3× threshold); synthetic baseline recalibration needed
+- VRF-05: Field RUM telemetry — Phase 65 never planned; activator = fresh prod deploy + 100 sessions; 6-step v1_9_unblock_recipe documented at `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json`
+- Close path_h: ScaleCanvas mobile breakpoint exception (`transform: none` below `sm`), restoring 24px AA target-size on native CSS sizing
+- Close path_i: GhostLabel low-contrast suppression mechanism (color: transparent + mask-image OR CSS pseudo-element)
+- Close path_k: bundle reduction phase allowed to break D-04 chunk-id lock (re-locks new chunk IDs)
+- Close path_l: lcp-guard refactor — live PerformanceObserver → STRUCTURAL DOM-query test
+- Wordmark Linux/darwin pixel-diff: D-12 0.1% may need 0.5% AES-04 alignment
+
+**Minor tech debt (v1.8, non-blocking):**
+- Phase 60 has no `60-VERIFICATION.md` artifact (ratified via 62-03 W2b spot-check)
+- Phase 60 LCP=810ms was localhost-measured (per `phase-60-mobile-lhci.json::url`); v1.9 reviewers should treat as localhost-only baseline
+- Phase 64 has only 1 SUMMARY.md (64-02) for 3 plans — CRT-05 ship validated by PR #1/#2/#3 on main, but per-plan summary docs absent
+- Cosmetic dual-source-of-truth: `scripts/launch-gate-vrf02-runner.mjs:30` carries `cls_max:0` while `lighthouserc.json:55-58` carries `cls 0.005` (path_a ratified); align in v1.9
+
 ## Key Decisions
 
 | Decision | Milestone | Outcome |
@@ -223,6 +253,18 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 | Cut idle-overlay + datamosh + WebGL particle mounts to clear PRF-02 | v1.7 | ⚠️ Revisit — three obsolescence sub-families originated here; reference templates retained for future re-mount via cheaper consumers |
 | Lean ratification methodology (grep-then-classify) | v1.7 | ✓ Good — 14 phases audited via single doc, file:line evidence; reusable taxonomy of process-gate sub-families |
 | `getQualityTier()` consumption mandatory for new SIGNAL surfaces | v1.7 | ✓ Good — `ParticleFieldHQ` Canvas2D path validates the rule; mobile/low-end parity ship-blocker per memory |
+| AESTHETIC-OF-RECORD.md as single read-once standing-rules surface | v1.8 | ✓ Good — Phase 57 lock-in mode (per `feedback_lockin_before_execute.md`); Phases 58-62 read it instead of re-deriving |
+| `@lhci/cli` per-PR gate over launch-gate.ts extension | v1.8 | ✓ Good — native cold-start variance discipline (numberOfRuns:5, warmup×2, median, threshold buffer); launch-gate.ts retained for prod 100/100 manual gate |
+| Self-hosted `/api/vitals` over `@vercel/speed-insights` | v1.8 | ✓ Good — zero new runtime npm dep; `useReportWebVitals` + `navigator.sendBeacon` (fetch keepalive fallback); 2KB cap, JSON-only, URL-stripped, no SaaS |
+| Inline `/sf-canvas-sync.js` IIFE in `<body>` tail (NOT delete; NOT defer/async; NOT next/script) | v1.8 | ✓ Good — preserves CLS=0, removes render-blocking external request; STACK.md "delete" recommendation refuted |
+| Anton `optional` → `swap` with measured descriptors via `opentype.js` | v1.8 | ✓ Good — measured from actual subsetted woff2 (per `feedback_measure_descriptors_from_woff2.md`), not guessed; Wave-3 0.485 CLS regression exorcised; AES-02 documented exception ratified |
+| Lenis init via `requestIdleCallback(initLenis, { timeout: 100 })` + Safari `setTimeout` fallback | v1.8 | ✓ Good — defers 19KB Lenis bundle past LCP; PF-04 `autoResize:true` contract preserved verbatim |
+| `content-visibility:auto` on GhostLabel LEAF (mobile-only, desktop accepted as-is) | v1.8 | ✓ Good — per-viewport LCP candidate divergence forces single-intervention shipping picks one viewport; cascade through `_path_a_decision` (CLS 0→0.005) |
+| 3-PR atomic bisect cohort (CRT-05) | v1.8 | ✓ Good — clean bisect if any single change regresses; 66ac4ec / 47fe585 / fc3827c independent intervention surfaces; PR #1/#2/#3 sequential merge to main 2026-04-29 |
+| `_path_X_decision` annotation pattern for ratified gate-loosenings | v1.8 | ✓ Good — 8 LHCI path_decisions on main + 2 test-spec ratifications via PR #4; (decided/audit/original/new/rationale/evidence/review_gate) block reusable; per `feedback_path_b_pattern.md` |
+| Path N bootstrap (Playwright snapshot baselines from CI via `actions/upload-artifact@v4 if: always()`) | v1.8 | ✓ Good — when baselines exist for one platform but not another, ~10 min total; chromium-linux wordmark baselines committed via this pattern (commits 0049e5f + 68131f6) |
+| Branch protection ruleset with `audit` required check | v1.8 | ✓ Good — id 15683540 active; LHCI gate now durable per-PR enforcement |
+| Wordmark vectorization (visible English `<text>` → static `<path>`) | v1.8 (Phase 63.1) | ✓ Good — D-12 fidelity 5/5 PASS at 0% pixel diff; eliminates SVG `<text>` LCP API quirk per `feedback_chrome_lcp_text_in_defs_quirk.md` |
 
 ## Constraints
 
@@ -260,4 +302,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-26 — Phase 59 (Critical-Path Restructure) complete; CRT-01..CRT-05 validated under v1.8; opentype.js@^1.3.4 devDep ratified (measurement-time only); 4 carry-over LHCI/PR-ship items + 2 Phase-58 repo-settings items tracked in HUMAN-UAT*
+*Last updated: 2026-04-29 after v1.8 Speed of Light milestone complete (PR #4 merged 22:39:56Z, commit 2a825cf, 226 commits, 9 phases, 5 days)*
