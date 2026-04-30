@@ -332,4 +332,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-29 after v1.8 archive + v1.9 Architectural Lock milestone defined (5 phases: 66-70)*
+*Last updated: 2026-04-30 after Phase 67 closure — Bundle Barrel-Optimization (D-04 Unlock) complete; homepage First Load JS 258.9 → 187.6 KB (-71.3 KB / 27.5%); CLAUDE.md 200 KB hard target restored; path_k retired; BND-05/06/07 Validated*
