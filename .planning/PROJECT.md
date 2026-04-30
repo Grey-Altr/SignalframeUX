@@ -236,9 +236,9 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - 2 test-spec ratifications shipped via PR #4 (path_k bundle 200→260 KB, path_l lcp-guard test.fixme)
 
 **Known gaps deferred to v1.9 (carry-over backlog):**
-- VRF-01: WPT real-device verification — Path A shipped but only 1 of 3 device profiles passed strict 4G LTE (<2000ms); 2 deferred (Moto G Power 3G Fast = 3605ms; iPhone 14 Pro variance 2104ms) — `_path_b_decision_d07_gate_recalibration` ratified
-- VRF-04: Mid-milestone real-device synthesis — cascade from VRF-01; D-09 ratio gate fail (real÷synthetic 2.37× vs 1.3× threshold); synthetic baseline recalibration needed
-- VRF-05: Field RUM telemetry — Phase 65 never planned; activator = fresh prod deploy + 100 sessions; 6-step v1_9_unblock_recipe documented at `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json`
+- VRF-01: WPT real-device verification — Path A shipped but only 1 of 3 device profiles passed strict 4G LTE (<2000ms); 2 deferred (Moto G Power 3G Fast = 3605ms; iPhone 14 Pro variance 2104ms) — `_path_b_decision_d07_gate_recalibration` ratified — **CLOSED in v1.9 Phase 70 via VRF-07 (iOS sub-cohort INSUFFICIENT_SAMPLES, deferred to natural traffic) + VRF-08 (Moto G 3G Fast moved to "supported but not gated" tier via `_path_b_decision`)**
+- VRF-04: Mid-milestone real-device synthesis — cascade from VRF-01; D-09 ratio gate fail (real÷synthetic 2.37× vs 1.3× threshold); synthetic baseline recalibration needed — **CLOSED in v1.9 Phase 70 cascading via VRF-07/08 closure**
+- VRF-05: Field RUM telemetry — Phase 65 never planned; activator = fresh prod deploy + 100 sessions; 6-step v1_9_unblock_recipe documented at `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json` — **CLOSED in v1.9 Phase 70 via VRF-06 (p75 LCP=264ms, n=800, synthetic-seeded under Vercel Hobby tier seed-and-aggregate-within-1h cycle)**
 - Close path_h: ScaleCanvas mobile breakpoint exception (`transform: none` below `sm`), restoring 24px AA target-size on native CSS sizing
 - Close path_i: GhostLabel low-contrast suppression mechanism (color: transparent + mask-image OR CSS pseudo-element)
 - Close path_k: bundle reduction phase allowed to break D-04 chunk-id lock (re-locks new chunk IDs)

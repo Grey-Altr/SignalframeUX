@@ -1171,7 +1171,7 @@ Plans:
 | 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 0/TBD | Not started | — |
 | 68. lcp-guard Structural Refactor | v1.9 | 0/TBD | Not started | — |
 | 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 0/TBD | Not started | — |
-| 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 3/4 | In Progress|  |
+| 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 1/4 | In Progress|  |
 
 ---
 

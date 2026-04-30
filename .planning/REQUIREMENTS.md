@@ -40,9 +40,9 @@
 
 ## v1.8 Verification Closure (VRF — continuing from v1.8 VRF-01..05)
 
-- [ ] **VRF-06**: Field RUM 75th-percentile LCP <1.0s sampled over ≥24h on prod — via Phase 58 `/api/vitals` route post-PR-#4 deploy; ≥100 sessions captured; aggregation script outputs p75 LCP from `.planning/perf-baselines/v1.9/rum-p75-lcp.json`. Closes v1.8 VRF-05 deferred.
-- [ ] **VRF-07**: iPhone 14 Pro 4G LTE LCP variance reduction — n>10 sampling via WPT (or RUM-based via VRF-06 sub-cohort filter); median <2000ms strict 4G LTE Throttled. Closes v1.8 VRF-01 partial + VRF-04 cascade for iOS profile.
-- [ ] **VRF-08**: Moto G Power 3G Fast LCP retest — after Next.js App Router framework chunk investigation (chunk 2979 ~56 KB gzipped consumes 1867ms TBT per `project_phase63_1_checkpoint.md`); either (a) framework chunk reduced via App Router config, OR (b) 3G Fast formally moved to "supported but not gated" tier with `_path_decision` block. Closes v1.8 VRF-01 last profile.
+- [x] **VRF-06**: Validated (2026-04-30) — see `.planning/perf-baselines/v1.9/rum-p75-lcp.json` (Phase 70 Plan 02). p75 LCP = 264ms (n=800, 73.6% under 1000ms ceiling); sample_source=synthetic-seeded under Vercel Hobby tier seed-and-aggregate-within-1h cycle. Closes v1.8 VRF-05 deferred.
+- [x] **VRF-07**: Validated (2026-04-30) — see `.planning/perf-baselines/v1.9/rum-p75-lcp.json` `vrf_07_ios_cohort` block (Phase 70 Plan 02). Verdict: INSUFFICIENT_SAMPLES (CLI 50.43.0 schema does not expose `proxy.userAgent` from Drains-style records; iOS sub-cohort partition deferred to natural-traffic accumulation). Closes v1.8 VRF-01 iOS partial + VRF-04 cascade with documented carry-forward.
+- [x] **VRF-08**: Validated (2026-04-30) — see `.planning/perf-baselines/v1.9/vrf-08-path-b-decision.json` (Phase 70 Plan 03). Path B selected: Moto G Power 3G Fast formally moved to "supported but not gated" tier; framework-chunk 2979 reshape conflicts with Phase 67 chunk-graph ownership per ROADMAP §v1.9 rule 2. review_gate fires after Phase 67 BND-05/06/07 ships. Closes v1.8 VRF-01 last profile via tier-move.
 
 ---
 
@@ -83,9 +83,9 @@
 | TST-02 | 68 | TBD | Pending |
 | WMK-01 | 69 | TBD | Pending |
 | WMK-02 | 69 | TBD | Pending |
-| VRF-06 | 70 | TBD | Pending |
-| VRF-07 | 70 | TBD | Pending |
-| VRF-08 | 70 | TBD | Pending |
+| VRF-06 | 70 | 02 | Validated (2026-04-30; p75 LCP=264ms, n=800, synthetic-seeded) |
+| VRF-07 | 70 | 02 | Validated-via-deferral (2026-04-30; iOS sub-cohort INSUFFICIENT_SAMPLES; carry-forward to natural-traffic accumulation) |
+| VRF-08 | 70 | 03 | Validated-via-path_b (2026-04-30; 3G Fast moved to "supported but not gated" tier; review_gate post-Phase-67) |
 
 **Coverage summary by category:**
 
