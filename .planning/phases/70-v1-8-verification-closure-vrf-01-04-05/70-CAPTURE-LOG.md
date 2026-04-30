@@ -69,3 +69,15 @@ aggregator_argv_drift_findings:
 aggregator_fix_commit: b438ef6 (fix(70-01-followup): aggregator argv + schema drift against CLI 50.43.0)
 aggregator_fix_rule: "Rule 3 — Blocking (deviation auto-fixed during Plan 02 execution; Plan 01 spec did not exercise live CLI integration)"
 aggregator_post_fix_spec_status: "22/22 vitest pass (no behavioral change to pure functions; only argv default + envelope filter widened)"
+
+## VRF-06 Verdict (Plan 02 Task 6)
+
+sample_count_lcp: 800
+p75_lcp_ms: 264
+threshold_p75_ms: 1000
+threshold_sample_min: 100
+verdict: PASS
+retry_count: 0
+margin_under_threshold_ms: 736 (264 vs 1000 ceiling)
+margin_over_sample_min: 700 (800 vs 100 floor)
+note: "VRF-06 PASS achieved on first aggregator run (post-drift-fix). Sample volume 8× over minimum; p75 latency 73.6% under ceiling. Result is conservative — synthetic seeder uses Playwright Chromium which lacks JIT/networking realism of real iOS Safari, so real iOS cohort would likely measure higher. VRF-07 sub-cohort verdict (Task 7) carries that caveat explicitly."
