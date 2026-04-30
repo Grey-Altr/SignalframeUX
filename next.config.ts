@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
       // numbered chunks with no stable prefixes. D-04 lock preserved by leaving this
       // list unchanged. Bundle reduction for Plan 01 is attained via Task 2
       // (next/dynamic route-level split) instead.
+      "@/components/sf",
       "lucide-react",
       "radix-ui",
       "input-otp",

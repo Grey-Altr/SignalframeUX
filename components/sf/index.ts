@@ -80,7 +80,10 @@ export {
   SFPopoverTitle,
   SFPopoverDescription,
 } from "./sf-popover";
-export { SFScrollArea, SFScrollBar } from "./sf-scroll-area";
+// Scroll-area exports — Phase 67 Plan 01 Vector 1 (D-04 unlock): removed from
+// barrel re-export. Zero runtime consumers in ./app/, ./components/layout/, or
+// ./components/blocks/ (verified 2026-04-30). Implementation file
+// components/sf/sf-scroll-area.tsx STAYS on disk for any direct-import future use.
 export { SFLabel } from "./sf-label";
 export {
   SFSelect,
@@ -146,16 +149,10 @@ export {
   SFPaginationPrevious,
   SFPaginationNext,
 } from "./sf-pagination";
-export {
-  SFNavigationMenu,
-  SFNavigationMenuList,
-  SFNavigationMenuItem,
-  SFNavigationMenuTrigger,
-  SFNavigationMenuContent,
-  SFNavigationMenuLink,
-  SFNavigationMenuViewport,
-  SFNavigationMenuMobile,
-} from "./sf-navigation-menu";
+// Navigation-menu exports (8 sub-components) — Phase 67 Plan 01 Vector 1
+// (D-04 unlock): removed from barrel re-export. Zero runtime consumers
+// (nav.tsx uses direct ColorCycleFrame imports). Implementation file
+// components/sf/sf-navigation-menu.tsx STAYS on disk for any direct-import use.
 
 // Multi-Step & Selection
 export { SFToggleGroup, SFToggleGroupItem } from "./sf-toggle-group";
