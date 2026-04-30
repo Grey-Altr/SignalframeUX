@@ -96,3 +96,19 @@ recovery_paths:
   - "Drains export — Vercel team-tier feature emits full envelope schema including proxy.userAgent. Out of scope for Phase 70; addressed in v1.9 telemetry roadmap if observability is reprioritized."
   - "Pro tier upgrade — natural 24h sampling window + full schema. Costs \$20/mo; user-discretion path-b-pro from Task 1."
   - "Embed UA into beacon payload — modify app/api/vitals POST handler to forward request UA into the inner RUM JSON; aggregator could then extract from inner.url-adjacent field. OUT OF PLAN 02 SCOPE (would touch app/ runtime; defer to Plan 04 closure or Phase 71)."
+
+## Sample-Source Verdict Labeling (Plan 02 Task 8)
+
+sample_source: synthetic-seeded
+sample_source_accuracy_check: "ACCURATE — aggregator labeled correctly: 105 Playwright Chromium sessions emitted to /api/vitals during the seed window; no organic traffic mixed (verified by timestamp clustering 17:13:00–17:18:18 with no gaps suggesting external visitors). \`mixed\` would require non-seeder visitor traffic landing in the same window, which is not detectable with the available CLI schema but timestamp density is consistent with seeder-only emission."
+user_acknowledged_caveat: true
+user_approval_timestamp: 2026-04-30T17:51:56Z
+user_notes: "Auto-approved under orchestrator --auto. User retains override window via revert + re-execute if sample_source label needs correction (e.g., to \"mixed\" if subsequent inspection shows organic traffic in the window)."
+auto_resolution: true
+auto_resolution_note: "Task 8 is checkpoint:human-verify; under orchestrator --auto, verdict is auto-approved. The aggregator's automatic SAMPLE_SOURCE=synthetic-seeded label (passed via env var) was accurate to actual capture conditions, so no manual correction was applied."
+
+vrf_07_synthetic_caveat_acknowledgment:
+  caveat: "Playwright Chromium spoofing iPhone UA is a platform-reachability proxy, not a real-iOS-Safari performance measurement. JIT cost / network stack / WebKit rendering all differ. VRF-07 verdict is INSUFFICIENT_SAMPLES regardless (CLI schema drift), so the synthetic-vs-natural distinction is moot for this plan run."
+  acknowledged: true
+  acknowledged_under: "orchestrator --auto"
+  next_recovery: "Phase 71 or v1.9 telemetry roadmap should address iOS cohort recovery via Drains export / payload-embedded UA / or Pro tier upgrade — see recovery_paths in VRF-07 section above."
