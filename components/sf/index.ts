@@ -67,9 +67,15 @@ export {
 } from "./sf-dropdown-menu";
 export { SFToggle } from "./sf-toggle";
 export { SFSlider } from "./sf-slider";
+export {
+  SFCombobox,
+  type SFComboboxOption,
+  type SFComboboxProps,
+} from "./sf-combobox";
 // SFCommand* — NOT re-exported from the barrel. cmdk (~12 kB gz) + nested
-// radix-dialog/primitives add up. Only CommandPalette consumes these; import
-// directly to keep the barrel tree-shakeable:
+// radix-dialog/primitives add up. Only CommandPalette + SFCombobox (via
+// direct path) consume these; import directly to keep the barrel
+// tree-shakeable:
 //   import { SFCommand, ... } from "@/components/sf/sf-command";
 export { SFSkeleton } from "./sf-skeleton";
 export {

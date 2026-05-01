@@ -245,6 +245,23 @@
       }
     },
     {
+      "name": "sf-combobox",
+      "type": "registry:ui",
+      "title": "SF Combobox",
+      "description": "Industrial combobox with type-ahead filter, grouping, clear, multi-select chips — composes cmdk + Radix Popover, zero new deps",
+      "registryDependencies": ["command", "popover", "button", "badge"],
+      "files": [
+        {
+          "path": "components/sf/sf-combobox.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
       "name": "sf-skeleton",
       "type": "registry:ui",
       "title": "SF Skeleton",
