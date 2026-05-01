@@ -67,7 +67,11 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 4. A consumer can enable checkbox row selection with single + multi + indeterminate header state; selected rows are accessible via `getRowModel().rows.filter(r => r.getIsSelected())`
 5. Homepage First Load JS remains under 200 KB after `pnpm add @tanstack/react-table` and clean build; `_dep_dt_01_decision` block is committed with measured (not estimated) bundle evidence
 
-**Plans:** TBD
+**Plans:** 3 plans
+
+- [ ] 71-01-PLAN.md — _dep_dt_01_decision ratification block + pnpm add @tanstack/react-table@^8.21.3 + post-install bundle measurement (DEP-01)
+- [ ] 71-02-PLAN.md — SFDataTable<TData> impl (sort + filter + selection + density CVA) + useDebouncedValue hook + SFCheckbox indeterminate visual (DT-01, DT-02, DT-04, DT-05)
+- [ ] 71-03-PLAN.md — DT-03 pagination composition + SFDataTableLazy P3 wrapper + playground fixture + Playwright/axe specs + production chunk audit (DT-03, DT-06, TST-03, DEP-01 closeout)
 
 ---
 
@@ -219,7 +223,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 71 — SFDataTable | 0/TBD | Not started | — |
+| 71 — SFDataTable | 0/3 | Plans created | — |
 | 72 — SFCombobox | 0/TBD | Not started | — |
 | 73 — SFRichEditor | 0/TBD | Not started | — |
 | 74 — SFFileUpload | 0/TBD | Not started | — |
