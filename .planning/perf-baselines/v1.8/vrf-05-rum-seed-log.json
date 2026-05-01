@@ -1,7 +1,7 @@
 {
-  "capturedAt": "2026-04-27T19:40:57.568Z",
-  "startedAt": "2026-04-27T19:40:10.176Z",
-  "finishedAt": "2026-04-27T19:40:57.568Z",
+  "capturedAt": "2026-04-30T17:18:18.917Z",
+  "startedAt": "2026-04-30T17:13:00.856Z",
+  "finishedAt": "2026-04-30T17:18:18.917Z",
   "prod_url": "https://signalframeux.vercel.app",
   "routes": [
     "/",
@@ -27,10 +27,10 @@
       "height": 900
     }
   ],
-  "visits_per_route_per_viewport": 1,
-  "expected_sessions": 15,
-  "actual_sessions": 15,
-  "successful_sessions": 15,
+  "visits_per_route_per_viewport": 7,
+  "expected_sessions": 105,
+  "actual_sessions": 105,
+  "successful_sessions": 105,
   "failed_sessions": 0,
   "note": "Synthetic seed for VRF-05 RUM aggregation. Each successful session triggers web-vitals beacons (LCP, CLS, INP, TTFB, FCP) via navigator.sendBeacon to /api/vitals -> console.log -> Vercel logs. Aggregator MUST label sample_source as \"synthetic-seeded\" or \"mixed\".",
   "sessions": [
@@ -43,83 +43,623 @@
     {
       "idx": 2,
       "route": "/",
-      "viewport": "mobile-android",
+      "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 3,
       "route": "/",
-      "viewport": "desktop-chrome",
+      "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 4,
-      "route": "/system",
+      "route": "/",
       "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 5,
-      "route": "/system",
-      "viewport": "mobile-android",
+      "route": "/",
+      "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 6,
-      "route": "/system",
-      "viewport": "desktop-chrome",
+      "route": "/",
+      "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 7,
-      "route": "/init",
+      "route": "/",
       "viewport": "mobile-iphone13",
       "ok": true
     },
     {
       "idx": 8,
-      "route": "/init",
+      "route": "/",
       "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 9,
-      "route": "/init",
-      "viewport": "desktop-chrome",
+      "route": "/",
+      "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 10,
-      "route": "/inventory",
-      "viewport": "mobile-iphone13",
+      "route": "/",
+      "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 11,
-      "route": "/inventory",
+      "route": "/",
       "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 12,
-      "route": "/inventory",
-      "viewport": "desktop-chrome",
+      "route": "/",
+      "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 13,
-      "route": "/reference",
-      "viewport": "mobile-iphone13",
+      "route": "/",
+      "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 14,
-      "route": "/reference",
+      "route": "/",
       "viewport": "mobile-android",
       "ok": true
     },
     {
       "idx": 15,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 16,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 17,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 18,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 19,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 20,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 21,
+      "route": "/",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 22,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 23,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 24,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 25,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 26,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 27,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 28,
+      "route": "/system",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 29,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 30,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 31,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 32,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 33,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 34,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 35,
+      "route": "/system",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 36,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 37,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 38,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 39,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 40,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 41,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 42,
+      "route": "/system",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 43,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 44,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 45,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 46,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 47,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 48,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 49,
+      "route": "/init",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 50,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 51,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 52,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 53,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 54,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 55,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 56,
+      "route": "/init",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 57,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 58,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 59,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 60,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 61,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 62,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 63,
+      "route": "/init",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 64,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 65,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 66,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 67,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 68,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 69,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 70,
+      "route": "/inventory",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 71,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 72,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 73,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 74,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 75,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 76,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 77,
+      "route": "/inventory",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 78,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 79,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 80,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 81,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 82,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 83,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 84,
+      "route": "/inventory",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 85,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 86,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 87,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 88,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 89,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 90,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 91,
+      "route": "/reference",
+      "viewport": "mobile-iphone13",
+      "ok": true
+    },
+    {
+      "idx": 92,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 93,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 94,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 95,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 96,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 97,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 98,
+      "route": "/reference",
+      "viewport": "mobile-android",
+      "ok": true
+    },
+    {
+      "idx": 99,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 100,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 101,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 102,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 103,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 104,
+      "route": "/reference",
+      "viewport": "desktop-chrome",
+      "ok": true
+    },
+    {
+      "idx": 105,
       "route": "/reference",
       "viewport": "desktop-chrome",
       "ok": true

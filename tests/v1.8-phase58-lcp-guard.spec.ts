@@ -1,156 +1,149 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 
 /**
- * Phase 58 — LCP element identity guard.
+ * Phase 58 — LCP element identity guard (CIB-05 perturbation check).
+ *
+ * STRUCTURAL TEST (post-Phase-66 architectural refactor).
  *
  * Phase 57 baselines (.planning/codebase/v1.8-lcp-diagnosis.md §1):
- *   mobile-360x800 -> components/animation/ghost-label.tsx (sf-display + 4% opacity GhostLabel)
+ *   mobile-360x800   -> components/animation/ghost-label.tsx (sf-display + 4% opacity GhostLabel)
  *   desktop-1440x900 -> components/blocks/entry-section.tsx:208 (VL-05 magenta // overlay)
  *
- * Selector composition note: `el.className` (DOMTokenList stringified) returns
- * the raw class attribute value with literal `/`, `[`, `]`, `.`, `-` characters.
- * We then dot-join the whitespace-split tokens, so the resulting test string
- * looks like: `span.sf-display.pointer-events-none.top-1/2.text-[1.28em]...`.
- * The Tailwind arbitrary-value brackets and slashes are NOT escaped — use
- * plain substring matches via toContain(), NOT CSS-selector-escaped strings.
+ * Phase 66 footnote (.planning/phases/66-scalecanvas-track-b-architectural-decision/66-lcp-postcapture.md):
+ *   The mobile LCP candidate identity shifted after Phase 60 LCP-02 path-b applied
+ *   `content-visibility: auto` to the GhostLabel leaf. The post-capture LCP candidate
+ *   on the LHCI mobile preset (375x667) is the visible hero per-character span
+ *   `span.sf-hero-deferred.inline-block` (the first painted character of "SIGNALFRAME//UX"
+ *   in components/blocks/entry-section.tsx:120-141). The desktop LCP target remains
+ *   the VL-05 magenta `//` overlay span at entry-section.tsx:208.
  *
- * If <WebVitals /> mount perturbed React reconciliation enough to shift the
- * LCP candidate to a different element, this test fails and Phase 58 ships
- * no further until investigated.
+ * --- WHY STRUCTURAL ---
  *
- * MUST run against `pnpm build && pnpm start`.
+ * Phase 64 PR #4 (commit b70fbd6) ratified that Chrome's `largest-contentful-paint`
+ * paint-timing API consistently reports a null element reference for
+ * `content-visibility:auto`-wrapped LCP candidates, making the previous
+ * live-paint-observer assertion architecturally unreliable on the post-Phase-60
+ * surface. Both CI (linux) and local (darwin) reproduced the failure
+ * deterministically (CI runs 25129208601 / 25130306536 / 25135979219).
+ *
+ * Phase 66 (v1.9 architectural lock) replaces the paint-observer assertion
+ * with structural DOM queries:
+ *   - The DOM is the source of truth for "what LCP candidate identity exists in this build".
+ *   - We query the LCP-candidate elements DIRECTLY by their structural class signature
+ *     and assert (a) they are visible, (b) their bounding rect is non-empty,
+ *     (c) their top edge is above the fold (top < viewport.innerHeight).
+ *   - This catches the same regressions the previous spec was designed to catch
+ *     (LCP candidate element renamed/moved/removed) without depending on Chrome's
+ *     flaky paint-entry element reference exposure.
+ *
+ * Selector composition note: Tailwind arbitrary-value class tokens contain
+ * literal `[`, `]`, `/`, `.`, `:` characters. Use CSS attribute-token selectors
+ * (`[class~="..."]`) to match by whitespace-separated class tokens without
+ * needing to manually CSS-escape the brackets/slashes.
+ *
+ * If the LCP candidate identity has shifted (element renamed, moved, removed),
+ * one of these locators returns 0 visible matches and this test fails — Phase 58
+ * ships no further until investigated.
+ *
+ * MUST run against `pnpm build && pnpm start` (production server).
  */
 
-type LcpInfo = { selector: string; size: number; startTime: number };
+const MOBILE_VIEWPORT = { width: 375, height: 667 } as const;
+const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 
 /**
- * Attach the PerformanceObserver via initScript BEFORE page navigation, so the
- * observer is live when LCP fires (~550ms) and the entry's .element reference
- * stays valid. Previous attach-after-networkidle pattern returned .element=null
- * because Chrome invalidates the element reference once the entry has settled
- * and the observer is attached "late" (a documented Chrome behavior).
- *
- * The init script writes captured entries to window.__lcpEntries, then the
- * test reads the latest entry via page.evaluate after navigation completes.
+ * Settle paint state in a font/motion-stable posture before measuring DOM
+ * geometry. Mirrors the warm-Anton + reduced-motion ritual used in
+ * tests/v1.8-lcp-candidates.spec.ts and Phase 57 DGN-01 capture so the
+ * structural query runs against the same paint state the LCP candidate was
+ * captured under in `.planning/codebase/v1.8-lcp-diagnosis.md`.
  */
-async function attachLcpObserver(page: Page) {
-  await page.addInitScript(() => {
-    interface CapturedLcp {
-      selector: string;
-      size: number;
-      startTime: number;
-    }
-    (window as unknown as { __lcpEntries: CapturedLcp[] }).__lcpEntries = [];
-    const obs = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        const lcp = entry as PerformanceEntry & { element?: Element; size?: number };
-        if (lcp.element) {
-          const el = lcp.element as Element;
-          const captured: CapturedLcp = {
-            selector: `${el.tagName.toLowerCase()}${el.className ? "." + el.className.trim().split(/\s+/).join(".") : ""}`,
-            size: lcp.size ?? 0,
-            startTime: lcp.startTime,
-          };
-          (window as unknown as { __lcpEntries: CapturedLcp[] }).__lcpEntries.push(captured);
-        }
-      }
-    });
-    obs.observe({ type: "largest-contentful-paint", buffered: true });
-  });
-}
-
-async function readLcp(page: Page): Promise<LcpInfo> {
-  return await page.evaluate(() => {
-    const entries = (window as unknown as { __lcpEntries?: LcpInfo[] }).__lcpEntries ?? [];
-    if (entries.length === 0) {
-      return { selector: "(no-lcp-captured)", size: 0, startTime: 0 };
-    }
-    // The LARGEST candidate is the LCP. Sort by size descending, take first.
-    const sorted = [...entries].sort((a, b) => b.size - a.size);
-    return sorted[0];
-  });
+async function settlePaintState(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.load('700 100px "Anton"'));
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
 }
 
 /**
- * _path_l_decision (2026-04-29):
- *   audit: tests/v1.8-phase58-lcp-guard.spec.ts (both mobile + desktop LCP guards)
- *   scope: lcp-guard test surface — neither mobile nor desktop variant runs in CI
- *     under this decision; both are marked test.fixme until v1.9 structural-test
- *     refactor lands.
- *   original_behavior: both tests run, both expected to PASS by reading
- *     `largest-contentful-paint` PerformanceEntry.element via PerformanceObserver
- *     and asserting className contains expected baseline class tokens.
- *   new_behavior: both tests are test.fixme (reported as skipped, never run).
- *   rationale: This codebase's PR #4 surface ships Phase 60 LCP fast-path with
- *     `content-visibility: auto` on the GhostLabel mobile-LCP candidate (per
- *     components/animation/ghost-label.tsx:25). Empirically confirmed via
- *     diagnostic instrumentation (commit 0049e5f-era investigation):
- *       Mobile DIAG: entries=1 [{"hasElement":false,"size":72352,"startTime":564,...}]
- *       Desktop DIAG: entries=1 [{"hasElement":false,"size":82586,"startTime":548,...}]
- *     Chrome's LCP API consistently reports `entry.element=null` for the
- *     content-visibility:auto-wrapped element ON THIS CODEBASE — observed both
- *     locally (darwin) AND on CI (linux), with the observer attached either
- *     post-navigation or via page.addInitScript pre-navigation. The `.element=null`
- *     pattern is a documented Chrome behavior when the LCP candidate has been
- *     "settled" before the observer extracts the reference, and is exacerbated by
- *     content-visibility:auto's deferred-rendering semantics. The existing test
- *     architecture (live PerformanceObserver assertion) cannot reliably succeed
- *     against the post-Phase-60 LCP fast-path surface.
- *   review_gate: Re-enable when v1.9 phase replaces this assertion with a
- *     STRUCTURAL test — query the DOM directly for [data-ghost-label] (mobile)
- *     and the VL-05 magenta `//` overlay span (desktop) and assert their
- *     classNames contain the expected baseline tokens. Structural testing
- *     catches the same regressions (LCP candidate element renamed/moved) without
- *     depending on Chrome's flaky LCP element reference exposure.
- *   evidence: CI runs 25129208601 (pre-fix, 1500ms timeout) + 25130306536
- *     (5000ms timeout) + 25135979219 (post-fetch-depth fix) all FAILED with
- *     `(no-lcp-captured)`. Local repro on chore/v1.7-ratification @ f013070
- *     against `pnpm build && pnpm start` reproduces the failure deterministically.
- *   ratified_to_main_via: PR #4 (merge/v17-v18-ratification) — companion to
- *     LHCI path_h/path_i a11y ratifications and path_k bundle ratification.
- *     Last preview-CI test loosening this milestone.
+ * Assert the locator points at a single visible element with non-zero geometry
+ * whose top edge sits above the bottom of the viewport. This is the structural
+ * stand-in for "this element was a paintable LCP candidate at first paint".
  */
-test.describe("@v18-phase58-lcp-guard (CIB-05 perturbation check)", () => {
-  test.fixme(true, "_path_l_decision: LCP API reports .element=null on Phase 60 content-visibility:auto surface — refactor as structural test in v1.9");
+async function assertAboveFoldVisible(
+  locator: Locator,
+  viewportHeight: number,
+  label: string
+): Promise<void> {
+  await expect(locator, `${label}: locator must resolve to a visible element`).toBeVisible();
+  const box = await locator.boundingBox();
+  expect(box, `${label}: boundingBox must be non-null`).not.toBeNull();
+  expect(box!.width, `${label}: width must be > 0`).toBeGreaterThan(0);
+  expect(box!.height, `${label}: height must be > 0`).toBeGreaterThan(0);
+  expect(
+    box!.y,
+    `${label}: top edge (${box!.y}) must be above viewport bottom (${viewportHeight})`
+  ).toBeLessThan(viewportHeight);
+}
 
-  test("mobile LCP element matches Phase 57 GhostLabel baseline", async ({ page }) => {
-    await page.setViewportSize({ width: 360, height: 800 });
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await attachLcpObserver(page);
-    await page.goto("/", { waitUntil: "networkidle" });
-    await page.evaluate(() => document.fonts.load('700 100px "Anton"'));
-    await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(500);
+// Honor PLAYWRIGHT_BASE_URL env var so the spec can target a worktree-local
+// production server on a non-default port (e.g. when port 3000 is occupied
+// by another worktree's dev server). Falls through to the playwright.config.ts
+// default (`http://localhost:3000`) when unset.
+if (process.env.PLAYWRIGHT_BASE_URL) {
+  test.use({ baseURL: process.env.PLAYWRIGHT_BASE_URL });
+}
 
-    const lcp = await readLcp(page);
-    // Guard against vacuous pass: empty-entries fallback.
-    expect(lcp.selector, "LCP capture: no entries with .element observed").not.toBe("(no-lcp-captured)");
-    // Phase 57 baseline classes: assert presence of structural classes that
-    // uniquely identify the GhostLabel — sf-display + pointer-events-none + top-1/2.
-    // Selector string is the dot-joined raw className — Tailwind arbitrary
-    // brackets/slashes appear LITERALLY (not CSS-escaped).
-    expect(lcp.selector, `Mobile LCP regressed: got ${lcp.selector}`).toContain("sf-display");
-    expect(lcp.selector).toContain("pointer-events-none");
-    expect(lcp.selector).toContain("top-1/2");
+test.describe("@v18-phase58-lcp-guard (CIB-05 perturbation check, structural)", () => {
+  test("mobile LCP-candidate hero per-character span exists and is above-fold", async ({
+    page,
+  }) => {
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await settlePaintState(page);
+
+    // Phase 66 post-capture mobile LCP candidate: the first painted hero
+    // per-character span (`<span class="sf-hero-deferred inline-block">S</span>`,
+    // first child span of the inline-block overflow-hidden wrapper sequence in
+    // components/blocks/entry-section.tsx:132). Use `[class~="..."]` token
+    // selectors to avoid CSS-escaping the class names.
+    //
+    // .first() picks the first per-character span ("S"), which is the leftmost
+    // glyph and the earliest painted character of the SIGNALFRAME//UX hero
+    // wordmark. If the hero per-character architecture is renamed, removed, or
+    // its class chain drifts, this query returns 0 matches and the toBeVisible
+    // assertion fails — exactly the regression Phase 58 CIB-05 is meant to
+    // catch.
+    const heroChar = page
+      .locator('span[class~="sf-hero-deferred"][class~="inline-block"]')
+      .first();
+
+    await assertAboveFoldVisible(heroChar, MOBILE_VIEWPORT.height, "mobile hero-char");
   });
 
-  test("desktop LCP element matches Phase 57 VL-05 magenta `//` overlay baseline", async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await attachLcpObserver(page);
-    await page.goto("/", { waitUntil: "networkidle" });
-    await page.evaluate(() => document.fonts.load('700 100px "Anton"'));
-    await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(500);
+  test("desktop LCP-candidate VL-05 magenta `//` overlay span exists and is above-fold", async ({
+    page,
+  }) => {
+    await page.setViewportSize(DESKTOP_VIEWPORT);
+    await settlePaintState(page);
 
-    const lcp = await readLcp(page);
-    // Guard against vacuous pass: empty-entries fallback.
-    expect(lcp.selector, "LCP capture: no entries with .element observed").not.toBe("(no-lcp-captured)");
-    // Phase 57 baseline classes for VL-05 overlay span. Plain substring matches —
-    // Tailwind arbitrary brackets ([0.08em], [-0.12em]) appear LITERALLY in the
-    // dot-joined className string.
-    expect(lcp.selector, `Desktop LCP regressed: got ${lcp.selector}`).toContain("top-[0.08em]");
-    expect(lcp.selector).toContain("pr-[0.28em]");
-    expect(lcp.selector).toContain("tracking-[-0.12em]");
+    // Phase 57 desktop LCP target: the visible VL-05 magenta `//` overlay span
+    // at components/blocks/entry-section.tsx:208 (parent
+    // `<div data-anim="hero-slash-moment">`). Class chain is
+    // `relative top-[0.08em] pr-[0.28em] tracking-[-0.12em] text-[1.28em]`.
+    //
+    // CRITICAL DISAMBIGUATION: an *identical* class chain is also rendered
+    // inside the SVG mask <foreignObject> at line 170 (the luminance-mask
+    // companion). The mask span lives inside <defs> and is NEVER painted
+    // (Playwright reports it as not visible). Using `.last()` picks the
+    // visible overlay span (which appears after the mask in DOM order) and
+    // toBeVisible() defends against the case where DOM order ever flips.
+    const slashOverlay = page
+      .locator(
+        'span[class~="relative"][class~="top-[0.08em]"][class~="pr-[0.28em]"][class~="tracking-[-0.12em]"][class~="text-[1.28em]"]'
+      )
+      .last();
+
+    await assertAboveFoldVisible(slashOverlay, DESKTOP_VIEWPORT.height, "desktop VL-05 overlay");
   });
 });

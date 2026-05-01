@@ -1,0 +1,63 @@
+{
+  "capturedAt": "2026-04-30T17:49:39.576Z",
+  "window_start": "2026-04-30T17:12:36Z",
+  "window_end": "2026-04-30T17:18:18.896Z",
+  "sample_count": 5000,
+  "sample_count_lcp": 800,
+  "by_metric": {
+    "LCP": {
+      "p50": 260,
+      "p75": 264,
+      "p99": 356,
+      "count": 800
+    },
+    "CLS": {
+      "p50": 0.0004659794560185185,
+      "p75": 0.0004659794560185185,
+      "p99": 0.0004659794560185185,
+      "count": 900
+    },
+    "INP": {
+      "p50": 136,
+      "p75": 136,
+      "p99": 168,
+      "count": 900
+    },
+    "TTFB": {
+      "p50": 45.200000047683716,
+      "p75": 47.40000009536743,
+      "p99": 72.39999985694885,
+      "count": 800
+    },
+    "FCP": {
+      "p50": 148,
+      "p75": 156,
+      "p99": 236,
+      "count": 800
+    }
+  },
+  "by_viewport": {
+    "mobile": {
+      "count": 0,
+      "p75_lcp_ms": null
+    },
+    "desktop": {
+      "count": 5000,
+      "p75_lcp_ms": 264
+    }
+  },
+  "vrf_07_ios_cohort": {
+    "count": 0,
+    "count_lcp": 0,
+    "median_lcp_ms": null,
+    "p75_lcp_ms": null,
+    "threshold_median_ms": 2000,
+    "verdict": "INSUFFICIENT_SAMPLES"
+  },
+  "thresholds": {
+    "p75_lcp_ms_max": 1000,
+    "sample_count_min": 100
+  },
+  "sample_source": "synthetic-seeded",
+  "verdict": "PASS"
+}

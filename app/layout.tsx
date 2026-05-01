@@ -114,7 +114,12 @@ export default function RootLayout({
   // This blocking script mirrors the initial applyScale() computation so the CSS var is
   // set before first paint and the CSS rule [data-sf-canvas]{transform:scale(var(...))}
   // renders the first frame already scaled. ScaleCanvas's effect keeps running for resize.
-  const scaleScript = `(function(){try{var vw=window.innerWidth,vh=window.innerHeight,DW=1280,SHRINK=435,IDLE=800;var s=vw/DW,hs=Math.min(1,vh/SHRINK),cs=Math.min(s,hs),ns=hs;var m=Math.max(0,Math.min(1,(IDLE-vh)/(IDLE-SHRINK)));var r=document.documentElement.style;r.setProperty('--sf-content-scale',String(s));r.setProperty('--sf-canvas-scale',String(cs));r.setProperty('--sf-nav-scale',String(ns));r.setProperty('--sf-nav-morph',String(m));r.setProperty('--sf-hero-shift','0px');r.setProperty('--sf-frame-offset-x','0px');r.setProperty('--sf-frame-bottom-gap','0px')}catch(e){}})()`;
+  //
+  // Phase 66 ARC-02: when vw < 640 (sm breakpoint, BP=640), all scale vars are
+  // pinned to 1 and nav-morph to 0, mirroring components/layout/scale-canvas.tsx
+  // applyScale() pillarbox branch (BREAKPOINT_PX=640). CLS=0 contract preserved
+  // by exact parity — Pitfall 1 of 66-RESEARCH.md.
+  const scaleScript = `(function(){try{var vw=window.innerWidth,vh=window.innerHeight,DW=1280,SHRINK=435,IDLE=800,BP=640;var s,hs,cs,ns,m;if(vw<BP){s=1;hs=1;cs=1;ns=1;m=0}else{s=vw/DW;hs=Math.min(1,vh/SHRINK);cs=Math.min(s,hs);ns=hs;m=Math.max(0,Math.min(1,(IDLE-vh)/(IDLE-SHRINK)))}var r=document.documentElement.style;r.setProperty('--sf-content-scale',String(s));r.setProperty('--sf-canvas-scale',String(cs));r.setProperty('--sf-nav-scale',String(ns));r.setProperty('--sf-nav-morph',String(m));r.setProperty('--sf-hero-shift','0px');r.setProperty('--sf-frame-offset-x','0px');r.setProperty('--sf-frame-bottom-gap','0px')}catch(e){}})()`;
 
   // Pre-paint canvas-height sync — inlined from public static file per CRT-01 Phase 59.
   // Mirrors the legacy external IIFE: query [data-sf-canvas], read inner
@@ -125,7 +130,14 @@ export default function RootLayout({
   // Pitfall #2/#8: do NOT migrate to next/script strategy="beforeInteractive"
   // (runs after first paint, reintroduces 0.485 CLS). Static literal, no user
   // input interpolated — XSS-impossible by construction.
-  const canvasSyncScript = `(function(){try{var i=document.querySelector('[data-sf-canvas]');if(!i)return;var o=i.parentElement;if(!o)return;var s=window.innerWidth/1280;o.style.height=(i.offsetHeight*s)+'px';}catch(e){}})()`;
+  //
+  // Phase 66 ARC-02: same vw<640 branch as scaleScript — when scale=1 below
+  // sm, outer.height = inner.offsetHeight * 1 (no scaling), matching the
+  // applyScale() pillarbox branch. Without this branch, when --sf-content-scale=1
+  // below sm but this script writes outer.height = inner.offsetHeight * (vw/1280),
+  // outer collapses to 28% of inner while inner renders full-size — massive
+  // scroll-overflow at first paint (Open Question 1 of decision-doc).
+  const canvasSyncScript = `(function(){try{var i=document.querySelector('[data-sf-canvas]');if(!i)return;var o=i.parentElement;if(!o)return;var vw=window.innerWidth,BP=640;var s=vw<BP?1:vw/1280;o.style.height=(i.offsetHeight*s)+'px';}catch(e){}})()`;
 
   return (
     <html

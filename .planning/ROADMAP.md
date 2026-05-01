@@ -10,7 +10,8 @@
 - [x] **v1.5 Redesign** — Phases 28-35 (shipped 2026-04-10)
 - [x] **v1.6 API-Ready** — Phases 36-43 (shipped 2026-04-11)
 - [x] **v1.7 Tightening, Polish, and Aesthetic Push** — Phases 44-56 (shipped 2026-04-13, doc-ratified 2026-04-25 — 50 reqs across 10 phases: 36R + 14O + 1Cp)
-- [ ] **v1.8 Speed of Light** — Phases 57-65 (active; perf-recovery to original CLAUDE.md gate — Lighthouse 100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial; Phases 63-65 added 2026-04-27 to close v1.8-MILESTONE-AUDIT gaps before milestone close)
+- [x] **v1.8 Speed of Light** — Phases 57-65 (shipped 2026-04-29; PR #4 merged commit 2a825cf; 26/29 reqs satisfied with VRF-01/04/05 deferred to v1.9; 8 LHCI + 2 test-spec path_decisions ratified to main as standing rules)
+- [x] **v1.9 Architectural Lock** — Phases 66-70 (feature-complete 2026-04-30; 14/14 reqs Validated — 4 ARC + 3 BND + 2 TST + 2 WMK + 3 VRF; IOU-discharge of v1.8 path_h/i/k/l + ScaleCanvas Track B + v1.8 verification closure; awaiting `/pde:complete-milestone v1.9`)
 
 ## Phases
 
@@ -1019,7 +1020,24 @@ Plans:
   2. `scripts/v1.8-rum-seed-runner.mjs` drives ≥100 sessions against the deployed alias (smoke-tested 15/15 ok in 80s; pipeline mechanically verified at Phase 62 close).
   3. `scripts/v1.8-rum-aggregate.ts` runs *within the Hobby-tier 1h log retention window* and produces a real p75 LCP < 1000ms.
   4. `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json` committed with real (non-synthetic) p75 LCP, replacing the `_v1_9_unblock_recipe`-only stub.
-**Plans**: TBD
+**Plans**: DEFERRED to v1.9 Phase 70 (VRF-05 closure migrated forward at v1.8 archive — see v1.8-MILESTONE-SUMMARY.md)
+
+---
+
+<details>
+<summary>v1.9 Architectural Lock (Phases 66-70) — SHIPPED 2026-04-30</summary>
+
+- [x] Phase 66: ScaleCanvas Track B Architectural Decision (3/3 plans) — completed 2026-04-30
+- [x] Phase 67: Bundle Barrel-Optimization (D-04 Unlock) (2/2 plans) — completed 2026-04-30
+- [x] Phase 68: lcp-guard Structural Refactor (1/1 plan) — completed 2026-04-30
+- [x] Phase 69: Wordmark Cross-Platform Pixel-Diff Alignment (1/1 plan) — completed 2026-04-30
+- [x] Phase 70: v1.8 Verification Closure (VRF-01/04/05) (4/4 plans) — completed 2026-04-30
+
+**Build-order constraints (archived):** Phase 66 ⊥ 68 ⊥ 69 ⊥ 70 parallel-safe; 67 NOT parallel-safe with 66. Phase 70 wall-clock-bound only on field RUM accumulation. Aesthetic preservation hard rule honored (mobile cohort review for Phase 66 dimensional shift; 67/68/69/70 visually invisible per AES-04 ≤0.5%). All v1.8 standing rules (AES-01..04, single-ticker, PF-04, no-runtime-dep) carried forward and preserved.
+
+**Path_decisions retired (4 of 4 v1.8 IOUs):** path_h (Phase 66) · path_i (Phase 66) · path_k (Phase 67) · path_l (Phase 68). Zero new path_decisions outside the requirement-keyed `_wmk_01_decision` precedent (Phase 69) and the JSON-schema `_path_b_decision` for VRF-08 (Phase 70).
+
+</details>
 
 ## Progress
 
@@ -1090,18 +1108,15 @@ Plans:
 | 62. Real-Device Verification + Final Gate | v1.8 | 0/TBD | Not started | - |
 | 63. WPT Real-Device Verification | v1.8 | 0/TBD | Not started | - |
 | 64. Bisect Protection + 3-PR Ship Sequence | v1.8 | 1/3 | In Progress|  |
-| 65. Field RUM Telemetry Activation | v1.8 | 0/TBD | Not started | - |
+| 65. Field RUM Telemetry Activation | v1.8 | DEFERRED | Migrated to v1.9 Phase 70 | — |
+| 66. ScaleCanvas Track B Architectural Decision | v1.9 | 3/3 | Complete    | 2026-04-30 |
+| 67. Bundle Barrel-Optimization (D-04 Unlock) | v1.9 | 2/2 | Complete    | 2026-04-30 |
+| 68. lcp-guard Structural Refactor | v1.9 | 1/1 | Complete    | 2026-04-30 |
+| 69. Wordmark Cross-Platform Pixel-Diff Alignment | v1.9 | 1/1 | Complete    | 2026-04-30 |
+| 70. v1.8 Verification Closure (VRF-01/04/05) | v1.9 | 4/4 | Complete    | 2026-04-30 |
 
 ---
 
-## v1.8 Build-Order Constraints (HARD)
+> **v1.8 + v1.9 Build-Order Constraints (archived):** see `.planning/milestones/v1.8-ROADMAP.md` for the v1.8 Phase 57-65 dependency chain and gap-closure rationale (Phase 65 migrated forward to v1.9 Phase 70 at archive). See `.planning/milestones/v1.9-ROADMAP.md` for the v1.9 Phase 66-70 IOU-discharge sequencing. All v1.8 standing rules (AES-01..04, single-ticker, PF-04, no-runtime-dep) carried forward through v1.9 close.
 
-1. **Phase 57 is HARD prerequisite for all other phases.** LCP element identity (DGN-01) and per-chunk owner attribution (DGN-02) must be confirmed before any optimization commits. Phase 60 plan shape is contingent on DGN-01 output.
-2. **Phase 58 MUST land before Phase 59.** Phase 59 touches the CLS-protection contract (HIGH RISK). Without LHCI gate, regressions caught only at end-milestone.
-3. **AES-01 (AESTHETIC-OF-RECORD.md) is documented in Phase 57; AES-02..04 are cross-cutting standing rules** referenced by every subsequent phase rather than mapped to their own phase. Single-source traceability — see Phase 57 cross-cutting note.
-4. **Phase 60 ⊥ Phase 61 (parallel-safe).** Both depend on Phase 57 audit output, neither on the other. If executed in parallel, separate plans within each phase, not interleaved.
-5. **Phase 59 expects >=3 plans per CRT-05** for clean bisect: sync-script PR, Anton (subset+swap) PR, Lenis PR. Plan-phase must not collapse to a single PR.
-6. **Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60**, not deferred to phase end. RUM 75th-percentile sampling (VRF-05) needs >=24h post-deploy → may extend milestone closure timing.
-7. **Gap-closure dependency chain (Phases 63-65, added 2026-04-27).** Phase 63 (WPT) is independent — runs anytime once `~/.wpt-api-key` is provisioned. Phase 64 (Bisect Protection + 3-PR Ship) MUST precede Phase 65 because Phase 65 (Field RUM) requires `chore/v1.7-ratification` to be merged to `main` so the CIB-05 `/api/vitals` route ships in the fresh prod deploy. Phases 63 ⊥ 64 (parallel-safe). Phase 64 → Phase 65 (strict order).
-
-*Last updated: 2026-04-28 — `/pde:plan-milestone-gaps` rev-3 amended Phase 64 scope to absorb `63.1-COHORT.md §7` carry-over #1 (Pitfall #10 synthetic baseline recalibration / D-09 successor); carry-overs #2/#3/#4 explicitly deferred to v1.9 (Option C lock-in posture). 2026-04-27 — Phases 63-65 added by `/pde:plan-milestone-gaps` to close v1.8-MILESTONE-AUDIT gaps (VRF-01, VRF-04, VRF-05, CRT-05). Original roadmap: 2026-04-25 from research/SUMMARY.md and 26 v1.8 requirements (later recounted to 29).*
+*Last updated: 2026-04-30 — v1.9 Architectural Lock SHIPPED (5 phases / 11 plans / 14 reqs Validated; 4 of 4 v1.8 path_decisions retired; homepage First Load JS 258.9→187.6 KB; lcp-guard structurally deterministic; v1.8 VRF-01/04/05 closed). Archive at `.planning/milestones/v1.9-ROADMAP.md` + `v1.9-REQUIREMENTS.md`. Next: `/pde:new-milestone` for v1.10.*

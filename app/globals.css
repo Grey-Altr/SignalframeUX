@@ -1,8 +1,11 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@source not "../.planning";
+@source "../app";
+@source "../components";
+@source "../lib";
+@source "../hooks";
 @source "../stories";
 
 @custom-variant dark (&:is(.dark *));
@@ -2766,11 +2769,26 @@ html:not(.dark) .sf-mesh-gradient {
    frame is already scaled. ScaleCanvas's useEffect still updates the var on
    resize (CSS re-reads it, transform recomputes).
    Fixes CLS 0.65 @ t=646ms where the wrapper flex-center jumped from the
-   pre-JS unscaled geometry to the post-JS scaled geometry. */
+   pre-JS unscaled geometry to the post-JS scaled geometry.
+
+   Phase 66 ARC-02 (pillarbox): transform applies only above sm (640px).
+   Below sm, --sf-content-scale=1 (set by scaleScript + applyScale pillarbox
+   branch), so the transform would resolve to identity anyway — but wrapping
+   in @media makes the architectural intent explicit + avoids a no-op composite
+   layer below sm (perf neutral or positive). transform-origin + will-change
+   remain unconditional so promotion behavior is consistent across breakpoints
+   in case a future change re-introduces transform.
+   The height-remap rules below collapse cleanly when scale=1
+   (calc(100vh / 1) = 100vh) — no rule change needed (66-RESEARCH §3a). */
 [data-sf-canvas] {
-  transform: scale(var(--sf-content-scale, 1));
   transform-origin: top left;
   will-change: transform;
+}
+
+@media (min-width: 640px) {
+  [data-sf-canvas] {
+    transform: scale(var(--sf-content-scale, 1));
+  }
 }
 
 /* ── Scale Canvas viewport-height remap ────────────────────────────────────
@@ -2806,6 +2824,22 @@ html:not(.dark) .sf-mesh-gradient {
 [data-sf-canvas] .max-h-svh,
 [data-sf-canvas] .max-h-lvh {
   max-height: calc(100vh / var(--sf-content-scale, 1));
+}
+
+/* ── Phase 66 ARC-04 — GhostLabel pseudo-element render ────────────────────
+   Closes path_i (color-contrast). axe-core 4.x explicitly excludes
+   pseudo-element content from color-contrast (pseudo-content is "not in
+   the accessibility tree" per Deque docs). Visual identical to the prior
+   text-node render; the empty <span data-ghost-text> is the host for the
+   pseudo-element, which renders the actual glyph string at the same
+   computed font-size/color/opacity as before.
+   Mobile LCP candidate stability is verified by
+   tests/v1.9-phase66-lcp-stability.spec.ts (Plan 02 Task 6) per RESEARCH
+   Pitfall 2 — pseudo-element-rendered text may not be LCP-eligible, so
+   the new candidate must be a stable above-fold SSR-paintable element.
+   ────────────────────────────────────────────────────────────────────── */
+.sf-ghost-label-pseudo::before {
+  content: attr(data-ghost-text);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
