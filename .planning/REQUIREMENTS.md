@@ -33,10 +33,10 @@
 
 ## SFCombobox (CB) — Phase 72
 
-- [ ] **CB-01**: Single-select with type-ahead filter, keyboard nav (arrow + type-ahead + Enter to select + Esc to close), empty state, loading state, controlled + uncontrolled API; composes existing `SFCommand` (direct import, NOT via barrel) + `SFPopover` + `SFInput`
-- [ ] **CB-02**: Clear/reset action + grouping support (CommandGroup) + active-state styling via `--sfx-*` token classes
-- [ ] **CB-03**: Multi-select variant via `multiple` prop — selected items render as badge chips composing existing `SFBadge` with remove affordance; controlled `value: string[]` API
-- [ ] **CB-04**: Component exported from `sf/index.ts` barrel (Pattern C — pure SF composition); zero new runtime deps
+- [x] **CB-01**: Single-select with type-ahead filter, keyboard nav (arrow + type-ahead + Enter to select + Esc to close), empty state, loading state, controlled + uncontrolled API; composes existing `SFCommand` (direct import, NOT via barrel) + `SFPopover` + `SFInput`
+- [x] **CB-02**: Clear/reset action + grouping support (CommandGroup) + active-state styling via `--sfx-*` token classes
+- [x] **CB-03**: Multi-select variant via `multiple` prop — selected items render as badge chips composing existing `SFBadge` with remove affordance; controlled `value: string[]` API
+- [x] **CB-04**: Component exported from `sf/index.ts` barrel (Pattern C — pure SF composition); zero new runtime deps
 
 ## SFRichEditor (RE) — Phase 73
 
@@ -124,10 +124,10 @@
 | DT-06 | 71 | Complete |
 | DEP-01 | 71 | Complete |
 | TST-03 (SFDataTable) | 71 | Pending |
-| CB-01 | 72 | Pending |
-| CB-02 | 72 | Pending |
-| CB-03 | 72 | Pending |
-| CB-04 | 72 | Pending |
+| CB-01 | 72 | Complete |
+| CB-02 | 72 | Complete |
+| CB-03 | 72 | Complete |
+| CB-04 | 72 | Complete |
 | TST-03 (SFCombobox) | 72 | Pending |
 | RE-01 | 73 | Pending |
 | RE-02 | 73 | Pending |
