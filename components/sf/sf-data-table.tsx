@@ -47,6 +47,9 @@
 //     - "Resolved version: 8.21.3"
 //     - "Measurement command: rm -rf .next/cache .next && ANALYZE=true pnpm build"
 //     - "Measurement date: 2026-05-01"
+//     - "Lazy chunk hosting @tanstack/react-table: 9339.7c1e528bda185d56.js, 73180 raw bytes (19.3 KB gzip) — measured Phase 71 Plan 03 close"
+//     - "SFDataTable component lazy chunk: 7732.b87c4535003bf283.js, 18050 raw bytes (5.2 KB gzip) — sibling of TanStack runtime chunk"
+//     - "Final ratification: Phase 71 Plan 03 close (TST-03 green; production chunk audit OK; BND-08 200 KB green at 187.6 KB)"
 //   review_gate: |
 //     Re-evaluate when @tanstack/react-table v9 reaches stable release
 //     (currently RFC #5834, no release date). Re-pin and re-measure if
