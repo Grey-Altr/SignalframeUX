@@ -66,11 +66,13 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   flexRender,
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
   type RowSelectionState,
+  type PaginationState,
 } from "@tanstack/react-table";
 import { useEffect, useRef, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -85,6 +87,12 @@ import {
   SFInput,
   SFSkeleton,
   SFEmptyState,
+  SFPagination,
+  SFPaginationContent,
+  SFPaginationItem,
+  SFPaginationLink,
+  SFPaginationPrevious,
+  SFPaginationNext,
 } from "@/components/sf";
 // SFScrollArea is NOT in barrel post-Phase-67 — direct import:
 import { SFScrollArea } from "@/components/sf/sf-scroll-area";
@@ -163,6 +171,9 @@ export interface SFDataTableProps<TData>
   /** Controlled global filter input value. Component owns debouncing. */
   globalFilter?: string;
   onGlobalFilterChange?: (value: string) => void;
+  /** Controlled pagination state (DT-03). When omitted, component owns state internally. */
+  pagination?: PaginationState;
+  onPaginationChange?: (state: PaginationState) => void;
   /**
    * @beta virtualize — Future v1.11 extension point.
    *
@@ -189,13 +200,23 @@ export function SFDataTable<TData>(props: SFDataTableProps<TData>) {
     onRowSelectionChange,
     globalFilter: globalFilterProp,
     onGlobalFilterChange,
+    pagination: paginationProp,
+    onPaginationChange,
     virtualize,
     className,
   } = props;
 
-  // -------- DT-01 sort + DT-02 filter state --------
+  // -------- DT-01 sort + DT-02 filter + DT-03 pagination state --------
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // DT-03: pagination state owned by component unless consumer overrides.
+  // Pattern 4 in 71-RESEARCH.md — getPaginationRowModel + page* helpers.
+  const [internalPagination, setInternalPagination] = useState<PaginationState>(
+    {
+      pageIndex: 0,
+      pageSize: pageSize,
+    }
+  );
 
   // DT-02: 300ms debounced global filter. Component owns the debounce window;
   // controlled API fires onGlobalFilterChange ONLY after the debounce settles.
@@ -267,6 +288,9 @@ export function SFDataTable<TData>(props: SFDataTableProps<TData>) {
     ? [selectionColumn, ...userColumns]
     : userColumns;
 
+  // Resolved pagination — controlled prop wins over internal state.
+  const resolvedPagination = paginationProp ?? internalPagination;
+
   // -------- TanStack Table instance --------
   const table = useReactTable({
     data,
@@ -275,11 +299,18 @@ export function SFDataTable<TData>(props: SFDataTableProps<TData>) {
       sorting,
       columnFilters,
       globalFilter: internalGlobalFilter,
+      pagination: resolvedPagination,
       ...(rowSelection !== undefined ? { rowSelection } : {}),
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setInternalGlobalFilter,
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function" ? updater(resolvedPagination) : updater;
+      setInternalPagination(next);
+      onPaginationChange?.(next);
+    },
     onRowSelectionChange: onRowSelectionChange
       ? (updater) => {
           const next =
@@ -293,6 +324,7 @@ export function SFDataTable<TData>(props: SFDataTableProps<TData>) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const rows = table.getRowModel().rows;
@@ -402,6 +434,48 @@ export function SFDataTable<TData>(props: SFDataTableProps<TData>) {
           </SFTableBody>
         </SFTable>
       </SFScrollArea>
+
+      {/* DT-03 pagination — only when more than one page exists */}
+      {table.getPageCount() > 1 && (
+        <SFPagination className="mt-[var(--sfx-space-3)]">
+          <SFPaginationContent>
+            <SFPaginationItem>
+              <SFPaginationPrevious
+                onClick={(e) => {
+                  e.preventDefault();
+                  table.previousPage();
+                }}
+                aria-disabled={!table.getCanPreviousPage()}
+                href="#"
+              />
+            </SFPaginationItem>
+            {Array.from({ length: table.getPageCount() }, (_, i) => (
+              <SFPaginationItem key={i}>
+                <SFPaginationLink
+                  isActive={table.getState().pagination.pageIndex === i}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    table.setPageIndex(i);
+                  }}
+                  href="#"
+                >
+                  {i + 1}
+                </SFPaginationLink>
+              </SFPaginationItem>
+            ))}
+            <SFPaginationItem>
+              <SFPaginationNext
+                onClick={(e) => {
+                  e.preventDefault();
+                  table.nextPage();
+                }}
+                aria-disabled={!table.getCanNextPage()}
+                href="#"
+              />
+            </SFPaginationItem>
+          </SFPaginationContent>
+        </SFPagination>
+      )}
     </div>
   );
 }
