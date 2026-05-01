@@ -40,11 +40,11 @@ import pixelmatch from "pixelmatch";
  *   pnpm exec playwright test tests/v1.9-phase66-aes04-diff.spec.ts --list   --project=chromium  # enumerate (20 total)
  */
 
-// Plan 03 Task 3 deviation (Rule 3 blocking): playwright.config.ts hardcodes
-// baseURL=http://localhost:3000 but other worktrees occupy that port; honor
-// CAPTURE_BASE_URL env override (default :3001) via absolute goto. Pattern
-// matches v1.9-phase66-pillarbox-transform / lcp-stability / arc-axe.
-const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3001";
+// playwright.config.ts hardcodes baseURL=http://localhost:3000; CI's webServer
+// boots on :3000. Default ABS_BASE matches CI + the local default. Worktree
+// users with port collisions can override via CAPTURE_BASE_URL=http://localhost:3001
+// (or any other port). Pattern matches v1.9-phase67-aes04 (CI-aligned default).
+const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3000";
 
 const ROUTES = [
   { path: "/", slug: "home" },

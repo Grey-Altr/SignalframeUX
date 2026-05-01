@@ -1,9 +1,9 @@
 {
   "workflow": {
-    "_auto_chain_active": false
+    "_auto_chain_active": true
   },
   "monitoring": {
-    "session_id": "ef386d3c-6276-407d-9d64-c070c67f300c",
-    "session_start_ts": "2026-04-25T21:09:08.244Z"
+    "session_id": "55e6cce6-a8d5-4398-ae14-7771c71a52b0",
+    "session_start_ts": "2026-04-30T22:13:10.239Z"
   }
 }

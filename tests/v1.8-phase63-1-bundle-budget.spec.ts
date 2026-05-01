@@ -1,5 +1,6 @@
-// Phase 63.1 Plan 01 Wave 0 — bundle budget gate per CONTEXT.md D-04 + CLAUDE.md target.
-// Asserts the homepage (/) First Load JS chunk sum < BUDGET_BYTES (gzip) after pnpm build.
+// Phase 67 Plan 02 BND-06 close — bundle budget gate restored to CLAUDE.md hard
+// constraint after the Phase 67 reshape. Asserts homepage / First Load JS chunk
+// sum < BUDGET_BYTES (gzip) after pnpm build.
 // Uses .next/app-build-manifest.json pages["/page"] for App Router builds (Next 15).
 // Falls back to build-manifest.json pages["/"] for Pages Router format.
 // Skips gracefully if build artifacts are not present.
@@ -8,57 +9,19 @@
 // This matches the "First Load JS" column in Next.js Route (app) build output — which
 // reports the compressed transfer size that users actually download.
 //
-// _path_k_decision (2026-04-29):
-//   audit: homepage First Load JS gzip
-//   scope: tests/v1.8-phase63-1-bundle-budget.spec.ts (CI test surface only)
-//   original_threshold: 200 KB (CLAUDE.md hard constraint, Phase 63.1 Plan 01 wave 0 target)
-//   new_threshold:      260 KB
-//   rationale: PR #4 (merge/v17-v18-ratification) homepage first-load gzip = 258.9 KB
-//     deterministic. Phase 63.1 Plans 01+02+03 collectively shipped (per
-//     project_phase63_1_checkpoint.md memory: "Plans 01+02 shipped, Plan 03 Tasks 0+1
-//     shipped, Task 2 awaiting Catchpoint Path B WPT 3-profile runs" — Task 2 is a
-//     measurement-collection gate, not code work). Bundle breakdown (gzip):
-//       Framework floor (~120 KB): React 53.1 + Next runtime 44.9 + webpack/main 21.9
-//       App code (~139 KB): chunks 4335/7525/8964/4458/page/3228/8843/2307/9046/7369
-//     Two single-commit paths to close the ~58 KB gap were investigated and rejected:
-//       (1) Add @/components/sf to optimizePackageImports → next.config comment explicitly
-//           rejects this because adding any entry "non-additively reshuffles webpack's
-//           splitChunks boundaries across the entire shared chunk graph — dissolving the
-//           post-Phase-61 stable chunk IDs (4335/e9a6067a/74c6194b/7525)" — i.e., violates
-//           the D-04 chunk-id lock that ship/59-* and Phase 61 BND-02 closure depend on.
-//       (2) Move TooltipProvider deeper in the tree → already touched by Phase 63.1 Plan 03
-//           Task 1 per app/layout.tsx comment. Further movement requires re-architecture
-//           of the client-provider tree (TooltipProvider → LenisProvider → SignalframeProvider).
-//     258.9 KB is the genuine post-optimization reality after Plans 01+02+03. The test was
-//     authored expecting Plan 02/03 to close the gap; they did not. Per
-//     feedback_ratify_reality_bias.md ("when doc/test lags shipping code and reality is
-//     working, ratify reality"), threshold is set to ratify the current truth (258.9 KB +
-//     1.1 KB margin = 260 KB). Tight ratification — any commit that bloats further trips
-//     the gate immediately, forcing investigate-before-bump discipline.
-//   evidence: GitHub Actions CI run 25130306536 (test: 258.6 KB); local pnpm exec
-//     playwright test ./tests/v1.8-phase63-1-bundle-budget.spec.ts (258.9 KB) on
-//     merge/v17-v18-ratification @ d7e9781. Chunk fingerprint inspection identified
-//     4335 = Radix ScrollArea (31.1 KB), 7525 = react-remove-scroll (26.0 KB,
-//     pulled in by TooltipProvider in app/layout.tsx), 8964 = GSAP ScrollSmoother
-//     + ScrollTrigger (24.9 KB, core to project per CLAUDE.md).
-//   review_gate: Tighten back to 200 KB when (a) v1.9 introduces a phase that is
-//     allowed to break the D-04 chunk-id lock (e.g., a deliberate barrel-optimization
-//     phase that re-locks new chunk IDs), OR (b) a structural refactor moves the
-//     TooltipProvider out of the root layout boundary, OR (c) a heavy library currently
-//     in initial-bundle (GSAP ScrollSmoother is the candidate) becomes a dynamic import.
-//     Until then, 260 KB is the standing rule. CLAUDE.md "Page weight < 200KB" hard
-//     constraint is documented-deferred to v1.9, NOT abandoned.
-//   ratified_to_main_via: PR #4 (merge/v17-v18-ratification) — first preview-CI test
-//     loosening this milestone (companion to LHCI path_h/path_i a11y ratifications)
+// History: Phase 63.1 ratified 260 KB (path_k); Phase 67 reshape (BND-05/06/07) restored
+// the 200 KB target via @/components/sf optimizePackageImports + DCE of zero-consumer
+// barrel exports + TooltipProviderLazy hydration-gate. The prior path_k threshold ratification retired
+// 2026-04-30; rationale + chunk-ID lock at .planning/codebase/v1.9-bundle-reshape.md.
 
 import { test, expect } from "@playwright/test";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
-const BUDGET_BYTES = 260 * 1024; // 260 KB gzip — see _path_k_decision above
+const BUDGET_BYTES = 200 * 1024; // 200 KB gzip — CLAUDE.md hard constraint, restored Phase 67 (BND-06)
 
-test("Phase 63.1 Plan 01 — homepage First Load JS < 260 KB (post-path_k)", () => {
+test("Phase 67 Plan 02 — homepage First Load JS < 200 KB (BND-06 / CLAUDE.md hard constraint)", () => {
   const nextDir = join(process.cwd(), ".next");
   const appManifestPath = join(nextDir, "app-build-manifest.json");
   const pagesManifestPath = join(nextDir, "build-manifest.json");
@@ -117,13 +80,13 @@ test("Phase 63.1 Plan 01 — homepage First Load JS < 260 KB (post-path_k)", () 
   for (const { file, gzipKB } of breakdown) {
     console.log(`  ${file}: ${gzipKB} KB`);
   }
-  console.log(`Total: ${totalKB} KB (budget: 260 KB, post-path_k)`);
+  console.log(`Total: ${totalKB} KB (budget: 200 KB, post-Phase-67 BND-06)`);
 
-  expect(totalGzipBytes, `Homepage First Load JS is ${totalKB} KB — budget is 260 KB ` +
-    `(post-path_k ratification of Phase 63.1 Plans 01+02+03 reality, see file header ` +
-    `for _path_k_decision rationale). If this fails after a recent commit, the commit ` +
-    `bloated the bundle past the post-Plan-03 baseline — investigate the new commit's ` +
-    `imports rather than bumping the threshold. Run ANALYZE=true pnpm build and inspect ` +
-    `.next/analyze/client.html to identify which chunks grew.`
+  expect(totalGzipBytes, `Homepage First Load JS is ${totalKB} KB — budget is 200 KB ` +
+    `(CLAUDE.md hard constraint, restored at Phase 67 BND-06 close per ` +
+    `.planning/codebase/v1.9-bundle-reshape.md). If this fails after a recent commit, ` +
+    `the commit bloated the bundle past the post-Phase-67 baseline — investigate ` +
+    `the new commit's imports rather than bumping the threshold. Run ANALYZE=true ` +
+    `pnpm build and inspect .next/analyze/client.html to identify which chunks grew.`
   ).toBeLessThan(BUDGET_BYTES);
 });

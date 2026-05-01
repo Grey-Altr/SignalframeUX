@@ -13,13 +13,14 @@ import { test, expect, type Page } from "@playwright/test";
  *   - Cross-resize: live applyScale() ResizeObserver path follows the same branch.
  *
  * Spec runs against the absolute URL via CAPTURE_BASE_URL (default
- * http://localhost:3001 — playwright.config baseURL is hardcoded to :3000 which
- * is occupied by other worktrees; mirrors the Plan 01 Task 4 override pattern).
+ * http://localhost:3000 — matches playwright.config.ts baseURL + CI's webServer
+ * port). Worktree users with port collisions can override via
+ * CAPTURE_BASE_URL=http://localhost:3001.
  *
- * Production build only (`pnpm build && PORT=3001 pnpm start`); see Plan 02 §verify.
+ * Production build only (`pnpm build && pnpm start`); see Plan 02 §verify.
  */
 
-const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3001";
+const ABS_BASE = process.env.CAPTURE_BASE_URL ?? "http://localhost:3000";
 
 const IDENTITY_MATRIX = "matrix(1, 0, 0, 1, 0, 0)";
 
