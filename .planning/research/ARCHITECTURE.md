@@ -1,562 +1,538 @@
-# Architecture Research — v1.8 Speed of Light
+# Architecture Research — v1.10 Library Completeness
 
-**Domain:** LCP/Lighthouse-100 perf recovery for shipped Next.js 15 App Router site (SignalframeUX portfolio)
-**Researched:** 2026-04-25
-**Mode:** Project research — integration architecture (NOT ecosystem survey)
-**Confidence:** HIGH for codebase-specific integration points (file paths, contracts), MEDIUM for Next.js 15 critical-path patterns (verified against current docs), LOW where Lighthouse CI runner choice is open
-
-> Scope discipline: this document does NOT re-investigate framework choices, animation stack, or aesthetic contracts. Those are locked. It only addresses HOW perf-recovery interventions slot into the existing rendering / cascade / ticker chain without breaching the locked contracts.
-
-## Existing Architecture (Reference, Not Re-Researched)
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  CRITICAL PATH (current — Phase 37 measured)                         │
-├──────────────────────────────────────────────────────────────────────┤
-│  HTML stream                                                         │
-│    ├─ inline themeScript        (<script>, ~250B, blocking)          │
-│    ├─ inline scaleScript        (<script>, ~600B, blocking)          │
-│    ├─ Tailwind+app CSS          (render-blocking, ~570ms total)      │
-│    └─ /sf-canvas-sync.js        (external sync, BLOCKING by design)  │
-│         └─ writes outer.style.height pre-paint → CLS=0               │
-│  React hydration                                                     │
-│    ├─ LenisProvider.useEffect   (Lenis init + GSAP ticker hook)      │
-│    ├─ ScaleCanvas.useEffect     (rAF debounced applyScale)           │
-│    ├─ GlobalEffectsLazy         (next/dynamic ssr:false)             │
-│    └─ SignalCanvasLazy          (next/dynamic ssr:false, Three.js)   │
-│  GSAP ticker starts → drives:                                        │
-│    ├─ Lenis.raf(time*1000)                                           │
-│    ├─ ScrollTrigger.update                                           │
-│    └─ All SIGNAL surfaces (single rAF rule)                          │
-│  First SIGNAL frame (currently visible LCP @ 6.5s mobile)            │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-| Locked contract | File-of-record | What perf work MUST NOT break |
-|-----------------|----------------|-------------------------------|
-| Single GSAP ticker | `lib/gsap-core.ts:8-13` | No new rAF loops; `getQualityTier()` mandatory for new SIGNAL |
-| WebGL singleton | `components/layout/signal-canvas-lazy.tsx`, `lib/signal-canvas.ts` | Max 1 SignalCanvas instance (iOS Safari context limit) |
-| `@layer signalframeux` cascade | `app/globals.css`, `dist/signalframeux.css` | Consumer (unlayered) wins; no flash, no SSR magenta |
-| `--sfx-*` vs `--sf-*` prefix split | `app/globals.css`, `components/layout/scale-canvas.tsx:75-81` | Color/duration → `--sfx-*`; sizing/canvas/nav-state → `--sf-*` |
-| Reduced-motion kill switch | `lib/gsap-core.ts`, `components/layout/lenis-provider.tsx:18-21` | All derived motion collapses to 0 with one timeScale flip |
-| Pre-hydration scale write | `app/layout.tsx:91-100` (themeScript + scaleScript inline) | First paint must already be scaled → CLS=0 |
-| Hole-in-the-donut SSR | `components/layout/signalframe-config.tsx` | Children stay Server Components |
-
-## Phase 37 Measured Gaps (HARD, drive intervention scope)
-
-| Gap | Current | Target | Root cause hypothesis |
-|-----|---------|--------|------------------------|
-| LCP (mobile, prod) | 6.5s | <1.0s | Ghost-label `span.sf-display` picked as LCP element after ScaleCanvas transform-box pulls below-fold elements into viewport calc |
-| Render-blocking | 570ms total | <200ms | Two CSS files + `/sf-canvas-sync.js` fetch on critical path |
-| Unused JS | 119 KiB across 4 chunks (`3302`, `e9a6067a`, `74c6194b`, `7525`) | <30 KiB | Unattributed; needs `@next/bundle-analyzer` audit |
-| Main-thread block | 2.4s | <1.5s TTI | Hydration + GSAP ticker registration + Lenis init front-loaded |
-
-## Integration Architecture (Question-by-Question)
+**Domain:** Design system component integration (Next.js 15.5 App Router + SF dual-layer model)
+**Researched:** 2026-04-30
+**Confidence:** HIGH (sourced from shipped codebase files, no external speculation)
 
 ---
 
-### Q1. `/sf-canvas-sync.js` repositioning
+## System Overview
 
-**Current contract** (`public/sf-canvas-sync.js`, 1 line minified):
-```js
-// Reads inner [data-sf-canvas].offsetHeight, multiplies by vw/1280, writes outer.style.height
-// Render-blocking; runs at HTML parse, after React-emitted DOM exists, before first paint.
-// Required: prevents the post-hydration height jump that ScaleCanvas's useEffect would create.
+The existing integration architecture is stable and dictates how the 5 new components slot in:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    BUNDLE DELIVERY LAYER                          │
+│                                                                   │
+│  sf/index.ts barrel  ←  optimizePackageImports  ←  next.config   │
+│  (Pattern A + C)         "@/components/sf"           (8 entries) │
+│                                                                   │
+│  P3 lazy files  (sf-*-lazy.tsx)  ←  next/dynamic(ssr:false)      │
+│  (Pattern B)     NOT in barrel    SFSkeleton loading fallback     │
+└──────────────────────────────────────────────────────────────────┘
+           │                              │
+           ▼                              ▼
+┌──────────────────────┐    ┌─────────────────────────────────────┐
+│  FRAME LAYER         │    │  P3 LAZY CHUNK  (per-component)     │
+│  Server Components   │    │  'use client' required              │
+│  by default          │    │  TanStack Table / Tiptap / etc.     │
+│  'use client' only   │    │  Loaded on first render, not boot   │
+│  if hooks/state      │    └─────────────────────────────────────┘
+└──────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                 SHARED PRIMITIVES                                  │
+│  SFTable  SFCalendar  SFCommand  SFPopover  SFInput               │
+│  SFSkeleton  SFScrollArea(disk-only)  SFBadge  SFButton           │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-The script is **already redundant with `app/layout.tsx:100`** — the inline `scaleScript` in `<head>` already writes `--sf-content-scale`, `--sf-canvas-scale`, `--sf-nav-scale`, `--sf-frame-offset-x`, and `--sf-frame-bottom-gap` before paint. The external `/sf-canvas-sync.js` exists ONLY to set `outer.style.height = inner.offsetHeight * scale` — which the inline script CANNOT do because at `<head>` parse time the body doesn't exist yet.
-
-**Integration options (ranked):**
-
-| Option | Mechanism | Pros | Cons | Recommendation |
-|--------|-----------|------|------|----------------|
-| **A. Static aspect-ratio CSS (RECOMMENDED)** | Move outer height calc to pure CSS using `aspect-ratio` + `width: 100%` so outer height = `inner.height * (vw/1280)` resolves at first style recalc, no JS needed | Eliminates `/sf-canvas-sync.js` entirely; CLS=0 by construction | Requires authoring inner content with predictable intrinsic height OR explicit per-page wrapper height | Phase 1 of v1.8 — biggest single critical-path win |
-| **B. Inline as `<script>` in layout.tsx body** | Move the 1-line IIFE inline as a sibling of `<ScaleCanvas>{children}</ScaleCanvas>` rendered into the body via the existing inline-script pattern | Removes the network roundtrip; still runs pre-paint | Still synchronous JS in critical path; inline injection increases HTML payload by ~200B per request (no caching) | Acceptable fallback if (A) blocked |
-| **C. `next/script` strategy="beforeInteractive"** | Wrap with `<Script src="/sf-canvas-sync.js" strategy="beforeInteractive" />` in App Router | Automatic deduplication, SRI possible | App Router `next/script` `beforeInteractive` strategy has documented limitations — only runs reliably from root layout, must be in `<head>`, NOT body. Won't see `[data-sf-canvas]` because it sits in `<body>`. **Will not work for this use case.** | Reject |
-| **D. Server-compute via Vercel headers + cookie** | Use `next/headers` viewport hint + cookie persistence to inline computed scale | Eliminates JS for repeat visitors | Forces dynamic rendering (already removed in Phase 37 to fix SEO); breaks "all routes static" contract | Reject — directly conflicts with Phase 37 fix |
-
-**Concrete recommendation for v1.8:** Option (A). Refactor `ScaleCanvas` so outer's height is determined by a CSS `aspect-ratio` derived from a build-time-known design height per route (homepage = 6 panels × 100vh + 2 pinned spans documented in the codebase), eliminating the runtime `inner.offsetHeight` read entirely. Files touched: `components/layout/scale-canvas.tsx:72`, `app/globals.css` (new `[data-sf-canvas-outer]` rule), delete `public/sf-canvas-sync.js`. This closes the **render-blocking 570ms** gap by removing a render-blocking external request.
-
-**CLS protection invariant:** the inline `scaleScript` in `app/layout.tsx:100` MUST remain — it sets `--sf-content-scale` which the CSS rule `[data-sf-canvas]{transform:scale(var(--sf-content-scale))}` reads on first paint. Removing it reintroduces CLS 0.65 (the Wave 3 T-01/T-02 finding documented in the Anton-font comment block).
-
-**Sources:**
-- Next.js 15 App Router Script docs (Context7-verified): `beforeInteractive` only fires from root layout, executes before any Next.js code
-- Repository file: `app/layout.tsx:91-100`, `public/sf-canvas-sync.js`, `components/layout/scale-canvas.tsx:42-83`
+**Bundle baseline:** `/` First Load JS = 187.6 KB gzip (12.4 KB under 200 KB hard target).
+**Chunk-ID lock:** D-04 RE-LOCKED at v1.9-bundle-reshape baseline. Any addition to `optimizePackageImports` is REJECTED until a future phase explicitly authorizes another D-04 unlock window.
 
 ---
 
-### Q2. Ghost-label LCP repositioning
+## Component Integration Analysis
 
-**Current state** (`components/animation/ghost-label.tsx`):
-```tsx
-<span
-  data-anim="ghost-label"
-  className="sf-display pointer-events-none select-none absolute leading-none"
-  style={{ fontSize: "clamp(200px, calc(25*var(--sf-vw)), 400px)" }}
->{text}</span>
-```
-- Renders inside `app/page.tsx:50` THESIS section
-- Anton font (~50KB woff2, `display: optional` per `app/layout.tsx:42-51`)
-- Class `sf-display` carries the Anton font binding
-- Positioned absolute at `top-1/2 -translate-y-1/2`, color `text-foreground/[0.04]` (4% opacity but Lighthouse counts ANY paint as LCP)
+### 1. SFDataTable
 
-**Why it wins LCP**: Lighthouse picks the largest in-viewport text/image at FCP. After ScaleCanvas applies `transform: scale(0.x)` to `[data-sf-canvas]`, the THESIS section's translate math places the ghost-label glyphs in the mobile viewport's first frame because the GLSL hero is `ssr: false` and renders blank initially — ghost-label is the first paintable text in the LCP candidate set.
+**RSC vs Client:** Client Component. Sort, filter, and pagination state require `useState`/`useReducer`. URL param state (via `useSearchParams` + `useRouter`) is an option for shareable sort/filter state, but requires `Suspense` boundary wrapping — viable but not mandatory for v1.10.
 
-**Two-track strategy** (one or both per phase):
+**State location decision:** Local `useState` for v1.10 scope. URL params are a consumer concern, not a system default. The SFDataTable prop contract should expose `onSortChange`, `onFilterChange`, `onPageChange` callbacks so consumers can promote state to URL if needed.
 
-**Track A — Force ghost-label to paint instantly:**
+**Composition with SFTable:** SFDataTable EXTENDS, does not replace SFTable. SFTable remains the simple semantic-HTML primitive for static data. SFDataTable wraps it: TanStack Table's `flexRender()` output feeds into `<SFTable>`, `<SFTableHeader>`, `<SFTableRow>`, `<SFTableHead>`, `<SFTableCell>` — the existing styled primitives become the render surface. Zero new table DOM styling needed.
 
-| Intervention | File | Mechanism | Closes |
-|--------------|------|-----------|--------|
-| **Anton preload** | `app/layout.tsx` `<head>` | `<link rel="preload" href="/fonts/Anton-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" fetchPriority="high">` | LCP 6.5s → expected ~3s mobile (font fetch parallelized) |
-| **`size-adjust` + `ascent-override`** | `app/layout.tsx:42-51` localFont options | Add `adjustFontFallback: { ascentOverride, descentOverride, sizeAdjust }` to match Anton metrics; eliminates fallback shift entirely so `display: swap` becomes safe | Allows changing `display: optional` → `display: swap` without CLS, which makes Anton paint on first visit (currently first-visit users get fallback per `optional` policy) |
-| **`fetchPriority="high"` on the font link** | layout.tsx | Already supported by Next.js localFont — inspect emitted `<link>` and ensure the preload tag carries it | Bumps font fetch ahead of CSS (Chrome 102+) |
+**Virtualization decision:** SFScrollArea was barrel-DCE'd in Phase 67 (barrel re-export removed; implementation file `components/sf/sf-scroll-area.tsx` still on disk). For v1.10 SFDataTable: use `sf-scroll-area.tsx` via direct import (not barrel) for the scrollable container. TanStack Virtual (`@tanstack/react-virtual`) is a SEPARATE optional dep from TanStack Table — do NOT bundle it by default. SFDataTable virtualization (DT-04/DT-05) should be a lazy variant: `SFDataTableVirtual` using the same P3 lazy pattern. TanStack Virtual is ~4 KB gz; if bundled eagerly it still fits under 200 KB, but lazy is cleaner since most table consumers won't need it.
 
-**Track B — Push another element into LCP candidate position:**
+**New dep required:** `@tanstack/react-table` v8 (TanStack Table). Requires `_dep_01_decision` block. Bundlephobia: ~14 KB gz. This pushes `/` First Load JS only if SFDataTable is eagerly imported — it MUST be P3 lazy.
 
-| Intervention | File | Mechanism | Trade-off |
-|--------------|------|-----------|-----------|
-| **Hero `<h1>` LCP candidate** | `components/blocks/entry-section.tsx:122-133` | The h1 already exists with `sf-hero-deferred` class on each char. Lighthouse currently doesn't pick it because `opacity: 0.01` is below LCP threshold. Move opacity reveal earlier (instant first frame, then GSAP reveals chars within) | Conflicts with current "char-by-char reveal" animation — needs page-animations.tsx coordination |
-| **Add explicit `width`/`height` to GhostLabel** | ghost-label.tsx | `width` + `height` attributes hint Lighthouse for stable LCP detection | Cosmetic; doesn't change which element wins |
-| **`content-visibility: auto`** on THESIS section | app/page.tsx:42-60 wrapper | Skips render until in-viewport; ghost-label drops out of FCP candidate set | RISK: `content-visibility: auto` interacts badly with GSAP ScrollTrigger pin/scrub — verify behavior on `pinned-section.tsx` first |
+**P3 lazy decision:** YES. P3 lazy mandatory. `sf-data-table-lazy.tsx` is the public API. The main `sf-data-table.tsx` is never in the barrel.
 
-**ScaleCanvas transform-box behavior**: The inner `[data-sf-canvas]` has `transform-origin: top left` (`scale-canvas.tsx:128`). LCP candidate detection uses transformed bounding boxes, so a scale of 0.3 on mobile means the THESIS ghost-label's translated position lands in the visible 0–100vh band even though pre-transform it sits at e.g. y=2400px. **`transform-box: fill-box`** would not help — the issue is the cascade of section heights × content scale, not the box reference.
+**Registry entry:**
+- `meta.layer`: `"frame"` (sorting/filtering is structural behavior, not expressive)
+- `meta.pattern`: `"B"` (lazy, P3)
+- `meta.heavy`: `true`
+- `registryDependencies`: `["table"]` (shadcn table base)
+- `dependencies`: `["@tanstack/react-table"]`
 
-**LCP suppression hazard (carry-forward from v1.5)**: `feedback_visual_verification.md` and STATE.md v1.5 carry-forward both flag: "Hero heading must NOT use `opacity: 0` as start state. Use `opacity: 0.01` or `clip-path` reveal." This applies to any reveal pattern in v1.8. The hero `<h1>` already follows this — verify no regressions when changing reveal timing.
+**Build order dependency:** Needs no shared primitive to land first. SFTable already exists. SFScrollArea is accessible via direct import. Phase 71 can proceed immediately.
 
-**Concrete recommendation for v1.8:** Run BOTH tracks. Track A is mechanical (3 files, near-zero risk). Track B (h1 elevation to LCP) is the durable fix — pair with a small `page-animations.tsx` change so the h1 paints at opacity 1 immediately, with chars revealing via `clip-path` instead of opacity.
-
-**Files touched:**
-- `app/layout.tsx` (Anton preload + adjustFontFallback)
-- `components/animation/ghost-label.tsx` (potential `content-visibility` + width/height)
-- `components/blocks/entry-section.tsx:122-133` (h1 reveal mechanism)
-- `components/layout/page-animations.tsx` (char-reveal timeline change)
-
-**Sources:**
-- web.dev/lcp 2025 guidance, Next.js 15 localFont docs (Context7-verified)
-- Repo: `app/layout.tsx:42-51`, `components/animation/ghost-label.tsx:13-22`
+**Files produced:**
+- `components/sf/sf-data-table.tsx` (main impl, 'use client', NOT in barrel)
+- `components/sf/sf-data-table-lazy.tsx` (next/dynamic wrapper, public API)
+- No modification to `sf/index.ts`
 
 ---
 
-### Q3. Bundle topology — surfacing 119 KiB unused
+### 2. SFCombobox
 
-`@next/bundle-analyzer@16.2.2` is **already installed and wired** (`next.config.ts:2-6`). Activated via `ANALYZE=true pnpm build`. STATE.md v1.3 carry-forward already mandates running this after every P1 component.
+**RSC vs Client:** Client Component. Open/closed state for the popover and the search/filter state for the command list both require `useState`. No way around it.
 
-**Per-chunk attribution workflow:**
+**Composition pattern:** SFCombobox is Pattern C (pure-SF construction) that composes existing SF primitives — it does NOT add new Radix primitives. The architecture is:
 
 ```
-1. ANALYZE=true pnpm build
-   → emits .next/analyze/{client,server,edge}.html
-2. For each unused chunk in {3302, e9a6067a, 74c6194b, 7525}:
-   a. Open client.html, locate chunk by name
-   b. Inspect contained modules (treemap)
-   c. Cross-reference module path against importer graph
-3. Per-route attribution:
-   pnpm next build --debug 2>&1 | grep -A 5 "Page                "
-   → maps chunks to routes
+SFCombobox
+  └── SFPopover (existing — sf-popover.tsx)
+        ├── SFPopoverTrigger
+        │     └── SFButton or SFInput (trigger surface)
+        └── SFPopoverContent
+              └── SFCommand (existing — sf-command.tsx, direct import)
+                    ├── SFCommandInput (search)
+                    └── SFCommandList
+                          ├── SFCommandEmpty
+                          └── SFCommandGroup
+                                └── SFCommandItem (per option)
 ```
 
-**Probable owners** (LOW confidence — needs analyzer run to confirm):
+**Critical barrel note:** `SFCommand` is explicitly NOT in the barrel (see `sf/index.ts` line 70-74: "cmdk (~12 kB gz) + nested radix-dialog/primitives add up"). SFCombobox must import from `"@/components/sf/sf-command"` directly.
 
-| Chunk hash | Likely owner | Reasoning |
-|------------|-------------|-----------|
-| `3302` (largest unused) | `radix-ui` umbrella import | `radix-ui@1.4.3` is the single-package umbrella; tree-shaking depends on per-primitive subpath imports. If any SF wrapper imports `from "radix-ui"` instead of `from "radix-ui/react-X"`, the entire bundle ships |
-| `e9a6067a` | `cmdk` (CommandPalette) | `command-palette-lazy.tsx` exists but if any non-lazy route imports CommandPalette directly, the lazy boundary leaks |
-| `74c6194b` | `shiki` core | `shiki@4.0.2`, used by code blocks in `/inventory`. If imported in shared layout, leaks to homepage. Verify via `grep -r "from \"shiki\"" components/ app/` |
-| `7525` | `date-fns` | `date-fns@4.1.0` only used by `react-day-picker` (Calendar). Calendar is `next/dynamic ssr:false` per STATE.md v1.3 — verify no leak |
+**Async data contract:** The prop interface should accept either `options: Array<{value: string; label: string}>` (sync) or `onSearch: (query: string) => Promise<Array<{value: string; label: string}>>` (async). The async path requires an internal loading state with SFSkeleton fallback inside the command list. This is the only novel architectural element.
 
-**Tree-shaking failure detection:**
+**No new dep:** SFCombobox is zero new runtime dep. All building blocks exist: `cmdk` (already in stack), `radix-ui` Popover (already in stack), SFCommand and SFPopover (already authored). Only composition code is new.
 
-```bash
-# Existing tooling (already shipped in scripts/):
-pnpm tsx scripts/verify-tree-shake.ts   # consumer-import probe
-pnpm tsx scripts/verify-bundle-size.ts  # asserts gzip budget
+**P3 lazy decision:** NO. SFCombobox does not introduce a heavy dep. But it composes SFCommand which pulls `cmdk` (~12 KB gz). The `cmdk` chunk is already handled via `optimizePackageImports: ["cmdk"]` — it routes to a lazy per-route chunk, not the homepage First Load JS. SFCombobox itself can live in the barrel (exported from `sf/index.ts`) without impacting homepage bundle because it imports from the direct path, not the barrel, for SFCommand.
 
-# Add for v1.8:
-pnpm tsx scripts/audit-chunk-attribution.ts  # NEW — maps chunks → first-importing route
-```
+**Barrel rule exception check:** SFCombobox imports `SFCommand` from the direct file path. SFCommand is not in the barrel. Therefore SFCombobox in the barrel does NOT eagerly pull `cmdk` into the homepage bundle. SAFE to barrel-export.
 
-**Code-split candidates beyond Calendar/Menubar:**
+**Registry entry:**
+- `meta.layer`: `"frame"`
+- `meta.pattern`: `"C"` (pure-SF composition, no Radix base of its own)
+- `meta.heavy`: `false`
+- `registryDependencies`: `["popover", "command", "input", "button"]`
 
-| Component | File | Current loading | Split mechanism |
-|-----------|------|-----------------|-----------------|
-| `SignalOverlay` (Shift+S debug) | `components/animation/signal-overlay.tsx` | Already wrapped via `signal-overlay-lazy.tsx` — VERIFY barrel doesn't leak | Confirm lazy |
-| `CommandPalette` | `components/layout/command-palette.tsx` | `command-palette-lazy.tsx` exists | Verify import path everywhere uses `-lazy` |
-| `InstrumentHUD` | `components/layout/instrument-hud.tsx` | Mounted in layout.tsx:151 — eager | Move behind a Shift+I gate; lazy import on activation |
-| `CheatsheetOverlay` | `components/layout/cheatsheet-overlay.tsx` | layout.tsx:130 — eager | Same pattern as InstrumentHUD |
-| `ProofShader`, `SignalMesh`, `TokenViz`, `ParticleFieldHQ` | `components/animation/*-lazy.tsx` | Already lazy | Verify scene-by-scene split (currently bundled in WebGL umbrella?) |
+**Build order dependency:** Needs SFCommand (exists), SFPopover (exists), SFInput (exists), SFButton (exists). No blocker. Can follow Phase 71 immediately as Phase 72.
 
-**Storybook leak check** (from question 5 — relevant here too):
-```bash
-# Storybook stories should NOT ship in main bundle. Verify:
-grep -r "\.stories\." components/ | grep -v node_modules
-# If stories import from app/ or components/sf/ via paths Webpack/Turbopack picks up
-# at build time, they leak. pnpm build-storybook is separate; main `pnpm build` should
-# emit zero story bytes.
-```
-
-**Concrete recommendation for v1.8:** Phase 1 of v1.8 is `ANALYZE=true pnpm build` + write `scripts/audit-chunk-attribution.ts`. No optimization work begins until ownership is mapped. This avoids the v1.7 anti-pattern where effects shipped before measurement.
-
-**Files touched:**
-- `scripts/audit-chunk-attribution.ts` (NEW)
-- Potentially `components/sf/index.ts` (barrel export hygiene)
-- Per-component lazy boundary fixes (TBD by analyzer output)
-
-**Closes:** Unused JS budget 119 KiB → target <30 KiB
+**Files produced:**
+- `components/sf/sf-combobox.tsx` ('use client', exported from barrel)
+- No lazy wrapper needed
 
 ---
 
-### Q4. GSAP ticker / Lenis on critical path
+### 3. SFRichEditor
 
-**Current sequence** (`components/layout/lenis-provider.tsx:17-63`):
-```
-hydrate → useEffect runs →
-  matchMedia('(prefers-reduced-motion: reduce)') check (skip if reduced) →
-  new Lenis({ ... }) →
-  gsap.ticker.add(tickerCallback) →
-  gsap.ticker.lagSmoothing(0)
-```
+**RSC vs Client:** Client Component. Tiptap requires the browser DOM for ProseMirror. The editor instance lives inside the component via `useEditor()` hook. No SSR path is possible — this is the most strictly client-bound component in the set.
 
-GSAP ticker is the **single rAF loop rule** — adding deferred imports must not introduce a second ticker. `lib/gsap-core.ts:8-13` registers plugins at module top-level; SSR guard via `"use client"` directive per Phase 41 (`feedback_pde_not_gsd.md` cross-ref via STATE.md).
+**Controlled vs uncontrolled:** Tiptap's `useEditor()` is inherently uncontrolled (the editor IS the state). Expose a controlled-compatible contract via:
+- `defaultContent?: string | JSONContent` (initial value, uncontrolled)
+- `content?: string | JSONContent` (controlled — syncs editor on change)
+- `onUpdate?: (output: EditorOutput) => void` (change callback)
 
-**Hydration deferral options:**
+The `EditorOutput` type should carry all three formats simultaneously: `{ html: string; json: JSONContent; text: string }` — let the consumer choose. Do NOT force a single output format at the component API level.
 
-| Option | Mechanism | TTI impact | Risk |
-|--------|-----------|-----------|------|
-| **A. `requestIdleCallback` wrap inside useEffect** | Defer Lenis init by 1-2 frames using `requestIdleCallback(initLenis, { timeout: 100 })` | Saves ~200ms TTI by yielding to first paint | Lenis scroll-restoration race (already documented as minor tech debt) — defer makes the race window slightly larger, not fundamentally different |
-| **B. Defer `gsap.ticker.lagSmoothing(0)` only** | Move the lagSmoothing call to first scroll/interaction event | Minor TTI win | Marginal; not worth complexity |
-| **C. `next/dynamic` with `ssr: false` for LenisProvider** | Wrap LenisProvider via dynamic import in layout.tsx | Removes Lenis JS from initial HTML payload | Children of LenisProvider become Client Components — RISK: violates hole-in-the-donut SSR contract |
-| **D. Intersection-based ScrollTrigger init** | Currently `ScrollTrigger.update` is wired immediately. Defer until first scroll | Saves ScrollTrigger.refresh cost on hydrate | Breaks scroll-restoration on reload |
+**Tailwind v4 @theme integration:** Tiptap's editor content renders inside a ProseMirror-managed `<div>` with `.ProseMirror` class. SF styling of editor content requires a `@layer signalframeux` rule targeting `.ProseMirror` children (headings, paragraphs, lists, blockquotes). This is a globals.css addition, not a component-level concern. Use `--sfx-*` token references inside these rules. Anti-pattern: do NOT inject Tiptap's bundled CSS — use only SF tokens.
 
-**Concrete recommendation for v1.8:** Option (A). Wrap the Lenis instantiation block in `lenis-provider.tsx:23-44` with `requestIdleCallback`. Keep the matchMedia check synchronous (cheap). Files touched: `components/layout/lenis-provider.tsx:17-63` only.
+**New dep required:** `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`. Requires `_dep_02_decision` block. Bundlephobia: Tiptap starter-kit ~48 KB gz (includes ProseMirror core). This is the largest single new dep in v1.10 — P3 lazy is not optional, it's mandatory.
 
-**SSR plugin guard sanity check**: Phase 41 already wrapped `gsap.registerPlugin()` in `typeof window` checks. Verify this is honored in:
-- `lib/gsap-core.ts` ✓ (file is `"use client"`)
-- `lib/gsap-split.ts`, `lib/gsap-flip.ts`, `lib/gsap-draw.ts`, `lib/gsap-plugins.ts` — verify all carry `"use client"` or window guards.
+**P3 lazy decision:** YES. Mandatory. Tiptap's bundle cannot touch First Load JS. `sf-rich-editor-lazy.tsx` is the public API; the loading fallback should be an SFSkeleton with a fixed height matching the editor container.
 
-**Lenis scroll-restoration race**: The v1.2 minor tech debt entry (PROJECT.md "Lenis vs window.scrollTo race on scroll restoration (rAF mitigates)") becomes more visible if Lenis init is deferred. Mitigation: ensure the deferral is bounded (`{ timeout: 100 }` so even if browser is busy, Lenis comes up within 100ms).
+**Toolbar architecture:** Keep the toolbar as a sub-component (`SFRichEditorToolbar`) authored inside `sf-rich-editor.tsx`. The v1.10 scope is "limited toolbar" (RE-02): bold, italic, heading levels, ordered/unordered lists, blockquote, link. Do NOT expose Tiptap's extension system directly through the SF API — accept an `extensions?: Extensions` pass-through prop for consumers who need to extend.
 
-**Closes:** Main-thread block 2.4s → target <1.5s
+**Registry entry:**
+- `meta.layer`: `"frame"` (editor is structural; consumers wire their own SIGNAL effects)
+- `meta.pattern`: `"B"` (lazy, P3)
+- `meta.heavy`: `true`
+- `registryDependencies`: `["button", "separator", "tooltip"]`
+- `dependencies`: `["@tiptap/react", "@tiptap/pm", "@tiptap/starter-kit"]`
 
----
+**Build order dependency:** No shared primitive needed first. Standalone dep. Phase 73 can proceed after Phase 72 completes.
 
-### Q5. CSS render-blocking budget
-
-**Current emitted CSS** (estimate from build output structure):
-
-| File | Source | Likely size | Render-blocking? |
-|------|--------|-------------|------------------|
-| `_next/static/css/[hash].css` | Tailwind v4 emit from `app/globals.css` | ~80-120KB | YES |
-| `_next/static/css/[hash].css` | Component CSS modules / `@theme inline` derivatives | ~20-40KB | YES |
-| `dist/signalframeux.css` | Library build output (consumer-side only) | N/A | Not loaded by app — separate `pnpm build:lib` artifact |
-
-The v1.7 contract (`app/globals.css`) has `@theme inline` aliasing `--color-*` → `--sfx-*` and `@layer signalframeux` wrapping is in `dist/` only — app globals are unlayered. This means:
-
-- App CSS is fully unlayered → ships at standard cascade weight, not deferrable via layer order tricks
-- `--sfx-*` derivations in `app/globals.css` (12 derived properties from `updateSignalDerivedProps`) are CSS variables — cheap, no critical-CSS extraction needed for them
-
-**Critical CSS inlining options:**
-
-| Option | Mechanism | Win | Risk |
-|--------|-----------|-----|------|
-| **A. Next.js 15 native critical CSS (default behavior)** | Next.js 15 already inlines critical CSS for App Router by default | Already on | None — verify it's actually firing via `view-source` of prod HTML |
-| **B. Manual above-the-fold CSS extraction** | Extract `entry-section.tsx` + nav + scale-canvas styles into inline `<style>` in layout.tsx | ~100ms FCP | Maintenance burden; styles drift |
-| **C. Split `app/globals.css` into critical + deferred** | Create `app/globals-critical.css` (tokens, layout primitives, hero-relevant utilities) + defer the rest via `<link rel="stylesheet" media="print" onload="this.media='all'">` | ~150ms FCP | Tailwind v4 `@theme` block must stay in critical (it defines all CSS vars); risks splitting `@layer` cascade |
-| **D. Move `.sf-mesh-gradient`, `.sf-circuit`, halftone, VHS classes to lazy CSS** | These v1.7 effects ship CSS even when off-route | ~30-60KB CSS savings | Requires per-route CSS loading — not currently architected |
-
-**Concrete recommendation for v1.8:** Verify (A) is firing via prod HTML inspection. If yes, attribute the 570ms to (A1) Anton font fetch + (A2) `/sf-canvas-sync.js` — already addressed in Q1 and Q2. Defer (C)/(D) to a v1.9 if (A1+A2+Q1) doesn't recover the budget.
-
-**Storybook story leak check**:
-```bash
-# 61 stories per v1.7 ship — verify isolation:
-grep -r "import.*\.stories" components/ app/ --include="*.tsx" --include="*.ts"
-# Expected: zero hits in app/ or components/ outside of .stories. files
-```
-`pnpm build-storybook` is a separate command (`package.json:scripts:build-storybook`) — main `next build` should not include stories. Verify via analyzer chunk inspection (Q3).
-
-**`@layer signalframeux` cascade**: Distinction matters for Q3 not Q5 — the layer wrapper is in `dist/signalframeux.css` (consumer library distribution), NOT in the app's emitted CSS. App `globals.css` is unlayered by design. This is correct and shouldn't change.
-
-**Closes:** Render-blocking 570ms → target <200ms (combined with Q1 `/sf-canvas-sync.js` removal)
+**Files produced:**
+- `components/sf/sf-rich-editor.tsx` ('use client', NOT in barrel)
+- `components/sf/sf-rich-editor-lazy.tsx` (next/dynamic wrapper, public API)
+- `app/globals.css` additions: `.ProseMirror` scoped rules under `@layer signalframeux`
 
 ---
 
-### Q6. Lighthouse CI integration
+### 4. SFFileUpload
 
-**Current state** (`scripts/launch-gate.ts`, 110 lines):
-- Runs `lighthouse@13.1.0` against a URL
-- 3 runs, takes worst score per category
-- Writes audit JSON to `.planning/phases/35-performance-launch-gate/`
-- **Advisory only** — comment at line 6: "It is NOT wired into CI"
-- Invoked manually: `pnpm tsx scripts/launch-gate.ts --url <prod-or-preview>`
+**RSC vs Client:** Client Component for the drag-drop surface (requires `dragover`, `drop` event listeners) and progress display (requires `useState` for progress). The upload action itself can be a React 19 Server Action.
 
-**CI workflow** (`.github/workflows/ci.yml`, 41 lines):
-- Runs lint, vitest, Playwright on `push:main` + PR
-- **No Lighthouse step**
+**React 19 form action integration:** React 19's `useActionState` (successor to `useFormState`) is the correct pattern. The SFFileUpload component wraps a `<form action={serverAction}>` with:
+- `useActionState(action, initialState)` for pending/error state
+- `data-[pending]` attribute on the drop zone for CSS-driven pending state
+- A `progressToken` prop for consumers using streaming progress via `ReadableStream` from the server action
 
-**Integration architecture options:**
+**Progress reporting pattern:** Server Actions in Next.js 15 do not support streaming responses natively (they return a single value). The correct architecture for progress is a separate API route (`/api/upload`) using `ReadableStream` + `EventSource` or `fetch` with streaming, NOT Server Actions. SFFileUpload should accept either:
+- `action: string` (URL for streaming fetch-based upload, progress via `onProgress`)
+- `serverAction: (formData: FormData) => Promise<UploadResult>` (no progress, simpler)
 
-| Option | Runner | Trigger | Pros | Cons |
-|--------|--------|---------|------|------|
-| **A. `treosh/lighthouse-ci-action@v12` against Vercel preview URL** | GitHub Action | PR opened/updated → wait for Vercel preview → run LH | True end-to-end; matches prod build; PR comment integration | Requires Vercel deployment hook; preview URL discovery via Vercel API or `actions/github-script` |
-| **B. `lhci autorun` against `next start` in CI** | `@lhci/cli` Docker | Every PR | No external dep on Vercel | CI runs LH on GitHub-hosted runner — known to be 30-50% slower than emulated mobile target, leading to false fails. Existing `launch-gate.ts` already mitigates via "worst of 3" pattern — this would inherit but at cost |
-| **C. Hybrid — `launch-gate.ts` upgraded + GH Action calls it** | Existing script + new workflow | PR + `workflow_dispatch` | Reuses existing tooling; minimum drift | Need to teach the script to fetch Vercel preview URL via `vercel.json` or env var |
+Expose both via the prop contract. Do not conflate them.
 
-**Budget enforcement** (`.lighthouseci/lighthouserc.json` standard format, RECOMMENDED with Option A or C):
+**No new dep:** SFFileUpload uses only the browser File API, `DragEvent`, and `fetch`. No external dep required.
 
-```json
-{
-  "ci": {
-    "collect": {
-      "url": ["${LHCI_PREVIEW_URL}"],
-      "numberOfRuns": 3,
-      "settings": { "preset": "desktop" }
-    },
-    "assert": {
-      "assertions": {
-        "categories:performance": ["error", { "minScore": 1.0 }],
-        "categories:accessibility": ["error", { "minScore": 1.0 }],
-        "categories:best-practices": ["error", { "minScore": 1.0 }],
-        "categories:seo": ["error", { "minScore": 1.0 }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 1000 }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0 }],
-        "interactive": ["error", { "maxNumericValue": 1500 }]
-      }
-    },
-    "upload": { "target": "temporary-public-storage" }
+**Error boundary pattern:** SFFileUpload handles its own error states via internal `useState`. Do NOT require consumers to wrap in `<ErrorBoundary>` — errors from upload failure are UX states, not React render errors. Return `{ status: 'error'; message: string }` in the result type.
+
+**P3 lazy decision:** NO. SFFileUpload has no heavy dep. It can live in the barrel. Bundle delta should be < 5 KB (SCAFFOLDING.md rule for FRAME-only components). It is pure TypeScript + JSX + browser APIs.
+
+**Registry entry:**
+- `meta.layer`: `"frame"`
+- `meta.pattern`: `"C"` (pure-SF construction, no Radix base)
+- `meta.heavy`: `false`
+- `registryDependencies`: `["button", "progress", "label"]`
+
+**Build order dependency:** Uses SFProgress (exists), SFButton (exists), SFLabel (exists). No blocker. But a shared `useFileUpload` hook pattern (if extracted) would be usable by both SFFileUpload and any consumer. Recommend keeping it internal for v1.10 — extract to `hooks/` only if a second consumer emerges.
+
+**Files produced:**
+- `components/sf/sf-file-upload.tsx` ('use client', exported from barrel)
+
+---
+
+### 5. SFDateRangePicker
+
+**RSC vs Client:** Client Component. Date range selection state (`{ from: Date | undefined; to: Date | undefined }`) requires `useState`. The calendar must be mounted in the browser (SFCalendar is already P3 lazy + ssr:false). SFDateRangePicker itself needs 'use client'.
+
+**Composition with existing SFCalendar:** SFDateRangePicker composes `SFCalendarLazy` (already exists at `components/sf/sf-calendar-lazy.tsx`) by passing `mode="range"` and `selected={dateRange}` to the underlying react-day-picker `Calendar`. No modification to `sf-calendar.tsx` needed — the range prop is already part of react-day-picker's API and flows through the existing `SFCalendarProps` passthrough (`type SFCalendarProps = React.ComponentProps<typeof Calendar>`).
+
+**Popover wrapper:** The calendar dropdown is anchored via SFPopover (existing). Architecture:
+
+```
+SFDateRangePicker ('use client')
+  └── SFPopover
+        ├── SFPopoverTrigger
+        │     └── SFButton (displays formatted date range)
+        └── SFPopoverContent
+              └── SFCalendarLazy (mode="range", ssr:false)
+```
+
+**Time picker primitive question:** The v1.10 scope includes a "time variant" (DR-03). A time picker is NOT a shared primitive that SFRichEditor needs — the date-link feature in a rich editor is a different interaction model. Do NOT extract a `SFTimePicker` primitive ahead of v1.10 scope. Instead, author a `SFTimeInput` sub-component directly inside `sf-date-range-picker.tsx` using `<SFInput type="time">` (the browser native time input, styled with SF tokens). This satisfies DR-03 without introducing a new primitive.
+
+**Output format decision:** Expose `Date` objects in the prop contract (`value: { from?: Date; to?: Date }`), not ISO strings or unix timestamps. Formatting is a consumer concern. Include a `locale` prop (forwarded to react-day-picker) and a `formatDisplay?: (from: Date, to: Date) => string` prop for custom trigger label formatting.
+
+**P3 lazy decision:** YES, but indirectly. SFDateRangePicker itself is lightweight, but it mounts `SFCalendarLazy` which is P3 lazy (react-day-picker). The outer SFDateRangePicker shell can be in the barrel — the heavy dep is already deferred inside `SFCalendarLazy`. However, since SFPopover + SFDateRangePicker together with calendar create a composed unit that most consumers will use together, and `react-day-picker` is already in `optimizePackageImports`, the lazy boundary is already handled. SFDateRangePicker can be barrel-exported.
+
+**Registry entry:**
+- `meta.layer`: `"frame"`
+- `meta.pattern`: `"C"` (pure-SF composition — no single Radix base, composes multiple SF primitives)
+- `meta.heavy`: `false` (heavy dep is inside SFCalendarLazy, not this component)
+- `registryDependencies`: `["sf-calendar", "sf-popover", "sf-button", "sf-input"]`
+
+**Build order dependency:** Depends on SFCalendarLazy (exists), SFPopover (exists), SFButton (exists), SFInput (exists). No blocker. Should be Phase 75 (last) because it's the most complex composition and the time-picker sub-component is novel.
+
+**Files produced:**
+- `components/sf/sf-date-range-picker.tsx` ('use client', exported from barrel)
+
+---
+
+## Registry Position for 5 New Entries
+
+Current registry: 53 items. Post-v1.10: 58 items.
+
+| Component | Pattern | Layer | Heavy | Position in Registry |
+|-----------|---------|-------|-------|---------------------|
+| SFDataTable | B | frame | true | After sf-table |
+| SFCombobox | C | frame | false | After sf-command / sf-popover group |
+| SFRichEditor | B | frame | true | New "Content" category |
+| SFFileUpload | C | frame | false | Under Forms — Extended |
+| SFDateRangePicker | C | frame | false | After sf-calendar |
+
+**REG-01 implementation note:** The 5 registry entries must land in the same commit as their component files per SCAFFOLDING.md rule #4 (Registry Same-Commit Rule). Run `pnpm registry:build` to regenerate `public/r/` files per-component.
+
+---
+
+## Shared Primitives Analysis
+
+The question was: what shared primitives should land BEFORE component phases?
+
+**Verdict: NO new shared primitives needed.** All required building blocks exist:
+
+| Needed By | Primitive | Status |
+|-----------|-----------|--------|
+| SFDataTable | SFTable, SFScrollArea (direct import) | Both exist on disk |
+| SFCombobox | SFCommand (direct import), SFPopover, SFInput | All exist |
+| SFRichEditor | SFButton, SFSeparator, SFTooltip | All in barrel |
+| SFFileUpload | SFProgress, SFButton, SFLabel | All in barrel |
+| SFDateRangePicker | SFCalendarLazy, SFPopover, SFButton, SFInput | All exist |
+
+**The "TimePicker shared primitive" question:** Rejected. The time-variant in SFDateRangePicker (DR-03) is an `<SFInput type="time">` wrapper, not a standalone primitive. Only one consumer exists in v1.10 scope. Extracting a `SFTimePicker` to `sf/` preemptively violates the CLAUDE.md rule: "DO NOT add features, components, or tokens beyond stabilization scope."
+
+**The "virtualization wrapper" question:** TanStack Virtual (for SFDataTable large-list virtualization) is not shared with SFCombobox in v1.10. SFCombobox async loading uses cmdk's built-in virtualization for command lists — it does NOT use TanStack Virtual. The two components have different virtualization needs. No shared wrapper.
+
+---
+
+## Build Order
+
+Dependencies flow as follows. Phases must respect this order:
+
+```
+Phase 71: SFDataTable
+  ← No new shared primitive needed
+  ← SFTable (existing), SFScrollArea direct import (existing)
+  ← @tanstack/react-table new dep (_dep_01_decision)
+
+Phase 72: SFCombobox
+  ← No new shared primitive needed
+  ← SFCommand direct import (existing), SFPopover (existing)
+  ← Zero new dep
+
+Phase 73: SFRichEditor
+  ← No new shared primitive needed
+  ← SFButton, SFSeparator, SFTooltip (all existing)
+  ← @tiptap/react + @tiptap/pm + @tiptap/starter-kit new dep (_dep_02_decision)
+  ← globals.css .ProseMirror rules (new addition)
+
+Phase 74: SFFileUpload
+  ← No new shared primitive needed
+  ← SFProgress, SFButton, SFLabel (all existing)
+  ← Zero new dep
+
+Phase 75: SFDateRangePicker
+  ← SFCalendarLazy (existing, Phase 71-74 complete)
+  ← SFPopover, SFInput, SFButton (all existing)
+  ← Zero new dep (react-day-picker already in stack)
+
+Phase 76: Final Gate
+  ← All 5 components shipped
+  ← Chromatic story coverage, bundle audit (BND-08), docs
+```
+
+Phase ordering rationale: SFDataTable first (largest new dep, sets the `_dep_01_decision` precedent for TanStack), SFCombobox second (no dep, low-risk), SFRichEditor third (largest overall dep, `_dep_02_decision`, globals.css mutation), SFFileUpload fourth (no dep, pure-SF), SFDateRangePicker last (most complex composition, depends on calendar which must be stable).
+
+---
+
+## Architectural Patterns
+
+### Pattern: P3 Lazy Wrapper (Pattern B)
+
+**What:** Heavy component loaded via `next/dynamic({ ssr: false })` with `SFSkeleton` as loading fallback. The lazy file is the public API. The implementation file is never in `sf/index.ts`.
+
+**When to use:** When the component's own code or its direct deps would add >3 KB gz to First Load JS on the homepage. Both SFDataTable and SFRichEditor qualify.
+
+**Canonical form (from sf-calendar-lazy.tsx):**
+```typescript
+"use client";
+import dynamic from "next/dynamic";
+import { SFSkeleton } from "@/components/sf";
+
+const SFDataTableDynamic = dynamic(
+  () => import("@/components/sf/sf-data-table").then((m) => ({
+    default: m.SFDataTable,
+  })),
+  {
+    ssr: false,
+    loading: () => <SFSkeleton className="h-[400px] w-full" />,
   }
+);
+
+export function SFDataTableLazy(
+  props: React.ComponentProps<typeof SFDataTableDynamic>
+) {
+  return <SFDataTableDynamic {...props} />;
 }
 ```
 
-**Real-device vs Lighthouse emulation tension**:
+### Pattern: Pure-SF Composition (Pattern C)
 
-The Lighthouse mobile preset emulates throttled CPU (4× slowdown) + 3G network. This is PROVABLY different from real iPhone Safari and mid-tier Android. v1.8 wants both.
+**What:** No Radix base. Composes existing SF components. Server Component by default unless hooks are required.
 
-| Stream | Tool | Cadence | Owner |
-|--------|------|---------|-------|
-| **Lighthouse emulation** | `lhci` in CI (Option A/C) | Every PR | Automated gate |
-| **Real-device sampling** | `chrome-devtools` MCP + manual iPhone Safari + BrowserStack/SauceLabs run | Per phase + pre-ship | Manual (per `feedback_visual_verification.md`) |
+**When to use:** When the component's behavior is purely compositional — it assembles existing SF primitives into a higher-order pattern. SFCombobox, SFFileUpload, SFDateRangePicker all qualify.
 
-The split is already implied by STATE.md feedback entries. v1.8 should formalize: CI gates emulation (PR-blocking), real-device verification gates ship (milestone-blocking, NOT per-PR).
+**Key rule:** Pattern C components that compose P3-lazy sub-components (SFCombobox does not; SFDateRangePicker composes SFCalendarLazy) are still safe to barrel-export because the lazy boundary is inside the sub-component, not the wrapper.
 
-**Concrete recommendation for v1.8:** Option C. Wire `launch-gate.ts` into a new `.github/workflows/lighthouse.yml` that runs on PR + waits for Vercel preview deployment. Add `.lighthouseci/lighthouserc.json` with above thresholds. Leave existing manual `pnpm tsx scripts/launch-gate.ts` path intact. PR comment integration via `treosh/lighthouse-ci-action@v12` ↳ comment posting.
+### Pattern: Direct Import for Non-Barrel Components
 
-**Files touched:**
-- `.github/workflows/lighthouse.yml` (NEW)
-- `.lighthouseci/lighthouserc.json` (NEW)
-- `scripts/launch-gate.ts` (minor — accept LHCI_BUILD_CONTEXT env)
-- `package.json:scripts` — add `lhci:autorun`
+**What:** Some SF components exist on disk but are deliberately NOT in `sf/index.ts`. They must be imported directly.
 
-**Closes:** Durable per-PR enforcement (acceptance criterion from PROJECT.md v1.8)
+**Non-barrel components as of v1.9:**
+- `SFCommand*` — cmdk too heavy for barrel
+- `SFScrollArea` — DCE'd from barrel in Phase 67
+- `SFNavigationMenu*` — DCE'd from barrel in Phase 67
+- `SFToaster`/`sfToast` — sonner too heavy for barrel
+- All P3 lazy impl files (`sf-calendar.tsx`, `sf-menubar.tsx`, etc.)
+
+**New components that must use direct import internally:**
+- SFDataTable imports `SFScrollArea` from `"@/components/sf/sf-scroll-area"` directly
+- SFCombobox imports `SFCommand*` from `"@/components/sf/sf-command"` directly
 
 ---
 
-### Q7. Build order / phase dependency analysis
+## Anti-Patterns
 
-Suggested phase boundaries derived from dependency analysis. Each phase has a hard prerequisite — reordering breaks the chain.
+### Anti-Pattern 1: Adding SFDataTable or SFRichEditor to the barrel
+
+**What people do:** Export from `sf/index.ts` for convenience.
+**Why it's wrong:** TanStack Table (~14 KB gz) or Tiptap (~48 KB gz) would enter First Load JS on every page, instantly blowing the 200 KB budget on the homepage.
+**Do this instead:** Export only the `*Lazy` wrapper file from a direct import. Never touch the barrel for Pattern B components.
+
+### Anti-Pattern 2: Adding entries to `optimizePackageImports` for new deps
+
+**What people do:** Add `@tanstack/react-table` or `@tiptap/react` to `next.config.ts` `optimizePackageImports`.
+**Why it's wrong:** Adding any entry non-additively reshuffles webpack's `splitChunks` boundaries, dissolving the post-Phase-67 stable chunk IDs (D-04 lock). Per the next.config.ts comment: "further additions to this list are REJECTED until a future phase explicitly authorizes another break of the chunk-id lock."
+**Do this instead:** The P3 lazy pattern already defers these deps to per-route chunks without needing `optimizePackageImports`. Leave the 8-entry list untouched for v1.10.
+
+### Anti-Pattern 3: Sharing a TimePicker primitive prematurely
+
+**What people do:** Extract `SFTimePicker` as a shared primitive "for future use by SFRichEditor date-link."
+**Why it's wrong:** Only one v1.10 consumer (SFDateRangePicker DR-03). Pre-extraction violates CLAUDE.md's "DO NOT add features beyond stabilization scope." The API will be wrong until a second real consumer exists.
+**Do this instead:** Author the time input as `<SFInput type="time">` inside `sf-date-range-picker.tsx`. Extract only if/when a second consumer appears in a future milestone.
+
+### Anti-Pattern 4: `'use client'` in `sf/index.ts`
+
+**What people do:** Add 'use client' to the barrel when a new interactive component is added.
+**Why it's wrong:** Turns all 6 layout primitives (SFContainer, SFSection, SFStack, SFGrid, SFText, SFPanel) into Client Components, silently inflating bundle by forcing them into client chunks.
+**Do this instead:** Each interactive component declares `'use client'` in its own file only. The barrel has no directive. This is SCAFFOLDING.md rule #3 — verified as invariant across all 53 existing registry items.
+
+### Anti-Pattern 5: Tiptap CSS injection
+
+**What people do:** Import Tiptap's bundled CSS (`@tiptap/core/dist/tiptap.css` or Tiptap-provided starter styles).
+**Why it's wrong:** Bypasses `@layer signalframeux` cascade ordering. Introduces generic dark-mode aesthetic. Violates token system.
+**Do this instead:** Write `.ProseMirror` scoped rules in `app/globals.css` under `@layer signalframeux` using `--sfx-*` tokens. Only four elements need rules: `p`, `h1-h4`, `ul/ol/li`, `blockquote`.
+
+---
+
+## Bundle Accounting
+
+Current budget headroom: 12.4 KB under 200 KB target (187.6 KB current).
+
+| Component | Eager delta | P3 lazy? | Homepage impact |
+|-----------|-------------|----------|-----------------|
+| SFDataTable | ~0 KB | YES | 0 KB (lazy chunk) |
+| SFCombobox | ~2-3 KB | NO | ~2-3 KB (composition code only; cmdk already lazy via optimizePackageImports) |
+| SFRichEditor | ~0 KB | YES | 0 KB (lazy chunk) |
+| SFFileUpload | ~3-4 KB | NO | ~3-4 KB (no heavy dep) |
+| SFDateRangePicker | ~3-5 KB | NO | ~3-5 KB (react-day-picker already in optimizePackageImports, lazy) |
+
+**Projected First Load JS after all 5:** ~195-198 KB gzip. Within 200 KB hard target under normal conditions.
+**BND-08 gate:** Full fresh build (`rm -rf .next/cache .next && ANALYZE=true pnpm build`) required at Phase 76 close. AES-04 pixel-diff gate applies per-phase.
+
+---
+
+## Data Flow
+
+### SFDataTable
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 57 — Bundle Audit (HARD PREREQUISITE)                      │
-│   ANALYZE=true pnpm build → attribute 119 KiB                    │
-│   Write scripts/audit-chunk-attribution.ts                       │
-│   Output: per-chunk owner map → informs Phases 60, 61            │
-│   Closes: nothing yet (measurement only)                         │
-│   Risk: low                                                      │
-└──────────────────────────────────────────────────────────────────┘
-                           ↓
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 58 — Lighthouse CI Install (HARD PREREQUISITE)             │
-│   .github/workflows/lighthouse.yml + .lighthouseci/lighthouserc  │
-│   Wire to Vercel preview URL                                     │
-│   Establish baseline: capture current scores into CI history     │
-│   Closes: durable per-PR enforcement                             │
-│   Risk: low — additive, no code changes                          │
-│   ⚠ MUST land before Phase 59-62 to gate regressions             │
-└──────────────────────────────────────────────────────────────────┘
-                           ↓
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 59 — Critical Path Restructure (Q1 + Q5 + Q4)              │
-│   /sf-canvas-sync.js → CSS aspect-ratio (Option A)               │
-│   Anton preload + adjustFontFallback (Q2 Track A)                │
-│   Lenis init via requestIdleCallback (Q4)                        │
-│   Closes: render-blocking 570ms → <200ms; main-thread 2.4 → 1.5  │
-│   Risk: HIGH — touches CLS-protection contract; full LH run req  │
-│   ⚠ DEPENDS ON Phase 58 (need CI gate live before regressing)   │
-└──────────────────────────────────────────────────────────────────┘
-                           ↓
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 60 — LCP Element Repositioning (Q2 Track B)                │
-│   Hero h1 elevated to LCP candidate via clip-path char-reveal    │
-│   ghost-label optional content-visibility                        │
-│   Closes: LCP 6.5s → <1.0s                                       │
-│   Risk: HIGH — hero is signature aesthetic, single most-viewed   │
-│   ⚠ DEPENDS ON Phase 59 (font preload must be live)              │
-└──────────────────────────────────────────────────────────────────┘
-                           ↓
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 61 — Bundle Optimization (Q3 — informed by Phase 57)       │
-│   Per-chunk fixes per audit: radix subpath imports, command-     │
-│   palette barrel hygiene, InstrumentHUD/Cheatsheet lazy          │
-│   Closes: unused JS 119 KiB → <30 KiB                            │
-│   Risk: medium — must verify lazy boundaries don't leak via SF   │
-│   barrel export contract                                         │
-│   ⚠ DEPENDS ON Phase 57 (per-chunk attribution required)         │
-└──────────────────────────────────────────────────────────────────┘
-                           ↓
-┌──────────────────────────────────────────────────────────────────┐
-│ Phase 62 — Real-Device Verification + Final Gate                 │
-│   iPhone Safari (real) + mid-tier Android (real) sampling        │
-│   chrome-devtools MCP scroll-test (per feedback_visual_*)        │
-│   launch-gate.ts 3× run against prod URL                         │
-│   Closes: real-device verification (acceptance criterion)        │
-│   Risk: low (measurement) — but blocks ship if devices regress   │
-│   ⚠ DEPENDS ON Phases 59, 60, 61 all complete                    │
-└──────────────────────────────────────────────────────────────────┘
+Consumer provides: columns[], data[], optional callbacks
+  ↓
+TanStack Table useReactTable() → table instance (local state)
+  ↓
+SFTableHeader → flexRender(header.column.columnDef.header)
+SFTableBody  → flexRender(cell.column.columnDef.cell)
+  ↓
+Sort click → column.getToggleSortingHandler() → local state update → re-render
+Filter input → setColumnFilters() → local state update → re-render
+Page change → setPagination() → local state update → re-render
 ```
 
-**Phase dependency rationale:**
+### SFCombobox
 
-- **57 → 58**: Independent — could parallelize, but sequencing keeps audit signal clean (CI baseline reflects the ANALYZED state).
-- **58 → 59**: HARD. Lighthouse CI must be live before Phase 59 because Phase 59 actively manipulates the critical path (`/sf-canvas-sync.js` removal is the single most regression-risky change in v1.8). Without CI, a regression silently ships.
-- **59 → 60**: HARD. Anton preload (in Phase 59) is a precondition for h1-as-LCP (Phase 60) — if the font isn't preloaded, h1 won't paint fast enough to win LCP.
-- **57 → 61**: HARD. Cannot fix unused chunks without knowing which chunks own which modules.
-- **All → 62**: HARD. Real-device verification only meaningful after all three intervention phases ship.
+```
+Consumer provides: options[] or onSearch async fn, value, onValueChange
+  ↓
+SFPopover open/closed state (local useState)
+  ↓ (open)
+SFCommandInput value → filters SFCommandItem list (cmdk internal)
+  OR onSearch(query) → async fetch → setItems (local useState)
+  ↓
+SFCommandItem selected → onValueChange(value) → popover closes
+```
 
-**Parallelizable**: Phase 57 and 58 can run concurrently (independent measurement/CI work).
+### SFRichEditor
 
-**Highest-risk phase**: Phase 59. The `/sf-canvas-sync.js` removal touches the CLS-protection contract documented in `app/layout.tsx:91-100` and `components/layout/scale-canvas.tsx:135-144`. Mitigation: Phase 58 gate must be passing GREEN before Phase 59 lands; one-feature-at-a-time PRs (3 separate PRs for Q1, Q2-A, Q4) so any regression is bisectable.
+```
+Consumer provides: defaultContent | content, onUpdate, extensions
+  ↓
+useEditor({ extensions: [StarterKit, ...extensions] }) → editor instance
+  ↓
+content prop changes → editor.commands.setContent() (controlled sync)
+  ↓
+editor.on('update') → onUpdate({ html, json, text })
+  ↓
+SFRichEditorToolbar → editor.chain().focus().toggleBold().run() etc.
+```
 
----
+### SFFileUpload
 
-## Summary Matrix — Intervention → Gap Closure
+```
+Consumer provides: action (URL) | serverAction, accept, multiple, onComplete
+  ↓
+DragEvent / input change → FileList → validation (type, size)
+  ↓
+Path A (fetch streaming): fetch(action, { body: FormData }) + ReadableStream progress
+Path B (server action): serverAction(formData) → useActionState result
+  ↓
+onProgress(0-100) → SFProgress tween update
+onComplete(result) | onError(error) → consumer callback
+```
 
-| Intervention | Phase | Closes (Phase 37 measured gap) | Files |
-|--------------|-------|--------------------------------|-------|
-| Bundle attribution audit | 57 | (measurement → informs 61) | `scripts/audit-chunk-attribution.ts` (NEW) |
-| Lighthouse CI workflow | 58 | (gate → blocks regression in 59-61) | `.github/workflows/lighthouse.yml`, `.lighthouseci/lighthouserc.json` (NEW) |
-| `/sf-canvas-sync.js` → CSS aspect-ratio | 59 | render-blocking 570ms (~80ms) | `components/layout/scale-canvas.tsx`, `app/globals.css`, delete `public/sf-canvas-sync.js` |
-| Anton font preload + adjustFontFallback | 59 | LCP (~2s) + render-blocking (~150ms) | `app/layout.tsx:42-51` |
-| Lenis init via requestIdleCallback | 59 | main-thread 2.4s (~200ms) | `components/layout/lenis-provider.tsx:17-63` |
-| Hero h1 → LCP candidate | 60 | LCP (final ~3s to land <1.0s) | `components/blocks/entry-section.tsx:122-133`, `components/layout/page-animations.tsx` |
-| Per-chunk lazy boundary fixes | 61 | unused JS 119 KiB | TBD by Phase 57 audit (likely `components/sf/index.ts` barrel + radix imports + InstrumentHUD/Cheatsheet) |
-| Real-device sampling | 62 | (verification only) | None — process change |
+### SFDateRangePicker
 
----
-
-## Architecture Anti-Patterns to Avoid (v1.8-Specific)
-
-### Anti-Pattern 1: Removing the inline `scaleScript` in `app/layout.tsx:91-100`
-
-**What people might do**: "It's a render-blocking inline script — let's defer it." Move to `next/script strategy="afterInteractive"`.
-**Why wrong**: The script writes `--sf-content-scale` BEFORE first paint. Deferring it reintroduces CLS 0.65 (Wave 3 T-01/T-02 finding, documented at `app/layout.tsx:93-99`).
-**Do instead**: The inline script is the CLS-protection contract. `/sf-canvas-sync.js` (the EXTERNAL script) is the redundant one targeted for removal.
-
-### Anti-Pattern 2: `next/dynamic ssr:false` on LenisProvider
-
-**What people might do**: Wrap LenisProvider in dynamic import to remove Lenis from initial JS payload.
-**Why wrong**: LenisProvider has children that propagate down via context. `ssr:false` forces children into the Client Component tree, breaking the hole-in-the-donut SSR contract (PROJECT.md v1.2 key decision).
-**Do instead**: `requestIdleCallback`-deferred init INSIDE LenisProvider's `useEffect`. Children stay Server-Component-eligible.
-
-### Anti-Pattern 3: Adding a second rAF loop for "deferred" measurement
-
-**What people might do**: Spawn a separate rAF loop to measure FPS or perf metrics outside the GSAP ticker.
-**Why wrong**: Violates the single-ticker rule. R3F was rejected in v1.1 specifically for this reason.
-**Do instead**: All perf measurement hooks via `gsap.ticker.add()` callbacks, OR use `PerformanceObserver` + one-shot `requestAnimationFrame`s (not loops).
-
-### Anti-Pattern 4: Splitting `app/globals.css` into critical + deferred without preserving `@theme`
-
-**What people might do**: Extract atomic Tailwind utilities into critical, defer the rest.
-**Why wrong**: Tailwind v4 `@theme inline` block defines all CSS variables. If `@theme` lands in deferred CSS, the first-paint cascade has zero `--sfx-*` values → SSR magenta flash (the exact v1.7 hazard FND-01 was designed to prevent).
-**Do instead**: Keep `@theme` and all `--sfx-*` definitions in critical. Defer only effect classes (`.sf-mesh-gradient`, `.sf-circuit`, halftone) — these are display-only and degrade gracefully.
-
-### Anti-Pattern 5: `content-visibility: auto` on a section containing a ScrollTrigger pin
-
-**What people might do**: Apply `content-visibility: auto` to THESIS to skip rendering.
-**Why wrong**: ScrollTrigger pin/scrub measures element heights. `content-visibility: auto` reports zero height when off-screen, breaking pin calculations (visible regression: PinnedSection scroll math goes haywire).
-**Do instead**: Apply `content-visibility: auto` only to leaf elements that don't participate in scroll math. Verify against `components/animation/pinned-section.tsx` consumers.
+```
+Consumer provides: value { from?: Date; to?: Date }, onValueChange
+  ↓
+SFPopoverTrigger → formatted string display (formatDisplay prop or default)
+  ↓ (popover open)
+SFCalendarLazy mode="range" selected=value onSelect=onValueChange
+  ↓ (DR-03 time variant)
+SFInput type="time" for from-time + to-time → merged into Date object
+  ↓
+onValueChange({ from: Date, to: Date }) → consumer state update
+```
 
 ---
 
-## Integration Points — File-by-File
+## Integration Points
 
-### Files MODIFIED (existing)
+### Existing SF Components Touched
 
-| File | Phase | Change |
-|------|-------|--------|
-| `app/layout.tsx` | 59 | Add Anton `<link rel="preload">` + adjustFontFallback options |
-| `app/globals.css` | 59 | Add `[data-sf-canvas-outer]` aspect-ratio rule |
-| `components/layout/scale-canvas.tsx` | 59 | Remove `<script src="/sf-canvas-sync.js" />` line; refactor outer height to CSS |
-| `components/layout/lenis-provider.tsx` | 59 | Wrap Lenis init in requestIdleCallback |
-| `components/blocks/entry-section.tsx` | 60 | h1 reveal mechanism: opacity → clip-path |
-| `components/layout/page-animations.tsx` | 60 | Char-reveal timeline target switch (opacity → clip-path) |
-| `components/animation/ghost-label.tsx` | 60 | (Optional) explicit width/height for LCP detection stability |
-| `components/sf/index.ts` | 61 | Barrel hygiene per audit |
-| `next.config.ts` | (none) | No changes — bundle analyzer already wired |
-| `package.json` | 58 | Add `lhci:autorun` script |
+| Component | Modified? | How |
+|-----------|-----------|-----|
+| `sf/index.ts` barrel | YES (add 3) | SFCombobox, SFFileUpload, SFDateRangePicker exported |
+| `sf/index.ts` barrel | NO (2 omitted) | SFDataTable, SFRichEditor stay out of barrel |
+| `sf-table.tsx` | NO | Consumed as-is by SFDataTable via import |
+| `sf-calendar-lazy.tsx` | NO | Consumed as-is by SFDateRangePicker |
+| `sf-calendar.tsx` | NO | Passthrough props already handle `mode="range"` |
+| `sf-command.tsx` | NO | Consumed as-is by SFCombobox via direct import |
+| `sf-popover.tsx` | NO | Consumed as-is by SFCombobox + SFDateRangePicker |
+| `sf-scroll-area.tsx` | NO | Consumed as-is by SFDataTable via direct import |
+| `app/globals.css` | YES (add) | `.ProseMirror` scoped rules for SFRichEditor |
+| `public/r/registry.json` | YES (add 5) | New registry entries per REG-01 |
+| `next.config.ts` | NO | D-04 lock holds; no new optimizePackageImports entries |
 
-### Files CREATED (new)
+### New Files Created
 
-| File | Phase | Purpose |
-|------|-------|---------|
-| `.github/workflows/lighthouse.yml` | 58 | LHCI workflow against Vercel preview |
-| `.lighthouseci/lighthouserc.json` | 58 | Budget assertions |
-| `scripts/audit-chunk-attribution.ts` | 57 | Per-chunk owner attribution from analyzer output |
-
-### Files DELETED
-
-| File | Phase | Reason |
-|------|-------|--------|
-| `public/sf-canvas-sync.js` | 59 | Replaced by CSS aspect-ratio |
-
----
-
-## Confidence Assessment
-
-| Area | Confidence | Source |
-|------|------------|--------|
-| Existing critical-path topology | HIGH | Direct read of `app/layout.tsx`, `components/layout/scale-canvas.tsx`, `components/layout/lenis-provider.tsx`, `public/sf-canvas-sync.js` |
-| `@next/bundle-analyzer` capabilities | HIGH | Context7-verified Next.js docs + already wired in `next.config.ts` |
-| Next.js 15 App Router `next/script` `beforeInteractive` constraints | MEDIUM | Documented constraint that it only fires from root layout — verified in Next.js 15 docs |
-| Lighthouse mobile emulation vs real device disparity | MEDIUM | Web.dev field-vs-lab guidance; corroborated by `feedback_visual_verification.md` memory entry |
-| Per-chunk owner hypotheses (`3302`/`e9a6067a`/etc.) | LOW | Educated guesses pending actual analyzer run; flagged in Phase 57 |
-| `content-visibility` × ScrollTrigger pin interaction | LOW | Theoretical based on how each system measures layout; needs spike if pursued |
-| `requestIdleCallback` Lenis-deferral race window size | MEDIUM | Existing v1.2 carry-forward says rAF "mitigates"; deferring widens but bounded by `{ timeout: 100 }` |
-| Anton `adjustFontFallback` metrics | MEDIUM | Next.js localFont supports it; exact override values need a one-shot calibration run |
+| File | Pattern | Barrel? |
+|------|---------|---------|
+| `components/sf/sf-data-table.tsx` | B impl | NO |
+| `components/sf/sf-data-table-lazy.tsx` | B lazy | NO |
+| `components/sf/sf-combobox.tsx` | C | YES |
+| `components/sf/sf-rich-editor.tsx` | B impl | NO |
+| `components/sf/sf-rich-editor-lazy.tsx` | B lazy | NO |
+| `components/sf/sf-file-upload.tsx` | C | YES |
+| `components/sf/sf-date-range-picker.tsx` | C | YES |
 
 ---
 
 ## Sources
 
-**Repository (HIGH confidence — direct file reads):**
-- `app/layout.tsx:42-155` — root layout, themeScript, scaleScript, font definitions, mount order
-- `components/layout/scale-canvas.tsx:1-146` — ScaleCanvas component + sf-canvas-sync.js script tag
-- `public/sf-canvas-sync.js` — full content (1 line, 175 bytes)
-- `components/layout/lenis-provider.tsx:1-66` — Lenis + GSAP ticker wiring
-- `components/animation/ghost-label.tsx:1-23` — current LCP element
-- `components/blocks/entry-section.tsx:1-213` — hero h1 char-reveal architecture
-- `next.config.ts:1-25` — bundle analyzer already wired
-- `scripts/launch-gate.ts:1-110` — existing manual Lighthouse runner
-- `.github/workflows/ci.yml:1-41` — current CI (no LH step)
-- `lib/gsap-core.ts:1-13` — single-ticker source of record
-- `package.json` — dep tree, scripts, peerDeps
-- `.planning/PROJECT.md` — v1.8 milestone goal + acceptance criteria
-- `.planning/STATE.md` — v1.5 LCP suppression hazard + carry-forward constraints
+All findings sourced from codebase files. No external speculation.
 
-**Memory (HIGH confidence — verified user instructions):**
-- `feedback_consume_quality_tier.md` — `getQualityTier()` mandatory for new SIGNAL surfaces
-- `feedback_raf_loop_no_layout_reads.md` — single-ticker rule
-- `feedback_visual_verification.md` — chrome-devtools MCP scroll-test before claiming done
-- `project_pf04_autoresize_contract.md` — Lenis `autoResize: true` is code-of-record
-- `project_phase37_mobile_a11y_architectural.md` — Phase 37 measured gaps (LCP 6.5s, perf 76)
-
-**External (MEDIUM confidence — Context7/web docs):**
-- Next.js 15 App Router docs: Script strategies, localFont, bundle analyzer integration
-- web.dev/lcp 2025: LCP candidate detection + transform-box behavior
-- web.dev/cls: `display: optional` vs `swap` interaction with `adjustFontFallback`
-- Lighthouse CI docs: `lighthouserc.json` budget format, treosh/lighthouse-ci-action
+- `components/sf/index.ts` — barrel exports, non-barrel rationale comments
+- `components/sf/sf-calendar-lazy.tsx` — P3 lazy pattern reference
+- `components/sf/sf-calendar.tsx` — react-day-picker range prop passthrough pattern
+- `components/sf/sf-command.tsx` — SFCommand composition reference
+- `components/sf/sf-popover.tsx` — SFPopover composition reference
+- `components/sf/sf-table.tsx` — SFTable primitive (SFDataTable render surface)
+- `components/sf/sf-menubar-lazy.tsx` — P3 lazy root component pattern variant
+- `components/sf/sf-toast-lazy.tsx` — P3 lazy (simplified, no loading fallback variant)
+- `components/sf/sf-drawer-lazy.tsx` — P3 lazy pattern with SFSkeleton fallback
+- `next.config.ts` — D-04 chunk-ID lock rationale, optimizePackageImports list
+- `.planning/codebase/v1.9-bundle-reshape.md` — bundle baseline, chunk IDs, Vector rationale
+- `.planning/codebase/AESTHETIC-OF-RECORD.md` — AES-01..04 standing rules
+- `SCAFFOLDING.md` — 9-point checklist, Pattern A/B/C definitions, registry template
+- `.planning/PROJECT.md` — v1.10 requirements, standing rules, D-04 lock status
 
 ---
 
-*Architecture research for: SignalframeUX v1.8 Speed of Light — perf recovery integration*
-*Researched: 2026-04-25*
-*Downstream: roadmapper consumes this for phase boundaries (suggested 57-62) and per-phase RESEARCH.md generation*
+*Architecture research for: SignalframeUX v1.10 Library Completeness — 5-component integration*
+*Researched: 2026-04-30*

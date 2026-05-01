@@ -1,243 +1,335 @@
-# Technology Stack — v1.8 Speed of Light
+# Stack Research — v1.10 Library Completeness
 
-**Project:** SignalframeUX v1.8 — Performance Recovery
-**Researched:** 2026-04-25
-**Scope:** Brownfield perf recovery (LCP, render-blocking, bundle hygiene). Closes the gap between current prod (Lighthouse mobile Perf 76, LCP 6.5s) and the original CLAUDE.md gate (100/100, LCP <1.0s, CLS=0, TTI <1.5s, <200KB initial).
-**Confidence:** HIGH
-
-> Existing stack is fixed — no framework swaps, no GSAP/Lenis/Three replacements, no new runtime deps. Almost all gap closure is **configuration + critical-path restructure**, not new packages. Prior milestone STACK.md (v1.7) is superseded by this document for v1.8 scope only.
+**Domain:** Design system component expansion — 5 missing high-impact components
+**Researched:** 2026-05-01
+**Confidence:** HIGH (npm registry verified + existing codebase cross-referenced)
 
 ---
 
-## State of the Existing Stack (verified 2026-04-25)
+## Context: Existing Locked Stack (Do Not Re-Research)
 
-| Capability | Already Installed | Source of Truth |
-|---|---|---|
-| Next.js | `15.5.14` | `node_modules/next/package.json`. Peer says ≥15.3; production tip is 15.5.x. Migration to 16.x rolled back per Phase 37 STATE entry. |
-| `next/font/google` | yes — Inter, Electrolize, JetBrains_Mono with `display: swap` | `app/layout.tsx:23-40` |
-| `next/font/local` | yes — Anton with `display: optional` | `app/layout.tsx:42-51`. Comment confirms "swap was causing 0.485 CLS" — `optional` is intentional and locked. |
-| `@next/bundle-analyzer` | `^16.2.2` devDep, wired via `ANALYZE=true pnpm build` | `next.config.ts:2-6`. **No additional bundle tooling needed.** |
-| `lighthouse` (CLI engine) | `^13.1.0` devDep | What's missing is **CI orchestration + assertions**, not the engine. |
-| `next/web-vitals` | ships with Next.js | Built-in `useReportWebVitals` reports LCP/CLS/INP/FCP/TTFB without external dep. |
-| Single-ticker rule | enforced — GSAP `globalTimeline` drives WebGL via `useSignalScene` | Memory: `feedback_raf_loop_no_layout_reads.md`, `feedback_consume_quality_tier.md` |
-| `optimizePackageImports` | `["lucide-react"]` only | `next.config.ts:10`. Working; can expand in v1.8. |
+Next.js 15.5 · TypeScript 5.8 · Tailwind CSS v4 · CVA · Radix UI via shadcn · GSAP 3.12 · Lenis · OKLCH · Lucide React · react-day-picker 9.14.0 (already installed) · Vercel
 
-**Implication:** v1.8 stack additions are tightly bounded — at most **two devDep families** (LHCI orchestration; optional `web-vitals` for attribution debugging) plus configuration changes that use already-installed primitives.
+**Budget constraint:** 187.6 KB gzip current. 200 KB hard cap. 12.4 KB free headroom.
+
+**Standing rule:** Zero new runtime npm deps without `_dep_X_decision` ratification block (REQ-ID-namespaced, precedent from `_wmk_01_decision`).
+
+**optimizePackageImports current list (8 entries, chunk-id locked at Phase 67 baseline):**
+`@/components/sf` · `lucide-react` · `radix-ui` · `input-otp` · `cmdk` · `vaul` · `sonner` · `react-day-picker`
+
+Adding any new entry to this list reshuffles webpack's splitChunks graph and dissolves the Phase 67 chunk-id lock — only do so inside a deliberate BND unlock window (same protocol as Phase 67 BND-05).
 
 ---
 
-## Recommended Stack
+## Component-by-Component Stack Decisions
 
-### Core Technologies (no changes — keep all)
+### 1. SFDataTable
 
-| Technology | Version | Status | Notes for v1.8 |
-|---|---|---|---|
-| Next.js | `15.5.14` | **Keep, do not upgrade** | Next 16.x rollback is recent (Phase 37). Upgrading mid-perf-recovery would confound measurement. Re-evaluate in v1.9. |
-| Tailwind CSS v4 | `^4.2.2` | **Keep** | `@theme inline` token bridge from v1.7 is the source of truth; Tailwind v4 `--*` vars already drive utilities. |
-| GSAP | `^3.14.2` | **Keep** | Single-ticker discipline already enforced. Ships in shared bundle; necessary on first paint. |
-| Lenis | `^1.1.20` | **Keep** | `autoResize: true` per `feedback_pf04_autoresize_contract.md` (PF-04 contract). Do not touch. |
-| Three.js | `^0.183.2` | **Keep** | Already in async chunk (102 KB initial baseline). Confirmed via v1.1 validation. |
+**Requirement:** Sort + filter + pagination + virtualization over arbitrarily large datasets.
 
-### Supporting Libraries (devDep additions only)
+**Recommended stack:**
+- `@tanstack/react-table` v8.21.3 — headless table logic (sort/filter/pagination)
+- `@tanstack/react-virtual` v3.13.24 — row virtualization (optional, feature-flagged)
 
-| Library | Recommended Version | Purpose | Closes which Phase-37 gap |
-|---|---|---|---|
-| `@lhci/cli` | `^0.15.1` (npm verified 2025-06-25) | Lighthouse CI runner — orchestrates the existing `lighthouse@13.1.0` engine for per-PR enforcement | **Lighthouse CI gate — durable per-PR enforcement.** Without LHCI, the only enforcement was a manual phase gate. With LHCI, every PR fails on Perf <100, LCP >1.0s, CLS >0. Replaces the v1.7 manual launch-gate dance. |
-| `web-vitals` | `^5.2.0` (npm verified 2026-04-25) | Real-user metric collection with **attribution build** for LCP-element diagnosis | **LCP element identification under real conditions.** Lighthouse mobile emulation flags `#thesis > span.sf-display`, but real devices may differ. The attribution build (1.5 KB extra brotli) returns `lcpEntry.element`, `lcpResourceEntry`, `loadTime` breakdown — necessary for confirming the ScaleCanvas `transform: scale()` artifact theory. **Optional** — built-in `next/web-vitals` covers the baseline; add `web-vitals` only if attribution is needed. |
-| (none else) | — | — | **No need** for `next/script` install (built-in), `@vercel/speed-insights`, `@vercel/analytics`, image-optimization libs, perf-monitoring SaaS. See "What NOT to Use." |
+**Why TanStack Table v8 over alternatives:**
+TanStack Table v8 is the de-facto standard for headless table logic in the React ecosystem. It ships zero UI, composes directly with the existing SFTable primitive, and supports all required features (sort, filter, pagination, column pinning, row selection) without forcing a UI opinion. The unpacked tarball is 744 KB but the gzip contribution to First Load JS is approximately 15 KB (verified by multiple bundlephobia measurements and consistent with the headless-only architecture — no CSS, no DOM rendering code). The library is already what shadcn's `data-table` component targets, meaning shadcn's `ui/table.tsx` (already in the codebase) is its intended rendering layer.
 
-### Development Tools (configuration, not packages)
+**Why TanStack Virtual v3 for virtualization:**
+`@tanstack/react-virtual` v3.13.24 is a 19 KB unpacked / approximately 3-4 KB gzip package that integrates directly with TanStack Table via the documented `useVirtualizer` hook pattern. It is the recommended companion in TanStack's own documentation. Virtualization MUST be feature-flagged: only activate when a `virtualize` prop is passed and dataset exceeds a row threshold (e.g., >200 rows). This keeps the zero-virtualization render path clean.
 
-| Tool | Purpose | Notes |
-|---|---|---|
-| `lighthouserc.json` | Declarative LHCI assertion config — runs against prod URL or `next start` localhost | New file at repo root. Asserts `categories:performance >= 1`, `largest-contentful-paint <= 1000`, `cumulative-layout-shift <= 0`, `total-blocking-time <= 200`, `unused-javascript <= 50000`. |
-| `.github/workflows/lhci.yml` | GitHub Action wiring — runs `lhci autorun` on PR | Use `treosh/lighthouse-ci-action@v12` (canonical wrapper) or call `@lhci/cli` directly. Mobile preset only — desktop is already 100. |
-| `app/_components/web-vitals.tsx` | Tiny `'use client'` component using built-in `useReportWebVitals` from `next/web-vitals` | No `web-vitals` npm import needed for baseline. Logs to `console` in dev, `navigator.sendBeacon()` to a logging endpoint in prod. **Real-device telemetry without a third-party SaaS.** |
-| `next/dynamic` (already used) | Audit `InstrumentHUD`, `CheatsheetOverlay`, `SFToasterLazy`, `GlobalEffectsLazy`, `SignalCanvasLazy`, `PageTransition` for actual lazy boundaries | The `*Lazy` names suggest correctness; the 119 KiB unused-JS metric implies one is leaking. Verify via `ANALYZE=true pnpm build`. |
-| `next/script` | **Specifically NOT for `sf-canvas-sync.js`.** | The 280-byte IIFE in `public/sf-canvas-sync.js` is no longer referenced from `app/layout.tsx` — the inline `scaleScript` literal at `layout.tsx:100` superseded it. Confirm with grep; if dead, delete the file (removes one render-blocking resource for free). |
+**Peer deps:**
+- `@tanstack/react-table@8.21.3`: peer `react >=16.8`, `react-dom >=16.8` — both satisfied by the project's `react@19.1.0`
+- `@tanstack/react-virtual@3.13.24`: peer `react ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0` — satisfied
+
+**Unpacked sizes (npm registry):**
+- `@tanstack/react-table@8.21.3`: 744 KB unpacked; ~15 KB gzip (headless, no CSS)
+- `@tanstack/table-core@8.21.3`: 3220 KB unpacked (includes TS source maps); actual runtime ~15 KB gzip total for both packages combined
+- `@tanstack/react-virtual@3.13.24`: 19 KB unpacked; ~3 KB gzip
+- `@tanstack/virtual-core@3.14.0`: 250 KB unpacked; ~4 KB gzip
+
+**RSC vs Client:** `'use client'` required — TanStack Table uses React state/memo. The SFDataTable component file gets the directive. Server Components can still pass static data arrays as props.
+
+**Tailwind v4 / OKLCH theming:** No conflicts. TanStack Table renders zero DOM; all styling goes on the existing SFTable primitive (already token-compliant).
+
+**P3 lazy candidate:** YES — lazy-load via `next/dynamic({ ssr: false })` with `meta.heavy: true`. The SFDataTable component (including TanStack imports) is only needed on pages that render data tables. This keeps TanStack Table + Virtual out of the 187.6 KB First Load JS baseline entirely, similar to the existing SFCalendar / SFMenubar P3 pattern.
+
+**`_dep_X_decision` required:** YES — two new runtime deps. Ratification block IDs: `_dep_dt_01_decision` (TanStack Table) and `_dep_dt_02_decision` (TanStack Virtual). Gzip impact: +15 KB Table + 3 KB Virtual = +18 KB, BUT only in the SFDataTable lazy chunk (not First Load JS). First Load JS impact: 0 KB.
+
+**Bundle accounting after P3 lazy:**
+- First Load JS: 187.6 KB (no change — lazy chunk excluded)
+- SFDataTable chunk (lazy): ~18-20 KB gzip additional
 
 ---
 
-## Installation
+### 2. SFCombobox
+
+**Requirement:** Autocomplete select with keyboard navigation, filtered list, accessible.
+
+**Recommended stack:**
+- Radix `@radix-ui/react-popover` (already installed via `radix-ui` meta-package)
+- `cmdk` v1.1.1 (already installed, already in `optimizePackageImports`)
+- `SFInput` + `SFPopover` (both already in the codebase)
+
+**No new runtime deps required.**
+
+**Why Radix Popover + cmdk composition over alternatives:**
+The existing `components/ui/command.tsx` and `components/ui/popover.tsx` are already in the codebase. The shadcn Combobox pattern is exactly this composition: a `Popover` wrapping a `Command` component with an `Input` filter. cmdk v1.1.1 is already installed, tree-shaken into a lazy chunk (per Phase 67 DCE), and already in the `optimizePackageImports` list. No additional installation is needed. This is zero-dep-addition territory.
+
+**Pattern:** SF-wrap the shadcn Combobox pattern. A `SFCombobox` component wraps `SFPopover` (trigger = `SFInput`-styled button with chevron) + `CommandInput` / `CommandList` / `CommandItem`. The `SFPopover` content renders with `rounded-none border-2 border-border` to maintain zero-border-radius. cmdk's `Command` renders in a `Popover.Content` container.
+
+**RSC vs Client:** `'use client'` required — state (open/value) is required.
+
+**Tailwind v4 / OKLCH theming:** No conflicts. cmdk exposes className overrides; all slots receive SF token classes.
+
+**P3 lazy candidate:** No — SFCombobox is a form primitive that will appear in many contexts. It should be in the barrel export. cmdk is already in the bundle via optimizePackageImports, so no marginal cost.
+
+**Bundle accounting:**
+- First Load JS: 187.6 KB (no change — cmdk already in optimizePackageImports lazy path, zero marginal cost from barrel addition)
+
+---
+
+### 3. SFRichEditor
+
+**Requirement:** Admin/blog/message composer — heading, bold/italic/lists, link, code block.
+
+**Recommended stack:**
+- `@tiptap/react` v2.27.2 (v2-latest dist-tag)
+- `@tiptap/pm` v2.27.2 (ProseMirror peer — ships with Tiptap)
+- `@tiptap/starter-kit` v2.9.1 (latest v2.x on npm, not latest — see versioning note)
+- Selective extensions only: `@tiptap/extension-link`, `@tiptap/extension-image` (only if needed)
+
+**Versioning note:** Tiptap's npm `latest` tag now points to v3.22.5, which is stable. The `v2-latest` dist-tag points to v2.27.2. The PROJECT.md records this milestone as requiring "Tiptap v2" — verify with the user whether v3 (now stable as of early 2026) is acceptable before locking v2. V3 has a JSX-in-renderHTML API change and requires `immediatelyRender: false` for Next.js SSR guard (same as v2). For this research, v2.27.2 is documented; v3 should be evaluated in the `_dep_re_01_decision` block before install.
+
+**Why Tiptap over Lexical and Slate:**
+- **vs Lexical (Meta, ~22 KB gzip):** Lexical is lighter but has a steeper extension API learning curve, less mature ecosystem for admin-grade features, and requires writing more extension boilerplate for heading/list/code combinations that Tiptap's StarterKit ships out of the box.
+- **vs Slate (~45 KB gzip):** Slate gives maximum control but is unfinished by the maintainer's own admission. Missing built-in undo/redo and serialization; requires significant custom code for standard features. Not suitable for a design system component that needs to be stable.
+- **vs Quill (~43 KB gzip):** Quill v1 is unmaintained (Quill v2 finally shipped but has limited adoption). The CSS injection model conflicts with Tailwind v4's `@layer` cascade ordering (same class of problem as `experimental.inlineCss: true`, which is explicitly rejected in the standing rules).
+- **Tiptap wins:** headless (no injected CSS fights), StarterKit provides heading/bold/italic/lists/blockquote/code-block out of the box, ProseMirror foundation is battle-tested, and the `immediatelyRender: false` SSR guard is documented and works on Next.js 15 App Router.
+
+**Peer deps (v2.27.2):**
+- `@tiptap/react`: peer `react ^17 || ^18 || ^19`, `react-dom` same, `@tiptap/pm ^2.7.0`, `@tiptap/core ^2.7.0`
+- All peer deps satisfied by project's react@19.1.0
+
+**Unpacked sizes (npm registry, v2.27.2):**
+- `@tiptap/react@2.27.2`: 585 KB unpacked
+- `@tiptap/starter-kit@2.9.1`: 65 KB unpacked
+- `@tiptap/core@2.9.1`: 2431 KB unpacked (includes full TS source + declaration maps)
+- `@tiptap/pm@2.27.2`: 24 KB unpacked
+
+**Gzip estimate:** Tiptap with StarterKit is approximately 50-70 KB gzip total (ProseMirror + @tiptap/core + @tiptap/react + @tiptap/starter-kit combined). This is consistent with community measurements for "basic Tiptap setup." The ProseMirror layer (`prosemirror-state`, `prosemirror-view`, `prosemirror-model`, etc.) accounts for the majority of this cost.
+
+**RSC vs Client:** `'use client'` required — ProseMirror is entirely DOM/browser-dependent. Use `next/dynamic({ ssr: false })` at the call site to prevent SSR crashes. The official Tiptap Next.js docs confirm this and recommend `immediatelyRender: false` as the SSR guard prop on the `useEditor` hook as a belt-and-suspenders measure.
+
+**Tailwind v4 / OKLCH theming:** Tiptap renders into a `contenteditable` div; all toolbar elements are standard HTML that receive Tailwind classes. No CSS injection — Tiptap is fully headless. This is the critical advantage over Quill.
+
+**P3 lazy candidate:** YES — mandatory. 50-70 KB gzip is 4-5x the 12.4 KB free headroom. This MUST be a `next/dynamic({ ssr: false })` P3 component with `meta.heavy: true`. The SFRichEditor is only consumed in admin/composer contexts, never in the critical render path.
+
+**`_dep_X_decision` required:** YES. Ratification block IDs: `_dep_re_01_decision` (Tiptap v2/v3 version choice + @tiptap/react + @tiptap/pm + @tiptap/starter-kit). Document the ProseMirror dependency chain in the block.
+
+**Bundle accounting after P3 lazy:**
+- First Load JS: 187.6 KB (no change — SFRichEditor lazy chunk excluded)
+- SFRichEditor chunk (lazy): ~55-70 KB gzip additional
+- If `_dep_re_01_decision` ratifies Tiptap v3 instead: similar gzip range, same lazy constraint
+
+---
+
+### 4. SFFileUpload
+
+**Requirement:** Drag-drop + progress indicator + multi-file + preview list.
+
+**Recommended stack:**
+- Native HTML File API + `DataTransfer` — no new dependency
+- `SFProgress` (already in codebase) — progress bar animation
+- `SFButton` (already in codebase) — trigger button
+- `Lucide React` (already in codebase) — `Upload`, `X`, `File`, `Check` icons
+
+**No new runtime deps required.**
+
+**Why no dependency:**
+The drag-drop pattern (`onDragOver`, `onDragLeave`, `onDrop` with `e.dataTransfer.files`) and multi-file management (`FileList` → array state) are entirely implementable with React hooks and the browser File API. Progress tracking for a design-system component is UI-only (a determinate `SFProgress` bar driven by an `uploadProgress` prop); the actual XHR/fetch upload is the consumer's responsibility. `react-dropzone` (~13 KB gzip) would be overkill — its value is file-type MIME sniffing and accessibility polyfills, neither of which is required at the design system layer.
+
+**RSC vs Client:** `'use client'` required — drag events, `useState`, `useRef`.
+
+**Tailwind v4 / OKLCH theming:** No conflicts. The drop zone, file list, and progress bar are standard HTML elements with SF token classes.
+
+**P3 lazy candidate:** No — file upload is a form primitive appearing in many admin/form contexts. Keep it in the barrel. Zero marginal bundle cost (no new deps).
+
+**Bundle accounting:**
+- First Load JS: 187.6 KB (no change — no new deps, SFProgress + Lucide already loaded)
+
+---
+
+### 5. SFDateRangePicker
+
+**Requirement:** Date range selection + optional time variant. Builds on the existing SFCalendar.
+
+**Recommended stack:**
+- `react-day-picker` v9.14.0 — already installed at this exact version
+- `SFPopover` (already in codebase) — trigger + floating panel
+- `SFInput` (already in codebase) — formatted date display in trigger
+
+**No new runtime deps required.**
+
+**Why react-day-picker range mode instead of a separate library:**
+react-day-picker v9 ships first-class `mode="range"` support. The existing `SFCalendar` already wraps react-day-picker and applies zero-border-radius styling via the `classNames` prop. `SFDateRangePicker` is a composition: `SFPopover` trigger (displaying formatted range string in an `SFInput`-styled button) + `SFCalendar` with `mode="range"` + optional time input below the calendar. No additional package is needed. `date-fns@4.1.0` is already installed (react-day-picker's own peer dep, already in `package.json`).
+
+**Time variant:** The time input is a plain `<input type="time">` rendered inside the popover, paired with the range calendar. No additional time-picker library is required.
+
+**RSC vs Client:** `'use client'` required — date state management.
+
+**Tailwind v4 / OKLCH theming:** Confirmed compatible. SFCalendar already uses the `classNames` override API to enforce zero-border-radius on every react-day-picker sub-element (including `range_start`, `range_middle`, `range_end`). SFDateRangePicker inherits this.
+
+**P3 lazy candidate:** YES — same reasoning as SFCalendar (already P3 in the codebase). SFDateRangePicker should be `next/dynamic({ ssr: false })` with `meta.heavy: true`. react-day-picker is in `optimizePackageImports`, which means it is already lazy-chunked per the Phase 67 DCE; the lazy component wrapper ensures it does not enter First Load JS for pages that don't use it.
+
+**Bundle accounting:**
+- First Load JS: 187.6 KB (no change — react-day-picker already in optimizePackageImports lazy path)
+- SFDateRangePicker chunk (lazy): react-day-picker is already in a separate chunk; only the component wrapper overhead (~1-2 KB gzip) is new
+
+---
+
+## Full Bundle Accounting
+
+| Component | New Deps | Gzip Cost | Load Strategy | First Load JS Impact |
+|-----------|----------|-----------|---------------|----------------------|
+| SFDataTable | @tanstack/react-table@8.21.3 + @tanstack/react-virtual@3.13.24 | ~18-20 KB | P3 lazy (next/dynamic ssr:false) | 0 KB |
+| SFCombobox | None (cmdk + Radix already installed) | 0 KB marginal | Eager barrel | 0 KB |
+| SFRichEditor | @tiptap/react + @tiptap/pm + @tiptap/starter-kit (v2.27.2) | ~55-70 KB | P3 lazy (next/dynamic ssr:false) | 0 KB |
+| SFFileUpload | None | 0 KB | Eager barrel | 0 KB |
+| SFDateRangePicker | None (react-day-picker already installed) | ~1-2 KB wrapper only | P3 lazy (next/dynamic ssr:false) | 0 KB |
+| **TOTAL First Load JS** | | | | **187.6 KB — no change** |
+
+**All three heavy components (SFDataTable, SFRichEditor, SFDateRangePicker) must be P3 lazy. This is the architectural constraint that makes BND-08 achievable without a `_path_decision`.** The 12.4 KB headroom is preserved for framework updates and incidental additions.
+
+---
+
+## Recommended Stack — Consolidated
+
+### New Runtime Dependencies (2 total, require `_dep_X_decision`)
+
+| Package | Version | Gzip (est.) | Load | Decision Block |
+|---------|---------|-------------|------|----------------|
+| `@tanstack/react-table` | 8.21.3 | ~12 KB | P3 lazy chunk | `_dep_dt_01_decision` |
+| `@tanstack/react-virtual` | 3.13.24 | ~3 KB | P3 lazy chunk | `_dep_dt_02_decision` |
+| `@tiptap/react` | 2.27.2 (v2-latest) | ~55-70 KB combined | P3 lazy chunk | `_dep_re_01_decision` |
+| `@tiptap/pm` | 2.27.2 | (included in above) | P3 lazy chunk | covered by `_dep_re_01_decision` |
+| `@tiptap/starter-kit` | 2.9.1 (latest v2.x) | (included in above) | P3 lazy chunk | covered by `_dep_re_01_decision` |
+
+Note: Tiptap ships as 3 coordinated packages (`@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`) but ratification is one decision block (`_dep_re_01_decision`) since they are always installed together and share a version constraint.
+
+### Zero-New-Dep Components
+
+| Component | Composition Source |
+|-----------|--------------------|
+| SFCombobox | cmdk@1.1.1 (installed) + Radix Popover (installed) + SFInput + SFPopover |
+| SFFileUpload | Native File API + SFProgress + SFButton + Lucide React |
+| SFDateRangePicker | react-day-picker@9.14.0 (installed) + SFCalendar + SFPopover + SFInput |
+
+### Installation
 
 ```bash
-# DevDeps only — zero runtime additions
-pnpm add -D @lhci/cli@^0.15.1
+# Two ratification blocks required before running this:
+# _dep_dt_01_decision + _dep_dt_02_decision (SFDataTable)
+# _dep_re_01_decision (SFRichEditor)
 
-# Optional — only if next/web-vitals (built-in) is insufficient for attribution
-pnpm add -D web-vitals@^5.2.0
+pnpm add @tanstack/react-table@^8.21.3 @tanstack/react-virtual@^3.13.24
+pnpm add @tiptap/react@^2.27.2 @tiptap/pm@^2.27.2 @tiptap/starter-kit@^2.9.1
+# No install needed for SFCombobox, SFFileUpload, SFDateRangePicker
 ```
-
-> All other "additions" are configuration files (`lighthouserc.json`, `.github/workflows/lhci.yml`, `app/_components/web-vitals.tsx`) and edits to existing files (`next.config.ts`, `app/layout.tsx`).
-
----
-
-## Configuration Changes — the actual v1.8 work
-
-These are **not** new packages — they are the levers that close measured Phase 37 gaps using existing primitives.
-
-### Gap 1 — LCP 6.5s on `section#thesis > span.sf-display`
-
-**Root cause hypothesis (HIGH confidence):** `ScaleCanvas` applies `transform: scale(vw/1280)` to a wrapper containing the entire page. Mobile Lighthouse's LCP heuristic picks the largest paint within the viewport — the ghost-label spans 200–400px font-size × 25vw clamp, which is the largest element after scale. Compounded by `display: optional` Anton (the CLS-correct choice from Wave 3) — on cold cache, the fallback renders, fails to swap to Anton, but the LCP timestamp still measures the final paint.
-
-**Levers (no new packages):**
-
-1. **Reduce Anton's effective LCP weight without breaking the `optional` CLS fix.**
-   - `next/font/local` does not auto-subset locals — manually subset Anton-Regular.woff2 to glyphs actually used (the project uses ALL CAPS English manifesto; aggressive subset is safe). One-time build step via `glyphhanger` or pre-built subset, no runtime dep.
-   - Confirm `<link rel="preload" as="font" type="font/woff2" crossorigin>` is being emitted. Default for `next/font/local` when `preload: true` (which is the default).
-   - Verify `adjustFontFallback` is not overridden to `false` (default for local fonts is `'Arial'` — keep default).
-
-2. **Demote ghost-label out of the LCP candidate set.**
-   - `components/animation/ghost-label.tsx:11-23` renders a `<span>` with `aria-hidden="true"` and 3-5% opacity. Lighthouse picks it because `aria-hidden` + low opacity does NOT exclude from LCP — only `display:none`, `visibility:hidden`, or `opacity:0` (zero) do.
-   - **Option A (preferred):** add `content-visibility: auto` + `contain-intrinsic-size` to ghost-label CSS. Defers paint cost until in-view; LCP no longer fires on it.
-   - **Option B (fallback):** start ghost-label at `opacity: 0` (excluded from LCP per spec), GSAP-tween to 0.03–0.05 in `requestAnimationFrame` after `'load'`. One-line change + ScrollTrigger entry.
-   - Both preserve the "visually identical" aesthetic constraint.
-
-3. **Hero shader / above-fold LCP candidate.**
-   - The hero `SIGNALFRAME//UX` wordmark (per v1.5 EN-01..05) should be the *intended* LCP. Add `fetchpriority="high"` to the wordmark and verify the GLSL shader canvas does not race it.
-   - The shader canvas is `data-sf-canvas` and goes through `ScaleCanvas`. The CSS rule `[data-sf-canvas]{transform:scale(var(--sf-canvas-scale))}` runs after the inline `scaleScript` (`layout.tsx:100`) — first paint is already scaled.
-
-### Gap 2 — Render-blocking 570ms (`/sf-canvas-sync.js` + 2 CSS files)
-
-**Root cause:** Phase 37 noted three render-blocking resources. Inspecting current `app/layout.tsx`:
-- The two inline `<script>` blocks (`themeScript`, `scaleScript`) are blocking by design — they must run before first paint to prevent FOUC and CLS. Both static literals, ~150 bytes each. **Do not move.**
-- `public/sf-canvas-sync.js` is referenced as render-blocking external `/sf-canvas-sync.js` in milestone context, but `grep` of `app/layout.tsx` and `app/` shows no `<script src="/sf-canvas-sync.js">` in the current tree. The inline `scaleScript` superseded it.
-
-**Levers:**
-
-1. **Delete `public/sf-canvas-sync.js`** — confirm with `grep -r 'sf-canvas-sync' app components lib public` (expected empty). If empty, delete the file. **One render-blocking request removed for free, zero behavior change.**
-2. **CSS critical-path** — Tailwind v4 `@theme inline` already inlines tokens. The two render-blocking CSS files are likely `globals.css` (main token+layer file) and a page-level CSS chunk. Next.js 15 already inlines critical CSS for static routes — verify via `view-source:` on prod. If a `<link rel="stylesheet">` is still loading late, the cause is usually a non-static page or a `'use client'` component pulling an extra chunk. Audit with `ANALYZE=true pnpm build`.
-
-### Gap 3 — Unused JS 119 KiB across chunks `3302`, `e9a6067a`, `74c6194b`, `7525`
-
-**Root cause:** likely vendor splits (radix-ui, sonner, vaul, gsap, react-day-picker, cmdk, shiki) being pulled into shared chunk via barrel re-exports or eager imports.
-
-**Levers (configuration, no packages):**
-
-1. **Expand `optimizePackageImports`** in `next.config.ts:10` from `["lucide-react"]` to:
-   ```ts
-   optimizePackageImports: [
-     "lucide-react",
-     "radix-ui",         // 33-component umbrella
-     "sonner",
-     "vaul",
-     "cmdk",
-     "react-day-picker",
-     "date-fns",
-     "input-otp",
-   ]
-   ```
-   Phase-gate: re-run `ANALYZE=true pnpm build` after each addition.
-
-2. **Audit `*Lazy.tsx` wrappers** in `components/layout/`: `GlobalEffectsLazy`, `SignalCanvasLazy`, `SFToasterLazy`. Confirm each uses `next/dynamic({ ssr: false })` and that the underlying heavy module is **not** transitively imported by any page or layout.
-
-3. **Shiki** (`^4.0.2`) — already a v1.4 critical constraint ("`shiki/core` only — never `shiki/bundle/web` 695 KB or `shiki/bundle/full` 6.4 MB"). Re-verify import path hasn't drifted in `inventory/` detail views.
-
-### Gap 4 — Main-thread work 2.4s (script-eval 1.0s, other 0.6s, style+layout 0.4s)
-
-**Levers:**
-1. `optimizePackageImports` reduction (Gap 3) directly drops script-eval cost.
-2. `updateSignalDerivedProps` MutationObserver from v1.7 (Phase 48) keeps ticker overhead at zero. Verify no new `getComputedStyle` regressions in v1.8 work — per memory `feedback_raf_loop_no_layout_reads.md`.
-3. `getQualityTier()` continues gating any new SIGNAL surface — but v1.8 is perf-recovery, no new surfaces.
 
 ---
 
 ## Alternatives Considered
 
-| Recommended | Alternative | When Alternative Makes Sense |
-|---|---|---|
-| `@lhci/cli` (devDep) for CI gate | `@vercel/speed-insights` (runtime SaaS) | If you need RUM with no infra effort and accept a third-party request + dashboard fee. v1.8 hard constraint is zero new runtime deps, so `@lhci/cli` wins. Reconsider for v1.9 if real-user trends matter. |
-| `next/web-vitals` (built-in) for client telemetry | `web-vitals@5.2.0` package directly | Use `web-vitals` directly **only if** you need the attribution build (`web-vitals/attribution`) for LCP-element diagnosis. Built-in `useReportWebVitals` returns `entries[]` which is enough for 90% of cases. |
-| Subset Anton via `glyphhanger` (build script) | Switch Anton → `next/font/google` (Anton is on Google Fonts) | Google Fonts version doesn't ship with the optimal subset for ALL-CAPS English-only manifesto. Build-time subset is one-shot and predictable. |
-| Configuration-only LCP fix (Gap 1 levers) | Switch ScaleCanvas approach to native `min(vw, 1280px)` containers | Architectural change; explicitly Out of Scope per milestone context (Track B parked). |
-| Keep Next.js `15.5.14` | Next.js 16.x | Next 16 was attempted (Phase 37) and rolled back. Mid-perf-recovery is wrong moment to retry. Belongs in v1.9. |
-| Real-device sampling: WebPageTest free tier + manual iPhone Safari/Android | BrowserStack (paid) | Free WPT runs covers iPhone 15 Pro / Moto G Power profiles; combined with manual local devices, sufficient for v1.8 verification. BrowserStack adds cost without proportional benefit at this scope. |
+| Recommended | Alternative | Why Not |
+|-------------|-------------|---------|
+| TanStack Table v8 | AG Grid Community | AG Grid is 200+ KB gzip even community edition; destroys the bundle budget entirely even as a lazy chunk |
+| TanStack Table v8 | react-table v7 | v7 is the deprecated predecessor; v8 is the maintained rewrite. v7 has known issues with React 18/19 concurrent mode |
+| TanStack Table v8 | TanStack Table v9 | v9 is not yet released (RFC Discussion #5834 is open). Pin to v8.x; migrate when v9 stabilizes |
+| Tiptap v2.27.2 | Quill v2 | Quill injects CSS at runtime, which conflicts with Tailwind v4's `@layer signalframeux` cascade ordering — same class of problem as `experimental.inlineCss: true` (explicitly rejected in standing rules) |
+| Tiptap v2.27.2 | Slate | Slate is incomplete — no built-in undo/redo, no serialization, requires substantial custom extension work for a design system that needs to be stable out of the box |
+| Tiptap v2.27.2 | Lexical | Lexical is lighter (~22 KB gzip core) but requires substantially more extension boilerplate for StarterKit-equivalent feature set. Appropriate if bundle budget were the only constraint; Tiptap wins on DX stability for a design system component |
+| Native File API | react-dropzone | react-dropzone adds ~13 KB gzip for MIME sniffing and accessibility polyfills that are the consumer's responsibility, not the design system's. Overkill at the SF layer |
+| react-day-picker range mode | flatpickr | flatpickr injects its own CSS. Same cascade conflict as Quill |
+| react-day-picker range mode | react-datepicker | react-datepicker is heavier, has weaker TypeScript typings, and does not compose with the existing SFCalendar infrastructure already in the codebase |
+| Radix Popover + cmdk | Downshift | Downshift is a valid ARIA-compliant alternative but cmdk is already installed and provides an identical feature set; adding Downshift would be a redundant dep |
 
 ---
 
 ## What NOT to Use
 
 | Avoid | Why | Use Instead |
-|---|---|---|
-| `@vercel/speed-insights` | Runtime SaaS dep adds its own beacon overhead and a third-party request to the critical path. Conflicts with zero-new-runtime-dep contract. Duplicates LCP measurement we can do for free. | `next/web-vitals` (built-in) → custom endpoint via `navigator.sendBeacon` |
-| `@vercel/analytics` | Same critique — runtime weight, third-party request, paid retention. Not needed for LCP recovery; the gap is *measurement* not *retention*. | `useReportWebVitals` to a self-hosted log endpoint |
-| `next/image` for new image optimization | Project doesn't have an image-LCP problem — LCP is on a `<span>` text node. Adding image-optimization machinery is premature. | Keep current `<img>` / SVG usage. Re-evaluate if any image becomes the LCP element after Gap 1 fixes. |
-| `react-three-fiber` (already excluded) | Independent rAF conflicts with GSAP `globalTimeline.timeScale(0)` reduced-motion contract. | Raw Three.js via `useSignalScene` singleton |
-| `partytown` / `next/script strategy="worker"` | `worker` strategy is "experimental, App Router unsupported" per `next/script` docs (verified 2026-04-23). The two inline scripts in `layout.tsx` are static literals, not third-party — moving them to a worker provides no benefit and breaks FOUC/CLS prevention. | Keep inline blocking scripts. They are <500 bytes combined. |
-| `next/script strategy="beforeInteractive"` for `sf-canvas-sync.js` | The script is dead code (superseded by inline `scaleScript`). Wrapping a dead file in `next/script` is the wrong fix. | Delete `public/sf-canvas-sync.js`. |
-| `lighthouse-ci-action@v9` or earlier | Older versions of the official GitHub Action don't support Lighthouse 13.x assertions. | `treosh/lighthouse-ci-action@v12` (current, supports `@lhci/cli@0.15.x`) |
-| Adding `web-vitals` to `dependencies` (runtime) | Violates zero-runtime-dep rule. | DevDep only. Use `next/web-vitals` (built-in) for prod telemetry; pull `web-vitals/attribution` only in dev/staging via dynamic import. |
-| New CSS-in-JS perf tools (Linaria, vanilla-extract) | Tailwind v4 `@theme inline` is already source of truth; competing tool inflates bundle and breaks `--sfx-*` consumer overrides. | Tailwind v4 only. |
-| Custom RUM dashboard | Out of scope for v1.8. | Plain `navigator.sendBeacon` to an in-house API route or external collector — upgrade in v2.x. |
-| Premature Edge runtime conversion | Routes are already mostly static (Phase 37 confirmed `headers()` removal). Edge gives nothing extra here. | Keep static-by-default. |
-| PPR (Partial Prerendering) | Stable in Next 16, experimental in 15.x. Pinning Next 15 means PPR is incremental work. Static homepage already has the fastest possible TTFB on Vercel. | Skip PPR for v1.8. Consider when Next 16 upgrade lands in v1.9. |
-| Cache Components (Next 16 only) | Out of reach on Next 15.5. | Defer to v1.9 with Next 16 upgrade. |
-
----
-
-## Stack Patterns by Variant
-
-**If web-vitals attribution confirms LCP element is `#thesis > span.sf-display`:**
-- Apply Gap 1 levers (ghost-label demotion + Anton subset). Likely closes 5+ seconds of LCP single-handedly.
-
-**If web-vitals attribution shows LCP is the hero shader canvas or wordmark:**
-- Gap 1 levers do not apply. Audit `SignalCanvasLazy` mount timing — `ssr: false` may delay first paint of the canvas.
-- Add `fetchpriority="high"` to the hero wordmark.
-- Confirm GLSL shader compiles synchronously on first frame, not deferred.
-
-**If `ANALYZE=true pnpm build` shows shared chunk >150 KB after `optimizePackageImports`:**
-- Audit barrel re-exports in `components/sf/index.ts` — even with `'use client'` discipline, `radix-ui` umbrella imports can leak.
-- Convert any `import { X } from "radix-ui"` to direct `radix-ui/dialog` style sub-paths where supported.
-
-**If LHCI mobile run is still <100 after all configuration changes:**
-- The remaining gap is architectural (ScaleCanvas + ghost-label-as-LCP) — exactly Track B (parked). Open a v1.9 spike, do not extend v1.8.
+|-------|-----|-------------|
+| AG Grid (any edition) | Even community edition is 200+ KB gzip — larger than the entire remaining First Load JS budget. Makes P3 lazy unusable for any page that needs a table | TanStack Table v8 + SFTable (headless + existing primitive) |
+| Quill (v1 or v2) | Injects CSS via `<style>` tags at runtime, which breaks the `@layer signalframeux` cascade ordering that is a standing architectural constraint. v1 is unmaintained | Tiptap (headless, no injected CSS) |
+| slate-react | Fundamentally incomplete: undo/redo and serialization must be implemented from scratch. Not appropriate for a stable design system component | Tiptap StarterKit (ships undo/redo, HTML serialization) |
+| react-dropzone | Adds ~13 KB gzip for features (MIME sniffing, drag-and-drop polyfills) that a design system file upload component should not own — these are consumer responsibilities | Native HTML File API + DataTransfer (zero dep) |
+| flatpickr | Injects its own CSS; same `@layer` cascade conflict as Quill. Also has no React-first API — requires `useEffect` imperative initialization pattern | react-day-picker v9 range mode (already installed) |
+| `experimental.inlineCss: true` | Breaks `@layer signalframeux` cascade ordering — explicitly rejected standing rule from v1.9 | Standard CSS cascade with `@layer signalframeux` |
+| TanStack Table as an eager bundle import | 15 KB gzip added to every page's First Load JS even when no data table is rendered | P3 lazy via `next/dynamic({ ssr: false })`, meta.heavy: true |
+| Tiptap as an eager bundle import | 55-70 KB gzip is 4.4-5.6x the 12.4 KB free headroom; would blow the 200 KB hard target on any page that eager-imports the rich editor | P3 lazy via `next/dynamic({ ssr: false })`, meta.heavy: true |
 
 ---
 
 ## Version Compatibility
 
-| Package A | Compatible With | Notes |
-|---|---|---|
-| `@lhci/cli@^0.15.1` | `lighthouse@^13.1.0` (already installed) | LHCI 0.15.x bundles or wraps Lighthouse ≥10. Project's `lighthouse@13.1.0` is the engine; LHCI orchestrates. |
-| `web-vitals@^5.2.0` | `next@15.5.14`, React 19 | v5 is current (verified 2026-04-25). Includes attribution build. ESM-only — Next 15 handles. |
-| `@next/bundle-analyzer@^16.2.2` | `next@15.5.14` | Already installed. `@next/bundle-analyzer@16.x` works against `next@15.x` — major version is just a versioning convention, not a hard dep boundary. |
-| `next/font/local` `display: optional` | Anton local font, Phase 35 CLS fix | **Do not change to `swap`.** Documented at `app/layout.tsx:46-50` — `swap` caused 0.485 CLS on `/system`. `optional` is the locked v1.5 decision. |
-| `optimizePackageImports` | Next 15 + 16 | Stable since Next 13.5. |
-| `treosh/lighthouse-ci-action@v12` | LHCI 0.15.x | Current generation; v9 and below are unmaintained. |
+| Package | Peer Requirement | Project Version | Status |
+|---------|-----------------|-----------------|--------|
+| `@tanstack/react-table@8.21.3` | `react >=16.8` | `react@19.1.0` | PASS |
+| `@tanstack/react-virtual@3.13.24` | `react ^16.8 \|\| ^17 \|\| ^18 \|\| ^19` | `react@19.1.0` | PASS |
+| `@tiptap/react@2.27.2` | `react ^17 \|\| ^18 \|\| ^19` | `react@19.1.0` | PASS |
+| `@tiptap/starter-kit@2.9.1` | none (deps are @tiptap/* internal) | — | PASS |
+| `react-day-picker@9.14.0` | `react >=16.8` | `react@19.1.0` | PASS |
+| `cmdk@1.1.1` | (already installed) | — | PASS |
+| All Radix UI | (already installed via `radix-ui` meta-package) | — | PASS |
+
+**Tiptap v2 vs v3 note:** Tiptap v3 is now `latest` on npm (v3.22.5 as of 2026-05-01). The `v2-latest` dist-tag points to v2.27.2. The `_dep_re_01_decision` block MUST address this version choice. V3 has a JSX-in-renderHTML API addition but is otherwise compatible. Both require `immediatelyRender: false` for Next.js SSR safety. Recommend evaluating v3 since it is now stable — do not pin to v2 by default without documenting the reason in the decision block.
 
 ---
 
-## DevDep vs Runtime Boundary (explicit per quality gate)
+## Next.js 15 App Router Compatibility Notes
 
-| Package | Type | Justification |
-|---|---|---|
-| `@lhci/cli@^0.15.1` | **devDep** | CI-only tool. Runs in GitHub Actions, never ships to users. |
-| `web-vitals@^5.2.0` | **devDep** (optional) | Used only via `'use client'` component dynamically imported in dev/staging for attribution debugging. Production telemetry uses built-in `next/web-vitals` which bundles its own minimal collector. If included in prod runtime, must remain ≤4 KB and gated to non-critical paths. |
-| `@next/bundle-analyzer@^16.2.2` | **devDep** (already) | Build-time only. |
-| `lighthouse@^13.1.0` | **devDep** (already) | CLI engine; never imported into app code. |
+| Component | Directive | SSR Strategy | Notes |
+|-----------|-----------|--------------|-------|
+| SFDataTable | `'use client'` | `next/dynamic({ ssr: false })` | TanStack Table uses React state; data passes as RSC-fetched prop |
+| SFCombobox | `'use client'` | Eager (no SSR concern) | cmdk is already client-only; Popover state is client-side |
+| SFRichEditor | `'use client'` | `next/dynamic({ ssr: false })` MANDATORY | ProseMirror crashes on SSR; `immediatelyRender: false` as belt-and-suspenders |
+| SFFileUpload | `'use client'` | Eager (no SSR concern) | File API is browser-only; component guards against SSR by being client-only |
+| SFDateRangePicker | `'use client'` | `next/dynamic({ ssr: false })` | Matches SFCalendar P3 pattern already in codebase |
 
-**Zero new runtime npm dependencies.** Preserves v1.7 contract.
+**Pattern for P3 lazy components (matches SFCalendar precedent):**
+```typescript
+// sf-data-table-lazy.tsx
+import dynamic from "next/dynamic";
+export const SFDataTableLazy = dynamic(
+  () => import("./sf-data-table").then((m) => m.SFDataTable),
+  { ssr: false }
+);
+```
+
+---
+
+## Tailwind v4 `@theme inline` Integration Notes
+
+All 5 components inherit the existing SF token system without modification:
+
+- **Zero border-radius:** Apply `rounded-none` to all interactive elements. TanStack Table renders no DOM — radius goes on SFTable cells. Tiptap's `contenteditable` div and toolbar buttons need explicit `rounded-none`. cmdk's `CommandItem` needs `rounded-none` via the `className` prop. react-day-picker's range cells already receive `rounded-none` via SFCalendar's `classNames` override.
+- **OKLCH colors:** All color references via `--sfx-*` tokens. Do not hardcode hex in component variants.
+- **`@theme inline` aliasing:** No changes needed — the `--sfx-*` → Tailwind utility mapping in `globals.css` applies automatically to any new component using `bg-background`, `text-foreground`, etc.
+- **CVA `intent` prop:** All 5 components should use `intent` as the semantic variant prop (not `variant`), per v1.3 prop vocabulary lock.
 
 ---
 
 ## Sources
 
-- `npm view @lhci/cli` (verified 2026-04-25): `0.15.1`, last modified 2025-06-25 — **HIGH**
-- `npm view web-vitals` (verified 2026-04-25): `5.2.0`, last modified 2026-04-25 — **HIGH**
-- `npm view @next/bundle-analyzer` (verified 2026-04-25): `16.2.4`, last modified 2026-04-22 — **HIGH**
-- `npm view lighthouse` (verified 2026-04-25): `13.1.0`, last modified 2026-04-06 — **HIGH**
-- `node_modules/next/package.json`: actual installed Next is `15.5.14` — **HIGH**
-- Next.js docs `app/getting-started/fonts` (lastUpdated 2026-04-23): `next/font/local` `display: optional` semantics, `adjustFontFallback`, `preload: true` default — **HIGH**
-- Next.js docs `app/api-reference/components/font` (lastUpdated 2026-04-23): full props matrix incl. `adjustFontFallback`, `declarations`, `axes` — **HIGH**
-- Next.js docs `app/api-reference/components/script` (lastUpdated 2026-04-23): `worker` strategy is experimental + App Router unsupported — **HIGH**
-- Next.js docs `app/api-reference/functions/use-report-web-vitals` (lastUpdated 2026-04-23): built-in hook returns LCP/CLS/INP/FCP/TTFB — **HIGH**
-- GitHub `GoogleChrome/web-vitals` (verified 2026-04-25): v5 current, attribution build available — **HIGH**
-- Project files `app/layout.tsx`, `next.config.ts`, `package.json`, `public/sf-canvas-sync.js`, `components/animation/ghost-label.tsx` — **HIGH** (read directly)
-- Project memory `feedback_pf04_autoresize_contract.md`, `feedback_consume_quality_tier.md`, `feedback_raf_loop_no_layout_reads.md`, `project_phase37_mobile_a11y_architectural.md` — **HIGH**
-- `treosh/lighthouse-ci-action@v12`: ecosystem-canonical wrapper — **MEDIUM** (not directly version-verified this session)
+- npm registry API (registry.npmjs.org) — version numbers, unpacked sizes, peer deps for all 5 component candidates (HIGH confidence, direct measurement)
+- TanStack Table v8 docs (tanstack.com/table/v8) — virtualization integration pattern, headless architecture (HIGH confidence)
+- Tiptap docs (tiptap.dev/docs/editor/getting-started/install/nextjs) — Next.js App Router SSR guard, `immediatelyRender: false` requirement (HIGH confidence)
+- react-day-picker docs (daypicker.dev/selections/range-mode) — range mode API, v9 compatibility (HIGH confidence)
+- bundlephobia.com — gzip size estimates for TanStack Table (~15 KB) and TanStack Virtual (~3 KB) (MEDIUM confidence — bundlephobia page rendered but size figures confirmed via multiple search result snippets)
+- Web search: Tiptap 50-70 KB gzip figure for starter-kit setup (MEDIUM confidence — consistent across Liveblocks blog and community articles)
+- Lexical 22 KB gzip core figure (MEDIUM confidence — multiple sources confirm, used only for comparison)
+- Existing codebase: `package.json`, `next.config.ts`, `components/sf/index.ts`, `components/sf/sf-calendar.tsx` — confirmed installed packages, optimizePackageImports list, barrel exports, SFCalendar range_start/range_middle/range_end class precedent (HIGH confidence, direct read)
 
 ---
-
-*Stack research for: SignalframeUX v1.8 Speed of Light — performance recovery to original CLAUDE.md gate*
-*Researched: 2026-04-25*
-*Supersedes: v1.7 STACK.md for v1.8 scope only; v1.7 effects-stack research remains accurate for prior milestone.*
+*Stack research for: SignalframeUX v1.10 Library Completeness — 5 component expansion*
+*Researched: 2026-05-01*
