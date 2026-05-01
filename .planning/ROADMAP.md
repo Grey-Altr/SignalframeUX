@@ -129,7 +129,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. The editor renders with zero system-font leakage (content area uses `--sfx-*` token stack) and zero rounded corners; `.ProseMirror *` rules are scoped under `@layer signalframeux` and do not override any `--sfx-*` tokens
 4. Homepage First Load JS remains under 200 KB after Tiptap deps are added; `_dep_re_01_decision` block is committed with measured bundle evidence; `@tiptap/*` chunks are absent from the homepage First Load chunk manifest
 
-**Plans:** TBD
+**Plans:** 2/3 plans executed
 
 ---
 
@@ -225,7 +225,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 |-------|----------------|--------|-----------|
 | 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
-| 73 — SFRichEditor | 0/TBD | Not started | — |
+| 73 — SFRichEditor | 2/3 | In Progress|  |
 | 74 — SFFileUpload | 0/TBD | Not started | — |
 | 75 — SFDateRangePicker | 0/TBD | Not started | — |
 | 76 — Final Gate | 0/TBD | Not started | — |
