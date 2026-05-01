@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.10
 milestone_name: Library Completeness
-status: defining_requirements
-last_updated: "2026-05-01T00:50:00.000Z"
+status: roadmap_created
+last_updated: "2026-05-01T01:30:00.000Z"
 last_activity: 2026-05-01
 progress:
-  total_phases: 70
+  total_phases: 76
   completed_phases: 70
   total_plans: 119
   completed_plans: 119
-  percent: 100
+  percent: 0
 ---
 
 # STATE — SignalframeUX
@@ -21,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.10 Library Completeness — defining requirements (Direction F, default 5 components + ratified deps) |
+| Current Focus | v1.10 Library Completeness — roadmap created, ready to plan Phase 71 |
 | Milestone | v1.10 Library Completeness (active) |
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 71 (next to plan)
 Plan: —
-Status: Defining requirements — research enabled, 4 parallel researchers + synthesizer queued
-Last activity: 2026-05-01 — Milestone v1.10 started
+Status: Roadmap created — 6 phases (71–76), 34 REQ-IDs mapped, 100% coverage
+Last activity: 2026-05-01 — ROADMAP.md + STATE.md written; REQUIREMENTS.md traceability verified
 
 ## Progress
 
@@ -44,9 +44,37 @@ v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE —
 v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
 v1.8: [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
 v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMPLETE — shipped 2026-04-30
+v1.10: [          ] 0% (0/6 phases) IN PROGRESS
 ```
 
-## v1.8 Phase Map
+## v1.10 Phase Map
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 71 | SFDataTable | DT-01..06, DEP-01, TST-03 | Not started |
+| 72 | SFCombobox | CB-01..04, TST-03 | Not started |
+| 73 | SFRichEditor | RE-01..06, DEP-02, TST-03 | Not started |
+| 74 | SFFileUpload | FU-01..05, TST-03, TST-04 | Not started |
+| 75 | SFDateRangePicker | DR-01..06, TST-03 | Not started |
+| 76 | Final Gate | REG-01, BND-08, AES-05 | Not started (hard dep: 71–75 all) |
+
+**Build-order constraints (encoded in ROADMAP.md):**
+
+- Phases 71–75 have NO hard build-order dependencies among themselves — all building blocks exist; ordering is risk-sequencing only.
+- Phase 76 is a HARD dependency on all of Phases 71–75.
+- Risk sequence rationale: dep-first (71: TanStack Table), confidence-builder (72: zero-dep Pattern C), SSR-complexity (73: Tiptap), zero-dep breathing room (74: FileUpload), complex-composition (75: DateRangePicker).
+
+## v1.9 Phase Map (archived)
+
+| Phase | Name | Requirements | Status |
+|-------|------|--------------|--------|
+| 66 | ScaleCanvas Track B + GhostLabel Pseudo-Element | ARC-01..04 | Complete |
+| 67 | Bundle Barrel-Optimization (D-04 Unlock) | BND-05..07 | Complete |
+| 68 | lcp-guard Structural Refactor | TST-01..02 | Complete |
+| 69 | Wordmark Cross-Platform Pixel-Diff Alignment | WMK-01..02 | Complete |
+| 70 | v1.8 Verification Closure (VRF-01/04/05) | VRF-06..08 | Complete |
+
+## v1.8 Phase Map (archived)
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
@@ -56,14 +84,6 @@ v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMP
 | 60 | LCP Element Repositioning | LCP-01, LCP-02, LCP-03 | Complete (2/2 plans, ratified 2026-04-27 via 62-03 W2b spot-check) |
 | 61 | Bundle Hygiene | BND-01, BND-02, BND-03, BND-04 | Complete (3/3 plans, all 4 BND + AES-04 SATISFIED post-recalibration) |
 | 62 | Real-Device Verification + Final Gate | VRF-01, VRF-02, VRF-03, VRF-04, VRF-05 | Closed-with-deferrals 2026-04-27 (3 PASS: VRF-02 post-path_b, VRF-03, AES-04; 3 DEFERRED to v1.9: VRF-01, VRF-04, VRF-05) |
-
-**Build-order constraints (encoded in ROADMAP.md):**
-
-- Phase 57 is HARD prereq for all others.
-- Phase 58 must land BEFORE Phase 59.
-- Phase 60 ⊥ Phase 61 (parallel-safe).
-- Phase 59 expects ≥3 plans per CRT-05 (clean bisect).
-- Phase 62 mid-milestone real-device checkpoint (VRF-04) fires after Phase 60, not deferred.
 
 ## v1.7 Phase Map (archived)
 
@@ -202,23 +222,30 @@ v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMP
 - **No new runtime npm dependencies in v1.8** — devDep additions limited to `@lhci/cli` + optional `web-vitals` (attribution only).
 - **Stale-chunk guard**: `rm -rf .next/cache .next` before any gating measurement (BND-04).
 
+### v1.10 Critical Constraints (New)
+
+- **`_dep_X_decision` blocks at plan-time, not post-hoc** — authored before `pnpm add`; bundle_evidence field populated post-install from `ANALYZE=true pnpm build` measurement (not an estimate). Pattern extends `_wmk_01_decision` (v1.9 Phase 69).
+- **D-04 chunk-ID lock holds throughout v1.10** — no `optimizePackageImports` additions; new heavy deps (TanStack Table, Tiptap) land in P3 lazy chunks by route, which is the correct mechanism without touching the 8-entry list.
+- **P3 lazy mandatory for SFDataTable + SFRichEditor** — `next/dynamic({ ssr: false })`; never in barrel; consumers import direct path. SFDateRangePicker achieves laziness through SFCalendarLazy composition.
+- **Tiptap CSS isolation is non-negotiable** — `injectCSS: false` on every `useEditor()`; `.ProseMirror *` rules in `app/globals.css` under `@layer signalframeux`; no Tiptap CSS imports anywhere.
+- **react-day-picker CSS isolation is non-negotiable** — `classNames` prop only; `import 'react-day-picker/dist/style.css'` is prohibited.
+- **`new Date()` only in `useEffect` or `useMemo`** — module-level `new Date()` in SFDateRangePicker is an SSR hydration mismatch trap.
+- **SFFileUpload `dataTransfer.files` gap is permanent** — split test strategy (setInputFiles + Chromatic) must be documented in the plan, not treated as a TODO.
+- **Bundle headroom at v1.10 start: 12.4 KB** — (200 KB hard target − 187.6 KB current); both new dep sets (TanStack Table ~12 KB gzip + Tiptap ~55-70 KB gzip) must land in lazy chunks only.
+- **SCAFFOLDING.md component count target: 58** — stale at "49" as of v1.9 close; v1.10 ships 5 new components; Phase 76 updates the header.
+- **Worktree leakage guard**: `git status` before every commit; untracked files in `components/sf/` not authored in-phase are leakage artifacts (`.claude/worktrees/` gitignored but leakage mechanism active).
+
 ### Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| 6 phases (57-62) — diagnosis, gate, restructure, LCP, bundle, verification | Each phase delivers one coherent, verifiable capability; dependency ordering forces this minimum count |
-| Phase 57 owns AES-01..04 (not a separate phase) | AES-02..04 are standing rules referenced from `AESTHETIC-OF-RECORD.md`, not a phase's own deliverables. Avoids phase proliferation while keeping single-source traceability |
-| Phase 58 LHCI gate before Phase 59 | Phase 59 actively manipulates CLS-protection critical path (HIGH RISK). Without LHCI, regression caught only at end-milestone |
-| Phase 59 ships 3 separate PRs (CRT-05) | Clean bisect if any single change regresses (sync-script vs Anton vs Lenis are independent intervention surfaces) |
-| Phase 60 plan shape contingent on Phase 57 diagnosis | Three intervention paths (THESIS clip-path, ghost-label content-visibility, hero h1 char-reveal); diagnosis picks one |
-| Phase 60 ⊥ Phase 61 parallel-safe | Both depend on Phase 57 audit; if executed in parallel, separate plans within each phase, not interleaved |
-| VRF-04 mid-milestone (post-Phase-60), not phase-end | Pitfall #10: discovering real-device blocker after all phases ship is a refactor crisis |
-| `@lhci/cli` over `launch-gate.ts` extension | LHCI natively supports cold-start variance discipline (warmup×2, numberOfRuns:5, median, threshold buffer); `launch-gate.ts` retained for prod 100/100 manual verification |
-| `useReportWebVitals` (built-in) over `@vercel/speed-insights` | Zero new runtime dep. Self-hosted RUM endpoint via `navigator.sendBeacon` |
-| Inline `/sf-canvas-sync.js` IIFE in `<body>` tail (NOT delete) | Direct read of script content + scale-canvas.tsx confirms it is NOT dead code; STACK.md "delete" recommendation is wrong. Inline preserves CLS=0, removes render-blocking external request |
-| Phase 57 Plan 03 Task 4 executed autonomously (D-04 override) | Programmatic `chartData` JSON extraction from `.next/analyze/client.html` replaces human treemap inspection. User memory `feedback_autonomous_forward_motion` mandates no pause; equivalent fidelity. Override documented in v1.8-lcp-diagnosis.md header for audit. |
-| LCP candidate diverges across viewports (mobile vs desktop) | Mobile = THESIS GhostLabel (4% opacity wayfinding glyph, ghost-label.tsx:11-23); desktop = VL-05 magenta `//` overlay (entry-section.tsx:208). Phase 60 LCP-02 selection MUST branch on viewport — single-intervention shipping picks one viewport, regresses the other. |
-| All 4 v1.7 named chunk IDs MATCHED in v1.8 build | Pitfall D fallback NOT triggered. Chunk IDs 3302, e9a6067a, 74c6194b, 7525 all preserved across v1.7→v1.8 webpack output. Phase 61 BND-02 work targets known IDs without rediscovery. |
+| 6 phases (71-76) — per-component + final gate | Each component phase delivers one complete, verifiable component; Phase 76 gates bundle + aesthetic + registry; research-confirmed shape |
+| Risk-sequencing order (71→72→73→74→75) | No hard build-order deps; dep-first (71 TanStack), confidence-builder (72 zero-dep), SSR-complexity (73 Tiptap), breathing room (74 FileUpload), complex-composition (75 DateRangePicker) |
+| P3 lazy for SFDataTable + SFRichEditor | Only mechanism that keeps First Load JS under 200 KB with two heavy new dep sets; D-04 lock means optimizePackageImports cannot be used |
+| Pattern C barrel export for SFCombobox, SFFileUpload, SFDateRangePicker | Pure-SF compositions with no new runtime deps; safe for barrel inclusion; sf/index.ts remains directive-free |
+| Virtualization (SFDataTableVirtual) deferred to v1.11 | Research consensus: `_dep_dt_02_decision` (TanStack Virtual) is v1.11 scope; DT-05 documents `virtualize` prop as JSDoc extension point only |
+| Tiptap version chosen at Phase 73 plan time via `_dep_re_01_decision` | v3.22.5 recommended (maintained track); final choice + ProseMirror chain recorded before `pnpm add` |
+| No SFTimePicker extraction | Single v1.10 consumer (SFDateRangePicker); `<SFInput type="time">` inline avoids premature abstraction |
 
 - [Phase 63.1]: D-04 ratified: chunk 3302 dissolved in Phase 61; stable IDs now 4335/e9a6067a/74c6194b/7525 (feedback_ratify_reality_bias)
 - [Phase 63.1]: optimizePackageImports additions rejected for Plan 01: any new entry reshuffles splitChunks graph non-additively; bundle reduction delegated to Plans 02+03
@@ -230,18 +257,19 @@ v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMP
 ### Roadmap Evolution
 
 - Phase 63.1 inserted after Phase 63: LCP Fast-Path Remediation (URGENT) — addresses real-device LCP FAIL on all 3 profiles found by Phase 63 Plan 01 (Catchpoint/WPT synthesis); Pitfall #10 TRIGGER on LCP (real÷synthetic = 2.95×) and TTI (6.0×). Wordmark `<text>` element is the unambiguous LCP candidate across all viewports per `63-MID-MILESTONE-CHECKPOINT.md` §3.
+- v1.10 roadmap finalized 2026-05-01: 6 phases (71-76), 34 REQ-IDs, research-confirmed shape; DT virtualization out of scope (research consensus); D-04 lock holds (no optimizePackageImports changes needed)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-01 for v1.10 kickoff)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** v1.10 Library Completeness — defining requirements (5 components: SFDataTable, SFCombobox, SFRichEditor, SFFileUpload, SFDateRangePicker)
+**Current focus:** v1.10 Library Completeness — Phase 71 ready to plan (SFDataTable)
 
 ## Session Continuity
 
-Last session: 2026-05-01T00:50:00.000Z
-Stopped at: v1.10 Library Completeness milestone initialized — Direction F locked, 5 components + ratified dep policy chosen, research about to spawn
+Last session: 2026-05-01T01:30:00.000Z
+Stopped at: v1.10 ROADMAP.md created — 6 phases (71-76), 34 REQ-IDs mapped 100%, STATE.md and REQUIREMENTS.md updated
 
 **v1.10 carry-forward backlog (from v1.9 close):**
 
@@ -255,4 +283,4 @@ Stopped at: v1.10 Library Completeness milestone initialized — Direction F loc
 - `cdb-v3-dossier` — fully shipped (T1-T8 + D8.x + D9.x + D10.x polish waves); parallel aesthetic branch, no merge-to-main intent
 - `exp/pixel-sort-transitions` — SPIKE-2 awaits (kernel extraction → shader prototype); could be pulled into v1.11 craft-completion milestone
 
-**Resume:** `/clear` then `/pde:plan-phase 71` to plan SFDataTable.
+**Resume:** `/pde:plan-phase 71` to plan SFDataTable (dep-first: `_dep_dt_01_decision` block before `pnpm add`).

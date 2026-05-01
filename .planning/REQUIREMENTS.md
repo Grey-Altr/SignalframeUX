@@ -116,15 +116,41 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DT-01..06 | 71 | Pending |
-| CB-01..04 | 72 | Pending |
-| RE-01..06 | 73 | Pending |
-| FU-01..05 | 74 | Pending |
-| DR-01..06 | 75 | Pending |
+| DT-01 | 71 | Pending |
+| DT-02 | 71 | Pending |
+| DT-03 | 71 | Pending |
+| DT-04 | 71 | Pending |
+| DT-05 | 71 | Pending |
+| DT-06 | 71 | Pending |
 | DEP-01 | 71 | Pending |
+| TST-03 (SFDataTable) | 71 | Pending |
+| CB-01 | 72 | Pending |
+| CB-02 | 72 | Pending |
+| CB-03 | 72 | Pending |
+| CB-04 | 72 | Pending |
+| TST-03 (SFCombobox) | 72 | Pending |
+| RE-01 | 73 | Pending |
+| RE-02 | 73 | Pending |
+| RE-03 | 73 | Pending |
+| RE-04 | 73 | Pending |
+| RE-05 | 73 | Pending |
+| RE-06 | 73 | Pending |
 | DEP-02 | 73 | Pending |
+| TST-03 (SFRichEditor) | 73 | Pending |
+| FU-01 | 74 | Pending |
+| FU-02 | 74 | Pending |
+| FU-03 | 74 | Pending |
+| FU-04 | 74 | Pending |
+| FU-05 | 74 | Pending |
+| TST-03 (SFFileUpload) | 74 | Pending |
+| TST-04 | 74 | Pending |
+| DR-01 | 75 | Pending |
+| DR-02 | 75 | Pending |
+| DR-03 | 75 | Pending |
+| DR-04 | 75 | Pending |
+| DR-05 | 75 | Pending |
+| DR-06 | 75 | Pending |
+| TST-03 (SFDateRangePicker) | 75 | Pending |
 | REG-01 | 76 | Pending |
 | BND-08 | 76 | Pending |
 | AES-05 | 76 | Pending |
-| TST-03 | 71-75 (per-phase) | Pending |
-| TST-04 | 74 | Pending |
