@@ -138,8 +138,8 @@ Component expansion to fill highest-impact gaps blocking SF adoption on real pro
 
 - ✓ **DT-01..06**: SFDataTable — sort + filter + pagination + selection + density + P3 lazy (TanStack Table v8 dep) — v1.10 (Phase 71)
 - ✓ **DEP-01**: `_dep_dt_01_decision` ratification block for TanStack Table v8.21.3 (REQ-ID-namespaced, extends `_wmk_01_decision`) — v1.10 (Phase 71)
-- ✓ **TST-03**: Per-component test coverage protocol established — 5 Playwright + 3 axe-core specs against `/dev-playground/sf-data-table` fixture — v1.10 (Phase 71)
-- [ ] **CB-01..04**: SFCombobox — autocomplete select (Radix Popover + SFInput composition, no new dep)
+- ✓ **TST-03**: Per-component test coverage protocol established — 5 Playwright + 3 axe-core specs against `/dev-playground/sf-data-table` fixture (Phase 71); extended to 12 Playwright + 6 axe-core specs against `/dev-playground/sf-combobox` 6-section fixture — v1.10 (Phases 71, 72)
+- ✓ **CB-01..04**: SFCombobox — Pattern C composition over cmdk + Radix Popover; single-select + multi-select (SFBadge chips) + grouping + clear + loading; barrel-exported with zero new runtime deps; cmdk absent from homepage First Load chunk via optimizePackageImports DCE — v1.10 (Phase 72)
 - [ ] **RE-01..06**: SFRichEditor — Tiptap shell with limited toolbar (Tiptap v2 dep, P3 lazy)
 - [ ] **FU-01..05**: SFFileUpload — drag-drop + progress + multi-file (no new dep)
 - [ ] **DR-01..06**: SFDateRangePicker — range + time variant (react-day-picker, already in stack)
@@ -399,4 +399,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-01 — Phase 71 (SFDataTable) closed. 8/8 reqs satisfied (DT-01..06, DEP-01, TST-03). `_dep_dt_01_decision` precedent ratified at plan-time and back-filled with measured `Lazy chunk hosting @tanstack/react-table: 9339.7c1e528bda185d56.js, 73180 raw bytes (19.3 KB gzip)`. Homepage First Load JS unchanged at 187.6 KB / 200 KB. Pattern B + D-04 locks held throughout. Phase 72 (SFCombobox, zero-dep confidence-builder) is next.*
+*Last updated: 2026-05-01 — Phase 72 (SFCombobox) closed. 5/5 reqs satisfied (CB-01..04, TST-03). Pattern C zero-dep composition over cmdk + Radix Popover proved out — barrel-exported with cmdk absent from homepage First Load chunk via optimizePackageImports DCE. Same-commit registry cohort (sf-combobox.json + items[54] entry + barrel export) shipped as REG-01 precedent. Homepage First Load JS unchanged at 187.6 KB / 200 KB. 18/18 specs (12 Playwright + 6 axe) green. Code review: 0 critical / 4 warning advisory (W-01 aria-checked semantic, W-02 shadcn cmdk-base rounded-* upstream, W-03 cast narrowing, W-04 chip stopPropagation race). Phase 73 (SFRichEditor, Tiptap v2 + `_dep_re_01_decision`) is next.*
