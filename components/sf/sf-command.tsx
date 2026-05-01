@@ -8,6 +8,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandLoading,
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
@@ -111,6 +112,29 @@ function SFCommandEmpty({
 }
 
 /**
+ * Sub-component of SFCommand — loading-state indicator rendered inside SFCommandList while async data resolves.
+ * cmdk renders this as <div role="progressbar"> (axe-friendly).
+ * @example
+ * <SFCommandList>
+ *   {loading ? <SFCommandLoading>Loading...</SFCommandLoading> : <SFCommandEmpty>No results.</SFCommandEmpty>}
+ * </SFCommandList>
+ */
+function SFCommandLoading({
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandLoading>) {
+  return (
+    <CommandLoading
+      className={cn(
+        "font-mono uppercase tracking-wider text-xs px-[var(--sfx-space-3)] py-[var(--sfx-space-2)]",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+/**
  * Sub-component of SFCommand — labeled group of related command items with mono uppercase heading.
  * @example
  * <SFCommandGroup heading="Navigation"><SFCommandItem>Go to dashboard</SFCommandItem></SFCommandGroup>
@@ -189,6 +213,7 @@ export {
   SFCommandDialog,
   SFCommandInput,
   SFCommandList,
+  SFCommandLoading,
   SFCommandEmpty,
   SFCommandGroup,
   SFCommandItem,
