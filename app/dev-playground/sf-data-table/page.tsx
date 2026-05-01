@@ -1,14 +1,19 @@
 /**
  * Playground fixture — Phase 71 Playwright + axe-core tests target this URL.
  *
- * Path: /_dev/playground/sf-data-table
+ * Path: /dev-playground/sf-data-table
  *
- * Convention-only suppression: leading underscore in `_dev` keeps this out
- * of typical sitemap/discovery paths. This is a TEST FIXTURE, not a public
- * surface. Do not link to it from production navigation. The hard-coded
- * sitemap at app/sitemap.ts does not enumerate /_dev/* — verified Phase 71.
- * If a sitemap or robots.txt is added in a future phase, ensure /_dev/* is
- * excluded.
+ * Convention-only suppression via discovery-list omission: this route is NOT
+ * added to app/sitemap.ts (hard-coded entries verified Phase 71), NOT linked
+ * from any production navigation, and the directory name `dev-playground`
+ * is self-documenting as a fixture surface. This is a TEST FIXTURE, not a
+ * public surface.
+ *
+ * NOTE on naming history: original plan specified `app/_dev/playground/`,
+ * but Next.js App Router treats folders prefixed with `_` as PRIVATE folders
+ * that are excluded from routing entirely (return 404). Renamed at Phase 71
+ * Plan 03 Task 3 to keep the route reachable for Playwright while preserving
+ * the public-discovery suppression posture.
  */
 
 "use client";
