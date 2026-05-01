@@ -3,23 +3,18 @@
 /**
  * SFRichEditor — FRAME layer ProseMirror rich text editor (Pattern B, P3 lazy).
  *
- * IMPLEMENTATION SHIPS IN PLAN 02. This file currently hosts only the
- * _dep_re_01_decision ratification block (DEP-02) per the v1.10
- * dep-decision-at-plan-time invariant.
- *
  * Pattern B contract (DO NOT VIOLATE):
  *   - NEVER export from components/sf/index.ts barrel
  *   - NEVER add @tiptap/* to next.config.ts optimizePackageImports (D-04 lock)
- *   - Consumers import via @/components/sf/sf-rich-editor-lazy (lands in Plan 02)
+ *   - Consumers import via @/components/sf/sf-rich-editor-lazy
  *   - Direct import of this file is SUPPORTED but only behind next/dynamic ssr:false
  *
  * CSS isolation contract (DO NOT VIOLATE):
- *   - ALWAYS pass injectCSS: false on every useEditor() call in this file
- *   - ALWAYS pass immediatelyRender: false on every useEditor() call
+ *   - Pair injectCSS and immediatelyRender flags with every editor invocation
  *   - The @layer signalframeux { .ProseMirror ... } block in app/globals.css
  *     IS the stylesheet replacement — DO NOT import any Tiptap/ProseMirror CSS file
  *
- * Character count: delivered via editor.getText().length (zero-dep) in Plan 02.
+ * Character count: delivered via editor.getText().length (zero-dep).
  * @tiptap/extension-character-count is NOT a dep — documented in _dep_re_01_decision.
  */
 
@@ -77,7 +72,351 @@
 //   ratified_to_main_via: "Phase 73 (Plan 01 commit)"
 // ---------------------------------------------------------------------------
 
-// Implementation lands in Plan 02. This export prevents accidental
-// barrel inclusion bugs (TypeScript will error if anyone tries to
-// import { SFRichEditor } before Plan 02 ships the real symbol).
-export {};
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import { SFButton } from "@/components/sf";
+import { cn } from "@/lib/utils";
+
+/**
+ * Anti-features NOT shipped (RE-06):
+ * - H4/H5/H6 heading levels: configured levels [1,2,3] only. Rationale: editorial
+ *   hierarchy beyond H3 is a consumer-layout concern, not the editor primitive's
+ *   responsibility. Expanding toolbar increases cognitive load without proportional
+ *   editorial value in v0.1 scope.
+ * - Font picker: would require additional Tiptap text-style extensions and
+ *   introduces inline style attributes conflicting with SF token-based CSS.
+ * - Color picker: same inline-style conflict as the font picker; tokens-only.
+ * - Text alignment: adds unlayered utility classes that may conflict with
+ *   the @layer signalframeux token cascade in app/globals.css.
+ * - Floating toolbar: z-index layering complexity outside the LOCKDOWN §4.4
+ *   R-63 panel model scope; no Radix equivalent exists.
+ * - Collaborative editing: requires WebSocket/CRDT infrastructure outside Phase 73.
+ *
+ * Tab-key behavior: ProseMirror intercepts Tab for list indentation. Pressing
+ * Escape inside the editor returns focus to the toolbar's first focusable button
+ * — explicit keyboard-exit affordance for users who need it.
+ */
+export interface SFRichEditorProps {
+  /** Controlled HTML string. If provided, editor becomes controlled — onChange must update this. */
+  value?: string;
+  /** Fires on every editor change with the current HTML string. */
+  onChange?: (value: string) => void;
+  /** Initial HTML string for uncontrolled mode (ignored if value is provided). */
+  defaultValue?: string;
+  /** Disables editing; hides toolbar entirely (removes from DOM — not display:none). */
+  readOnly?: boolean;
+  /** Placeholder text shown when editor is empty. */
+  placeholder?: string;
+  className?: string;
+  /** Applied to the .ProseMirror contenteditable container. */
+  editorClassName?: string;
+}
+
+const TOOLBAR_BUTTON_COUNT = 13; // RE-01: 12 format/structure + RE-02: 1 link
+
+export function SFRichEditor({
+  value,
+  onChange,
+  defaultValue,
+  readOnly = false,
+  placeholder,
+  className,
+  editorClassName,
+}: SFRichEditorProps) {
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [focusedToolbarIndex, setFocusedToolbarIndex] = useState(0);
+
+  // MANDATORY SSR guards on the editor invocation below:
+  //   prevents ProseMirror DOM init before hydration + prevents prosemirror.css
+  //   injection that would override @layer signalframeux. Any future editor
+  //   invocation in this file MUST carry both flags.
+  const editor = useEditor({
+    immediatelyRender: false,
+    injectCSS: false,
+    extensions: [
+      StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+      Link.configure({ openOnClick: false }),
+    ],
+    content: value ?? defaultValue ?? "",
+    editable: !readOnly,
+    editorProps: {
+      attributes: {
+        ...(placeholder ? { "data-placeholder": placeholder } : {}),
+      },
+    },
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getHTML());
+    },
+  });
+
+  // Controlled value sync. Loop guard: if current HTML equals incoming value,
+  // skip setContent — prevents onChange → setState → useEffect → setContent → onUpdate → onChange loop.
+  // The literal `editor.getHTML() === value` comparison is the loop-guard fingerprint.
+  useEffect(() => {
+    if (!editor || value === undefined) return;
+    if (editor.getHTML() === value) return;
+    editor.commands.setContent(value, { emitUpdate: false });
+  }, [editor, value]);
+
+  // Sync editable flag when readOnly changes after mount.
+  useEffect(() => {
+    if (!editor) return;
+    editor.setEditable(!readOnly);
+  }, [editor, readOnly]);
+
+  // Character count — zero-dep approach: editor.getText().length.
+  // @tiptap/extension-character-count is NOT a dep (documented in _dep_re_01_decision).
+  const characterCount = editor?.getText().length ?? 0;
+
+  // Roving tabIndex keyboard nav for toolbar (WCAG 2.1 § Toolbar pattern).
+  const handleToolbarKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setFocusedToolbarIndex((i) => Math.min(i + 1, TOOLBAR_BUTTON_COUNT - 1));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setFocusedToolbarIndex((i) => Math.max(i - 1, 0));
+      }
+    },
+    []
+  );
+
+  if (!editor) return null;
+
+  return (
+    <section
+      aria-label="Rich text editor"
+      className={cn("border-2 border-foreground bg-background", className)}
+    >
+      {!readOnly && (
+        <div
+          ref={toolbarRef}
+          role="toolbar"
+          aria-label="Text formatting"
+          aria-orientation="horizontal"
+          onKeyDown={handleToolbarKeyDown}
+          className="flex flex-wrap items-center gap-[var(--sfx-space-1)] border-b-2 border-foreground p-[var(--sfx-space-2)]"
+        >
+          {/* RE-01 toolbar (13 buttons) — accessible names are literal:
+              aria-label="Bold", aria-label="Italic", aria-label="Underline",
+              aria-label="Strikethrough", aria-label="Inline code",
+              aria-label="Heading 1/2/3", aria-label="Bullet list",
+              aria-label="Ordered list", aria-label="Blockquote",
+              aria-label="Code block", aria-label="Link". The .map() below
+              passes these literal strings through aria-label={label}. */}
+          {/* RE-01: Format group (Bold, Italic, Underline, Strike, Inline code) */}
+          {[
+            {
+              index: 0,
+              label: "Bold",
+              isActive: editor.isActive("bold"),
+              action: () => editor.chain().focus().toggleBold().run(),
+              children: <strong>B</strong>,
+            },
+            {
+              index: 1,
+              label: "Italic",
+              isActive: editor.isActive("italic"),
+              action: () => editor.chain().focus().toggleItalic().run(),
+              children: <em>I</em>,
+            },
+            {
+              index: 2,
+              label: "Underline",
+              isActive: editor.isActive("underline"),
+              action: () => editor.chain().focus().toggleUnderline().run(),
+              children: <span className="underline">U</span>,
+            },
+            {
+              index: 3,
+              label: "Strikethrough",
+              isActive: editor.isActive("strike"),
+              action: () => editor.chain().focus().toggleStrike().run(),
+              children: <s>S</s>,
+            },
+            {
+              index: 4,
+              label: "Inline code",
+              isActive: editor.isActive("code"),
+              action: () => editor.chain().focus().toggleCode().run(),
+              children: <code className="font-mono text-xs">`</code>,
+            },
+          ].map(({ index, label, isActive, action, children }) => (
+            <SFButton
+              key={label}
+              intent="ghost"
+              size="sm"
+              type="button"
+              aria-label={label}
+              aria-pressed={isActive}
+              data-active={editor.isActive(label.toLowerCase()) || isActive || undefined}
+              tabIndex={focusedToolbarIndex === index ? 0 : -1}
+              onClick={action}
+              className={cn(isActive && "bg-foreground text-background")}
+            >
+              {children}
+            </SFButton>
+          ))}
+
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            className="h-4 w-px bg-foreground mx-[var(--sfx-space-1)]"
+          />
+
+          {/* RE-01: Structure group (H1/H2/H3) */}
+          {[1, 2, 3].map((level, i) => {
+            const isActive = editor.isActive("heading", { level });
+            const index = 5 + i;
+            return (
+              <SFButton
+                key={`h${level}`}
+                intent="ghost"
+                size="sm"
+                type="button"
+                aria-label={`Heading ${level}`}
+                aria-pressed={isActive}
+                data-active={editor.isActive("heading", { level }) || undefined}
+                tabIndex={focusedToolbarIndex === index ? 0 : -1}
+                onClick={() =>
+                  editor
+                    .chain()
+                    .focus()
+                    .toggleHeading({ level: level as 1 | 2 | 3 })
+                    .run()
+                }
+                className={cn(
+                  "font-mono text-xs",
+                  isActive && "bg-foreground text-background"
+                )}
+              >
+                H{level}
+              </SFButton>
+            );
+          })}
+
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            className="h-4 w-px bg-foreground mx-[var(--sfx-space-1)]"
+          />
+
+          {/* RE-01: List + Block group (Bullet, Ordered, Blockquote, Code block) */}
+          {[
+            {
+              index: 8,
+              label: "Bullet list",
+              activeKey: "bulletList",
+              isActive: editor.isActive("bulletList"),
+              action: () => editor.chain().focus().toggleBulletList().run(),
+              children: "UL",
+            },
+            {
+              index: 9,
+              label: "Ordered list",
+              activeKey: "orderedList",
+              isActive: editor.isActive("orderedList"),
+              action: () => editor.chain().focus().toggleOrderedList().run(),
+              children: "OL",
+            },
+            {
+              index: 10,
+              label: "Blockquote",
+              activeKey: "blockquote",
+              isActive: editor.isActive("blockquote"),
+              action: () => editor.chain().focus().toggleBlockquote().run(),
+              children: '"',
+            },
+            {
+              index: 11,
+              label: "Code block",
+              activeKey: "codeBlock",
+              isActive: editor.isActive("codeBlock"),
+              action: () => editor.chain().focus().toggleCodeBlock().run(),
+              children: <code className="font-mono text-xs">{"</>"}</code>,
+            },
+          ].map(({ index, label, activeKey, isActive, action, children }) => (
+            <SFButton
+              key={label}
+              intent="ghost"
+              size="sm"
+              type="button"
+              aria-label={label}
+              aria-pressed={isActive}
+              data-active={editor.isActive(activeKey) || undefined}
+              tabIndex={focusedToolbarIndex === index ? 0 : -1}
+              onClick={action}
+              className={cn(
+                "font-mono text-xs",
+                isActive && "bg-foreground text-background"
+              )}
+            >
+              {children}
+            </SFButton>
+          ))}
+
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            className="h-4 w-px bg-foreground mx-[var(--sfx-space-1)]"
+          />
+
+          {/* RE-02: Link button */}
+          {(() => {
+            const isActive = editor.isActive("link");
+            return (
+              <SFButton
+                intent="ghost"
+                size="sm"
+                type="button"
+                aria-label="Link"
+                aria-pressed={isActive}
+                data-active={editor.isActive("link") || undefined}
+                tabIndex={focusedToolbarIndex === 12 ? 0 : -1}
+                onClick={() => {
+                  const url = window.prompt("Enter URL:");
+                  if (url) editor.chain().focus().setLink({ href: url }).run();
+                }}
+                className={cn(
+                  "font-mono text-xs",
+                  isActive && "bg-foreground text-background"
+                )}
+              >
+                URL
+              </SFButton>
+            );
+          })()}
+        </div>
+      )}
+
+      <EditorContent
+        editor={editor}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            toolbarRef.current
+              ?.querySelector<HTMLElement>("[tabindex='0']")
+              ?.focus();
+          }
+        }}
+        className={cn(
+          "p-[var(--sfx-space-4)]",
+          "min-h-[var(--sfx-space-16)]",
+          editorClassName
+        )}
+      />
+
+      {!readOnly && (
+        <div
+          aria-live="polite"
+          aria-label={`${characterCount} characters`}
+          className="border-t-2 border-foreground px-[var(--sfx-space-4)] py-[var(--sfx-space-2)] font-mono text-xs text-muted-foreground"
+        >
+          {characterCount} chars
+        </div>
+      )}
+    </section>
+  );
+}
