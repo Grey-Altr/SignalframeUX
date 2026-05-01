@@ -98,7 +98,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. A consumer can enable multi-select via the `multiple` prop — selected items render as `SFBadge` chips with a remove affordance, and the controlled `value: string[]` API reflects all selections
 4. axe-core reports zero violations on the open combobox in both controlled and uncontrolled modes (listbox role, activedescendant, keyboard nav pattern)
 
-**Plans:** TBD
+**Plans:** 1/2 plans executed
 
 ---
 
@@ -224,7 +224,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
-| 72 — SFCombobox | 0/TBD | Not started | — |
+| 72 — SFCombobox | 1/2 | In Progress|  |
 | 73 — SFRichEditor | 0/TBD | Not started | — |
 | 74 — SFFileUpload | 0/TBD | Not started | — |
 | 75 — SFDateRangePicker | 0/TBD | Not started | — |
