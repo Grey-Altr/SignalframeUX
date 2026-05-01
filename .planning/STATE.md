@@ -1,11 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.9
-milestone_name: Architectural Lock
-status: completed
-shipped_at: 2026-04-30
-last_updated: "2026-04-30T22:44:04.694Z"
-last_activity: 2026-04-30
+milestone: v1.10
+milestone_name: Library Completeness
+status: defining_requirements
+last_updated: "2026-05-01T00:50:00.000Z"
+last_activity: 2026-05-01
 progress:
   total_phases: 70
   completed_phases: 70
@@ -22,15 +21,15 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.9 SHIPPED 2026-04-30 — awaiting `/pde:new-milestone` for v1.10 |
-| Milestone | v1.9 Architectural Lock (completed) |
+| Current Focus | v1.10 Library Completeness — defining requirements (Direction F, default 5 components + ratified deps) |
+| Milestone | v1.10 Library Completeness (active) |
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.9 milestone closed 2026-04-30 (14/14 reqs Validated, 4 path_decisions retired); next: `/pde:new-milestone` for v1.10
-Last activity: 2026-04-30
+Status: Defining requirements — research enabled, 4 parallel researchers + synthesizer queued
+Last activity: 2026-05-01 — Milestone v1.10 started
 
 ## Progress
 
@@ -234,35 +233,26 @@ v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMP
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-29 after v1.8 archival)
+See: .planning/PROJECT.md (updated 2026-05-01 for v1.10 kickoff)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 67 — Bundle Barrel-Optimization (D-04 Unlock)
+**Current focus:** v1.10 Library Completeness — defining requirements (5 components: SFDataTable, SFCombobox, SFRichEditor, SFFileUpload, SFDateRangePicker)
 
 ## Session Continuity
 
-Last session: 2026-04-30T19:53:27.606Z
-Stopped at: Phase 67 context gathered
+Last session: 2026-05-01T00:50:00.000Z
+Stopped at: v1.10 Library Completeness milestone initialized — Direction F locked, 5 components + ratified dep policy chosen, research about to spawn
 
-**v1.9 carry-over backlog (from v1.8 path_decisions + deferred reqs):**
+**v1.10 carry-forward backlog (from v1.9 close):**
 
-1. **VRF-01** — WPT real-device verification: 2 of 3 device profiles deferred (iPhone 14 Pro 4G LTE variance 2104ms; Moto G Power 3G Fast 3605ms — Next.js App Router framework chunk ~56 KB gzipped consumes 1867ms TBT, intrinsic to runtime)
-2. **VRF-04** — Mid-milestone real-device synthesis: cascade from VRF-01; D-09 ratio gate fail (real÷synthetic 2.37× vs 1.3× threshold); synthetic baseline recalibration needed
-3. **VRF-05** — Field RUM telemetry (p75 LCP <1.0s post-deploy ≥24h): activator = fresh prod deploy + 100 sessions; 6-step `v1_9_unblock_recipe` documented at `.planning/perf-baselines/v1.8/vrf-05-rum-p75-lcp.json`
-4. **path_h close** — ScaleCanvas mobile breakpoint exception (`transform: none` below `sm`)
-5. **path_i close** — GhostLabel low-contrast suppression mechanism (color: transparent + mask-image OR CSS pseudo-element)
-6. **path_k close** — Bundle reduction phase allowed to break D-04 chunk-id lock (re-locks new chunk IDs)
-7. **path_l close** — lcp-guard refactor (live PerformanceObserver → STRUCTURAL DOM-query test)
-8. **Wordmark Linux/darwin pixel-diff** — D-12 0.1% may need 0.5% AES-04 alignment
+1. **VRF-07 iOS sub-cohort partition** — auto-resolves when Vercel CLI exposes `proxy.userAgent` from Drains-style records; not actionable in v1.10
+2. **13 stale agent worktrees** in `.claude/worktrees/` from 2026-04-28..30 — gitignored 2026-04-30, pruning deferred per worktree-leakage caution
+3. **Cosmetic dual-source-of-truth** in `scripts/launch-gate-vrf02-runner.mjs:30` — `cls_max:0` vs lighthouserc `cls 0.005`; observed 0.0042 satisfies both, alignment is hygiene
+4. **Localhost Phase 60 LCP=810ms** baseline carry-over — superseded by Phase 62 prod 657ms + Phase 70 RUM p75=264ms; v1.10 reviewers should treat 810ms as superseded
 
-**Active separate tracks (per memory, not v1.8/v1.9):**
+**Active separate tracks (per memory, not v1.10):**
 
-- `cdb-v3-dossier` (separate worktree at `/Users/greyaltaer/code/projects/SignalframeUX-v3`) — T3-T7 plates pending
-- `exp/pixel-sort-transitions` — SPIKE-2 awaits (kernel extraction → shader prototype). Unpin condition fired with v1.0 lock.
+- `cdb-v3-dossier` — fully shipped (T1-T8 + D8.x + D9.x + D10.x polish waves); parallel aesthetic branch, no merge-to-main intent
+- `exp/pixel-sort-transitions` — SPIKE-2 awaits (kernel extraction → shader prototype); could be pulled into v1.11 craft-completion milestone
 
-**Cleanup queue (pre-v1.9 hygiene):**
-
-- Worktree removal: `.claude/worktrees/agent-pr4-merge`, `agent-a2067e28`, `agent-ac998ae6`, `agent-a61d9fac`, `agent-a363e836`, `agent-a6dc4e43` (all PR-merged or session-stale)
-- `.planning/CONTINUE-HERE.md` consumed; remove or archive
-
-**Resume:** `/clear` then `/pde:new-milestone` to start v1.9.
+**Resume:** `/clear` then `/pde:plan-phase 71` to plan SFDataTable.

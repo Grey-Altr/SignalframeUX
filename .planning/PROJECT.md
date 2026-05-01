@@ -132,7 +132,18 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 ### Active
 
-(v1.10 not yet defined — awaiting `/pde:new-milestone`)
+**v1.10 Library Completeness — in progress**
+
+Component expansion to fill highest-impact gaps blocking SF adoption on real product work. Five components shipped under per-component contract (zero border-radius, OKLCH only, CVA `intent`, Chromatic story, JSDoc, SCAFFOLDING entry, light+dark parity, P3 lazy if >3KB). Two ratified runtime npm dep exceptions (TanStack Table v8 + Tiptap v2) under new `_dep_X_decision` block precedent.
+
+- [ ] **DT-01..05**: SFDataTable — sort + filter + pagination + virtualization (TanStack Table v8 dep, P3 lazy)
+- [ ] **CB-01..03**: SFCombobox — autocomplete select (Radix Popover + SFInput composition, no new dep)
+- [ ] **RE-01..04**: SFRichEditor — Tiptap shell with limited toolbar (Tiptap v2 dep, P3 lazy)
+- [ ] **FU-01..03**: SFFileUpload — drag-drop + progress + multi-file (no new dep)
+- [ ] **DR-01..03**: SFDateRangePicker — range + time variant (react-day-picker, already in stack)
+- [ ] **DEP-01..02**: `_dep_X_decision` ratification blocks for TanStack Table + Tiptap (REQ-ID-namespaced, extends `_wmk_01_decision` precedent)
+- [ ] **REG-01**: Registry expansion — 5 new entries with meta.layer/meta.pattern + meta.heavy:true on P3 lazy entries
+- [ ] **BND-08**: `/` First Load JS remains under 200 KB hard target after all 5 components ship
 
 ### Out of Scope
 
@@ -142,9 +153,26 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.10 — Not Yet Defined
+## Current Milestone: v1.10 Library Completeness
 
-**Status:** Awaiting `/pde:new-milestone`. v1.9 Architectural Lock SHIPPED 2026-04-30 — full record under Context.
+**Goal:** Ship 5 highest-impact missing SF components — SFDataTable, SFCombobox, SFRichEditor, SFFileUpload, SFDateRangePicker — to make SignalframeUX adoptable for real product work without breaking the locked aesthetic, the 200 KB First Load target, or any standing rule ratified through v1.9.
+
+**Target features:**
+- SFDataTable (sort/filter/pagination/virtualization) — TanStack Table v8, P3 lazy
+- SFCombobox (autocomplete select) — Radix Popover + SFInput composition, no new dep
+- SFRichEditor (admin/blog/message composers) — Tiptap v2 shell, P3 lazy
+- SFFileUpload (drag-drop + progress + multi-file) — no new dep
+- SFDateRangePicker (range + time variant) — react-day-picker, already in stack
+- `_dep_X_decision` ratification block precedent for new runtime npm deps
+
+**Phase shape (6 phases, 71-76):** Phase 71 SFDataTable → Phase 72 SFCombobox → Phase 73 SFRichEditor → Phase 74 SFFileUpload → Phase 75 SFDateRangePicker → Phase 76 Final Gate (Chromatic + bundle audit + docs).
+
+**Hard constraints (carried from standing rules):**
+- 200 KB First Load JS hard target — any regression requires `_dep_X_decision` ratification
+- Zero new runtime npm deps WITHOUT explicit per-component ratification block
+- D-04 chunk-id stability lock RE-LOCKED at v1.9-bundle-reshape baseline (post-Vector-1 DCE); same unlock-window protocol applies
+- AESTHETIC-OF-RECORD.md AES-01..04 enforced per phase
+- Single-ticker rule, PF-04 contract, `experimental.inlineCss: true` rejected
 
 **Standing rules carry forward (locked across all milestones until explicitly retired):**
 
@@ -368,4 +396,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-30 after v1.9 Architectural Lock SHIPPED — 5 phases (66, 67, 68, 69, 70), 11 plans, 14/14 reqs Validated, 4 of 4 v1.8 path_decisions retired (path_h/i/k/l). Homepage First Load JS 258.9 → 187.6 KB (12.4 KB UNDER 200 KB target); lcp-guard structurally deterministic; ScaleCanvas Track B = pillarbox at vw<640 + GhostLabel `::before` pseudo-element; v1.8 VRF-01/04/05 closed via RUM aggregator + path_b tier-move. Awaiting `/pde:new-milestone` for v1.10.*
+*Last updated: 2026-05-01 — v1.10 Library Completeness initialized. Direction F (component expansion). Default 5 components + ratified runtime npm dep exceptions (`_dep_X_decision` REQ-ID-namespaced precedent extending `_wmk_01_decision`). 6 phases planned (71-76), continuing from v1.9 Phase 70. Standing rules carry forward unchanged. Research enabled (4 parallel + synthesizer).*
