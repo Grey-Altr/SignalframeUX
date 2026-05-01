@@ -24,7 +24,7 @@
 //   audit: "sf-data-table:runtime-dep"
 //   dep_added:
 //     - "@tanstack/react-table"
-//   version: "<TBD — populated by Task 2 post-install>"
+//   version: "8.21.3"
 //   rationale: |
 //     SFDataTable composes TanStack Table v8 headless logic (sort, filter,
 //     pagination, row selection state machine; ~12 KB gzip; zero DOM) over
@@ -39,8 +39,14 @@
 //     impact at 0 KB. Sort headers use <button type="button"> per WCAG 2.1.1;
 //     axe-core enforces in Phase 71 Plan 03 TST-03.
 //   bundle_evidence:
-//     - "TBD — populated by Task 3 post-install via ANALYZE=true pnpm build"
-//     - "Pre-add homepage First Load JS baseline: 187.6 KB gzip (Phase 67 close, MILESTONES.md)"
+//     - "Homepage / First Load JS pre-add baseline: 187.6 KB gzip (Phase 67 close)"
+//     - "Homepage / First Load JS post-add (placeholder file, no impl): 187.6 KB gzip"
+//     - "Headroom remaining: 12.4 KB under 200 KB hard target"
+//     - "TanStack Table chunk: ABSENT from homepage manifest (placeholder file has no import — real chunk lands Plan 02)"
+//     - "Devtools subpath audit: zero references in .next/analyze/client.html (verified via grep)"
+//     - "Resolved version: 8.21.3"
+//     - "Measurement command: rm -rf .next/cache .next && ANALYZE=true pnpm build"
+//     - "Measurement date: 2026-05-01"
 //   review_gate: |
 //     Re-evaluate when @tanstack/react-table v9 reaches stable release
 //     (currently RFC #5834, no release date). Re-pin and re-measure if
