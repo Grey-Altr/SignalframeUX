@@ -30,7 +30,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 
 ## Phases
 
-- [ ] **Phase 71: SFDataTable** — TanStack Table v8 integration; sort, filter, pagination, row selection; P3 lazy; `_dep_dt_01_decision` ratified at plan time
+- [x] **Phase 71: SFDataTable** — TanStack Table v8 integration; sort, filter, pagination, row selection; P3 lazy; `_dep_dt_01_decision` ratified at plan time (completed 2026-05-01)
 - [ ] **Phase 72: SFCombobox** — Pure SF composition (cmdk + Radix Popover + SFInput); zero new deps; barrel-exported; confidence-builder phase
 - [ ] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules
 - [ ] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented
@@ -67,11 +67,11 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 4. A consumer can enable checkbox row selection with single + multi + indeterminate header state; selected rows are accessible via `getRowModel().rows.filter(r => r.getIsSelected())`
 5. Homepage First Load JS remains under 200 KB after `pnpm add @tanstack/react-table` and clean build; `_dep_dt_01_decision` block is committed with measured (not estimated) bundle evidence
 
-**Plans:** 3 plans
+**Plans:** 4/3 plans complete
 
-- [ ] 71-01-PLAN.md — _dep_dt_01_decision ratification block + pnpm add @tanstack/react-table@^8.21.3 + post-install bundle measurement (DEP-01)
-- [ ] 71-02-PLAN.md — SFDataTable<TData> impl (sort + filter + selection + density CVA) + useDebouncedValue hook + SFCheckbox indeterminate visual (DT-01, DT-02, DT-04, DT-05)
-- [ ] 71-03-PLAN.md — DT-03 pagination composition + SFDataTableLazy P3 wrapper + playground fixture + Playwright/axe specs + production chunk audit (DT-03, DT-06, TST-03, DEP-01 closeout)
+- [x] 71-01-PLAN.md — _dep_dt_01_decision ratification block + pnpm add @tanstack/react-table@^8.21.3 + post-install bundle measurement (DEP-01)
+- [x] 71-02-PLAN.md — SFDataTable<TData> impl (sort + filter + selection + density CVA) + useDebouncedValue hook + SFCheckbox indeterminate visual (DT-01, DT-02, DT-04, DT-05)
+- [x] 71-03-PLAN.md — DT-03 pagination composition + SFDataTableLazy P3 wrapper + playground fixture + Playwright/axe specs + production chunk audit (DT-03, DT-06, TST-03, DEP-01 closeout)
 
 ---
 
@@ -223,7 +223,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 71 — SFDataTable | 0/3 | Plans created | — |
+| 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
 | 72 — SFCombobox | 0/TBD | Not started | — |
 | 73 — SFRichEditor | 0/TBD | Not started | — |
 | 74 — SFFileUpload | 0/TBD | Not started | — |

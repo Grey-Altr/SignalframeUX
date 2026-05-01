@@ -24,12 +24,12 @@
 
 ## SFDataTable (DT) — Phase 71
 
-- [ ] **DT-01**: Column sort — single-column cycle (asc → desc → none) + sort indicator glyph + accessible header `<button>` (NOT `<div onClick>` per WCAG 2.1.1) + keyboard nav (Enter/Space toggles); composes `@tanstack/react-table@8.21.3` `getSortedRowModel`
-- [ ] **DT-02**: Filter — per-column debounced text input (300ms) + global filter via `getFilteredRowModel`; controlled and uncontrolled API
-- [ ] **DT-03**: Pagination — page-number pagination composing existing `SFPagination`; `getPaginationRowModel`; controlled `pageIndex` / `pageSize` API
-- [ ] **DT-04**: Row selection — checkbox column with single + multi + indeterminate header state; composes existing `SFCheckbox`; `getRowModel().rows.filter(r => r.getIsSelected())` accessor exposed
-- [ ] **DT-05**: Density modes (compact / default / comfortable) via CVA `density` variant + loading skeleton + empty state + keyboard nav grid role + JSDoc extension point for future `virtualize` prop
-- [ ] **DT-06**: P3 lazy — `components/sf/sf-data-table-lazy.tsx` via `next/dynamic({ ssr: false })`; component NOT exported from `sf/index.ts` barrel; consumers import via `@/components/sf/sf-data-table-lazy`
+- [x] **DT-01**: Column sort — single-column cycle (asc → desc → none) + sort indicator glyph + accessible header `<button>` (NOT `<div onClick>` per WCAG 2.1.1) + keyboard nav (Enter/Space toggles); composes `@tanstack/react-table@8.21.3` `getSortedRowModel`
+- [x] **DT-02**: Filter — per-column debounced text input (300ms) + global filter via `getFilteredRowModel`; controlled and uncontrolled API
+- [x] **DT-03**: Pagination — page-number pagination composing existing `SFPagination`; `getPaginationRowModel`; controlled `pageIndex` / `pageSize` API
+- [x] **DT-04**: Row selection — checkbox column with single + multi + indeterminate header state; composes existing `SFCheckbox`; `getRowModel().rows.filter(r => r.getIsSelected())` accessor exposed
+- [x] **DT-05**: Density modes (compact / default / comfortable) via CVA `density` variant + loading skeleton + empty state + keyboard nav grid role + JSDoc extension point for future `virtualize` prop
+- [x] **DT-06**: P3 lazy — `components/sf/sf-data-table-lazy.tsx` via `next/dynamic({ ssr: false })`; component NOT exported from `sf/index.ts` barrel; consumers import via `@/components/sf/sf-data-table-lazy`
 
 ## SFCombobox (CB) — Phase 72
 
@@ -66,7 +66,7 @@
 
 ## Dependency Ratification (DEP)
 
-- [ ] **DEP-01**: `_dep_dt_01_decision` block ratified at Phase 71 plan time — 7 fields (decided / audit / dep_added / version / rationale / bundle_evidence / review_gate); covers `@tanstack/react-table@8.21.3`; bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on TanStack Table v9 stable release
+- [x] **DEP-01**: `_dep_dt_01_decision` block ratified at Phase 71 plan time — 7 fields (decided / audit / dep_added / version / rationale / bundle_evidence / review_gate); covers `@tanstack/react-table@8.21.3`; bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on TanStack Table v9 stable release
 - [ ] **DEP-02**: `_dep_re_01_decision` block ratified at Phase 73 plan time — 7 fields covering `@tiptap/react` + `@tiptap/pm` + `@tiptap/starter-kit` + (optional) `@tiptap/extension-link`; version chosen between v3.22.5 (recommended default — actively maintained) and v2.27.2 (legacy); bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on Tiptap v4 stable release
 
 ## Registry Expansion (REG)
@@ -83,7 +83,7 @@
 
 ## Test Coverage (TST)
 
-- [ ] **TST-03**: Per-component Playwright + axe-core test files land same-phase as component — Playwright covers controlled API + keyboard nav + open/close states; axe-core covers WCAG AA (sort header keyboard, combobox listbox role, RichEditor focus management, FileUpload drop zone keyboard fallback, DateRangePicker label association); all tests green before phase close
+- [x] **TST-03**: Per-component Playwright + axe-core test files land same-phase as component — Playwright covers controlled API + keyboard nav + open/close states; axe-core covers WCAG AA (sort header keyboard, combobox listbox role, RichEditor focus management, FileUpload drop zone keyboard fallback, DateRangePicker label association); all tests green before phase close
 - [ ] **TST-04**: SFFileUpload split-test strategy documented in `74-VERIFICATION.md` per FU-05 — explicit acknowledgement of `dataTransfer.files` Chromium gap, NOT papered over with vacuously-passing test
 
 ---
@@ -116,13 +116,13 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DT-01 | 71 | Pending |
-| DT-02 | 71 | Pending |
-| DT-03 | 71 | Pending |
-| DT-04 | 71 | Pending |
-| DT-05 | 71 | Pending |
-| DT-06 | 71 | Pending |
-| DEP-01 | 71 | Pending |
+| DT-01 | 71 | Complete |
+| DT-02 | 71 | Complete |
+| DT-03 | 71 | Complete |
+| DT-04 | 71 | Complete |
+| DT-05 | 71 | Complete |
+| DT-06 | 71 | Complete |
+| DEP-01 | 71 | Complete |
 | TST-03 (SFDataTable) | 71 | Pending |
 | CB-01 | 72 | Pending |
 | CB-02 | 72 | Pending |

@@ -136,14 +136,17 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 
 Component expansion to fill highest-impact gaps blocking SF adoption on real product work. Five components shipped under per-component contract (zero border-radius, OKLCH only, CVA `intent`, Chromatic story, JSDoc, SCAFFOLDING entry, light+dark parity, P3 lazy if >3KB). Two ratified runtime npm dep exceptions (TanStack Table v8 + Tiptap v2) under new `_dep_X_decision` block precedent.
 
-- [ ] **DT-01..05**: SFDataTable — sort + filter + pagination + virtualization (TanStack Table v8 dep, P3 lazy)
-- [ ] **CB-01..03**: SFCombobox — autocomplete select (Radix Popover + SFInput composition, no new dep)
-- [ ] **RE-01..04**: SFRichEditor — Tiptap shell with limited toolbar (Tiptap v2 dep, P3 lazy)
-- [ ] **FU-01..03**: SFFileUpload — drag-drop + progress + multi-file (no new dep)
-- [ ] **DR-01..03**: SFDateRangePicker — range + time variant (react-day-picker, already in stack)
-- [ ] **DEP-01..02**: `_dep_X_decision` ratification blocks for TanStack Table + Tiptap (REQ-ID-namespaced, extends `_wmk_01_decision` precedent)
+- ✓ **DT-01..06**: SFDataTable — sort + filter + pagination + selection + density + P3 lazy (TanStack Table v8 dep) — v1.10 (Phase 71)
+- ✓ **DEP-01**: `_dep_dt_01_decision` ratification block for TanStack Table v8.21.3 (REQ-ID-namespaced, extends `_wmk_01_decision`) — v1.10 (Phase 71)
+- ✓ **TST-03**: Per-component test coverage protocol established — 5 Playwright + 3 axe-core specs against `/dev-playground/sf-data-table` fixture — v1.10 (Phase 71)
+- [ ] **CB-01..04**: SFCombobox — autocomplete select (Radix Popover + SFInput composition, no new dep)
+- [ ] **RE-01..06**: SFRichEditor — Tiptap shell with limited toolbar (Tiptap v2 dep, P3 lazy)
+- [ ] **FU-01..05**: SFFileUpload — drag-drop + progress + multi-file (no new dep)
+- [ ] **DR-01..06**: SFDateRangePicker — range + time variant (react-day-picker, already in stack)
+- [ ] **DEP-02**: `_dep_re_01_decision` ratification block for Tiptap v2 (planned Phase 73)
 - [ ] **REG-01**: Registry expansion — 5 new entries with meta.layer/meta.pattern + meta.heavy:true on P3 lazy entries
-- [ ] **BND-08**: `/` First Load JS remains under 200 KB hard target after all 5 components ship
+- [ ] **BND-08**: `/` First Load JS remains under 200 KB hard target after all 5 components ship (current: 187.6 KB / 200 KB after Phase 71 close)
+- [ ] **AES-05**: Final aesthetic regression audit (Phase 76)
 
 ### Out of Scope
 
@@ -396,4 +399,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-01 — v1.10 Library Completeness initialized. Direction F (component expansion). Default 5 components + ratified runtime npm dep exceptions (`_dep_X_decision` REQ-ID-namespaced precedent extending `_wmk_01_decision`). 6 phases planned (71-76), continuing from v1.9 Phase 70. Standing rules carry forward unchanged. Research enabled (4 parallel + synthesizer).*
+*Last updated: 2026-05-01 — Phase 71 (SFDataTable) closed. 8/8 reqs satisfied (DT-01..06, DEP-01, TST-03). `_dep_dt_01_decision` precedent ratified at plan-time and back-filled with measured `Lazy chunk hosting @tanstack/react-table: 9339.7c1e528bda185d56.js, 73180 raw bytes (19.3 KB gzip)`. Homepage First Load JS unchanged at 187.6 KB / 200 KB. Pattern B + D-04 locks held throughout. Phase 72 (SFCombobox, zero-dep confidence-builder) is next.*
