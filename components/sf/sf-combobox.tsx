@@ -113,7 +113,6 @@ export function SFCombobox(props: SFComboboxProps) {
 
   // Plan 01 multi-select fallback (Plan 02 replaces this entire branch).
   if (isMulti && process.env.NODE_ENV !== "production") {
-    // eslint-disable-next-line no-console
     console.warn(
       "SFCombobox: multi-select (multiple=true) is a Plan 02 extension; " +
         "Plan 01 falls back to single-select. See 72-RESEARCH.md."
