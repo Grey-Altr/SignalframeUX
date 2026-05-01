@@ -9,8 +9,12 @@
  * @/components/sf/sf-command (NEVER via the @/components/sf barrel) per
  * the cmdk barrel-exclusion contract documented at sf/index.ts:70-73.
  *
- * Single-select API in v0.1 (CB-01 + CB-02). Multi-select via `multiple`
- * prop ships in Plan 02 (CB-03).
+ * Single-select (CB-01 + CB-02) + multi-select (CB-03) via discriminated
+ * union on the `multiple` prop. Multi-select renders SFBadge chips inside
+ * the trigger area, keeps the popover open after each selection, threads
+ * `aria-multiselectable="true"` onto the listbox, and exposes a
+ * `value: string[]` controlled API. Chip remove × uses span+role=button
+ * to avoid the nested-interactive anti-pattern (axe 4.x heuristic).
  *
  * ANTI-PATTERN: SFInput as PopoverTrigger asChild — produces conflicting
  * aria-expanded + role="combobox" + aria-haspopup. Use a plain <button>
@@ -20,6 +24,10 @@
  * ANTI-PATTERN: raw-HTML option rendering — option labels render via
  * React text-node escaping; pass plain strings, do not bypass.
  *
+ * ANTI-PATTERN: setOpen(false) inside multi-select onSelect — closes the
+ * popover after each chip add, defeats the bulk-pick UX. Multi-select
+ * relies on Escape / click-outside to close (Radix default).
+ *
  * @example
  * <SFCombobox
  *   options={[{ value: "a", label: "Apple" }, { value: "b", label: "Banana" }]}
@@ -27,12 +35,22 @@
  *   onChange={(v) => console.log("selected", v)}
  *   placeholder="Pick fruit"
  * />
+ *
+ * @example  // multi-select (CB-03)
+ * <SFCombobox
+ *   multiple
+ *   options={tagOptions}
+ *   value={selectedTags}
+ *   onChange={setSelectedTags}
+ *   placeholder="Pick tags"
+ * />
  */
 import { useMemo, useState } from "react";
 import {
   SFPopover,
   SFPopoverTrigger,
   SFPopoverContent,
+  SFBadge,
 } from "@/components/sf";
 // SFCommand* are NOT in the @/components/sf barrel (cmdk barrel-exclusion,
 // see components/sf/index.ts:70-73). Import directly.
@@ -98,37 +116,74 @@ export function SFCombobox(props: SFComboboxProps) {
     ariaLabel,
   } = props;
 
-  // Single-select state (Plan 01 scope). Multi branch falls back here with a warning.
+  // Discriminated-union state: single-select (Plan 01) + multi-select (Plan 02).
   const isMulti = props.multiple === true;
-  const isControlled =
-    !isMulti && (props as SFComboboxSingleProps).value !== undefined;
   const [open, setOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState<string | undefined>(
-    !isMulti ? (props as SFComboboxSingleProps).defaultValue : undefined
-  );
 
-  const selectedValue: string | undefined = isControlled
+  // Single-select state branch
+  const isControlledSingle =
+    !isMulti && (props as SFComboboxSingleProps).value !== undefined;
+  const [internalSingleValue, setInternalSingleValue] = useState<
+    string | undefined
+  >(!isMulti ? (props as SFComboboxSingleProps).defaultValue : undefined);
+  const selectedSingleValue: string | undefined = isControlledSingle
     ? (props as SFComboboxSingleProps).value
-    : internalValue;
+    : internalSingleValue;
 
-  // Plan 01 multi-select fallback (Plan 02 replaces this entire branch).
-  if (isMulti && process.env.NODE_ENV !== "production") {
-    console.warn(
-      "SFCombobox: multi-select (multiple=true) is a Plan 02 extension; " +
-        "Plan 01 falls back to single-select. See 72-RESEARCH.md."
-    );
-  }
+  // Multi-select state branch (CB-03)
+  const isControlledMulti =
+    isMulti && (props as SFComboboxMultiProps).value !== undefined;
+  const [internalMultiValue, setInternalMultiValue] = useState<string[]>(
+    isMulti ? ((props as SFComboboxMultiProps).defaultValue ?? []) : []
+  );
+  const selectedMultiValues: string[] = isControlledMulti
+    ? ((props as SFComboboxMultiProps).value ?? [])
+    : internalMultiValue;
+
+  // Unified is-selected check for SFCommandItem aria-selected mapping
+  const isOptionSelected = (value: string): boolean =>
+    isMulti
+      ? selectedMultiValues.includes(value)
+      : selectedSingleValue === value;
+
+  // hasSelection unified across single + multi
+  const hasSelection = isMulti
+    ? selectedMultiValues.length > 0
+    : selectedSingleValue !== undefined;
 
   const handleSelect = (itemValue: string) => {
-    const next = itemValue === selectedValue ? undefined : itemValue;
-    if (!isControlled) setInternalValue(next);
+    if (isMulti) {
+      const next = selectedMultiValues.includes(itemValue)
+        ? selectedMultiValues.filter((v) => v !== itemValue)
+        : [...selectedMultiValues, itemValue];
+      if (!isControlledMulti) setInternalMultiValue(next);
+      (props as SFComboboxMultiProps).onChange?.(next);
+      // CRITICAL: do NOT setOpen(false) in multi-select — popover stays open
+      // for next selection. Closing happens via Escape / click-outside.
+      return;
+    }
+    // Single-select branch
+    const next = itemValue === selectedSingleValue ? undefined : itemValue;
+    if (!isControlledSingle) setInternalSingleValue(next);
     (props as SFComboboxSingleProps).onChange?.(next);
-    setOpen(false); // single-select closes on select
+    setOpen(false);
   };
 
   const handleClear = () => {
-    if (!isControlled) setInternalValue(undefined);
+    if (isMulti) {
+      if (!isControlledMulti) setInternalMultiValue([]);
+      (props as SFComboboxMultiProps).onChange?.([]);
+      return;
+    }
+    if (!isControlledSingle) setInternalSingleValue(undefined);
     (props as SFComboboxSingleProps).onChange?.(undefined);
+  };
+
+  const handleRemoveChip = (value: string) => {
+    if (!isMulti) return;
+    const next = selectedMultiValues.filter((v) => v !== value);
+    if (!isControlledMulti) setInternalMultiValue(next);
+    (props as SFComboboxMultiProps).onChange?.(next);
   };
 
   // Group options for CB-02 grouping support.
@@ -147,11 +202,11 @@ export function SFCombobox(props: SFComboboxProps) {
     return { groups, ungrouped };
   }, [options]);
 
-  const selectedLabel = selectedValue
-    ? options.find((o) => o.value === selectedValue)?.label ?? selectedValue
-    : undefined;
-
-  const hasSelection = selectedValue !== undefined;
+  const selectedSingleLabel =
+    !isMulti && selectedSingleValue
+      ? (options.find((o) => o.value === selectedSingleValue)?.label ??
+        selectedSingleValue)
+      : undefined;
 
   return (
     <SFPopover open={open} onOpenChange={setOpen}>
@@ -174,17 +229,61 @@ export function SFCombobox(props: SFComboboxProps) {
               "font-mono uppercase tracking-wider text-xs",
               "bg-transparent text-foreground",
               "cursor-pointer",
+              "min-h-[40px]",
               "data-[state=open]:bg-foreground data-[state=open]:text-background"
             )}
           >
-            <span
-              className={cn(
-                "truncate",
-                !hasSelection && "text-muted-foreground"
-              )}
-            >
-              {selectedLabel ?? placeholder ?? "Select..."}
-            </span>
+            {isMulti ? (
+              <div className="flex flex-wrap gap-[var(--sfx-space-1)] flex-1 items-center">
+                {selectedMultiValues.length === 0 ? (
+                  <span className="text-muted-foreground">
+                    {placeholder ?? "Select..."}
+                  </span>
+                ) : (
+                  selectedMultiValues.map((v) => {
+                    const opt = options.find((o) => o.value === v);
+                    const label = opt?.label ?? v;
+                    return (
+                      <SFBadge
+                        key={v}
+                        intent="outline"
+                        className="gap-[var(--sfx-space-1)] pr-[var(--sfx-space-1)]"
+                      >
+                        <span>{label}</span>
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Remove ${label}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveChip(v);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleRemoveChip(v);
+                            }
+                          }}
+                          className="cursor-pointer hover:bg-foreground hover:text-background px-[var(--sfx-space-1)]"
+                        >
+                          {"\u00D7"}
+                        </span>
+                      </SFBadge>
+                    );
+                  })
+                )}
+              </div>
+            ) : (
+              <span
+                className={cn(
+                  "truncate",
+                  !hasSelection && "text-muted-foreground"
+                )}
+              >
+                {selectedSingleLabel ?? placeholder ?? "Select..."}
+              </span>
+            )}
             <span
               aria-hidden="true"
               className="ml-[var(--sfx-space-2)] font-mono text-xs"
@@ -217,7 +316,7 @@ export function SFCombobox(props: SFComboboxProps) {
       <SFPopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[240px]">
         <SFCommand label={ariaLabel ?? "Search options"} loop>
           <SFCommandInput placeholder={searchPlaceholder ?? "Search..."} />
-          <SFCommandList>
+          <SFCommandList aria-multiselectable={isMulti ? true : undefined}>
             {loading ? (
               <SFCommandLoading>Loading...</SFCommandLoading>
             ) : (
@@ -232,7 +331,7 @@ export function SFCombobox(props: SFComboboxProps) {
                           value={opt.value}
                           disabled={opt.disabled}
                           onSelect={handleSelect}
-                          aria-selected={opt.value === selectedValue}
+                          aria-selected={isOptionSelected(opt.value)}
                         >
                           {opt.label}
                         </SFCommandItem>
@@ -248,7 +347,7 @@ export function SFCombobox(props: SFComboboxProps) {
                         value={opt.value}
                         disabled={opt.disabled}
                         onSelect={handleSelect}
-                        aria-selected={opt.value === selectedValue}
+                        aria-selected={isOptionSelected(opt.value)}
                       >
                         {opt.label}
                       </SFCommandItem>
