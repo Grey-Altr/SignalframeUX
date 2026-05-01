@@ -37,7 +37,7 @@
 //     - "@tiptap/pm"
 //     - "@tiptap/starter-kit"
 //     - "@tiptap/extension-link"
-//   version: "<TBD — populated by Task 2 post-install via pnpm list --depth=0>"
+//   version: "3.22.5"
 //   rationale: |
 //     SFRichEditor wraps ProseMirror via Tiptap v3 (useEditor + EditorContent
 //     + StarterKit extension model). No viable zero-dep substitute:
@@ -57,8 +57,16 @@
 //     — documented in JSDoc and enforced by grep acceptance criteria in
 //     73-01-PLAN.md and 73-02-PLAN.md.
 //   bundle_evidence:
-//     - "TBD — populated by Task 3 post-install via ANALYZE=true pnpm build"
-//     - "Pre-add homepage First Load JS baseline: 187.6 KB gzip (Phase 72 close, MILESTONES.md)"
+//     - "Homepage / First Load JS pre-add baseline: 187.6 KB gzip (Phase 72 close, MILESTONES.md)"
+//     - "Homepage / First Load JS post-add (placeholder file, no impl): 187.6 KB gzip (12 chunks, measured by tests/v1.8-phase63-1-bundle-budget.spec.ts)"
+//     - "Headroom remaining: 12.4 KB under 200 KB hard target — UNCHANGED from Phase 72 baseline"
+//     - "Delta from placeholder file: 0 KB (export {} has no @tiptap import)"
+//     - "Tiptap in homepage First Load chunk: PASS (manifest probe across .next/build-manifest.json + .next/app-build-manifest.json returned PASS for /tiptap|prosemirror|starter.kit/ regex; matching chunks: [])"
+//     - "Tiptap lazy chunk: ABSENT from homepage manifest (real chunk lands Plan 02 behind next/dynamic ssr:false)"
+//     - "Resolved version: @tiptap/react@3.22.5 (matches @tiptap/pm@3.22.5, @tiptap/starter-kit@3.22.5, @tiptap/extension-link@3.22.5 — verified via pnpm list --depth=0)"
+//     - "Measurement command: rm -rf .next/cache .next && ANALYZE=true pnpm build"
+//     - "Bundle budget spec: tests/v1.8-phase63-1-bundle-budget.spec.ts PASS (187.6 KB / 200 KB budget)"
+//     - "Measurement date: 2026-05-01"
 //   review_gate: |
 //     Re-evaluate when Tiptap v4 reaches stable release. Re-pin and
 //     re-measure if v4 changes API surface (useEditor options, extension

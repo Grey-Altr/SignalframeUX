@@ -1347,6 +1347,56 @@ body[data-nav-intro="true"] [data-sf-nav-chrome] > *:nth-child(6) { --sf-nav-int
 }
 
 /* ══════════════════════════════════════════════════════════════
+   PROSEMIRROR / TIPTAP CONTENT ISOLATION
+   Paired with: injectCSS: false on every useEditor() call in
+   components/sf/sf-rich-editor.tsx. These rules ARE the stylesheet
+   replacement. DO NOT import any Tiptap/ProseMirror CSS file
+   anywhere in app/, components/, or lib/. Adding such an import
+   would inject unlayered styles that override these @layer rules.
+   Only 4 element rules — structural minimum. Do not expand.
+   ══════════════════════════════════════════════════════════════ */
+@layer signalframeux {
+  .ProseMirror {
+    font-family: inherit;
+    outline: none;
+    min-height: var(--sfx-space-16);
+  }
+
+  .ProseMirror p {
+    margin: 0 0 var(--sfx-space-4) 0;
+    line-height: 1.5;
+  }
+
+  .ProseMirror h1,
+  .ProseMirror h2,
+  .ProseMirror h3,
+  .ProseMirror h4 {
+    margin: 0 0 var(--sfx-space-3) 0;
+    font-family: var(--sfx-font-sans);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .ProseMirror ul,
+  .ProseMirror ol {
+    padding-left: var(--sfx-space-6);
+    margin: 0 0 var(--sfx-space-4) 0;
+  }
+
+  .ProseMirror li {
+    margin-bottom: var(--sfx-space-2);
+  }
+
+  .ProseMirror blockquote {
+    border-left: 2px solid var(--sfx-foreground);
+    padding-left: var(--sfx-space-4);
+    margin: 0 0 var(--sfx-space-4) var(--sfx-space-2);
+    color: var(--sfx-muted-foreground);
+    font-style: italic;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    KEYFRAMES
    ══════════════════════════════════════════════════════════════ */
 
