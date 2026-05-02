@@ -781,6 +781,23 @@
       }
     },
     {
+      "name": "sf-date-range-picker",
+      "type": "registry:ui",
+      "title": "SF Date Range Picker",
+      "description": "Industrial date range picker — read-only SFInput trigger + SFPopover panel + SFCalendarLazy + optional presets + optional inline time inputs. Pattern C zero-deps composition.",
+      "registryDependencies": ["calendar", "popover", "input", "button"],
+      "files": [
+        {
+          "path": "components/sf/sf-date-range-picker.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
       "name": "sf-toast",
       "type": "registry:ui",
       "title": "SF Toast",

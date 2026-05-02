@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sf-date-range-picker",
+  "title": "SF Date Range Picker",
+  "description": "Industrial date range picker — read-only SFInput trigger + SFPopover panel + SFCalendarLazy (P3 lazy boundary inherited; react-day-picker stays out of homepage First Load JS) + optional left-rail presets + optional inline time inputs. classNames-only styling with rounded-none + bg-primary/text-primary-foreground for selected. Zero new runtime deps. Locale is type-only.",
+  "registryDependencies": [
+    "calendar",
+    "popover",
+    "input",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "components/sf/sf-date-range-picker.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "layer": "frame",
+    "pattern": "C"
+  }
+}
