@@ -36,7 +36,7 @@ test.describe("SFDateRangePicker — hydration + accessibility (TST-03)", () => 
     await page.waitForTimeout(250);
 
     const hydrationWarnings = consoleMessages.filter((m) =>
-      /hydrat/i.test(m.text())
+      /hydrat/i.test(m.text)
     );
     expect(
       hydrationWarnings,
@@ -80,19 +80,19 @@ test.describe("SFDateRangePicker — DR-01 range selection + classNames", () => 
       .first();
     await trigger.click();
 
+    // Radix Popover portals content to <body>, NOT inside the fixture wrapper.
     // Wait for SFCalendarLazy hydration (dynamic({ ssr: false }) — async chunk)
     const popoverContent = page
-      .locator(
-        '[data-testid="fixture-uncontrolled-range"] [data-testid="sf-date-range-picker-content"]'
-      )
+      .locator('[data-testid="sf-date-range-picker-content"]')
       .first();
     await expect(popoverContent).toBeVisible({ timeout: 5000 });
 
-    // Day buttons — RDP v9 renders day cells as <button> inside <td role="gridcell"> OR
-    // exposes them as [role="gridcell"] direct buttons. Use a tolerant selector.
-    const dayButtons = page.locator(
-      '[data-testid="fixture-uncontrolled-range"] td button:not([disabled]), [data-testid="fixture-uncontrolled-range"] [role="gridcell"] button:not([disabled])'
+    // Day buttons live inside the portaled popover content (RDP v9: button inside td role=gridcell)
+    const dayButtons = popoverContent.locator(
+      'td button:not([disabled]), [role="gridcell"] button:not([disabled])'
     );
+    // Wait for SFCalendarLazy async chunk to hydrate at least one day cell
+    await dayButtons.first().waitFor({ state: "visible", timeout: 5000 });
     const dayCount = await dayButtons.count();
     expect(dayCount).toBeGreaterThanOrEqual(14);
 
@@ -100,26 +100,24 @@ test.describe("SFDateRangePicker — DR-01 range selection + classNames", () => 
     await dayButtons.nth(7).click();
     await dayButtons.nth(13).click();
 
-    // Verify the three range classNames keys appear in the DOM
-    const rangeStart = page
-      .locator(
-        '[data-testid="fixture-uncontrolled-range"] [class*="range_start"]'
-      )
-      .first();
-    const rangeMiddle = page
-      .locator(
-        '[data-testid="fixture-uncontrolled-range"] [class*="range_middle"]'
-      )
-      .first();
-    const rangeEnd = page
-      .locator('[data-testid="fixture-uncontrolled-range"] [class*="range_end"]')
-      .first();
-    await expect(rangeStart).toBeVisible();
-    await expect(rangeMiddle).toBeVisible();
-    await expect(rangeEnd).toBeVisible();
+    // RDP v9 emits range modifiers as data-attributes on the day buttons:
+    // data-range-start="true" / data-range-middle="true" / data-range-end="true".
+    // The component's classNames map (range_start / range_middle / range_end) is the
+    // hue-binding contract, but RDP produces the user-supplied class strings rather
+    // than literal range_* tokens — so we assert on the data-attributes that RDP
+    // applies independently of classNames text.
+    await expect(
+      popoverContent.locator('[data-range-start="true"]').first()
+    ).toBeVisible();
+    await expect(
+      popoverContent.locator('[data-range-middle="true"]').first()
+    ).toBeVisible();
+    await expect(
+      popoverContent.locator('[data-range-end="true"]').first()
+    ).toBeVisible();
   });
 
-  test("DR-01 range selection updates section1 JSON echo with non-null from + to", async ({
+  test("DR-01 range selection updates section1 trigger value with formatted range", async ({
     page,
   }) => {
     await page.goto(FIXTURE, { waitUntil: "networkidle" });
@@ -130,29 +128,30 @@ test.describe("SFDateRangePicker — DR-01 range selection + classNames", () => 
       )
       .first();
     await expect(trigger).toBeVisible();
+    // Section 1 trigger starts empty (placeholder shown, value attribute absent / empty)
+    await expect(trigger).toHaveValue("");
     await trigger.click();
 
     const popoverContent = page
-      .locator(
-        '[data-testid="fixture-uncontrolled-range"] [data-testid="sf-date-range-picker-content"]'
-      )
+      .locator('[data-testid="sf-date-range-picker-content"]')
       .first();
     await expect(popoverContent).toBeVisible({ timeout: 5000 });
 
-    const dayButtons = page.locator(
-      '[data-testid="fixture-uncontrolled-range"] td button:not([disabled]), [data-testid="fixture-uncontrolled-range"] [role="gridcell"] button:not([disabled])'
+    const dayButtons = popoverContent.locator(
+      'td button:not([disabled]), [role="gridcell"] button:not([disabled])'
     );
+    await dayButtons.first().waitFor({ state: "visible", timeout: 5000 });
     const dayCount = await dayButtons.count();
     expect(dayCount).toBeGreaterThanOrEqual(14);
     await dayButtons.nth(7).click();
     await dayButtons.nth(13).click();
 
-    const echo = page.locator('[data-testid="fixture-uncontrolled-range"]').locator('pre').first();
-    const echoText = await echo.textContent();
-    expect(echoText).toBeTruthy();
-    const parsed = JSON.parse(echoText ?? "{}");
-    expect(parsed.from).not.toBeNull();
-    expect(parsed.to).not.toBeNull();
+    // After two day clicks, section1Range is set; trigger displays formatted range
+    // via component formatRange() which emits localized "Mon D, YYYY — Mon D, YYYY"
+    // (e.g. "May 3, 2026 — May 9, 2026"). Assert both endpoints + em-dash separator.
+    await expect(trigger).toHaveValue(
+      /[A-Za-z]+\s+\d{1,2},\s+\d{4}\s+[—-]\s+[A-Za-z]+\s+\d{1,2},\s+\d{4}/
+    );
   });
 });
 
@@ -171,17 +170,14 @@ test.describe(
         .first();
       await trigger.click();
 
+      // Popover content is portaled to <body> by Radix
       const popoverContent = page
-        .locator(
-          '[data-testid="fixture-controlled-presets"] [data-testid="sf-date-range-picker-content"]'
-        )
+        .locator('[data-testid="sf-date-range-picker-content"]')
         .first();
       await expect(popoverContent).toBeVisible({ timeout: 5000 });
 
-      const presetsRail = page
-        .locator(
-          '[data-testid="fixture-controlled-presets"] [data-testid="sf-date-range-picker-presets"]'
-        )
+      const presetsRail = popoverContent
+        .locator('[data-testid="sf-date-range-picker-presets"]')
         .first();
       await expect(presetsRail).toBeVisible();
 
@@ -216,10 +212,9 @@ test.describe("SFDateRangePicker — DR-04 withTime variant", () => {
       .first();
     await trigger.click();
 
+    // time-row lives inside the portaled popover content (Radix portals to body)
     const timeRow = page
-      .locator(
-        '[data-testid="fixture-withtime"] [data-testid="sf-date-range-picker-time-row"]'
-      )
+      .locator('[data-testid="sf-date-range-picker-time-row"]')
       .first();
     await expect(timeRow).toBeVisible({ timeout: 5000 });
 
@@ -242,9 +237,10 @@ test.describe("SFDateRangePicker — DR-04 withTime variant", () => {
       .first();
     await trigger.click();
 
+    // time-row + input live inside the portaled popover content
     const startInput = page
       .locator(
-        '[data-testid="fixture-withtime"] [data-testid="sf-date-range-picker-time-row"] input[type="time"]'
+        '[data-testid="sf-date-range-picker-time-row"] input[type="time"]'
       )
       .first();
     await startInput.fill("10:30");
