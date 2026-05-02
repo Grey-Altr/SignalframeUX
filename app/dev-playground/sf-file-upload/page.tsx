@@ -41,7 +41,7 @@ export default function SFFileUploadPlaygroundPage() {
         aria-label="Uncontrolled image-only file upload"
       >
         <h2 className="font-mono uppercase tracking-wider text-sm mb-[var(--sfx-space-3)]">
-          // 01 // Uncontrolled // Image-only // 5 MB max
+          {"// 01 // Uncontrolled // Image-only // 5 MB max"}
         </h2>
         <SFFileUpload
           accept="image/*"
@@ -56,7 +56,7 @@ export default function SFFileUploadPlaygroundPage() {
         aria-label="Controlled file upload with state echo"
       >
         <h2 className="font-mono uppercase tracking-wider text-sm mb-[var(--sfx-space-3)]">
-          // 02 // Controlled // onChange echo
+          {"// 02 // Controlled // onChange echo"}
         </h2>
         <SFFileUpload
           files={controlledFiles}
@@ -87,7 +87,7 @@ export default function SFFileUploadPlaygroundPage() {
         aria-label="Multi-file upload with simulated progress"
       >
         <h2 className="font-mono uppercase tracking-wider text-sm mb-[var(--sfx-space-3)]">
-          // 03 // Multi // Progress slider
+          {"// 03 // Multi // Progress slider"}
         </h2>
         <SFFileUpload
           files={multiFiles}
@@ -116,7 +116,7 @@ export default function SFFileUploadPlaygroundPage() {
         aria-label="File upload with 1 KB max size for error testing"
       >
         <h2 className="font-mono uppercase tracking-wider text-sm mb-[var(--sfx-space-3)]">
-          // 04 // 1 KB max // Error state
+          {"// 04 // 1 KB max // Error state"}
         </h2>
         <SFFileUpload
           maxSize={1024}
@@ -130,7 +130,7 @@ export default function SFFileUploadPlaygroundPage() {
         aria-label="Disabled file upload"
       >
         <h2 className="font-mono uppercase tracking-wider text-sm mb-[var(--sfx-space-3)]">
-          // 05 // Disabled
+          {"// 05 // Disabled"}
         </h2>
         <SFFileUpload disabled multiple />
       </section>
