@@ -1,9 +1,9 @@
 ---
-phase: 75
-slug: sfdaterangepicker
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+phase: 75-sfdaterangepicker
+status: passed
+nyquist_compliant: true
+closed: 2026-05-02
+wave_0_complete: true
 created: 2026-05-02
 ---
 
@@ -39,8 +39,13 @@ created: 2026-05-02
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 75-01-XX | 01 | 1 | DR-01..DR-06 | — | classNames-only styling, SSR-safe | structural grep | per-req predicates below | ⬜ planner-defined | ⬜ pending |
-| 75-02-XX | 02 | 2 | TST-03 | — | Playwright hydration + barrel + DCE | E2E + chunk-grep | per-req predicates below | ⬜ planner-defined | ⬜ pending |
+| 75-01-01 | 01 | 1 | DR-01..06 | T-75-01..11 | Component impl + classNames-only + SSR-safe | structural grep | `pnpm exec tsc --noEmit && grep -E "range_start\|range_middle\|range_end" components/sf/sf-date-range-picker.tsx \| wc -l` | ✅ components/sf/sf-date-range-picker.tsx | ✅ green |
+| 75-01-02 | 01 | 1 | DR-05 + REG-01 | T-75-10 | Barrel + registry same-commit cohort | grep + git show | `git show HEAD~2 --stat \| grep -cE "components/sf/index.ts\|public/r/sf-date-range-picker.json\|public/r/registry.json"` = 3 | ✅ barrel + registry | ✅ green |
+| 75-01-03 | 01 | 1 | (Wave 0) | — | Showcase fixture for hydration spec + DCE proof | route-exists + tsc | `test -f app/showcase/date-range-picker/page.tsx && pnpm exec tsc --noEmit` | ✅ app/showcase/date-range-picker/page.tsx | ✅ green |
+| 75-02-01 | 02 | 2 | TST-03 | T-75-V01..V03 | Playwright hydration + acceptance | E2E | `pnpm exec playwright test tests/e2e/sf-date-range-picker.spec.ts --project=chromium` | ✅ tests/e2e/sf-date-range-picker.spec.ts | ✅ green |
+| 75-02-02 | 02 | 2 | TST-03 | T-75-V02 | axe-core WCAG AA | E2E + AxeBuilder | `pnpm exec playwright test tests/e2e/sf-date-range-picker-axe.spec.ts --project=chromium` | ✅ tests/e2e/sf-date-range-picker-axe.spec.ts | ✅ green |
+| 75-02-03 | 02 | 2 | DR-05 + DR-06 | T-75-V04..V06 | Chunk-grep DCE proof + bundle measurement + type-only Locale | grep + build + budget spec | (see 75-VERIFICATION.md commands) | ✅ .planning/phases/75-sfdaterangepicker/75-VERIFICATION.md | ✅ green |
+| 75-02-04 | 02 | 2 | (deferred) | T-75-V09 | 4 manual UAT items M-01..M-04 deferred | doc-exists | `test -f .planning/phases/75-sfdaterangepicker/75-HUMAN-UAT.md && grep -c 'M-0[1-4]' .planning/phases/75-sfdaterangepicker/75-HUMAN-UAT.md` = 4 | ✅ .planning/phases/75-sfdaterangepicker/75-HUMAN-UAT.md | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -128,11 +133,26 @@ Predicates are intentionally structural (grep / file-exists / build-output) rath
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references (showcase route + Playwright spec)
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] `nyquist_compliant: true` set in frontmatter (post-planner sign-off)
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references (showcase route + Playwright spec)
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] `nyquist_compliant: true` set in frontmatter (post-planner sign-off)
 
-**Approval:** pending
+**Approval:** approved 2026-05-02
+
+---
+
+## Phase 75 Closeout Summary
+
+- Component-side: 6/6 DR requirements satisfied (DR-01..DR-06) — Plan 01
+- Test-side: TST-03 satisfied via Plan 02 Playwright spec (7+ tests) + axe spec (3 scans, 0 violations)
+- Bundle gate (BND-08 prerequisite): homepage First Load JS within 200 KB hard target (measured 192 KB, 8 KB headroom) — see 75-VERIFICATION.md
+- Pattern C DCE proof: react-day-picker lazy-loaded via SFCalendarLazy dynamic({ ssr: false }), absent from homepage chunks — see 75-VERIFICATION.md
+- 4 manual UAT items deferred to 75-HUMAN-UAT.md (touch-target, screen-reader, mobile-popover, time-input keyboard parity)
+- Registry items count: 56 → 57 (sf-date-range-picker added in Plan 01 same-commit cohort)
+- D-04 chunk-id stability lock: HOLDS (next.config.ts unchanged)
+- DR-05 zero-new-deps: HOLDS (package.json unchanged)
+
+Phase 75 status: **CLOSED**. Phase 76 (Final Gate) is the next milestone phase.
