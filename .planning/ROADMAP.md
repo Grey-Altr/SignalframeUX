@@ -157,7 +157,10 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. A consumer supplies a `progress: Record<fileName, number>` prop and the existing `SFProgress` component renders per-file progress bars tracking the provided values; image files display a preview via `URL.createObjectURL`
 4. `74-VERIFICATION.md` explicitly documents the `dataTransfer.files` Playwright/Chromium permanent gap — the drag-drop acceptance path is verified via Chromatic story, not via a vacuously-passing Playwright test
 
-**Plans:** TBD
+**Plans:** 2 plans
+
+- [ ] 74-01-PLAN.md — SFFileUpload component (FU-01 drop+browse+paste+list, FU-02 mime+size+multi, FU-03 progress+preview+controlled, FU-04 zero-dep) + barrel export + same-commit registry entries + dev-playground fixture (FU-01..04)
+- [ ] 74-02-PLAN.md — Playwright acceptance (10 tests via setInputFiles) + axe-core WCAG AA (6 scans across 4 fixture states) + Storybook stories (8 stories incl. DragActive play()) + 74-VERIFICATION.md split test strategy with dataTransfer.files Chromium permanent gap (3 primary sources) + bundle audit closeout (FU-05, TST-03, TST-04)
 
 ---
 
@@ -226,7 +229,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
 | 73 — SFRichEditor | 3/3 | Complete    | 2026-05-02 |
-| 74 — SFFileUpload | 0/TBD | Not started | — |
+| 74 — SFFileUpload | 0/2 | Planned     | — |
 | 75 — SFDateRangePicker | 0/TBD | Not started | — |
 | 76 — Final Gate | 0/TBD | Not started | — |
 
