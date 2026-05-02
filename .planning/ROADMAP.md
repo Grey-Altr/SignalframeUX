@@ -34,7 +34,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 - [x] **Phase 72: SFCombobox** — Pure SF composition (cmdk + Radix Popover + SFInput); zero new deps; barrel-exported; confidence-builder phase (completed 2026-05-01)
 - [x] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules (completed 2026-05-02)
 - [x] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented (completed 2026-05-02)
-- [ ] **Phase 75: SFDateRangePicker** — react-day-picker range mode + presets + time variant; zero new deps; barrel-exported; SSR hydration guard mandatory
+- [x] **Phase 75: SFDateRangePicker** — react-day-picker range mode + presets + time variant; zero new deps; barrel-exported; SSR hydration guard mandatory (completed 2026-05-02)
 - [ ] **Phase 76: Final Gate** — BND-08 clean build measurement, AES-05 Chromatic baseline approval, REG-01 registry verification, DEP-01..02 block commit, SCAFFOLDING.md count update to 58
 
 ---
@@ -190,10 +190,10 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. A consumer enables the `withTime` prop — an inline `<SFInput type="time">` renders inside the popover for time-of-day specification; no external `SFTimePicker` primitive is introduced
 4. The picker mounts with zero console hydration warnings; `new Date()` is only called inside `useEffect` or `useMemo`; no react-day-picker default styles leak through; all day cells render with `rounded-none`
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
-- [ ] 75-01-PLAN.md — SFDateRangePicker component (DR-01..DR-06) + barrel export + same-commit registry entry + showcase fixture at `app/showcase/date-range-picker/page.tsx`
-- [ ] 75-02-PLAN.md — Playwright hydration + acceptance spec (TST-03) + axe-core WCAG AA spec (3 fixture states) + 75-VERIFICATION.md (chunk-grep DCE proof + bundle measurement + type-only Locale verification) + 75-HUMAN-UAT.md (4 deferred manual items M-01..M-04) + 75-VALIDATION.md flip to status: passed + nyquist_compliant: true
+- [x] 75-01-PLAN.md — SFDateRangePicker component (DR-01..DR-06) + barrel export + same-commit registry entry + showcase fixture at `app/showcase/date-range-picker/page.tsx`
+- [x] 75-02-PLAN.md — Playwright hydration + acceptance spec (TST-03) + axe-core WCAG AA spec (3 fixture states) + 75-VERIFICATION.md (chunk-grep DCE proof + bundle measurement + type-only Locale verification) + 75-HUMAN-UAT.md (4 deferred manual items M-01..M-04) + 75-VALIDATION.md flip to status: passed + nyquist_compliant: true
 
 ---
 
@@ -233,7 +233,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
 | 73 — SFRichEditor | 3/3 | Complete    | 2026-05-02 |
 | 74 — SFFileUpload | 2/2 | Complete    | 2026-05-02 |
-| 75 — SFDateRangePicker | 0/2 | Not started | — |
+| 75 — SFDateRangePicker | 2/2 | Complete    | 2026-05-02 |
 | 76 — Final Gate | 0/TBD | Not started | — |
 
 ---

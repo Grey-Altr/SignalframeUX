@@ -57,12 +57,12 @@
 
 ## SFDateRangePicker (DR) — Phase 75
 
-- [ ] **DR-01**: Date range mode + single date mode via `mode: "range" | "single"` prop + popover trigger composing `SFPopover` + `SFInput` (read-only, displays formatted range) + range highlight visualization with `range_start` / `range_middle` / `range_end` `classNames` keys
-- [ ] **DR-02**: Keyboard input parsing + min/max bounds (`fromDate` / `toDate`) + disabled dates (`disabled` prop) + clear/reset action; `new Date()` only inside `useEffect` or `useMemo` (NEVER at module level — SSR hydration trap)
-- [ ] **DR-03**: Presets panel (e.g., "Last 7 days", "Last 30 days", "This month", "This quarter") rendered as left-rail buttons composing `SFButton` + Locale type-only pass-through (`locale?: Locale` accepting `Locale` from `date-fns/locale` as type-only import — NEVER import date-fns runtime code) + controlled API (`value`, `onChange`)
-- [ ] **DR-04**: Inline `<SFInput type="time">` for time-of-day specification when `withTime` prop is true (no shared `SFTimePicker` extraction — single v1.10 consumer)
-- [ ] **DR-05**: Component exported from `sf/index.ts` barrel (Pattern C); zero new runtime deps (react-day-picker already in stack); composes existing `SFCalendarLazy` (already P3 lazy) + `SFPopover` + `SFInput`
-- [ ] **DR-06**: react-day-picker default stylesheet NEVER imported — all styling via `classNames` prop using `--sfx-*` token classes only (`bg-primary text-primary-foreground` for selected day; `rounded-none` everywhere)
+- [x] **DR-01**: Date range mode + single date mode via `mode: "range" | "single"` prop + popover trigger composing `SFPopover` + `SFInput` (read-only, displays formatted range) + range highlight visualization with `range_start` / `range_middle` / `range_end` `classNames` keys
+- [x] **DR-02**: Keyboard input parsing + min/max bounds (`fromDate` / `toDate`) + disabled dates (`disabled` prop) + clear/reset action; `new Date()` only inside `useEffect` or `useMemo` (NEVER at module level — SSR hydration trap)
+- [x] **DR-03**: Presets panel (e.g., "Last 7 days", "Last 30 days", "This month", "This quarter") rendered as left-rail buttons composing `SFButton` + Locale type-only pass-through (`locale?: Locale` accepting `Locale` from `date-fns/locale` as type-only import — NEVER import date-fns runtime code) + controlled API (`value`, `onChange`)
+- [x] **DR-04**: Inline `<SFInput type="time">` for time-of-day specification when `withTime` prop is true (no shared `SFTimePicker` extraction — single v1.10 consumer)
+- [x] **DR-05**: Component exported from `sf/index.ts` barrel (Pattern C); zero new runtime deps (react-day-picker already in stack); composes existing `SFCalendarLazy` (already P3 lazy) + `SFPopover` + `SFInput`
+- [x] **DR-06**: react-day-picker default stylesheet NEVER imported — all styling via `classNames` prop using `--sfx-*` token classes only (`bg-primary text-primary-foreground` for selected day; `rounded-none` everywhere)
 
 ## Dependency Ratification (DEP)
 
@@ -144,12 +144,12 @@
 | FU-05 | 74 | Complete |
 | TST-03 (SFFileUpload) | 74 | Pending |
 | TST-04 | 74 | Complete |
-| DR-01 | 75 | Pending |
-| DR-02 | 75 | Pending |
-| DR-03 | 75 | Pending |
-| DR-04 | 75 | Pending |
-| DR-05 | 75 | Pending |
-| DR-06 | 75 | Pending |
+| DR-01 | 75 | Complete |
+| DR-02 | 75 | Complete |
+| DR-03 | 75 | Complete |
+| DR-04 | 75 | Complete |
+| DR-05 | 75 | Complete |
+| DR-06 | 75 | Complete |
 | TST-03 (SFDateRangePicker) | 75 | Pending |
 | REG-01 | 76 | Pending |
 | BND-08 | 76 | Pending |
