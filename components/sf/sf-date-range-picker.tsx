@@ -240,6 +240,7 @@ export function SFDateRangePicker(props: SFDateRangePickerProps) {
             toDate={toDate}
             disabled={disabled}
             locale={locale}
+            {...(mode === "range" && { required: false })}
             classNames={{
               range_start: "rounded-none bg-primary text-primary-foreground",
               range_middle: "rounded-none bg-primary/20",
