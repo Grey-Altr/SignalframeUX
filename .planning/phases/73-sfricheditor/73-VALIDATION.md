@@ -98,3 +98,34 @@ closed: 2026-05-02
 - [x] `nyquist_compliant: true` set in frontmatter
 
 **Approval:** auditor sign-off `nyquist_compliant: true` recorded post-execution 2026-05-02 — full Phase 73 test suite green (15/15 tests across 2 specs); bundle audit PASS (187.7 KB / 200 KB; Tiptap absent from homepage chunks); barrel non-export + D-04 lock + registry-deferral all hold.
+
+---
+
+## Validation Audit 2026-05-02
+
+Retroactive Nyquist audit via `/pde:validate-phase 73` after phase close. All 18 per-task predicate commands re-executed and confirmed against the live codebase.
+
+| Metric | Count |
+|--------|-------|
+| Requirements audited | 8 (RE-01..06, DEP-02, TST-03) |
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated to manual-only | 0 |
+| Per-task predicates re-verified | 18/18 |
+
+**Coverage by requirement:**
+
+| Requirement | Coverage | Predicate rows |
+|-------------|----------|----------------|
+| RE-01 (toolbar) | COVERED | 73-02-07, 73-03-03, 73-03-07 |
+| RE-02 (link/code) | COVERED | 73-03-03 (Link prompt) |
+| RE-03 (controlled API + readOnly) | COVERED | 73-02-03, 73-03-03 |
+| RE-04 (SSR + CSS isolation) | COVERED | 73-01-03, 73-01-04, 73-02-01, 73-02-02 |
+| RE-05 (P3 lazy + barrel non-export) | COVERED | 73-02-05, 73-02-06, 73-03-04, 73-03-05, 73-03-06 |
+| RE-06 (anti-features) | COVERED | 73-02-04, 73-03-07 |
+| DEP-02 (`_dep_re_01_decision` + D-04) | COVERED | 73-01-01, 73-01-02, 73-03-08 |
+| TST-03 (Playwright + axe same-phase) | COVERED | 73-03-01, 73-03-02 |
+
+**No new tests required.** Audit confirms `nyquist_compliant: true` from Plan 03 sign-off remains accurate.
+
+The advisory code-review findings in `73-REVIEW.md` (0 critical / 4 warning / 5 info) are NOT requirement-level coverage gaps — they are code-quality concerns parked for future `/pde:code-review-fix 73`. The Manual-Only Verifications section already lists the human-judgment items (token cascade, FRAME/SIGNAL register, Tab behavior, theme parity) that pair with the human_verification block in `73-VERIFICATION.md`.
