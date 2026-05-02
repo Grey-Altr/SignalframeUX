@@ -40,12 +40,12 @@
 
 ## SFRichEditor (RE) — Phase 73
 
-- [ ] **RE-01**: Core toolbar — bold/italic/underline/strike, H1/H2/H3, bulleted+ordered lists, blockquote; toolbar buttons composed from existing `SFButton` with active-state via `data-active`; placeholder text + character count display
-- [ ] **RE-02**: Code block + inline code + link extension (Tiptap `@tiptap/extension-link` if separate from starter-kit in chosen version — decided in `_dep_re_01_decision`)
-- [ ] **RE-03**: Controlled API (`value` HTML string + `onChange`) + uncontrolled API (`defaultValue`) + read-only mode (`readOnly` prop) + `immediatelyRender: false` SSR guard on every `useEditor()` call
-- [ ] **RE-04**: `injectCSS: false` set on every `useEditor()` call; `.ProseMirror` and `.ProseMirror *` scoped rules added to `app/globals.css` under `@layer signalframeux` — only 4 element rules needed (p, h1-h4, ul/ol/li, blockquote); NO Tiptap CSS imports anywhere
-- [ ] **RE-05**: P3 lazy — `components/sf/sf-rich-editor-lazy.tsx` via `next/dynamic({ ssr: false })`; component NOT exported from `sf/index.ts` barrel
-- [ ] **RE-06**: Anti-features explicitly NOT shipped — H4/H5/H6, font picker, color picker, text alignment, floating toolbar, collaborative editing (each documented in JSDoc with rationale)
+- [x] **RE-01**: Core toolbar — bold/italic/underline/strike, H1/H2/H3, bulleted+ordered lists, blockquote; toolbar buttons composed from existing `SFButton` with active-state via `data-active`; placeholder text + character count display
+- [x] **RE-02**: Code block + inline code + link extension (Tiptap `@tiptap/extension-link` if separate from starter-kit in chosen version — decided in `_dep_re_01_decision`)
+- [x] **RE-03**: Controlled API (`value` HTML string + `onChange`) + uncontrolled API (`defaultValue`) + read-only mode (`readOnly` prop) + `immediatelyRender: false` SSR guard on every `useEditor()` call
+- [x] **RE-04**: `injectCSS: false` set on every `useEditor()` call; `.ProseMirror` and `.ProseMirror *` scoped rules added to `app/globals.css` under `@layer signalframeux` — only 4 element rules needed (p, h1-h4, ul/ol/li, blockquote); NO Tiptap CSS imports anywhere
+- [x] **RE-05**: P3 lazy — `components/sf/sf-rich-editor-lazy.tsx` via `next/dynamic({ ssr: false })`; component NOT exported from `sf/index.ts` barrel
+- [x] **RE-06**: Anti-features explicitly NOT shipped — H4/H5/H6, font picker, color picker, text alignment, floating toolbar, collaborative editing (each documented in JSDoc with rationale)
 
 ## SFFileUpload (FU) — Phase 74
 
@@ -67,7 +67,7 @@
 ## Dependency Ratification (DEP)
 
 - [x] **DEP-01**: `_dep_dt_01_decision` block ratified at Phase 71 plan time — 7 fields (decided / audit / dep_added / version / rationale / bundle_evidence / review_gate); covers `@tanstack/react-table@8.21.3`; bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on TanStack Table v9 stable release
-- [ ] **DEP-02**: `_dep_re_01_decision` block ratified at Phase 73 plan time — 7 fields covering `@tiptap/react` + `@tiptap/pm` + `@tiptap/starter-kit` + (optional) `@tiptap/extension-link`; version chosen between v3.22.5 (recommended default — actively maintained) and v2.27.2 (legacy); bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on Tiptap v4 stable release
+- [x] **DEP-02**: `_dep_re_01_decision` block ratified at Phase 73 plan time — 7 fields covering `@tiptap/react` + `@tiptap/pm` + `@tiptap/starter-kit` + (optional) `@tiptap/extension-link`; version chosen between v3.22.5 (recommended default — actively maintained) and v2.27.2 (legacy); bundle evidence from post-`pnpm add` `ANALYZE=true pnpm build` measurement (NOT estimate); review_gate fires on Tiptap v4 stable release
 
 ## Registry Expansion (REG)
 
@@ -129,13 +129,13 @@
 | CB-03 | 72 | Complete |
 | CB-04 | 72 | Complete |
 | TST-03 (SFCombobox) | 72 | Pending |
-| RE-01 | 73 | Pending |
-| RE-02 | 73 | Pending |
-| RE-03 | 73 | Pending |
-| RE-04 | 73 | Pending |
-| RE-05 | 73 | Pending |
-| RE-06 | 73 | Pending |
-| DEP-02 | 73 | Pending |
+| RE-01 | 73 | Complete |
+| RE-02 | 73 | Complete |
+| RE-03 | 73 | Complete |
+| RE-04 | 73 | Complete |
+| RE-05 | 73 | Complete |
+| RE-06 | 73 | Complete |
+| DEP-02 | 73 | Complete |
 | TST-03 (SFRichEditor) | 73 | Pending |
 | FU-01 | 74 | Pending |
 | FU-02 | 74 | Pending |
