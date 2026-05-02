@@ -132,9 +132,13 @@ export function SFRichEditor({
   //   prevents ProseMirror DOM init before hydration + prevents prosemirror.css
   //   injection that would override @layer signalframeux. Any future editor
   //   invocation in this file MUST carry both flags.
+  // shouldRerenderOnTransaction: required for editor.isActive() reads driving
+  //   toolbar data-active / aria-pressed to stay in sync with editor state.
+  //   Tiptap v3 default is false (perf), but the toolbar contract requires true.
   const editor = useEditor({
     immediatelyRender: false,
     injectCSS: false,
+    shouldRerenderOnTransaction: true,
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
       Link.configure({ openOnClick: false }),
