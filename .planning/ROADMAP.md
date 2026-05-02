@@ -33,7 +33,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 - [x] **Phase 71: SFDataTable** — TanStack Table v8 integration; sort, filter, pagination, row selection; P3 lazy; `_dep_dt_01_decision` ratified at plan time (completed 2026-05-01)
 - [x] **Phase 72: SFCombobox** — Pure SF composition (cmdk + Radix Popover + SFInput); zero new deps; barrel-exported; confidence-builder phase (completed 2026-05-01)
 - [x] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules (completed 2026-05-02)
-- [ ] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented
+- [x] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented (completed 2026-05-02)
 - [ ] **Phase 75: SFDateRangePicker** — react-day-picker range mode + presets + time variant; zero new deps; barrel-exported; SSR hydration guard mandatory
 - [ ] **Phase 76: Final Gate** — BND-08 clean build measurement, AES-05 Chromatic baseline approval, REG-01 registry verification, DEP-01..02 block commit, SCAFFOLDING.md count update to 58
 
@@ -157,10 +157,10 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. A consumer supplies a `progress: Record<fileName, number>` prop and the existing `SFProgress` component renders per-file progress bars tracking the provided values; image files display a preview via `URL.createObjectURL`
 4. `74-VERIFICATION.md` explicitly documents the `dataTransfer.files` Playwright/Chromium permanent gap — the drag-drop acceptance path is verified via Chromatic story, not via a vacuously-passing Playwright test
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
-- [ ] 74-01-PLAN.md — SFFileUpload component (FU-01 drop+browse+paste+list, FU-02 mime+size+multi, FU-03 progress+preview+controlled, FU-04 zero-dep) + barrel export + same-commit registry entries + dev-playground fixture (FU-01..04)
-- [ ] 74-02-PLAN.md — Playwright acceptance (10 tests via setInputFiles) + axe-core WCAG AA (6 scans across 4 fixture states) + Storybook stories (8 stories incl. DragActive play()) + 74-VERIFICATION.md split test strategy with dataTransfer.files Chromium permanent gap (3 primary sources) + bundle audit closeout (FU-05, TST-03, TST-04)
+- [x] 74-01-PLAN.md — SFFileUpload component (FU-01 drop+browse+paste+list, FU-02 mime+size+multi, FU-03 progress+preview+controlled, FU-04 zero-dep) + barrel export + same-commit registry entries + dev-playground fixture (FU-01..04)
+- [x] 74-02-PLAN.md — Playwright acceptance (10 tests via setInputFiles) + axe-core WCAG AA (6 scans across 4 fixture states) + Storybook stories (8 stories incl. DragActive play()) + 74-VERIFICATION.md split test strategy with dataTransfer.files Chromium permanent gap (3 primary sources) + bundle audit closeout (FU-05, TST-03, TST-04)
 
 ---
 
@@ -229,7 +229,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
 | 73 — SFRichEditor | 3/3 | Complete    | 2026-05-02 |
-| 74 — SFFileUpload | 0/2 | Planned     | — |
+| 74 — SFFileUpload | 2/2 | Complete    | 2026-05-02 |
 | 75 — SFDateRangePicker | 0/TBD | Not started | — |
 | 76 — Final Gate | 0/TBD | Not started | — |
 

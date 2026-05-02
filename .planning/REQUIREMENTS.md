@@ -49,11 +49,11 @@
 
 ## SFFileUpload (FU) — Phase 74
 
-- [ ] **FU-01**: Drag-drop zone (`onDrop` + `onDragOver` + `onDragLeave`) + click-to-browse via hidden `<input type="file">` + file list with per-file remove affordance + paste-from-clipboard handler
-- [ ] **FU-02**: File-type validation (`accept` prop, MIME or extension), size validation (`maxSize` prop in bytes), multi-file support (`multiple` prop), per-file error state with intent variant
-- [ ] **FU-03**: Per-file progress reporting via existing `SFProgress` (controlled by consumer-supplied `progress: Record<fileName, number>` prop), controlled API (`files`, `onChange`), disabled state, image preview via `URL.createObjectURL` (NOT `FileReader.readAsDataURL` for large files)
-- [ ] **FU-04**: Component exported from `sf/index.ts` barrel (Pattern C); zero new runtime deps; consumer owns the HTTP upload (component owns UI state only — no built-in fetch)
-- [ ] **FU-05**: Test-strategy split documented in phase close — `locator.setInputFiles()` for acceptance logic (type/size validation, multi-file, error state); Chromatic story with `play()` for drag visual state; permanent gap on drag-drop file events in CI Playwright (Chromium `dataTransfer.files` limitation)
+- [x] **FU-01**: Drag-drop zone (`onDrop` + `onDragOver` + `onDragLeave`) + click-to-browse via hidden `<input type="file">` + file list with per-file remove affordance + paste-from-clipboard handler
+- [x] **FU-02**: File-type validation (`accept` prop, MIME or extension), size validation (`maxSize` prop in bytes), multi-file support (`multiple` prop), per-file error state with intent variant
+- [x] **FU-03**: Per-file progress reporting via existing `SFProgress` (controlled by consumer-supplied `progress: Record<fileName, number>` prop), controlled API (`files`, `onChange`), disabled state, image preview via `URL.createObjectURL` (NOT `FileReader.readAsDataURL` for large files)
+- [x] **FU-04**: Component exported from `sf/index.ts` barrel (Pattern C); zero new runtime deps; consumer owns the HTTP upload (component owns UI state only — no built-in fetch)
+- [x] **FU-05**: Test-strategy split documented in phase close — `locator.setInputFiles()` for acceptance logic (type/size validation, multi-file, error state); Chromatic story with `play()` for drag visual state; permanent gap on drag-drop file events in CI Playwright (Chromium `dataTransfer.files` limitation)
 
 ## SFDateRangePicker (DR) — Phase 75
 
@@ -84,7 +84,7 @@
 ## Test Coverage (TST)
 
 - [x] **TST-03**: Per-component Playwright + axe-core test files land same-phase as component — Playwright covers controlled API + keyboard nav + open/close states; axe-core covers WCAG AA (sort header keyboard, combobox listbox role, RichEditor focus management, FileUpload drop zone keyboard fallback, DateRangePicker label association); all tests green before phase close
-- [ ] **TST-04**: SFFileUpload split-test strategy documented in `74-VERIFICATION.md` per FU-05 — explicit acknowledgement of `dataTransfer.files` Chromium gap, NOT papered over with vacuously-passing test
+- [x] **TST-04**: SFFileUpload split-test strategy documented in `74-VERIFICATION.md` per FU-05 — explicit acknowledgement of `dataTransfer.files` Chromium gap, NOT papered over with vacuously-passing test
 
 ---
 
@@ -137,13 +137,13 @@
 | RE-06 | 73 | Complete |
 | DEP-02 | 73 | Complete |
 | TST-03 (SFRichEditor) | 73 | Pending |
-| FU-01 | 74 | Pending |
-| FU-02 | 74 | Pending |
-| FU-03 | 74 | Pending |
-| FU-04 | 74 | Pending |
-| FU-05 | 74 | Pending |
+| FU-01 | 74 | Complete |
+| FU-02 | 74 | Complete |
+| FU-03 | 74 | Complete |
+| FU-04 | 74 | Complete |
+| FU-05 | 74 | Complete |
 | TST-03 (SFFileUpload) | 74 | Pending |
-| TST-04 | 74 | Pending |
+| TST-04 | 74 | Complete |
 | DR-01 | 75 | Pending |
 | DR-02 | 75 | Pending |
 | DR-03 | 75 | Pending |
