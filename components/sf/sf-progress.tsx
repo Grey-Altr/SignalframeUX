@@ -57,6 +57,13 @@ function SFProgress({ className, value, ...props }: SFProgressProps) {
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      // Forward value to Radix Progress.Root so it sets aria-valuenow and
+      // data-state correctly. Destructuring at the param list strips value
+      // from `props` for the GSAP-tween useEffect; without re-passing here,
+      // Radix sees no value and stays in data-state="indeterminate" with no
+      // aria-valuenow attribute. Surfaced by Phase 74 SFFileUpload acceptance
+      // spec FU-03 (auto-fix Rule 1: pre-existing SFProgress bug).
+      value={value}
       className={cn(
         "relative flex h-1 w-full items-center overflow-x-hidden rounded-none bg-muted",
         className
