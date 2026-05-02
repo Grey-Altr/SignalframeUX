@@ -131,6 +131,7 @@ export {
   SFAccordionContent,
 } from "./sf-accordion";
 export { SFProgress } from "./sf-progress";
+export { SFFileUpload, type SFFileEntry, type SFFileUploadProps } from "./sf-file-upload";
 // SFToaster / sfToast — NOT re-exported from the barrel. Pulling these eagerly
 // through the barrel drags sonner (~33 kB gz) into every consumer's critical
 // path. Import directly when needed:

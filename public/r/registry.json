@@ -764,6 +764,23 @@
       }
     },
     {
+      "name": "sf-file-upload",
+      "type": "registry:ui",
+      "title": "SF File Upload",
+      "description": "Industrial file upload — drop zone + click-to-browse + per-file remove + MIME/size validation + per-file progress via SFProgress + image preview via URL.createObjectURL. Zero new runtime deps. Consumer owns HTTP.",
+      "registryDependencies": ["progress"],
+      "files": [
+        {
+          "path": "components/sf/sf-file-upload.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "C"
+      }
+    },
+    {
       "name": "sf-toast",
       "type": "registry:ui",
       "title": "SF Toast",
