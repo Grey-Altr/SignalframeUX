@@ -371,7 +371,16 @@ export function SFFileUpload(props: SFFileUploadProps) {
                   </div>
                   {entry.error && (
                     <div
-                      className="font-mono uppercase tracking-wider text-xs text-destructive mt-[var(--sfx-space-1)]"
+                      // text-foreground (not text-destructive) for WCAG AA
+                      // contrast: text-destructive (#c53637 light-mode) on
+                      // bg-destructive/10 (light pink) measures 3.76:1, fails
+                      // 4.5:1. text-foreground inherits the high-contrast
+                      // token (black on light, white on dark) → 4.5:1+ in
+                      // both themes. Visual error indication preserved via
+                      // bg-destructive/10 row tint + data-error attr +
+                      // font-bold weight bump. Surfaced by Phase 74 axe
+                      // color-contrast scan (Rule 1 auto-fix).
+                      className="font-mono font-bold uppercase tracking-wider text-xs text-foreground mt-[var(--sfx-space-1)]"
                       data-error
                     >
                       {entry.error}
