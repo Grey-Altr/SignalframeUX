@@ -190,7 +190,10 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. A consumer enables the `withTime` prop — an inline `<SFInput type="time">` renders inside the popover for time-of-day specification; no external `SFTimePicker` primitive is introduced
 4. The picker mounts with zero console hydration warnings; `new Date()` is only called inside `useEffect` or `useMemo`; no react-day-picker default styles leak through; all day cells render with `rounded-none`
 
-**Plans:** TBD
+**Plans:** 2 plans
+
+- [ ] 75-01-PLAN.md — SFDateRangePicker component (DR-01..DR-06) + barrel export + same-commit registry entry + showcase fixture at `app/showcase/date-range-picker/page.tsx`
+- [ ] 75-02-PLAN.md — Playwright hydration + acceptance spec (TST-03) + axe-core WCAG AA spec (3 fixture states) + 75-VERIFICATION.md (chunk-grep DCE proof + bundle measurement + type-only Locale verification) + 75-HUMAN-UAT.md (4 deferred manual items M-01..M-04) + 75-VALIDATION.md flip to status: passed + nyquist_compliant: true
 
 ---
 
@@ -230,7 +233,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
 | 73 — SFRichEditor | 3/3 | Complete    | 2026-05-02 |
 | 74 — SFFileUpload | 2/2 | Complete    | 2026-05-02 |
-| 75 — SFDateRangePicker | 0/TBD | Not started | — |
+| 75 — SFDateRangePicker | 0/2 | Not started | — |
 | 76 — Final Gate | 0/TBD | Not started | — |
 
 ---
