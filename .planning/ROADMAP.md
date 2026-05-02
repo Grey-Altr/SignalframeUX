@@ -32,7 +32,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 
 - [x] **Phase 71: SFDataTable** — TanStack Table v8 integration; sort, filter, pagination, row selection; P3 lazy; `_dep_dt_01_decision` ratified at plan time (completed 2026-05-01)
 - [x] **Phase 72: SFCombobox** — Pure SF composition (cmdk + Radix Popover + SFInput); zero new deps; barrel-exported; confidence-builder phase (completed 2026-05-01)
-- [ ] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules
+- [x] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules (completed 2026-05-02)
 - [ ] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented
 - [ ] **Phase 75: SFDateRangePicker** — react-day-picker range mode + presets + time variant; zero new deps; barrel-exported; SSR hydration guard mandatory
 - [ ] **Phase 76: Final Gate** — BND-08 clean build measurement, AES-05 Chromatic baseline approval, REG-01 registry verification, DEP-01..02 block commit, SCAFFOLDING.md count update to 58
@@ -129,7 +129,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. The editor renders with zero system-font leakage (content area uses `--sfx-*` token stack) and zero rounded corners; `.ProseMirror *` rules are scoped under `@layer signalframeux` and do not override any `--sfx-*` tokens
 4. Homepage First Load JS remains under 200 KB after Tiptap deps are added; `_dep_re_01_decision` block is committed with measured bundle evidence; `@tiptap/*` chunks are absent from the homepage First Load chunk manifest
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 ---
 
@@ -225,7 +225,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 |-------|----------------|--------|-----------|
 | 71 — SFDataTable | 4/3 | Complete    | 2026-05-01 |
 | 72 — SFCombobox | 2/2 | Complete    | 2026-05-01 |
-| 73 — SFRichEditor | 2/3 | In Progress|  |
+| 73 — SFRichEditor | 3/3 | Complete   | 2026-05-02 |
 | 74 — SFFileUpload | 0/TBD | Not started | — |
 | 75 — SFDateRangePicker | 0/TBD | Not started | — |
 | 76 — Final Gate | 0/TBD | Not started | — |
