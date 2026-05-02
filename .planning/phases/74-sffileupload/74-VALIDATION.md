@@ -51,7 +51,7 @@ validated: 2026-05-02
 | 74-01-07 | 01 | 1 | FU-02 | multi-file-mode-broken | `multiple` prop forwarded to hidden input | grep | `grep -c 'multiple={multiple}\|multiple\b' components/sf/sf-file-upload.tsx` (≥ 1) | ✅ W0 | ✅ green |
 | 74-01-08 | 01 | 1 | FU-03 | filereader-leak | `FileReader.readAsDataURL` is FORBIDDEN (causes memory blow-up on large images) | grep | `grep -c 'FileReader' components/sf/sf-file-upload.tsx` (= 0) | ✅ W0 | ✅ green |
 | 74-01-09 | 01 | 1 | FU-03 | objecturl-leak | `URL.createObjectURL` paired with `URL.revokeObjectURL` in cleanup | grep | `grep -c 'URL\.createObjectURL' components/sf/sf-file-upload.tsx` (≥ 1) AND `grep -c 'URL\.revokeObjectURL' components/sf/sf-file-upload.tsx` (≥ 1) | ✅ W0 | ✅ green |
-| 74-01-10 | 01 | 1 | FU-03 | progress-not-rendered | `SFProgress` imported and consumed for per-file rendering driven by `progress` prop | grep | `grep -c 'SFProgress' components/sf/sf-file-upload.tsx` (≥ 1) AND `grep -c 'progress\[' components/sf/sf-file-upload.tsx` (≥ 1) | ✅ W0 | ✅ green |
+| 74-01-10 | 01 | 1 | FU-03 | progress-not-rendered | `SFProgress` imported and consumed for per-file rendering driven by `progress` prop | grep | `grep -c 'SFProgress' components/sf/sf-file-upload.tsx` (≥ 1) AND `grep -cE 'progress\?\?\.\[\|progress\[\|progress\?\.\[' components/sf/sf-file-upload.tsx` (≥ 1) — broadened to match actual idiom `progress?.[entry.file.name]` (optional-chained bracket access); literal-`[` regex was stale (validation-predicate-drift fix 2026-05-02) | ✅ W0 | ✅ green |
 | 74-01-11 | 01 | 1 | FU-03 | controlled-api-broken | `files?: SFFileEntry[]` + `onChange?: (files: SFFileEntry[]) => void` declared | grep | `grep -cE 'files\?:' components/sf/sf-file-upload.tsx` (≥ 1) AND `grep -cE 'onChange\?:' components/sf/sf-file-upload.tsx` (≥ 1) | ✅ W0 | ✅ green |
 | 74-01-12 | 01 | 1 | FU-04 | http-leak-into-component | NO `fetch(`, `XMLHttpRequest`, or `axios` calls inside the component (consumer owns HTTP) | grep | `grep -cE 'fetch\(\|XMLHttpRequest\|axios' components/sf/sf-file-upload.tsx` (= 0) | ✅ W0 | ✅ green |
 | 74-01-13 | 01 | 1 | FU-04 | new-runtime-dep | Zero forbidden drag-drop libraries in `package.json` `dependencies` (react-dropzone, react-dnd, filepond, react-files); JSON-aware (does NOT confuse devDeps with deps) | shell | `node -e "const p=require('./package.json'); const b=['react-dropzone','react-dnd','filepond','react-files']; const v=b.filter(d=>p.dependencies&&d in p.dependencies); process.exit(v.length?1:0)"` (exit 0) | ✅ W0 | ✅ green |
@@ -105,3 +105,22 @@ validated: 2026-05-02
 - [x] `nyquist_compliant: true` set in frontmatter
 
 **Approval:** passed (2026-05-02; pending user sign-off on M-01..M-07 manual checks per `74-VERIFICATION.md`)
+
+---
+
+## Validation Audit 2026-05-02
+
+| Metric | Count |
+|--------|-------|
+| Rows ratified against live main-tree code | 23 |
+| Rows green at first pass | 22 |
+| Rows requiring predicate-regex fix | 1 (row 74-01-10) |
+| Real gaps found | 0 |
+| Resolved | 1 (predicate broadened) |
+| Escalated to manual-only | 0 |
+
+**Audit method:** Each Per-Task Map row's automated grep/shell predicate re-executed against the post-merge main-tree code. All behavioral checks (FileReader=0, HTTP-leak=0, forbidden-deps=0, barrel export, createObjectURL+revokeObjectURL pairing, aria-live presence, role=button + type=file fallback, primary-source citations, Storybook DragActive, axe vacuous-green guard, bundle audit absence-from-/page) confirmed against live code.
+
+**Drift fixed:** Row 74-01-10 used literal-`[` regex (`progress\[`) which does not match the actual idiom `progress?.[entry.file.name]` (optional-chained bracket access on `sf-file-upload.tsx:339`). Predicate broadened to `progress\?\?\.\[|progress\[|progress\?\.\[` — covers all three idioms (optional-chained, plain bracket, nullish-coalescing-with-bracket). Component behavior was always correct; only the predicate was too literal. This is the canonical pattern documented in feedback_validation_predicate_drift memory.
+
+**Status post-audit:** `nyquist_compliant: true` retained. No new tests required.
