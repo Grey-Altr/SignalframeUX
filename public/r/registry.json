@@ -8,8 +8,12 @@
       "type": "registry:ui",
       "title": "SF Button",
       "description": "Brutalist button with signal/ghost/signal intents, 2px borders, invert-on-hover",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["button"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "button"
+      ],
       "files": [
         {
           "path": "components/sf/sf-button.tsx",
@@ -26,7 +30,9 @@
       "type": "registry:ui",
       "title": "SF Card",
       "description": "Industrial card with 2px borders, hover border highlight",
-      "registryDependencies": ["card"],
+      "registryDependencies": [
+        "card"
+      ],
       "files": [
         {
           "path": "components/sf/sf-card.tsx",
@@ -43,7 +49,9 @@
       "type": "registry:ui",
       "title": "SF Input",
       "description": "Brutalist text input with 2px border-bottom, mono uppercase placeholder",
-      "registryDependencies": ["input"],
+      "registryDependencies": [
+        "input"
+      ],
       "files": [
         {
           "path": "components/sf/sf-input.tsx",
@@ -60,8 +68,12 @@
       "type": "registry:ui",
       "title": "SF Badge",
       "description": "Flat badge with default/primary/outline/signal intents",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["badge"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "badge"
+      ],
       "files": [
         {
           "path": "components/sf/sf-badge.tsx",
@@ -78,7 +90,9 @@
       "type": "registry:ui",
       "title": "SF Tabs",
       "description": "Industrial tabs with 2px borders, invert active state",
-      "registryDependencies": ["tabs"],
+      "registryDependencies": [
+        "tabs"
+      ],
       "files": [
         {
           "path": "components/sf/sf-tabs.tsx",
@@ -95,7 +109,9 @@
       "type": "registry:ui",
       "title": "SF Table",
       "description": "Brutalist data table with inverted header, mono text",
-      "registryDependencies": ["table"],
+      "registryDependencies": [
+        "table"
+      ],
       "files": [
         {
           "path": "components/sf/sf-table.tsx",
@@ -112,7 +128,9 @@
       "type": "registry:ui",
       "title": "SF Separator",
       "description": "2px foreground-colored divider",
-      "registryDependencies": ["separator"],
+      "registryDependencies": [
+        "separator"
+      ],
       "files": [
         {
           "path": "components/sf/sf-separator.tsx",
@@ -129,7 +147,9 @@
       "type": "registry:ui",
       "title": "SF Tooltip",
       "description": "Industrial tooltip with inverted colors, no radius",
-      "registryDependencies": ["tooltip"],
+      "registryDependencies": [
+        "tooltip"
+      ],
       "files": [
         {
           "path": "components/sf/sf-tooltip.tsx",
@@ -146,7 +166,9 @@
       "type": "registry:ui",
       "title": "SF Dialog",
       "description": "Brutalist modal dialog with 2px borders, no radius, no shadow",
-      "registryDependencies": ["dialog"],
+      "registryDependencies": [
+        "dialog"
+      ],
       "files": [
         {
           "path": "components/sf/sf-dialog.tsx",
@@ -163,7 +185,9 @@
       "type": "registry:ui",
       "title": "SF Sheet",
       "description": "Industrial slide-out panel with 2px borders",
-      "registryDependencies": ["sheet"],
+      "registryDependencies": [
+        "sheet"
+      ],
       "files": [
         {
           "path": "components/sf/sf-sheet.tsx",
@@ -180,7 +204,9 @@
       "type": "registry:ui",
       "title": "SF Dropdown Menu",
       "description": "Brutalist dropdown with inverted focus state, mono text",
-      "registryDependencies": ["dropdown-menu"],
+      "registryDependencies": [
+        "dropdown-menu"
+      ],
       "files": [
         {
           "path": "components/sf/sf-dropdown-menu.tsx",
@@ -197,8 +223,12 @@
       "type": "registry:ui",
       "title": "SF Toggle",
       "description": "Industrial toggle button with invert-on-press",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["toggle"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "toggle"
+      ],
       "files": [
         {
           "path": "components/sf/sf-toggle.tsx",
@@ -215,7 +245,9 @@
       "type": "registry:ui",
       "title": "SF Slider",
       "description": "Flat slider with square thumb, 3px track, no radius",
-      "registryDependencies": ["slider"],
+      "registryDependencies": [
+        "slider"
+      ],
       "files": [
         {
           "path": "components/sf/sf-slider.tsx",
@@ -232,7 +264,9 @@
       "type": "registry:ui",
       "title": "SF Command",
       "description": "Industrial command palette with inverted selection, mono text",
-      "registryDependencies": ["command"],
+      "registryDependencies": [
+        "command"
+      ],
       "files": [
         {
           "path": "components/sf/sf-command.tsx",
@@ -249,7 +283,12 @@
       "type": "registry:ui",
       "title": "SF Combobox",
       "description": "Industrial combobox with type-ahead filter, grouping, clear, multi-select chips — composes cmdk + Radix Popover, zero new deps",
-      "registryDependencies": ["command", "popover", "button", "badge"],
+      "registryDependencies": [
+        "command",
+        "popover",
+        "button",
+        "badge"
+      ],
       "files": [
         {
           "path": "components/sf/sf-combobox.tsx",
@@ -266,7 +305,9 @@
       "type": "registry:ui",
       "title": "SF Skeleton",
       "description": "Flat skeleton with scanline sweep animation",
-      "registryDependencies": ["skeleton"],
+      "registryDependencies": [
+        "skeleton"
+      ],
       "files": [
         {
           "path": "components/sf/sf-skeleton.tsx",
@@ -283,7 +324,9 @@
       "type": "registry:ui",
       "title": "SF Popover",
       "description": "Brutalist popover with 2px borders, no radius, no shadow",
-      "registryDependencies": ["popover"],
+      "registryDependencies": [
+        "popover"
+      ],
       "files": [
         {
           "path": "components/sf/sf-popover.tsx",
@@ -300,7 +343,9 @@
       "type": "registry:ui",
       "title": "SF Scroll Area",
       "description": "Scroll area with flat square scrollbar thumb",
-      "registryDependencies": ["scroll-area"],
+      "registryDependencies": [
+        "scroll-area"
+      ],
       "files": [
         {
           "path": "components/sf/sf-scroll-area.tsx",
@@ -317,7 +362,9 @@
       "type": "registry:ui",
       "title": "Circuit Divider",
       "description": "DrawSVG circuit-board divider with animated paths and junction dots",
-      "dependencies": ["gsap"],
+      "dependencies": [
+        "gsap"
+      ],
       "files": [
         {
           "path": "components/animation/circuit-divider.tsx",
@@ -334,7 +381,9 @@
       "type": "registry:ui",
       "title": "VHS Overlay",
       "description": "CRT scanlines, noise flicker, glitch bursts, and chromatic aberration overlay",
-      "dependencies": ["gsap"],
+      "dependencies": [
+        "gsap"
+      ],
       "files": [
         {
           "path": "components/animation/vhs-overlay.tsx",
@@ -383,7 +432,9 @@
       "type": "registry:ui",
       "title": "SF Label",
       "description": "Mono uppercase label with wider tracking",
-      "registryDependencies": ["label"],
+      "registryDependencies": [
+        "label"
+      ],
       "files": [
         {
           "path": "components/sf/sf-label.tsx",
@@ -400,7 +451,9 @@
       "type": "registry:ui",
       "title": "SF Select",
       "description": "Brutalist select with 2px borders, no radius, inverted focus state",
-      "registryDependencies": ["select"],
+      "registryDependencies": [
+        "select"
+      ],
       "files": [
         {
           "path": "components/sf/sf-select.tsx",
@@ -417,7 +470,9 @@
       "type": "registry:ui",
       "title": "SF Checkbox",
       "description": "Square checkbox with 2px borders, primary checked state",
-      "registryDependencies": ["checkbox"],
+      "registryDependencies": [
+        "checkbox"
+      ],
       "files": [
         {
           "path": "components/sf/sf-checkbox.tsx",
@@ -434,7 +489,9 @@
       "type": "registry:ui",
       "title": "SF Radio Group",
       "description": "Square radio buttons with 2px borders, no radius",
-      "registryDependencies": ["radio-group"],
+      "registryDependencies": [
+        "radio-group"
+      ],
       "files": [
         {
           "path": "components/sf/sf-radio-group.tsx",
@@ -451,7 +508,9 @@
       "type": "registry:ui",
       "title": "SF Switch",
       "description": "Square switch with 2px borders, primary checked state",
-      "registryDependencies": ["switch"],
+      "registryDependencies": [
+        "switch"
+      ],
       "files": [
         {
           "path": "components/sf/sf-switch.tsx",
@@ -468,7 +527,9 @@
       "type": "registry:ui",
       "title": "SF Textarea",
       "description": "Brutalist textarea with bottom border only, mono uppercase text",
-      "registryDependencies": ["textarea"],
+      "registryDependencies": [
+        "textarea"
+      ],
       "files": [
         {
           "path": "components/sf/sf-textarea.tsx",
@@ -485,7 +546,9 @@
       "type": "registry:ui",
       "title": "SF Container",
       "description": "Responsive page container enforcing max-width tokens and responsive gutters. FRAME layer.",
-      "dependencies": ["class-variance-authority"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "files": [
         {
           "path": "components/sf/sf-container.tsx",
@@ -518,7 +581,9 @@
       "type": "registry:ui",
       "title": "SF Grid",
       "description": "Responsive grid with blessed column counts and gap tokens. FRAME layer.",
-      "dependencies": ["class-variance-authority"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "files": [
         {
           "path": "components/sf/sf-grid.tsx",
@@ -535,7 +600,9 @@
       "type": "registry:ui",
       "title": "SF Stack",
       "description": "Flex stack with blessed gap tokens for vertical/horizontal layouts. FRAME layer.",
-      "dependencies": ["class-variance-authority"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "files": [
         {
           "path": "components/sf/sf-stack.tsx",
@@ -613,7 +680,9 @@
       "type": "registry:ui",
       "title": "SF Collapsible",
       "description": "Toggleable content panel with asChild trigger pattern",
-      "registryDependencies": ["collapsible"],
+      "registryDependencies": [
+        "collapsible"
+      ],
       "files": [
         {
           "path": "components/sf/sf-collapsible.tsx",
@@ -630,7 +699,9 @@
       "type": "registry:ui",
       "title": "SF Breadcrumb",
       "description": "Navigation hierarchy breadcrumb with monospace / separator, Server Component",
-      "registryDependencies": ["breadcrumb"],
+      "registryDependencies": [
+        "breadcrumb"
+      ],
       "files": [
         {
           "path": "components/sf/sf-breadcrumb.tsx",
@@ -647,7 +718,9 @@
       "type": "registry:ui",
       "title": "SF Avatar",
       "description": "Square user avatar with Radix fallback chain: image -> initials -> icon",
-      "registryDependencies": ["avatar"],
+      "registryDependencies": [
+        "avatar"
+      ],
       "files": [
         {
           "path": "components/sf/sf-avatar.tsx",
@@ -664,8 +737,12 @@
       "type": "registry:ui",
       "title": "SF Alert",
       "description": "Inline feedback banner with CVA intent variants: info, warning, destructive, success",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["alert"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "alert"
+      ],
       "files": [
         {
           "path": "components/sf/sf-alert.tsx",
@@ -682,7 +759,9 @@
       "type": "registry:ui",
       "title": "SF AlertDialog",
       "description": "Focus-trapped confirmation dialog with loading state on confirm action",
-      "registryDependencies": ["alert-dialog"],
+      "registryDependencies": [
+        "alert-dialog"
+      ],
       "files": [
         {
           "path": "components/sf/sf-alert-dialog.tsx",
@@ -715,7 +794,9 @@
       "type": "registry:ui",
       "title": "SF StatusDot",
       "description": "8px square presence indicator with GSAP pulse on active state",
-      "dependencies": ["gsap"],
+      "dependencies": [
+        "gsap"
+      ],
       "files": [
         {
           "path": "components/sf/sf-status-dot.tsx",
@@ -732,8 +813,12 @@
       "type": "registry:ui",
       "title": "SF Accordion",
       "description": "SIGNAL accordion with GSAP stagger on expand, reverse on collapse, reduced-motion guard",
-      "dependencies": ["gsap"],
-      "registryDependencies": ["accordion"],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [
+        "accordion"
+      ],
       "files": [
         {
           "path": "components/sf/sf-accordion.tsx",
@@ -750,8 +835,12 @@
       "type": "registry:ui",
       "title": "SF Progress",
       "description": "SIGNAL progress bar with GSAP fill tween, reduced-motion instant set",
-      "dependencies": ["gsap"],
-      "registryDependencies": ["progress"],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [
+        "progress"
+      ],
       "files": [
         {
           "path": "components/sf/sf-progress.tsx",
@@ -768,7 +857,9 @@
       "type": "registry:ui",
       "title": "SF File Upload",
       "description": "Industrial file upload — drop zone + click-to-browse + per-file remove + MIME/size validation + per-file progress via SFProgress + image preview via URL.createObjectURL. Zero new runtime deps. Consumer owns HTTP.",
-      "registryDependencies": ["progress"],
+      "registryDependencies": [
+        "progress"
+      ],
       "files": [
         {
           "path": "components/sf/sf-file-upload.tsx",
@@ -785,7 +876,12 @@
       "type": "registry:ui",
       "title": "SF Date Range Picker",
       "description": "Industrial date range picker — read-only SFInput trigger + SFPopover panel + SFCalendarLazy + optional presets + optional inline time inputs. Pattern C zero-deps composition.",
-      "registryDependencies": ["calendar", "popover", "input", "button"],
+      "registryDependencies": [
+        "calendar",
+        "popover",
+        "input",
+        "button"
+      ],
       "files": [
         {
           "path": "components/sf/sf-date-range-picker.tsx",
@@ -802,7 +898,11 @@
       "type": "registry:ui",
       "title": "SF Toast",
       "description": "System notification toast with GSAP slide entrance, Sonner engine, bottom-left positioning",
-      "dependencies": ["sonner", "gsap", "lucide-react"],
+      "dependencies": [
+        "sonner",
+        "gsap",
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -820,8 +920,12 @@
       "type": "registry:ui",
       "title": "SF ToggleGroup",
       "description": "Exclusive or multi-select toggle group with CVA intent variants, industrial edge-to-edge layout",
-      "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["toggle-group"],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "toggle-group"
+      ],
       "files": [
         {
           "path": "components/sf/sf-toggle-group.tsx",
@@ -838,7 +942,9 @@
       "type": "registry:ui",
       "title": "SF Pagination",
       "description": "Minimal numbered page navigation with previous/next, Server Component, no ellipsis",
-      "registryDependencies": ["pagination"],
+      "registryDependencies": [
+        "pagination"
+      ],
       "files": [
         {
           "path": "components/sf/sf-pagination.tsx",
@@ -855,7 +961,10 @@
       "type": "registry:ui",
       "title": "SF Stepper",
       "description": "Vertical multi-step flow with SFProgress connectors and per-step error state",
-      "dependencies": ["gsap", "lucide-react"],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -873,8 +982,13 @@
       "type": "registry:ui",
       "title": "SF NavigationMenu",
       "description": "Site navigation with desktop flyout panels and mobile SFSheet collapse, industrial DU/TDR styling",
-      "dependencies": ["lucide-react"],
-      "registryDependencies": ["navigation-menu", "sheet"],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "navigation-menu",
+        "sheet"
+      ],
       "files": [
         {
           "path": "components/sf/sf-navigation-menu.tsx",
@@ -891,8 +1005,14 @@
       "type": "registry:ui",
       "title": "SF Calendar",
       "description": "Lazy-loaded date calendar with react-day-picker. Import via next/dynamic only — NOT in sf/index.ts barrel.",
-      "dependencies": ["react-day-picker", "date-fns"],
-      "registryDependencies": ["calendar", "button"],
+      "dependencies": [
+        "react-day-picker",
+        "date-fns"
+      ],
+      "registryDependencies": [
+        "calendar",
+        "button"
+      ],
       "files": [
         {
           "path": "components/sf/sf-calendar.tsx",
@@ -914,7 +1034,9 @@
       "type": "registry:ui",
       "title": "SF Menubar",
       "description": "Desktop application menubar with Radix primitives. Import via next/dynamic only — NOT in sf/index.ts barrel.",
-      "registryDependencies": ["menubar"],
+      "registryDependencies": [
+        "menubar"
+      ],
       "files": [
         {
           "path": "components/sf/sf-menubar.tsx",
@@ -936,8 +1058,12 @@
       "type": "registry:ui",
       "title": "SF Drawer",
       "description": "Bottom-sheet overlay via vaul. Lazy-loaded via next/dynamic (ssr: false). Import sf-drawer-lazy.tsx — NOT from sf/index.ts barrel.",
-      "dependencies": ["vaul"],
-      "registryDependencies": ["drawer"],
+      "dependencies": [
+        "vaul"
+      ],
+      "registryDependencies": [
+        "drawer"
+      ],
       "files": [
         {
           "path": "components/sf/sf-drawer.tsx",
@@ -955,11 +1081,75 @@
       }
     },
     {
+      "name": "sf-data-table",
+      "type": "registry:ui",
+      "title": "SF Data Table",
+      "description": "Lazy-loaded headless data table with sort, filter, pagination, row selection, and density modes. Composes TanStack Table v8. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "dependencies": [
+        "@tanstack/react-table"
+      ],
+      "registryDependencies": [
+        "sf-table",
+        "sf-checkbox",
+        "sf-input",
+        "sf-skeleton",
+        "sf-empty-state",
+        "sf-pagination"
+      ],
+      "files": [
+        {
+          "path": "components/sf/sf-data-table.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-data-table-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
+      "name": "sf-rich-editor",
+      "type": "registry:ui",
+      "title": "SF Rich Editor",
+      "description": "Lazy-loaded rich-text editor with bold/italic/underline/strike, H1-H3, lists, blockquote, code, and link extension. Composes Tiptap v3 + ProseMirror. injectCSS:false + .ProseMirror scoped rules in app/globals.css. Import via next/dynamic only — NOT in sf/index.ts barrel.",
+      "dependencies": [
+        "@tiptap/react",
+        "@tiptap/pm",
+        "@tiptap/starter-kit",
+        "@tiptap/extension-link"
+      ],
+      "registryDependencies": [
+        "sf-button"
+      ],
+      "files": [
+        {
+          "path": "components/sf/sf-rich-editor.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "components/sf/sf-rich-editor-lazy.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "meta": {
+        "layer": "frame",
+        "pattern": "B",
+        "heavy": true
+      }
+    },
+    {
       "name": "sf-input-group",
       "type": "registry:ui",
       "title": "SF InputGroup",
       "description": "Grouped input with inline addons and action buttons. Zero border-radius on all sub-elements.",
-      "registryDependencies": ["input-group"],
+      "registryDependencies": [
+        "input-group"
+      ],
       "files": [
         {
           "path": "components/sf/sf-input-group.tsx",
@@ -976,7 +1166,9 @@
       "type": "registry:ui",
       "title": "SF HoverCard",
       "description": "FRAME-only hover/focus preview panel. Sharp 2px border, no radius, no shadow. Keyboard accessible via Radix.",
-      "registryDependencies": ["hover-card"],
+      "registryDependencies": [
+        "hover-card"
+      ],
       "files": [
         {
           "path": "components/sf/sf-hover-card.tsx",
@@ -993,7 +1185,9 @@
       "type": "registry:ui",
       "title": "SF InputOTP",
       "description": "OTP verification input with individual character slots. Zero border-radius, mono font, keyboard navigable.",
-      "registryDependencies": ["input-otp"],
+      "registryDependencies": [
+        "input-otp"
+      ],
       "files": [
         {
           "path": "components/sf/sf-input-otp.tsx",

@@ -2,7 +2,7 @@
 
 > Canonical reference for v1.3 component expansion.
 > Every new SF wrapper must pass all 9 checklist items before merge.
-> **v1.3 final state:** 42 SF component files (35 Pattern A, 2 Pattern B lazy, 5 Pattern C pure-SF) + 4 animation/generative entries + sf-theme = 49 registry items total.
+> **v1.10 final state:** 47 SF component files (35 Pattern A v1.3 + 5 Pattern B lazy + 7 Pattern C pure-SF) + 4 animation/generative entries + sf-theme = 58 registry items total. (Historical: v1.3 closed at 49 items.)
 
 ## SF Wrapper Creation Checklist
 
