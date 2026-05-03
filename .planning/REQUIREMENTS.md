@@ -71,15 +71,15 @@
 
 ## Registry Expansion (REG)
 
-- [ ] **REG-01**: 5 new registry entries land in `public/r/registry.json` same-commit as their respective component files — all `meta.layer: "frame"`; `meta.pattern: "C"` for SFCombobox / SFFileUpload / SFDateRangePicker; `meta.pattern: "B"` + `meta.heavy: true` for SFDataTable / SFRichEditor; SCAFFOLDING.md component count header updated to current accurate value (currently stale at "49"; v1.9 Phase 67 left registry at 53; v1.10 brings to 58)
+- [x] **REG-01**: 5 new registry entries land in `public/r/registry.json` same-commit as their respective component files — all `meta.layer: "frame"`; `meta.pattern: "C"` for SFCombobox / SFFileUpload / SFDateRangePicker; `meta.pattern: "B"` + `meta.heavy: true` for SFDataTable / SFRichEditor; SCAFFOLDING.md component count header updated to current accurate value (currently stale at "49"; v1.9 Phase 67 left registry at 53; v1.10 brings to 58)
 
 ## Bundle Discipline (BND)
 
-- [ ] **BND-08**: `/` First Load JS ≤ 200 KB hard target maintained at v1.10 close — clean build measurement: `rm -rf .next/cache .next && ANALYZE=true pnpm build`; assert `BUDGET_BYTES = 200 * 1024` in `tests/v1.8-phase63-1-bundle-budget.spec.ts`; verify TanStack Table and Tiptap absent from homepage First Load chunk manifest (both must remain in route-bound lazy chunks)
+- [x] **BND-08**: `/` First Load JS ≤ 200 KB hard target maintained at v1.10 close — clean build measurement: `rm -rf .next/cache .next && ANALYZE=true pnpm build`; assert `BUDGET_BYTES = 200 * 1024` in `tests/v1.8-phase63-1-bundle-budget.spec.ts`; verify TanStack Table and Tiptap absent from homepage First Load chunk manifest (both must remain in route-bound lazy chunks)
 
 ## Aesthetic Preservation (AES)
 
-- [ ] **AES-05**: Chromatic baseline approval at Phase 76 — zero rounded corners across all 5 new components (override library defaults: react-day-picker `rounded-full` selected day, cmdk `CommandItem` `rounded-md`, Tiptap content rules); no library default colors leaking through (no react-day-picker blue, no Tiptap system fonts in editor content); spacing on blessed stops (4/8/12/16/24/32/48/64/96); OKLCH-only colors verified
+- [x] **AES-05**: Chromatic baseline approval at Phase 76 — zero rounded corners across all 5 new components (override library defaults: react-day-picker `rounded-full` selected day, cmdk `CommandItem` `rounded-md`, Tiptap content rules); no library default colors leaking through (no react-day-picker blue, no Tiptap system fonts in editor content); spacing on blessed stops (4/8/12/16/24/32/48/64/96); OKLCH-only colors verified
 
 ## Test Coverage (TST)
 
@@ -151,6 +151,6 @@
 | DR-05 | 75 | Complete |
 | DR-06 | 75 | Complete |
 | TST-03 (SFDateRangePicker) | 75 | Pending |
-| REG-01 | 76 | Pending |
-| BND-08 | 76 | Pending |
-| AES-05 | 76 | Pending |
+| REG-01 | 76 | Complete |
+| BND-08 | 76 | Complete |
+| AES-05 | 76 | Complete |

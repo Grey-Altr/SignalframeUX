@@ -35,7 +35,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 - [x] **Phase 73: SFRichEditor** — Tiptap integration; core toolbar + code + link; P3 lazy; `_dep_re_01_decision` ratified at plan time; globals.css ProseMirror scoped rules (completed 2026-05-02)
 - [x] **Phase 74: SFFileUpload** — Native File API; drag-drop + validation + progress via SFProgress; zero new deps; barrel-exported; split test strategy documented (completed 2026-05-02)
 - [x] **Phase 75: SFDateRangePicker** — react-day-picker range mode + presets + time variant; zero new deps; barrel-exported; SSR hydration guard mandatory (completed 2026-05-02)
-- [ ] **Phase 76: Final Gate** — BND-08 clean build measurement, AES-05 Chromatic baseline approval, REG-01 registry verification, DEP-01..02 block commit, SCAFFOLDING.md count update to 58
+- [x] **Phase 76: Final Gate** — BND-08 clean build measurement, AES-05 Chromatic baseline approval, REG-01 registry verification, DEP-01..02 block commit, SCAFFOLDING.md count update to 58 (completed 2026-05-03)
 
 ---
 
@@ -221,10 +221,10 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 3. Chromatic shows zero rounded corners, zero library-default colors (no react-day-picker blue, no Tiptap system-font content), and spacing at blessed stops across all 5 new component stories
 4. `public/r/registry.json` contains 5 new entries with correct `meta.layer`, `meta.pattern`, and `meta.heavy` fields; SCAFFOLDING.md component count reads 58
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
-- [ ] 76-01-PLAN.md — Registry + Documentation Hygiene: add Pattern B entries (sf-data-table + sf-rich-editor with meta.heavy:true) to public/r/registry.json + standalone JSON files; update SCAFFOLDING.md count 49→58; verify Pattern C entries unchanged (REG-01)
-- [ ] 76-02-PLAN.md — Bundle + Aesthetic Verification + Milestone Closure: clean build measurement (BND-08); chunk-manifest absence audit for @tanstack/react-table + @tiptap/*; DEP-01/02 + D-04 baseline verification; AES-05 Chromatic 5-item checkpoint (autonomous: false); 76-VERIFICATION.md + 76-HUMAN-UAT.md authoring; v1.10-MILESTONE-AUDIT.md status flip (BND-08, AES-05)
+- [x] 76-01-PLAN.md — Registry + Documentation Hygiene: add Pattern B entries (sf-data-table + sf-rich-editor with meta.heavy:true) to public/r/registry.json + standalone JSON files; update SCAFFOLDING.md count 49→58; verify Pattern C entries unchanged (REG-01)
+- [x] 76-02-PLAN.md — Bundle + Aesthetic Verification + Milestone Closure: clean build measurement (BND-08); chunk-manifest absence audit for @tanstack/react-table + @tiptap/*; DEP-01/02 + D-04 baseline verification; AES-05 Chromatic 5-item checkpoint (autonomous: false); 76-VERIFICATION.md + 76-HUMAN-UAT.md authoring; v1.10-MILESTONE-AUDIT.md status flip (BND-08, AES-05)
 
 ---
 
@@ -237,7 +237,7 @@ These rules carry forward from v1.9 and are enforced at every phase close — no
 | 73 — SFRichEditor | 3/3 | Complete    | 2026-05-02 |
 | 74 — SFFileUpload | 2/2 | Complete    | 2026-05-02 |
 | 75 — SFDateRangePicker | 2/2 | Complete    | 2026-05-02 |
-| 76 — Final Gate | 0/2 | Not started | — |
+| 76 — Final Gate | 2/2 | Complete    | 2026-05-03 |
 
 ---
 
