@@ -129,25 +129,35 @@ The dual-layer model: FRAME provides deterministic, legible, semantic structure.
 - ✓ VRF-06: Field RUM p75 LCP=264ms (n=800, 73.6% under 1000ms ceiling, sample_source=synthetic-seeded under Vercel Hobby tier) at `.planning/perf-baselines/v1.9/rum-p75-lcp.json` — v1.9 (Phase 70)
 - ✓ VRF-07: iOS sub-cohort INSUFFICIENT_SAMPLES with graceful schema-degradation (CLI 50.43.0 `proxy.userAgent` gap); deferred to natural-traffic accumulation — v1.9 (Phase 70)
 - ✓ VRF-08: Moto G Power 3G Fast moved to "supported but not gated" tier via JSON-schema `_path_b_decision` at `.planning/perf-baselines/v1.9/vrf-08-path-b-decision.json`; review_gate fires post-Phase-67 chunk-graph reshape — v1.9 (Phase 70)
-
-### Active
-
-**v1.10 Library Completeness — COMPLETE (2026-05-02)**
-
-All 6 phases (71-76) closed; 34/34 requirements satisfied; 10/10 standing-rule locks held; v1.10 ready for `/pde:complete-milestone`. Component expansion shipped under per-component contract (zero border-radius, OKLCH only, CVA `intent`, Chromatic story, JSDoc, SCAFFOLDING entry, light+dark parity, P3 lazy if >3KB). Two ratified runtime npm dep exceptions (TanStack Table v8 + Tiptap v3) under new `_dep_X_decision` block precedent.
-
 - ✓ **DT-01..06**: SFDataTable — sort + filter + pagination + selection + density + P3 lazy (TanStack Table v8 dep) — v1.10 (Phase 71)
 - ✓ **DEP-01**: `_dep_dt_01_decision` ratification block for TanStack Table v8.21.3 (REQ-ID-namespaced, extends `_wmk_01_decision`) — v1.10 (Phase 71)
-- ✓ **TST-03**: Per-component test coverage protocol established — 5 Playwright + 3 axe-core specs against `/dev-playground/sf-data-table` fixture (Phase 71); extended to 12 Playwright + 6 axe-core specs against `/dev-playground/sf-combobox` 6-section fixture — v1.10 (Phases 71, 72)
+- ✓ **TST-03**: Per-component Playwright + axe-core test coverage — 8 + 3 (Phase 71), 12 + 6 (Phase 72), 10 + 5 (Phase 73), 12 + 6 (Phase 74), 7+ + 3 (Phase 75); vacuous-green guard MANDATORY before every `axe.analyze()` call — v1.10 (Phases 71-75)
 - ✓ **CB-01..04**: SFCombobox — Pattern C composition over cmdk + Radix Popover; single-select + multi-select (SFBadge chips) + grouping + clear + loading; barrel-exported with zero new runtime deps; cmdk absent from homepage First Load chunk via optimizePackageImports DCE — v1.10 (Phase 72)
-- ✓ **RE-01..06**: SFRichEditor — Tiptap shell with limited toolbar (Tiptap v2 dep, P3 lazy) — v1.10 (Phase 73)
-- ✓ **DEP-02**: `_dep_re_01_decision` ratification block for Tiptap v2 — v1.10 (Phase 73)
+- ✓ **RE-01..06**: SFRichEditor — Tiptap v3.22.5 shell with core toolbar + code + link + ProseMirror scoped rules under `@layer signalframeux`; `injectCSS:false` + `immediatelyRender:false` SSR guards; P3 lazy; Tiptap v3 `shouldRerenderOnTransaction` default flip caught + overridden inline at sf-rich-editor.tsx:141 (commit `65a2002`) — v1.10 (Phase 73)
+- ✓ **DEP-02**: `_dep_re_01_decision` ratification block for @tiptap/{react,pm,starter-kit,extension-link}@3.22.5 — v1.10 (Phase 73)
 - ✓ **FU-01..05**: SFFileUpload — Pattern C drag-drop + clipboard paste + image preview via `URL.createObjectURL` (paired `revokeObjectURL` cleanup) + multi-file + per-file progress via `SFProgress`; zero new runtime deps; `dataTransfer.files` Chromium gap documented as first-class deliverable in `74-VERIFICATION.md` (FU-05/TST-04) — v1.10 (Phase 74)
 - ✓ **TST-04**: SFFileUpload split-test strategy — `locator.setInputFiles()` for acceptance + Storybook `DragActive` `play()` + `fireEvent.dragOver` for visual + 3 primary-source citations (microsoft/playwright#13362, crbug.com/531834, WHATWG HTML §6.10.6) — v1.10 (Phase 74)
-- ✓ **DR-01..06**: SFDateRangePicker — Pattern C composition over SFCalendarLazy + SFPopover trio + SFInput + SFButton presets; range + withTime variant; controlled-only API; type-only `Locale` import (date-fns absent from runtime); SSR-safe `new Date()` only inside `useMemo`; classNames-only styling with `rounded-none` on every key; RDP v9 `data-range-{start|middle|end}` modifiers asserted in spec — v1.10 (Phase 75)
+- ✓ **DR-01..06**: SFDateRangePicker — Pattern C composition over SFCalendarLazy + SFPopover + SFInput + SFButton presets; range + withTime variant; controlled-only API; type-only `Locale` import (date-fns absent from runtime); SSR-safe `new Date()` only inside `useMemo`; classNames-only styling with `rounded-none` on every key; RDP v9 `data-range-{start|middle|end}` modifiers asserted in spec — v1.10 (Phase 75)
 - ✓ **REG-01**: Registry expansion — items[] 56 → 58 with 2 Pattern B standalones (sf-data-table.json + sf-rich-editor.json with `meta.heavy: true` inline content per sf-calendar precedent) + 3 Pattern C entries already shipped per-phase (sf-combobox/sf-file-upload/sf-date-range-picker with `meta.pattern: "C"` and NO `heavy` key); SCAFFOLDING.md count line v1.3 49 → v1.10 58 with historical anchor preserved; same-commit cohort `58aa842` — v1.10 (Phase 76)
 - ✓ **BND-08**: Homepage `/` First Load JS = **188.1 KB / 200 KB** (11.9 KB headroom) on clean build via `tests/v1.8-phase63-1-bundle-budget.spec.ts`; chunk-manifest absence audit PASS for both `@tanstack/react-table` and `@tiptap/*` across 12 homepage chunks; DEP-01 (6 commits) + DEP-02 (3 commits) ratified to main; D-04 8-entry `optimizePackageImports` list intact (zero v1.10 modifications to `next.config.ts`) — v1.10 (Phase 76)
 - ✓ **AES-05**: Final aesthetic regression audit — 5/5 audit items hold based on standing per-phase grep evidence (zero rounded corners across 7 v1.10 component files, no react-day-picker default blue, no Tiptap system fonts, blessed-stop spacing, OKLCH-only colors); user resume-signal `continue` interpreted as `approved` per checkpoint contract; 11 HUMAN-UAT items consolidated to `76-HUMAN-UAT.md` for v1.11 hardening; recovery path documented if Chromatic regression surfaces — v1.10 (Phase 76)
+
+### Active
+
+*v1.10 Library Completeness shipped 2026-05-02. Awaiting `/pde:new-milestone` to scope v1.11.*
+
+**Surfaced for v1.11 (not yet committed to scope):**
+
+- 11 HUMAN-UAT items consolidated at `.planning/phases/76-final-gate/76-HUMAN-UAT.md` — Phase 74 M-01..M-07 (drag-active visual, real drag→drop ingestion via `dataTransfer.files` permanent gap, image preview render quality, `URL.revokeObjectURL` on removal, VoiceOver announcement, light+dark mode parity, Space-key file-dialog parity per LOCKDOWN R-64-d) and Phase 75 M-01..M-04 (iPhone Safari thumb-tap on calendar day cells, NVDA+VoiceOver range start+end announcement, Radix Popover collision-avoidance at 375px viewport in withTime, SFInput type=time keyboard parity)
+- 10 advisory tech-debt items parked — Phase 72 W-01..W-04 (cmdk semantics + `rounded-xl!` `!important` + 6 cast bypasses + chip remove race), Phase 73 WR-01..WR-04 (toolbar roving tabindex + Home/End + brittle Escape + redundant `Link.configure`), Phase 73 IN-03..IN-05 (px values + chromatic.delay duplication)
+- VRF-07 iOS sub-cohort partition still parked from v1.9 (Vercel CLI 50.43.0 `proxy.userAgent` schema gap)
+- `_dep_dt_02_decision` (TanStack Virtual) pre-spec'd v1.11 unlock for `SFDataTableVirtual` separate component
+- Localization / JFM toggles (planned)
+- Petrol/steel-blue color swatch (parked 2026-04-25, awaiting confirmed hex + slot)
+- cdb-v3-dossier T3-T7 plates (separate worktree track)
+- exp/pixel-sort-transitions SPIKE-2 (separate experimental branch)
+- Prune 13 stale `.claude/worktrees/agent-*` directories (gitignored 2026-04-30; deletion deferred per worktree-leakage caution)
+- Cosmetic dual-source-of-truth in `scripts/launch-gate-vrf02-runner.mjs:30` (`cls_max:0` vs `lighthouserc.json:55-58 cls 0.005`)
 
 ### Out of Scope
 
@@ -157,47 +167,22 @@ All 6 phases (71-76) closed; 34/34 requirements satisfied; 10/10 standing-rule l
 - React Three Fiber — excluded; R3F's independent rAF loop conflicts with GSAP globalTimeline.timeScale(0)
 - Lottie — JSON-replayed animation, not generative/procedural; incompatible with DU/TDR aesthetic
 
-## Current Milestone: v1.10 Library Completeness
+## Current Milestone: (between milestones)
 
-**Goal:** Ship 5 highest-impact missing SF components — SFDataTable, SFCombobox, SFRichEditor, SFFileUpload, SFDateRangePicker — to make SignalframeUX adoptable for real product work without breaking the locked aesthetic, the 200 KB First Load target, or any standing rule ratified through v1.9.
+**v1.10 Library Completeness shipped 2026-05-02.** Awaiting `/pde:new-milestone` to scope v1.11.
 
-**Target features:**
-- SFDataTable (sort/filter/pagination/virtualization) — TanStack Table v8, P3 lazy
-- SFCombobox (autocomplete select) — Radix Popover + SFInput composition, no new dep
-- SFRichEditor (admin/blog/message composers) — Tiptap v2 shell, P3 lazy
-- SFFileUpload (drag-drop + progress + multi-file) — no new dep
-- SFDateRangePicker (range + time variant) — react-day-picker, already in stack
-- `_dep_X_decision` ratification block precedent for new runtime npm deps
-
-**Phase shape (6 phases, 71-76):** Phase 71 SFDataTable → Phase 72 SFCombobox → Phase 73 SFRichEditor → Phase 74 SFFileUpload → Phase 75 SFDateRangePicker → Phase 76 Final Gate (Chromatic + bundle audit + docs).
-
-**Hard constraints (carried from standing rules):**
-- 200 KB First Load JS hard target — any regression requires `_dep_X_decision` ratification
-- Zero new runtime npm deps WITHOUT explicit per-component ratification block
-- D-04 chunk-id stability lock RE-LOCKED at v1.9-bundle-reshape baseline (post-Vector-1 DCE); same unlock-window protocol applies
-- AESTHETIC-OF-RECORD.md AES-01..04 enforced per phase
-- Single-ticker rule, PF-04 contract, `experimental.inlineCss: true` rejected
-
-**Standing rules carry forward (locked across all milestones until explicitly retired):**
+**Standing rules locked across all milestones until explicitly retired:**
 
 - Aesthetic preservation hard constraint — `.planning/codebase/AESTHETIC-OF-RECORD.md` is the single read-once standing-rules surface; AES-01..04 enforced per phase (no Chromatic re-baseline for architectural changes)
-- `_path_X_decision` annotation pattern — for any ratified loosening; v1.9 added the requirement-keyed `_wmk_01_decision` variant (REQ-ID-namespaced) and JSON-schema variant (`_path_b_decision` for VRF-08); pattern is for DOCUMENTED tradeoffs, not silent threshold drift
+- `_path_X_decision` annotation pattern — for any ratified loosening (alphabetic variant); v1.9 added the requirement-keyed `_wmk_01_decision` variant and JSON-schema variant (`_path_b_decision` for VRF-08); v1.10 generalised to `_dep_X_decision` for runtime npm dep introductions (REQ-ID-namespaced); pattern is for DOCUMENTED tradeoffs, not silent threshold drift
 - Single-ticker rule — any new rAF call site is a violation; use GSAP ticker or PerformanceObserver only
 - PF-04 contract — Lenis `autoResize: true` is code-of-record; do not revert under perf pressure
 - `experimental.inlineCss: true` rejected — breaks `@layer signalframeux` cascade ordering
-- 200 KB First Load JS hard target restored at v1.9 close (Phase 67); regression beyond this requires explicit `_path_decision` ratification or a follow-up reshape phase
-- D-04 chunk-id stability lock RE-LOCKED at v1.9-bundle-reshape baseline (post-Vector-1 DCE); same unlock-window protocol applies to future chunk-graph attacks
-- No new runtime npm dependencies (devDeps allowed when measurement-time only); stack swaps blocked (Next.js 15.5 / Tailwind v4 / GSAP / Lenis / Three.js locked)
-
-**Backlog (not committed to v1.10 scope; surfacing for `/pde:new-milestone`):**
-
-- Localization / JFM toggles (planned post-feature-complete)
-- Petrol/steel-blue color swatch (parked 2026-04-25, awaiting confirmed hex + slot)
-- cdb-v3-dossier T3-T7 plates (separate worktree track)
-- exp/pixel-sort-transitions SPIKE-2 (separate experimental branch)
-- iOS RUM sub-cohort partition (VRF-07 carry-forward; auto-resolves when Vercel CLI exposes `proxy.userAgent` from Drains records)
-- Prune 13 stale `.claude/worktrees/agent-*` directories (gitignored 2026-04-30; deletion deferred per worktree-leakage caution)
-- Cosmetic dual-source-of-truth in `scripts/launch-gate-vrf02-runner.mjs:30` (`cls_max:0` vs `lighthouserc.json:55-58 cls 0.005`)
+- 200 KB First Load JS hard target — currently 188.1 KB (11.9 KB headroom post-v1.10); regression beyond this requires explicit `_dep_X_decision` ratification or a follow-up reshape phase
+- D-04 chunk-id stability lock — 8-entry `optimizePackageImports` list (`@/components/sf`, `lucide-react`, `radix-ui`, `input-otp`, `cmdk`, `vaul`, `sonner`, `react-day-picker`) frozen at v1.9-bundle-reshape baseline; same unlock-window protocol applies to future chunk-graph attacks
+- Same-commit cohort rule (Pattern C) — component file + barrel export + registry entry MUST land in one commit; Pattern B (P3 lazy + barrel-excluded) defers registry to milestone final-gate by design
+- Vacuous-green guard MANDATORY — every `axe.analyze()` call preceded by `toBeVisible({timeout:10000})` on the live target; without this gate, axe scans the SFSkeleton loading state and reports zero violations trivially
+- Zero new runtime npm dependencies WITHOUT explicit `_dep_X_decision` block (devDeps allowed when measurement-time only); stack swaps blocked (Next.js 15.5 / Tailwind v4 / GSAP / Lenis / Three.js locked)
 
 ## Context
 
@@ -309,6 +294,23 @@ All 6 phases (71-76) closed; 34/34 requirements satisfied; 10/10 standing-rule l
 - 13 stale `.claude/worktrees/agent-*` directories (gitignored 2026-04-30; pruning deferred)
 - Localhost Phase 60 LCP=810ms baseline superseded by Phase 62 prod 657ms + Phase 70 RUM p75=264ms
 
+**Shipped v1.10 Library Completeness** (2026-05-02):
+- 113 files modified, +32,069 / −2,664 LOC across 6 phases (71, 72, 73, 74, 75, 76), 14 plans, 114 commits, 3 days
+- Phase 71 SFDataTable: TanStack Table v8.21.3 (Pattern B P3 lazy); sort + filter (300ms debounce) + pagination + multi-select with indeterminate header + density CVA; `_dep_dt_01_decision` ratified at plan-time with measured bundle_evidence
+- Phase 72 SFCombobox: Pattern C composition over cmdk (direct-import, never barrel) + Radix Popover wrapper-button-as-trigger + SFInput; single + multi-select (SFBadge chips) + grouping; same-commit cohort `394786f`; zero new deps; cmdk barrel-exclusion verified via chunk-manifest grep
+- Phase 73 SFRichEditor: Tiptap v3.22.5 (`@tiptap/react` + `@tiptap/pm` + `@tiptap/starter-kit` + `@tiptap/extension-link`); core toolbar + code + link; `injectCSS:false` + `immediatelyRender:false` SSR guards; ProseMirror scoped rules under `@layer signalframeux` (4 element rules); `_dep_re_01_decision` ratified at plan-time; **Tiptap v3 `shouldRerenderOnTransaction` default flip** (true→false) caught and overridden inline (commit `65a2002`)
+- Phase 74 SFFileUpload: Pattern C with native browser File API; drag-drop + click + paste; MIME/extension + size validation; image preview via `URL.createObjectURL`; `dataTransfer.files` Chromium gap captured as **first-class FU-05 deliverable** (3 primary sources cited); zero new deps
+- Phase 75 SFDateRangePicker: Pattern C composing existing SFCalendarLazy + SFPopover + SFInput + SFButton presets; range + single + withTime variants; type-only `Locale` import (date-fns absent from runtime); SSR-safe `new Date()` via `useMemo`; classNames-only styling (react-day-picker default stylesheet NEVER imported); zero new deps
+- Phase 76 Final Gate: 3 deferred consolidation gates discharged in 2 plans — REG-01 (registry items[] 56→58 + 2 Pattern B standalones with `meta.heavy:true` + SCAFFOLDING.md count v1.3 49 → v1.10 58 with historical anchor); BND-08 (188.1 KB / 200 KB clean build, 11.9 KB headroom, chunk-manifest absence audit PASS); AES-05 (5/5 mechanical evidence + user `continue` resume-signal interpreted as `approved` per checkpoint contract)
+- 10/10 standing-rule locks held across all 6 phases (200 KB target, D-04 chunk-id, AES-01..04, single-ticker, PF-04, zero border-radius, OKLCH-only, `_dep_X_decision` at plan-time, same-commit cohort, zero new runtime npm deps without ratification)
+- Bundle 187.6 → 188.1 KB across milestone (+0.5 KB / 11.9 KB headroom retained); Pattern B P3 lazy strategy proven 2× (TanStack Table + Tiptap absent from homepage chunks); Pattern C zero-dep composition proven 3× (cmdk + dataTransfer-only + react-day-picker absent via DCE)
+
+**Known carry-forwards into v1.11:**
+- 11 HUMAN-UAT items consolidated to `.planning/phases/76-final-gate/76-HUMAN-UAT.md` (Phase 74 M-01..M-07 drag/preview/RAM/voiceover/lite-dark/Space-key + Phase 75 M-01..M-04 touch/screen-reader/popover-collision/time-keyboard parity)
+- 10 advisory tech-debt items parked (Phase 72 W-01..W-04 cmdk semantics + chip race; Phase 73 WR-01..WR-04 toolbar a11y + Tiptap dup; Phase 73 IN-03..IN-05 px values + chromatic.delay)
+- VRF-07 iOS sub-cohort partition still parked from v1.9 (Vercel CLI schema gap)
+- `_dep_dt_02_decision` (TanStack Virtual) pre-spec'd for `SFDataTableVirtual`
+
 ## Key Decisions
 
 | Decision | Milestone | Outcome |
@@ -404,4 +406,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-05-02 — **Phase 76 (Final Gate) closed; v1.10 Library Completeness COMPLETE.** All 6 phases (71-76) closed; 34/34 requirements satisfied; 10/10 standing-rule locks held; ready for `/pde:complete-milestone`. Plan 76-01 (commit `58aa842`) closed REG-01 — registry items[] 56 → 58 with 2 Pattern B standalones (sf-data-table.json + sf-rich-editor.json with `meta.heavy: true` inline content per sf-calendar precedent) + SCAFFOLDING.md count line v1.3 49 → v1.10 58 with historical anchor preserved + worktree-leakage clean. Plan 76-02 (commit `ed3b26b`) closed BND-08 + AES-05 — homepage First Load JS = **188.1 KB / 200 KB** (11.9 KB headroom) on clean build via `tests/v1.8-phase63-1-bundle-budget.spec.ts`; chunk-manifest absence audit PASS for both `@tanstack/react-table` + `@tiptap/*` across 12 homepage chunks; DEP-01 (6 commits ratifying `_dep_dt_01_decision` for @tanstack/react-table@8.21.3) + DEP-02 (3 commits ratifying `_dep_re_01_decision` for @tiptap/{react,pm,starter-kit,extension-link}@3.22.5) verified on main; D-04 8-entry `optimizePackageImports` list intact (zero v1.10 modifications to `next.config.ts`); AES-05 user resume-signal `continue` interpreted as `approved` per checkpoint contract with audit-trail capture in 76-VERIFICATION.md. 11 HUMAN-UAT items (Phase 74 M-01..M-07 + Phase 75 M-01..M-04) consolidated to `76-HUMAN-UAT.md` for v1.11 hardening pass. v1.10 milestone unique surface: 5 new SF components shipped (SFDataTable + SFCombobox + SFRichEditor + SFFileUpload + SFDateRangePicker) under per-component contract; 2 ratified runtime npm dep exceptions via new `_dep_X_decision` block precedent (REQ-ID-namespaced extension of `_wmk_01_decision`); D-04 chunk-id stability lock held throughout milestone (no `optimizePackageImports` drift); AES-01..04 enforced per-phase + AES-05 consolidated this phase.*
+*Last updated: 2026-05-03 after v1.10 milestone — **v1.10 Library Completeness ARCHIVED via `/pde:complete-milestone`.** All 6 phases (71-76) closed; 34/34 requirements satisfied; 10/10 standing-rule locks held; tagged v1.10. Plan 76-01 (commit `58aa842`) closed REG-01 — registry items[] 56 → 58 with 2 Pattern B standalones (sf-data-table.json + sf-rich-editor.json with `meta.heavy: true` inline content per sf-calendar precedent) + SCAFFOLDING.md count line v1.3 49 → v1.10 58 with historical anchor preserved + worktree-leakage clean. Plan 76-02 (commit `ed3b26b`) closed BND-08 + AES-05 — homepage First Load JS = **188.1 KB / 200 KB** (11.9 KB headroom) on clean build via `tests/v1.8-phase63-1-bundle-budget.spec.ts`; chunk-manifest absence audit PASS for both `@tanstack/react-table` + `@tiptap/*` across 12 homepage chunks; DEP-01 (6 commits ratifying `_dep_dt_01_decision` for @tanstack/react-table@8.21.3) + DEP-02 (3 commits ratifying `_dep_re_01_decision` for @tiptap/{react,pm,starter-kit,extension-link}@3.22.5) verified on main; D-04 8-entry `optimizePackageImports` list intact (zero v1.10 modifications to `next.config.ts`); AES-05 user resume-signal `continue` interpreted as `approved` per checkpoint contract with audit-trail capture in 76-VERIFICATION.md. 11 HUMAN-UAT items (Phase 74 M-01..M-07 + Phase 75 M-01..M-04) consolidated to `76-HUMAN-UAT.md` for v1.11 hardening pass. v1.10 milestone unique surface: 5 new SF components shipped (SFDataTable + SFCombobox + SFRichEditor + SFFileUpload + SFDateRangePicker) under per-component contract; 2 ratified runtime npm dep exceptions via new `_dep_X_decision` block precedent (REQ-ID-namespaced extension of `_wmk_01_decision`); D-04 chunk-id stability lock held throughout milestone (no `optimizePackageImports` drift); AES-01..04 enforced per-phase + AES-05 consolidated this phase.*

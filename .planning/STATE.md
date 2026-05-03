@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.10
-milestone_name: milestone
-status: executing
-stopped_at: Phase 71 planning complete — 3 plans (DEP-01 + DT-01..06 + TST-03), 11 tasks, plan-checker PASS
-last_updated: "2026-05-03T05:00:21.877Z"
+milestone_name: Library Completeness
+status: complete
+stopped_at: ""
+last_updated: "2026-05-03T06:00:00.000Z"
 last_activity: 2026-05-03
 progress:
   total_phases: 6
   completed_phases: 6
   total_plans: 14
-  completed_plans: 15
+  completed_plans: 14
   percent: 100
 ---
 
@@ -22,48 +22,42 @@ progress:
 |----------|-------|
 | Project | SignalframeUX — Design System for Culture Division |
 | Core Value | Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure |
-| Current Focus | v1.10 Library Completeness — Phases 71–75 complete; Phase 76 (Final Gate) planned, ready to execute |
-| Milestone | v1.10 Library Completeness (active) |
+| Current Focus | (between milestones) — v1.10 Library Completeness archived; awaiting `/pde:new-milestone` to scope v1.11 |
+| Milestone | v1.10 Library Completeness (shipped 2026-05-02, archived 2026-05-03) |
 
 ## Current Position
 
-Phase: 76
-Plan: Not started
-Status: Executing Phase 76
+Phase: —
+Plan: —
+Status: Milestone complete — between milestones
 Last activity: 2026-05-03
 
 ## Progress
 
 ```
-v1.0: [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
-v1.1: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.2: [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.3: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
-v1.4: [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
-v1.5: [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
-v1.6: [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
-v1.7: [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
-v1.8: [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
-v1.9: [██████████] 100% (5 phases / 11 plans) MILESTONE COMPLETE — shipped 2026-04-30
-v1.10: [█▋        ] 17% (1/6 phases) IN PROGRESS — Phase 71 complete
+v1.0:  [██████████] 100% (14/14 plans) MILESTONE COMPLETE — shipped 2026-04-05
+v1.1:  [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.2:  [██████████] 100% (9/9 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.3:  [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-06
+v1.4:  [██████████] 100% (13/13 plans) MILESTONE COMPLETE — shipped 2026-04-08
+v1.5:  [██████████] 100% (20/20 plans) MILESTONE COMPLETE — shipped 2026-04-10
+v1.6:  [██████████] 100% (10/10 plans) MILESTONE COMPLETE — shipped 2026-04-11
+v1.7:  [██████████] 100% MILESTONE COMPLETE — shipped 2026-04-25
+v1.8:  [██████████] 100% (9 phases / 23 plans) MILESTONE COMPLETE — shipped 2026-04-29
+v1.9:  [██████████] 100% (5 phases / 11 plans) MILESTONE COMPLETE — shipped 2026-04-30
+v1.10: [██████████] 100% (6 phases / 14 plans) MILESTONE COMPLETE — shipped 2026-05-02
 ```
 
-## v1.10 Phase Map
+## v1.10 Phase Map (archived)
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 71 | SFDataTable | DT-01..06, DEP-01, TST-03 | Complete (3 plans) |
-| 72 | SFCombobox | CB-01..04, TST-03 | Not started |
-| 73 | SFRichEditor | RE-01..06, DEP-02, TST-03 | Not started |
-| 74 | SFFileUpload | FU-01..05, TST-03, TST-04 | Not started |
-| 75 | SFDateRangePicker | DR-01..06, TST-03 | Not started |
-| 76 | Final Gate | REG-01, BND-08, AES-05 | Not started (hard dep: 71–75 all) |
-
-**Build-order constraints (encoded in ROADMAP.md):**
-
-- Phases 71–75 have NO hard build-order dependencies among themselves — all building blocks exist; ordering is risk-sequencing only.
-- Phase 76 is a HARD dependency on all of Phases 71–75.
-- Risk sequence rationale: dep-first (71: TanStack Table), confidence-builder (72: zero-dep Pattern C), SSR-complexity (73: Tiptap), zero-dep breathing room (74: FileUpload), complex-composition (75: DateRangePicker).
+| 72 | SFCombobox | CB-01..04, TST-03 | Complete (2 plans) |
+| 73 | SFRichEditor | RE-01..06, DEP-02, TST-03 | Complete (3 plans) |
+| 74 | SFFileUpload | FU-01..05, TST-03, TST-04 | Complete (2 plans) |
+| 75 | SFDateRangePicker | DR-01..06, TST-03 | Complete (2 plans) |
+| 76 | Final Gate | REG-01, BND-08, AES-05 | Complete (2 plans) |
 
 ## v1.9 Phase Map (archived)
 
@@ -262,26 +256,29 @@ v1.10: [█▋        ] 17% (1/6 phases) IN PROGRESS — Phase 71 complete
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-01 for v1.10 kickoff)
+See: .planning/PROJECT.md (updated 2026-05-03 after v1.10 milestone close)
 
 **Core value:** Dual-layer SIGNAL/FRAME model — generative expression through deterministic structure
-**Current focus:** Phase 76 — final-gate
+**Current focus:** (between milestones) — awaiting `/pde:new-milestone` to scope v1.11
 
 ## Session Continuity
 
-Last session: 2026-05-01T19:09:36.150Z
-Stopped at: Phase 71 planning complete — 3 plans (DEP-01 + DT-01..06 + TST-03), 11 tasks, plan-checker PASS
+Last session: 2026-05-03 (v1.10 milestone close)
+Stopped at: v1.10 Library Completeness archived — MILESTONES.md entry written, ROADMAP+REQUIREMENTS+AUDIT snapshotted to .planning/milestones/v1.10-*.md, RETROSPECTIVE.md updated with v1.10 section + cross-milestone trends, PROJECT.md evolved (v1.10 reqs Validated, Active section emptied, footer dated 2026-05-03), STATE.md frontmatter flipped to status: complete, git tag v1.10 created.
 
-**v1.10 carry-forward backlog (from v1.9 close):**
+**v1.11 carry-forward backlog (open after v1.10 close):**
 
-1. **VRF-07 iOS sub-cohort partition** — auto-resolves when Vercel CLI exposes `proxy.userAgent` from Drains-style records; not actionable in v1.10
-2. **13 stale agent worktrees** in `.claude/worktrees/` from 2026-04-28..30 — gitignored 2026-04-30, pruning deferred per worktree-leakage caution
-3. **Cosmetic dual-source-of-truth** in `scripts/launch-gate-vrf02-runner.mjs:30` — `cls_max:0` vs lighthouserc `cls 0.005`; observed 0.0042 satisfies both, alignment is hygiene
-4. **Localhost Phase 60 LCP=810ms** baseline carry-over — superseded by Phase 62 prod 657ms + Phase 70 RUM p75=264ms; v1.10 reviewers should treat 810ms as superseded
+1. **11 HUMAN-UAT items** consolidated to `.planning/phases/76-final-gate/76-HUMAN-UAT.md` — Phase 74 M-01..M-07 (drag-active visual / real drag→drop ingestion / image preview render quality / `URL.revokeObjectURL` on removal / VoiceOver announcement / light+dark mode parity / Space-key file-dialog parity per LOCKDOWN R-64-d) + Phase 75 M-01..M-04 (iPhone Safari thumb-tap on calendar day cells, NVDA+VoiceOver range start+end announcement, Radix Popover collision-avoidance at 375px viewport in withTime, SFInput type=time keyboard parity)
+2. **10 advisory tech-debt items parked** — Phase 72 W-01..W-04 (cmdk semantics + chip remove race), Phase 73 WR-01..WR-04 (toolbar a11y + Tiptap dup), Phase 73 IN-03..IN-05 (px values + chromatic.delay)
+3. **VRF-07 iOS sub-cohort partition** — still parked from v1.9 (auto-resolves on Vercel CLI upgrade exposing `proxy.userAgent` from Drains records)
+4. **`_dep_dt_02_decision` (TanStack Virtual)** — pre-spec'd v1.11 unlock for `SFDataTableVirtual` separate component
+5. **13 stale agent worktrees** in `.claude/worktrees/` from 2026-04-28..30 — gitignored 2026-04-30, pruning still deferred
+6. **Cosmetic dual-source-of-truth** in `scripts/launch-gate-vrf02-runner.mjs:30` — `cls_max:0` vs lighthouserc `cls 0.005`; observed 0.0042 satisfies both
+7. **Localhost Phase 60 LCP=810ms** baseline carry-over — superseded by Phase 62 prod 657ms + Phase 70 RUM p75=264ms
 
-**Active separate tracks (per memory, not v1.10):**
+**Active separate tracks (per memory, not v1.11 by default):**
 
 - `cdb-v3-dossier` — fully shipped (T1-T8 + D8.x + D9.x + D10.x polish waves); parallel aesthetic branch, no merge-to-main intent
 - `exp/pixel-sort-transitions` — SPIKE-2 awaits (kernel extraction → shader prototype); could be pulled into v1.11 craft-completion milestone
 
-**Resume:** `/pde:execute-phase 71` to execute SFDataTable (Wave 1 = 71-01 `_dep_dt_01_decision` + install + bundle measurement; sequential through Wave 3).
+**Resume:** `/pde:new-milestone` to scope v1.11.

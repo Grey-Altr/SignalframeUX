@@ -315,6 +315,64 @@
 
 ---
 
+## Milestone: v1.10 — Library Completeness
+
+**Shipped:** 2026-05-02 (Phase 76 close commit `3037ffb`, milestone close in this session)
+**Phases:** 6 (71, 72, 73, 74, 75, 76) | **Plans:** 14 | **Sessions:** 3 days, 114 commits, 113 files modified, +32,069 / −2,664 LOC
+
+### What Was Built
+
+- **SFDataTable (Phase 71)** — Pattern B (P3 lazy) + `@tanstack/react-table@8.21.3`; sort cycle on `<button>` headers (WCAG 2.1.1), 300ms-debounced filter, pagination composing existing SFPagination, multi-select with indeterminate header, density CVA + skeleton + empty state. `SFDataTableLazy` consumed via `@/components/sf/sf-data-table-lazy` (NOT barrel). `_dep_dt_01_decision` 7-field ratification block authored BEFORE `pnpm add`; bundle_evidence back-filled from clean `ANALYZE=true pnpm build` measurement.
+- **SFCombobox (Phase 72)** — Pattern C composition over SFCommand (direct-import) + SFPopover (wrapper-button-as-trigger) + SFInput. Single + multi-select (SFBadge chips with remove affordance), grouping via CommandGroup. Same-commit cohort `394786f` (component + barrel + registry). Zero new deps; cmdk barrel-exclusion verified via chunk-manifest grep.
+- **SFRichEditor (Phase 73)** — Pattern B (P3 lazy) + Tiptap v3.22.5 (`@tiptap/react` + `@tiptap/pm` + `@tiptap/starter-kit` + `@tiptap/extension-link`). Toolbar (bold/italic/underline/strike, H1-H3, ul/ol, blockquote, code, link), `immediatelyRender: false` SSR guard, `injectCSS: false`, ProseMirror scoped rules in `app/globals.css` under `@layer signalframeux`. `_dep_re_01_decision` ratified at plan-time. **Inline gap-closure (commit `65a2002`)** — Tiptap v3 default flip (`shouldRerenderOnTransaction: true → false`) caught and overridden, otherwise toolbar `editor.isActive()` reactivity goes stale.
+- **SFFileUpload (Phase 74)** — Pattern C with native browser File API only — drag-drop + click-to-browse + paste-from-clipboard, MIME/extension + size validation, multi-file + per-file progress via existing SFProgress, image preview via `URL.createObjectURL` (NOT `FileReader.readAsDataURL`). `dataTransfer.files` Chromium gap captured as **first-class FU-05 deliverable** (3 primary sources cited: microsoft/playwright#13362, crbug.com/531834, WHATWG HTML §6.10.6), not papered over with vacuously-green tests. Two pre-existing bugs auto-fixed (sf-progress aria-valuenow, error chip contrast). Zero new deps.
+- **SFDateRangePicker (Phase 75)** — Pattern C composing existing SFCalendarLazy (already P3 lazy) + SFPopover + SFInput + SFButton presets. `mode: "range" | "single"`, presets panel left rail, `withTime` variant (inline `<SFInput type="time">`, no shared SFTimePicker extraction at single-consumer scale), Locale type-only pass-through (NEVER runtime), SSR hydration guard (`new Date()` only inside `useMemo`). react-day-picker default stylesheet NEVER imported — 100% styling via `classNames` prop using `--sfx-*` tokens. Zero new deps.
+- **Final Gate (Phase 76)** — REG-01 closed via same-commit cohort `58aa842` (registry items[] 56→58 + 2 Pattern B standalones with `meta.heavy:true` inline content per sf-calendar precedent + SCAFFOLDING.md count v1.3 49 → v1.10 58 with historical anchor preserved). BND-08 closed at 188.1 KB / 200 KB (11.9 KB headroom) on clean build via `tests/v1.8-phase63-1-bundle-budget.spec.ts`; chunk-manifest absence audit PASS for both `@tanstack/react-table` and `@tiptap/*` across 12 homepage chunks. AES-05 closed via 5/5 mechanical evidence (zero rounded corners across 7 v1.10 component files, no react-day-picker default blue, no Tiptap system fonts, blessed-stop spacing, OKLCH-only colors) + user resume-signal `continue` interpreted as `approved` per checkpoint contract.
+
+### What Worked
+
+- **`_dep_X_decision` ratification block at plan-time** — generalisation of v1.9's `_wmk_01_decision` REQ-ID-namespaced precedent. DEP-01 + DEP-02 both authored BEFORE `pnpm add`, with bundle_evidence back-filled from MEASURED post-install build (never estimated). Two runtime npm deps shipped under explicit ratification with audit trail; zero silent additions.
+- **Pattern B vs Pattern C distinction held cleanly across 5 components** — Pattern B (heavy deps, lazy chunk, NEVER barrel-exported, registry deferred to milestone final-gate) for SFDataTable + SFRichEditor; Pattern C (zero new deps, composition over existing primitives, barrel-exported, same-commit registry cohort) for SFCombobox + SFFileUpload + SFDateRangePicker. Pattern C proven 3× to keep underlying libs out of homepage First Load chunk manifest via DCE.
+- **Vacuous-green guard for axe-core was load-bearing** — every `axe.analyze()` call preceded by `toBeVisible({timeout:10000})` on the live target (`[contenteditable="true"]` for editors, popover content for combobox). Without this gate, axe scans the SFSkeleton loading state and reports zero violations trivially. Phases 71/72/73/74/75 all enforce; pattern documented inline in spec headers.
+- **dataTransfer.files Chromium gap promoted to first-class deliverable (Phase 74)** — instead of papering over with a fragile Playwright spec or skipping coverage, FU-05 deliberately documents the permanent gap with 3 primary sources cited and routes drag-active visual coverage through a Storybook `play()` + `fireEvent.dragOver` story. Test-strategy split honest about what each track covers.
+- **Audit-before-planning at every phase** — feedback `feedback_audit_before_planning.md` honoured throughout. Phases 71-76 all opened with a quick reality check against shipped state before spawning planner agents; zero late-milestone snapshot drift hit this cycle.
+- **Gap-closure inline at the discovering plan (Phase 73)** — Tiptap v3 default flip (`shouldRerenderOnTransaction: true → false`) caught during Plan 02 testing, then closed inline at `sf-rich-editor.tsx:141` (commit `65a2002`) before Plan 03 exit; no defer-to-next-phase chain.
+
+### What Was Inefficient
+
+- **CLI auto-output garbage at v1.10 close (predicted)** — `pde-tools milestone complete` would emit wrong phase counts and aggregated-from-every-prior-summary accomplishments per `feedback_milestone_complete_cli_garbage.md`. Skipped the CLI entirely this milestone in favor of manual MILESTONES.md/PROJECT.md/STATE.md edits; saved the cleanup labor that v1.9 close incurred.
+- **Workflow's "delete originals" step contradicts project precedent** — per `feedback_milestone_workflow_keep_originals.md`, the workflow's delete-then-archive ROADMAP.md/REQUIREMENTS.md step contradicts 9 prior milestones' practice (snapshot to milestones/ + leave originals in place; replaced naturally on next /pde:new-milestone). Skipped the delete step and the cross-milestone "reorganize ROADMAP" step — neither has ever been adopted in this project's ROADMAP layout.
+- **AES-05 user-checkpoint signal interpretation needed explicit contract** — user `continue` on the AES-05 audit checkpoint required interpreting as `approved` (the literal first option). Per `feedback_continue_as_approve.md` already in memory; audit-trail capture in 76-VERIFICATION.md mandatory. Future milestones should pre-document the checkpoint resume-signal contract before opening a checkpoint.
+- **Two pre-existing bugs (sf-progress aria-valuenow, error chip contrast) surfaced only inside Phase 74 a11y testing** — no separate diagnostic phase caught them. Phase 74 absorbed the fixes inline (zero rework cost), but they should have been caught by the Phase 67 a11y sweep at v1.9 close.
+- **Phase 71 has 4 SUMMARY.md files (3 plans + 1 phase-level) while Phases 72-76 have only per-plan SUMMARYs** — phase-level SUMMARY.md remains optional in this project's convention. Phase 71's extra phase-level summary was useful at the dep-ratification precedent juncture, but format inconsistency makes accomplishment-extraction harder for the milestone-close workflow.
+
+### Patterns Established
+
+- **`_dep_X_decision` REQ-ID-namespaced ratification block for runtime npm deps** — 7 fields (decided / audit / dep_added / version / rationale / bundle_evidence / review_gate); MUST be authored BEFORE `pnpm add`; bundle_evidence MUST be measured post-install (never estimated). Generalisation of v1.9's `_wmk_01_decision`. Sets the canonical mechanism for any future v1.11+ runtime npm dep introduction (review_gates already pre-spec'd: `_dep_dt_02_decision` for TanStack Virtual, future Tiptap v4).
+- **Pattern B vs Pattern C component-shape distinction** — formalised in REQUIREMENTS.md and ROADMAP.md as competing component shapes; selection driven by dep weight (>3KB gzip → Pattern B P3 lazy; ≤3KB or zero-dep composition → Pattern C barrel-exported). Both shapes carry distinct registry-cohort rules (Pattern B defers to final-gate; Pattern C lands same-commit).
+- **Vacuous-green guard MANDATORY for axe-core specs** — `toBeVisible({timeout:10000})` before every `axe.analyze()` call; rule violation surfaces as zero-violations-on-skeleton-state false-positive. Codified in 5 phase spec files; would catch regression on any future axe spec.
+- **Per-rule sharp axe scans via `AxeBuilder().include(testid-section)`** — isolates fixture-state regressions from sibling-section noise; replaces blanket `analyze()` over full page. Mirrors phase 60's _path_p_decision rule-isolation pattern.
+- **Same-commit cohort rule (Pattern C only)** — component file + barrel export + registry entry MUST land in one commit (Phase 72 cohort `394786f`, Phase 75 cohort `06f5df6`); Pattern B phases (71, 73) defer registry to milestone final-gate by design.
+- **Tiptap v3 `shouldRerenderOnTransaction` override pattern** — v3 defaults to `false`; toolbars reading `editor.isActive()` go stale unless explicitly set to `true` on every `useEditor()` call. Documented in `feedback_tiptap_v3_rerender_default.md` for any future Tiptap-touching code.
+- **AES-05 user-checkpoint resume-signal interpretation** — `continue` interpreted as `approved` per the checkpoint contract; explicit audit-trail capture (verbatim signal + interpretation rationale + recovery path) is mandatory in VERIFICATION.md.
+
+### Key Lessons
+
+1. **`_dep_X_decision` at plan-time is the durable mechanism for runtime dep introduction** — author the block BEFORE `pnpm add`, leave bundle_evidence empty, populate it from MEASURED post-install build. Treats deps like measured constants, not estimated negotiations. v1.9's `_wmk_01_decision` was the proof; v1.10 generalised it cleanly.
+2. **Pattern B and Pattern C are not interchangeable** — heavy deps in barrels regress homepage First Load instantly via Tailwind v4 source-scanning + Next.js `optimizePackageImports` interaction. Pattern B's barrel-exclusion is enforced by chunk-manifest absence audit at the milestone final-gate, not just by convention. SFDataTable + SFRichEditor would have failed BND-08 if shipped via Pattern C.
+3. **Permanent vendor gaps deserve first-class documentation, not silent omission** — `dataTransfer.files` Chromium limitation in Playwright is permanent; documenting it as FU-05 with 3 primary sources cited is more honest than skipping coverage or shipping a vacuously-green spec. Test-strategy splits should be explicit about what each track covers AND what it cannot.
+4. **CLI auto-output for milestone-close has been wrong every milestone since v1.7** — v1.7, v1.8, v1.9, and now v1.10 all required manual MILESTONES.md authorship. The CLI scaffolding exists for tools that don't read SUMMARY.md frontmatters; ours do. Skip the CLI for milestone artifact authoring; use it only for archive-file moves and STATE.md frontmatter timestamp bumps.
+5. **Workflow's "delete originals" step is a hazard, not a feature** — project precedent across 9 milestones is to snapshot ROADMAP.md/REQUIREMENTS.md to `.planning/milestones/vN-*.md` and leave the originals in place to be replaced naturally by the next `/pde:new-milestone`. Deleting them creates a window where the planning surface has no current ROADMAP, breaking subsequent commands that expect `.planning/ROADMAP.md` to exist.
+6. **Vacuous-green guard pays for itself in 1 spec write** — without `toBeVisible` before `axe.analyze()`, axe scans the loading skeleton; spec passes; regression ships. With the guard, no axe spec can vacuously pass on initial mount. Adding the guard is a 2-line cost; missing it is a multi-phase production-bug cost.
+
+### Cost Observations
+
+- Model mix: opus-orchestrator-heavy through plan-time ratification (Phases 71 + 73 _dep_X_decision authoring); sonnet-executor for the 5 component implementation phases; opus for the Phase 76 final-gate consolidation.
+- Sessions: 3 calendar days (2026-04-30 → 2026-05-02). Phases 71 + 72 shipped same-day (2026-05-01); Phases 73-76 shipped over the next two days. 114 commits / 6 phases = 19 commits/phase average; +32,069 / −2,664 LOC means net code grew (5 new components shipped).
+- Notable: 2 ratified runtime npm deps added (`@tanstack/react-table` + 4× `@tiptap/*`); zero unratified deps. Bundle moved 187.6 → 188.1 KB across the milestone (+0.5 KB) — Pattern B P3 lazy strategy worked exactly as designed.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -326,6 +384,8 @@
 | v1.2 | 1 | 6 | All infrastructure — discuss skipped for all phases, 3 parallel wave executions |
 | v1.7 | multi-session over 13 days | 14 | Lean-ratification campaign — single-doc audit replaces per-phase verifiers; six process-gate sub-families catalogued |
 | v1.8 | multi-session over 5 days | 9 | `_path_X_decision` ratification pattern + 3-PR atomic bisect cohort + Path N CI baseline bootstrap; durable per-PR LHCI gate + branch protection |
+| v1.9 | multi-session over 2 days | 5 | IOU-discharge posture (4/4 v1.8 path_decisions retired); `_wmk_01_decision` REQ-ID-namespaced precedent; D-06 outcome ladder + JSON-schema `_path_b_decision` |
+| v1.10 | multi-session over 3 days | 6 | Library expansion under `_dep_X_decision` ratification; Pattern B vs Pattern C component-shape distinction formalised; vacuous-green guard mandatory for axe |
 
 ### Cumulative Quality
 
@@ -336,6 +396,8 @@
 | v1.2 | 30+ must-have checks | 0/6 phases (partial — no test runner) | 6 (all non-blocking: observer disconnect, NaN guard, Lenis race) |
 | v1.7 | 50 reqs grep-audited (40R/15O/9C/0P) | n/a — ratification model | 4 (3 dead-derive slots + 1 cosmetic checkbox set) |
 | v1.8 | 26/29 reqs satisfied + 8 LHCI path_decisions + 2 test-spec ratifications | 2/9 phases (58, 60); 4/9 partial; 3/9 missing (gap-closure phases) | 4 (Phase 60 missing VERIFICATION.md, Phase 60 localhost LCP measurement, Phase 64 partial summaries, runner/lhci dual-source-of-truth) + 8 v1.9 carry-overs (VRF-01/04/05 + 5 path_close items) |
+| v1.9 | 14/14 reqs Validated + `_wmk_01_decision` + JSON-schema `_path_b_decision` | 5/5 phases | 0 blocking + 4 v1.10 carry-overs (VRF-07 iOS sub-cohort, 13 stale agent worktrees, localhost Phase 60 baseline annotation, runner/lhci cosmetic dual-source) |
+| v1.10 | 34/34 reqs Validated + `_dep_dt_01_decision` + `_dep_re_01_decision` | 6/6 phases (5 via VALIDATION.md frontmatter, 1 via VERIFICATION.md inline) | 0 blocking + 10 advisory parked (Phase 72 W-01..W-04 + Phase 73 WR-01..WR-04 + Phase 73 IN-03..IN-05) + 11 HUMAN-UAT items consolidated to v1.11 |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -349,3 +411,5 @@
 8. Audit revisions go stale fast on multi-session milestones — re-run audit immediately before complete-milestone if phase closes happened since (v1.8-formalized)
 9. `_path_X_decision` annotation block is the ratification pattern for documented design tradeoffs — auditable rationale + evidence + review gate beats both over-rigid rejection and silent threshold drift (v1.8-formalized)
 10. Cross-platform CI baselines need an artifact bootstrap pattern (Path N), not just rerunning — `actions/upload-artifact@v4 if: always()` + force-add commit is the working recipe (v1.8-formalized)
+11. `_dep_X_decision` REQ-ID-namespaced ratification block at plan-time is the durable mechanism for runtime npm dep introduction — bundle_evidence MUST be MEASURED post-`pnpm add`, never estimated; both DEP-01 + DEP-02 in v1.10 ratified this way, and Pattern B P3 lazy posture proven 2× to keep heavy deps out of homepage chunks (v1.10-formalized)
+12. Vacuous-green guard for axe-core (`toBeVisible` before `analyze()`) is mandatory, not optional — without it, axe scans skeleton/loading state and reports zero violations trivially; codified across 5 phases of v1.10 a11y specs (v1.10-formalized)
